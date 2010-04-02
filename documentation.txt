@@ -1,0 +1,54 @@
+Non-heirarchal = Use when a value can have more than one parent.  Ex. catalog item relationships.  1 item can be an upsell, a cross sell, a back end sell, etc. (GOES INTO APP STRUCTURE)
+
+Heirarchal = Use when a value can only have one parent.  Ex. catalog brands.  Mickey Mouse is a brand of the Disney brand, and couldn't have any other parent brands.  (GOES INTO TABLE STRUCTURE)
+
+
+Made an except for the app database structure, when it comes to contacts.  There are only two kinds of contacts possible (hard coded) - people and companies.  Because of that, the controller code is what needs to decide who the activities, addresses, details, etc, belong to. (instead of the database dictating who they belong to, as is the case with the rest of the apps)
+
+
+app structure as follows...
+
+ -  root table (ie. app name with an "s")  (ie. catalogs)
+ -  any multi value sub items (ie. catalog_brands, catalog_items)
+ -  multi-value files table (ie. catalog_brand_files)
+ -  multi-value tags table (ie. catalog_brand_tags)
+ -  multi-value user groups table (ie. catalog_brand_users) - who can edit this multi-value?
+
+ if non-heirarchal (refer to above)
+	 -  multi-value relationships (ie. catalog_item_relationships)
+	 -  multi-value relationship types (ie. catalog_item_relationship_types)
+ -  root files table (ie. catalog_files)
+ -  root tags table (ie. catalog_tags)
+ -  root user groups table (ie. catalog_user_groups) - who can edit this root?
+
+ if non-heirarchal (refer to above)
+	 -  root relationships (ie. catalog_item_relationships)
+	 -  root relationship types (ie. catalog_item_relationship_types)
+
+
+database table structure goes as follow...
+
+ -  id
+ 	if heirarchal
+	 -  parent
+ -  selector (ie. type)
+ -  values 
+ -  created by user id (usually user_id) (optional)
+ -  relational_ids
+ -  created date
+ -  modified date
+
+
+SAVE THIS THINKING JUST IN CAse ###################################
+I chose to separate companies and people by database tables, because when I go to create fields, I want them to go straight into the company or people tables.  ie. if I create a company formation field, I want that to be a field in the contacts_companies table.  (This was a very hard choice, because we could have put all contacts into one table, and then just tagged them or typed them as company or people - and though this would be more extensible, it seemed to make the separation between files, activities, and details, etc too much - we'd have had to add like 10 new tables all holding very similar data)
+########################## DEPRECATED THINKING END
+
+What if you do everything thats the same in the root, and then everything thats different gets its own table by type.  So contact type people have a table called contact_people and that has "first name", "last name", and contact_companies has just "name", meanwhile they share "lead source", "industry".  And so contact people gets a contact_id and can only have one contact id.  And when you display it, you would show contact people if this contact id has a person assoicated with, and if not then show the company associated with it. <!!!!  THIS WORKED PERFECTLY !!!!!!>
+
+
+Anything with types should not have tags. Types is a different way of tagging, and you don't need both.  But they should have files, and user groups. 
+
+
+
+
+For every root level type there needs to be a form associated with it. 

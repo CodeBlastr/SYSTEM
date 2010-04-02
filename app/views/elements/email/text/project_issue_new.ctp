@@ -1,0 +1,2 @@
+Hello,
+This email is notification that a new issue has been assigned to <?php echo $Contact['Contact']['primary_email']; ?>. Please login to check the description and status. http://www2.razorit.com/admin/projects/
