@@ -2,6 +2,7 @@
 class Alias extends AppModel {
 
 	var $name = 'Alias';
+	var $userField = array();
 	var $validate = array(
 		#'name' => array('notempty'),
 		'alias' => array(

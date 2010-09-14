@@ -8,6 +8,7 @@
 class User extends AppModel {
 
 	var $name = 'User';
+	var $userField = array();
 	var $validate = array(
 		'username' => array(
 					'notempty'=>array(

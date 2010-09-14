@@ -3,6 +3,7 @@ class Enumeration extends AppModel {
 	
 	var $name = 'Enumeration';
 	public $order = 'weight ASC';
+	var $userField = array();
 	
 	public $valdiate = array(
 		'type' => array(
