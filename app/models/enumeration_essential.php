@@ -1,6 +1,7 @@
 <?php
 class EnumerationEssential extends AppModel {
 	var $name = 'EnumerationEssential';
+	var $userField = array();
 	public $order = 'weight ASC';
 	
 	public $valdiate = array(

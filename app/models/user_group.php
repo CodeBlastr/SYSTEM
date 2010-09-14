@@ -9,7 +9,7 @@ class UserGroup extends AppModel {
 
 	var $name = 'UserGroup';	
 	var $actsAs = array('Acl' => array('requester'));
- 
+ 	var $userField = array();
 	function parentNode() {
 	    return null;
 	}

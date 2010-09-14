@@ -2,6 +2,7 @@
 class Attribute extends AppModel {
 
 	var $name = 'Attribute';
+	var $userField = array();
 	var $validate = array(
 		'attribute_group_id' => array('numeric'),
 	    'code' => array(
