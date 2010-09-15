@@ -1,7 +1,7 @@
 /app/tmp/logs/debug.log
 /app/tmp/logs/error.log
-/app/tmp/cache/models
-/app/tmp/cache/persistent
-/app/tmp/cache/views
+/app/tmp/cache/models/cake*
+/app/tmp/cache/persistent/cake*
+/app/tmp/cache/views/cake*
 /plugins
 /vendors
