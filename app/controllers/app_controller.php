@@ -11,7 +11,7 @@ class AppController extends Controller {
 		# set up theme so that we can have multiple sites
 		$this->theme = 'default';
         # Configure AuthComponent
-        $this->Auth->authorize = 'actions';
+        $this->Auth->authorize = 'controller';
         $this->Auth->loginAction = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
        # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
@@ -37,8 +37,18 @@ class AppController extends Controller {
 			$this->__parseIncludedPages ($defaultTemplate);
 			$this->set(compact('defaultTemplate'));
 		}
+		
+
     }
+    
+    /*
+     * Determines if a record belongs to an user or not . 
+     * 
+     */
 	
+    function isAuthorized(){
+    	return true; 	
+    }
 
     function beforeRender() {
 		if($this->RequestHandler->isAjax()) { 
@@ -498,6 +508,7 @@ function __build_acl() {
 ################################ END ACO ADD #############################
 ##########################################################################
 
+	
  
 }
 ?>

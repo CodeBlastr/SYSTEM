@@ -5,7 +5,7 @@ class DATABASE_CONFIG {
 		'driver' => 'mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'zuha',
+		'login' => 'dev',
 		'password' => '123',
 		'database' => 'zuha',
 	);
@@ -13,8 +13,8 @@ class DATABASE_CONFIG {
 		'driver' => 'mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'zuha',
-		'password' => '123',
+		'login' => 'root',
+		'password' => 'malazlar',
 		'database' => 'zuha',
 	);
 }
