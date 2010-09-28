@@ -31,7 +31,7 @@ class AppController extends Controller {
 			$user_model = ClassRegistry::init('User');
 			$user_moodel->recursive = 1 ;
 			$u_data = $user_model->find('first' , array(
-				'conditions'=>array('User.id'=>$this->Auth->user('id'),
+				'conditions'=>array('User.id'=>$this->Auth->user('id')),
 				'contain'=>array(
 					'UserGroup'=>array(
 						'fields'=>array(
@@ -41,7 +41,7 @@ class AppController extends Controller {
 					)
 				)
 				
-			)));
+			));
 			
 			$perm_aro = ClassRegistry::init('Permissions.Arore');
 			$perm_aro->recursive = 0;
@@ -77,7 +77,8 @@ class AppController extends Controller {
      */
 	
     function isAuthorized(){
-   		return $this->Acl->check();
+   		//return $this->Acl->check();
+   		return true;
     }
 
     function beforeRender() {
