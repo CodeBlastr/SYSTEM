@@ -6,6 +6,7 @@ class AppController extends Controller {
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
 	var $components = array('Auth', 'Session', 'Acl', 'RequestHandler', 'Email', 'RegisterCallbacks'/*, 'Security' Messed up ajax editing */ );
 	var $view = 'Theme';
+	var $userGroup = '';
 
 	function beforeFilter() {	
 		# set up theme so that we can have multiple sites
@@ -25,6 +26,36 @@ class AppController extends Controller {
 			$this->$model->setParams($this->params);
 		}
 		
+		#get users group
+		if($this->Auth->user('id') != 0){
+			$user_model = ClassRegistry::init('User');
+			$user_moodel->recursive = 1 ;
+			$u_data = $user_model->find('first' , array(
+				'conditions'=>array('User.id'=>$this->Auth->user('id'),
+				'contain'=>array(
+					'UserGroup'=>array(
+						'fields'=>array(
+							'id',
+							'name'
+						)
+					)
+				)
+				
+			)));
+			
+			$perm_aro = ClassRegistry::init('Permissions.Arore');
+			$perm_aro->recursive = 0;
+			$ar_dat = $perm_aro->find('first' , array(
+					'conditions'=>array(
+							'Arore.foreign_key'=>$u_data['UserGroup']['id']
+					), 
+					'contain'=>array(),
+					'fields'=>array('id')
+			));
+			
+			$this->userGroup = $ar_dat["Arore"]["id"];
+		}
+		
 		# show admin layout for admin pages
 		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' && $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
 			$this->layout = 'admin';
@@ -37,7 +68,6 @@ class AppController extends Controller {
 			$this->__parseIncludedPages ($defaultTemplate);
 			$this->set(compact('defaultTemplate'));
 		}
-		
 
     }
     
@@ -47,7 +77,7 @@ class AppController extends Controller {
      */
 	
     function isAuthorized(){
-    	return true; 	
+   		return $this->Acl->check();
     }
 
     function beforeRender() {

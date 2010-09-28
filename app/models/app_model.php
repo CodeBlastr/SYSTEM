@@ -236,7 +236,20 @@ class AppModel extends Model {
 	      return parent::delete($id, $cascade);
 	}
 	
-	function does_belongs(){
+	/*
+	 * 
+	 */
+	
+	function beforeDelete(){
+		
+	}
+	
+	
+	/*
+	 * Checks if the recor belongs to some one or not .  
+	 */
+	
+	function does_belongs($user){
 		if($this->id){
 			$dat = $this->find('first' , array(
 					'contain'=>array(),
