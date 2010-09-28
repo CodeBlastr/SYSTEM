@@ -194,8 +194,74 @@ class AppModel extends Model {
     	          unset($results[$key][0]);
     	       }
     	    }
-    	}	
+    	}
+
     	return $results;
+	}
+	
+	function findMy($type, $options=array())
+	{
+	   if($this->hasField($this->userField) && !empty($_SESSION['Auth']['User']['id'])){
+	      $options['conditions'][$this->alias.'.'.$this->userField] = $_SESSION['Auth']['User']['id'];
+	      return parent::find($type, $options);
+	   }
+	   else{
+	      return parent::find($type, $options);
+	   }
+	}
+	
+	function deleteMy($id = null, $cascade = true)
+	{
+	   if (!empty($id)) {
+	      $this->id = $id;
+	   }
+	   $id = $this->id;
+	
+	   if($this->hasField($this->userField) && !empty($_SESSION['Auth']['User']['id'])){
+	      $opt = array(
+	         'conditions' => array(
+	            $this->alias.'.'.$this->userField => $_SESSION['Auth']['User']['id'],
+	            $this->alias.'.id' => $id,
+	            ),
+	         );
+	      if($this->find('count', $opt) > 0){
+	         return parent::delete($id, $cascade);
+	      }
+	      else{
+	         return false;
+	      }
+	
+	   }
+	   else
+	      return parent::delete($id, $cascade);
+	}
+	
+	/*
+	 * 
+	 */
+	
+	function beforeDelete(){
+		
+	}
+	
+	
+	/*
+	 * Checks if the recor belongs to some one or not .  
+	 */
+	
+	function does_belongs($user){
+		if($this->id){
+			$dat = $this->find('first' , array(
+					'contain'=>array(),
+					'conditions'=>array(
+						 'id'=>$this->id,
+						 $this->userField=>$_SESSION['Auth']['User']['id']
+					)
+			));		
+		}else{
+			return true;
+		}
+		
 	}
 
 }
