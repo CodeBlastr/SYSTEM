@@ -5,3 +5,4 @@
 /app/tmp/cache/views/cake*
 /plugins
 /vendors
+/app/config/database.php
