@@ -1,3 +1,4 @@
+/app/config/database.php
 /app/tmp/logs/debug.log
 /app/tmp/logs/error.log
 /app/tmp/cache/models/cake*
@@ -5,4 +6,7 @@
 /app/tmp/cache/views/cake*
 /plugins
 /vendors
+<<<<<<< HEAD
 /app/config/database.php
+=======
+>>>>>>> b877f86785eb1e83854ce4cf40d6b0762c104289
