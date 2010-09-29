@@ -26,7 +26,9 @@ class AppController extends Controller {
 			$this->$model->setParams($this->params);
 		}
 		
+		
 		#get users group
+		/*
 		if($this->Auth->user('id') != 0){
 			$user_model = ClassRegistry::init('User');
 			$user_moodel->recursive = 1 ;
@@ -54,7 +56,8 @@ class AppController extends Controller {
 			));
 			
 			$this->userGroup = $ar_dat["Arore"]["id"];
-		}
+			
+		}*/
 		
 		# show admin layout for admin pages
 		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' && $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {

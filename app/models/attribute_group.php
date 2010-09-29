@@ -37,5 +37,7 @@ class AttributeGroup extends AppModel {
 		)
 	);
 
+	// Does this model requires user level access
+	var $userLevel = false;
 }
 ?>

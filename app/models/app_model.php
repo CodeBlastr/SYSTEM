@@ -237,15 +237,6 @@ class AppModel extends Model {
 	}
 	
 	/*
-	 * 
-	 */
-	
-	function beforeDelete(){
-		
-	}
-	
-	
-	/*
 	 * Checks if the recor belongs to some one or not .  
 	 */
 	
