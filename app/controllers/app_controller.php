@@ -6,12 +6,13 @@ class AppController extends Controller {
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
 	var $components = array('Auth', 'Session', 'Acl', 'RequestHandler', 'Email', 'RegisterCallbacks'/*, 'Security' Messed up ajax editing */ );
 	var $view = 'Theme';
+	var $userGroup = '';
 
 	function beforeFilter() {	
 		# set up theme so that we can have multiple sites
 		$this->theme = 'default';
         # Configure AuthComponent
-        $this->Auth->authorize = 'actions';
+        $this->Auth->authorize = 'controller';
         $this->Auth->loginAction = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
        # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
@@ -23,6 +24,36 @@ class AppController extends Controller {
 		# because app_model doesn't have access to $this->params, we pass it here
 		foreach($this->modelNames as $model) {
 			$this->$model->setParams($this->params);
+		}
+		
+		#get users group
+		if($this->Auth->user('id') != 0){
+			$user_model = ClassRegistry::init('User');
+			$user_moodel->recursive = 1 ;
+			$u_data = $user_model->find('first' , array(
+				'conditions'=>array('User.id'=>$this->Auth->user('id')),
+				'contain'=>array(
+					'UserGroup'=>array(
+						'fields'=>array(
+							'id',
+							'name'
+						)
+					)
+				)
+				
+			));
+			
+			$perm_aro = ClassRegistry::init('Permissions.Arore');
+			$perm_aro->recursive = 0;
+			$ar_dat = $perm_aro->find('first' , array(
+					'conditions'=>array(
+							'Arore.foreign_key'=>$u_data['UserGroup']['id']
+					), 
+					'contain'=>array(),
+					'fields'=>array('id')
+			));
+			
+			$this->userGroup = $ar_dat["Arore"]["id"];
 		}
 		
 		# show admin layout for admin pages
@@ -37,8 +68,18 @@ class AppController extends Controller {
 			$this->__parseIncludedPages ($defaultTemplate);
 			$this->set(compact('defaultTemplate'));
 		}
+
     }
+    
+    /*
+     * Determines if a record belongs to an user or not . 
+     * 
+     */
 	
+    function isAuthorized(){
+   		//return $this->Acl->check();
+   		return true;
+    }
 
     function beforeRender() {
 		if($this->RequestHandler->isAjax()) { 
@@ -498,6 +539,7 @@ function __build_acl() {
 ################################ END ACO ADD #############################
 ##########################################################################
 
+	
  
 }
 ?>
