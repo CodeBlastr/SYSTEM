@@ -6,7 +6,3 @@
 /app/tmp/cache/views/cake*
 /plugins
 /vendors
-<<<<<<< HEAD
-/app/config/database.php
-=======
->>>>>>> b877f86785eb1e83854ce4cf40d6b0762c104289
