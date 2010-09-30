@@ -39,6 +39,12 @@ class AppModel extends Model {
 		if(!empty($conditionTriggers)) {
 			$this->__saveOrCheckExtraConditions($conditionTriggers);
 		}
+		
+		
+		// If the model needs UserLevel Access add an Aco
+		if($this->userLevel == true){
+					
+		}	
     }
 	
 	function __saveOrCheckExtraConditions($conditionTriggers) {	
@@ -237,15 +243,6 @@ class AppModel extends Model {
 	}
 	
 	/*
-	 * 
-	 */
-	
-	function beforeDelete(){
-		
-	}
-	
-	
-	/*
 	 * Checks if the recor belongs to some one or not .  
 	 */
 	
@@ -262,6 +259,10 @@ class AppModel extends Model {
 			return true;
 		}
 		
+	}
+		
+	function parentNode() {
+	        return 'root_node';
 	}
 
 }

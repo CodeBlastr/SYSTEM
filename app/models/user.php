@@ -8,7 +8,12 @@
 class User extends AppModel {
 
 	var $name = 'User';
+	
 	var $userField = array();
+	
+	// Does this model requires user level access
+	var $userLevel = false;
+	
 	var $validate = array(
 		'username' => array(
 					'notempty'=>array(

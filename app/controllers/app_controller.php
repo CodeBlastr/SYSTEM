@@ -12,7 +12,7 @@ class AppController extends Controller {
 		# set up theme so that we can have multiple sites
 		$this->theme = 'default';
         # Configure AuthComponent
-        $this->Auth->authorize = 'controller';
+        //$this->Auth->authorize = 'controller';
         $this->Auth->loginAction = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
        # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
@@ -26,7 +26,9 @@ class AppController extends Controller {
 			$this->$model->setParams($this->params);
 		}
 		
+		
 		#get users group
+		/*
 		if($this->Auth->user('id') != 0){
 			$user_model = ClassRegistry::init('User');
 			$user_moodel->recursive = 1 ;
@@ -54,7 +56,8 @@ class AppController extends Controller {
 			));
 			
 			$this->userGroup = $ar_dat["Arore"]["id"];
-		}
+			
+		}*/
 		
 		# show admin layout for admin pages
 		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' && $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
@@ -76,10 +79,10 @@ class AppController extends Controller {
      * 
      */
 	
-    function isAuthorized(){
+    /*function isAuthorized(){
    		//return $this->Acl->check();
    		return true;
-    }
+    }*/
 
     function beforeRender() {
 		if($this->RequestHandler->isAjax()) { 
