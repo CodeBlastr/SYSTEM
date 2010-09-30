@@ -43,7 +43,11 @@ class AppModel extends Model {
 		
 		// If the model needs UserLevel Access add an Aco
 		if($this->userLevel == true){
-					
+			$aco = ClassRegistry::init('Permissions.acore');
+			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
+			$node = $this->node();
+			
+				
 		}	
     }
 	
@@ -262,7 +266,7 @@ class AppModel extends Model {
 	}
 		
 	function parentNode() {
-	        return 'root_node';
+	        return null;
 	}
 
 }
