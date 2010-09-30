@@ -6,3 +6,6 @@
 /app/tmp/cache/views/cake*
 /plugins
 /vendors
+/sites/**/tmp/cache/models/cake*
+/sites/**/tmp/cache/persistent/cake*
+/sites/**/tmp/cache/views/cake*
