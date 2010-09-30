@@ -10,6 +10,10 @@ class UserGroup extends AppModel {
 	var $name = 'UserGroup';	
 	var $actsAs = array('Acl' => array('requester'));
  	var $userField = array();
+ 	
+ 	// Does this model requires user level access
+	var $userLevel = false;
+	
 	function parentNode() {
 	    return null;
 	}

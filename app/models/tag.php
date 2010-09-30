@@ -6,6 +6,9 @@ class Tag extends AppModel {
 		'name' => array('notempty')
 	);
 	var $userField = array();
+	
+	// Does this model requires user level access
+	var $userLevel = false;
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $belongsTo = array(

@@ -39,6 +39,16 @@ class AppModel extends Model {
 		if(!empty($conditionTriggers)) {
 			$this->__saveOrCheckExtraConditions($conditionTriggers);
 		}
+		
+		
+		// If the model needs UserLevel Access add an Aco
+		if($this->userLevel == true){
+			$aco = ClassRegistry::init('Permissions.acore');
+			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
+			$node = $this->node();
+			
+				
+		}	
     }
 	
 	function __saveOrCheckExtraConditions($conditionTriggers) {	
@@ -237,15 +247,6 @@ class AppModel extends Model {
 	}
 	
 	/*
-	 * 
-	 */
-	
-	function beforeDelete(){
-		
-	}
-	
-	
-	/*
 	 * Checks if the recor belongs to some one or not .  
 	 */
 	
@@ -262,6 +263,10 @@ class AppModel extends Model {
 			return true;
 		}
 		
+	}
+		
+	function parentNode() {
+	        return null;
 	}
 
 }

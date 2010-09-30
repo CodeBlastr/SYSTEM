@@ -27,6 +27,9 @@ class Condition extends AppModel {
 			'order' => ''
 		)
 	);
+	
+	// Does this model requires user level access
+	var $userLevel = false;
 
 }
 ?>
