@@ -12,7 +12,7 @@ class AppController extends Controller {
 		# set up theme so that we can have multiple sites
 		$this->theme = 'default';
         # Configure AuthComponent
-        //$this->Auth->authorize = 'controller';
+        $this->Auth->authorize = 'controller';
         $this->Auth->loginAction = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
        # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
@@ -26,9 +26,50 @@ class AppController extends Controller {
 			$this->$model->setParams($this->params);
 		}
 		
+		$this->userGroup = $this->get_user_group();
 		
-		#get users group
-		/*
+		
+		# show admin layout for admin pages
+		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' && $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
+			$this->layout = 'admin';
+		}
+		# get constants for app configuration
+		$this->__getConstants();
+		
+		if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
+			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
+			$this->__parseIncludedPages ($defaultTemplate);
+			$this->set(compact('defaultTemplate'));
+		}
+		    	$this->log($this->{$this->modelClass}->get_aco());
+    }
+    
+    /*
+     * Determines if a record belongs to an user or not . 
+     * 
+     */
+	
+    function isAuthorized(){
+   		//check if user has access 
+   		if(!$this->has_access($this->get_user_group())){
+   			return true;
+   		}else{
+   			if($this->has_access($this->get_user_group(32))){
+   				return true;
+   			}else{
+   				return false;
+   			}
+   		}
+   		
+    }
+    
+    /*
+     * ets user group for acl check 
+     */
+    
+    function get_user_group(){
+    	#get users group
+		
 		if($this->Auth->user('id') != 0){
 			$user_model = ClassRegistry::init('User');
 			$user_moodel->recursive = 1 ;
@@ -55,34 +96,37 @@ class AppController extends Controller {
 					'fields'=>array('id')
 			));
 			
-			$this->userGroup = $ar_dat["Arore"]["id"];
+			return $ar_dat["Arore"]["id"];
 			
-		}*/
-		
-		# show admin layout for admin pages
-		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' && $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
-			$this->layout = 'admin';
 		}
-		# get constants for app configuration
-		$this->__getConstants();
-		
-		if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
-			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
-			$this->__parseIncludedPages ($defaultTemplate);
-			$this->set(compact('defaultTemplate'));
-		}
-
     }
     
     /*
-     * Determines if a record belongs to an user or not . 
-     * 
+     * Does the node have creator access ?
+     * @param {int} userGroup -> The aro_id of the userGroup 
+     * @todo add guest functionality here with a param 
+     * @return {bool}
      */
-	
-    /*function isAuthorized(){
-   		//return $this->Acl->check();
-   		return true;
-    }*/
+    
+    function has_access($userGroup){
+    	$arac = ClassRegistry::init("Permissions.ArosAco");
+    	$cn = $arac->find('first' , array(
+    					'conditions'=>array(
+    						'ArosAco.aro_id'=>$userGroup
+    					),
+    					'contain'=>array(),
+    					'fields'=>array(
+    						'_create',
+    					)
+    	));
+    	
+    	if(count($cn) != 0){
+    		return $cn["ArosAco"]["_create"];	
+    	}else{
+    		return false;
+    	}	
+
+    }
 
     function beforeRender() {
 		if($this->RequestHandler->isAjax()) { 
