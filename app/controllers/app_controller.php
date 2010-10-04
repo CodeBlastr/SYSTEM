@@ -53,8 +53,12 @@ class AppController extends Controller {
 					//allow user
 					$this->Auth->allow($this->params['action']);
 				}
+			}else if($this->has_access(5)){
+				$this->Auth->allow($this->params['action']);
 			}
 		}	
+		
+		$this->log($this->{$this->modelClass}->get_aco($this->params));
     }
     
     /*
