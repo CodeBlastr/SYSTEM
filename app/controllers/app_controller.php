@@ -52,12 +52,13 @@ class AppController extends Controller {
 				if($this->{$this->modelClass}->does_belongs($this->Auth->user('id') , $this->params)){
 					//allow user
 					$this->Auth->allow('*');
-					$this->log('here woeiei');
 				}
-			}else if($this->has_access(33 , $this->params)){
-				$this->Auth->allow('*');
 			}
-		}	
+		}
+		
+		if($this->has_access(33 , $this->params)){
+				$this->Auth->allow('*');
+		}
     }
     
     /*
