@@ -42,7 +42,19 @@ class AppController extends Controller {
 			$this->set(compact('defaultTemplate'));
 		}
 		
-		 $this->log($this->Auth->isAuthorized());   	
+		//if user does not have access check if he / she is the creator and record has creator access.
+		if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
+			//user is logged in but not authorized.
+			//check if node has creator access 
+			// 4 is the creator group
+			if($this->has_access(4)){
+				//check if record belongs to the user
+				if($this->{$this->modelClass}->does_belongs($this->Auth->user('id') , $this->params)){
+					//allow user
+					$this->Auth->allow($this->params['action']);
+				}
+			}
+		}	
     }
     
     /*
