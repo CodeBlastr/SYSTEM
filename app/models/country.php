@@ -36,6 +36,9 @@ class Country extends AppModel {
 			'counterQuery' => ''
 		)
 	);
+	
+	// Does this model requires user level access
+	var $userLevel = false;
 
 }
 ?>

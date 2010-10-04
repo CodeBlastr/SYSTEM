@@ -1,13 +1,12 @@
 <?php
 class DATABASE_CONFIG {
-
 	var $default = array(
 		'driver' => 'mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'z',
-		'password' => '123',
-		'database' => 'z',
+		'login' => 'root',
+		'password' => 'deneme',
+		'database' => 'zuha',
 	);
 	
 	function __construct() {
@@ -15,5 +14,6 @@ class DATABASE_CONFIG {
 			require_once ('../'.WEBROOT_DIR.'/install.php'); 
 		}
 	}
+				
 }
 ?>

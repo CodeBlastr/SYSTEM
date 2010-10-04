@@ -39,6 +39,31 @@ class AppModel extends Model {
 		if(!empty($conditionTriggers)) {
 			$this->__saveOrCheckExtraConditions($conditionTriggers);
 		}
+		
+		
+		// If the model needs UserLevel Access add an Aco
+		if($this->userLevel == true){
+			$aco = ClassRegistry::init('Permissions.Acore');
+			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
+			// foreign_key
+			$last_one = $this->getLastInsertID();
+			$aco_dat["acore"]["foreign_key"] = $last_one;
+			//set the alias
+			if($this->params["plugin"] != ''){
+				//set the aco dat 
+				$aco_dat["acore"]["alias"] = $this->params['plugin'] . '/' . $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
+			}else{
+				//set the aco dat
+				$aco_dat["acore"]["alias"] = $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
+			}
+			
+			$aco_dat['acore']['parent_id'] = $this->get_aco($plugin);
+			
+			$aco_dat["acore"]["model"] = $this->name;
+			$aco_dat["acore"]["type"] = 'record';
+			$aco->create();
+			$aco->save($aco_dat);
+		}	
     }
 	
 	function __saveOrCheckExtraConditions($conditionTriggers) {	
@@ -53,6 +78,73 @@ class AppModel extends Model {
 				$this->__saveNotification($conditionTrigger);
 			}
 		}
+	}
+	
+	/*
+	 * Gets the aco node
+	 * @return int
+	 */
+	
+	function get_aco(){
+		$acor = ClassRegistry::init('Permissions.Acore');
+		
+		if($this->params['plugin'] == ''){
+			$plugin = false ;
+		}else{
+			$plugin = true;
+		}
+		if($plugin){
+				//get the aco data to be able to determine the parent_id field
+				$ret_aco = $acor->find('first' , array(
+							'conditions'=>array(
+								'type'=>'plugin',
+								'alias'=>ucwords($this->params['plugin'])
+							),
+							'contain'=>array(),
+							'fields'=>array('id'),
+							'callbacks'=>false
+				));
+				// get clidren
+				$child = $acor->children($ret_aco["acore"]["id"]);
+				//the current id of the aco node.
+				$curr_parent = $ret_aco["acore"]["id"];
+				// get the controller id 
+				foreach($child as $c){
+					if($c["acore"]["alias"] == ucwords($this->params["controller"])){
+						$curr_parent = $c["acore"]["id"];
+						
+					}
+				}
+				// get the action id 
+				foreach($child as $c){
+					if($c["acore"]["alias"] == $this->params["action"] && $c["acore"]["parent_id"] == $curr_parent){
+						$curr_parent = $c["acore"]["id"];
+					}
+				}
+				// set the parent_id
+				return $curr_parent;
+				
+			}else{
+				//not in a plugin and getting aco dat
+				$ret_aco = $acor->find('first', array(
+									'conditions'=>array(
+										'type'=>'controller',
+										'alias'=>ucwords($this->params['controller'])
+									),
+									'contain'=>array(),
+									'fields'=>array('id'),
+									'callbacks'=>false
+				));
+				// get the action
+				foreach($child as $c){
+					
+					if($c["acore"]["alias"] == $this->params["action"]){
+						$curr_parent = $c["acore"]["id"];
+					}
+				}
+				// set the parent_id
+				return $curr_parent;
+			}
 	}
 	
 	function __saveNotification($conditionTrigger) {		
@@ -194,8 +286,69 @@ class AppModel extends Model {
     	          unset($results[$key][0]);
     	       }
     	    }
-    	}	
+    	}
+
     	return $results;
+	}
+	
+	function findMy($type, $options=array())
+	{
+	   if($this->hasField($this->userField) && !empty($_SESSION['Auth']['User']['id'])){
+	      $options['conditions'][$this->alias.'.'.$this->userField] = $_SESSION['Auth']['User']['id'];
+	      return parent::find($type, $options);
+	   }
+	   else{
+	      return parent::find($type, $options);
+	   }
+	}
+	
+	function deleteMy($id = null, $cascade = true)
+	{
+	   if (!empty($id)) {
+	      $this->id = $id;
+	   }
+	   $id = $this->id;
+	
+	   if($this->hasField($this->userField) && !empty($_SESSION['Auth']['User']['id'])){
+	      $opt = array(
+	         'conditions' => array(
+	            $this->alias.'.'.$this->userField => $_SESSION['Auth']['User']['id'],
+	            $this->alias.'.id' => $id,
+	            ),
+	         );
+	      if($this->find('count', $opt) > 0){
+	         return parent::delete($id, $cascade);
+	      }
+	      else{
+	         return false;
+	      }
+	
+	   }
+	   else
+	      return parent::delete($id, $cascade);
+	}
+	
+	/*
+	 * Checks if the recor belongs to some one or not .  
+	 */
+	
+	function does_belongs($user){
+		if($this->id){
+			$dat = $this->find('first' , array(
+					'contain'=>array(),
+					'conditions'=>array(
+						 'id'=>$this->id,
+						 $this->userField=>$_SESSION['Auth']['User']['id']
+					)
+			));		
+		}else{
+			return true;
+		}
+		
+	}
+		
+	function parentNode() {
+	        $this->name;
 	}
 
 }

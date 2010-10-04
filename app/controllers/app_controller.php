@@ -6,12 +6,13 @@ class AppController extends Controller {
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
 	var $components = array('Auth', 'Session', 'Acl', 'RequestHandler', 'Email', 'RegisterCallbacks'/*, 'Security' Messed up ajax editing */ );
 	var $view = 'Theme';
+	var $userGroup = '';
 
 	function beforeFilter() {	
 		# set up theme so that we can have multiple sites
 		$this->theme = 'default';
         # Configure AuthComponent
-        $this->Auth->authorize = 'actions';
+        $this->Auth->authorize = 'controller';
         $this->Auth->loginAction = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
        # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
@@ -25,6 +26,9 @@ class AppController extends Controller {
 			$this->$model->setParams($this->params);
 		}
 		
+		$this->userGroup = $this->get_user_group();
+		
+		
 		# show admin layout for admin pages
 		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' && $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
 			$this->layout = 'admin';
@@ -37,8 +41,92 @@ class AppController extends Controller {
 			$this->__parseIncludedPages ($defaultTemplate);
 			$this->set(compact('defaultTemplate'));
 		}
+		    	$this->log($this->{$this->modelClass}->get_aco());
     }
+    
+    /*
+     * Determines if a record belongs to an user or not . 
+     * 
+     */
 	
+    function isAuthorized(){
+   		//check if user has access 
+   		if(!$this->has_access($this->get_user_group())){
+   			return true;
+   		}else{
+   			if($this->has_access($this->get_user_group(32))){
+   				return true;
+   			}else{
+   				return false;
+   			}
+   		}
+   		
+    }
+    
+    /*
+     * ets user group for acl check 
+     */
+    
+    function get_user_group(){
+    	#get users group
+		
+		if($this->Auth->user('id') != 0){
+			$user_model = ClassRegistry::init('User');
+			$user_moodel->recursive = 1 ;
+			$u_data = $user_model->find('first' , array(
+				'conditions'=>array('User.id'=>$this->Auth->user('id')),
+				'contain'=>array(
+					'UserGroup'=>array(
+						'fields'=>array(
+							'id',
+							'name'
+						)
+					)
+				)
+				
+			));
+			
+			$perm_aro = ClassRegistry::init('Permissions.Arore');
+			$perm_aro->recursive = 0;
+			$ar_dat = $perm_aro->find('first' , array(
+					'conditions'=>array(
+							'Arore.foreign_key'=>$u_data['UserGroup']['id']
+					), 
+					'contain'=>array(),
+					'fields'=>array('id')
+			));
+			
+			return $ar_dat["Arore"]["id"];
+			
+		}
+    }
+    
+    /*
+     * Does the node have creator access ?
+     * @param {int} userGroup -> The aro_id of the userGroup 
+     * @todo add guest functionality here with a param 
+     * @return {bool}
+     */
+    
+    function has_access($userGroup){
+    	$arac = ClassRegistry::init("Permissions.ArosAco");
+    	$cn = $arac->find('first' , array(
+    					'conditions'=>array(
+    						'ArosAco.aro_id'=>$userGroup
+    					),
+    					'contain'=>array(),
+    					'fields'=>array(
+    						'_create',
+    					)
+    	));
+    	
+    	if(count($cn) != 0){
+    		return $cn["ArosAco"]["_create"];	
+    	}else{
+    		return false;
+    	}	
+
+    }
 
     function beforeRender() {
 		if($this->RequestHandler->isAjax()) { 
@@ -498,6 +586,7 @@ function __build_acl() {
 ################################ END ACO ADD #############################
 ##########################################################################
 
+	
  
 }
 ?>
