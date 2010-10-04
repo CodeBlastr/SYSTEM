@@ -47,22 +47,21 @@ class AppController extends Controller {
 			//user is logged in but not authorized.
 			//check if node has creator access 
 			// 4 is the creator group
-			if($this->has_access(4)){
+			if($this->has_access(32 , $this->params)){
 				//check if record belongs to the user
 				if($this->{$this->modelClass}->does_belongs($this->Auth->user('id') , $this->params)){
 					//allow user
-					$this->Auth->allow($this->params['action']);
+					$this->Auth->allow('*');
+					$this->log('here woeiei');
 				}
-			}else if($this->has_access(5)){
-				$this->Auth->allow($this->params['action']);
+			}else if($this->has_access(33 , $this->params)){
+				$this->Auth->allow('*');
 			}
 		}	
-		
-		$this->log($this->{$this->modelClass}->get_aco($this->params));
     }
     
     /*
-     * ets user group for acl check 
+     * gets user group for acl check 
      */
     
     function get_user_group(){
@@ -106,11 +105,12 @@ class AppController extends Controller {
      * @return {bool}
      */
     
-    function has_access($userGroup){
+    function has_access($userGroup , $params){
     	$arac = ClassRegistry::init("Permissions.ArosAco");
     	$cn = $arac->find('first' , array(
     					'conditions'=>array(
-    						'ArosAco.aro_id'=>$userGroup
+    						'ArosAco.aro_id'=>$userGroup,
+    						'ArosAco.aco_id'=>$this->{$this->modelClass}->get_aco($params , true)
     					),
     					'contain'=>array(),
     					'fields'=>array(
