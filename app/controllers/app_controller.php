@@ -120,7 +120,11 @@ class AppController extends Controller {
     	));
     	
     	if(count($cn) != 0){
-    		return $cn["ArosAco"]["_create"];	
+    		if($cn["ArosAco"]["_create"] == 1 ){
+    			return true;
+    		}else{
+    			return false;	
+    		}	
     	}else{
     		return false;
     	}	
