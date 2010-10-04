@@ -22,6 +22,8 @@ class AppModel extends Model {
 		$this->params = $params;
 	}
 	
+
+	
     function afterSave() {
 		# Now lets check condtions 
 		$modelName = $this->name;
@@ -47,20 +49,20 @@ class AppModel extends Model {
 			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
 			// foreign_key
 			$last_one = $this->getLastInsertID();
-			$aco_dat["acore"]["foreign_key"] = $last_one;
+			$aco_dat["Acore"]["foreign_key"] = $last_one;
 			//set the alias
 			if($this->params["plugin"] != ''){
 				//set the aco dat 
-				$aco_dat["acore"]["alias"] = $this->params['plugin'] . '/' . $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
+				$aco_dat["Acore"]["alias"] = $this->params['plugin'] . '/' . $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
 			}else{
 				//set the aco dat
-				$aco_dat["acore"]["alias"] = $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
+				$aco_dat["Acore"]["alias"] = $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
 			}
 			
-			$aco_dat['acore']['parent_id'] = $this->get_aco($plugin);
+			$aco_dat['Acore']['parent_id'] = $this->get_aco($this->params);
 			
-			$aco_dat["acore"]["model"] = $this->name;
-			$aco_dat["acore"]["type"] = 'record';
+			$aco_dat["Acore"]["model"] = $this->name;
+			$aco_dat["Acore"]["type"] = 'record';
 			$aco->create();
 			$aco->save($aco_dat);
 		}	
@@ -82,69 +84,114 @@ class AppModel extends Model {
 	
 	/*
 	 * Gets the aco node
+	 * @param {array} params -> $this->params having problems reaching it from model
+	 * @param {bool} main -> Do you want the aco of the record or the action
 	 * @return int
 	 */
 	
-	function get_aco(){
+	function get_aco($params , $main = false){
 		$acor = ClassRegistry::init('Permissions.Acore');
 		
-		if($this->params['plugin'] == ''){
+		if($params['plugin'] == ''){
+			$alias = 0;
+			if($params['pass'][0]){
+				$alias = $params['pass'][0];
+			}
 			$plugin = false ;
 		}else{
+			
+			$alias = 0;
+			if($params['pass'][0]){
+				$alias = $params['pass'][0];
+			}
 			$plugin = true;
 		}
-		if($plugin){
-				//get the aco data to be able to determine the parent_id field
-				$ret_aco = $acor->find('first' , array(
-							'conditions'=>array(
-								'type'=>'plugin',
-								'alias'=>ucwords($this->params['plugin'])
-							),
-							'contain'=>array(),
-							'fields'=>array('id'),
-							'callbacks'=>false
-				));
-				// get clidren
-				$child = $acor->children($ret_aco["acore"]["id"]);
-				//the current id of the aco node.
-				$curr_parent = $ret_aco["acore"]["id"];
-				// get the controller id 
-				foreach($child as $c){
-					if($c["acore"]["alias"] == ucwords($this->params["controller"])){
-						$curr_parent = $c["acore"]["id"];
+			if($plugin){
+					//get the aco data to be able to determine the parent_id field
+					$ret_aco = $acor->find('first' , array(
+								'conditions'=>array(
+									'type'=>'plugin',
+									'alias'=>ucwords($params['plugin'])
+								),
+								'contain'=>array(),
+								'fields'=>array('id'),
+								'callbacks'=>false
+					));
+					// get clidren
+					$child = $acor->children($ret_aco["Acore"]["id"]);
+					if(count($ret_aco) != 0){
+					//the current id of the aco node.
+						$curr_parent = $ret_aco["Acore"]["id"];
+						// get the controller id 
+						foreach($child as $c){
+							if($c["Acore"]["alias"] == ucwords($params["controller"])){
+								$curr_parent = $c["Acore"]["id"];
+								
+							}
+						}
+						// get the action id 
+						foreach($child as $c){
+							if($c["Acore"]["alias"] == $params["action"] && $c["Acore"]["parent_id"] == $curr_parent){
+								$curr_parent = $c["Acore"]["id"];
+							}
+						}
 						
+						// get the node id if set 
+						// to get the records aco id. Has to check with main. 
+						if($alias != 0 && !$main){
+							
+							foreach($child as $c){
+								$record_num = explode('/' , $c["Acore"]["alias"]);
+								if(count($record_num) != 1){
+									if($record_num[3] == $alias)
+										$curr_parent = $c["Acore"]["id"];
+								}
+							}
+						}
+						// set the parent_id
+						return $curr_parent;
 					}
-				}
-				// get the action id 
-				foreach($child as $c){
-					if($c["acore"]["alias"] == $this->params["action"] && $c["acore"]["parent_id"] == $curr_parent){
-						$curr_parent = $c["acore"]["id"];
-					}
-				}
-				// set the parent_id
-				return $curr_parent;
-				
-			}else{
-				//not in a plugin and getting aco dat
-				$ret_aco = $acor->find('first', array(
-									'conditions'=>array(
-										'type'=>'controller',
-										'alias'=>ucwords($this->params['controller'])
-									),
-									'contain'=>array(),
-									'fields'=>array('id'),
-									'callbacks'=>false
-				));
-				// get the action
-				foreach($child as $c){
 					
-					if($c["acore"]["alias"] == $this->params["action"]){
-						$curr_parent = $c["acore"]["id"];
+				}else{
+					//not in a plugin and getting aco dat
+					$ret_aco = $acor->find('first', array(
+										'conditions'=>array(
+											'type'=>'controller',
+											'alias'=>ucwords($params['controller'])
+										),
+										'contain'=>array(),
+										'fields'=>array('id'),
+										'callbacks'=>false
+					));
+					// get the action
+				
+					if(count($ret_aco) != 0){
+						$child = $acor->children($ret_aco["Acore"]["id"]);
+						$curr_parent = $ret_aco["Acore"]["id"];
+						foreach($child as $c){
+							
+							if($c["Acore"]["alias"] == $params["action"]){
+								$curr_parent = $c["Acore"]["id"];
+							}
+						}
+						// to get the records aco id. Has to check with main. 
+						if($alias != 0 && !$main){
+							
+							foreach($child as $c){
+								$record_num = explode('/' , $c["Acore"]["alias"]);
+								if(count($record_num) != 1){
+									if($record_num[2] == $alias)
+										$curr_parent = $c["Acore"]["id"];
+								}
+							}
+						}
+						
+						return $curr_parent;
 					}
+					
+					// set the parent_id
+					
 				}
-				// set the parent_id
-				return $curr_parent;
-			}
 	}
 	
 	function __saveNotification($conditionTrigger) {		
@@ -286,7 +333,7 @@ class AppModel extends Model {
     	          unset($results[$key][0]);
     	       }
     	    }
-    	}
+    	}    	
 
     	return $results;
 	}
@@ -330,17 +377,32 @@ class AppModel extends Model {
 	
 	/*
 	 * Checks if the recor belongs to some one or not .  
+	 * @param {int} user -> $this->Auth->user('id') from app_controller
+	 * @param {array} params -> $this->params from app_controller
+	 * @return {bool}
 	 */
 	
-	function does_belongs($user){
-		if($this->id){
-			$dat = $this->find('first' , array(
+	function does_belongs($user , $params){
+		if($params["pass"][0] != 0){
+			// set the conditions 
+			$conditions = array(
+				'id'=> $params['pass'][0]
+			);
+			// loop through user fields to set the conditions
+			$userFields = $this->userField;
+			for($i = 0 ; $i < count($userFields) ; $i++){
+				$conditions['OR'][$userFields[$i]] = $user;
+			}
+			$dat = $this->find('count' , array(
 					'contain'=>array(),
-					'conditions'=>array(
-						 'id'=>$this->id,
-						 $this->userField=>$_SESSION['Auth']['User']['id']
-					)
+					'conditions'=>$conditions
 			));		
+			if($dat != 0){
+				return true;
+			}else{
+				return false;
+			}
+			
 		}else{
 			return true;
 		}

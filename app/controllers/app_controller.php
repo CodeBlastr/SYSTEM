@@ -4,7 +4,7 @@ class AppController extends Controller {
 	#var $scaffold;
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
-	var $components = array('Auth', 'Session', 'Acl', 'RequestHandler', 'Email', 'RegisterCallbacks'/*, 'Security' Messed up ajax editing */ );
+	var $components = array('Acl','Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
 
@@ -12,7 +12,7 @@ class AppController extends Controller {
 		# set up theme so that we can have multiple sites
 		$this->theme = 'default';
         # Configure AuthComponent
-        $this->Auth->authorize = 'controller';
+        $this->Auth->authorize = 'actions';
         $this->Auth->loginAction = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
        # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
@@ -41,26 +41,8 @@ class AppController extends Controller {
 			$this->__parseIncludedPages ($defaultTemplate);
 			$this->set(compact('defaultTemplate'));
 		}
-		    	$this->log($this->{$this->modelClass}->get_aco());
-    }
-    
-    /*
-     * Determines if a record belongs to an user or not . 
-     * 
-     */
-	
-    function isAuthorized(){
-   		//check if user has access 
-   		if(!$this->has_access($this->get_user_group())){
-   			return true;
-   		}else{
-   			if($this->has_access($this->get_user_group(32))){
-   				return true;
-   			}else{
-   				return false;
-   			}
-   		}
-   		
+		
+		 $this->log($this->Auth->isAuthorized());   	
     }
     
     /*
