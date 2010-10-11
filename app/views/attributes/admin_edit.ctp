@@ -5,7 +5,7 @@
 	<?php
 		echo $form->input('id');
 		echo $form->input('attribute_group_id'); 
-		echo $form->input('code'); 
+		echo $form->input('code', array('after' => ' (action database column name)')); 
 		echo $form->input('name'); 
 		echo $form->input('input_type_id', array('type' => 'select', 'options' => array('Text Field', 'Text Area'/*, 'Date', 'Yes/No', 'Multiple Select', 'Dropdown', 'Media/Image/File'*/))); 
 		echo $form->input('default_value'); 

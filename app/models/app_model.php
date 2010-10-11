@@ -91,14 +91,13 @@ class AppModel extends Model {
 	
 	function get_aco($params , $main = false){
 		$acor = ClassRegistry::init('Permissions.Acore');
-		
 		if($params['plugin'] == ''){
 			$alias = 0;
-			if($params['pass'][0]){
+			if(isset($params['pass'][0])){
 				$alias = $params['pass'][0];
 			}
 			$plugin = false ;
-		}else{
+		} else {
 			
 			$alias = 0;
 			if($params['pass'][0]){
