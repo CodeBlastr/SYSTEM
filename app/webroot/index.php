@@ -39,12 +39,30 @@
 		define('ROOT', dirname(dirname(dirname(__FILE__))));
 	}
 /**
+* For multi site setups 
+* If you want to define a site folder
+* instead of using the default server http host to find the site folder
+* do it here
+*/
+	if ($_SERVER['HTTP_HOST'] == 'razorit.localhost' || $_SERVER['HTTP_HOST'] == 'www2.razorit.com') {
+		if (!defined('SITE_DIR')) {
+			# this is the site combined local and remote sites directory
+			define('SITE_DIR', 'www2.razorit.com');
+		}
+	} else {
+		if (!defined('SITE_DIR')) {
+			define('SITE_DIR', $_SERVER['HTTP_HOST']);
+		} 
+	}
+	
+/**
  * The actual directory name for the "app".
  *
  */
+	
 	if (!defined('APP_DIR')) {
-		if (file_exists(ROOT.DS.'sites'.DS.$_SERVER['HTTP_HOST'])) {
-			define('APP_DIR', 'sites'.DS.$_SERVER['HTTP_HOST']);
+		if (file_exists(ROOT.DS.'sites'.DS.SITE_DIR)) {
+			define('APP_DIR', 'sites'.DS.SITE_DIR);
 		} else {
 			define('APP_DIR', basename(dirname(dirname(__FILE__))));
 		}
