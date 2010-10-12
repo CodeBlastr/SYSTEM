@@ -44,12 +44,32 @@
 * instead of using the default server http host to find the site folder
 * do it here
 */
-	if ($_SERVER['HTTP_HOST'] == 'razorit.localhost' || $_SERVER['HTTP_HOST'] == 'www2.razorit.com') {
+	if ($_SERVER['HTTP_HOST'] == 'adoptamodel.localhost' || $_SERVER['HTTP_HOST'] == 'adoptamodel.zuha.com') {
+		if (!defined('SITE_DIR')) {
+			# this is the site combined local and remote sites directory
+			define('SITE_DIR', 'adoptamodel.zuha.com');
+		}
+	} else if ($_SERVER['HTTP_HOST'] == 'crimetv.localhost' || $_SERVER['HTTP_HOST'] == 'crimetv.zuha.com') {
+		if (!defined('SITE_DIR')) {
+			# this is the site combined local and remote sites directory
+			define('SITE_DIR', 'crimetv.zuha.com');
+		}
+	} else if ($_SERVER['HTTP_HOST'] == 'planetcolor.localhost' || $_SERVER['HTTP_HOST'] == 'planetcolor.biz') {
+		if (!defined('SITE_DIR')) {
+			# this is the site combined local and remote sites directory
+			define('SITE_DIR', 'planetcolor.biz');
+		}
+	} else if ($_SERVER['HTTP_HOST'] == 'razorit.localhost' || $_SERVER['HTTP_HOST'] == 'www2.razorit.com') {
 		if (!defined('SITE_DIR')) {
 			# this is the site combined local and remote sites directory
 			define('SITE_DIR', 'www2.razorit.com');
 		}
-	} else {
+	} else if ($_SERVER['HTTP_HOST'] == 'zuha.localhost' || $_SERVER['HTTP_HOST'] == 'zuha.com') {
+		if (!defined('SITE_DIR')) {
+			# this is the site combined local and remote sites directory
+			define('SITE_DIR', 'zuha.com');
+		}
+	}  else {
 		if (!defined('SITE_DIR')) {
 			define('SITE_DIR', $_SERVER['HTTP_HOST']);
 		} 
