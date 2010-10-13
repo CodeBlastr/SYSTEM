@@ -1,1 +1,0 @@
-http://colorpowered.com/colorbox/
