@@ -1,3 +1,5 @@
+Minor change to test git
+
 Settings (not done, just the start of a plan for it)
 In plugins your models will be the key to set dependencies.  The first note I can think of is... 
 
