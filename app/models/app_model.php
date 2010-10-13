@@ -22,8 +22,11 @@ class AppModel extends Model {
 		$this->params = $params;
 	}
 	
+<<<<<<< HEAD
 
 	
+=======
+>>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
     function afterSave() {
 		# Now lets check condtions 
 		$modelName = $this->name;
@@ -49,6 +52,7 @@ class AppModel extends Model {
 			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
 			// foreign_key
 			$last_one = $this->getLastInsertID();
+<<<<<<< HEAD
 			$aco_dat["Acore"]["foreign_key"] = $last_one;
 			//set the alias
 			if($this->params["plugin"] != ''){
@@ -63,6 +67,22 @@ class AppModel extends Model {
 			
 			$aco_dat["Acore"]["model"] = $this->name;
 			$aco_dat["Acore"]["type"] = 'record';
+=======
+			$aco_dat["acore"]["foreign_key"] = $last_one;
+			//set the alias
+			if($this->params["plugin"] != ''){
+				//set the aco dat 
+				$aco_dat["acore"]["alias"] = $this->params['plugin'] . '/' . $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
+			}else{
+				//set the aco dat
+				$aco_dat["acore"]["alias"] = $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
+			}
+			
+			$aco_dat['acore']['parent_id'] = $this->get_aco($plugin);
+			
+			$aco_dat["acore"]["model"] = $this->name;
+			$aco_dat["acore"]["type"] = 'record';
+>>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 			$aco->create();
 			$aco->save($aco_dat);
 		}	
@@ -84,6 +104,7 @@ class AppModel extends Model {
 	
 	/*
 	 * Gets the aco node
+<<<<<<< HEAD
 	 * @param {array} params -> $this->params having problems reaching it from model
 	 * @param {bool} main -> Do you want the aco of the record or the action
 	 * @return int
@@ -191,6 +212,71 @@ class AppModel extends Model {
 					// set the parent_id
 					
 				}
+=======
+	 * @return int
+	 */
+	
+	function get_aco(){
+		$acor = ClassRegistry::init('Permissions.Acore');
+		
+		if($this->params['plugin'] == ''){
+			$plugin = false ;
+		}else{
+			$plugin = true;
+		}
+		if($plugin){
+				//get the aco data to be able to determine the parent_id field
+				$ret_aco = $acor->find('first' , array(
+							'conditions'=>array(
+								'type'=>'plugin',
+								'alias'=>ucwords($this->params['plugin'])
+							),
+							'contain'=>array(),
+							'fields'=>array('id'),
+							'callbacks'=>false
+				));
+				// get clidren
+				$child = $acor->children($ret_aco["acore"]["id"]);
+				//the current id of the aco node.
+				$curr_parent = $ret_aco["acore"]["id"];
+				// get the controller id 
+				foreach($child as $c){
+					if($c["acore"]["alias"] == ucwords($this->params["controller"])){
+						$curr_parent = $c["acore"]["id"];
+						
+					}
+				}
+				// get the action id 
+				foreach($child as $c){
+					if($c["acore"]["alias"] == $this->params["action"] && $c["acore"]["parent_id"] == $curr_parent){
+						$curr_parent = $c["acore"]["id"];
+					}
+				}
+				// set the parent_id
+				return $curr_parent;
+				
+			}else{
+				//not in a plugin and getting aco dat
+				$ret_aco = $acor->find('first', array(
+									'conditions'=>array(
+										'type'=>'controller',
+										'alias'=>ucwords($this->params['controller'])
+									),
+									'contain'=>array(),
+									'fields'=>array('id'),
+									'callbacks'=>false
+				));
+				// get the action
+				foreach($child as $c){
+					
+					if($c["acore"]["alias"] == $this->params["action"]){
+						$curr_parent = $c["acore"]["id"];
+					}
+				}
+				// set the parent_id
+				return $curr_parent;
+			}
+>>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 	}
 	
 	function __saveNotification($conditionTrigger) {		
@@ -332,7 +418,11 @@ class AppModel extends Model {
     	          unset($results[$key][0]);
     	       }
     	    }
+<<<<<<< HEAD
     	}    	
+=======
+    	}
+>>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 
     	return $results;
 	}
@@ -376,6 +466,7 @@ class AppModel extends Model {
 	
 	/*
 	 * Checks if the recor belongs to some one or not .  
+<<<<<<< HEAD
 	 * @param {int} user -> $this->Auth->user('id') from app_controller
 	 * @param {array} params -> $this->params from app_controller
 	 * @return {bool}
@@ -402,6 +493,19 @@ class AppModel extends Model {
 				return false;
 			}
 			
+=======
+	 */
+	
+	function does_belongs($user){
+		if($this->id){
+			$dat = $this->find('first' , array(
+					'contain'=>array(),
+					'conditions'=>array(
+						 'id'=>$this->id,
+						 $this->userField=>$_SESSION['Auth']['User']['id']
+					)
+			));		
+>>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 		}else{
 			return true;
 		}

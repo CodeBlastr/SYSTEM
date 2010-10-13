@@ -4,7 +4,11 @@ class AppController extends Controller {
 	#var $scaffold;
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
+<<<<<<< HEAD
 	var $components = array('Acl','Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
+=======
+	var $components = array('Auth', 'Session', 'Acl', 'RequestHandler', 'Email', 'RegisterCallbacks'/*, 'Security' Messed up ajax editing */ );
+>>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 	var $view = 'Theme';
 	var $userGroup = '';
 
@@ -12,7 +16,11 @@ class AppController extends Controller {
 		# set up theme so that we can have multiple sites
 		$this->theme = 'default';
         # Configure AuthComponent
+<<<<<<< HEAD
         $this->Auth->authorize = 'actions';
+=======
+        $this->Auth->authorize = 'controller';
+>>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
         $this->Auth->loginAction = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
        # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
@@ -41,6 +49,7 @@ class AppController extends Controller {
 			$this->__parseIncludedPages ($defaultTemplate);
 			$this->set(compact('defaultTemplate'));
 		}
+<<<<<<< HEAD
 		
 		//if user does not have access check if he / she is the creator and record has creator access.
 		if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
@@ -63,6 +72,32 @@ class AppController extends Controller {
     
     /*
      * gets user group for acl check 
+=======
+		    	$this->log($this->{$this->modelClass}->get_aco());
+    }
+    
+    /*
+     * Determines if a record belongs to an user or not . 
+     * 
+     */
+	
+    function isAuthorized(){
+   		//check if user has access 
+   		if(!$this->has_access($this->get_user_group())){
+   			return true;
+   		}else{
+   			if($this->has_access($this->get_user_group(32))){
+   				return true;
+   			}else{
+   				return false;
+   			}
+   		}
+   		
+    }
+    
+    /*
+     * ets user group for acl check 
+>>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
      */
     
     function get_user_group(){
@@ -106,12 +141,20 @@ class AppController extends Controller {
      * @return {bool}
      */
     
+<<<<<<< HEAD
     function has_access($userGroup , $params){
     	$arac = ClassRegistry::init("Permissions.ArosAco");
     	$cn = $arac->find('first' , array(
     					'conditions'=>array(
     						'ArosAco.aro_id'=>$userGroup,
     						'ArosAco.aco_id'=>$this->{$this->modelClass}->get_aco($params , true)
+=======
+    function has_access($userGroup){
+    	$arac = ClassRegistry::init("Permissions.ArosAco");
+    	$cn = $arac->find('first' , array(
+    					'conditions'=>array(
+    						'ArosAco.aro_id'=>$userGroup
+>>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
     					),
     					'contain'=>array(),
     					'fields'=>array(
@@ -120,11 +163,15 @@ class AppController extends Controller {
     	));
     	
     	if(count($cn) != 0){
+<<<<<<< HEAD
     		if($cn["ArosAco"]["_create"] == 1 ){
     			return true;
     		}else{
     			return false;	
     		}	
+=======
+    		return $cn["ArosAco"]["_create"];	
+>>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
     	}else{
     		return false;
     	}	
