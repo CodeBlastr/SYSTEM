@@ -39,7 +39,6 @@
 		define('ROOT', dirname(dirname(dirname(__FILE__))));
 	}
 /**
-<<<<<<< HEAD
 * For multi site setups 
 * If you want to define a site folder
 * instead of using the default server http host to find the site folder
@@ -84,14 +83,6 @@
 	if (!defined('APP_DIR')) {
 		if (file_exists(ROOT.DS.'sites'.DS.SITE_DIR)) {
 			define('APP_DIR', 'sites'.DS.SITE_DIR);
-=======
- * The actual directory name for the "app".
- *
- */
-	if (!defined('APP_DIR')) {
-		if (file_exists(ROOT.DS.'sites'.DS.$_SERVER['HTTP_HOST'])) {
-			define('APP_DIR', 'sites'.DS.$_SERVER['HTTP_HOST']);
->>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 		} else {
 			define('APP_DIR', basename(dirname(dirname(__FILE__))));
 		}

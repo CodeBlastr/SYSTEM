@@ -1,14 +1,10 @@
-<<<<<<< HEAD
 /app/config/database.php
-=======
->>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 /app/tmp/logs/debug.log
 /app/tmp/logs/error.log
 /app/tmp/cache/models/cake*
 /app/tmp/cache/persistent/cake*
 /app/tmp/cache/views/cake*
 /plugins
-<<<<<<< HEAD
 /vendors
 /sites/**/config/database.php
 /sites/**/tmp/logs/debug.log
@@ -16,6 +12,3 @@
 /sites/**/tmp/cache/models/cake*
 /sites/**/tmp/cache/persistent/cake*
 /sites/**/tmp/cache/views/cake*
-=======
-/vendors
->>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc

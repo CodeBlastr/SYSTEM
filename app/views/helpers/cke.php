@@ -1,18 +1,10 @@
-<<<<<<< HEAD
 <?php 
-=======
-	<?php 
->>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 class CkeHelper extends Helper { 
 
     var $helpers = Array('Html', 'Javascript'); 
 
-<<<<<<< HEAD
     function load($id, $path, $settings = null) { 		
 		# I don't know what path is used for, might be pointless
-=======
-    function load($id, $path, $settings) { 
->>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
         $did = ''; 
         foreach (explode('.', $id) as $v) { 
             $did .= ucfirst($v); 
@@ -22,15 +14,7 @@ class CkeHelper extends Helper {
   			var field = CKEDITOR.replace( '".$did."' );
   			CKFinder.setupCKEditor(field, '".$path."') ;
         ";*/ 
-<<<<<<< HEAD
 		$configuration = $this->__config($settings);
-=======
-		if (!empty($settings)) {
-			$configuration = $this->__config($settings);
-		} else {
-			$configuration = '';
-		}
->>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 		
         $code = "
   			var field = CKEDITOR.replace( '".$did."', {".$configuration."});
@@ -38,19 +22,13 @@ class CkeHelper extends Helper {
         return $this->Javascript->codeBlock($code);  
     } 
 	
-<<<<<<< HEAD
 	
-=======
-	# this should be updated so that it works from an array
-	# like this $config = array('buttons' => array('button1', 'button2'), 'uiColor' => '#000000');
->>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 	function __config($settings) {
 		# color settings
 		if (!empty($settings['uiColor'])) {
 			$color = "uiColor: '".$settings['uiColor']."',";
 		}
 		
-<<<<<<< HEAD
 		
 		# path settings
 		if (defined('SITE_DIR')) {
@@ -87,8 +65,6 @@ class CkeHelper extends Helper {
 		}
 		
 		
-=======
->>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 		#button settings
 		if (is_array($settings['buttons'])) {
 			$button = "
@@ -111,7 +87,6 @@ class CkeHelper extends Helper {
 				$output = $color;
 			}				
 		}
-<<<<<<< HEAD
 		if (!empty($paths)) {
 			# add in color if it exsists
 			if (!empty($output)) {
@@ -120,8 +95,6 @@ class CkeHelper extends Helper {
 				$output = $paths;
 			}				
 		}
-=======
->>>>>>> 71fe1cf1216af5445d2f6e177f9920fc444140cc
 		if (!empty($button)) {
 			# add in buttons if they exist
 			if (!empty($output)) {

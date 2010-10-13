@@ -1,21 +1,34 @@
-ZuHa is a content management, customer relationship manaagement, project management, (soon to be ecommerce) platform built on the CakePHP rapid development framework for PHP which uses commonly known design patterns like Active Record, Association Data Mapping, Front Controller and MVC. 
+CakePHP is a rapid development framework for PHP which uses commonly known design patterns like Active Record, Association Data Mapping, Front Controller and MVC. Our primary goal is to provide a structured framework that enables PHP users at all levels to rapidly develop robust web applications, without any loss to flexibility.
 
-Our primary goal is to provide a full business management system.  From where leads come in, to how you fulfill their orders, and all of the details in between.  All while solving the problem of the piecemeal systems that currently exist.  If you want your own ecommerce platform with a forum, multi-user blogs, crm, cms, and user profiles, groups, wikis and more... you're basically stuck with piecing at least two if not many more systems together into one. We aim to make a single system where all of these systems are in use if and when you want them to be with the push of a button. 
+The Cake Software Foundation - promoting development related to CakePHP
+http://cakefoundation.org/
 
-The Zuha Software Foundation - promoting development related to ZuHa
-http://zuha.com/
-
-Zuha on CakeForge
-https://cakeforge.org/projects/zuha/
-
-Zuha Project Roadmap
-https://cakeforge.org/plugins/wiki/index.php?ProjectRoadMap&id=392&type=g
-
-Zuha Forums
-https://cakeforge.org/forum/?group_id=392
+CakePHP - the rapid development PHP framework
+http://www.cakephp.org
 
 Cookbook - user documentation for learning about CakePHP
 http://book.cakephp.org
 
-CakePHP - the rapid development PHP framework
-http://www.cakephp.org
+API - quick reference to CakePHP
+http://api.cakephp.org
+
+The Bakery - everything CakePHP
+http://bakery.cakephp.org
+
+The Show - live and archived podcasts about CakePHP and more
+http://live.cakephp.org
+
+CakePHP Google Group - community mailing list and forum
+http://groups.google.com/group/cake-php
+
+#cakephp on irc.freenode.net - chat with CakePHP developers
+irc://irc.freenode.net/cakephp
+
+CakeForge - open development for CakePHP
+http://cakeforge.org
+
+CakePHP gear
+http://www.cafepress.com/cakefoundation
+
+Recommended Reading
+http://astore.amazon.com/cakesoftwaref-20/
