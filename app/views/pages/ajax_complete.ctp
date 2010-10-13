@@ -1,0 +1,1 @@
+<ul><?php foreach($tags as $tag): ?><li><?php echo $tag['Tag']['name']; ?></li><?php endforeach; ?></ul>
