@@ -336,8 +336,7 @@ class AppModel extends Model {
     	return $results;
 	}
 	
-	function findMy($type, $options=array())
-	{
+	function findMy($type, $options=array()) {
 	   if($this->hasField($this->userField) && !empty($_SESSION['Auth']['User']['id'])){
 	      $options['conditions'][$this->alias.'.'.$this->userField] = $_SESSION['Auth']['User']['id'];
 	      return parent::find($type, $options);
@@ -347,8 +346,7 @@ class AppModel extends Model {
 	   }
 	}
 	
-	function deleteMy($id = null, $cascade = true)
-	{
+	function deleteMy($id = null, $cascade = true) {
 	   if (!empty($id)) {
 	      $this->id = $id;
 	   }
