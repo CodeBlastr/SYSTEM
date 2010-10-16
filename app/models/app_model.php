@@ -98,9 +98,8 @@ class AppModel extends Model {
 			}
 			$plugin = false ;
 		} else {
-			
 			$alias = 0;
-			if($params['pass'][0]){
+			if(isset($params['pass'][0])){
 				$alias = $params['pass'][0];
 			}
 			$plugin = true;
