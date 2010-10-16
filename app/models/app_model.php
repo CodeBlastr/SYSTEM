@@ -25,26 +25,34 @@ class AppModel extends Model {
 
 	
     function afterSave() {
-		# Now lets check condtions 
-		$modelName = $this->name;
-		$controller = Inflector::underscore(Inflector::pluralize($modelName));
-		$plugin = explode('_', $controller);
-		$plugin = Inflector::pluralize($plugin[0]);	
-		#get the id that was just inserted so you can call back on it.
-		$this->data[$modelName]['id'] = $this->id;		
-		
-		App::import('Model', 'Condition');
-		$Condition = new Condition();
-		# check if a notification condition is met
-		$conditionTriggers = $Condition->find('all', array('conditions' => array('Condition.plugin' => $plugin, 'Condition.controller' => $controller, 'Condition.action' => $this->params['action'])));
-		#first condition was a match, see if there is an additional condition
-		if(!empty($conditionTriggers)) {
-			$this->__saveOrCheckExtraConditions($conditionTriggers);
+		if (isset($this->params['action'])) {
+			# Now lets check condtions 
+			$modelName = $this->name;
+			$controller = Inflector::underscore(Inflector::pluralize($modelName));
+			$plugin = explode('_', $controller);
+			$plugin = Inflector::pluralize($plugin[0]);	
+			#get the id that was just inserted so you can call back on it.
+			$this->data[$modelName]['id'] = $this->id;		
+			
+			App::import('Model', 'Condition');
+			$Condition = new Condition();
+			# check if a notification condition is met
+			$conditionTriggers = $Condition->find('all', array(
+				'conditions' => array(
+					'Condition.plugin' => $plugin,
+					'Condition.controller' => $controller,
+					'Condition.action' => $this->params['action']
+					)
+				));
+			#first condition was a match, see if there is an additional condition
+			if(!empty($conditionTriggers)) {
+				$this->__saveOrCheckExtraConditions($conditionTriggers);
+			}
 		}
 		
 		
 		// If the model needs UserLevel Access add an Aco
-		if($this->userLevel == true){
+		if(isset($this->userLevel) && $this->userLevel == true){
 			$aco = ClassRegistry::init('Permissions.Acore');
 			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
 			// foreign_key
