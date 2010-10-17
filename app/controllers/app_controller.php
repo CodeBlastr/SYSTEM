@@ -40,24 +40,37 @@ class AppController extends Controller {
 			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
 			$this->__parseIncludedPages ($defaultTemplate);
 			$this->set(compact('defaultTemplate'));
+		} else {
+			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
 		}
 		
 		//if user does not have access check if he / she is the creator and record has creator access.
+	
 		if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
-			//user is logged in but not authorized.
-			//check if node has creator access 
+			// user is logged in but not authorized.
+			// check if node has creator access 
 			// 4 is the creator group
-			if($this->has_access(32 , $this->params)){
-				//check if record belongs to the user
-				if($this->{$this->modelClass}->does_belongs($this->Auth->user('id') , $this->params)){
-					//allow user
-					$this->Auth->allow('*');
+			if (defined('__SYS_CREATORS_GROUP_ARO_ID')) {
+				if($this->has_access(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
+					//check if record belongs to the user
+					if($this->{$this->modelClass}->does_belongs($this->Auth->user('id') , $this->params)){
+						//allow user
+						$this->Auth->allow('*');
+					}
 				}
+			} else {
+				echo 'In /admin/settings key: SYS, value: CREATORS_GROUP_ARO_ID must be defined';
+				die;
 			}
 		}
 		
-		if($this->has_access(33 , $this->params)){
+		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
+			if($this->has_access(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
 				$this->Auth->allow('*');
+			}
+		} else {
+			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
+			die;
 		}
     }
     

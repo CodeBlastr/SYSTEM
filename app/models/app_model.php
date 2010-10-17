@@ -62,7 +62,7 @@ class AppModel extends Model {
 			if($this->params["plugin"] != ''){
 				//set the aco dat 
 				$aco_dat["Acore"]["alias"] = $this->params['plugin'] . '/' . $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
-			}else{
+			} else {
 				//set the aco dat
 				$aco_dat["Acore"]["alias"] = $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
 			}
@@ -158,7 +158,7 @@ class AppModel extends Model {
 						return $curr_parent;
 					}
 					
-				}else{
+				} else {
 					//not in a plugin and getting aco dat
 					$ret_aco = $acor->find('first', array(
 										'conditions'=>array(
