@@ -18,6 +18,8 @@
 </head>
 <body class="<?php echo $this->params['controller']; ?><?php #if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">            
 <?php 
+$flash_for_layout = $session->flash();
+$flash_auth_for_layout = $session->flash('auth');
 if (!empty($defaultTemplate)) {
 	preg_match_all ("/(\{([^\}\{]*)element([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
@@ -27,8 +29,6 @@ if (!empty($defaultTemplate)) {
 	$i++;
 	}
 	# display the database driven default template
-	echo $session->flash(); 
-    echo $session->flash('auth');
 	echo $defaultTemplate['Webpage']['content'];
 } else {
 	echo $session->flash(); 
