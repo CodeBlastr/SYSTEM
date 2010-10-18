@@ -25,26 +25,34 @@ class AppModel extends Model {
 
 	
     function afterSave() {
-		# Now lets check condtions 
-		$modelName = $this->name;
-		$controller = Inflector::underscore(Inflector::pluralize($modelName));
-		$plugin = explode('_', $controller);
-		$plugin = Inflector::pluralize($plugin[0]);	
-		#get the id that was just inserted so you can call back on it.
-		$this->data[$modelName]['id'] = $this->id;		
-		
-		App::import('Model', 'Condition');
-		$Condition = new Condition();
-		# check if a notification condition is met
-		$conditionTriggers = $Condition->find('all', array('conditions' => array('Condition.plugin' => $plugin, 'Condition.controller' => $controller, 'Condition.action' => $this->params['action'])));
-		#first condition was a match, see if there is an additional condition
-		if(!empty($conditionTriggers)) {
-			$this->__saveOrCheckExtraConditions($conditionTriggers);
+		if (isset($this->params['action'])) {
+			# Now lets check condtions 
+			$modelName = $this->name;
+			$controller = Inflector::underscore(Inflector::pluralize($modelName));
+			$plugin = explode('_', $controller);
+			$plugin = Inflector::pluralize($plugin[0]);	
+			#get the id that was just inserted so you can call back on it.
+			$this->data[$modelName]['id'] = $this->id;		
+			
+			App::import('Model', 'Condition');
+			$Condition = new Condition();
+			# check if a notification condition is met
+			$conditionTriggers = $Condition->find('all', array(
+				'conditions' => array(
+					'Condition.plugin' => $plugin,
+					'Condition.controller' => $controller,
+					'Condition.action' => $this->params['action']
+					)
+				));
+			#first condition was a match, see if there is an additional condition
+			if(!empty($conditionTriggers)) {
+				$this->__saveOrCheckExtraConditions($conditionTriggers);
+			}
 		}
 		
 		
 		// If the model needs UserLevel Access add an Aco
-		if($this->userLevel == true){
+		if(isset($this->userLevel) && $this->userLevel == true){
 			$aco = ClassRegistry::init('Permissions.Acore');
 			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
 			// foreign_key
@@ -54,7 +62,7 @@ class AppModel extends Model {
 			if($this->params["plugin"] != ''){
 				//set the aco dat 
 				$aco_dat["Acore"]["alias"] = $this->params['plugin'] . '/' . $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
-			}else{
+			} else {
 				//set the aco dat
 				$aco_dat["Acore"]["alias"] = $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
 			}
@@ -91,107 +99,99 @@ class AppModel extends Model {
 	
 	function get_aco($params , $main = false){
 		$acor = ClassRegistry::init('Permissions.Acore');
-		
 		if($params['plugin'] == ''){
 			$alias = 0;
-			if($params['pass'][0]){
+			if(isset($params['pass'][0])){
 				$alias = $params['pass'][0];
 			}
 			$plugin = false ;
-		}else{
-			
+		} else {
 			$alias = 0;
-			if($params['pass'][0]){
+			if(isset($params['pass'][0])){
 				$alias = $params['pass'][0];
 			}
 			$plugin = true;
 		}
-			if($plugin){
-					//get the aco data to be able to determine the parent_id field
-					$ret_aco = $acor->find('first' , array(
-								'conditions'=>array(
-									'type'=>'plugin',
-									'alias'=>ucwords($params['plugin'])
-								),
-								'contain'=>array(),
-								'fields'=>array('id'),
-								'callbacks'=>false
-					));
-					// get clidren
-					$child = $acor->children($ret_aco["Acore"]["id"]);
-					if(count($ret_aco) != 0){
-					//the current id of the aco node.
-						$curr_parent = $ret_aco["Acore"]["id"];
-						// get the controller id 
-						foreach($child as $c){
-							if($c["Acore"]["alias"] == ucwords($params["controller"])){
-								$curr_parent = $c["Acore"]["id"];
-								
-							}
-						}
-						// get the action id 
-						foreach($child as $c){
-							if($c["Acore"]["alias"] == $params["action"] && $c["Acore"]["parent_id"] == $curr_parent){
-								$curr_parent = $c["Acore"]["id"];
-							}
-						}
-						
-						// get the node id if set 
-						// to get the records aco id. Has to check with main. 
-						if($alias != 0 && !$main){
-							
-							foreach($child as $c){
-								$record_num = explode('/' , $c["Acore"]["alias"]);
-								if(count($record_num) != 1){
-									if($record_num[3] == $alias)
-										$curr_parent = $c["Acore"]["id"];
-								}
-							}
-						}
-						// set the parent_id
-						return $curr_parent;
+		if($plugin){
+			//get the aco data to be able to determine the parent_id field
+			$ret_aco = $acor->find('first' , array(
+				'conditions'=>array(
+				// not sure what effects changing this might have on other parts of the system so I'm leaving reference
+				//'type' => 'plugin',
+				'type' => 'pcontroller',
+				'alias' => ucwords($params['plugin'])
+				),
+				'contain' => array(),
+				'fields' => array('id'),
+				'callbacks' => false
+			));
+			
+			// get clidren
+			$child = $acor->children($ret_aco["Acore"]["id"]);
+			if(count($ret_aco) != 0){
+				// the current id of the aco node.
+				$curr_parent = $ret_aco["Acore"]["id"];
+				// get the controller id 
+				foreach($child as $c){
+					if($c["Acore"]["alias"] == ucwords($params["controller"])){
+						$curr_parent = $c["Acore"]["id"];
 					}
-					
-				}else{
-					//not in a plugin and getting aco dat
-					$ret_aco = $acor->find('first', array(
-										'conditions'=>array(
-											'type'=>'controller',
-											'alias'=>ucwords($params['controller'])
-										),
-										'contain'=>array(),
-										'fields'=>array('id'),
-										'callbacks'=>false
-					));
-					// get the action
-				
-					if(count($ret_aco) != 0){
-						$child = $acor->children($ret_aco["Acore"]["id"]);
-						$curr_parent = $ret_aco["Acore"]["id"];
-						foreach($child as $c){
-							
-							if($c["Acore"]["alias"] == $params["action"]){
-								$curr_parent = $c["Acore"]["id"];
-							}
-						}
-						// to get the records aco id. Has to check with main. 
-						if($alias != 0 && !$main){
-							
-							foreach($child as $c){
-								$record_num = explode('/' , $c["Acore"]["alias"]);
-								if(count($record_num) != 1){
-									if($record_num[2] == $alias)
-										$curr_parent = $c["Acore"]["id"];
-								}
-							}
-						}
-						
-						return $curr_parent;
-					}
-					
-					// set the parent_id
-					
 				}
+				// get the action id 
+				foreach($child as $c){
+					if($c["Acore"]["alias"] == $params["action"] && $c["Acore"]["parent_id"] == $curr_parent){
+						$curr_parent = $c["Acore"]["id"];
+					}
+				}					
+				// get the node id if set 
+				// to get the records aco id. Has to check with main. 
+				if($alias != 0 && !$main){
+					foreach($child as $c){
+						$record_num = explode('/' , $c["Acore"]["alias"]);
+						if(count($record_num) != 1){
+							if($record_num[3] == $alias)
+								$curr_parent = $c["Acore"]["id"];
+							}
+						}
+					}
+					// set the parent_id
+				return $curr_parent;
+			}
+					
+		} else {
+			//not in a plugin and getting aco dat
+			$ret_aco = $acor->find('first', array(
+				'conditions'=>array(
+					'type' => 'controller',
+					'alias' => ucwords($params['controller'])
+				),
+				'contain' => array(),
+				'fields' => array('id'),
+				'callbacks' => false
+			));
+			// get the action
+			if(count($ret_aco) != 0){
+				$child = $acor->children($ret_aco["Acore"]["id"]);
+				$curr_parent = $ret_aco["Acore"]["id"];
+				foreach($child as $c){
+					if($c["Acore"]["alias"] == $params["action"]){
+						$curr_parent = $c["Acore"]["id"];
+					}
+				}
+			// to get the records aco id. Has to check with main. 
+			if($alias != 0 && !$main){
+				foreach($child as $c){
+					$record_num = explode('/' , $c["Acore"]["alias"]);
+					if(count($record_num) != 1){
+						if($record_num[2] == $alias)
+							$curr_parent = $c["Acore"]["id"];
+						}
+					}
+				}
+			return $curr_parent;
+			}
+			// set the parent_id
+		}
 	}
 	
 	function __saveNotification($conditionTrigger) {		
@@ -338,8 +338,7 @@ class AppModel extends Model {
     	return $results;
 	}
 	
-	function findMy($type, $options=array())
-	{
+	function findMy($type, $options=array()) {
 	   if($this->hasField($this->userField) && !empty($_SESSION['Auth']['User']['id'])){
 	      $options['conditions'][$this->alias.'.'.$this->userField] = $_SESSION['Auth']['User']['id'];
 	      return parent::find($type, $options);
@@ -349,8 +348,7 @@ class AppModel extends Model {
 	   }
 	}
 	
-	function deleteMy($id = null, $cascade = true)
-	{
+	function deleteMy($id = null, $cascade = true) {
 	   if (!empty($id)) {
 	      $this->id = $id;
 	   }

@@ -12,4 +12,3 @@
 /sites/**/tmp/cache/models/cake*
 /sites/**/tmp/cache/persistent/cake*
 /sites/**/tmp/cache/views/cake*
-/sites/**/views/themed/default/webroot/img/*

@@ -8,27 +8,32 @@
 class User extends AppModel {
 
 	var $name = 'User';
-	
 	var $userField = array();
-	
 	// Does this model requires user level access
 	var $userLevel = false;
-	
 	var $validate = array(
 		'username' => array(
-					'notempty'=>array(
-							'rule'=>'notEmpty',
-							'message'=>'Please Enter a value for your Username'
-					),
-					'isUnique'=>array(
-							'rule'=>'isUnique',
-							'message'=>'This Username belongs to someone else. Please pick another one.'
-					)
+			'notempty' => array(
+				'rule' => 'notEmpty',
+				'message' => 'Please Enter a value for Username'
+			),
+			'isUnique' => array(
+				'rule' => 'isUnique',
+				'message' => 'This Username belongs to someone else. Please try again.'
+			),
 		),
-		'password' => array('notempty'),
+		'password' => array(
+			'notempty' => array(
+				'rule' => 'notEmpty',
+				'message' => 'Please Enter a value for Password'
+			),
+			'comparePassword' => array(
+				'rule' => array('__comparePassword'),
+				'message' => 'Password, and Password Confirmation did not match.'
+			),
+		),
 	);
 	var $displayField = 'username';
-	
 	var $actsAs = array('Acl' => 'requester');
 	
 	function parentNode() {
@@ -62,6 +67,21 @@ class User extends AppModel {
             $this->Aro->save($aro);
         }
 	}
+	
+	function beforeValidate() {
+		if (isset($this->data['User']['confirm_password'])) {
+			$this->data['User']['confirm_password'] = Security::hash($this->data['User']['confirm_password'],'', true);
+		}
+	}
+	
+	function __comparePassword() {
+		# fyi, confirm password is hashed in the beforeValidate method
+		if ($this->data['User']['password'] == $this->data['User']['confirm_password']) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $belongsTo = array(
@@ -73,69 +93,6 @@ class User extends AppModel {
 			'order' => ''
 		)
 	);
-	/* commented out after contacts, projects, blogs, and profiles were moved to plugins
-		should be deleted eventually
-		
-	var $hasMany = array(
-		'ProjectCreator' => array(
-			'className' => 'Projects.Project',
-			'foreignKey' => 'creator_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		),
-		'ProjectModifier' => array(
-			'className' => 'Projects.Project',
-			'foreignKey' => 'modifier_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		),
-		'BlogPost' => array(
-			'className' => 'Blogs.BlogPost',
-			'foreignKey' => 'creatir_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		)
-	);
-	
-	var $hasOne = array(
-		'UserProfile' => array(
-			'className' => 'UserProfile',
-			'foreignKey' => 'user_id',
-			'dependent' => true,
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
-		'Contact' => array(
-			'className' => 'Contacts.Contact',
-			'foreignKey' => 'user_id',
-			'dependent' => true,
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
-	); */
 
 }
 ?>
