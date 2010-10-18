@@ -119,6 +119,8 @@ class AppController extends Controller {
     					)
     	));
     	
+    	$this->log($params);
+    	
     	if(count($cn) != 0){
     		if($cn["ArosAco"]["_create"] == 1 ){
     			return true;
