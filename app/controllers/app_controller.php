@@ -123,15 +123,17 @@ class AppController extends Controller {
     	$arac = ClassRegistry::init("Permissions.ArosAco");
     	$cn = $arac->find('first' , array(
     					'conditions'=>array(
-    						'ArosAco.aro_id'=>$userGroup,
-    						'ArosAco.aco_id'=>$this->{$this->modelClass}->get_aco($params , true)
+    						'ArosAco.aro_id' => $userGroup,
+							/*this was changed to false to get individual records to work (not sure what other effects it will have)
+    						'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , true)*/
+    						'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)
     					),
     					'contain'=>array(),
-    					'fields'=>array(
+    					/*'fields'=>array(
     						'_create',
-    					)
+    					)*/
     	));
-    	
+		
     	if(count($cn) != 0){
     		if($cn["ArosAco"]["_create"] == 1 ){
     			return true;
