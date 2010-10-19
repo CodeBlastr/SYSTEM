@@ -5,7 +5,9 @@ Not available yet take from RFDF
  		<legend><?php __('Add User');?></legend>
 	<?php
 		echo $form->input('username');
-		echo $form->input('password');
+		echo $form->input('User.email');
+		echo $form->input('User.password', array('value' => ''));
+		echo $form->input('User.confirm_password', array('value' => '', 'type' => 'password'));
 		echo $form->input('user_group_id');
 	?>
 	</fieldset>
