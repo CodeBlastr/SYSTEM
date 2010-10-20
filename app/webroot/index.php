@@ -78,6 +78,7 @@
 		if (!defined('SITE_DIR')) {
 			# this is the site combined local and remote sites directory
 			define('SITE_DIR', 'getrooted.com');
+			$this->log('here worked');
 		}
 	} else {
 		if (!defined('SITE_DIR')) {
