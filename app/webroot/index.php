@@ -82,7 +82,7 @@
 	}else if ($_SERVER['HTTP_HOST'] == 'getrooted.zuha.localhost' || $_SERVER['HTTP_HOST'] == 'getrooted.zuha.com') {
 		if (!defined('SITE_DIR')) {
 			# this is the site combined local and remote sites directory
-			define('SITE_DIR', 'zuha.com');
+			define('SITE_DIR', 'getrooted.com');
 		}
 	} else {
 		if (!defined('SITE_DIR')) {
