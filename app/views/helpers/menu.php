@@ -4,7 +4,6 @@ class MenuHelper extends AppHelper {
     var $value = '';
 
     function afterRender() {
-        $view = ClassRegistry::getObject('view');
 		if (!empty($this->value)) {
 			$menu = '';
 			$menu = '
@@ -41,10 +40,12 @@ class MenuHelper extends AppHelper {
 		
 		
 		if (!empty($menu)) {
+       	   $view = ClassRegistry::getObject('view');
 	       $view->set('menu_for_layout', $menu);
 		} else { 
+       	   $view = ClassRegistry::getObject('view');
 	       $view->set('menu_for_layout', '');
-		}		
+		}
     }
 
     function setValue($value) {

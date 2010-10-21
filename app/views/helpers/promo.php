@@ -29,7 +29,6 @@ class PromoHelper extends AppHelper {
 		$default = ob_get_clean();
 		# end default promo bar 
 		
-        $view = ClassRegistry::getObject('view');
 		$promo = '';
 		if (!empty($this->beforeValue)) {
 			# show the first parameter before the promo bar
@@ -44,6 +43,7 @@ class PromoHelper extends AppHelper {
 			$promo .= $this->afterValue;
 		} 
 		if (!empty($promo)) {
+       		$view = ClassRegistry::getObject('view');
 			# wrap into an out put variable and send it to the default template
 	    	$view->set('promo_for_layout', $promo);
 		}
