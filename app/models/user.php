@@ -76,7 +76,7 @@ class User extends AppModel {
 	
 	function __comparePassword() {
 		# fyi, confirm password is hashed in the beforeValidate method
-		if (!empty($this->data['User']['confirm_password']) && $this->data['User']['password'] == $this->data['User']['confirm_password']) {
+		if ((!empty($this->data['User']['confirm_password']) && $this->data['User']['password'] == $this->data['User']['confirm_password']) || $this->params['action'] = 'login') {
 			return true;
 		} else {
 			return false;
