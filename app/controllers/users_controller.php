@@ -22,9 +22,11 @@ class UsersController extends AppController {
 	
 	# front end login
 	function login() { 	
-		$this->User->read(null, 1);
-		$this->User->set('last_login', date('Y-m-d h:i:s'));
-		$this->User->save();
+	    if (!empty($this->data)) {
+			$this->User->read(null, 1);
+			$this->User->set('last_login', date('Y-m-d h:i:s'));
+			$this->User->save();
+		}
     }
 	
 	# desktop login
