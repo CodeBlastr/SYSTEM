@@ -49,12 +49,12 @@
 			# this is the site combined local and remote sites directory
 			define('SITE_DIR', 'adoptamodel.zuha.com');
 		}
-	} else if ($_SERVER['HTTP_HOST'] == 'crimetv.localhost' || $_SERVER['HTTP_HOST'] == 'crimetv.zuha.com') {
+	} else if ($_SERVER['HTTP_HOST'] == 'crimetv.zuha.localhost' || $_SERVER['HTTP_HOST'] == 'crimetv.zuha.com' || $_SERVER['HTTP_HOST'] == 'crimetv.localhost') {
 		if (!defined('SITE_DIR')) {
 			# this is the site combined local and remote sites directory
 			define('SITE_DIR', 'crimetv.zuha.com');
 		}
-	} else if ($_SERVER['HTTP_HOST'] == 'getrooted.localhost' || $_SERVER['HTTP_HOST'] == 'getrooted.zuha.localhost' || $_SERVER['HTTP_HOST'] == 'getrooted.zuha.com') {
+	} else if ($_SERVER['HTTP_HOST'] == 'getrooted.localhost' || $_SERVER['HTTP_HOST'] == 'getrooted.zuha.localhost' || $_SERVER['HTTP_HOST'] == 'getrooted.zuha.com' || $_SERVER['HTTP_HOST'] == 'getrooted.org') {
 		if (!defined('SITE_DIR')) {
 			define('SITE_DIR', 'getrooted.com');
 		}
