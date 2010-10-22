@@ -68,7 +68,7 @@
 			# this is the site combined local and remote sites directory
 			define('SITE_DIR', 'planetcolor.biz');
 		}
-	} else if ($_SERVER['HTTP_HOST'] == 'wwbe.localhost' || $_SERVER['HTTP_HOST'] == 'wwbe.92rm.com') {
+	} else if ($_SERVER['HTTP_HOST'] == 'wwbe.zuha.localhost' || $_SERVER['HTTP_HOST'] == 'wwbe.92rm.com') {
 		if (!defined('SITE_DIR')) {
 			# this is the site combined local and remote sites directory
 			define('SITE_DIR', 'wwbe.com');
