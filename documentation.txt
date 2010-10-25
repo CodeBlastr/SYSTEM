@@ -1,4 +1,4 @@
-Settings (not done, just the start of a plan for it)
+testSettings (not done, just the start of a plan for it)
 In plugins your models will be the key to set dependencies.  The first note I can think of is... 
 
 ### IF the relationship is belongsTo then that means this plugin is dependent on that plugin/model being enabled. ###  
