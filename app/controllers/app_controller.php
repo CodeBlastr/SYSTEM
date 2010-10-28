@@ -28,7 +28,6 @@ class AppController extends Controller {
 		
 		$this->userGroup = $this->get_user_group();
 		
-		
 		# show admin layout for admin pages
 		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' && $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
 			$this->layout = 'admin';
@@ -45,6 +44,7 @@ class AppController extends Controller {
 		}
 		
 		//if user does not have access check if he / she is the creator and record has creator access.
+		
 		if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
 			// user is logged in but not authorized.
 			// check if node has creator access 
