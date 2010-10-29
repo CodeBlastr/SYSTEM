@@ -15,7 +15,7 @@ class AppController extends Controller {
         $this->Auth->authorize = 'actions';
         $this->Auth->loginAction = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
         $this->Auth->logoutRedirect = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
-       # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
+        # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
         $this->Auth->loginRedirect = array('plugin' => 'profiles', 'controller' => 'profiles', 'action' => 'view', 'user_id' => $this->Session->read('Auth.User.id'));
 		$this->Auth->actionPath = 'controllers/';
 		$this->Auth->allowedActions = array('display');
