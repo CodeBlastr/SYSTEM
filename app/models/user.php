@@ -93,6 +93,15 @@ class User extends AppModel {
 			'order' => ''
 		)
 	);
-
+	
+	var $hasAndBelongsToMany = array(
+        'Profiles.ProfileGroup' =>
+            array(
+                'className'              => 'Profiles.ProfileGroup',
+                'joinTable'              => 'users_profile_goups',
+                'foreignKey'             => 'profile_group_id',
+                'associationForeignKey'  => 'user_id'
+            )
+    );
 }
 ?>
