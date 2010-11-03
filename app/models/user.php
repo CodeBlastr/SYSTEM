@@ -98,7 +98,7 @@ class User extends AppModel {
         'Profiles.ProfileGroup' =>
             array(
                 'className'              => 'Profiles.ProfileGroup',
-                'joinTable'              => 'users_profile_goups',
+                'joinTable'              => 'users_profile_groups',
                 'foreignKey'             => 'profile_group_id',
                 'associationForeignKey'  => 'user_id'
             )
