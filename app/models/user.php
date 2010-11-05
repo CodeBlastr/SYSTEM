@@ -36,6 +36,14 @@ class User extends AppModel {
 	var $displayField = 'username';
 	var $actsAs = array('Acl' => 'requester');
 	
+	var $hasMany = array(
+		'ProfileFallower' => array(
+			'className' => 'Profiles.ProfileFallower',
+			'foreignKey' => 'user_id',
+			'dependent' => false,
+		)
+	);
+	
 	function parentNode() {
    		if (!$this->id && empty($this->data)) {
 	        return null;
@@ -98,7 +106,7 @@ class User extends AppModel {
         'Profiles.ProfileGroup' =>
             array(
                 'className'              => 'Profiles.ProfileGroup',
-                'joinTable'              => 'users_profile_goups',
+                'joinTable'              => 'users_profile_groups',
                 'foreignKey'             => 'profile_group_id',
                 'associationForeignKey'  => 'user_id'
             )
