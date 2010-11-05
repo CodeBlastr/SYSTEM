@@ -36,6 +36,14 @@ class User extends AppModel {
 	var $displayField = 'username';
 	var $actsAs = array('Acl' => 'requester');
 	
+	var $hasMany = array(
+		'ProfileFallower' => array(
+			'className' => 'Profiles.ProfileFallower',
+			'foreignKey' => 'user_id',
+			'dependent' => false,
+		)
+	);
+	
 	function parentNode() {
    		if (!$this->id && empty($this->data)) {
 	        return null;
