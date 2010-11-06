@@ -4,7 +4,7 @@ class AppController extends Controller {
 	#var $scaffold;
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
-	var $components = array(/**/'Acl','Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
 

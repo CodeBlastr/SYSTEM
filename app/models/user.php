@@ -1,10 +1,4 @@
 <?php
-
-############### PERMISSIONS TUTORIAL ########################
-# http://book.cakephp.org/view/647/An-Automated-tool-for-creating-ACOs
-#############################################################
-
-
 class User extends AppModel {
 
 	var $name = 'User';

@@ -1,10 +1,4 @@
 <?php
-
-############### PERMISSIONS TUTORIAL ########################
-# http://book.cakephp.org/view/647/An-Automated-tool-for-creating-ACOs
-#############################################################
-
-
 class UserGroup extends AppModel {
 
 	var $name = 'UserGroup';	
@@ -17,7 +11,6 @@ class UserGroup extends AppModel {
 	function parentNode() {
 	    return null;
 	}
-
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $hasMany = array(
@@ -35,6 +28,11 @@ class UserGroup extends AppModel {
 			'counterQuery' => ''
 		)
 	);
+	
+	/*
+	@todo This model needs to be updated so that when you delete a user group
+	it will also update the aros table by removing the UserGroup
+	*/
 
 }
 ?>
