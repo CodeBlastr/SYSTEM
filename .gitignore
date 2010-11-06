@@ -4,6 +4,7 @@
 /app/tmp/cache/models/cake*
 /app/tmp/cache/persistent/cake*
 /app/tmp/cache/views/cake*
+/app/tmp/cache/cake*
 /plugins
 /vendors
 /sites/**/config/database.php
@@ -12,6 +13,7 @@
 /sites/**/tmp/cache/models/cake*
 /sites/**/tmp/cache/persistent/cake*
 /sites/**/tmp/cache/views/cake*
+/sites/**/tmp/cache/cake*
 /sites/bootstrap.php
 \.*
 \_*

@@ -3,12 +3,12 @@ class AppController extends Controller {
 	
 	#var $scaffold;
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', );
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
 
-	function beforeFilter() {	
+	function beforeFilter() {
 		/*  
 		* Allows us to have webroot files (css, js, etc) in the sites directories
 		* Used in conjunction with the "var $view above"
