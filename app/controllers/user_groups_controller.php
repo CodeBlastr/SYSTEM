@@ -56,7 +56,7 @@ class UserGroupsController extends AppController {
 			$this->Session->setFlash(__('Invalid id for UserGroup', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->UserGroup->del($id)) {
+		if ($this->UserGroup->delete($id)) {
 			$this->Session->setFlash(__('UserGroup deleted', true));
 			$this->redirect(array('action'=>'index'));
 		}
@@ -111,7 +111,7 @@ class UserGroupsController extends AppController {
 			$this->Session->setFlash(__('Invalid id for UserGroup', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->UserGroup->del($id)) {
+		if ($this->UserGroup->delete($id)) {
 			$this->Session->setFlash(__('UserGroup deleted', true));
 			$this->redirect(array('action'=>'index'));
 		}

@@ -4,37 +4,87 @@ class AppController extends Controller {
 	#var $scaffold;
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
-	var $components = array('Acl','Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
+	var $components = array(/**/'Acl','Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
 
 	function beforeFilter() {	
-		# set up theme so that we can have multiple sites
+		/*  
+		* Allows us to have webroot files (css, js, etc) in the sites directories
+		* Used in conjunction with the "var $view above"
+		* @todo allow the use of multiple themes, database driven themes, and theme switching
+		*/
 		$this->theme = 'default';
-        # Configure AuthComponent
+		
+		
+        /* 
+		* Configure AuthComponent
+		*/
         $this->Auth->authorize = 'actions';
-        $this->Auth->loginAction = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
-        $this->Auth->logoutRedirect = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
-        # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
-        $this->Auth->loginRedirect = array('plugin' => 'profiles', 'controller' => 'profiles', 'action' => 'view', 'user_id' => $this->Session->read('Auth.User.id'));
+		
+        $this->Auth->loginAction = array(
+			'plugin' => null,
+			'controller' => 'users',
+			'action' => 'login'
+			);
+		
+        $this->Auth->logoutRedirect = array(
+			'plugin' => null,
+			'controller' => 'users',
+			'action' => 'login'
+			);
+        
+        $this->Auth->loginRedirect = array(
+			'plugin' => 'profiles',
+			'controller' => 'profiles',
+			'action' => 'view',
+			'user_id' => $this->Session->read('Auth.User.id')
+			);
+		
 		$this->Auth->actionPath = 'controllers/';
+		
 		$this->Auth->allowedActions = array('display');
-		# json support
+		
+		/*
+		* Support for json file types when using json extensions
+		*/
 		$this->RequestHandler->setContent('json', 'text/x-json');
-		# because app_model doesn't have access to $this->params, we pass it here
+		
+		/*
+		* app_model doesn't have access to $this->params, we pass it here
+		* @todo We'd like to get rid of this completely, if it all possible. 
+		* (it seems like a lot of info being pushed to app_model)
+		*/
 		foreach($this->modelNames as $model) {
 			$this->$model->setParams($this->params);
 		}
 		
+		/* 
+		* Implemented for allowing guests and creators ACL control
+		*/
 		$this->userGroup = $this->get_user_group();
 		
-		# show admin layout for admin pages
-		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' && $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
+		/*
+		* Used to show admin layout for admin pages
+		*/
+		if(!empty($this->params['prefix']) && 
+		   $this->params['prefix'] == 'admin' && 
+		   $this->params['url']['ext'] != 'json' && 
+		   $this->params['url']['ext'] != 'rss' && 
+		   $this->params['url']['ext'] != 'xml' && 
+		   $this->params['url']['ext'] != 'csv') {
 			$this->layout = 'admin';
 		}
-		# get constants for app configuration
+		
+		/*
+		* System wide settings are set here,
+		* by gettting constants for app configuration
+		*/
 		$this->__getConstants();
 		
+		/*
+		* Used to get database driven template
+		*/
 		if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
 			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
 			$this->__parseIncludedPages ($defaultTemplate);
@@ -79,7 +129,6 @@ class AppController extends Controller {
     
     function get_user_group(){
     	#get users group
-		
 		if($this->Auth->user('id') != 0){
 			$user_model = ClassRegistry::init('User');
 			$user_moodel->recursive = 1 ;

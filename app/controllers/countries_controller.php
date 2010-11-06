@@ -51,7 +51,7 @@ class CountriesController extends AppController {
 			$this->Session->setFlash(__('Invalid id for Country', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->Country->del($id)) {
+		if ($this->Country->delete($id)) {
 			$this->Session->setFlash(__('Country deleted', true));
 			$this->redirect(array('action'=>'index'));
 		}
