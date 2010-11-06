@@ -1,8 +1,10 @@
 <?php
 class EnumerationEssential extends AppModel {
 	var $name = 'EnumerationEssential';
-	var $userField = array();
-	public $order = 'weight ASC';
+	var $order = 'weight ASC';
+	
+	var $userField = array(); # Used to define the creator table field (typically creator_id)
+	var $userLevel = false; # Used to define if this model requires record level user access control?
 	
 	public $valdiate = array(
 		'type' => array(
@@ -13,7 +15,6 @@ class EnumerationEssential extends AppModel {
 		),
 	);
 	
-	// Used to define if this model requires record level user access control? 
-	var $userLevel = false;
+	
 }
 ?>

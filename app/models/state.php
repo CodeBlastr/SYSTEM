@@ -5,10 +5,9 @@ class State extends AppModel {
 	var $validate = array(
 		'name' => array('notempty')
 	);
-	var $userField = array();
+	var $userField = array(); # Used to define the creator table field (typically creator_id)
+	var $userLevel = false; # Used to define if this model requires record level user access control?
 	
-	// Used to define if this model requires record level user access control? 
-	var $userLevel = false;
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $belongsTo = array(

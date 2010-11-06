@@ -2,7 +2,9 @@
 class Attribute extends AppModel {
 
 	var $name = 'Attribute';
-	var $userField = array();
+	var $userField = array(); # Used to define the creator table field (typically creator_id)
+	var $userLevel = false; # Used to define if this model requires record level user access control?
+	
 	var $validate = array(
 		'attribute_group_id' => array('numeric'),
 	    'code' => array(
@@ -32,7 +34,6 @@ class Attribute extends AppModel {
 		)
 	);
 
-	// Used to define if this model requires record level user access control? 
-	var $userLevel = false;
+	
 }
 ?>

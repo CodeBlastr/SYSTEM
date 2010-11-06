@@ -62,7 +62,7 @@ class AppController extends Controller {
 		/* 
 		* Implemented for allowing guests and creators ACL control
 		*/
-		$this->userGroup = $this->get_user_group();
+		$this->userGroup = $this->__checkUserGroup();
 		
 		/*
 		* Used to show admin layout for admin pages
@@ -93,14 +93,31 @@ class AppController extends Controller {
 			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
 		}
 		
-		//if user does not have access check if he / she is the creator and record has creator access.
+		
+		/*
+		* Access control upgrade
+		* It should fire only if the user does not have 
+		* access to the current page and if they don't 
+		* see if they have creator access.
+		*/
+		
+		# user is logged in but not authorized.
+		# check if node has creator access 
+		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
+			if($this->__checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
+				$this->Auth->allow('*');
+			}
+		} else {
+			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
+			die;
+		}
 		
 		if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
-			// user is logged in but not authorized.
-			// check if node has creator access 
-			// 4 is the creator group
+			# user is logged in but not authorized.
+			# check if node has creator access 
+			# creator group is a system setting editable at /admin/settings
 			if (defined('__SYS_CREATORS_GROUP_ARO_ID')) {
-				if($this->has_access(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
+				if($this->__checkAccess(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
 					//check if record belongs to the user
 					if($this->{$this->modelClass}->does_belongs($this->Auth->user('id') , $this->params)){
 						//allow user
@@ -112,22 +129,13 @@ class AppController extends Controller {
 				die;
 			}
 		}
-		
-		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-			if($this->has_access(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
-				$this->Auth->allow('*');
-			}
-		} else {
-			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
-			die;
-		}
     }
     
     /*
      * gets user group for acl check 
      */
     
-    function get_user_group(){
+    function __checkUserGroup(){
     	#get users group
 		if($this->Auth->user('id') != 0){
 			$user_model = ClassRegistry::init('User');
@@ -167,7 +175,7 @@ class AppController extends Controller {
      * @return {bool}
      */
     
-    function has_access($userGroup , $params){
+    function __checkAccess($userGroup , $params){
      $arac = ClassRegistry::init("Permissions.ArosAco");
      $cn = $arac->find('first' , array(
       'conditions'=>array(
