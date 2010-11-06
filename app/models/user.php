@@ -30,19 +30,6 @@ class User extends AppModel {
 	var $displayField = 'username';
 	var $actsAs = array('Acl' => 'requester');
 	
-	var $hasMany = array(
-		'ProfileFollower' => array(
-			'className' => 'Profiles.ProfileFollower',
-			'foreignKey' => 'user_id',
-			'dependent' => false,
-		),
-		'ProfileGroupWallPost'=>array(
-			'className' => 'Profiles.ProfileGroupWallPost',
-			'foreignKey' => 'creator_id',
-			'dependent' => false,
-		)
-	);
-	
 	function parentNode() {
    		if (!$this->id && empty($this->data)) {
 	        return null;
@@ -100,6 +87,21 @@ class User extends AppModel {
 			'order' => ''
 		)
 	);
+	/* 
+	@ todo You can't have relations from core to plugin for it to really be a plugin
+	
+	var $hasMany = array(
+		'ProfileFollower' => array(
+			'className' => 'Profiles.ProfileFollower',
+			'foreignKey' => 'user_id',
+			'dependent' => false,
+		),
+		'ProfileGroupWallPost'=>array(
+			'className' => 'Profiles.ProfileGroupWallPost',
+			'foreignKey' => 'creator_id',
+			'dependent' => false,
+		)
+	);
 	
 	var $hasAndBelongsToMany = array(
         'Profiles.ProfileGroup' =>
@@ -110,5 +112,6 @@ class User extends AppModel {
                 'associationForeignKey'  => 'user_id'
             )
     );
+	*/
 }
 ?>
