@@ -41,6 +41,11 @@ class User extends AppModel {
 			'className' => 'Profiles.ProfileFollower',
 			'foreignKey' => 'user_id',
 			'dependent' => false,
+		),
+		'ProfileGroupWallPost'=>array(
+			'className' => 'Profiles.ProfileGroupWallPost',
+			'foreignKey' => 'creator_id',
+			'dependent' => false,
 		)
 	);
 	
