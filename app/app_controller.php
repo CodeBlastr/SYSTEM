@@ -112,10 +112,10 @@ class AppController extends Controller {
 			die;
 		}
 		
+		# user is logged in but not authorized.
+		# check if node has creator access 
+		# creator group is a system setting editable at /admin/settings
 		if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
-			# user is logged in but not authorized.
-			# check if node has creator access 
-			# creator group is a system setting editable at /admin/settings
 			if (defined('__SYS_CREATORS_GROUP_ARO_ID')) {
 				if($this->__checkAccess(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
 					//check if record belongs to the user
