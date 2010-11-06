@@ -11,7 +11,7 @@ class UserGroup extends AppModel {
 	var $actsAs = array('Acl' => array('requester'));
  	var $userField = array();
  	
- 	// Does this model requires user level access
+ 	// Used to define if this model requires record level user access control? 
 	var $userLevel = false;
 	
 	function parentNode() {

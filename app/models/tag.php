@@ -7,7 +7,7 @@ class Tag extends AppModel {
 	);
 	var $userField = array();
 	
-	// Does this model requires user level access
+	// Used to define if this model requires record level user access control? 
 	var $userLevel = false;
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
