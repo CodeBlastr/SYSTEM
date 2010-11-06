@@ -4,20 +4,20 @@
  *
  * The Front Controller for handling every request
  *
- * PHP versions 4 and 5
+ * PHP versions 5
  *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Zuha(tm) : Web Development Suite (http://zuha.com)
+ * Copyright 2009-2010, Zuha.com (http://zuha.com)
  *
- * Licensed under The MIT License
+ * Licensed under GNU General Public License version 3 http://www.gnu.org/licenses/gpl.html
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       cake
- * @subpackage    cake.app.webroot
- * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @copyright     Copyright 2009-2010, Zuha.com (http://zuha.com)
+ * @link          http://zuha.com Zuha
+ * @package       zuha
+ * @subpackage    app.webroot
+ * @since         Zuha(tm) v 0.0.0
+ * @license       GNU General Public License version 3 (http://www.gnu.org/licenses/gpl.html)
  */
 /**
  * Use the DS to separate the directories in other defines
@@ -40,56 +40,19 @@
 	}
 /**
 * For multi site setups 
-* If you want to define a site folder
-* instead of using the default server http host to find the site folder
-* do it here
+* There are two methods for hosting multiple sites
+* Easy method : create a folder called /sites/myDomain.com 
+* (replacing myDomain with actual domain name that will be used)
+* Named method : care a folder called /sites/AnyName
+* and define the urls that will resolve to that sites folder
+* in the file /sites/bootstrap.php
 */
-	if ($_SERVER['HTTP_HOST'] == 'adoptamodel.localhost' || $_SERVER['HTTP_HOST'] == 'adoptamodel.zuha.com') {
-		if (!defined('SITE_DIR')) {
-			# this is the site combined local and remote sites directory
-			define('SITE_DIR', 'adoptamodel.zuha.com');
-		}
-	} else if ($_SERVER['HTTP_HOST'] == 'crimetv.zuha.localhost' || $_SERVER['HTTP_HOST'] == 'crimetv.zuha.com' || $_SERVER['HTTP_HOST'] == 'crimetv.localhost') {
-		if (!defined('SITE_DIR')) {
-			# this is the site combined local and remote sites directory
-			define('SITE_DIR', 'crimetv.zuha.com');
-		}
-	} else if ($_SERVER['HTTP_HOST'] == 'getrooted.localhost' || $_SERVER['HTTP_HOST'] == 'getrooted.zuha.localhost' || $_SERVER['HTTP_HOST'] == 'getrooted.zuha.com' || $_SERVER['HTTP_HOST'] == 'getrooted.org') {
-		if (!defined('SITE_DIR')) {
-			define('SITE_DIR', 'getrooted.com');
-		}
-	} else if ($_SERVER['HTTP_HOST'] == 'joinmyrfq.localhost' || $_SERVER['HTTP_HOST'] == 'joinmyrfq.zuha.com') {
-		if (!defined('SITE_DIR')) {
-			# this is the site combined local and remote sites directory
-			define('SITE_DIR', 'joinmyrfq.com');
-		}
-	} else if ($_SERVER['HTTP_HOST'] == 'planetcolor.localhost' || $_SERVER['HTTP_HOST'] == 'planetcolor.biz') {
-		if (!defined('SITE_DIR')) {
-			# this is the site combined local and remote sites directory
-			define('SITE_DIR', 'planetcolor.biz');
-		}
-	} else if ($_SERVER['HTTP_HOST'] == 'wwbe.zuha.localhost' || $_SERVER['HTTP_HOST'] == 'wwbe.92rm.com') {
-		if (!defined('SITE_DIR')) {
-			# this is the site combined local and remote sites directory
-			define('SITE_DIR', 'wwbe.com');
-		}
-	} else if ($_SERVER['HTTP_HOST'] == 'razorit.localhost' || $_SERVER['HTTP_HOST'] == 'www2.razorit.com') {
-		if (!defined('SITE_DIR')) {
-			# this is the site combined local and remote sites directory
-			define('SITE_DIR', 'www2.razorit.com');
-		}
-	} else if ($_SERVER['HTTP_HOST'] == 'zuha.localhost' || $_SERVER['HTTP_HOST'] == 'zuha.com') {
-		if (!defined('SITE_DIR')) {
-			# this is the site combined local and remote sites directory
-			define('SITE_DIR', 'zuha.com');
-		}
-	} else {
+
+	if(!include(ROOT . DS . 'sites' . DS . 'bootstrap.php')) {
 		if (!defined('SITE_DIR')) {
 			define('SITE_DIR', $_SERVER['HTTP_HOST']);
 		} 
-	}
-	
-	//print($_SERVER['HTTP_HOST']);
+	} 
 	
 /**
  * The actual directory name for the "app".
@@ -97,8 +60,8 @@
  */
 	
 	if (!defined('APP_DIR')) {
-		if (file_exists(ROOT.DS.'sites'.DS.SITE_DIR)) {
-			define('APP_DIR', 'sites'.DS.SITE_DIR);
+		if (file_exists(ROOT.DS.'sites' . DS . SITE_DIR)) {
+			define('APP_DIR', 'sites' .DS . SITE_DIR);
 		} else {
 			define('APP_DIR', basename(dirname(dirname(__FILE__))));
 		}
