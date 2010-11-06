@@ -101,7 +101,7 @@ class TagsController extends AppController {
 			$this->redirect(array('action'=>'index'));
 		}
 		$model = $this->modelClass;
-		if ($this->$model->del($id)) {
+		if ($this->$model->delete($id)) {
 			$this->redirect('/ajax_delete');
 	        $this->layout = 'ajax';
 		}

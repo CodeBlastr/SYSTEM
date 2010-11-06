@@ -31,7 +31,7 @@ class AttributeGroupsController extends AppController {
 			$this->Session->setFlash(__('Invalid id for AttributeGroup', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->AttributeGroup->del($id)) {
+		if ($this->AttributeGroup->delete($id)) {
 			$this->Session->setFlash(__('AttributeGroup deleted', true));
 			$this->redirect(array('action'=>'index'));
 		}

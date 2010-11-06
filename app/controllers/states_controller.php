@@ -55,7 +55,7 @@ class StatesController extends AppController {
 			$this->Session->setFlash(__('Invalid id for State', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->State->del($id)) {
+		if ($this->State->delete($id)) {
 			$this->Session->setFlash(__('State deleted', true));
 			$this->redirect(array('action'=>'index'));
 		}
