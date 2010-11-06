@@ -14,3 +14,4 @@
 /sites/**/tmp/cache/views/cake*
 /sites/bootstrap.php
 \.*
+\_*
