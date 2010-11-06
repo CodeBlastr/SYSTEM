@@ -109,7 +109,6 @@ class AppController extends Controller {
 			}
 		} else {
 			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
-			die;
 		}
 		
 		# user is logged in but not authorized.
@@ -126,15 +125,26 @@ class AppController extends Controller {
 				}
 			} else {
 				echo 'In /admin/settings key: SYS, value: CREATORS_GROUP_ARO_ID must be defined';
-				die;
 			}
 		}
     }
+	
+	/* This turns off debug so that ajax views don't get severly messed up
+	* @todo convert to a full REST application and this might not be necessary
+	*/
+    function beforeRender() {
+		if($this->RequestHandler->isAjax()) { 
+            Configure::write('debug', 0); 
+        } else if ($this->RequestHandler->isXml()) {
+            Configure::write('debug', 0); 
+		} else if ($this->params['url']['ext'] == 'json') {
+            #Configure::write('debug', 0); 
+		}
+	}
     
     /*
      * gets user group for acl check 
      */
-    
     function __checkUserGroup(){
     	#get users group
 		if($this->Auth->user('id') != 0){
@@ -176,40 +186,29 @@ class AppController extends Controller {
      */
     
     function __checkAccess($userGroup , $params){
-     $arac = ClassRegistry::init("Permissions.ArosAco");
-     $cn = $arac->find('first' , array(
-      'conditions'=>array(
-      'ArosAco.aro_id' => $userGroup,
-   	/*this was changed to false to get individual records to work (not sure what other effects it will have)
-      'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , true)*/
-      'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)
-      ),
-      'contain'=>array(),
-      /*'fields'=>array(
-       '_create',
-      )*/
-     ));
+    	$arac = ClassRegistry::init("Permissions.ArosAco");
+		$cn = $arac->find('first' , array(
+      		'conditions'=>array(
+	      		'ArosAco.aro_id' => $userGroup,
+	   			/* this was changed to false to get individual records to work (not sure what other effects it will have)
+			  	'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , true)*/
+	      		'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)
+	      		),
+	      	'contain'=>array(),
+	      	/*'fields'=>array(
+	       		'_create',
+	      		)*/
+     	));
   
-     if(count($cn) != 0){
-      if($cn["ArosAco"]["_create"] == 1 ){
-       return true;
-      }else{
-       return false; 
-      } 
-     }else{
-      return false;
-     } 
-
-    }
-
-    function beforeRender() {
-		if($this->RequestHandler->isAjax()) { 
-            Configure::write('debug', 0); 
-        } else if ($this->RequestHandler->isXml()) {
-            Configure::write('debug', 0); 
-		} else if ($this->params['url']['ext'] == 'json') {
-            #Configure::write('debug', 0); 
-		}
+    	if(count($cn) != 0){
+			if($cn["ArosAco"]["_create"] == 1 ){
+       			return true;
+      		} else {
+       			return false; 
+      		} 
+     	} else {
+      		return false;
+     	} 
 	}
 	
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
@@ -328,48 +327,7 @@ class AppController extends Controller {
 		}
 		$this->render(false);
 	}	
-		
-	/**
-	 * Delete a List
-	 * @param int $id
-	 */
-	function admin_delete($id=null) {
-		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
-		App::import('Model', $model);
-		$this->$model = new $model();
-		// set default class & message for setFlash
-		$class = 'flash_bad';
-		$msg   = 'Invalid List Id';
-		
-		// check id is valid
-		if($id!=null && is_numeric($id)) {
-			// get the Item
-			$item = $this->$model->read(null,$id);
 			
-			// check Item is valid
-			if(!empty($item)) {
-				// try deleting the item
-				if($this->$model->delete($id)) {
-					$class = 'flash_good';
-					$msg   = 'Successfully deleted';
-				} else {
-					$msg = 'There was a problem deleting your Item, please try again';
-				}
-			}
-		}
-	
-		// output JSON on AJAX request
-		if($this->RequestHandler->isAjax()) {
-			$this->autoRender = $this->layout = false;
-			echo json_encode(array('success'=>($class=='flash_bad') ? FALSE : TRUE,'msg'=>"<p id='flashMessage' class='{$class}'>{$msg}</p>"));
-		exit;
-		}
-	
-		// set flash message & redirect
-		$this->Session->setFlash(__($msg, true));
-		$this->redirect(Controller::referer());
-	}
-	
 	
 	# show the drop downs for the named parameter 
     function ajax_list($id = null){	
@@ -407,7 +365,7 @@ class AppController extends Controller {
 	
 	
 	function __send_mail($id, $subject = null, $message = null, $template = null) {
-		# ex call :  $this->__send_mail(array('contact' => array(1, 2), 'user' => array(1, 2)));
+		# example call :  $this->__send_mail(array('contact' => array(1, 2), 'user' => array(1, 2)));
 		if (is_array($id)) : 
 			if (is_array($id['contact'])): 
 				foreach ($id['contact'] as $contact_id) : 
@@ -449,7 +407,59 @@ class AppController extends Controller {
 		#pr($this->Session->read('Message.email'));
 		#die;
 	}
-	##############################################################################################
+	
+	
+	
+	/**
+	 * Delete a List
+	 * The goal is to make less code necessary in individual controllers 
+	 * and have more reusable code.
+	 * @param int $id
+	 * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
+	 */
+	function admin_delete($id=null) {
+		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
+		App::import('Model', $model);
+		$this->$model = new $model();
+		// set default class & message for setFlash
+		$class = 'flash_bad';
+		$msg   = 'Invalid List Id';
+		
+		// check id is valid
+		if($id!=null && is_numeric($id)) {
+			// get the Item
+			$item = $this->$model->read(null,$id);
+			
+			// check Item is valid
+			if(!empty($item)) {
+				// try deleting the item
+				if($this->$model->delete($id)) {
+					$class = 'flash_good';
+					$msg   = 'Successfully deleted';
+				} else {
+					$msg = 'There was a problem deleting your Item, please try again';
+				}
+			}
+		}
+	
+		// output JSON on AJAX request
+		if($this->RequestHandler->isAjax()) {
+			$this->autoRender = $this->layout = false;
+			echo json_encode(array('success'=>($class=='flash_bad') ? FALSE : TRUE,'msg'=>"<p id='flashMessage' class='{$class}'>{$msg}</p>"));
+		exit;
+		}
+	
+		// set flash message & redirect
+		$this->Session->setFlash(__($msg, true));
+		$this->redirect(Controller::referer());
+	}
+	
+	/*
+	* @todo We need to add default index, view, add, edit, delete, admin_index, admin_view, admin_add, admin_edit, admin_delete functions, if we can figure out a way so that particular controllers can turn them off, and keep the build_acl stuff below knowledgeable of it, so that acos stay clean. 
+	*/
+	
+	
+##############################################################################################
 ################# BUILD ACO's ################################################################
 ################# empty the aco table ########################################################
 ################# uncomment then go to : http://zuha.localhost/user_groups/build_acl #########
@@ -458,7 +468,7 @@ class AppController extends Controller {
 ##############################################################################################
 	
 	
-function __build_acl() {
+	function __build_acl() {
 		if (!Configure::read('debug')) {
 			return $this->_stop();
 		}
