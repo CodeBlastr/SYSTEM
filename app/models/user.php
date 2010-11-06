@@ -37,8 +37,8 @@ class User extends AppModel {
 	var $actsAs = array('Acl' => 'requester');
 	
 	var $hasMany = array(
-		'ProfileFallower' => array(
-			'className' => 'Profiles.ProfileFallower',
+		'ProfileFollower' => array(
+			'className' => 'Profiles.ProfileFollower',
 			'foreignKey' => 'user_id',
 			'dependent' => false,
 		)
