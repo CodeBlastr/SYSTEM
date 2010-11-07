@@ -23,11 +23,24 @@
 		</dd>
 	</dl>
 </div>
-<div class="actions">
-	<ul>
-		<li><?php echo $html->link(__('Edit UserGroup', true), array('action' => 'edit', $userGroup['UserGroup']['id'])); ?> </li>
-		<li><?php echo $html->link(__('Delete UserGroup', true), array('action' => 'delete', $userGroup['UserGroup']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $userGroup['UserGroup']['id'])); ?> </li>
-		<li><?php echo $html->link(__('List UserGroups', true), array('action' => 'index')); ?> </li>
-		<li><?php echo $html->link(__('New UserGroup', true), array('action' => 'add')); ?> </li>
-	</ul>
-</div>
+
+<?php 
+// set the contextual menu items
+$menu->setValue(array(
+	array(
+		'heading' => 'User Groups',
+		'items' => array(
+			 $html->link(__('Edit UserGroup', true), array('action' => 'edit', $userGroup['UserGroup']['id'])),
+			 $html->link(__('Delete UserGroup', true), array('action' => 'delete', $userGroup['UserGroup']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $userGroup['UserGroup']['id'])),
+			 $html->link(__('List UserGroups', true), array('action' => 'index')),
+			 $html->link(__('New UserGroup', true), array('action' => 'add')),
+			 )
+		),
+	array(
+		'heading' => 'Users',
+		'items' => array(
+			 $html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')),
+			 )
+		),
+	));
+?>

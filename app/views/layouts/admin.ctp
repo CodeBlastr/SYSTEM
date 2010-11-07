@@ -21,7 +21,7 @@
 	<div id="container">
 		<div id="header">				
 			<div id="loadingimg" style="display: none;"><?php echo $html->image('ajax-loader.gif'); ?></div>
-            <a href="/" id="logo"><p>Collaborative Business Management</p><p>Grow into the business of your dreams.</p></a>
+            <a href="/admin/" id="logo"><p>Collaborative Business Management</p><p>Grow into the business of your dreams.</p></a>
             
             <div class="login">
 			<?php 
@@ -55,10 +55,10 @@
 					<li><a href="#navtabs-6">Marketing</a></li>
 				</ul>
 				<div id="navtabs-1">
+					<a href="/"><?php echo __('Public Home', true); ?></a>
 					<?php echo $html->link(__('Users', true), array('plugin' => null, 'controller' => 'users', 'action' => 'index', 'admin' => 1)); ?>
-					<?php echo $html->link(__('Priorities', true), array('plugin' => 'priorities', 'controller' => 'priorities', 'action' => 'my', 'admin' => 1)); ?>
-					<?php echo $html->link(__('Reports', true), array('plugin' => null, 'controller' => '', 'admin' => 1)); ?>
-					<?php echo $html->link(__('Search', true), array('plugin' => 'searches', 'controller' => 'searches', 'action' => 'index', 'admin' => 1)); ?>
+					<?php echo $html->link(__('Permissions', true), array('plugin' => 'permissions', 'controller' => 'acores', 'action' => 'index', 'admin' => 1)); ?>
+					<?php # echo $html->link(__('Search', true), array('plugin' => 'searches', 'controller' => 'searches', 'action' => 'index', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Notifications', true), array('plugin' => 'notifications', 'controller' => 'notification_templates', 'action' => 'index', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Attributes', true), array('plugin' => null, 'controller' => 'attributes', 'action' => 'index', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Settings', true), array('plugin' => null, 'controller' => 'settings', 'admin' => 1)); ?>
@@ -71,9 +71,9 @@
 				</div>
 				<div id="navtabs-3">
 					<?php echo $html->link(__('Projects', true), array('plugin' => 'projects', 'controller' => 'projects', 'action' => 'index', 'admin' => 1)); ?>
-					<?php echo $html->link(__('Quotes', true), array('plugin' => null, 'controller' => 'quotes', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Timesheets', true), array('plugin' => null, 'controller' => 'timesheets', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Tickets', true), array('plugin' => null, 'controller' => 'tickets', 'admin' => 1)); ?>
+					<?php echo $html->link(__('Priorities', true), array('plugin' => 'priorities', 'controller' => 'priorities', 'action' => 'my', 'admin' => 1)); ?>
 				</div>
 				<div id="navtabs-4">
 					<?php echo $html->link(__('Orders', true), array('plugin' => 'orders', 'controller' => 'orders', 'admin' => 1)); ?>
@@ -84,9 +84,9 @@
 				<div id="navtabs-5">
 					<?php echo $html->link(__('Pages', true), array('plugin' => null, 'controller' => 'webpages', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Blogs', true), array('plugin' => null, 'controller' => 'blogs', 'action' => 'index', 'admin' => 1)); ?>
-					<?php echo $html->link(__('FAQ\'s', true), array('plugin' => null, 'controller' => 'faqs', 'admin' => 1)); ?>
+					<?php #echo $html->link(__('FAQ\'s', true), array('plugin' => null, 'controller' => 'faqs', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Wikis', true), array('plugin' => null, 'controller' => 'wikis', 'admin' => 1)); ?>
-					<?php echo $html->link(__('Forums', true), array('plugin' => 'forums', 'controller' => 'forums', 'action' => 'index', 'admin' => 1)); ?>
+					<?php #echo $html->link(__('Forums', true), array('plugin' => 'forums', 'controller' => 'forums', 'action' => 'index', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Media', true), '/ckfinder/ckfinder.html'); ?>
 					<?php echo $html->link(__('Tags', true), array('plugin' => null, 'controller' => 'tags', 'admin' => 1)); ?>
 				</div>
