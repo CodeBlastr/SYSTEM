@@ -17,8 +17,8 @@
  * @filesource
  * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
- * @package       cake
- * @subpackage    cake.app.config
+ * @package       zuha
+ * @subpackage    zuha.app.config
  * @since         CakePHP(tm) v 1.0.0.2312
  * @version       $Revision$
  * @modifiedby    $LastChangedBy$

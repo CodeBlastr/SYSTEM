@@ -14,9 +14,9 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       cake
- * @subpackage    cake.app.config
+ * @link          http://zuha.com Zuha™ Project
+ * @package       zuha
+ * @subpackage    zuha.app.config
  * @since         CakePHP(tm) v 0.10.8.2117
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

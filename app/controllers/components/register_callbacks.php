@@ -1,26 +1,4 @@
 <?php 
-
-/**
-http://jamienay.com/2009/11/an-easy-plugin-callback-component-for-cakephp-1-2/
-
-If you want certain plugin callbacks to fire before others, you can specify a partial or complete order using the ‘priority’ setting: var $components = array('RegisterCallbacks' => array('priority' => array('ImportantPluginOne, 'ImportantPluginTwo')));
-
-Any plugins not specified in the ‘priority’ array are loaded as per Configure::listobjects('plugin')
-
-For each plugin you want to include in the callback system, create a plugin_name_callback.php  file in the plugin’s root directory (app/plugins/plugin_name). Within that file define a CamelizedPluginNameCallback class.
-
-The CamelizedPluginNameCallback class can contain any or all of the following functions:
-
-    * initialize(&$controller): Called before the controller’s beforeFilter method.
-    * beforeFilter(&$controller): Called after the controller’s beforeFilter() method but before the controller executes the current action handler. Uses ‘beforeFilter’ instead of ’startup’ to make the action name more consistent with the controller name.
-    * beforeRender(&$controller): Called after the controller’s beforeRender method but before the controller renders views and layout.
-    * shutdown(&$controller): Called before output is sent to the browser.
-    * beforeRedirect(&$controller, $url, $status = null, $exit = true): Called when the controller’s redirect method is called but before any further action.
-
-
-*/
-
-
 /**
 * RegisterCallbacksComponent class file
 *
@@ -36,6 +14,8 @@ The CamelizedPluginNameCallback class can contain any or all of the following fu
 * @copyright Jamie Nay
 * @license http://www.opensource.org/licenses/mit-license.php The MIT License
 * @link http://jamienay.com/2009/11/an-easy-plugin-callback-component-for-cakephp-12/
+* @package       zuha
+* @subpackage    zuha.app.controllers.components
 */
 class RegisterCallbacksComponent extends Object {
 /**
@@ -54,7 +34,7 @@ var $__controller = null;
 */
 public $settings = array();
 
-    /**
+/**
 * Default values for settings.
 * - priority (optional): the order in which callbacks should be executed. If
 * priority is left empty, or if some plugins are left out of the list, the
@@ -196,4 +176,22 @@ public function initialize(&$controller, $settings = array()) {
 	}
 
 }
+
+/*
+ http://jamienay.com/2009/11/an-easy-plugin-callback-component-for-cakephp-1-2/
+
+If you want certain plugin callbacks to fire before others, you can specify a partial or complete order using the ‘priority’ setting: var $components = array('RegisterCallbacks' => array('priority' => array('ImportantPluginOne, 'ImportantPluginTwo')));
+
+Any plugins not specified in the ‘priority’ array are loaded as per Configure::listobjects('plugin')
+
+For each plugin you want to include in the callback system, create a plugin_name_callback.php  file in the plugin’s root directory (app/plugins/plugin_name). Within that file define a CamelizedPluginNameCallback class.
+
+The CamelizedPluginNameCallback class can contain any or all of the following functions:
+
+    * initialize(&$controller): Called before the controller’s beforeFilter method.
+    * beforeFilter(&$controller): Called after the controller’s beforeFilter() method but before the controller executes the current action handler. Uses ‘beforeFilter’ instead of ’startup’ to make the action name more consistent with the controller name.
+    * beforeRender(&$controller): Called after the controller’s beforeRender method but before the controller renders views and layout.
+    * shutdown(&$controller): Called before output is sent to the browser.
+    * beforeRedirect(&$controller, $url, $status = null, $exit = true): Called when the controller’s redirect method is called but before any further action.
+*/
 ?>
