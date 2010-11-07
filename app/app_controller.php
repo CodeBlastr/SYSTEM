@@ -27,19 +27,21 @@ class AppController extends Controller {
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
 	var $view = 'Theme';
 	var $userGroup = '';
+/**
+ * Fired early in the display process for defining app wide settings
+ */
 
 	function beforeFilter() {
-		/*  
-		* Allows us to have webroot files (css, js, etc) in the sites directories
-		* Used in conjunction with the "var $view above"
-		* @todo allow the use of multiple themes, database driven themes, and theme switching
-		*/
+/**
+ * Allows us to have webroot files (css, js, etc) in the sites directories
+ * Used in conjunction with the "var $view above"
+ * @todo allow the use of multiple themes, database driven themes, and theme switching
+ */
 		$this->theme = 'default';
 		
-		
-        /* 
-		* Configure AuthComponent
-		*/
+/**
+ * Configure AuthComponent
+*/
         $this->Auth->authorize = 'actions';
 		
         $this->Auth->loginAction = array(
@@ -65,28 +67,28 @@ class AppController extends Controller {
 		
 		$this->Auth->allowedActions = array('display');
 		
-		/*
-		* Support for json file types when using json extensions
-		*/
+/**
+ * Support for json file types when using json extensions
+ */
 		$this->RequestHandler->setContent('json', 'text/x-json');
 		
-		/*
-		* app_model doesn't have access to $this->params, we pass it here
-		* @todo We'd like to get rid of this completely, if it all possible. 
-		* (it seems like a lot of info being pushed to app_model)
-		*/
+/**
+ * app_model doesn't have access to $this->params, we pass it here
+ * @todo We'd like to get rid of this completely, if it all possible. 
+ * (it seems like a lot of info being pushed to app_model)
+ */
 		foreach($this->modelNames as $model) {
 			$this->$model->setParams($this->params);
 		}
 		
-		/* 
-		* Implemented for allowing guests and creators ACL control
-		*/
+/**
+ * Implemented for allowing guests and creators ACL control
+ */
 		$this->userGroup = $this->__checkUserGroup();
 		
-		/*
-		* Used to show admin layout for admin pages
-		*/
+/**
+ * Used to show admin layout for admin pages
+ */
 		if(!empty($this->params['prefix']) && 
 		   $this->params['prefix'] == 'admin' && 
 		   $this->params['url']['ext'] != 'json' && 
@@ -96,15 +98,15 @@ class AppController extends Controller {
 			$this->layout = 'admin';
 		}
 		
-		/*
-		* System wide settings are set here,
-		* by gettting constants for app configuration
-		*/
+/**
+ * System wide settings are set here,
+ * by gettting constants for app configuration
+ */
 		$this->__getConstants();
 		
-		/*
-		* Used to get database driven template
-		*/
+/**
+ * Used to get database driven template
+ */
 		if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
 			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
 			$this->__parseIncludedPages ($defaultTemplate);
@@ -114,12 +116,12 @@ class AppController extends Controller {
 		}
 		
 		
-		/*
-		* Access control upgrade
-		* It should fire only if the user does not have 
-		* access to the current page and if they don't 
-		* see if they have creator access.
-		*/
+/**
+ * Access control upgrade
+ * It should fire only if the user does not have 
+ * access to the current page and if they don't 
+ * see if they have creator access.
+ */
 		
 		# user is logged in but not authorized.
 		# check if node has creator access 
@@ -149,9 +151,10 @@ class AppController extends Controller {
 		}
     }
 	
-	/* This turns off debug so that ajax views don't get severly messed up
-	* @todo convert to a full REST application and this might not be necessary
-	*/
+/**
+ * This turns off debug so that ajax views don't get severly messed up
+ * @todo convert to a full REST application and this might not be necessary
+ */
     function beforeRender() {
 		if($this->RequestHandler->isAjax()) { 
             Configure::write('debug', 0); 
@@ -162,9 +165,9 @@ class AppController extends Controller {
 		}
 	}
     
-    /*
-     * gets user group for acl check 
-     */
+/**
+ * gets user group for acl check 
+ */
     function __checkUserGroup(){
     	#get users group
 		if($this->Auth->user('id') != 0){
@@ -198,12 +201,12 @@ class AppController extends Controller {
 		}
     }
     
-    /*
-     * Does the node have creator access ?
-     * @param {int} userGroup -> The aro_id of the userGroup 
-     * @todo add guest functionality here with a param 
-     * @return {bool}
-     */   
+/**
+ * Does the node have creator access ?
+ * @param {int} userGroup -> The aro_id of the userGroup 
+ * @todo add guest functionality here with a param 
+ * @return {bool}
+ */   
     function __checkAccess($userGroup , $params){
     	$arac = ClassRegistry::init("Permissions.ArosAco");
 		$cn = $arac->find('first' , array(
@@ -230,14 +233,14 @@ class AppController extends Controller {
      	} 
 	}
 	
-	/** 
-	 * Database driven template system
-	 *
-	 * Using this function we can create pages within pages in the database
-	 * using structured tags (example : {include:pageid3}) 
-	 * which would include the database webpage with that id in place of the tag
-	 * @todo We need to fix up the {element: xyz_for_layout} so that you don't have to edit app_controller to have new helpers included, or somehow switch them all over to elements (the problem with that being that elements aren't as handy for data)
-	 **/
+/** 
+ * Database driven template system
+ *
+ * Using this function we can create pages within pages in the database
+ * using structured tags (example : {include:pageid3}) 
+ * which would include the database webpage with that id in place of the tag
+ * @todo We need to fix up the {element: xyz_for_layout} so that you don't have to edit app_controller to have new helpers included, or somehow switch them all over to elements (the problem with that being that elements aren't as handy for data)
+ */
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
 		$matches = array ();
 		$parents[] = $webpage["Webpage"]["id"];
@@ -255,12 +258,12 @@ class AppController extends Controller {
 		}
 	}
 	
-	/** 
-	 * Settings for the site
-	 *
-	 * This is where we call all of the data in the "settings" table and parse
-	 * them into constants to be used through out the site.
-	 */	
+/** 
+ * Settings for the site
+ *
+ * This is where we call all of the data in the "settings" table and parse
+ * them into constants to be used through out the site.
+ */	
 	function __getConstants(){
 		//Fetching All params
 	   	$settings_array = $this->Setting->find('all');
@@ -279,12 +282,12 @@ class AppController extends Controller {
 	   # echo __APP_DEFAULT_TEMPLATE_ID;
 	}
 	
-	/** Mail functions
-	 * 
-	 * These next two functions are used primarily in the notifications plugin
-	 * but can be used in any plugin that needs to send email
-	 * @todo Alot more documentation on the notifications subject
-	 **/	
+/** Mail functions
+ * 
+ * These next two functions are used primarily in the notifications plugin
+ * but can be used in any plugin that needs to send email
+ * @todo Alot more documentation on the notifications subject
+ */	
 	function __send_mail($id, $subject = null, $message = null, $template = null) {
 		# example call :  $this->__send_mail(array('contact' => array(1, 2), 'user' => array(1, 2)));
 		if (is_array($id)) : 
@@ -332,11 +335,11 @@ class AppController extends Controller {
 	
 	
 	
-	/**
-	 * Convenience admin_add 
-	 * The goal is to make less code necessary in individual controllers 
-	 * and have more reusable code.
-	 */
+/**
+ * Convenience admin_add 
+ * The goal is to make less code necessary in individual controllers 
+ * and have more reusable code.
+ */
 	function __admin_add() {
 		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
 		if (!empty($this->data)) {
@@ -351,11 +354,11 @@ class AppController extends Controller {
 	}
 	
 	
-	/**
-	 * Convenience admin_ajax_edit 
-	 * The goal is to make less code necessary in individual controllers 
-	 * and have more reusable code.
-	 */
+/**
+ * Convenience admin_ajax_edit 
+ * The goal is to make less code necessary in individual controllers 
+ * and have more reusable code.
+ */
 	function __admin_ajax_edit($id = null) {
         if ($this->data) {
 			# This will not work for multiple fields, and is meant for a form with a single value to update
@@ -413,13 +416,13 @@ class AppController extends Controller {
 	
 	
 	
-	/**
-	 * Convenience admin_delete
-	 * The goal is to make less code necessary in individual controllers 
-	 * and have more reusable code.
-	 * @param int $id
-	 * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
-	 */
+/**
+ * Convenience admin_delete
+ * The goal is to make less code necessary in individual controllers 
+ * and have more reusable code.
+ * @param int $id
+ * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
+ */
 	function __admin_delete($id=null) {
 		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
 		App::import('Model', $model);
@@ -456,14 +459,15 @@ class AppController extends Controller {
 		$this->Session->setFlash(__($msg, true));
 		$this->redirect(Controller::referer());
 	}
-			
 	
 	
-	/**
-	 * Convenience ajax_list 
-	 * The goal is to make less code necessary in individual controllers 
-	 * and have more reusable code.
-	 */
+/**
+ * Convenience Ajax List Method (Fill Select Drop Downs) for Editable Fields
+ * The goal is to make less code necessary in individual controllers 
+ * and have more reusable code.
+ * 
+ * @return a filled <select> with <options>
+ */
     function __ajax_list($id = null){	
 		# get the model from the controller being requested
 		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
@@ -498,20 +502,13 @@ class AppController extends Controller {
     }
 	
 	
-	/*
-	* @todo We need to add default index, view, add, edit, delete, admin_index, admin_view, admin_add, admin_edit, admin_delete functions, if we can figure out a way so that particular controllers can turn them off, and keep the build_acl stuff below knowledgeable of it, so that acos stay clean. 
-	*/
-	
-	
-##############################################################################################
-################# BUILD ACO's ################################################################
-################# empty the aco table ########################################################
-################# uncomment then go to : http://zuha.localhost/user_groups/build_acl #########
-################# then comment out again #####################################################
-################# source : http://book.cakephp.org/view/648/Setting-up-permissions ###########
-##############################################################################################
-	
-	
+/**
+ * Build ACL is a function used for updating the acos table with all available plugins and controller methods.
+ * 
+ * Was extended to make it possible to do a single controller or plugin at a time, instead of a full rebuild.
+ * @todo We need to add default index, view, add, edit, delete, admin_index, admin_view, admin_add, admin_edit, admin_delete functions, if we can figure out a way so that particular controllers can turn them off, and keep the build_acl stuff below knowledgeable of it, so that acos stay clean. 
+ * @link http://book.cakephp.org/view/648/Setting-up-permissions
+ */	
 	function __build_acl($specifiedController = null) {
 		if (!Configure::read('debug')) {
 			return $this->_stop();
