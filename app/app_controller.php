@@ -1,7 +1,6 @@
 <?php
 class AppController extends Controller {
 	
-	#var $scaffold;
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', );
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
@@ -183,8 +182,7 @@ class AppController extends Controller {
      * @param {int} userGroup -> The aro_id of the userGroup 
      * @todo add guest functionality here with a param 
      * @return {bool}
-     */
-    
+     */   
     function __checkAccess($userGroup , $params){
     	$arac = ClassRegistry::init("Permissions.ArosAco");
 		$cn = $arac->find('first' , array(
@@ -211,6 +209,14 @@ class AppController extends Controller {
      	} 
 	}
 	
+	/** 
+	 * Database driven template system
+	 *
+	 * Using this function we can create pages within pages in the database
+	 * using structured tags (example : {include:pageid3}) 
+	 * which would include the database webpage with that id in place of the tag
+	 * @todo We need to fix up the {element: xyz_for_layout} so that you don't have to edit app_controller to have new helpers included, or somehow switch them all over to elements (the problem with that being that elements aren't as handy for data)
+	 **/
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
 		$matches = array ();
 		$parents[] = $webpage["Webpage"]["id"];
@@ -228,19 +234,11 @@ class AppController extends Controller {
 		}
 	}
 	
-	/* // this might be a bit slower than __getConstants() 
-	function __getConfiguration(){
-	   //Loading model on the fly
-	   #$settings = new Setting();
-	   //Fetching All params
-	   $settings_array = $this->Setting->findAll();
-	   foreach($settings_array as $key=>$value){
-	      Configure::write("__".$value['Setting']['key'], $value['Setting']['value']);
-	   }
-	   $var = Configure::read('__MyApp');
-	   #pr($var);
-	} */
-	
+	/** Settings for the site
+	 *
+	 * This is where we call all of the data in the "settings" table and parse
+	 * them into constants to be used through out the site.
+	 **/	
 	function __getConstants(){
 		//Fetching All params
 	   	$settings_array = $this->Setting->find('all');
@@ -259,7 +257,65 @@ class AppController extends Controller {
 	   # echo __APP_DEFAULT_TEMPLATE_ID;
 	}
 	
-	function admin_add() {
+	/** Mail functions
+	 * 
+	 * These next two functions are used primarily in the notifications plugin
+	 * but can be used in any plugin that needs to send email
+	 * @todo Alot more documentation on the notifications subject
+	 **/	
+	function __send_mail($id, $subject = null, $message = null, $template = null) {
+		# example call :  $this->__send_mail(array('contact' => array(1, 2), 'user' => array(1, 2)));
+		if (is_array($id)) : 
+			if (is_array($id['contact'])): 
+				foreach ($id['contact'] as $contact_id) : 
+					$this->__send($contact_id, $subject, $message, $template);
+				endforeach;
+			endif;
+			if (is_array($id['user'])): 
+				foreach ($id['user'] as $user_id) : 
+					App::import('Model', 'User');
+					$this->User = new User();	
+					$User = $this->User->read(null, $user_id);
+					$contact_id = $User['User']['contact_id'];
+					$this->__send($contact_id, $subject, $message, $template);
+				endforeach;
+			endif;
+		else :
+			$this->Session->setFlash(__('Notification ID Invalid', true));
+		endif;
+    } 
+	
+			
+	function __send($id, $subject, $message, $template) {
+		#$this->Email->delivery = 'debug';
+		
+		App::import('Model', 'Contact');
+		$this->Contact = new Contact();	
+		$Contact = $this->Contact->read(null,$id);
+    	$this->Email->to = $Contact['Contact']['primary_email'];
+   		$this->Email->bcc = array('slickricky+secret@gmail.com');  
+    	$this->Email->subject = $subject;
+	    $this->Email->replyTo = 'noreply@razorit.com';
+	    $this->Email->from = 'noreply@razorit.com';
+	    $this->Email->template = $template; 
+	    $this->Email->sendAs = 'both'; 
+	    $this->set('message', $message);
+	    $this->Email->send();
+		$this->Email->reset();
+		
+		#pr($this->Session->read('Message.email'));
+		#die;
+	}
+	
+	
+	
+	
+	/**
+	 * Convenience admin_add 
+	 * The goal is to make less code necessary in individual controllers 
+	 * and have more reusable code.
+	 */
+	function __admin_add() {
 		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
 		if (!empty($this->data)) {
 			$this->$model->create();
@@ -273,7 +329,12 @@ class AppController extends Controller {
 	}
 	
 	
-	function admin_ajax_edit($id = null) {
+	/**
+	 * Convenience admin_ajax_edit 
+	 * The goal is to make less code necessary in individual controllers 
+	 * and have more reusable code.
+	 */
+	function __admin_ajax_edit($id = null) {
         if ($this->data) {
 			# This will not work for multiple fields, and is meant for a form with a single value to update
 			# Create the model name from the controller requested in the url
@@ -327,97 +388,17 @@ class AppController extends Controller {
 		}
 		$this->render(false);
 	}	
-			
-	
-	# show the drop downs for the named parameter 
-    function ajax_list($id = null){	
-		# get the model from the controller being requested
-		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
-		# check for empty values and set them to null
-		foreach ($this->params['named'] as $key => $value ) {
-			if(empty($this->params['named'][$key])) {
-				$this->params['named'][$key] = null;
-			}
-		}
-		# set the conditions by the named parameters - ex. project_id:1
-		$conditions = am($this->params['named']);
-		#find the list with given parameter conditions
-    	$list =  $this->$model->find('list', array('conditions' => $conditions));
-		#display the drop down
-		$this->str = '<option value="">-- Select --</option>';
-        foreach ($list as $key => $value){
-            $this->str .= "<option value=".$key.">".$value."</option>";
-        }		
-		if ($this->params['url']['ext'] == 'json') {
-			echo '{';
-			foreach ($list as $key => $value) {
-				echo '"'.$key.'":"'.$value.'",';
-			}			
-			echo '}';
-			$this->render(false);
-		} else {
-        	$this->set('data', $this->str);  
-			$list = $this->str;
-			echo $list;
-			$this->render(false);
-		}		
-    }
-	
-	
-	function __send_mail($id, $subject = null, $message = null, $template = null) {
-		# example call :  $this->__send_mail(array('contact' => array(1, 2), 'user' => array(1, 2)));
-		if (is_array($id)) : 
-			if (is_array($id['contact'])): 
-				foreach ($id['contact'] as $contact_id) : 
-					$this->__send($contact_id, $subject, $message, $template);
-				endforeach;
-			endif;
-			if (is_array($id['user'])): 
-				foreach ($id['user'] as $user_id) : 
-					App::import('Model', 'User');
-					$this->User = new User();	
-					$User = $this->User->read(null, $user_id);
-					$contact_id = $User['User']['contact_id'];
-					$this->__send($contact_id, $subject, $message, $template);
-				endforeach;
-			endif;
-		else :
-			$this->Session->setFlash(__('Notification ID Invalid', true));
-		endif;
-    } 
-	
-			
-	function __send($id, $subject, $message, $template) {
-		#$this->Email->delivery = 'debug';
-		
-		App::import('Model', 'Contact');
-		$this->Contact = new Contact();	
-		$Contact = $this->Contact->read(null,$id);
-    	$this->Email->to = $Contact['Contact']['primary_email'];
-   		$this->Email->bcc = array('slickricky+secret@gmail.com');  
-    	$this->Email->subject = $subject;
-	    $this->Email->replyTo = 'noreply@razorit.com';
-	    $this->Email->from = 'noreply@razorit.com';
-	    $this->Email->template = $template; 
-	    $this->Email->sendAs = 'both'; 
-	    $this->set('message', $message);
-	    $this->Email->send();
-		$this->Email->reset();
-		
-		#pr($this->Session->read('Message.email'));
-		#die;
-	}
 	
 	
 	
 	/**
-	 * Delete a List
+	 * Convenience admin_delete
 	 * The goal is to make less code necessary in individual controllers 
 	 * and have more reusable code.
 	 * @param int $id
 	 * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
 	 */
-	function admin_delete($id=null) {
+	function __admin_delete($id=null) {
 		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
 		App::import('Model', $model);
 		$this->$model = new $model();
@@ -453,6 +434,47 @@ class AppController extends Controller {
 		$this->Session->setFlash(__($msg, true));
 		$this->redirect(Controller::referer());
 	}
+			
+	
+	
+	/**
+	 * Convenience ajax_list 
+	 * The goal is to make less code necessary in individual controllers 
+	 * and have more reusable code.
+	 */
+    function __ajax_list($id = null){	
+		# get the model from the controller being requested
+		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
+		# check for empty values and set them to null
+		foreach ($this->params['named'] as $key => $value ) {
+			if(empty($this->params['named'][$key])) {
+				$this->params['named'][$key] = null;
+			}
+		}
+		# set the conditions by the named parameters - ex. project_id:1
+		$conditions = am($this->params['named']);
+		#find the list with given parameter conditions
+    	$list =  $this->$model->find('list', array('conditions' => $conditions));
+		#display the drop down
+		$this->str = '<option value="">-- Select --</option>';
+        foreach ($list as $key => $value){
+            $this->str .= "<option value=".$key.">".$value."</option>";
+        }		
+		if ($this->params['url']['ext'] == 'json') {
+			echo '{';
+			foreach ($list as $key => $value) {
+				echo '"'.$key.'":"'.$value.'",';
+			}			
+			echo '}';
+			$this->render(false);
+		} else {
+        	$this->set('data', $this->str);  
+			$list = $this->str;
+			echo $list;
+			$this->render(false);
+		}		
+    }
+	
 	
 	/*
 	* @todo We need to add default index, view, add, edit, delete, admin_index, admin_view, admin_add, admin_edit, admin_delete functions, if we can figure out a way so that particular controllers can turn them off, and keep the build_acl stuff below knowledgeable of it, so that acos stay clean. 
@@ -468,7 +490,7 @@ class AppController extends Controller {
 ##############################################################################################
 	
 	
-	function __build_acl() {
+	function __build_acl($specifiedController = null) {
 		if (!Configure::read('debug')) {
 			return $this->_stop();
 		}
@@ -496,6 +518,23 @@ class AppController extends Controller {
 
 		$Plugins = $this->_getPluginControllerNames();
 		$Controllers = array_merge($Controllers, $Plugins);
+		
+		# See if a specific plugin or controller was specified
+		# And if it was, then we only need to build_acl for that one
+		if (isset($specifiedController)) {
+			foreach ($Controllers as $controller) {
+				# check to see if the specified controller is already installed
+				if(strstr($controller, $specifiedController)) {
+					$newControllers[] = $controller;
+				}
+			}
+			if (isset($newControllers)) {
+				$Controllers = $newControllers;
+			} else {
+				# if the specified controller doesn't exist send it back
+				return false;
+			}
+		}
 
 		// look at each controller in app/controllers
 		foreach ($Controllers as $ctrlName) {
@@ -553,6 +592,7 @@ class AppController extends Controller {
 		}
 		if(count($log)>0) {
 			debug($log);
+			return true;
 		}
 	}
 
@@ -567,14 +607,15 @@ class AppController extends Controller {
 		$methods = get_class_methods($ctrlclass);
 
 		// Add scaffold defaults if scaffolds are being used
-		$properties = get_class_vars($ctrlclass);
+		// @todo This section was commented out because it is not working.  It runs even if scaffold is off.
+		/*$properties = get_class_vars($ctrlclass);
 		if (array_key_exists('scaffold',$properties)) {
 			if($properties['scaffold'] == 'admin') {
 				$methods = array_merge($methods, array('admin_add', 'admin_edit', 'admin_index', 'admin_view', 'admin_delete'));
 			} else {
 				$methods = array_merge($methods, array('add', 'edit', 'index', 'view', 'delete'));
 			}
-		}
+		}*/
 		return $methods;
 	}
 
