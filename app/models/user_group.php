@@ -1,23 +1,14 @@
 <?php
-
-############### PERMISSIONS TUTORIAL ########################
-# http://book.cakephp.org/view/647/An-Automated-tool-for-creating-ACOs
-#############################################################
-
-
 class UserGroup extends AppModel {
 
 	var $name = 'UserGroup';	
 	var $actsAs = array('Acl' => array('requester'));
- 	var $userField = array();
- 	
- 	// Does this model requires user level access
-	var $userLevel = false;
+ 	var $userField = array(); # Used to define the creator table field (typically creator_id)
+	var $userLevel = false; # Used to define if this model requires record level user access control? 	
 	
 	function parentNode() {
 	    return null;
 	}
-
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $hasMany = array(
@@ -35,6 +26,11 @@ class UserGroup extends AppModel {
 			'counterQuery' => ''
 		)
 	);
+	
+	/*
+	@todo This model needs to be updated so that when you delete a user group
+	it will also update the aros table by removing the UserGroup
+	*/
 
 }
 ?>

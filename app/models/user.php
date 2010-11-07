@@ -1,16 +1,10 @@
 <?php
-
-############### PERMISSIONS TUTORIAL ########################
-# http://book.cakephp.org/view/647/An-Automated-tool-for-creating-ACOs
-#############################################################
-
-
 class User extends AppModel {
 
 	var $name = 'User';
-	var $userField = array();
-	// Does this model requires user level access
-	var $userLevel = false;
+	var $userField = array(); # Used to define the creator table field (typically creator_id)
+	var $userLevel = false; # Used to define if this model requires record level user access control?
+	
 	var $validate = array(
 		'username' => array(
 			'notempty' => array(
@@ -35,19 +29,6 @@ class User extends AppModel {
 	);
 	var $displayField = 'username';
 	var $actsAs = array('Acl' => 'requester');
-	
-	var $hasMany = array(
-		'ProfileFollower' => array(
-			'className' => 'Profiles.ProfileFollower',
-			'foreignKey' => 'user_id',
-			'dependent' => false,
-		),
-		'ProfileGroupWallPost'=>array(
-			'className' => 'Profiles.ProfileGroupWallPost',
-			'foreignKey' => 'creator_id',
-			'dependent' => false,
-		)
-	);
 	
 	function parentNode() {
    		if (!$this->id && empty($this->data)) {
@@ -106,6 +87,21 @@ class User extends AppModel {
 			'order' => ''
 		)
 	);
+	/* 
+	@ todo You can't have relations from core to plugin for it to really be a plugin
+	
+	var $hasMany = array(
+		'ProfileFollower' => array(
+			'className' => 'Profiles.ProfileFollower',
+			'foreignKey' => 'user_id',
+			'dependent' => false,
+		),
+		'ProfileGroupWallPost'=>array(
+			'className' => 'Profiles.ProfileGroupWallPost',
+			'foreignKey' => 'creator_id',
+			'dependent' => false,
+		)
+	);
 	
 	var $hasAndBelongsToMany = array(
         'Profiles.ProfileGroup' =>
@@ -116,5 +112,6 @@ class User extends AppModel {
                 'associationForeignKey'  => 'user_id'
             )
     );
+	*/
 }
 ?>

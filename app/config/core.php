@@ -91,7 +91,7 @@
  * Turn off all caching application-wide.
  *
  */
-	//Configure::write('Cache.disable', true);
+	Configure::write('Cache.disable', true);
 
 /**
  * Enable cache checking.
@@ -170,7 +170,7 @@
  * Session time out time (in minutes).
  * Actual value depends on 'Security.level' setting.
  */
-	Configure::write('Session.timeout', '120');
+	Configure::write('Session.timeout', '120000');
 
 /**
  * If set to false, sessions are not automatically started.

@@ -42,3 +42,5 @@ INSTALLATION TIPS
  - Zuha works best when installed at a root domain or subdomain of a site.  (ex. myDomain.com OR subDomain.myDomain.com OR subDomain.localhost).
  
  - It is possible to get it to get a Hello World setup inside a sub directory, but you must rename or delete the ROOT/.htaccess file.  However, please note : webroot files (css / js / etc) will not work without further customization.  So its virtually worthless to use it in sub directories.
+ 
+ - Once you have a working view of the site you can login with the user "admin" and the password "test" in order to gain access to every available page. 

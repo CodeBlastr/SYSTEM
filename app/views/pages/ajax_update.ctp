@@ -1,1 +1,0 @@
-<?php if (empty($value)): echo 'Click to add...'; else: __(trim(nl2br($value))); endif; ?>

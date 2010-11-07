@@ -2,8 +2,10 @@
 class Enumeration extends AppModel {
 	
 	var $name = 'Enumeration';
-	public $order = 'weight ASC';
-	var $userField = array();
+	var $order = 'weight ASC';
+	
+	var $userField = array(); # Used to define the creator table field (typically creator_id)
+	var $userLevel = false; # Used to define if this model requires record level user access control?
 	
 	public $valdiate = array(
 		'type' => array(
@@ -14,7 +16,6 @@ class Enumeration extends AppModel {
 		),
 	);
 	
-	// Does this model requires user level access
-	var $userLevel = false;
+	
 }
 ?>
