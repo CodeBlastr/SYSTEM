@@ -56,8 +56,7 @@
 				</ul>
 				<div id="navtabs-1">
 					<?php echo $html->link(__('Users', true), array('plugin' => null, 'controller' => 'users', 'action' => 'index', 'admin' => 1)); ?>
-					<?php echo $html->link(__('Priorities', true), array('plugin' => 'priorities', 'controller' => 'priorities', 'action' => 'my', 'admin' => 1)); ?>
-					<?php echo $html->link(__('Reports', true), array('plugin' => null, 'controller' => '', 'admin' => 1)); ?>
+					<?php echo $html->link(__('Permissions', true), array('plugin' => 'permissions', 'controller' => 'acores', 'action' => 'index', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Search', true), array('plugin' => 'searches', 'controller' => 'searches', 'action' => 'index', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Notifications', true), array('plugin' => 'notifications', 'controller' => 'notification_templates', 'action' => 'index', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Attributes', true), array('plugin' => null, 'controller' => 'attributes', 'action' => 'index', 'admin' => 1)); ?>
@@ -74,6 +73,7 @@
 					<?php echo $html->link(__('Quotes', true), array('plugin' => null, 'controller' => 'quotes', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Timesheets', true), array('plugin' => null, 'controller' => 'timesheets', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Tickets', true), array('plugin' => null, 'controller' => 'tickets', 'admin' => 1)); ?>
+					<?php echo $html->link(__('Priorities', true), array('plugin' => 'priorities', 'controller' => 'priorities', 'action' => 'my', 'admin' => 1)); ?>
 				</div>
 				<div id="navtabs-4">
 					<?php echo $html->link(__('Orders', true), array('plugin' => 'orders', 'controller' => 'orders', 'admin' => 1)); ?>
