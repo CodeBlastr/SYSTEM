@@ -25,6 +25,8 @@ We further seek to solve the problem faced by many website systems, where in ord
 
 [ZuHa Foundation](http://zuha.com/) - promoting development related to ZuHa
 
+[ZuHa Book](http://book.zuha.com/)
+
 [ZuHa RoadMap Wiki](https://cakeforge.org/plugins/wiki/index.php?ProjectRoadMap&id=392&type=g)
 
 [ZuHa Forum](https://cakeforge.org/forum/?group_id=392)
