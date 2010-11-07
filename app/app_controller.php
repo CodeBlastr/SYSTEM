@@ -14,7 +14,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com CakePHP(tm) Project
+ * @link          http://zuha.com Zuha™ Project
  * @package       zuha
  * @subpackage    zuha.app
  * @since         Zuha(tm) v 0.0.1
@@ -30,7 +30,6 @@ class AppController extends Controller {
 /**
  * Fired early in the display process for defining app wide settings
  */
-
 	function beforeFilter() {
 /**
  * Allows us to have webroot files (css, js, etc) in the sites directories

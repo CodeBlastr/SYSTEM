@@ -14,7 +14,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com CakePHP(tm) Project
+ * @link          http://zuha.com Zuha™ Project
  * @package       zuha
  * @subpackage    zuha.app
  * @since         Zuha(tm) v 0.0.1
@@ -338,13 +338,13 @@ class AppModel extends Model {
 		return true;
 	}
 	
-	/* In your application models, if you need to override the beforeSave callback, make sure you call the parent function: example : 
-	class Article extends AppModel {
-		function beforeSave() {
-			return parent::beforeSave();
-		}
-
-	*/
+/**
+ * In your application models, if you need to override the beforeSave callback, make sure you call the parent function: example : 
+ * class Article extends AppModel {
+ *		function beforeSave() {
+ *			return parent::beforeSave();
+ *		}
+ */
 	function afterFind($results, $primary=false) {
     	if($primary == true) {
     	   if(Set::check($results, '0.0')) {
@@ -394,13 +394,12 @@ class AppModel extends Model {
 	      return parent::delete($id, $cascade);
 	}
 	
-	/*
-	 * Checks if the recor belongs to some one or not .  
-	 * @param {int} user -> $this->Auth->user('id') from app_controller
-	 * @param {array} params -> $this->params from app_controller
-	 * @return {bool}
-	 */
-	
+/*
+ * Checks if the recor belongs to some one or not .  
+ * @param {int} user -> $this->Auth->user('id') from app_controller
+ * @param {array} params -> $this->params from app_controller
+ * @return {bool}
+ */
 	function does_belongs($user , $params){
 		if($params["pass"][0] != 0){
 			// set the conditions 
