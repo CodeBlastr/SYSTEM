@@ -56,12 +56,17 @@ foreach ($users as $user):
 <?php 
 // set the contextual menu items
 $menu->setValue(array(
-					  array(
-							'heading' => 'Users',
-							'items' => array(
-											 $html->link(__('New User', true), array('action' => 'add')),
-											 )
-							),
-					  )
-				);
+	array(
+		'heading' => 'Users',
+		'items' => array(
+			 $html->link(__('New User', true), array('action' => 'add')),
+			 )
+		),
+	array(
+		'heading' => 'User Groups',
+		'items' => array(
+			 $html->link(__('List User Groups', true), array('controller' => 'user_groups', 'action' => 'index')),
+			 )
+		),
+	));
 ?>
