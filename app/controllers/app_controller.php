@@ -23,8 +23,8 @@
 class AppController extends Controller {
 	
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', );
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
 /**
@@ -88,12 +88,7 @@ class AppController extends Controller {
 /**
  * Used to show admin layout for admin pages
  */
-		if(!empty($this->params['prefix']) && 
-		   $this->params['prefix'] == 'admin' && 
-		   $this->params['url']['ext'] != 'json' && 
-		   $this->params['url']['ext'] != 'rss' && 
-		   $this->params['url']['ext'] != 'xml' && 
-		   $this->params['url']['ext'] != 'csv') {
+		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
 			$this->layout = 'admin';
 		}
 		
