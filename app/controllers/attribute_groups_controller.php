@@ -1,4 +1,28 @@
 <?php
+/**
+ * Attribute Groups Controller
+ *
+ * For use in grouping attributes (database fields) for use. 
+ * Attribute groups can literally mean a database table.  The database table where attributes
+ * will be saved.  For example : if you had a "ticket" attribute group, you may set it up
+ * so that it attributes (database fields) added to this group, are added to the database 
+ * table named, "tickets".  
+ *
+ * PHP versions 5
+ *
+ * Zuha(tm) : Business Management Applications (http://zuha.com)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ *
+ * Licensed under GPL v3 License
+ * Must retain the above copyright notice and release modifications publicly.
+ *
+ * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
+ * @link          http://zuha.com Zuha™ Project
+ * @package       zuha
+ * @subpackage    zuha.app.controllers
+ * @since         Zuha(tm) v 0.0.1
+ * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
+ */
 class AttributeGroupsController extends AppController {
 
 	var $name = 'AttributeGroups';

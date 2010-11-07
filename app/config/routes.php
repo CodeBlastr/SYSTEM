@@ -1,42 +1,27 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
- * Short description for file.
+ * Custom Routes
  *
- * In this file, you set up routes to your controllers and their actions.
- * Routes are very important mechanism that allows you to freely connect
- * different urls to chosen controllers and their actions (functions).
+ * Used for routing access requests to the correct file resource.
  *
- * PHP versions 4 and 5
+ * PHP versions 5
  *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Zuha(tm) : Business Management Applications (http://zuha.com)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
  *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
+ * Licensed under GPL v3 License
+ * Must retain the above copyright notice and release modifications publicly.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       cake
- * @subpackage    cake.app.config
- * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-/**
- * Here, we are connecting '/' (base path) to controller called 'Pages',
- * its action called 'display', and we pass a param to select the view file
- * to use (in this case, /app/views/pages/home.ctp)...
+ * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
+ * @link          http://zuha.com Zuha™ Project
+ * @package       zuha
+ * @subpackage    zuha.app.config
+ * @since         Zuha(tm) v 0.0.1
+ * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
  	Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
-#	Router::connect('/ajax_delete', array('controller' => 'pages', 'action' => 'display', 'ajax_delete'));
-#	Router::connect('/ajax_edit', array('controller' => 'pages', 'action' => 'display', 'ajax_edit'));
-#	Router::connect('/ajax_update', array('controller' => 'pages', 'action' => 'display', 'ajax_update'));
-#	Router::connect('/ajax_complete', array('controller' => 'pages', 'action' => 'display', 'ajax_complete'));
-#	Router::connect('/edit_types', array('controller' => 'pages', 'action' => 'display', 'edit_types'));
-#	Router::connect('/add_tags', array('controller' => 'pages', 'action' => 'display', 'add_tags'));
-	
-#	Router::connect('/admin_index', array('controller' => 'pages', 'action' => 'display', 'admin_index'));
 	Router::parseExtensions('json');
+	
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */

@@ -1,4 +1,25 @@
 <?php
+/**
+ * App Wide Methods
+ *
+ * File is used for app wide convenience functions and logic and settings. 
+ * Methods in this file can be accessed from any other controller in the app.
+ *
+ * PHP versions 5
+ *
+ * Zuha(tm) : Business Management Applications (http://zuha.com)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ *
+ * Licensed under GPL v3 License
+ * Must retain the above copyright notice and release modifications publicly.
+ *
+ * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
+ * @link          http://zuha.com CakePHP(tm) Project
+ * @package       zuha
+ * @subpackage    zuha.app
+ * @since         Zuha(tm) v 0.0.1
+ * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
+ */
 class AppController extends Controller {
 	
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
@@ -234,11 +255,12 @@ class AppController extends Controller {
 		}
 	}
 	
-	/** Settings for the site
+	/** 
+	 * Settings for the site
 	 *
 	 * This is where we call all of the data in the "settings" table and parse
 	 * them into constants to be used through out the site.
-	 **/	
+	 */	
 	function __getConstants(){
 		//Fetching All params
 	   	$settings_array = $this->Setting->find('all');
