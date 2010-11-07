@@ -36,6 +36,7 @@ if (!empty($defaultTemplate)) {
 	echo $content_for_layout;
 } 
 
-echo $this->element('sql_dump'); ?>       
+echo $this->element('sql_dump'); 
+?>       
 </body>
 </html>

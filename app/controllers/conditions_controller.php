@@ -35,7 +35,7 @@ class ConditionsController extends AppController {
 			$this->Session->setFlash(__('Invalid id for Condition', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->Condition->del($id)) {
+		if ($this->Condition->delete($id)) {
 			$this->Session->setFlash(__('Condition deleted', true));
 			$this->redirect(array('action'=>'index'));
 		}

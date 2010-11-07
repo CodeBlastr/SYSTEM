@@ -51,7 +51,7 @@ class SettingsController extends AppController {
 			$this->Session->setFlash(__('Invalid id for Setting', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->Setting->del($id)) {
+		if ($this->Setting->delete($id)) {
 			$this->Session->setFlash(__('Setting deleted', true));
 			$this->redirect(array('action'=>'index'));
 		}
@@ -106,7 +106,7 @@ class SettingsController extends AppController {
 			$this->Session->setFlash(__('Invalid id for Setting', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->Setting->del($id)) {
+		if ($this->Setting->delete($id)) {
 			$this->Session->setFlash(__('Setting deleted', true));
 			$this->redirect(array('action'=>'index'));
 		}

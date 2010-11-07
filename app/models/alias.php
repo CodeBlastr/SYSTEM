@@ -2,7 +2,9 @@
 class Alias extends AppModel {
 
 	var $name = 'Alias';
-	var $userField = array();
+	var $userField = array(); # Used to define the creator table field (typically creator_id)
+	var $userLevel = false; # Used to define if this model requires record level user access control?
+	
 	var $validate = array(
 		#'name' => array('notempty'),
 		'alias' => array(
@@ -21,8 +23,7 @@ class Alias extends AppModel {
 		),
 	);
 	
-	// Does this model requires user level access
-	var $userLevel = false;
+	
 
 }
 ?>

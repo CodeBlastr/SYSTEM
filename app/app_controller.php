@@ -1,40 +1,89 @@
 <?php
 class AppController extends Controller {
 	
-	#var $scaffold;
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', );
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time');
-	var $components = array('Acl','Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
 
-	function beforeFilter() {	
-		# set up theme so that we can have multiple sites
+	function beforeFilter() {
+		/*  
+		* Allows us to have webroot files (css, js, etc) in the sites directories
+		* Used in conjunction with the "var $view above"
+		* @todo allow the use of multiple themes, database driven themes, and theme switching
+		*/
 		$this->theme = 'default';
-        # Configure AuthComponent
+		
+		
+        /* 
+		* Configure AuthComponent
+		*/
         $this->Auth->authorize = 'actions';
-        $this->Auth->loginAction = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
-        $this->Auth->logoutRedirect = array('plugin' => null, 'controller' => 'users', 'action' => 'login');
-        # $this->Auth->loginRedirect = array('controller' => 'settings', 'admin' => 1);
-        $this->Auth->loginRedirect = array('plugin' => 'profiles', 'controller' => 'profiles', 'action' => 'view', 'user_id' => $this->Session->read('Auth.User.id'));
+		
+        $this->Auth->loginAction = array(
+			'plugin' => null,
+			'controller' => 'users',
+			'action' => 'login'
+			);
+		
+        $this->Auth->logoutRedirect = array(
+			'plugin' => null,
+			'controller' => 'users',
+			'action' => 'login'
+			);
+        
+        $this->Auth->loginRedirect = array(
+			'plugin' => 'profiles',
+			'controller' => 'profiles',
+			'action' => 'view',
+			'user_id' => $this->Session->read('Auth.User.id')
+			);
+		
 		$this->Auth->actionPath = 'controllers/';
+		
 		$this->Auth->allowedActions = array('display');
-		# json support
+		
+		/*
+		* Support for json file types when using json extensions
+		*/
 		$this->RequestHandler->setContent('json', 'text/x-json');
-		# because app_model doesn't have access to $this->params, we pass it here
+		
+		/*
+		* app_model doesn't have access to $this->params, we pass it here
+		* @todo We'd like to get rid of this completely, if it all possible. 
+		* (it seems like a lot of info being pushed to app_model)
+		*/
 		foreach($this->modelNames as $model) {
 			$this->$model->setParams($this->params);
 		}
 		
-		$this->userGroup = $this->get_user_group();
+		/* 
+		* Implemented for allowing guests and creators ACL control
+		*/
+		$this->userGroup = $this->__checkUserGroup();
 		
-		# show admin layout for admin pages
-		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' && $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
+		/*
+		* Used to show admin layout for admin pages
+		*/
+		if(!empty($this->params['prefix']) && 
+		   $this->params['prefix'] == 'admin' && 
+		   $this->params['url']['ext'] != 'json' && 
+		   $this->params['url']['ext'] != 'rss' && 
+		   $this->params['url']['ext'] != 'xml' && 
+		   $this->params['url']['ext'] != 'csv') {
 			$this->layout = 'admin';
 		}
-		# get constants for app configuration
+		
+		/*
+		* System wide settings are set here,
+		* by gettting constants for app configuration
+		*/
 		$this->__getConstants();
 		
+		/*
+		* Used to get database driven template
+		*/
 		if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
 			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
 			$this->__parseIncludedPages ($defaultTemplate);
@@ -43,14 +92,30 @@ class AppController extends Controller {
 			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
 		}
 		
-		//if user does not have access check if he / she is the creator and record has creator access.
 		
+		/*
+		* Access control upgrade
+		* It should fire only if the user does not have 
+		* access to the current page and if they don't 
+		* see if they have creator access.
+		*/
+		
+		# user is logged in but not authorized.
+		# check if node has creator access 
+		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
+			if($this->__checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
+				$this->Auth->allow('*');
+			}
+		} else {
+			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
+		}
+		
+		# user is logged in but not authorized.
+		# check if node has creator access 
+		# creator group is a system setting editable at /admin/settings
 		if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
-			// user is logged in but not authorized.
-			// check if node has creator access 
-			// 4 is the creator group
 			if (defined('__SYS_CREATORS_GROUP_ARO_ID')) {
-				if($this->has_access(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
+				if($this->__checkAccess(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
 					//check if record belongs to the user
 					if($this->{$this->modelClass}->does_belongs($this->Auth->user('id') , $this->params)){
 						//allow user
@@ -59,27 +124,28 @@ class AppController extends Controller {
 				}
 			} else {
 				echo 'In /admin/settings key: SYS, value: CREATORS_GROUP_ARO_ID must be defined';
-				die;
 			}
-		}
-		
-		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-			if($this->has_access(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
-				$this->Auth->allow('*');
-			}
-		} else {
-			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
-			die;
 		}
     }
+	
+	/* This turns off debug so that ajax views don't get severly messed up
+	* @todo convert to a full REST application and this might not be necessary
+	*/
+    function beforeRender() {
+		if($this->RequestHandler->isAjax()) { 
+            Configure::write('debug', 0); 
+        } else if ($this->RequestHandler->isXml()) {
+            Configure::write('debug', 0); 
+		} else if ($this->params['url']['ext'] == 'json') {
+            #Configure::write('debug', 0); 
+		}
+	}
     
     /*
      * gets user group for acl check 
      */
-    
-    function get_user_group(){
+    function __checkUserGroup(){
     	#get users group
-		
 		if($this->Auth->user('id') != 0){
 			$user_model = ClassRegistry::init('User');
 			$user_moodel->recursive = 1 ;
@@ -116,45 +182,41 @@ class AppController extends Controller {
      * @param {int} userGroup -> The aro_id of the userGroup 
      * @todo add guest functionality here with a param 
      * @return {bool}
-     */
-    
-    function has_access($userGroup , $params){
-     $arac = ClassRegistry::init("Permissions.ArosAco");
-     $cn = $arac->find('first' , array(
-      'conditions'=>array(
-      'ArosAco.aro_id' => $userGroup,
-   	/*this was changed to false to get individual records to work (not sure what other effects it will have)
-      'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , true)*/
-      'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)
-      ),
-      'contain'=>array(),
-      /*'fields'=>array(
-       '_create',
-      )*/
-     ));
+     */   
+    function __checkAccess($userGroup , $params){
+    	$arac = ClassRegistry::init("Permissions.ArosAco");
+		$cn = $arac->find('first' , array(
+      		'conditions'=>array(
+	      		'ArosAco.aro_id' => $userGroup,
+	   			/* this was changed to false to get individual records to work (not sure what other effects it will have)
+			  	'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , true)*/
+	      		'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)
+	      		),
+	      	'contain'=>array(),
+	      	/*'fields'=>array(
+	       		'_create',
+	      		)*/
+     	));
   
-     if(count($cn) != 0){
-      if($cn["ArosAco"]["_create"] == 1 ){
-       return true;
-      }else{
-       return false; 
-      } 
-     }else{
-      return false;
-     } 
-
-    }
-
-    function beforeRender() {
-		if($this->RequestHandler->isAjax()) { 
-            Configure::write('debug', 0); 
-        } else if ($this->RequestHandler->isXml()) {
-            Configure::write('debug', 0); 
-		} else if ($this->params['url']['ext'] == 'json') {
-            #Configure::write('debug', 0); 
-		}
+    	if(count($cn) != 0){
+			if($cn["ArosAco"]["_create"] == 1 ){
+       			return true;
+      		} else {
+       			return false; 
+      		} 
+     	} else {
+      		return false;
+     	} 
 	}
 	
+	/** 
+	 * Database driven template system
+	 *
+	 * Using this function we can create pages within pages in the database
+	 * using structured tags (example : {include:pageid3}) 
+	 * which would include the database webpage with that id in place of the tag
+	 * @todo We need to fix up the {element: xyz_for_layout} so that you don't have to edit app_controller to have new helpers included, or somehow switch them all over to elements (the problem with that being that elements aren't as handy for data)
+	 **/
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
 		$matches = array ();
 		$parents[] = $webpage["Webpage"]["id"];
@@ -172,19 +234,11 @@ class AppController extends Controller {
 		}
 	}
 	
-	/* // this might be a bit slower than __getConstants() 
-	function __getConfiguration(){
-	   //Loading model on the fly
-	   #$settings = new Setting();
-	   //Fetching All params
-	   $settings_array = $this->Setting->findAll();
-	   foreach($settings_array as $key=>$value){
-	      Configure::write("__".$value['Setting']['key'], $value['Setting']['value']);
-	   }
-	   $var = Configure::read('__MyApp');
-	   #pr($var);
-	} */
-	
+	/** Settings for the site
+	 *
+	 * This is where we call all of the data in the "settings" table and parse
+	 * them into constants to be used through out the site.
+	 **/	
 	function __getConstants(){
 		//Fetching All params
 	   	$settings_array = $this->Setting->find('all');
@@ -203,7 +257,65 @@ class AppController extends Controller {
 	   # echo __APP_DEFAULT_TEMPLATE_ID;
 	}
 	
-	function admin_add() {
+	/** Mail functions
+	 * 
+	 * These next two functions are used primarily in the notifications plugin
+	 * but can be used in any plugin that needs to send email
+	 * @todo Alot more documentation on the notifications subject
+	 **/	
+	function __send_mail($id, $subject = null, $message = null, $template = null) {
+		# example call :  $this->__send_mail(array('contact' => array(1, 2), 'user' => array(1, 2)));
+		if (is_array($id)) : 
+			if (is_array($id['contact'])): 
+				foreach ($id['contact'] as $contact_id) : 
+					$this->__send($contact_id, $subject, $message, $template);
+				endforeach;
+			endif;
+			if (is_array($id['user'])): 
+				foreach ($id['user'] as $user_id) : 
+					App::import('Model', 'User');
+					$this->User = new User();	
+					$User = $this->User->read(null, $user_id);
+					$contact_id = $User['User']['contact_id'];
+					$this->__send($contact_id, $subject, $message, $template);
+				endforeach;
+			endif;
+		else :
+			$this->Session->setFlash(__('Notification ID Invalid', true));
+		endif;
+    } 
+	
+			
+	function __send($id, $subject, $message, $template) {
+		#$this->Email->delivery = 'debug';
+		
+		App::import('Model', 'Contact');
+		$this->Contact = new Contact();	
+		$Contact = $this->Contact->read(null,$id);
+    	$this->Email->to = $Contact['Contact']['primary_email'];
+   		$this->Email->bcc = array('slickricky+secret@gmail.com');  
+    	$this->Email->subject = $subject;
+	    $this->Email->replyTo = 'noreply@razorit.com';
+	    $this->Email->from = 'noreply@razorit.com';
+	    $this->Email->template = $template; 
+	    $this->Email->sendAs = 'both'; 
+	    $this->set('message', $message);
+	    $this->Email->send();
+		$this->Email->reset();
+		
+		#pr($this->Session->read('Message.email'));
+		#die;
+	}
+	
+	
+	
+	
+	/**
+	 * Convenience admin_add 
+	 * The goal is to make less code necessary in individual controllers 
+	 * and have more reusable code.
+	 */
+	function __admin_add() {
 		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
 		if (!empty($this->data)) {
 			$this->$model->create();
@@ -217,7 +329,12 @@ class AppController extends Controller {
 	}
 	
 	
-	function admin_ajax_edit($id = null) {
+	/**
+	 * Convenience admin_ajax_edit 
+	 * The goal is to make less code necessary in individual controllers 
+	 * and have more reusable code.
+	 */
+	function __admin_ajax_edit($id = null) {
         if ($this->data) {
 			# This will not work for multiple fields, and is meant for a form with a single value to update
 			# Create the model name from the controller requested in the url
@@ -271,12 +388,17 @@ class AppController extends Controller {
 		}
 		$this->render(false);
 	}	
-		
+	
+	
+	
 	/**
-	 * Delete a List
+	 * Convenience admin_delete
+	 * The goal is to make less code necessary in individual controllers 
+	 * and have more reusable code.
 	 * @param int $id
+	 * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
 	 */
-	function admin_delete($id=null) {
+	function __admin_delete($id=null) {
 		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
 		App::import('Model', $model);
 		$this->$model = new $model();
@@ -312,10 +434,15 @@ class AppController extends Controller {
 		$this->Session->setFlash(__($msg, true));
 		$this->redirect(Controller::referer());
 	}
+			
 	
 	
-	# show the drop downs for the named parameter 
-    function ajax_list($id = null){	
+	/**
+	 * Convenience ajax_list 
+	 * The goal is to make less code necessary in individual controllers 
+	 * and have more reusable code.
+	 */
+    function __ajax_list($id = null){	
 		# get the model from the controller being requested
 		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
 		# check for empty values and set them to null
@@ -349,50 +476,12 @@ class AppController extends Controller {
     }
 	
 	
-	function __send_mail($id, $subject = null, $message = null, $template = null) {
-		# ex call :  $this->__send_mail(array('contact' => array(1, 2), 'user' => array(1, 2)));
-		if (is_array($id)) : 
-			if (is_array($id['contact'])): 
-				foreach ($id['contact'] as $contact_id) : 
-					$this->__send($contact_id, $subject, $message, $template);
-				endforeach;
-			endif;
-			if (is_array($id['user'])): 
-				foreach ($id['user'] as $user_id) : 
-					App::import('Model', 'User');
-					$this->User = new User();	
-					$User = $this->User->read(null, $user_id);
-					$contact_id = $User['User']['contact_id'];
-					$this->__send($contact_id, $subject, $message, $template);
-				endforeach;
-			endif;
-		else :
-			$this->Session->setFlash(__('Notification ID Invalid', true));
-		endif;
-    } 
+	/*
+	* @todo We need to add default index, view, add, edit, delete, admin_index, admin_view, admin_add, admin_edit, admin_delete functions, if we can figure out a way so that particular controllers can turn them off, and keep the build_acl stuff below knowledgeable of it, so that acos stay clean. 
+	*/
 	
-			
-	function __send($id, $subject, $message, $template) {
-		#$this->Email->delivery = 'debug';
-		
-		App::import('Model', 'Contact');
-		$this->Contact = new Contact();	
-		$Contact = $this->Contact->read(null,$id);
-    	$this->Email->to = $Contact['Contact']['primary_email'];
-   		$this->Email->bcc = array('slickricky+secret@gmail.com');  
-    	$this->Email->subject = $subject;
-	    $this->Email->replyTo = 'noreply@razorit.com';
-	    $this->Email->from = 'noreply@razorit.com';
-	    $this->Email->template = $template; 
-	    $this->Email->sendAs = 'both'; 
-	    $this->set('message', $message);
-	    $this->Email->send();
-		$this->Email->reset();
-		
-		#pr($this->Session->read('Message.email'));
-		#die;
-	}
-	##############################################################################################
+	
+##############################################################################################
 ################# BUILD ACO's ################################################################
 ################# empty the aco table ########################################################
 ################# uncomment then go to : http://zuha.localhost/user_groups/build_acl #########
@@ -401,7 +490,7 @@ class AppController extends Controller {
 ##############################################################################################
 	
 	
-function __build_acl() {
+	function __build_acl($specifiedController = null) {
 		if (!Configure::read('debug')) {
 			return $this->_stop();
 		}
@@ -429,6 +518,23 @@ function __build_acl() {
 
 		$Plugins = $this->_getPluginControllerNames();
 		$Controllers = array_merge($Controllers, $Plugins);
+		
+		# See if a specific plugin or controller was specified
+		# And if it was, then we only need to build_acl for that one
+		if (isset($specifiedController)) {
+			foreach ($Controllers as $controller) {
+				# check to see if the specified controller is already installed
+				if(strstr($controller, $specifiedController)) {
+					$newControllers[] = $controller;
+				}
+			}
+			if (isset($newControllers)) {
+				$Controllers = $newControllers;
+			} else {
+				# if the specified controller doesn't exist send it back
+				return false;
+			}
+		}
 
 		// look at each controller in app/controllers
 		foreach ($Controllers as $ctrlName) {
@@ -486,6 +592,7 @@ function __build_acl() {
 		}
 		if(count($log)>0) {
 			debug($log);
+			return true;
 		}
 	}
 
@@ -500,14 +607,15 @@ function __build_acl() {
 		$methods = get_class_methods($ctrlclass);
 
 		// Add scaffold defaults if scaffolds are being used
-		$properties = get_class_vars($ctrlclass);
+		// @todo This section was commented out because it is not working.  It runs even if scaffold is off.
+		/*$properties = get_class_vars($ctrlclass);
 		if (array_key_exists('scaffold',$properties)) {
 			if($properties['scaffold'] == 'admin') {
 				$methods = array_merge($methods, array('admin_add', 'admin_edit', 'admin_index', 'admin_view', 'admin_delete'));
 			} else {
 				$methods = array_merge($methods, array('add', 'edit', 'index', 'view', 'delete'));
 			}
-		}
+		}*/
 		return $methods;
 	}
 
