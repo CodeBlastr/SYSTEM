@@ -161,6 +161,7 @@ class AdminController extends AppController {
 /**
  * Takes a SQL file and parses it into an array of queries. Also exists in /app/webroot/install.default.php
  * 
+ * @todo there is something wrong with this, because it seems like sometimes the last query in the sql file doesn't get returned in the array
  * @param {filename} the whole file name (including directory) of the sql file
  * @return latest version number of files or false if directory is empty
  */
