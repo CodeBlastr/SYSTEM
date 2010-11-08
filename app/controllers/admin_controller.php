@@ -138,6 +138,7 @@ class AdminController extends AppController {
  * Gets the latest db file version by checking the /version directory for the latest sql file. Works if we always make sure that the file names are sequential, in the X.XXXX.sql format.
  * 
  * @todo For safety we should check to make sure the file name is well formatted.
+ * @todo Seems there is a cake core Folder component which would make this folder reading more concise (App::Import('Core', 'File', 'Folder'); 
  * @param {versionDirectory} The queries to run
  * @return latest version number of files or false if directory is empty
  */
