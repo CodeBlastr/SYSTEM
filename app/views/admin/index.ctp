@@ -15,7 +15,7 @@
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
  * @link          http://zuha.com Zuha™ Project
  * @package       zuha
- * @subpackage    zuha.app.controllers
+ * @subpackage    zuha.app.views.admin
  * @since         Zuha(tm) v 0.0009
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
