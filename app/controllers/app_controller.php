@@ -609,6 +609,14 @@ class AppController extends Controller {
 		}
 	}
 
+/**
+ * Get the actions (or methods or functions) defined in controller.
+ *
+ * @todo Not entirely sure that this is working if you were to pick a /sites customization and add a new plugin controller or add a new plugin controller method, whether that method will be identified and have an aco created for it. Just need to verify whether it is or not and remove this todo.
+ * @todo Very sure that we're pulling methods from else where in this application, we can reuse this code most likely and eliminate some unecessary code. Need to search the app for other places where we call all methods and use this function instead if possible, and then delete this todo. 
+ * @todo This function could be expanded to work for models as well, by adding a $modelName param.
+ * @param {ctrlName} the controller to pull methods from
+ */
 	function _getClassMethods($ctrlName = null) {
 		App::import('Controller', $ctrlName);
 		if (strlen(strstr($ctrlName, '.')) > 0) {
@@ -619,8 +627,8 @@ class AppController extends Controller {
 		$ctrlclass = $ctrlName . 'Controller';
 		$methods = get_class_methods($ctrlclass);
 
-		// Add scaffold defaults if scaffolds are being used
-		// @todo This section was commented out because it is not working.  It runs even if scaffold is off.
+		# Add scaffold defaults if scaffolds are being used
+		# @todo This section was commented out because it is not working.  It runs even if scaffold is off.
 		/*$properties = get_class_vars($ctrlclass);
 		if (array_key_exists('scaffold',$properties)) {
 			if($properties['scaffold'] == 'admin') {
@@ -683,26 +691,39 @@ class AppController extends Controller {
 		$paths = Configure::getInstance();
 		$folder =& new Folder();
 		$folder->cd(APP . 'plugins');
-
-		// Get the list of plugins
+		
+		# get the list of plugins
 		$Plugins = $folder->read();
 		$Plugins = $Plugins[0];
+		
+		# get the list of core plugins
+		$folder->cd(ROOT . DS . 'app'. DS . 'plugins');
+		$CorePlugins = $folder->read();
+		
+		# merge the core and the sites directory and eliminate duplicates
+		$Plugins = am($CorePlugins[0], $Plugins[0]);
+		$Plugins = array_unique($Plugins);
+		
 		$arr = array();
+		
 
-		// Loop through the plugins
+		# Loop through the plugins
 		foreach($Plugins as $pluginName) {
-			// Change directory to the plugin
-			$didCD = $folder->cd(APP . 'plugins'. DS . $pluginName . DS . 'controllers');
-			// Get a list of the files that have a file name that ends
-			// with controller.php
+			# Change directory to the plugin
+			$didCD = $folder->cd(ROOT . DS . 'app'. DS . 'plugins'. DS . $pluginName . DS . 'controllers');
+			# Get a list of the files that have a file name that ends with controller.php
 			$files = $folder->findRecursive('.*_controller\.php');
+			# support for multi site setups by searching the sites app as well.
+			$didCD = $folder->cd(APP . 'plugins'. DS . $pluginName . DS . 'controllers');
+			$files = am($files, $folder->findRecursive('.*_controller\.php'));
+			$files = array_unique($files);
 
-			// Loop through the controllers we found in the plugins directory
+			# Loop through the controllers we found in the plugins directory
 			foreach($files as $fileName) {
-				// Get the base file name
+				# Get the base file name
 				$file = basename($fileName);
 
-				// Get the controller name
+				# Get the controller name
 				$file = Inflector::camelize(substr($file, 0, strlen($file)-strlen('_controller.php')));
 				if (!preg_match('/^'. Inflector::humanize($pluginName). 'App/', $file)) {
 					if (!App::import('Controller', $pluginName.'.'.$file)) {
