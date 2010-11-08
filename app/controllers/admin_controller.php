@@ -51,7 +51,13 @@ class AdminController extends AppController {
         # $this->set('topSellingProducts', ClassRegistry::init('Product')->getTopSellers());
 		$this->layout = 'admin';
 	}
-	
+
+/**
+ * Upgrades the database using queries given
+ * 
+ * @param {queries} The queries to run
+ * @return {bool}
+ */
 	function _upgradeDatabase($queries) {
 		foreach ($queries['Query'] as $query) {
 			if ($this->Setting->query($query['data'])) {
@@ -67,6 +73,14 @@ class AdminController extends AppController {
 		}
 	}
 	
+
+/**
+ * Updates the settings table with a single uptick in the version number (goes from 0.0001 to 0.0002)
+ * 
+ * @todo In the future it would be good if we somehow got it to run all the update files at once, so that you didn't have to manually click the button by however many version numbers you're behind.
+ * @todo We could tie this into the acos table, and have that updated as well (if necessary)
+ * @return {bool}
+ */
 	function _updateSettingVersion() {
 		App::Import('Model', 'Setting');
 		$this->Setting = new Setting;
@@ -96,6 +110,12 @@ class AdminController extends AppController {
 		}
 	}
 	
+
+/**
+ * Checks to see if the the current database if up to date, and if not gets the next sql file to import
+ * 
+ * @return file name to import
+ */
 	function _checkIfLatestVersion() {
 		# the directory updated sql files are stored in.
 		$versionDirectory = ROOT . DS . 'version';
@@ -113,6 +133,14 @@ class AdminController extends AppController {
 		}
 	}
 	
+
+/**
+ * Gets the latest db file version by checking the /version directory for the latest sql file. Works if we always make sure that the file names are sequential, in the X.XXXX.sql format.
+ * 
+ * @todo For safety we should check to make sure the file name is well formatted.
+ * @param {versionDirectory} The queries to run
+ * @return latest version number of files or false if directory is empty
+ */
 	function _checkFileVersion($versionDirectory) {
 		# Open a known directory, and proceed to read its contents
 		if (is_dir($versionDirectory)) {
@@ -130,6 +158,12 @@ class AdminController extends AppController {
 		}
 	}
 	
+/**
+ * Takes a SQL file and parses it into an array of queries. Also exists in /app/webroot/install.default.php
+ * 
+ * @param {filename} the whole file name (including directory) of the sql file
+ * @return latest version number of files or false if directory is empty
+ */
 	function _mysqlImport($filename) {
 		$prefix = '';
 	
