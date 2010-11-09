@@ -15,6 +15,5 @@
 /sites/**/tmp/cache/persistent/cake*
 /sites/**/tmp/cache/views/cake*
 /sites/**/tmp/cache/cake*
-/sites/bootstrap.php
 \.*
 \_*
