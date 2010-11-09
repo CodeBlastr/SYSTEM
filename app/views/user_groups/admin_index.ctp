@@ -49,8 +49,20 @@ foreach ($userGroups as $userGroup):
  | 	<?php echo $paginator->numbers();?>
 	<?php echo $paginator->next(__('next', true).' >>', array(), null, array('class' => 'disabled'));?>
 </div>
-<div class="actions">
-	<ul>
-		<li><?php echo $html->link(__('New UserGroup', true), array('action' => 'add')); ?></li>
-	</ul>
-</div>
+<?php 
+// set the contextual menu items
+$menu->setValue(array(
+	array(
+		'heading' => 'User Groups',
+		'items' => array(
+			 $html->link(__('Add User Group', true), array('action' => 'add')),
+			 )
+		),
+	array(
+		'heading' => 'Users',
+		'items' => array(
+			 $html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')),
+			 )
+		),
+	));
+?>

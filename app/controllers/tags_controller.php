@@ -1,4 +1,26 @@
 <?php
+/**
+ * Tags Controller
+ *
+ * A central controller for handling tags throughout the app. If you need
+ * to have a section which allows the end user to tag a record, it should be 
+ * done with this controller. 
+ *
+ * PHP versions 5
+ *
+ * Zuha(tm) : Business Management Applications (http://zuha.com)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ *
+ * Licensed under GPL v3 License
+ * Must retain the above copyright notice and release modifications publicly.
+ *
+ * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
+ * @link          http://zuha.com Zuha™ Project
+ * @package       zuha
+ * @subpackage    zuha.app.controllers
+ * @since         Zuha(tm) v 0.0.1
+ * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
+ */
 class TagsController extends AppController {
 
 	var $name = 'Tags';

@@ -64,7 +64,6 @@ App::build(array(
 #   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),
 #   'locales' => array('/full/path/to/locale/', '/next/full/path/to/locale/')
 ));
- 
 
 /**
  * As of 1.3, additional rules for the inflector are added below
