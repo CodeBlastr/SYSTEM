@@ -1,4 +1,28 @@
 <?php  
+/**
+ * Authoriz.net Checkout Component
+ *
+ * All transactions should be pushed through this controller. It is the catch all 
+ * and should be able to (though it doesn't as of today) handle all monetary transaction
+ * types.  
+ *
+ * PHP versions 5
+ *
+ * Zuha(tm) : Business Management Applications (http://zuha.com)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ *
+ * Licensed under GPL v3 License
+ * Must retain the above copyright notice and release modifications publicly.
+ *
+ * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
+ * @link          http://zuha.com Zuha™ Project
+ * @package       zuha
+ * @subpackage    zuha.app.controllers
+ * @since         Zuha(tm) v 0.0.1
+ * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
+ * @todo		  Make this give the response success or failure instead of having to handle it in the controller.  
+ * @todo		  Think about moving this to the /plugins/transactions/libs - seems like a more proper place for it.
+ */
 class AuthorizeNetComponent extends Object { 
 
     ### Created By Graydon Stoner - www.getstonered.com ### 
@@ -204,9 +228,56 @@ class AuthorizeNetComponent extends Object {
             } // end if $p === false 
 
         } // end parsing for loop 
-         
-        return $responsearray; 
+        $response = $this->_responseArray($responsearray);
+        return $response; 
          
     } // end chargeCard function 
+	
+
+/**
+ * Parse the response from Authorize.net into a more readable array
+ * makes doing validation changes easier.
+ *
+ * @todo		There are more codes we could add. List is here : http://developer.authorize.net/guides/AIM/
+ */
+	function _responseArray($response) {
+		$parsedResponse['response_code'] = $response[1]; // 1 = approved, 2 = declined, 3 = error, 4 = held for review
+		$parsedResponse['response_subcode'] = $response[2]; // A code used by the payment gateway for internal transaction tracking
+		$parsedResponse['reason_code'] = $response[3]; // A code that provides more details about the result of the transaction
+		$parsedResponse['reason_text'] = $response[4]; // A brief description of the result, which corresponds with the response reason code
+		$parsedResponse['authorization_code'] = $response[5]; // 6 character authorization or approval code
+		$parsedResponse['avs_response'] = $response[6];
+		/*A = Address (Street) matches, ZIP does not
+		B = Address information not provided for AVS check
+		E = AVS error
+		G = Non-U.S. Card Issuing Bank
+		N = No Match on Address (Street) or ZIP
+		P = AVS not applicable for this transaction
+		R = Retry — System unavailable or timed out
+		S = Service not supported by issuer
+		U = Address information is unavailable
+		W = Nine digit ZIP matches, Address (Street) does not
+		X = Address (Street) and nine digit ZIP match
+		Y = Address (Street) and five digit ZIP match
+		Z = Five digit ZIP matches, Address (Street) does not*/
+		$parsedResponse['transaction_id'] = $response[7]; // The payment gateway assigned identification number for the transaction
+		$parsedResponse['invoice_number'] = $response[8]; //	The merchant-assigned invoice number for the transaction. Up to 20 characters (no symbols)
+		$parsedResponse['description'] = $response[9]; // The transaction description, Up to 255 characters (no symbols)
+		$parsedResponse['amount'] = $response[10]; // The amount of the transaction, Up to 15 digits
+		$parsedResponse['method'] = $response[11]; // The payment method, CC or ECHECK
+		$parsedResponse['transaction_type'] = $response[12]; // The type of credit card transaction, AUTH_CAPTURE, AUTH_ONLY, CAPTURE_ONLY, CREDIT, PRIOR_AUTH_CAPTURE, VOID
+		$parsedResponse['md5_hash'] = $response[38]; // The payment gateway generated MD5 hash value that can be used to authenticate the transaction response.
+		$parsedResponse['ccv_match_code'] = $response[39]; //The card code verification (CCV) response code
+		/*M = Match
+		N = No Match
+		P = Not Processed
+		S = Should have been present
+		U = Issuer unable to process request*/
+		$parsedResponse['hiddden_card_number'] = $response[51]; // card number in XXXX1111 format
+		$parsedResponse['card_type_name'] = $response[52]; // CC type
+		
+		return $parsedResponse;
+			
+	}
 }
 ?>
