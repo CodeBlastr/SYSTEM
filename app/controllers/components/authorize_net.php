@@ -101,37 +101,37 @@ class AuthorizeNetComponent extends Object {
         $authnet_values                = array 
         ( 
             "x_login"                => $auth_net_login_id, 
-            "x_version"                => "3.1", 
-            "x_delim_char"            => "|", 
-            "x_delim_data"            => "TRUE", 
-            "x_url"                    => "FALSE", 
-            "x_type"                => "AUTH_CAPTURE", 
-            "x_method"                => "CC", 
-            "x_tran_key"            => $auth_net_tran_key, 
-            "x_relay_response"        => "FALSE", 
-            "x_card_num"            => str_replace(" ", "", $ccnum), 
+            "x_version"              => "3.1", 
+            "x_delim_char"           => "|", 
+            "x_delim_data"           => "TRUE", 
+            "x_url"        	         => "FALSE", 
+            "x_type"                 => "AUTH_CAPTURE", 
+            "x_method"               => "CC", 
+            "x_tran_key"             => $auth_net_tran_key, 
+            "x_relay_response"       => "FALSE", 
+            "x_card_num"             => str_replace(" ", "", $ccnum), 
             "x_card_code"            => $ccver, 
-            "x_exp_date"            => $ccexp, 
-            "x_description"            => $desc, 
-            "x_amount"                => $amount, 
-            "x_tax"                    => $tax, 
-            "x_freight"                => $shipping, 
-            "x_first_name"            => $billinginfo["fname"], 
+            "x_exp_date"             => $ccexp, 
+            "x_description"          => $desc, 
+            "x_amount"               => $amount, 
+            "x_tax"                  => $tax, 
+            "x_freight"              => $shipping, 
+            "x_first_name"           => $billinginfo["fname"], 
             "x_last_name"            => $billinginfo["lname"], 
-            "x_address"                => $billinginfo["address"], 
-            "x_city"                => $billinginfo["city"], 
+            "x_address"              => $billinginfo["address"], 
+            "x_city"               	 => $billinginfo["city"], 
             "x_state"                => $billinginfo["state"], 
-            "x_zip"                    => $billinginfo["zip"], 
-            "x_country"                => $billinginfo["country"], 
+            "x_zip"                  => $billinginfo["zip"], 
+            "x_country"              => $billinginfo["country"], 
             "x_email"                => $email, 
             "x_phone"                => $phone, 
-            "x_ship_to_first_name"    => $shippinginfo["fname"], 
+            "x_ship_to_first_name"   => $shippinginfo["fname"], 
             "x_ship_to_last_name"    => $shippinginfo["lname"], 
-            "x_ship_to_address"        => $shippinginfo["address"], 
-            "x_ship_to_city"        => $shippinginfo["city"], 
+            "x_ship_to_address"      => $shippinginfo["address"], 
+            "x_ship_to_city"         => $shippinginfo["city"], 
             "x_ship_to_state"        => $shippinginfo["state"], 
-            "x_ship_to_zip"            => $shippinginfo["zip"], 
-            "x_ship_to_country"        => $shippinginfo["country"], 
+            "x_ship_to_zip"          => $shippinginfo["zip"], 
+            "x_ship_to_country"      => $shippinginfo["country"], 
         ); 
          
         $fields = ""; 
@@ -151,11 +151,11 @@ class AuthorizeNetComponent extends Object {
         curl_setopt($ch, CURLOPT_POSTFIELDS, rtrim( $fields, "& " )); // use HTTP POST to send form data
          
         ### Go Daddy Specific CURL Options 
-        curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, true);  
-        curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);  
-           curl_setopt($ch, CURLOPT_PROXY, 'http://proxy.shr.secureserver.net:3128');  
-        curl_setopt($ch, CURLOPT_TIMEOUT, 120); 
-           ### End Go Daddy Specific CURL Options 
+        #curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, true);  
+        #curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);  
+        #curl_setopt($ch, CURLOPT_PROXY, 'http://proxy.shr.secureserver.net:3128');  
+        #curl_setopt($ch, CURLOPT_TIMEOUT, 120); 
+        ### End Go Daddy Specific CURL Options 
             
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // uncomment this line if you get no gateway response. ###
         $resp = curl_exec($ch); //execute post and get results 
