@@ -126,7 +126,6 @@ class AdminController extends AppController {
 		if ($databaseVersion < $fileVersion) {
 			# file name from file version
 			$importFileName = $versionDirectory . DS . number_format(($databaseVersion + 0.0001), 4) . '.sql';
-			echo $importFileName;
 			return $this->_mysqlImport($importFileName);
 		} else {
 			return false;
