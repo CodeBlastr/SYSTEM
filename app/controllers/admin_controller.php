@@ -123,10 +123,9 @@ class AdminController extends AppController {
 		$databaseVersion = __SYS_ZUHA_DB_VERSION;
 		# checks to see if there is a new db sql file
 		$fileVersion = $this->_checkFileVersion($versionDirectory);
-		
 		if ($databaseVersion < $fileVersion) {
 			# file name from file version
-			$importFileName = $versionDirectory . DS . ($databaseVersion + 0.0001) . '.sql';
+			$importFileName = $versionDirectory . DS . number_format(($databaseVersion + 0.0001), 4) . '.sql';
 			return $this->_mysqlImport($importFileName);
 		} else {
 			return false;
