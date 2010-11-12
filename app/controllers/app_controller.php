@@ -31,6 +31,11 @@ class AppController extends Controller {
  * Fired early in the display process for defining app wide settings
  */
 	function beforeFilter() {
+		
+		#Configure::write('Config.language', 'eng');
+		$this->viewPath = $this->_getLanguageViewFile();
+		
+	
 /**
  * Allows us to have webroot files (css, js, etc) in the sites directories
  * Used in conjunction with the "var $view above"
@@ -116,13 +121,22 @@ class AppController extends Controller {
  * access to the current page and if they don't 
  * see if they have creator access.
  */
-		
+ 		/*
+		 * @todo A big priority is to get this implemented around the following two actions.  It saves 2 seconds per page load, by checking if you have access before checking if guests and creators have access.  But before you can implement you have to make user groups, and users save the Aro alias as their names.
+		 *
+		if (!$this->Acl->check('[AcoAlias]', '[AroAlias]')) {
+			// does not have access
+			// put rest of the checks here
+		} else {
+			// has access we don't need to check the guests and creators group
+		}
+		 */
 		# user is logged in but not authorized.
 		# check if node has creator access 
 		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
 			if($this->__checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
 				$this->Auth->allow('*');
-			}
+			} 
 		} else {
 			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
 		}
@@ -158,6 +172,8 @@ class AppController extends Controller {
             #Configure::write('debug', 0); 
 		}
 	}
+	
+	
     
 /**
  * gets user group for acl check 
@@ -494,6 +510,29 @@ class AppController extends Controller {
 			$this->render(false);
 		}		
     }
+	
+	
+	function _getLanguageViewFile() {
+		$locale = Configure::read('Config.language');
+		if ($locale && !empty($this->params['plugin'])) {
+			// put plugin view path here
+			$localViewFile = APP.'views'.DS.'locale'.DS.$locale . DS . 'plugins' . DS . $this->params['plugin'] . DS . $this->viewPath . DS . $this->params['action'] . '.ctp';
+			$localPluginViewFile = APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath . DS . $this->params['action'] . '.ctp';
+			if (file_exists($localViewFile)) {
+				$this->viewPath = 'locale'.DS.$locale.DS.'plugins'.DS.$this->params['plugin'].DS.$this->viewPath;
+			} else if (file_exists($localPluginViewFile)) {
+				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;			
+			}
+
+		} else if ($locale) {
+			// put non-plugin view path here
+			$localViewFile = APP.DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
+			if (file_exists($localViewFile)) {
+				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;
+			}
+		} 
+		return $this->viewPath;
+	}
 	
 	
 /**
