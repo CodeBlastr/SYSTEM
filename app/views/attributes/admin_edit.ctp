@@ -17,6 +17,8 @@
 		echo $form->input('is_layered'); 
 		echo $form->input('layer_order'); 
 		echo $form->input('is_visible'); 
+		echo $form->input('is_addable'); 
+		echo $form->input('is_editable'); 
 		echo $form->input('order'); 
 	?>
 	</fieldset>
