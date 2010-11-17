@@ -27,14 +27,22 @@ class AttributesController extends AppController {
 
 	function admin_index() {
 		$this->Attribute->recursive = 0;
+		
 		if (!empty($this->params['named']['group'])) {
 			$groupCondition = array('Attribute.attribute_group_id' => $this->params['named']['group']);
 		} else {
 			$groupCondition = null;
 		}
+		
+		if (!empty($this->params['named']['system'])) {
+			$systemCondition = array('Attribute.is_system' => 1);
+		} else {
+			$systemCondition = array('Attribute.is_system' => 0);
+		}
+		
 		$this->paginate = array(
 			'conditions' => array(
-				'Attribute.is_system' => 0,
+				$systemCondition,
 				$groupCondition,
 				),
 			);
@@ -46,6 +54,7 @@ class AttributesController extends AppController {
 	function admin_add($id = null) {
 		if (!empty($this->data)) {
 			pr($this->data);
+			break;
 		}
 		
 		$attributeGroups = $this->Attribute->AttributeGroup->find('list');

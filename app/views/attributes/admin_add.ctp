@@ -1,5 +1,5 @@
 <div class="attributes form">
-<?php echo $form->create('Attribute', array('action' => 'edit'));?>
+<?php echo $form->create('Attribute');?>
 	<fieldset>
  		<legend><?php __('Edit Attribute');?></legend>
 	<?php

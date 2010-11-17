@@ -37,7 +37,7 @@ foreach ($attributeGroups as $attributeGroup):
 		</td>
 		<td class="actions">
 			<?php echo $html->link(__('Edit', true), array('action' => 'edit', $attributeGroup['AttributeGroup']['id'])); ?>
-			<?php echo $html->link(__('View Attributes', true), array('controller' => 'attributes', 'action' => 'index', 'group' => $attributeGroup['AttributeGroup']['id'])); ?>
+			<?php echo $html->link(__('View Attributes', true), array('controller' => 'attributes', 'action' => 'index', 'group' => $attributeGroup['AttributeGroup']['id'], 'system' => 1)); ?>
 			<?php echo $html->link(__('Delete', true), array('action' => 'delete', $attributeGroup['AttributeGroup']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $attributeGroup['AttributeGroup']['id'])); ?>
 		</td>
 	</tr>
