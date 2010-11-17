@@ -1,4 +1,24 @@
 <?php
+/**
+ * Attribute Model
+ *
+ * Handles the return of information using the attributes model.  (think of attributes as form fields)
+ *
+ * PHP versions 5
+ *
+ * Zuha(tm) : Business Management Applications (http://zuha.com)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ *
+ * Licensed under GPL v3 License
+ * Must retain the above copyright notice and release modifications publicly.
+ *
+ * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
+ * @link          http://zuha.com Zuha™ Project
+ * @package       zuha
+ * @subpackage    zuha.app.models
+ * @since         Zuha(tm) v 0.0.1
+ * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
+ */
 class Attribute extends AppModel {
 
 	var $name = 'Attribute';
@@ -33,6 +53,28 @@ class Attribute extends AppModel {
 			'order' => ''
 		)
 	);
+	
+
+/**
+ * Finds all the attributes for the specified model and type.
+ *
+ * @param {model}		The model the attribute group belongsTo.
+ * @param {typeId}		A limiter or predefined field which can be used to change the attributes that in the end get displayed. Refer to the enumerations table for id numbers.
+ * @param {options] 	Additional directions for what attributes to find.
+ * @return 				The optionally limited attributes for the specified model. 
+ */
+	function getAttributes($model, $typeId = null, $options = null) {
+		$attributeGroup = $this->AttributeGroup->getAttributeGroup($model, $typeId);
+		$attributes = $this->find('all', array(
+			'conditions' => array(
+				'Attribute.attribute_group_id' => $attributeGroup['AttributeGroup']['id'],
+				$options['conditions'],
+				),
+			'order' => 'Attribute.order',
+			));
+		
+		return $attributes;
+	}
 
 	
 }

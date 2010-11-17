@@ -19,7 +19,8 @@
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
- 	Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
+ 	Router::connect('/', array('controller' => '', 'home'));
+	
 	Router::parseExtensions('json');
 	
 /**
