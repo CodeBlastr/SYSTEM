@@ -27,10 +27,40 @@ class AttributesController extends AppController {
 
 	function admin_index() {
 		$this->Attribute->recursive = 0;
-		$this->set('attributes', $this->paginate());
+		if (!empty($this->params['named']['group'])) {
+			$groupCondition = array('Attribute.attribute_group_id' => $this->params['named']['group']);
+		} else {
+			$groupCondition = null;
+		}
+		$this->paginate = array(
+			'conditions' => array(
+				'Attribute.is_system' => 0,
+				$groupCondition,
+				),
+			);
+		$attributes = $this->paginate();
+		
+		$this->set(compact('attributes'));
+	}
+	
+	function admin_add($id = null) {
+		if (!empty($this->data)) {
+			pr($this->data);
+		}
+		
+		$attributeGroups = $this->Attribute->AttributeGroup->find('list');
+		$this->set(compact('attributeGroups'));		
 	}
 
-	function admin_edit($id = null) {
+/**
+ * This function is for adding and editing attribute fields.
+ * 
+ * @param {id}		The id of the attribute to edit
+ * @todo 			attributes need all the form options that cakephp has, so that you can easily make a database driven form
+ * @todo			Changing a field type is NOT working
+ * @todo			Overall this function is just too "fat" it needs to be trimmed down, and make the model fat instead.
+ */
+	function admin_edit($id) {
 		if (!empty($this->data)) {
 			$attributeGroup = $this->Attribute->AttributeGroup->read(null, $this->data['Attribute']['attribute_group_id']);
 			$this->data['AttributeGroup'] = $attributeGroup['AttributeGroup'];

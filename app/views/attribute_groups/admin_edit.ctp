@@ -4,9 +4,10 @@
  		<legend><?php __('Edit Attribute');?></legend>
 	<?php
 		echo $form->input('AttributeGroup.id');
-		echo $form->input('AttributeGroup.enumeration_id'); 
+		echo $form->input('AttributeGroup.enumeration_id', array('empty' => '-- Select Limiter --')); 
 		echo $form->input('AttributeGroup.name'); 
 		echo $form->input('AttributeGroup.model', array('after' => ' (model alias of the db table attributes will be written to)' )); 
+		echo $form->input('AttributeGroup.is_system'); 
 	?>
 	</fieldset>
 <?php echo $form->end('Submit');?>
