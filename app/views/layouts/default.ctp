@@ -16,7 +16,7 @@
 
 	?>
 </head>
-<body class="<?php echo $this->params['controller']; ?><?php #if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">            
+<body class="<?php echo $this->params['controller']; ?><?php #if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">      
 <?php 
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');

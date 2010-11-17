@@ -4,7 +4,7 @@ class LoginHelper extends AppHelper {
     var $value = '';
 	var $helpers = array('Session', 'Html');
 
-    function afterRender() {
+    function beforeRender() {
 		$user_id = $this->Session->read('Auth.User.id');
 		
 		if (!empty($user_id)) {
