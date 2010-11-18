@@ -97,10 +97,13 @@ class Attribute extends AppModel {
  * @return 				The optionally limited attributes for the specified model. 
  */
 	function getAttributes($model, $typeId = null, $options = null) {
-		$attributeGroup = $this->AttributeGroup->getAttributeGroup($model, $typeId);
+		$attributeGroups = $this->AttributeGroup->getAttributeGroups($model, $typeId);
+		foreach ($attributeGroups as $attributeGroup) {
+			$attributeGroupIds[] = $attributeGroup['AttributeGroup']['id'];
+		}
 		$attributes = $this->find('all', array(
 			'conditions' => array(
-				'Attribute.attribute_group_id' => $attributeGroup['AttributeGroup']['id'],
+				'Attribute.attribute_group_id' => $attributeGroupIds,
 				$options['conditions'],
 				),
 			'order' => 'Attribute.order',

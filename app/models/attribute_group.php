@@ -65,15 +65,23 @@ class AttributeGroup extends AppModel {
  * @param {model}		The model the attribute group belongsTo.
  * @param {typeId}		A limiter or predefined field which can be used to change the attributes that in the end get displayed. Refer to the enumerations table for id numbers.
  */
-	function getAttributeGroup($model, $typeId = null) {
-		$attributeGroup = $this->find('first', array(
+	function getAttributeGroups($model, $typeId = null) {
+		$attributeGroups = $this->find('all', array(
 			'conditions' => array(
-				'AttributeGroup.model' => $model,
-				'AttributeGroup.enumeration_id' => $typeId,
+				array(
+					'OR' => array(
+						array('AttributeGroup.enumeration_id' => $typeId),
+						array('AttributeGroup.enumeration_id' => null),
+						),
+					),
+				'AND' => array(
+					array(
+						'AttributeGroup.model' => $model,
+						),
+					),
 				),
-			));
-		
-		return $attributeGroup;
+			));		
+		return $attributeGroups;
 	}
 
 	
