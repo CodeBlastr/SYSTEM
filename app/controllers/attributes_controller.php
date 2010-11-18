@@ -20,11 +20,17 @@
  * @subpackage    zuha.app.controllers
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
+ * @todo		  Match up the fields, and field options with the full run of cakephp form input options. 
  */
 class AttributesController extends AppController {
 
 	var $name = 'Attributes';
 
+
+/**
+ * Gives us filtered and paginated results for all attributes. 
+ * 
+ */
 	function admin_index() {
 		$this->Attribute->recursive = 0;
 		
@@ -50,11 +56,30 @@ class AttributesController extends AppController {
 		
 		$this->set(compact('attributes'));
 	}
-	
-	function admin_add($id = null) {
+
+
+/**
+ * This function is for adding attribute fields.
+ * 
+ * @param {id}		The id of the attribute to edit
+ * @todo 			attributes need all the form options that cakephp has, so that you can easily make a database driven form
+ * @todo			Move the second part of this save to the model, so that it is simply part of the save operation, and can be reused.
+ */
+	function admin_add() {
 		if (!empty($this->data)) {
-			pr($this->data);
-			break;
+			# create the attribute
+			if($this->Attribute->save($this->data)) {
+				# update the database table
+				$this->Attribute->query($this->_buildQuery($this->data, $this->Attribute->id));
+				if ($this->Attribute->checkFieldExistence($this->data['Attribute'])) {
+					$this->Session->setFlash(__('Attribute Successfully Added!', true));
+					$this->redirect(array('action'=>'index'));
+				} else {
+					$this->Session->setFlash(__('Database table was not updated. Please try again.', true));
+				}
+			} else {
+				$this->set('duplicate', true);
+			}
 		}
 		
 		$attributeGroups = $this->Attribute->AttributeGroup->find('list');
@@ -62,46 +87,38 @@ class AttributesController extends AppController {
 	}
 
 /**
- * This function is for adding and editing attribute fields.
+ * This function is for editing attribute fields.
  * 
  * @param {id}		The id of the attribute to edit
  * @todo 			attributes need all the form options that cakephp has, so that you can easily make a database driven form
  * @todo			Changing a field type is NOT working
  * @todo			Overall this function is just too "fat" it needs to be trimmed down, and make the model fat instead.
+ * @todo			Move the second part of this save to the model, so that it is simply part of the save operation, and can be reused.
  */
 	function admin_edit($id) {
 		if (!empty($this->data)) {
-			$attributeGroup = $this->Attribute->AttributeGroup->read(null, $this->data['Attribute']['attribute_group_id']);
-			$this->data['AttributeGroup'] = $attributeGroup['AttributeGroup'];
-			
-			if ($this->Attribute->save($this->data)) {
-				$attrId = $this->Attribute->id;
-				$tableName = Inflector::underscore(Inflector::pluralize($this->data['AttributeGroup']['model']));
-				$fieldName = $this->data['Attribute']['code'];			
-				# this is where you do all the magic
-				$inputType = $this->data['Attribute']['input_type_id']; 
-				# $fieldOptions = array('a', 'b', 'c');
-				$fieldOptions = ''; 
-				# this updates the database fields and column
-				$this->Attribute->query($this->__buildQuery($this->data, $attrId));
-				# this checks to see if a field name now exists in the table that matches input info
-				$verified = $this->Attribute->query('SHOW columns FROM '.$tableName.' LIKE "'.$fieldName.'"');
-				# now lets see if it worked 
-				if (!empty($verified )) {
-					$this->Session->setFlash(__('The Attribute has been saved', true));
+			# create the attribute
+			if($this->Attribute->save($this->data)) {
+				# update the database table
+				$this->Attribute->query($this->_buildQuery($this->data, $this->Attribute->id));
+				if ($this->Attribute->checkFieldExistence($this->data['Attribute'])) {
+					$this->Session->setFlash(__('Attribute Successfully Added!', true));
 					$this->redirect(array('action'=>'index'));
 				} else {
-					$this->Session->setFlash(__('The Attribute Db Update could not be saved. Please, try again.', true));
-				}					
+					$this->Session->setFlash(__('Database table was not updated. Please try again.', true));
+				}
 			} else {
-				$this->Session->setFlash(__('The Attribute could not be saved. Please, try again.', true));
+				$this->set('duplicate', true);
 			}
 		} else {
-			if (!empty($id)) {
-				$this->data = $this->Attribute->read(null, $id);
+			$this->data = $this->Attribute->read(null, $id);
+			if (!empty($this->data)) {
+				$attributeGroups = $this->Attribute->AttributeGroup->find('list');
+				$this->set(compact('attributeGroups'));
+			} else {
+				$this->Session->setFlash(__('Invalid Attribute', true));
+				$this->redirect(array('action'=>'index'));
 			}
-			$attributeGroups = $this->Attribute->AttributeGroup->find('list');
-			$this->set(compact('attributeGroups'));
 		}
 	}
 
@@ -119,12 +136,19 @@ class AttributesController extends AppController {
 		}
 	}
 	
-	
-	function __buildQuery($thisData = null, $attrId = null) {
-		pr($thisData);
-		
+/**
+ * Builds the query for updating the database table with new attributes. (AttributeGroup = table, Attribute = field)
+ *
+ * @param {thisData}		Info from the save operation.
+ * @param {attriId}			The id of the attribute being saved
+ * @todo					Possibly move this to the model. Otherwise decide not to and remove this todo.
+ * @todo					Simplify and break up the multiple actions going on within this function.
+ */
+	function _buildQuery($thisData = null, $attrId = null) {
 		# this is where you do all the magic
-		$tableName = Inflector::underscore(Inflector::pluralize($thisData['AttributeGroup']['model']));
+		$this->Attribute->AttributeGroup->id = $thisData['Attribute']['attribute_group_id'];
+		$groupModel = $this->Attribute->AttributeGroup->field('model');
+		$tableName = Inflector::underscore(Inflector::pluralize($groupModel));
 		$fieldName = $thisData['Attribute']['code'];			
 		$inputType = $thisData['Attribute']['input_type_id']; 
 		# $fieldOptions = array('a', 'b', 'c');
@@ -183,10 +207,20 @@ class AttributesController extends AppController {
 			# break because its invalid
 			$fieldQuery = false;
 		}
-		return $this->__query($tableName, $fieldName, $fieldQuery, $attrId);
+		return $this->_query($tableName, $fieldName, $fieldQuery, $attrId);
 	}
 			
-	function __query($tableName = null, $fieldName = null, $fieldQuery = null, $attrId = null) {
+
+/**
+ * Finalizes the query details from build query
+ *
+ * @param {tableName}		The table to modify
+ * @param {fieldName}		The field to update or add
+ * @param {fieldQuery}		The sub query from buildQuery
+ * @todo					Possibly move this to the model. Otherwise decide not to and remove this todo.
+ * @todo					Simplify and break up the multiple actions going on within this function.
+ */
+	function _query($tableName = null, $fieldName = null, $fieldQuery = null) {
 		#this will be a separate function
 		$table = $this->Attribute->query('SHOW tables LIKE "'.$tableName.'"');
 		if (!empty($table)) {
