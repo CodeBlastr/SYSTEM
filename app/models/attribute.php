@@ -96,7 +96,7 @@ class Attribute extends AppModel {
  * @param {options] 	Additional directions for what attributes to find.
  * @return 				The optionally limited attributes for the specified model. 
  */
-	function getAttributes($model, $typeId = null, $options = null) {
+	function getAttributes($model, $typeId = null, $options = null) {		
 		$attributeGroups = $this->AttributeGroup->getAttributeGroups($model, $typeId);
 		foreach ($attributeGroups as $attributeGroup) {
 			$attributeGroupIds[] = $attributeGroup['AttributeGroup']['id'];
@@ -108,7 +108,6 @@ class Attribute extends AppModel {
 				),
 			'order' => 'Attribute.order',
 			));
-		
 		return $attributes;
 	}
 	
