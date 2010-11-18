@@ -74,7 +74,8 @@ $menu->setValue(array(
 	array(
 		'heading' => 'Attributes',
 		'items' => array(
-			$html->link(__('New Attribute', true), array('action' => 'edit')),
+			$html->link(__('New Attribute', true), array('action' => 'add')),
+			$html->link(__('Show System Attributes', true), array('action' => 'index', 'system' => 1)),
 			)
 		),
 	array(

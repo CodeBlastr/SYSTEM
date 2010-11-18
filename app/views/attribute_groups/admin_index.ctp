@@ -27,7 +27,7 @@ foreach ($attributeGroups as $attributeGroup):
 			<?php echo $attributeGroup['AttributeGroup']['id']; ?>
 		</td>
 		<td>
-			<?php echo $attributeGroup['AttributeGroup']['enumeration_id']; ?>
+			<?php echo $attributeGroup['Enumeration']['type']. ' : ' .$attributeGroup['Enumeration']['name']; ?>
 		</td>
 		<td>
 			<?php echo $attributeGroup['AttributeGroup']['name']; ?>
@@ -37,6 +37,7 @@ foreach ($attributeGroups as $attributeGroup):
 		</td>
 		<td class="actions">
 			<?php echo $html->link(__('Edit', true), array('action' => 'edit', $attributeGroup['AttributeGroup']['id'])); ?>
+			<?php echo $html->link(__('View Attributes', true), array('controller' => 'attributes', 'action' => 'index', 'group' => $attributeGroup['AttributeGroup']['id'], 'system' => 1)); ?>
 			<?php echo $html->link(__('Delete', true), array('action' => 'delete', $attributeGroup['AttributeGroup']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $attributeGroup['AttributeGroup']['id'])); ?>
 		</td>
 	</tr>
@@ -55,12 +56,13 @@ $menu->setValue(array(
 		'heading' => 'Attribute Groups',
 		'items' => array(
 			$html->link(__('New Attribute Group', true), array('action' => 'edit')),
+			$html->link(__('Show System Groups', true), array('action' => 'index', 'system' => 1)),
 			)
 		),
 	array(
 		'heading' => 'Attributes',
 		'items' => array(
-			$html->link(__('New Attributes', true), array('controller' => 'attributes', 'action' => 'edit')),
+			$html->link(__('New Attributes', true), array('controller' => 'attributes', 'action' => 'add')),
 			$html->link(__('List Attributes', true), array('controller' => 'attributes', 'action' => 'index')),
 			)
 		),

@@ -30,6 +30,18 @@ class AttributeGroupsController extends AppController {
 
 	function admin_index() {
 		$this->AttributeGroup->recursive = 0;
+		
+		if (!empty($this->params['named']['system'])) {
+			$isSystem = 1;
+		} else {
+			$isSystem = 0;
+		}
+			
+		$this->paginate = array(
+			'conditions' => array(
+				'AttributeGroup.is_system' => $isSystem,
+				),
+			);	
 		$this->set('attributeGroups', $this->paginate());
 	}
 
