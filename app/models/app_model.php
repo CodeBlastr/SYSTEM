@@ -16,7 +16,7 @@
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
  * @link          http://zuha.com Zuha™ Project
  * @package       zuha
- * @subpackage    zuha.app
+ * @subpackage    zuha.app.models
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
@@ -111,13 +111,13 @@ class AppModel extends Model {
 		}
 	}
 	
-	/*
-	 * Gets the aco node
-	 * @param {array} params -> $this->params having problems reaching it from model
-	 * @param {bool} main -> Do you want the aco of the record or the action
-	 * @return int
-	 */
 	
+/**
+ * Gets the aco node
+ * @param {array} params -> $this->params having problems reaching it from model
+ * @param {bool} main -> Do you want the aco of the record or the action
+ * @return int
+ */
 	function get_aco($params , $main = false){
 		$acor = ClassRegistry::init('Permissions.Acore');
 		if($params['plugin'] == ''){
@@ -137,16 +137,15 @@ class AppModel extends Model {
 			//get the aco data to be able to determine the parent_id field
 			$ret_aco = $acor->find('first' , array(
 				'conditions'=>array(
-				// not sure what effects changing this might have on other parts of the system so I'm leaving reference
-				//'type' => 'plugin',
-				'type' => 'pcontroller',
-				'alias' => ucwords($params['plugin'])
+					// not sure what effects changing this might have on other parts of the system so I'm leaving reference
+					//'type' => 'plugin',
+					'type' => 'pcontroller',
+					'alias' => Inflector::camelize($params['controller'])
 				),
 				'contain' => array(),
 				'fields' => array('id'),
 				'callbacks' => false
 			));
-			
 			// get clidren
 			$child = $acor->children($ret_aco["Acore"]["id"]);
 			if(count($ret_aco) != 0){
@@ -209,9 +208,9 @@ class AppModel extends Model {
 						}
 					}
 				}
+			// set the parent_id
 			return $curr_parent;
 			}
-			// set the parent_id
 		}
 	}
 	

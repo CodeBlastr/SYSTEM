@@ -132,7 +132,7 @@ class AppController extends Controller {
 		}
 		 */
 		# user is logged in but not authorized.
-		# check if node has creator access 
+		# check if node has guest access 
 		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
 			if($this->__checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
 				$this->Auth->allow('*');
@@ -222,9 +222,10 @@ class AppController extends Controller {
 		$cn = $arac->find('first' , array(
       		'conditions'=>array(
 	      		'ArosAco.aro_id' => $userGroup,
-	   			/* this was changed to false to get individual records to work (not sure what other effects it will have)
-			  	'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , true)*/
-	      		'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)
+	   			/* this was changed to false to get individual records to work (not sure what other effects it will have)*/
+			  	'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , true)
+	   			/* this was changed to true to get individual action to work (not sure what other effects it will have)
+	      		'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)*/
 	      		),
 	      	'contain'=>array(),
 	      	/*'fields'=>array(
