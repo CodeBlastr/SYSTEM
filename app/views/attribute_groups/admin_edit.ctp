@@ -7,6 +7,7 @@
 		echo $form->input('AttributeGroup.enumeration_id', array('empty' => '-- Select Limiter --')); 
 		echo $form->input('AttributeGroup.name'); 
 		echo $form->input('AttributeGroup.model', array('after' => ' (model alias of the db table attributes will be written to)' )); 
+		echo $form->input('AttributeGroup.order'); 
 		echo $form->input('AttributeGroup.is_system'); 
 	?>
 	</fieldset>

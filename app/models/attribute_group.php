@@ -117,8 +117,11 @@ class AttributeGroup extends AppModel {
 						),
 					),
 				),
+			'order' => 'AttributeGroup.order',
 			'contain' => array(
-				'Attribute',
+				'Attribute' => array(
+					'order' => 'Attribute.order',
+					),
 				),
 			));		
 		return $attributeGroups;

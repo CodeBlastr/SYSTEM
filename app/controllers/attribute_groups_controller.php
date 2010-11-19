@@ -39,7 +39,8 @@ class AttributeGroupsController extends AppController {
  * @param {limiter} 	We can set a limiter so that we can create a particular kind of form using the enumerations table.
  * @param {type}		add, edit or view form type?  Default to add for now, because that is the first one being worked on.
  * @return {attributes}	Form elements within the requested attribute groups.
- * @todo 				We may need to rethink how limiter works.  Because we may not really need it, and instead need a group (or parent_id) within the attribute groups -- oh maybe we could use sub?  Or something like that.  
+ * @todo 				We may need to rethink how limiter works.  Because we may not really need it, and instead need a group (or parent_id) within the attribute groups -- oh maybe we could use sub?  Or something like that. 
+ * @todo 				It is possible that a url like domain.com//model/add/59 would work (where there first value is null when it shows double slashes.  We might not even need this variable switching thing that we do. 
  */
 	function display($plugin, $model = null, $type = 'add', $limiter = null) {
 		# check if it is a plugin, and move variables derived from the url up a step if it isn't.
