@@ -18,30 +18,37 @@
  * @subpackage    zuha.app.views.elements
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
+ * @todo		  Create options for attribute groups which control the form
+ * @todo		  Make full use of the cakephp form helper
  */
 ?>
+
 <div id="attributeForm">
-<?php
+  <?php
 $groups = $this->requestAction('attribute_groups/display/'.$plugin.'/'.$model.'/'.$type.'/'.$limiter);
 
-foreach ($groups as $group) {
-	$attributes[] = $group['Attribute'];
-}
-
+# initialize the form open tag
 echo $form->create($model, array(
 	'url' => strtolower($plugin).'/'.
 			 Inflector::pluralize(Inflector::underscore($model)).'/'.
 			 $type
 	));
 
-foreach ($attributes as $attribute) {
-	foreach ($attribute as $attr) {
-		echo $form->input($attr['code'], array(
-					'label' => $attr['name'],
-					)); 
-	}
-} 
-
+foreach ($groups as $group) {  
+?>
+	<fieldset>
+  <?php echo (!empty($group['AttributeGroup']['display_name']) ? '<legend>'.$group['AttributeGroup']['display_name'].'</legend>' : ''); ?>
+    <?php
+	foreach ($group['Attribute'] as $attribute) {
+		echo $form->input($attribute['code'], array(
+				'label' => $attribute['name'],
+				)); 
+	} 
+?>
+  </fieldset>
+  <?php
+}
+#close the form and show the submit button
 echo $form->end('Submit');
 ?>
 </div>
