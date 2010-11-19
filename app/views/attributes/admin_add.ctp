@@ -5,9 +5,19 @@
 	<?php
 		echo (isset($duplicate) ? $form->input('is_duplicate', array('type' => 'hidden', 'value' => '1')) : ''); 
 		echo $form->input('id');
-		echo $form->input('attribute_group_id'); 
+		echo $form->input('attribute_group_id', array('type' => 'select', 'multiple' => true)); 
 		echo $form->input('code'); 
 		echo $form->input('name'); 
+		echo $form->input('input_type', array(
+			'type' => 'select',
+			'options' => array(
+				'select' => 'select',
+				'multi-select' => 'multi-select',
+				'multi-select-checkbox' => 'multi-select-checkbox',
+				'Text Field',
+				'Text Area'/*, 'Date', 'Yes/No', 'Multiple Select', 'Dropdown', 'Media/Image/File'*/
+				)
+			)); 
 		echo $form->input('input_type_id', array('type' => 'select', 'options' => array('Text Field', 'Text Area'/*, 'Date', 'Yes/No', 'Multiple Select', 'Dropdown', 'Media/Image/File'*/))); 
 		echo $form->input('default_value'); 
 		echo $form->input('is_system'); 
