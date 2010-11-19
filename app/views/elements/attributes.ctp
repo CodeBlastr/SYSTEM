@@ -22,10 +22,26 @@
 ?>
 <div id="attributeForm">
 <?php
+$groups = $this->requestAction('attribute_groups/display/'.$plugin.'/'.$model.'/'.$type.'/'.$limiter);
+
+foreach ($groups as $group) {
+	$attributes[] = $group['Attribute'];
+}
+
+echo $form->create($model, array(
+	'url' => strtolower($plugin).'/'.
+			 Inflector::pluralize(Inflector::underscore($model)).'/'.
+			 $type
+	));
+
 foreach ($attributes as $attribute) {
-	echo $form->input($attribute['Attribute']['code'], array(
-				'label' => $attribute['Attribute']['name']
-				)); 
+	foreach ($attribute as $attr) {
+		echo $form->input($attr['code'], array(
+					'label' => $attr['name'],
+					)); 
+	}
 } 
+
+echo $form->end('Submit');
 ?>
 </div>

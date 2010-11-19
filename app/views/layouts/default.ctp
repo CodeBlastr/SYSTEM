@@ -16,11 +16,13 @@
 
 	?>
 </head>
-<body class="<?php echo $this->params['controller']; ?><?php #if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">      
+<body class="<?php echo $this->params['controller']; ?><?php #if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">       
 <?php 
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
 if (!empty($defaultTemplate)) {
+	
+	# matches helper calls like {element: content_for_layout} or {element: menu_for_layout}
 	preg_match_all ("/(\{([^\}\{]*)element([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
 	foreach ($matches[0] as $elementMatch) {
@@ -28,6 +30,21 @@ if (!empty($defaultTemplate)) {
 		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $$element, $defaultTemplate['Webpage']['content']);
 	$i++;
 	}
+	
+	# matches form calls like {form: Plugin.Model.Type.Limiter} for example {form: Contacts.ContactPeople.add.59}
+	preg_match_all ("/(\{([^\}\{]*)form([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	$i = 0;
+	foreach ($matches[0] as $elementMatch) {
+		$attrGrpSettings = trim($matches[4][$i]);
+		$attrGrpSettings = explode('.', $attrGrpSettings);
+		$attributeGroup['plugin'] = $attrGrpSettings[0];  
+		$attributeGroup['model'] = $attrGrpSettings[1];  
+		$attributeGroup['type'] = $attrGrpSettings[2]; 
+		$attributeGroup['limiter'] = $attrGrpSettings[3]; 
+		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element('attributes', $attributeGroup), $defaultTemplate['Webpage']['content']);
+	$i++;
+	}
+	
 	# display the database driven default template
 	echo $defaultTemplate['Webpage']['content'];
 } else {
@@ -35,8 +52,8 @@ if (!empty($defaultTemplate)) {
     echo $session->flash('auth');
 	echo $content_for_layout;
 } 
+?>
 
-echo $this->element('sql_dump'); 
-?>       
+<?php echo $this->element('sql_dump');  ?>       
 </body>
 </html>

@@ -27,6 +27,41 @@ class AttributeGroupsController extends AppController {
 
 	var $name = 'AttributeGroups';
 	
+	function beforeFilter() {
+	    parent::beforeFilter(); 
+	    $this->Auth->allowedActions = array('display');
+	}
+
+/**
+ * Used when elements need to build forms 
+ *
+ * @param {plugin}		Plugin could be the plugin, if it is in the plugins list. If not then it is the model, and other params get pushed up. 
+ * @param {limiter} 	We can set a limiter so that we can create a particular kind of form using the enumerations table.
+ * @param {type}		add, edit or view form type?  Default to add for now, because that is the first one being worked on.
+ * @return {attributes}	Form elements within the requested attribute groups.
+ * @todo 				We may need to rethink how limiter works.  Because we may not really need it, and instead need a group (or parent_id) within the attribute groups -- oh maybe we could use sub?  Or something like that.  
+ */
+	function display($plugin, $model = null, $type = 'add', $limiter = null) {
+		# check if it is a plugin, and move variables derived from the url up a step if it isn't.
+		$plugins = Configure::listObjects('plugin');
+		if (!array_search($plugin, $plugins)) {
+			$options['model'] = $plugin;
+			$options['type'] = (!empty($model) ? $model : null);
+			$options['limiter'] = (!empty($type) ? $type : null);
+		} else {
+			$options = array('plugin' => $plugin);
+			$options['model'] = (!empty($model) ? $model : null);
+			$options['type'] = (!empty($type) ? $type : null);
+			$options['limiter'] = (!empty($limiter) ? $limiter : null);
+		}
+		
+		$attributes = $this->AttributeGroup->getForm($options); 
+		
+		if (isset($this->params['requested'])) {
+        	return $attributes;
+        }
+	}
+	
 
 	function admin_index() {
 		$this->AttributeGroup->recursive = 0;

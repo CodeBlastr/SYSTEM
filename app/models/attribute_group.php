@@ -64,8 +64,14 @@ class AttributeGroup extends AppModel {
  *
  * @param {model}		The model the attribute group belongsTo.
  * @param {typeId}		A limiter or predefined field which can be used to change the attributes that in the end get displayed. Refer to the enumerations table for id numbers.
+ * @todo 				I'm assuming there will be a problem later with the additional of adding belongsTo models automatically, so we will probably need to set an on off switch for that method.
  */
-	function getAttributeGroups($model, $typeId = null) {
+	function getAttributeGroups($model, $typeId = null) {		
+		App::Import('Model', 'Contacts.'.$model);
+		$this->$model = new $model;
+		$models = array_keys($this->$model->belongsTo);
+		$models[] = $model;
+		
 		$attributeGroups = $this->find('all', array(
 			'conditions' => array(
 				array(
@@ -76,14 +82,48 @@ class AttributeGroup extends AppModel {
 					),
 				'AND' => array(
 					array(
-						'AttributeGroup.model' => $model,
+						'AttributeGroup.model' => $models,
 						),
 					),
 				),
 			));		
 		return $attributeGroups;
 	}
-
+	
+	
+	function getForm($options) {	
+		$plugin = (!empty($options['plugin']) ? $options['plugin'].'.' : null);
+		$model = (!empty($options['model']) ? $options['model'] : null);
+		$type = (!empty($options['type']) ? $options['type'] : null);
+		$limiter = (!empty($options['limiter']) ? $options['limiter'] : null);
+		
+		# get the models this model belongs to
+		App::Import('Model', $plugin.$model);
+		$this->$model = new $model;
+		$models = array_keys($this->$model->belongsTo);
+		$models[] = $model;
+		
+		$attributeGroups = $this->find('all', array(
+			'conditions' => array(
+				array(
+					'OR' => array(
+						array('AttributeGroup.enumeration_id' => $limiter),
+						array('AttributeGroup.enumeration_id' => null),
+						),
+					),
+				'AND' => array(
+					array(
+						'AttributeGroup.model' => $models,
+						),
+					),
+				),
+			'contain' => array(
+				'Attribute',
+				),
+			));		
+		return $attributeGroups;
+	}
+	
 	
 }
 ?>
