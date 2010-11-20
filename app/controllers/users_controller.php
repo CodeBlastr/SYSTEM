@@ -89,9 +89,6 @@ class UsersController extends AppController {
 	}
 	
 	function add() {
-		pr($this->data);
-		echo 'asldkfjalsdkfjalsdkfjalsdfkj';
-		break;
 		if (!empty($this->data)) {
 			$this->User->create();
 			if ($this->User->save($this->data)) {
