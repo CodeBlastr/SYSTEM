@@ -60,7 +60,7 @@
 					<?php echo $html->link(__('Permissions', true), array('plugin' => 'permissions', 'controller' => 'acores', 'action' => 'index', 'admin' => 1)); ?>
 					<?php # echo $html->link(__('Search', true), array('plugin' => 'searches', 'controller' => 'searches', 'action' => 'index', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Notifications', true), array('plugin' => 'notifications', 'controller' => 'notification_templates', 'action' => 'index', 'admin' => 1)); ?>
-					<?php echo $html->link(__('Attributes', true), array('plugin' => null, 'controller' => 'attributes', 'action' => 'index', 'admin' => 1)); ?>
+					<?php echo $html->link(__('Forms', true), array('plugin' => 'forms', 'controller' => 'forms', 'action' => 'index', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Settings', true), array('plugin' => null, 'controller' => 'settings', 'admin' => 1)); ?>
 				</div>
 				<div id="navtabs-2">
