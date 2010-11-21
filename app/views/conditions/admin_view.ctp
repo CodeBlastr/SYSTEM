@@ -11,6 +11,11 @@
 			<?php echo $condition['Condition']['name']; ?>
 			&nbsp;
 		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Description'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $condition['Condition']['description']; ?>
+			&nbsp;
+		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Plugin'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $condition['Condition']['plugin']; ?>
@@ -31,6 +36,11 @@
 			<?php echo $condition['Condition']['condition']; ?>
 			&nbsp;
 		</dd>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Model'); ?></dt>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
+			<?php echo $condition['Condition']['model']; ?>
+			&nbsp;
+		</dd>
 	</dl>
 </div>
 
@@ -40,7 +50,7 @@ $menu->setValue(array(
 	array(
 		'heading' => 'Conditions',
 		'items' => array(
-			$html->link(__('Edit Conditions', true), array('plugin' => null, 'controller' => 'conditions', 'action' => 'edit', $condition['Condition']['id'])),
+			$html->link(__('Edit Condition', true), array('plugin' => null, 'controller' => 'conditions', 'action' => 'edit', $condition['Condition']['id'])),
 			$html->link(__('Delete Condition', true), array('plugin' => null, 'controller' => 'conditions', 'action' => 'delete', $condition['Condition']['id'])),
 			$html->link(__('List Conditions', true), array('plugin' => null, 'controller' => 'conditions', 'action' => 'index')),
 			$html->link(__('New Condition', true), array('plugin' => null, 'controller' => 'conditions', 'action' => 'edit')),
