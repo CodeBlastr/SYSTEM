@@ -4,7 +4,7 @@ class Condition extends AppModel {
 	var $name = 'Condition';
 	var $validate = array(
 		'name' => array('notempty'),
-		'controller' => array('notempty'),
+		'bind_model' => array('notempty'),
 		'creator_id' => array('numeric'),
 		'modifier_id' => array('numeric')
 	);

@@ -77,13 +77,9 @@ class AppController extends Controller {
 		$this->RequestHandler->setContent('json', 'text/x-json');
 		
 /**
- * app_model doesn't have access to $this->params, we pass it here
- * @todo We'd like to get rid of this completely, if it all possible. 
- * (it seems like a lot of info being pushed to app_model)
+ * @todo 	create this function, so that conditions can fire on the view of records
+		$this->checkConditions($plugin, $controller, $action, $extraValues);
  */
-		foreach($this->modelNames as $model) {
-			$this->$model->setParams($this->params);
-		}
 		
 /**
  * Implemented for allowing guests and creators ACL control

@@ -37,13 +37,7 @@ class AppModel extends Model {
 			return call_user_func_array(array('parent', 'find'), $args);
 		}
 	}
-	*/
-	
-	function setParams( $params = null ) {
-		$this->params = $params;
-	}
-	
-
+	*/	
 	
     function afterSave() {
 		if (isset($this->params['action'])) {
