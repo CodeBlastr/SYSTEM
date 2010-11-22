@@ -66,6 +66,8 @@ class AppModel extends Model {
 		}
 		# End Condition Check #
 		
+		
+		
 		// If the model needs UserLevel Access add an Aco
 		if(isset($this->userLevel) && $this->userLevel == true){
 			$aco = ClassRegistry::init('Permissions.Acore');
@@ -90,20 +92,6 @@ class AppModel extends Model {
 			$aco->save($aco_dat);
 		}	
     }
-	
-	function __saveOrCheckExtraConditions($conditionTriggers) {	
-		foreach ($conditionTriggers as $conditionTrigger) {
-			if (!empty($conditionTrigger['Condition']['condition'])) {
-				# if it does check $this->data to see if its still a match
-				if ($this->__checkExtraCondition($conditionTrigger)) {
-					$this->__saveNotification($conditionTrigger);
-				}
-			} else {
-				# otherwise save it
-				$this->__saveNotification($conditionTrigger);
-			}
-		}
-	}
 	
 	
 /**
@@ -208,6 +196,25 @@ class AppModel extends Model {
 		}
 	}
 	
+	
+	
+	
+	
+	function __saveOrCheckExtraConditions($conditionTriggers) {	
+		foreach ($conditionTriggers as $conditionTrigger) {
+			if (!empty($conditionTrigger['Condition']['condition'])) {
+				# if it does check $this->data to see if its still a match
+				if ($this->__checkExtraCondition($conditionTrigger)) {
+					$this->__saveNotification($conditionTrigger);
+				}
+			} else {
+				# otherwise save it
+				$this->__saveNotification($conditionTrigger);
+			}
+		}
+	}
+	
+	
 	function __saveNotification($conditionTrigger) {		
 		# import the model that originally saved the condition
 		App::import('Model', $conditionTrigger['Condition']['lookup_model']);
@@ -221,7 +228,7 @@ class AppModel extends Model {
 		
 		# get the template that we're turning into a real action that was triggered by this condition
 				
-		# get it ready for saving by importing the save model
+		# get it ready for saving by importing the save model (save_model was Notification)
 		App::import('Model', $conditionTrigger['Condition']['save_model']);
 		# test if its a plugin you're doing the saving to
 		if (strpos($conditionTrigger['Condition']['save_model'], '.')) {
@@ -331,13 +338,7 @@ class AppModel extends Model {
 		return true;
 	}
 	
-/**
- * In your application models, if you need to override the beforeSave callback, make sure you call the parent function: example : 
- * class Article extends AppModel {
- *		function beforeSave() {
- *			return parent::beforeSave();
- *		}
- */
+	
 	function afterFind($results, $primary=false) {
     	if($primary == true) {
     	   if(Set::check($results, '0.0')) {
@@ -347,10 +348,10 @@ class AppModel extends Model {
     	          unset($results[$key][0]);
     	       }
     	    }
-    	}    	
-
+    	}    
     	return $results;
 	}
+	
 	
 	function findMy($type, $options=array()) {
 	   if($this->hasField($this->userField) && !empty($_SESSION['Auth']['User']['id'])){
@@ -361,6 +362,7 @@ class AppModel extends Model {
 	      return parent::find($type, $options);
 	   }
 	}
+	
 	
 	function deleteMy($id = null, $cascade = true) {
 	   if (!empty($id)) {
@@ -421,7 +423,7 @@ class AppModel extends Model {
 	}
 		
 	function parentNode() {
-	        $this->name;
+		$this->name;
 	}
 
 }
