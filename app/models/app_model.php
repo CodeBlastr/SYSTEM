@@ -62,16 +62,12 @@ class AppModel extends Model {
 			}
 			
 			if (!empty($triggers)) {
-				pr($triggers);
 				#if it is then fire all of the actions that are a 100% match
 				foreach ($triggers as $trigger) {
 					# fire the triggered action in the model condition is binded to
 					$this->fireAction($trigger['id'], $trigger['model'], $data);
-						
 				}
 			}
-			pr($conditions);
-			break;
 		}
 	}
 	
