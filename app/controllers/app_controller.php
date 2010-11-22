@@ -29,8 +29,25 @@ class AppController extends Controller {
 	var $userGroup = '';
 /**
  * Fired early in the display process for defining app wide settings
+ *
+ * @todo 			Setup the condition check so that an APP constant turns it on and off.  A constant that gets turn on, when the first is_read condition is created.  It has a slight effect on performance so it should only be on if necessary.
  */
 	function beforeFilter() {
+		
+		# DO NOT DELETE #
+		# commented out because for performance this should only be turned on if asked to be turned on
+		# Start Condition Check #
+		/*App::Import('Model', 'Condition');
+		$this->Condition = new Condition;
+		#get the id that was just inserted so you can call back on it.
+		$conditions['plugin'] = $this->params['plugin'];
+		$conditions['controller'] = $this->params['controller'];
+		$conditions['action'] = $this->params['action'];
+		$conditions['extra_values'] = $this->params['pass'];
+		$this->Condition->checkAndFire('is_read', $conditions, $this->data); */
+		# End Condition Check #
+		# End DO NOT DELETE #
+		
 		
 		#Configure::write('Config.language', 'eng');
 		$this->viewPath = $this->_getLanguageViewFile();
