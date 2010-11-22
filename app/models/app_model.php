@@ -39,7 +39,124 @@ class AppModel extends Model {
 	}
 	*/	
 	
-    function afterSave() {
+	
+/** 
+ * Check the conditions table to see if the record being created, read, updated, or deleted matches any conditions. And if it is then will fire a sub condition check, and finally fire the bindModel if condtions are met.
+ *
+ * @param {type} 		Valid values are, "is_create", "is_read", "is_update", "is_delete".
+ * @param {lookups}		An array with either model, or plugin, controller, action, values indexes defined.
+ * @param {data}		The data that we're checking against and saving if a match is made.
+ * @return {array}		returns an array of ids of the conditions that were met, otherwise false.
+ */
+	function checkAndFire($type, $lookups, $data) {
+		# first check a condtion for plugin, controller, model, action, extra values and type matches
+		if ($conditions = $this->checkConditions($type, $lookups)) {
+			# if those are matched traverse this data with the sub condtion to see if its a 100% match
+			$i = 0;
+			foreach ($conditions as $condition) {
+				if ($this->_checkSubConditions($condition, $data)) {
+					$triggers[$i]['id'] = $condition['Condition']['id'];
+					$triggers[$i]['model'] = $condition['Condition']['bind_model'];
+				}
+				$i++;
+			}
+			
+			if (!empty($triggers)) {
+				pr($triggers);
+				#if it is then fire all of the actions that are a 100% match
+				foreach ($triggers as $trigger) {
+					# fire the triggered action in the model condition is binded to
+					$this->fireAction($trigger['id'], $trigger['model'], $data);
+						
+				}
+			}
+			pr($conditions);
+			break;
+		}
+	}
+	
+	
+	function fireAction($id, $model, $data) {
+		# import the bind model and fire a model action called triggered.
+		App::import('Model', $model);
+		$thisModel = explode('.', $model);
+		
+		if (!empty($thisModel[1])) {
+			# this supports a plugin
+			$this->$thisModel[1] = new $thisModel[1];
+			$this->$thisModel[1]->triggered($id, $data);
+		} else {
+			# this is if it is not a plugin
+			$this->$thisModel[0] = new $thisModel[0];
+			$this->$thisModel[0]->triggered($id, $data);
+		}
+	}
+	
+	
+	
+	function _checkSubConditions($condition, $data) {
+		if (!empty($condition['Condition']['condtion'])) {
+			# check the sub condition code goes here. 
+			# if the sub condition does match return true if not return false.
+		} else {
+			return true;
+		}
+	}
+	
+	function checkConditions($type, $lookups) {
+		App::Import('Model', 'Condition');
+		$this->Condition = new Condition;
+		$fields = $this->_conditionConditions($lookups);
+		$conditions = $this->Condition->find('all', array(
+			'conditions' => array(
+				$fields,
+				'Condition.'.$type => 1,
+				),
+			'fields' => array(
+				'id',
+				'bind_model',
+				'condition',
+				),
+			));
+		return $conditions;
+	}
+	
+		
+	function _conditionConditions($lookups) {
+		$model =(!empty($lookups['model']) ? $lookups['model'] : null);
+		$plugin =(!empty($lookups['plugin']) ? $lookups['plugin'] : null);
+		$controller =(!empty($lookups['controller']) ? $lookups['controller'] : null);
+		$action =(!empty($lookups['action']) ? $lookups['action'] : null);
+		$extraValues =(!empty($lookups['extra_values']) ? $lookups['extra_values'] : null);
+		
+		if (!empty($model)) {
+			$condition = array('Condition.model' => $model);
+		} else {
+			$condition = array(
+				'Condition.plugin' => $plugin,
+				'Condition.controller' => $controller,
+				'Condition.action' => $action,
+				'Condtion.extra_values' => $extraValues,
+				);
+		}
+		return $condition;
+	}
+	
+	
+	
+    function afterSave($created) {
+		#get the id that was just inserted so you can call back on it.
+		$this->data[$this->name]['id'] = $this->id;	
+		
+		if ($created == true) {
+			$this->checkAndFire('is_create', array('model' => $this->name), $this->data);
+		} else {
+			#$this->conditionCheck('is_update'); 
+			#$this->conditionCheck('is_read'); 
+			#$this->conditionCheck('is_delete'); 
+		}
+		
+		
 		if (isset($this->params['action'])) {
 			# Now lets check condtions 
 			$modelName = $this->name;
