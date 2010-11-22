@@ -10,14 +10,11 @@ echo $paginator->counter(array(
 <tr>
 	<th><?php echo $paginator->sort('id');?></th>
 	<th><?php echo $paginator->sort('name');?></th>
-	<th><?php echo $paginator->sort('plugin');?></th>
-	<th><?php echo $paginator->sort('controller');?></th>
-	<th><?php echo $paginator->sort('action');?></th>
-	<th><?php echo $paginator->sort('condition');?></th>
-	<th><?php echo $paginator->sort('creator_id');?></th>
-	<th><?php echo $paginator->sort('modifier_id');?></th>
-	<th><?php echo $paginator->sort('created');?></th>
-	<th><?php echo $paginator->sort('modified');?></th>
+	<th><?php echo $paginator->sort('is_create');?></th>
+	<th><?php echo $paginator->sort('is_read');?></th>
+	<th><?php echo $paginator->sort('is_update');?></th>
+	<th><?php echo $paginator->sort('is_delete');?></th>
+	<th><?php echo $paginator->sort('model');?></th>
 	<th class="actions"><?php __('Actions');?></th>
 </tr>
 <?php
@@ -36,28 +33,19 @@ foreach ($conditions as $condition):
 			<?php echo $condition['Condition']['name']; ?>
 		</td>
 		<td>
-			<?php echo $condition['Condition']['plugin']; ?>
+			<?php echo $condition['Condition']['is_create']; ?>
 		</td>
 		<td>
-			<?php echo $condition['Condition']['controller']; ?>
+			<?php echo $condition['Condition']['is_read']; ?>
 		</td>
 		<td>
-			<?php echo $condition['Condition']['action']; ?>
+			<?php echo $condition['Condition']['is_update']; ?>
 		</td>
 		<td>
-			<?php echo $condition['Condition']['condition']; ?>
+			<?php echo $condition['Condition']['is_delete']; ?>
 		</td>
 		<td>
-			<?php echo $html->link($condition['Creator']['username'], array('controller' => 'users', 'action' => 'view', $condition['Creator']['id'])); ?>
-		</td>
-		<td>
-			<?php echo $html->link($condition['Modifier']['username'], array('controller' => 'users', 'action' => 'view', $condition['Modifier']['id'])); ?>
-		</td>
-		<td>
-			<?php echo $condition['Condition']['created']; ?>
-		</td>
-		<td>
-			<?php echo $condition['Condition']['modified']; ?>
+			<?php echo $condition['Condition']['model']; ?>
 		</td>
 		<td class="actions">
 			<?php echo $html->link(__('View', true), array('action' => 'view', $condition['Condition']['id'])); ?>

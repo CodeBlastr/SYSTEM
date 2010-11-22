@@ -37,39 +37,35 @@ class AppModel extends Model {
 			return call_user_func_array(array('parent', 'find'), $args);
 		}
 	}
-	*/
+	*/		
 	
-	function setParams( $params = null ) {
-		$this->params = $params;
+	
+    function afterDelete($created) {
+		# Start Condition Check #
+		App::Import('Model', 'Condition');
+		$this->Condition = new Condition;
+		#get the id that was just inserted so you can call back on it.
+		$this->data[$this->name]['id'] = $this->id;	
+		$this->Condition->checkAndFire('is_delete', array('model' => $this->name), $this->data); 
+		# End Condition Check #
 	}
 	
-
 	
-    function afterSave() {
-		if (isset($this->params['action'])) {
-			# Now lets check condtions 
-			$modelName = $this->name;
-			$controller = Inflector::underscore(Inflector::pluralize($modelName));
-			$plugin = explode('_', $controller);
-			$plugin = Inflector::pluralize($plugin[0]);	
-			#get the id that was just inserted so you can call back on it.
-			$this->data[$modelName]['id'] = $this->id;		
-			
-			App::import('Model', 'Condition');
-			$Condition = new Condition();
-			# check if a notification condition is met
-			$conditionTriggers = $Condition->find('all', array(
-				'conditions' => array(
-					'Condition.plugin' => $plugin,
-					'Condition.controller' => $controller,
-					'Condition.action' => $this->params['action']
-					)
-				));
-			#first condition was a match, see if there is an additional condition
-			if(!empty($conditionTriggers)) {
-				$this->__saveOrCheckExtraConditions($conditionTriggers);
-			}
+    function afterSave($created) {
+		# Start Condition Check #
+		App::Import('Model', 'Condition');
+		$this->Condition = new Condition;
+		#get the id that was just inserted so you can call back on it.
+		$this->data[$this->name]['id'] = $this->id;	
+		
+		if ($created == true) {
+			$this->Condition->checkAndFire('is_create', array('model' => $this->name), $this->data);
+		} else {
+			$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
+			#$this->conditionCheck('is_read'); // this needs to be put into the before Filter of the 
 		}
+		# End Condition Check #
+		
 		
 		
 		// If the model needs UserLevel Access add an Aco
@@ -96,20 +92,6 @@ class AppModel extends Model {
 			$aco->save($aco_dat);
 		}	
     }
-	
-	function __saveOrCheckExtraConditions($conditionTriggers) {	
-		foreach ($conditionTriggers as $conditionTrigger) {
-			if (!empty($conditionTrigger['Condition']['condition'])) {
-				# if it does check $this->data to see if its still a match
-				if ($this->__checkExtraCondition($conditionTrigger)) {
-					$this->__saveNotification($conditionTrigger);
-				}
-			} else {
-				# otherwise save it
-				$this->__saveNotification($conditionTrigger);
-			}
-		}
-	}
 	
 	
 /**
@@ -214,6 +196,25 @@ class AppModel extends Model {
 		}
 	}
 	
+	
+	
+	
+	
+	function __saveOrCheckExtraConditions($conditionTriggers) {	
+		foreach ($conditionTriggers as $conditionTrigger) {
+			if (!empty($conditionTrigger['Condition']['condition'])) {
+				# if it does check $this->data to see if its still a match
+				if ($this->__checkExtraCondition($conditionTrigger)) {
+					$this->__saveNotification($conditionTrigger);
+				}
+			} else {
+				# otherwise save it
+				$this->__saveNotification($conditionTrigger);
+			}
+		}
+	}
+	
+	
 	function __saveNotification($conditionTrigger) {		
 		# import the model that originally saved the condition
 		App::import('Model', $conditionTrigger['Condition']['lookup_model']);
@@ -227,7 +228,7 @@ class AppModel extends Model {
 		
 		# get the template that we're turning into a real action that was triggered by this condition
 				
-		# get it ready for saving by importing the save model
+		# get it ready for saving by importing the save model (save_model was Notification)
 		App::import('Model', $conditionTrigger['Condition']['save_model']);
 		# test if its a plugin you're doing the saving to
 		if (strpos($conditionTrigger['Condition']['save_model'], '.')) {
@@ -337,13 +338,7 @@ class AppModel extends Model {
 		return true;
 	}
 	
-/**
- * In your application models, if you need to override the beforeSave callback, make sure you call the parent function: example : 
- * class Article extends AppModel {
- *		function beforeSave() {
- *			return parent::beforeSave();
- *		}
- */
+	
 	function afterFind($results, $primary=false) {
     	if($primary == true) {
     	   if(Set::check($results, '0.0')) {
@@ -353,10 +348,10 @@ class AppModel extends Model {
     	          unset($results[$key][0]);
     	       }
     	    }
-    	}    	
-
+    	}    
     	return $results;
 	}
+	
 	
 	function findMy($type, $options=array()) {
 	   if($this->hasField($this->userField) && !empty($_SESSION['Auth']['User']['id'])){
@@ -367,6 +362,7 @@ class AppModel extends Model {
 	      return parent::find($type, $options);
 	   }
 	}
+	
 	
 	function deleteMy($id = null, $cascade = true) {
 	   if (!empty($id)) {
@@ -427,7 +423,7 @@ class AppModel extends Model {
 	}
 		
 	function parentNode() {
-	        $this->name;
+		$this->name;
 	}
 
 }
