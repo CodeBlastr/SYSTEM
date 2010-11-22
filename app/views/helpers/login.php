@@ -14,25 +14,43 @@ class LoginHelper extends AppHelper {
 				'controller' => 'profiles',
 				'action' => 'view',
 				'user_id' => $this->Session->read('Auth.User.id'),
-				));
+			), array(
+				'class' => 'login-link',
+				'id' => 'userid-link'
+				)
+			);
 			$login .= __(' - ', true);
 			$login .= $this->Html->link(__('Logout', true), array(
 				'plugin' => null,
 				'controller' => 'users',
 				'action' => 'logout',
-				));
+			), array(
+				'class' => 'login-link',
+				'id' => 'logout-link'
+				)
+			);
 		} else {
 			$login = $this->Html->link(__('Sign up', true), array(
 				'plugin' => null,
 				'controller' => 'users',
-				'action' => 'add'
-				));
+				'action' => 'add',
+				'id' => 'login-signup',
+				'class' => 'login-link',
+			), array(
+				'class' => 'login-link',
+				'id' => 'signup-link'
+				)
+			);
 			$login .= __(' - ', true);
 			$login .= $this->Html->link(__('Sign in', true), array(
 				'plugin' => null,
 				'controller' => 'users',
-				'action' => 'login'
-				));
+				'action' => 'login',
+			), array(
+				'class' => 'login-link',
+				'id' => 'signin-link'
+				)
+			);
 		}
 		
     	$view = ClassRegistry::getObject('view');
