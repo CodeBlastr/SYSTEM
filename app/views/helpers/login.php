@@ -32,7 +32,7 @@ class LoginHelper extends AppHelper {
 				)
 			);
 		} else {
-			$login = $this->Html->link(__('Sign up', true), array(
+			$login .= $this->Html->link(__('Sign up', true), array(
 				'plugin' => null,
 				'controller' => 'users',
 				'action' => 'add',
