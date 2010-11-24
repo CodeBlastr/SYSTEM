@@ -7,8 +7,10 @@ class LoginHelper extends AppHelper {
     function beforeRender() {
 		$user_id = $this->Session->read('Auth.User.id');
 		
+		$login = '<div id="login-helper" class="login">';
+		
 		if (!empty($user_id)) {
-			$login = __('Welcome ', true);
+			$login .= '<p>'.__('Welcome ', true);
 			$login .= $this->Html->link(__($this->Session->read('Auth.User.username'), true), array(
 				'plugin' => 'profiles',
 				'controller' => 'profiles',
@@ -52,6 +54,7 @@ class LoginHelper extends AppHelper {
 				)
 			);
 		}
+		$login .= '</p></div>';
 		
     	$view = ClassRegistry::getObject('view');
 	    $view->set('login_for_layout', $login);
