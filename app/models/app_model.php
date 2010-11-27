@@ -40,7 +40,7 @@ class AppModel extends Model {
 	*/		
 	
 	
-    function afterDelete($created) {
+    function afterDelete() {
 		# Start Condition Check #
 		App::Import('Model', 'Condition');
 		$this->Condition = new Condition;

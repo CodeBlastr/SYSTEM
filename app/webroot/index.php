@@ -47,10 +47,11 @@
 * and define the urls that will resolve to that sites folder
 * in the file /sites/bootstrap.php
 */
-	if(!file_exists(ROOT . DS . 'sites' . DS . 'bootstrap.php') && !include(ROOT . DS . 'sites' . DS . 'bootstrap.php')) {
-		if (!defined('SITE_DIR')) {
-			define('SITE_DIR', $_SERVER['HTTP_HOST']);
-		} 
+	if (file_exists(ROOT . DS . 'sites' . DS . 'bootstrap.php')) {
+		include(ROOT . DS . 'sites' . DS . 'bootstrap.php');
+	} 
+	if (!defined('SITE_DIR')) {
+		define('SITE_DIR', $_SERVER['HTTP_HOST']);
 	} 
 	
 /**

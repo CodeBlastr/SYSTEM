@@ -20,7 +20,6 @@
  * @subpackage    zuha.app.controllers
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
- * @todo		  Consider moving user groups and users to a plugin, (maybe the permissions plugin) or replacing this with the users plugin available from CakeDC.
  */
 class UsersController extends AppController {
 
@@ -30,7 +29,7 @@ class UsersController extends AppController {
 	
 	function beforeFilter() {
 	    parent::beforeFilter(); 
-	    $this->Auth->allowedActions = array('add', 'login', 'desktop_login', 'admin_login', 'logout', 'admin_logout', 'forgot_password', 'reset_password');
+	    $this->Auth->allowedActions = array('login', 'desktop_login', 'admin_login', 'logout', 'admin_logout', 'forgot_password', 'reset_password');
 	}
 	
 	// this checks to see if you're logged in
@@ -44,15 +43,20 @@ class UsersController extends AppController {
     }
 	
 	# front end login
-	function login() { 	
+	function login() {
 	    if (!empty($this->data)) {
-			$this->User->read(null, 1);
-			$this->User->set('last_login', date('Y-m-d h:i:s'));
-			$this->User->save();
+			$user = $this->User->findbyUsername($this->data['User']['username']);
+			$this->data['User']['id'] = $user['User']['id'];
+			$this->data['User']['last_login'] = date('Y-m-d h:i:s');
+			$this->User->save($this->data, false);
 		}
     }
 	
-	# desktop login
+/**
+ * Used for Zuha Desktop integration. 
+ * 
+ * @todo 		This should be updated to some kind of API login (maybe REST) so that any apps can authenticate.
+ */
 	function desktop_login() { 	
         $user = $this->User->find('first', array('conditions' => array('username' => $this->data['User']['username'],'password' => $this->data['User']['password'])));	
         if($user!= null ){	    
@@ -67,6 +71,7 @@ class UsersController extends AppController {
     function logout() {
         $this->redirect($this->Auth->logout());
     }
+
 	# back end login
 	function admin_login() {
     }
