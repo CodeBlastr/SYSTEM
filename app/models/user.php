@@ -2,6 +2,8 @@
 class User extends AppModel {
 
 	var $name = 'User';
+	var $displayField = 'username';
+	var $actsAs = array('Acl' => 'requester');
 	var $userField = array(); # Used to define the creator table field (typically creator_id)
 	var $userLevel = false; # Used to define if this model requires record level user access control?
 	
@@ -29,8 +31,6 @@ class User extends AppModel {
 			),
 		),
 	);
-	var $displayField = 'username';
-	var $actsAs = array('Acl' => 'requester');
 	
 	function parentNode() {
    		if (!$this->id && empty($this->data)) {
@@ -47,12 +47,12 @@ class User extends AppModel {
 	    }
 	}
 	
-	/**    
-	 * After save callback
-	 * Update the aro for the user.
-	 * @access public
-	 * @return void
-	 */
+/**    
+ * After save callback
+ * Update the aro for the user.
+ * @access public
+ * @return void
+ */
 	function afterSave($created) {
         if (!$created) {
             $parent = $this->parentNode();
@@ -71,7 +71,6 @@ class User extends AppModel {
 	}
 	
 	function __comparePassword() {
-		pr($this->data);
 		# fyi, confirm password is hashed in the beforeValidate method
 		if ((!empty($this->data['User']['confirm_password']) && $this->data['User']['password'] == $this->data['User']['confirm_password'])) {
 			return true;
