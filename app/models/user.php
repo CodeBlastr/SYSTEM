@@ -6,6 +6,18 @@ class User extends AppModel {
 	var $userLevel = false; # Used to define if this model requires record level user access control?
 	
 	var $validate = array(
+		'password' => array(
+			'notempty' => array(
+				'rule' => 'notEmpty',
+				'allowEmpty' => false,
+				'message' => 'Please Enter a value for Password'
+			),
+			'comparePassword' => array(
+				'rule' => array('__comparePassword'),
+				'allowEmpty' => false,
+				'message' => 'Password, and Password Confirmation did not match.'
+			),
+		),
 		'username' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
@@ -14,16 +26,6 @@ class User extends AppModel {
 			'isUnique' => array(
 				'rule' => 'isUnique',
 				'message' => 'This Username belongs to someone else. Please try again.'
-			),
-		),
-		'password' => array(
-			'notempty' => array(
-				'rule' => 'notEmpty',
-				'message' => 'Please Enter a value for Password'
-			),
-			'comparePassword' => array(
-				'rule' => array('__comparePassword'),
-				'message' => 'Password, and Password Confirmation did not match.'
 			),
 		),
 	);
@@ -38,7 +40,7 @@ class User extends AppModel {
 	    if (empty($this->data)) {
 	        $data = $this->read();
 	    }
-	    if (!$data['User']['user_group_id']) {
+	    if (empty($data['User']['user_group_id'])) {
 	        return null;
 	    } else {
 	        return array('UserGroup' => array('id' => $data['User']['user_group_id']));
@@ -63,14 +65,15 @@ class User extends AppModel {
 	}
 	
 	function beforeValidate() {
-		if (isset($this->data['User']['confirm_password'])) {
+		if (!empty($this->data['User']['confirm_password'])) {
 			$this->data['User']['confirm_password'] = Security::hash($this->data['User']['confirm_password'],'', true);
 		}
 	}
 	
 	function __comparePassword() {
+		pr($this->data);
 		# fyi, confirm password is hashed in the beforeValidate method
-		if ((!empty($this->data['User']['confirm_password']) && $this->data['User']['password'] == $this->data['User']['confirm_password']) || $this->params['action'] = 'login') {
+		if ((!empty($this->data['User']['confirm_password']) && $this->data['User']['password'] == $this->data['User']['confirm_password'])) {
 			return true;
 		} else {
 			return false;

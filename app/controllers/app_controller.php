@@ -78,8 +78,8 @@ class AppController extends Controller {
 			);
         
         $this->Auth->loginRedirect = array(
-			'plugin' => 'profiles',
-			'controller' => 'profiles',
+			'plugin' => null,
+			'controller' => 'users',
 			'action' => 'view',
 			'user_id' => $this->Session->read('Auth.User.id')
 			);
