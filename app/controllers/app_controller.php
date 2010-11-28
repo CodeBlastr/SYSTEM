@@ -32,8 +32,7 @@ class AppController extends Controller {
  *
  * @todo 			Setup the condition check so that an APP constant turns it on and off.  A constant that gets turn on, when the first is_read condition is created.  It has a slight effect on performance so it should only be on if necessary.
  */
-	function beforeFilter() {
-		
+	function beforeFilter() {	
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
@@ -98,10 +97,6 @@ class AppController extends Controller {
 		$this->checkConditions($plugin, $controller, $action, $extraValues);
  */
 		
-/**
- * Implemented for allowing guests and creators ACL control
- */
-		$this->userGroup = $this->__checkUserGroup();
 		
 /**
  * Used to show admin layout for admin pages
@@ -129,47 +124,10 @@ class AppController extends Controller {
 		
 		
 /**
- * Access control upgrade
- * It should fire only if the user does not have 
- * access to the current page and if they don't 
- * see if they have creator access.
+ * Implemented for allowing guests and creators ACL control
  */
- 		/*
-		 * @todo A big priority is to get this implemented around the following two actions.  It saves 2 seconds per page load, by checking if you have access before checking if guests and creators have access.  But before you can implement you have to make user groups, and users save the Aro alias as their names.
-		 *
-		if (!$this->Acl->check('[AcoAlias]', '[AroAlias]')) {
-			// does not have access
-			// put rest of the checks here
-		} else {
-			// has access we don't need to check the guests and creators group
-		}
-		 */
-		# user is logged in but not authorized.
-		# check if node has guest access 
-		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-			if($this->__checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
-				$this->Auth->allow('*');
-			} 
-		} else {
-			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
-		}
-		
-		# user is logged in but not authorized.
-		# check if node has creator access 
-		# creator group is a system setting editable at /admin/settings
-		if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
-			if (defined('__SYS_CREATORS_GROUP_ARO_ID')) {
-				if($this->__checkAccess(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
-					//check if record belongs to the user
-					if($this->{$this->modelClass}->does_belongs($this->Auth->user('id') , $this->params)){
-						//allow user
-						$this->Auth->allow('*');
-					}
-				}
-			} else {
-				echo 'In /admin/settings key: SYS, value: CREATORS_GROUP_ARO_ID must be defined';
-			}
-		}
+		$this->userGroup = $this->_getUserGroupAroId();
+		$this->_getUserGroupId();
     }
 	
 /**
@@ -186,76 +144,6 @@ class AppController extends Controller {
 		}
 	}
 	
-	
-    
-/**
- * gets user group for acl check 
- */
-    function __checkUserGroup(){
-    	#get users group
-		if($this->Auth->user('id') != 0){
-			$user_model = ClassRegistry::init('User');
-			$user_moodel->recursive = 1 ;
-			$u_data = $user_model->find('first' , array(
-				'conditions'=>array('User.id'=>$this->Auth->user('id')),
-				'contain'=>array(
-					'UserGroup'=>array(
-						'fields'=>array(
-							'id',
-							'name'
-						)
-					)
-				)
-				
-			));
-			
-			$perm_aro = ClassRegistry::init('Permissions.Arore');
-			$perm_aro->recursive = 0;
-			$ar_dat = $perm_aro->find('first' , array(
-					'conditions'=>array(
-							'Arore.foreign_key'=>$u_data['UserGroup']['id']
-					), 
-					'contain'=>array(),
-					'fields'=>array('id')
-			));
-			
-			return $ar_dat["Arore"]["id"];
-			
-		}
-    }
-    
-/**
- * Does the node have creator access ?
- * @param {int} userGroup -> The aro_id of the userGroup 
- * @todo add guest functionality here with a param 
- * @return {bool}
- */   
-    function __checkAccess($userGroup , $params){
-    	$arac = ClassRegistry::init("Permissions.ArosAco");
-		$cn = $arac->find('first' , array(
-      		'conditions'=>array(
-	      		'ArosAco.aro_id' => $userGroup,
-	   			/* this was changed to false to get individual records to work (not sure what other effects it will have)*/
-			  	'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , true)
-	   			/* this was changed to true to get individual action to work (not sure what other effects it will have)
-	      		'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)*/
-	      		),
-	      	'contain'=>array(),
-	      	/*'fields'=>array(
-	       		'_create',
-	      		)*/
-     	));
-  
-    	if(count($cn) != 0){
-			if($cn["ArosAco"]["_create"] == 1 ){
-       			return true;
-      		} else {
-       			return false; 
-      		} 
-     	} else {
-      		return false;
-     	} 
-	}
 	
 /** 
  * Database driven template system
@@ -564,6 +452,7 @@ class AppController extends Controller {
 
 		$aco =& $this->Acl->Aco;
 		$root = $aco->node('controllers');
+		
 		if (!$root) {
 			$aco->create(array('parent_id' => null, 'model' => null, 'alias' => 'controllers' , 'type'=>'controller'));
 			$root = $aco->save();
@@ -796,6 +685,125 @@ class AppController extends Controller {
 ################################ END ACO ADD #############################
 ##########################################################################
 
+	
+#################  HERE DOWN IS PERMISSIONS ##################	
+
+
+/**
+ * Access control upgrade
+ * It should fire only if the user does not have 
+ * access to the current page and if they don't 
+ * see if they have creator access.
+ */
+	function _getUserGroupId() {		
+		if ($this->Auth->user('id') != 0) {
+			if (!$this->Acl->check(array('model' => 'User', 'foreign_key' => $this->Auth->user('id')), $this->name)) {
+				# check if node has guest access 
+				if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
+					if($this->_checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
+						$this->Auth->allow('*');
+					} 
+				} else {
+					echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
+				}
+				
+				
+				# user is logged in but not authorized.
+				# check if node has creator access 
+				# creator group is a system setting editable at /admin/settings
+				if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
+					if (defined('__SYS_CREATORS_GROUP_ARO_ID')) {
+						if($this->_checkAccess(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
+							# check if record belongs to the user using a field like creator_id, modifier_id, assignee_id, etc
+							if($this->{$this->modelClass}->checkUserFields($this->Auth->user('id') , $this->params)){
+								# allow user
+								$this->Auth->allow('*');
+							}
+						}
+					} else {
+						echo 'In /admin/settings key: SYS, value: CREATORS_GROUP_ARO_ID must be defined';
+					}
+				}
+			}
+		} else {			
+			if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
+				if($this->_checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
+					$this->Auth->allow('*');
+				} 
+			} else {
+				echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
+			}
+		}
+	}
+	
+    
+/**
+ * gets user group for acl check 
+ */
+    function _getUserGroupAroId(){
+    	#get users group
+		if($this->Auth->user('id') != 0){
+			$userModel = ClassRegistry::init('User');
+			# $userModel->recursive = 1 ;  // commented for non-use 11/2010, remove if no errors show because of it.
+			# this gets the user group id of the user
+			$uData = $userModel->find('first' , array(
+				'conditions' => array('User.id'=>$this->Auth->user('id')),
+				'contain' => array(
+					'UserGroup' => array(
+						'fields' => array(
+							'id',
+							'name'
+						)
+					)
+				)
+				
+			));
+			
+			$permAro = ClassRegistry::init('Permissions.Arore');
+			$permAro->recursive = 0;
+			# this returns the aro id for the user group this user belongs to 
+			$arDat = $permAro->find('first' , array(
+					'conditions'=>array(
+							'Arore.foreign_key'=>$uData['UserGroup']['id']
+					), 
+					'contain'=>array(),
+					'fields'=>array('id')
+			));
+			return $arDat["Arore"]["id"];
+		}
+    }
+    
+/**
+ * Does the node have creator access ?
+ * @param {int} userGroup -> The aro_id of the userGroup 
+ * @todo add guest functionality here with a param 
+ * @return {bool}
+ */   
+    function _checkAccess($userGroup , $params){
+    	$arac = ClassRegistry::init("Permissions.ArosAco");
+		$cn = $arac->find('first' , array(
+      		'conditions'=>array(
+	      		'ArosAco.aro_id' => $userGroup,
+	   			/* this was changed to false to get individual records to work (not sure what other effects it will have)*/
+			  	'ArosAco.aco_id' => $this->{$this->modelClass}->getAco($params , true)
+	   			/* this was changed to true to get individual action to work (not sure what other effects it will have)
+	      		'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)*/
+	      		),
+	      	'contain'=>array(),
+	      	/*'fields'=>array(
+	       		'_create',
+	      		)*/
+     	));
+    	if(count($cn) != 0){
+			if($cn["ArosAco"]["_create"] == 1 ){
+       			return true;
+      		} else {
+       			return false; 
+      		} 
+     	} else {
+      		return false;
+     	} 
+	}
 	
  
 }

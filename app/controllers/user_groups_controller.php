@@ -28,10 +28,10 @@ class UserGroupsController extends AppController {
 	
 	function beforeFilter() {
 	    parent::beforeFilter(); 
-	    $this->Auth->allowedActions = array('build_acl');
+	    $this->Auth->allowedActions = array('build_acl', 'admin_add', 'admin_index', 'admin_delete');
 	}
 
-	function admin_index() {
+	function admin_index() {		
 		$this->UserGroup->recursive = 0;
 		$this->set('userGroups', $this->paginate());
 	}
@@ -44,7 +44,7 @@ class UserGroupsController extends AppController {
 		$this->set('userGroup', $this->UserGroup->read(null, $id));
 	}
 
-	function admin_add() {
+	function admin_add() {	
 		if (!empty($this->data)) {
 			$this->UserGroup->create();
 			if ($this->UserGroup->save($this->data)) {
@@ -54,6 +54,8 @@ class UserGroupsController extends AppController {
 				$this->Session->setFlash(__('The UserGroup could not be saved. Please, try again.', true));
 			}
 		}
+		$parents = $this->UserGroup->ParentUserGroup->generatetreelist();
+		$this->set(compact('parents'));
 	}
 
 	function admin_edit($id = null) {

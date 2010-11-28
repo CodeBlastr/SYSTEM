@@ -3,6 +3,7 @@
 	<fieldset>
  		<legend><?php __('Add UserGroup');?></legend>
 	<?php
+		echo $form->input('parent_id', array('empty' => '--None--'));
 		echo $form->input('name');
 	?>
 	</fieldset>

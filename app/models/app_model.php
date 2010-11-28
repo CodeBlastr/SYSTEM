@@ -24,52 +24,15 @@ class AppModel extends Model {
 	var $actsAs = array('Containable');
 	var $recursive = -1;
 	
-	/*
-	function find($type, $options = array()) {
-		$method = null;
-		if(is_string($type)) {
-			$method = sprintf('__find%s', Inflector::camelize($type));
-		}
-		if($method && method_exists($this, $method)) {
-			return $this->{$method}($options);
-		} else {
-			$args = func_get_args();
-			return call_user_func_array(array('parent', 'find'), $args);
-		}
-	}
-	*/		
-	
-	
-    function afterDelete() {
-		# Start Condition Check #
-		App::Import('Model', 'Condition');
-		$this->Condition = new Condition;
-		#get the id that was just inserted so you can call back on it.
-		$this->data[$this->name]['id'] = $this->id;	
-		$this->Condition->checkAndFire('is_delete', array('model' => $this->name), $this->data); 
-		# End Condition Check #
-	}
-	
-	
-    function afterSave($created) {
-		# Start Condition Check #
-		App::Import('Model', 'Condition');
-		$this->Condition = new Condition;
-		#get the id that was just inserted so you can call back on it.
-		$this->data[$this->name]['id'] = $this->id;	
-		
-		if ($created == true) {
-			$this->Condition->checkAndFire('is_create', array('model' => $this->name), $this->data);
-		} else {
-			$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
-			#$this->conditionCheck('is_read'); // this needs to be put into the before Filter of the 
-		}
-		# End Condition Check #
-		
-		
-		
+
+
+	function beforeSave() {
+		# Start Record Level Access Save #
 		// If the model needs UserLevel Access add an Aco
 		if(isset($this->userLevel) && $this->userLevel == true){
+			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
+		} 
+			/* Not sure what's under here is even necessary, because moving it to beforeSave (instead of afterSave might have fixed it.
 			$aco = ClassRegistry::init('Permissions.Acore');
 			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
 			// foreign_key
@@ -84,14 +47,65 @@ class AppModel extends Model {
 				$aco_dat["Acore"]["alias"] = $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
 			}
 			
-			$aco_dat['Acore']['parent_id'] = $this->get_aco($this->params);
+			$aco_dat['Acore']['parent_id'] = $this->getAco($this->params);
 			
 			$aco_dat["Acore"]["model"] = $this->name;
 			$aco_dat["Acore"]["type"] = 'record';
 			$aco->create();
-			$aco->save($aco_dat);
-		}	
+			$aco->save($aco_dat); 
+		}	*/
+		# End Record Level Access Save #
+	
+		# Start Auto Creator & Modifier Id Saving # 
+		$exists = $this->exists();
+		App::import('Component', 'Session');
+		$Session = new SessionComponent();
+		$user = $Session->read('Auth.User');
+		
+		if ( !$exists && $this->hasField('creator_id') && empty($this->data[$this->alias]['creator_id']) ) {
+			$this->data[$this->alias]['creator_id'] = $user['id'];
+		}
+		if ( $this->hasField('modifier_id') && empty($this->data[$this->alias]['modifier_id']) ) {
+			$this->data[$this->alias]['modifier_id'] = $user['id'];
+		}
+		# End Auto Creator & Modifier Id Saving # 
+		
+		# you have to return true to make the save continue.
+		return true;
+	}
+		
+	
+/**
+ * Condition Check, checks to see if any conditions from the conditions table were met.
+ */
+    function afterSave($created) {
+		# Start Condition Check #
+		App::Import('Model', 'Condition');
+		$this->Condition = new Condition;
+		#get the id that was just inserted so you can call back on it.
+		$this->data[$this->name]['id'] = $this->id;	
+		
+		if ($created == true) {
+			$this->Condition->checkAndFire('is_create', array('model' => $this->name), $this->data);
+		} else {
+			$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
+			#$this->conditionCheck('is_read'); // this needs to be put into the before Filter of the 
+		}
+		# End Condition Check #
     }
+	
+/**
+ * Condition Check, checks to see if any conditions from the conditions table were met.
+ */
+    function afterDelete() {
+		# Start Condition Check #
+		App::Import('Model', 'Condition');
+		$this->Condition = new Condition;
+		#get the id that was just inserted so you can call back on it.
+		$this->data[$this->name]['id'] = $this->id;	
+		$this->Condition->checkAndFire('is_delete', array('model' => $this->name), $this->data); 
+		# End Condition Check #
+	}
 	
 	
 /**
@@ -100,7 +114,7 @@ class AppModel extends Model {
  * @param {bool} main -> Do you want the aco of the record or the action
  * @return int
  */
-	function get_aco($params , $main = false){
+	function getAco($params , $main = false){
 		$acor = ClassRegistry::init('Permissions.Acore');
 		if($params['plugin'] == ''){
 			$alias = 0;
@@ -197,75 +211,8 @@ class AppModel extends Model {
 	}
 	
 	
-	
-	
-	
-	function __saveOrCheckExtraConditions($conditionTriggers) {	
-		foreach ($conditionTriggers as $conditionTrigger) {
-			if (!empty($conditionTrigger['Condition']['condition'])) {
-				# if it does check $this->data to see if its still a match
-				if ($this->__checkExtraCondition($conditionTrigger)) {
-					$this->__saveNotification($conditionTrigger);
-				}
-			} else {
-				# otherwise save it
-				$this->__saveNotification($conditionTrigger);
-			}
-		}
-	}
-	
-	
-	function __saveNotification($conditionTrigger) {		
-		# import the model that originally saved the condition
-		App::import('Model', $conditionTrigger['Condition']['lookup_model']);
-		if (strpos($conditionTrigger['Condition']['lookup_model'], '.')) {
-			$model = explode('.', $conditionTrigger['Condition']['lookup_model']);
-			$model = $model[1];
-		} else {
-			$model = $conditionTrigger['Condition']['lookup_model'];
-		}		
-		$this->$model = new $model();
-		
-		# get the template that we're turning into a real action that was triggered by this condition
-				
-		# get it ready for saving by importing the save model (save_model was Notification)
-		App::import('Model', $conditionTrigger['Condition']['save_model']);
-		# test if its a plugin you're doing the saving to
-		if (strpos($conditionTrigger['Condition']['save_model'], '.')) {
-			# it is a plugin
-			$saveModel = explode('.', $conditionTrigger['Condition']['save_model']);
-			$saveModel = $saveModel[1];
-		} else {
-			# it is not a plugin
-			$saveModel = $conditionTrigger['Condition']['save_model'];
-		}
-		$this->$saveModel = new $saveModel();
-		
-		$saveData = $this->$model->read(null, $conditionTrigger['Condition']['lookup_model_record_id']);
-		$saveDataFinal[$saveModel] = $saveData[$saveModel.'Template'];
-		
-		# save the previous actual record data being saved into a data array to help with actual data replacements
-		$saveDataFinal[$saveModel]['data_array'] = print_r($this->data, true);
-		# unset standard fields so that they can be specific to the actual data 
-		$saveDataFinal[$saveModel]['id'] = null;
-		$saveDataFinal[$saveModel]['creator_id'] = null;
-		$saveDataFinal[$saveModel]['modifier_id'] = null;
-		$saveDataFinal[$saveModel]['created'] = null;
-		$saveDataFinal[$saveModel]['modified'] = null;
-		
-		# now change all of the template data to real data
-		$this->$saveModel->set($saveDataFinal);
-		
-		# and do the save
-		if ($this->$saveModel->save()) {
-			# nothing here normal operation continues
-			return true;
-		} else {
-			echo 'Action Trigger Error ::: Condition Trigger, failed to save.';
-			return false;
-		}
-	}
-	
+	# this has been saved so that we can use it when we finish of the extra condition checking in the condition model
+	# if it exists there, then delete this function
 	function __checkExtraCondition($conditionTrigger) {
 		$conditionsArray = explode(',',$conditionTrigger['Condition']['condition']);
 		foreach ($conditionsArray as $conditionsArr) {
@@ -322,24 +269,11 @@ class AppModel extends Model {
 		return $positive;
 	}
 	
-	# always checks if a table has the creator_id and/or modifier_id and writes the current user id to the record.
-	function beforeSave() {
-		$exists = $this->exists();
-		App::import('Component', 'Session');
-		$Session = new SessionComponent();
-		$user = $Session->read('Auth.User');
-		
-		if ( !$exists && $this->hasField('creator_id') && empty($this->data[$this->alias]['creator_id']) ) {
-			$this->data[$this->alias]['creator_id'] = $user['id'];
-		}
-		if ( $this->hasField('modifier_id') && empty($this->data[$this->alias]['modifier_id']) ) {
-			$this->data[$this->alias]['modifier_id'] = $user['id'];
-		}
-		return true;
-	}
 	
-	
-	function afterFind($results, $primary=false) {
+/**
+ * What the hell is this for?  Why is there no comment about it?
+ */ 
+	function afterFind($results, $primary = false) {
     	if($primary == true) {
     	   if(Set::check($results, '0.0')) {
     	      $fieldName = key($results[0][0]);
@@ -353,6 +287,10 @@ class AppModel extends Model {
 	}
 	
 	
+
+/**
+ * What the hell is this for?  Why is there no comment about it?
+ */ 
 	function findMy($type, $options=array()) {
 	   if($this->hasField($this->userField) && !empty($_SESSION['Auth']['User']['id'])){
 	      $options['conditions'][$this->alias.'.'.$this->userField] = $_SESSION['Auth']['User']['id'];
@@ -364,6 +302,10 @@ class AppModel extends Model {
 	}
 	
 	
+	
+/**
+ * What the hell is this for?  Why is there no comment about it?
+ */ 
 	function deleteMy($id = null, $cascade = true) {
 	   if (!empty($id)) {
 	      $this->id = $id;
@@ -383,45 +325,70 @@ class AppModel extends Model {
 	      else{
 	         return false;
 	      }
-	
 	   }
 	   else
 	      return parent::delete($id, $cascade);
 	}
 	
+	
 /*
- * Checks if the recor belongs to some one or not .  
- * @param {int} user -> $this->Auth->user('id') from app_controller
- * @param {array} params -> $this->params from app_controller
+ * Checks if the record belongs to some one or not.  This is used when doing a record level check on a user.  For example, if you want to restrict edit access to a page to the creator only.  This does the extra check needed to see if they get access, using one of the user fields (like creator_id, modifier_id, assignee_id, etc).
+ *
+ * @param {int} 		user -> $this->Auth->user('id') from app_controller
+ * @param {array} 		params -> $this->params from app_controller
  * @return {bool}
  */
-	function does_belongs($user , $params){
-		if($params["pass"][0] != 0){
-			// set the conditions 
+	function checkUserFields($user, $params){
+		if(isset($params['pass'][0])){
+			# set the conditions 
 			$conditions = array(
-				'id'=> $params['pass'][0]
+				'id' => $params['pass'][0]
 			);
-			// loop through user fields to set the conditions
-			$userFields = $this->userField;
+			# loop through user fields to set the conditions (ie. creator_id = 2 (current user id))
+			# the fields we check are pulled from belongsTo variables of models, where the className = 'User'
+			$userFields = $this->_userFields();
 			for($i = 0 ; $i < count($userFields) ; $i++){
 				$conditions['OR'][$userFields[$i]] = $user;
 			}
-			$dat = $this->find('count' , array(
-					'contain'=>array(),
-					'conditions'=>$conditions
-			));		
-			if($dat != 0){
+			# check the fields to see if any of them have the current user as the value
+			$modelDat = $this->find('count' , array(
+				'contain' => array(),
+				'conditions' => $conditions
+			));	
+			if($modelDat != 0){
 				return true;
-			}else{
+			} else {
 				return false;
-			}
-			
-		}else{
-			return true;
-		}
-		
+			}	
+		}		
 	}
-		
+
+
+/** 
+ * This pulls the user fields from the model using the belongsTo variable, and the className User
+ *
+ * @return {array}			Returns an array of user fields (ie. creator_id, modifier_id, assignee_id, etc.)
+ * @todo					Create a new table called acos_userfields, and make it so that the creators grouop, (change the name of the creators group to something better too), allows you to choose the user fields which are allowed in a multi-select.  I'm envisioning a multi-select field that you see after setting a checkbox for a group we call, "user_ids" or something, and by default all user id field types are selected, but you can limit them this way. 
+ * @todo					Allow the use of the var $userField var to over ride access, but if its blank use the belongsTo version.
+ */
+	function _userFields() {
+		if (property_exists($this->name, 'userField')) {
+			return $this->userField;
+		} else {
+			foreach ($this->belongsTo as $model) {
+				# gets user fields from the model for any belongsTo records which have a className of User
+				if ($model['className'] == 'User') {
+					$userFields[] = $model['foreignKey'];
+				} 
+			}
+		}
+		return $userFields;
+	}
+	
+	
+/**
+ * Don't know what this is for, I'd like to see a comment placed.
+ */
 	function parentNode() {
 		$this->name;
 	}
