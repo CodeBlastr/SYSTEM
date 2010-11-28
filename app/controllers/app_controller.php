@@ -695,9 +695,9 @@ class AppController extends Controller {
  * access to the current page and if they don't 
  * see if they have creator access.
  */
-	function _getUserGroupId() {
+	function _getUserGroupId() {		
 		if ($this->Auth->user('id') != 0) {
-			if (!$this->Acl->check(array('model' => 'User', 'foreign_key' => 1), 'Users')) {
+			if (!$this->Acl->check(array('model' => 'User', 'foreign_key' => $this->Auth->user('id')), $this->name)) {
 				# check if node has guest access 
 				if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
 					if($this->_checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
@@ -714,9 +714,9 @@ class AppController extends Controller {
 				if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
 					if (defined('__SYS_CREATORS_GROUP_ARO_ID')) {
 						if($this->_checkAccess(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
-							//check if record belongs to the user
-							if($this->{$this->modelClass}->doesBelong($this->Auth->user('id') , $this->params)){
-								//allow user
+							# check if record belongs to the user using a field like creator_id, modifier_id, assignee_id, etc
+							if($this->{$this->modelClass}->checkUserFields($this->Auth->user('id') , $this->params)){
+								# allow user
 								$this->Auth->allow('*');
 							}
 						}

@@ -31,7 +31,6 @@ class AppModel extends Model {
 		// If the model needs UserLevel Access add an Aco
 		if(isset($this->userLevel) && $this->userLevel == true){
 			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
-			return true;
 		} 
 			/* Not sure what's under here is even necessary, because moving it to beforeSave (instead of afterSave might have fixed it.
 			$aco = ClassRegistry::init('Permissions.Acore');
@@ -69,8 +68,10 @@ class AppModel extends Model {
 		if ( $this->hasField('modifier_id') && empty($this->data[$this->alias]['modifier_id']) ) {
 			$this->data[$this->alias]['modifier_id'] = $user['id'];
 		}
-		return true;
 		# End Auto Creator & Modifier Id Saving # 
+		
+		# you have to return true to make the save continue.
+		return true;
 	}
 		
 	
@@ -329,41 +330,65 @@ class AppModel extends Model {
 	      return parent::delete($id, $cascade);
 	}
 	
+	
 /*
- * Checks if the record belongs to some one or not.  This is used when doing a record level check on a user.  For example, if you want to restrict edit access to a page to the creator only.  This does the extra check needed to see if they get access.
+ * Checks if the record belongs to some one or not.  This is used when doing a record level check on a user.  For example, if you want to restrict edit access to a page to the creator only.  This does the extra check needed to see if they get access, using one of the user fields (like creator_id, modifier_id, assignee_id, etc).
  *
  * @param {int} 		user -> $this->Auth->user('id') from app_controller
  * @param {array} 		params -> $this->params from app_controller
  * @return {bool}
  */
-	function doesBelong($user , $params){
-		if($params["pass"][0] != 0){
+	function checkUserFields($user, $params){
+		if(isset($params['pass'][0])){
 			# set the conditions 
 			$conditions = array(
 				'id' => $params['pass'][0]
 			);
-			# loop through user fields to set the conditions (user fields might be creator_id, modifier_id, assignee_id, etc)
-			# they are pulled from the model, where possible userFields should be defined as an array.
-			$userFields = $this->userField;
+			# loop through user fields to set the conditions (ie. creator_id = 2 (current user id))
+			# the fields we check are pulled from belongsTo variables of models, where the className = 'User'
+			$userFields = $this->_userFields();
 			for($i = 0 ; $i < count($userFields) ; $i++){
 				$conditions['OR'][$userFields[$i]] = $user;
 			}
-			$dat = $this->find('count' , array(
+			# check the fields to see if any of them have the current user as the value
+			$modelDat = $this->find('count' , array(
 				'contain' => array(),
 				'conditions' => $conditions
-			));		
-			if($dat != 0){
+			));	
+			if($modelDat != 0){
 				return true;
 			} else {
 				return false;
-			}
-			
-		} else {
-			return true;
-		}
-		
+			}	
+		}		
 	}
-		
+
+
+/** 
+ * This pulls the user fields from the model using the belongsTo variable, and the className User
+ *
+ * @return {array}			Returns an array of user fields (ie. creator_id, modifier_id, assignee_id, etc.)
+ * @todo					Create a new table called acos_userfields, and make it so that the creators grouop, (change the name of the creators group to something better too), allows you to choose the user fields which are allowed in a multi-select.  I'm envisioning a multi-select field that you see after setting a checkbox for a group we call, "user_ids" or something, and by default all user id field types are selected, but you can limit them this way. 
+ * @todo					Allow the use of the var $userField var to over ride access, but if its blank use the belongsTo version.
+ */
+	function _userFields() {
+		if (property_exists($this->name, 'userField')) {
+			return $this->userField;
+		} else {
+			foreach ($this->belongsTo as $model) {
+				# gets user fields from the model for any belongsTo records which have a className of User
+				if ($model['className'] == 'User') {
+					$userFields[] = $model['foreignKey'];
+				} 
+			}
+		}
+		return $userFields;
+	}
+	
+	
+/**
+ * Don't know what this is for, I'd like to see a comment placed.
+ */
 	function parentNode() {
 		$this->name;
 	}
