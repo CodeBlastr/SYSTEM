@@ -3,12 +3,20 @@ class CkeHelper extends Helper {
 
     var $helpers = Array('Html', 'Javascript'); 
 
-    function load($id, $path, $settings = null) { 		
-		# I don't know what path is used for, might be pointless
+    function load($id, $path, $settings = null) { 
+		App::import('Helper', 'Html');
+		$this->Html = new HtmlHelper;	
+		
+		# this is the id to replace the following two foreach's change it into the id format that cake uses from the field name.
         $did = ''; 
         foreach (explode('.', $id) as $v) { 
-            $did .= ucfirst($v); 
-        }  
+            $did .= ucfirst($v);
+        }
+		
+		$did = str_replace('[', '_', $did);
+		$did = str_replace('Data_', '', $did);
+		$did = str_replace(']', '', $did);		
+		$did = Inflector::camelize($did);
 
         /*$code = "
   			var field = CKEDITOR.replace( '".$did."' );
@@ -19,7 +27,7 @@ class CkeHelper extends Helper {
         $code = "
   			var field = CKEDITOR.replace( '".$did."', {".$configuration."});
         "; 
-        return $this->Javascript->codeBlock($code);  
+        return $this->Html->scriptBlock($code);  
     } 
 	
 	

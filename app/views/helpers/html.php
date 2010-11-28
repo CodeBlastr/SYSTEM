@@ -42,6 +42,7 @@ class HtmlHelper extends AppHelper {
 		'formend' => '</form>',
 		'input' => '<input name="%s" %s/>',
 		'textarea' => '<textarea name="%s" %s>%s</textarea>',
+		'richtext' => '<div class="richtextarea" id="%s"><textarea name="%s" %s>%s</textarea></div>%s%s',
 		'hidden' => '<input type="hidden" name="%s" %s/>',
 		'checkbox' => '<input type="checkbox" name="%s" %s/>',
 		'checkboxmultiple' => '<input type="checkbox" name="%s[]"%s />',
