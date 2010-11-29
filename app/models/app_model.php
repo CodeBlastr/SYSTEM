@@ -113,6 +113,7 @@ class AppModel extends Model {
  * @param {array} params -> $this->params having problems reaching it from model
  * @param {bool} main -> Do you want the aco of the record or the action
  * @return int
+ * @todo I'm relatively positive that this could be whittled down, and probably moved to the permissions plugin or something. 
  */
 	function getAco($params , $main = false){
 		$acor = ClassRegistry::init('Permissions.Acore');
