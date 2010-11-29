@@ -695,7 +695,7 @@ class AppController extends Controller {
  * access to the current page and if they don't 
  * see if they have creator access.
  */
-	function _getUserGroupId() {		
+	function _getUserGroupId() {
 		if ($this->Auth->user('id') != 0) {
 			if (!$this->Acl->check(array('model' => 'User', 'foreign_key' => $this->Auth->user('id')), $this->name)) {
 				# check if node has guest access 
@@ -725,7 +725,7 @@ class AppController extends Controller {
 					}
 				}
 			}
-		} else {			
+		} else {		
 			if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
 				if($this->_checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
 					$this->Auth->allow('*');
@@ -774,16 +774,16 @@ class AppController extends Controller {
     }
     
 /**
- * Does the node have creator access ?
+ * Used to do a double check on the aro id, for record level, and guest level access.
  * @param {int} userGroup -> The aro_id of the userGroup 
  * @todo add guest functionality here with a param 
  * @return {bool}
  */   
-    function _checkAccess($userGroup , $params){
+    function _checkAccess($aroId , $params){
     	$arac = ClassRegistry::init("Permissions.ArosAco");
 		$cn = $arac->find('first' , array(
       		'conditions'=>array(
-	      		'ArosAco.aro_id' => $userGroup,
+	      		'ArosAco.aro_id' => $aroId,
 	   			/* this was changed to false to get individual records to work (not sure what other effects it will have)*/
 			  	'ArosAco.aco_id' => $this->{$this->modelClass}->getAco($params , true)
 	   			/* this was changed to true to get individual action to work (not sure what other effects it will have)
