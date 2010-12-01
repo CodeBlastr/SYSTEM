@@ -3,7 +3,7 @@ class CkeHelper extends Helper {
 
     var $helpers = Array('Html', 'Javascript'); 
 
-    function load($id, $path, $settings = null) { 
+    function load($id, $settings = null) { 
 		App::import('Helper', 'Html');
 		$this->Html = new HtmlHelper;	
 		
@@ -74,7 +74,7 @@ class CkeHelper extends Helper {
 		
 		
 		#button settings
-		if (is_array($settings['buttons'])) {
+		if (!empty($settings['buttons'])) {
 			$button = "
 					toolbar :
 					[
