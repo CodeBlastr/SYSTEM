@@ -29,8 +29,9 @@ class UsersController extends AppController {
 	
 	function beforeFilter() {
 	    parent::beforeFilter(); 
-	    $this->Auth->allowedActions = array('login', 'desktop_login', 'admin_login', 'logout', 'admin_logout', 'forgot_password', 'reset_password', 'admin_edit');
+	    $this->Auth->allowedActions = array('login', 'desktop_login', 'admin_login', 'logout', 'admin_logout', 'forgot_password', 'reset_password', 'admin_edit', 'admin_index');
 	}
+	
 	
 	// this checks to see if you're logged in
     function checkSession() {

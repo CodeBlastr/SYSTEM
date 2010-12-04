@@ -24,7 +24,7 @@ class AppController extends Controller {
 	
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
+	var $components = array('Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
 /**
@@ -62,7 +62,6 @@ class AppController extends Controller {
 /**
  * Configure AuthComponent
 */
-        $this->Auth->authorize = 'actions';
 		
         $this->Auth->loginAction = array(
 			'plugin' => null,
@@ -84,8 +83,9 @@ class AppController extends Controller {
 			);
 		
 		$this->Auth->actionPath = 'controllers/';
-		
+		# pulls in the hard coded allowed actions from the current controller
 		$this->Auth->allowedActions = array('display');
+		$this->Auth->authorize = 'controller';
 		
 /**
  * Support for json file types when using json extensions
@@ -122,13 +122,20 @@ class AppController extends Controller {
 			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
 		}
 		
-		
 /**
- * Implemented for allowing guests and creators ACL control
- */
-		$this->userGroup = $this->_getUserGroupAroId();
-		$this->_getUserGroupId();
-    }
+ * Implemented for allowing guests access through db acl control
+ */	
+ 		/* could not find where this is used so commented it out.  Delete if not used 12/3/2010 
+ 		$this->userGroup = $this->_getUserGroupAroId(); */
+		$userId = $this->Auth->user('id');
+		if (empty($userId)) {
+			$aro = $this->_guestsAro(); // guest aro model and foreign_key
+			$aco = $this->_actionAco(); // get controller and action 
+			if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+				$this->Auth->allow('*');
+			}
+		}
+	}
 	
 /**
  * This turns off debug so that ajax views don't get severly messed up
@@ -142,6 +149,7 @@ class AppController extends Controller {
 		} else if ($this->params['url']['ext'] == 'json') {
             #Configure::write('debug', 0); 
 		}
+		
 	}
 	
 	
@@ -695,114 +703,84 @@ class AppController extends Controller {
  * access to the current page and if they don't 
  * see if they have creator access.
  */
-	function _getUserGroupId() {
-		if ($this->Auth->user('id') != 0) {
-			if (!$this->Acl->check(array('model' => 'User', 'foreign_key' => $this->Auth->user('id')), $this->name)) {
-				# check if node has guest access 
-				if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-					if($this->_checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
-						$this->Auth->allow('*');
-					} 
-				} else {
-					echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
-				}
-				
-				
-				# user is logged in but not authorized.
-				# check if node has creator access 
-				# creator group is a system setting editable at /admin/settings
-				if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
-					if (defined('__SYS_CREATORS_GROUP_ARO_ID')) {
-						if($this->_checkAccess(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
-							# check if record belongs to the user using a field like creator_id, modifier_id, assignee_id, etc
-							if($this->{$this->modelClass}->checkUserFields($this->Auth->user('id') , $this->params)){
-								# allow user
-								$this->Auth->allow('*');
-							}
-						}
-					} else {
-						echo 'In /admin/settings key: SYS, value: CREATORS_GROUP_ARO_ID must be defined';
-					}
-				}
-			}
-		} else {		
-			if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-				if($this->_checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
-					$this->Auth->allow('*');
-				} 
+	function isAuthorized() {		
+		$userId = $this->Auth->user('id');
+		# check guest access
+		$aro = $this->_guestsAro(); // guest aro model and foreign_key
+		$aco = $this->_actionAco(); // get controller and action 
+		if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+			#echo 'guest access passed';
+			#return array('passed' => 1, 'message' => 'guest access passed');
+			return true;
+		} else {
+			# check user access
+			$aro = $this->_userAro($userId); // guest aro model and foreign_key
+			$aco = $this->_actionAco(); // get controller and action 
+			if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+				#echo 'user access passed';
+				#return array('passed' => 1, 'message' => 'user access passed');
+				return true;
 			} else {
-				echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
-			}
-		}
+				# check user access
+				$aro = $this->_userAro($userId); // guest aro model and foreign_key
+				$aco = $this->_recordAco(); // get controller and action 
+				if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+					#echo 'record level access passed';
+					#return array('passed' => 1, 'message' => 'record level access passed');
+					return true;
+				} else {
+					#echo ' all three checks failed';
+					#return array('message' => 'You are logged in, but access is denied for your user.');
+					$this->Session->setFlash(__('You are logged in, but access is denied for requested page.', true));
+					$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
+				}
+			}	
+		} 
 	}
 	
-    
 /**
- * gets user group for acl check 
+ * Gets the variables used to lookup the aco id for the action type of lookup
  */
-    function _getUserGroupAroId(){
-    	#get users group
-		if($this->Auth->user('id') != 0){
-			$userModel = ClassRegistry::init('User');
-			# $userModel->recursive = 1 ;  // commented for non-use 11/2010, remove if no errors show because of it.
-			# this gets the user group id of the user
-			$uData = $userModel->find('first' , array(
-				'conditions' => array('User.id'=>$this->Auth->user('id')),
-				'contain' => array(
-					'UserGroup' => array(
-						'fields' => array(
-							'id',
-							'name'
-						)
-					)
-				)
-				
-			));
-			
-			$permAro = ClassRegistry::init('Permissions.Arore');
-			$permAro->recursive = 0;
-			# this returns the aro id for the user group this user belongs to 
-			$arDat = $permAro->find('first' , array(
-					'conditions'=>array(
-							'Arore.foreign_key'=>$uData['UserGroup']['id']
-					), 
-					'contain'=>array(),
-					'fields'=>array('id')
-			));
-			return $arDat["Arore"]["id"];
-		}
-    }
-    
+	function _actionAco() {
+		$guestsAco['controller'] = Inflector::camelize($this->params['controller']);
+		$guestsAco['action'] = $this->params['action'];
+		return $guestsAco;
+	}
+	
 /**
- * Used to do a double check on the aro id, for record level, and guest level access.
- * @param {int} userGroup -> The aro_id of the userGroup 
- * @todo add guest functionality here with a param 
- * @return {bool}
- */   
-    function _checkAccess($aroId , $params){
-    	$arac = ClassRegistry::init("Permissions.ArosAco");
-		$cn = $arac->find('first' , array(
-      		'conditions'=>array(
-	      		'ArosAco.aro_id' => $aroId,
-	   			/* this was changed to false to get individual records to work (not sure what other effects it will have)*/
-			  	'ArosAco.aco_id' => $this->{$this->modelClass}->getAco($params , true)
-	   			/* this was changed to true to get individual action to work (not sure what other effects it will have)
-	      		'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)*/
-	      		),
-	      	'contain'=>array(),
-	      	/*'fields'=>array(
-	       		'_create',
-	      		)*/
-     	));
-    	if(count($cn) != 0){
-			if($cn["ArosAco"]["_create"] == 1 ){
-       			return true;
-      		} else {
-       			return false; 
-      		} 
-     	} else {
-      		return false;
-     	} 
+ * Gets the variables used for the lookup of the aro id
+ */
+	function _userAro($userId) {
+		$guestsAro = array('model' => 'User', 'foreign_key' => $userId);
+		return $guestsAro;
+	}
+	
+/**
+ * Gets the variables used for the lookup of the guest aro id
+ */
+	function _guestsAro() {
+		if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
+			$guestsAro = array('model' => 'UserGroup', 'foreign_key' => __SYS_GUESTS_USER_GROUP_ID);
+		} else {
+			echo 'In /admin/settings key: SYS, value: GUESTS_USER_GROUP_ID must be defined for guest access to work.';
+		}
+		return $guestsAro;
+	}
+	
+	
+/**
+ * Gets the variables used in a record level Aco id lookup
+ */
+	function _recordAco() {
+		if(!empty($this->params['pass'][0])) {
+			$recordAco = array(
+				'model' => Inflector::classify($this->params['controller']), 
+				'foreign_key' => $this->params['pass'][0],
+				);
+			return $recordAco;
+		} else {
+			return null;
+		}
 	}
 	
  
