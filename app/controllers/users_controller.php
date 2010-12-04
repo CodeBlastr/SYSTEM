@@ -47,9 +47,11 @@ class UsersController extends AppController {
 	function login() {
 	    if (!empty($this->data)) {
 			$user = $this->User->findbyUsername($this->data['User']['username']);
-			$this->data['User']['id'] = $user['User']['id'];
-			$this->data['User']['last_login'] = date('Y-m-d h:i:s');
-			$this->User->save($this->data, false);
+			if (!empty($user)) {
+				$this->data['User']['id'] = $user['User']['id'];
+				$this->data['User']['last_login'] = date('Y-m-d h:i:s');
+				$this->User->save($this->data, false);
+			}
 		}
     }
 	

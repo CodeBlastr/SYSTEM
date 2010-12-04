@@ -78,8 +78,7 @@ class AppController extends Controller {
         $this->Auth->loginRedirect = array(
 			'plugin' => null,
 			'controller' => 'users',
-			'action' => 'view',
-			'user_id' => $this->Session->read('Auth.User.id')
+			'action' => 'view'
 			);
 		
 		$this->Auth->actionPath = 'controllers/';
@@ -730,7 +729,6 @@ class AppController extends Controller {
 					return true;
 				} else {
 					#echo ' all three checks failed';
-					#return array('message' => 'You are logged in, but access is denied for your user.');
 					$this->Session->setFlash(__('You are logged in, but access is denied for requested page.', true));
 					$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
 				}

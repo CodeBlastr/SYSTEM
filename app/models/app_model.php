@@ -26,11 +26,12 @@ class AppModel extends Model {
 	
 
 
-	function beforeSave() {
+	function beforeSave(&$model) {
 		# Start Record Level Access Save #
 		// If the model needs UserLevel Access add an Aco
 		if(isset($this->userLevel) && $this->userLevel == true){
 			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
+			$this->Behaviors->attach('AclExtra', array('type' => 'both'));
 		} 
 			/* Not sure what's under here is even necessary, because moving it to beforeSave (instead of afterSave might have fixed it.
 			$aco = ClassRegistry::init('Permissions.Acore');
@@ -399,7 +400,6 @@ class AppModel extends Model {
  * Used by App Controller to check access to the requested page. 
  */
 	function checkAccess($aro = array(), $aco = array()) {
-		#pr($aco);
 		# this finds every single aco that this aro has access to 
 		$acos = $this->_getAllAcos($aro['model'], $aro['foreign_key']);
 		if (!empty($aco['controller']) && !empty($aco['action'])) {
