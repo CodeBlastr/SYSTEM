@@ -23,8 +23,8 @@
 class AppController extends Controller {
 	
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', /*'Menu',*/ 'Promo', 'Time', 'Login');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login');
+	var $components = array(/*'Acl', */'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
 /**
@@ -85,7 +85,8 @@ class AppController extends Controller {
 		
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
-		$this->Auth->allowedActions = (!empty($this->allowedActions) ? array_merge(array('display'), $this->allowedActions) : array('display'));
+		$this->Auth->allowedActions = array('display');
+		$this->Auth->authorize = 'controller';
 		
 /**
  * Support for json file types when using json extensions
@@ -126,15 +127,16 @@ class AppController extends Controller {
  * Implemented for allowing guests and creators ACL control
  */	
  		/* could not find where this is used so commented it out.  Delete if not used 12/3/2010 
- 		$this->userGroup = $this->_getUserGroupAroId(); */
-		if ($this->_getUserGroupId()) {
+ 		$this->userGroup = $this->_getUserGroupAroId(); 
+		$access = $this->_getUserGroupId();
+		if (!empty($access['passed'])) {
+			Configure::write('accessMessage', $access['message']);
+			echo Configure::read('accessMessage');
 			$this->Auth->allow('*');
 		} else {
-			echo 'access denied';
-			break;
-			$this->Session->setFlash(__('Access denied', true));
+			$this->Session->setFlash($access['message']);
 			$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
-		}
+		}*/
 	}
 	
 /**
@@ -703,27 +705,42 @@ class AppController extends Controller {
  * access to the current page and if they don't 
  * see if they have creator access.
  */
-	function _getUserGroupId() {
-		# guest example
-		$aroModel = 'User';
-		$aroForeignKey = $this->Auth->user('id'); 
-		$aco = $this->_actionAco(); // action level
-		# $aco = $this->_recordAco(1); // record level
-		# $aco['controller'] = 'Tickets';
-		# $aco['action'] = 'index';		
-		
-		if (!in_array($this->params['action'], $this->Auth->allowedActions)) {
-			App::import('Model', 'User');
-			$this->User = new User;
-			if ($this->User->checkAccess($aroModel, $aroForeignKey, $aco)) {
+	function isAuthorized() {		
+		$userId = $this->Auth->user('id');
+		# check guest access
+		$aro = $this->_guestsAro(); // guest aro model and foreign_key
+		$aco = $this->_actionAco(); // get controller and action 
+		if ($this->checkAccess($aro, $aco)) {
+			echo 'guest access passed';
+			#return array('passed' => 1, 'message' => 'guest access passed');
+			return true;
+		} else if (!empty($userId)) {
+			# check user access
+			$aro = $this->_userAro($userId); // guest aro model and foreign_key
+			$aco = $this->_actionAco(); // get controller and action 
+			if ($this->checkAccess($aro, $aco)) {
+				echo 'user access passed';
+				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
-				return false;
-			}
+				# check user access
+				$aro = $this->_userAro($userId); // guest aro model and foreign_key
+				$aco = $this->_recordAco(); // get controller and action 
+				if ($this->checkAccess($aro, $aco)) {
+					echo 'record level access passed';
+					#return array('passed' => 1, 'message' => 'record level access passed');
+					return true;
+				} else {
+					echo ' all three checks failed';
+					#return array('message' => 'You are logged in, but access is denied for your user.');
+					$this->Session->setFlash(__('You are logged in, but access is denied for your user.', true));
+					$this->redirect(array('controller' => 'users', 'action' => 'login'));
+				}
+			}	
 		} else {
-			return true;
+			$this->Session->setFlash(__('Guests access not allowed, please login.', true));
+			$this->redirect(array('controller' => 'users', 'action' => 'login'));
 		}
-		
 		
 		/*
 		pr($this->Auth->isAuthorized());
@@ -776,6 +793,33 @@ class AppController extends Controller {
 			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined for guest access to work.';
 		}
 		return $guestsAco;
+	}
+	
+/**
+ * guestsAco = string ex. Tickets/index
+ * this could be the full path of the aco, but it is a slightly slower query
+ * $this->Acl->check($guestsAro, 'controllers/Tickets/Tickets/index') 
+ */
+	function _userAro($userId) {
+		$guestsAro = array('model' => 'User', 'foreign_key' => $userId);
+		return $guestsAro;
+	}
+	
+/**
+ * guestsAco = string ex. Tickets/index
+ * this could be the full path of the aco, but it is a slightly slower query
+ * $this->Acl->check($guestsAro, 'controllers/Tickets/Tickets/index') 
+ */
+	function _guestsAro() {
+		//if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
+		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
+			# IMPORTTANT THIS NEEDS TO BE UPDATED TO THE USER GROUP ID THAT THE CURRENT USER IS IN
+			# OR TO THE GUEST USER GROUP
+			$guestsAro = array('model' => 'UserGroup', 'foreign_key' => 5);
+		} else {
+			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined for guest access to work.';
+		}
+		return $guestsAro;
 	}
 	
 /**
