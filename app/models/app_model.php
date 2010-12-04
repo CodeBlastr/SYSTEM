@@ -30,7 +30,7 @@ class AppModel extends Model {
 		# Start Record Level Access Save #
 		// If the model needs UserLevel Access add an Aco
 		if(isset($this->userLevel) && $this->userLevel == true){
-			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
+			//$this->Behaviors->attach('Acl', array('type' => 'controlled'));
 		} 
 			/* Not sure what's under here is even necessary, because moving it to beforeSave (instead of afterSave might have fixed it.
 			$aco = ClassRegistry::init('Permissions.Acore');

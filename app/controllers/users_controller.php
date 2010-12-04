@@ -381,6 +381,5 @@ class UsersController extends AppController {
 			return array('error' => 'Invalid username or email address, please try again.');	
 		}
 	}
-
 }
 ?>
