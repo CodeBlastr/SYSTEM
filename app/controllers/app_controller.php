@@ -124,19 +124,18 @@ class AppController extends Controller {
 		}
 		
 /**
- * Implemented for allowing guests and creators ACL control
+ * Implemented for allowing guests access through db acl control
  */	
  		/* could not find where this is used so commented it out.  Delete if not used 12/3/2010 
- 		$this->userGroup = $this->_getUserGroupAroId(); 
-		$access = $this->_getUserGroupId();
-		if (!empty($access['passed'])) {
-			Configure::write('accessMessage', $access['message']);
-			echo Configure::read('accessMessage');
-			$this->Auth->allow('*');
-		} else {
-			$this->Session->setFlash($access['message']);
-			$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
-		}*/
+ 		$this->userGroup = $this->_getUserGroupAroId(); */
+		$userId = $this->Auth->user('id');
+		if (empty($userId)) {
+			$aro = $this->_guestsAro(); // guest aro model and foreign_key
+			$aco = $this->_actionAco(); // get controller and action 
+			if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+				$this->Auth->allow('*');
+			}
+		}
 	}
 	
 /**
@@ -710,95 +709,47 @@ class AppController extends Controller {
 		# check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_actionAco(); // get controller and action 
-		if ($this->checkAccess($aro, $aco)) {
-			echo 'guest access passed';
+		if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+			#echo 'guest access passed';
 			#return array('passed' => 1, 'message' => 'guest access passed');
 			return true;
-		} else if (!empty($userId)) {
+		} else {
 			# check user access
 			$aro = $this->_userAro($userId); // guest aro model and foreign_key
 			$aco = $this->_actionAco(); // get controller and action 
-			if ($this->checkAccess($aro, $aco)) {
-				echo 'user access passed';
+			if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+				#echo 'user access passed';
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
 				# check user access
 				$aro = $this->_userAro($userId); // guest aro model and foreign_key
 				$aco = $this->_recordAco(); // get controller and action 
-				if ($this->checkAccess($aro, $aco)) {
-					echo 'record level access passed';
+				if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+					#echo 'record level access passed';
 					#return array('passed' => 1, 'message' => 'record level access passed');
 					return true;
 				} else {
-					echo ' all three checks failed';
+					#echo ' all three checks failed';
 					#return array('message' => 'You are logged in, but access is denied for your user.');
-					$this->Session->setFlash(__('You are logged in, but access is denied for your user.', true));
-					$this->redirect(array('controller' => 'users', 'action' => 'login'));
+					$this->Session->setFlash(__('You are logged in, but access is denied for requested page.', true));
+					$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
 				}
 			}	
-		} else {
-			$this->Session->setFlash(__('Guests access not allowed, please login.', true));
-			$this->redirect(array('controller' => 'users', 'action' => 'login'));
-		}
-		
-		/*
-		pr($this->Auth->isAuthorized());
-		echo '<hr>';
-		#break;
-		$userId = $this->Auth->user('id');
-		# this needs another version which gets the record level aco if it exists, and if not get the 
-		$aco = $this->{$this->modelClass}->getAco($this->params , true);
-		# check if the function is already allowed by hard coding in the controller
-		if (!in_array($this->params['action'], $this->Auth->allowedActions) && property_exists($this, 'Acl')) {
-			# if the user is logged in we need to check for creator and guest access
-			# if they are not logged in, then we only need to check for creator access
-			# removed an if here !$this->Auth->isAuthorized() from this if because it does 7 extra db calls (12/3/2010)
-			# check if node has guest access 
-			$AroAco = $this->_guestsAroAco();
-			if(!$this->Acl->check($AroAco['aro'], $AroAco['aco'])) {
-				# check if node has record level access
-				$AroAco = $this->_recordAroAco($userId);
-				if (!empty($userId) && $this->Acl->check($AroAco['aro'], $AroAco['aco'])) {
-					echo 'third access check';
-					return true;
-				} else {
-					echo 'all three checks failed';
-					return false;
-				}
-			} else {
-				echo 'second access check';
-				# guest acccess went through
-				return true;
-			} 
-		} else {
-			// action is allowed directly from the actual controller (hard coded)
-			echo 'hard coded access';
-			return true;
-		}*/
+		} 
 	}
 	
 /**
- * guestsAco = string ex. Tickets/index
- * this could be the full path of the aco, but it is a slightly slower query
- * $this->Acl->check($guestsAro, 'controllers/Tickets/Tickets/index') 
+ * Gets the variables used to lookup the aco id for the action type of lookup
  */
 	function _actionAco() {
-		//if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
-		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-			#$guestsAco = Inflector::camelize($this->params['controller']).'/'.$this->params['action']; 
-			$guestsAco['controller'] = Inflector::camelize($this->params['controller']);
-			$guestsAco['action'] = $this->params['action'];
-		} else {
-			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined for guest access to work.';
-		}
+		$guestsAco['controller'] = Inflector::camelize($this->params['controller']);
+		$guestsAco['action'] = $this->params['action'];
 		return $guestsAco;
 	}
 	
 /**
- * guestsAco = string ex. Tickets/index
- * this could be the full path of the aco, but it is a slightly slower query
- * $this->Acl->check($guestsAro, 'controllers/Tickets/Tickets/index') 
+ * Gets the variables used for the lookup of the aro id
  */
 	function _userAro($userId) {
 		$guestsAro = array('model' => 'User', 'foreign_key' => $userId);
@@ -806,43 +757,23 @@ class AppController extends Controller {
 	}
 	
 /**
- * guestsAco = string ex. Tickets/index
- * this could be the full path of the aco, but it is a slightly slower query
- * $this->Acl->check($guestsAro, 'controllers/Tickets/Tickets/index') 
+ * Gets the variables used for the lookup of the guest aro id
  */
 	function _guestsAro() {
 		//if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
-		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
+		if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
 			# IMPORTTANT THIS NEEDS TO BE UPDATED TO THE USER GROUP ID THAT THE CURRENT USER IS IN
 			# OR TO THE GUEST USER GROUP
-			$guestsAro = array('model' => 'UserGroup', 'foreign_key' => 5);
+			$guestsAro = array('model' => 'UserGroup', 'foreign_key' => __SYS_GUESTS_USER_GROUP_ID);
 		} else {
-			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined for guest access to work.';
+			echo 'In /admin/settings key: SYS, value: GUESTS_USER_GROUP_ID must be defined for guest access to work.';
 		}
 		return $guestsAro;
 	}
 	
-/**
- * guestsAco = string ex. Tickets/index
- * this could be the full path of the aco, but it is a slightly slower query
- * $this->Acl->check($guestsAro, 'controllers/Tickets/Tickets/index') 
- */
-	function _guestsAroAco() {
-		//if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
-		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-			$guestsAro = array('model' => 'UserGroup', 'foreign_key' => 5);
-			#$guestsAco = Inflector::camelize($this->params['controller']).'/'.$this->params['action']; 
-			$guestsAco['controller'] = Inflector::camelize($this->params['controller']);
-			$guestsAco['action'] = $this->params['action'];
-		} else {
-			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined for guest access to work.';
-		}
-		return array('aro' => $guestsAro, 'aco' => $guestsAco);
-	}
-	
 	
 /**
- * Gets the recordLevel Aro and Aco nodes
+ * Gets the variables used in a record level Aco id lookup
  */
 	function _recordAco() {
 		if(!empty($this->params['pass'][0])) {
@@ -854,91 +785,6 @@ class AppController extends Controller {
 		} else {
 			return null;
 		}
-	}
-	
-	
-/**
- * Gets the recordLevel Aro and Aco nodes
- */
-	function _recordAroAco($userId) {
-		if(!empty($this->params['pass'][0])) {
-			$recordAro = array('model' => 'User', 'foreign_key' => $userId);
-			$recordAco = array(
-				'model' => Inflector::classify($this->params['controller']), 
-				'foreign_key' => $this->params['pass'][0],
-				);
-			return array('aro' => $recordAro, 'aco' => $recordAco);
-		} else {
-			return null;
-		}
-	}
-    
-/**
- * gets user group for acl check 
- */
-    function _getUserGroupAroId(){
-    	#get users group
-		if($this->Auth->user('id') != 0){
-			$userModel = ClassRegistry::init('User');
-			# $userModel->recursive = 1 ;  // commented for non-use 11/2010, remove if no errors show because of it.
-			# this gets the user group id of the user
-			$uData = $userModel->find('first' , array(
-				'conditions' => array('User.id'=>$this->Auth->user('id')),
-				'contain' => array(
-					'UserGroup' => array(
-						'fields' => array(
-							'id',
-							'name'
-						)
-					)
-				)
-				
-			));
-			
-			$permAro = ClassRegistry::init('Permissions.Arore');
-			$permAro->recursive = 0;
-			# this returns the aro id for the user group this user belongs to 
-			$arDat = $permAro->find('first' , array(
-					'conditions'=>array(
-							'Arore.foreign_key'=>$uData['UserGroup']['id']
-					), 
-					'contain'=>array(),
-					'fields'=>array('id')
-			));
-			return $arDat["Arore"]["id"];
-		}
-    }
-    
-/**
- * Used to do a double check on the aro id, for record level, and guest level access.
- * @param {int} userGroup -> The aro_id of the userGroup 
- * @todo add guest functionality here with a param 
- * @return {bool}
- */   
-    function _checkAccess($aroId , $params){
-    	$arac = ClassRegistry::init("Permissions.ArosAco");
-		$cn = $arac->find('first' , array(
-      		'conditions'=>array(
-	      		'ArosAco.aro_id' => $aroId,
-	   			/* this was changed to false to get individual records to work (not sure what other effects it will have)*/
-			  	'ArosAco.aco_id' => $this->{$this->modelClass}->getAco($params , true)
-	   			/* this was changed to true to get individual action to work (not sure what other effects it will have)
-	      		'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)*/
-	      		),
-	      	'contain'=>array(),
-	      	/*'fields'=>array(
-	       		'_create',
-	      		)*/
-     	));
-    	if(!empty($cn)){
-			if($cn["ArosAco"]["_create"] == 1 ){
-       			return true;
-      		} else {
-       			return false; 
-      		} 
-     	} else {
-      		return false;
-     	} 
 	}
 	
  

@@ -395,7 +395,9 @@ class AppModel extends Model {
 	}
 	
 	
-	
+/** 
+ * Used by App Controller to check access to the requested page. 
+ */
 	function checkAccess($aro = array(), $aco = array()) {
 		#pr($aco);
 		# this finds every single aco that this aro has access to 
@@ -415,6 +417,9 @@ class AppModel extends Model {
 	}
 	
 	
+/**
+ * searches the aco array to see if the aro exists
+ */
 	function _searchAcos($needle, $haystacks) {
 		foreach ($haystacks as $stack) {
 			if($stack['Aco']['AcoId'] == $needle) {
@@ -425,7 +430,10 @@ class AppModel extends Model {
 		return false;
 	}
 	
-	
+
+/**
+ * This finds every single aco that this group or user has access to.
+ */
 	function _getAllAcos($model, $foreignKey) {
 		$allAcos = $this->query("
 			SELECT
@@ -459,6 +467,9 @@ class AppModel extends Model {
 	}
 	
 	
+/**
+ * This finds the id of the aco when using the action type of aco lookup 
+ */
 	function _getAcoIdAction($controller, $action) {
 		# important note, this will not work if there are name collisions between controllers, plugin controllers
 		$acos = $this->query("
@@ -491,6 +502,9 @@ class AppModel extends Model {
 		}
 	}
 	
+/**
+ * This finds the aco id of when using the record lookup type.
+ */
 	function _getAcoRecordLevel($model, $foreignKey) {
 		$acos = $this->query("
     		SELECT
