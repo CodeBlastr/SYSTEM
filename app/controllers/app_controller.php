@@ -760,10 +760,7 @@ class AppController extends Controller {
  * Gets the variables used for the lookup of the guest aro id
  */
 	function _guestsAro() {
-		//if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
 		if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
-			# IMPORTTANT THIS NEEDS TO BE UPDATED TO THE USER GROUP ID THAT THE CURRENT USER IS IN
-			# OR TO THE GUEST USER GROUP
 			$guestsAro = array('model' => 'UserGroup', 'foreign_key' => __SYS_GUESTS_USER_GROUP_ID);
 		} else {
 			echo 'In /admin/settings key: SYS, value: GUESTS_USER_GROUP_ID must be defined for guest access to work.';
