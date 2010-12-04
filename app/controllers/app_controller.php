@@ -24,7 +24,7 @@ class AppController extends Controller {
 	
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login');
-	var $components = array(/*'Acl', */'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
+	var $components = array('Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
 /**
@@ -62,7 +62,6 @@ class AppController extends Controller {
 /**
  * Configure AuthComponent
 */
-        $this->Auth->authorize = 'actions';
 		
         $this->Auth->loginAction = array(
 			'plugin' => null,
