@@ -23,7 +23,7 @@
 class AppController extends Controller {
 	
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', /*'Menu',*/ 'Promo', 'Time', 'Login');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
@@ -84,8 +84,8 @@ class AppController extends Controller {
 			);
 		
 		$this->Auth->actionPath = 'controllers/';
-		
-		$this->Auth->allowedActions = array('display');
+		# pulls in the hard coded allowed actions from the current controller
+		$this->Auth->allowedActions = (!empty($this->allowedActions) ? array_merge(array('display'), $this->allowedActions) : array('display'));
 		
 /**
  * Support for json file types when using json extensions
@@ -122,13 +122,20 @@ class AppController extends Controller {
 			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
 		}
 		
-		
 /**
  * Implemented for allowing guests and creators ACL control
- */
-		$this->userGroup = $this->_getUserGroupAroId();
-		$this->_getUserGroupId();
-    }
+ */	
+ 		/* could not find where this is used so commented it out.  Delete if not used 12/3/2010 
+ 		$this->userGroup = $this->_getUserGroupAroId(); */
+		if ($this->_getUserGroupId()) {
+			$this->Auth->allow('*');
+		} else {
+			echo 'access denied';
+			break;
+			$this->Session->setFlash(__('Access denied', true));
+			$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
+		}
+	}
 	
 /**
  * This turns off debug so that ajax views don't get severly messed up
@@ -142,6 +149,7 @@ class AppController extends Controller {
 		} else if ($this->params['url']['ext'] == 'json') {
             #Configure::write('debug', 0); 
 		}
+		
 	}
 	
 	
@@ -696,46 +704,130 @@ class AppController extends Controller {
  * see if they have creator access.
  */
 	function _getUserGroupId() {
-		if ($this->Auth->user('id') != 0) {
-			if (!$this->Acl->check(array('model' => 'User', 'foreign_key' => $this->Auth->user('id')), $this->name)) {
-				# check if node has guest access 
-				if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-					if($this->_checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
-						$this->Auth->allow('*');
-					} 
-				} else {
-					echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
-				}
-				
-				
-				# user is logged in but not authorized.
-				# check if node has creator access 
-				# creator group is a system setting editable at /admin/settings
-				if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
-					if (defined('__SYS_CREATORS_GROUP_ARO_ID')) {
-						if($this->_checkAccess(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
-							# check if record belongs to the user using a field like creator_id, modifier_id, assignee_id, etc
-							if($this->{$this->modelClass}->checkUserFields($this->Auth->user('id') , $this->params)){
-								# allow user
-								$this->Auth->allow('*');
-							}
-						}
-					} else {
-						echo 'In /admin/settings key: SYS, value: CREATORS_GROUP_ARO_ID must be defined';
-					}
-				}
-			}
-		} else {		
-			if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-				if($this->_checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
-					$this->Auth->allow('*');
-				} 
+		# guest example
+		$aroModel = 'User';
+		$aroForeignKey = $this->Auth->user('id'); 
+		$aco = $this->_actionAco(); // action level
+		# $aco = $this->_recordAco(1); // record level
+		# $aco['controller'] = 'Tickets';
+		# $aco['action'] = 'index';		
+		
+		if (!in_array($this->params['action'], $this->Auth->allowedActions)) {
+			App::import('Model', 'User');
+			$this->User = new User;
+			if ($this->User->checkAccess($aroModel, $aroForeignKey, $aco)) {
+				return true;
 			} else {
-				echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
+				return false;
 			}
+		} else {
+			return true;
+		}
+		
+		
+		/*
+		pr($this->Auth->isAuthorized());
+		echo '<hr>';
+		#break;
+		$userId = $this->Auth->user('id');
+		# this needs another version which gets the record level aco if it exists, and if not get the 
+		$aco = $this->{$this->modelClass}->getAco($this->params , true);
+		# check if the function is already allowed by hard coding in the controller
+		if (!in_array($this->params['action'], $this->Auth->allowedActions) && property_exists($this, 'Acl')) {
+			# if the user is logged in we need to check for creator and guest access
+			# if they are not logged in, then we only need to check for creator access
+			# removed an if here !$this->Auth->isAuthorized() from this if because it does 7 extra db calls (12/3/2010)
+			# check if node has guest access 
+			$AroAco = $this->_guestsAroAco();
+			if(!$this->Acl->check($AroAco['aro'], $AroAco['aco'])) {
+				# check if node has record level access
+				$AroAco = $this->_recordAroAco($userId);
+				if (!empty($userId) && $this->Acl->check($AroAco['aro'], $AroAco['aco'])) {
+					echo 'third access check';
+					return true;
+				} else {
+					echo 'all three checks failed';
+					return false;
+				}
+			} else {
+				echo 'second access check';
+				# guest acccess went through
+				return true;
+			} 
+		} else {
+			// action is allowed directly from the actual controller (hard coded)
+			echo 'hard coded access';
+			return true;
+		}*/
+	}
+	
+/**
+ * guestsAco = string ex. Tickets/index
+ * this could be the full path of the aco, but it is a slightly slower query
+ * $this->Acl->check($guestsAro, 'controllers/Tickets/Tickets/index') 
+ */
+	function _actionAco() {
+		//if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
+		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
+			#$guestsAco = Inflector::camelize($this->params['controller']).'/'.$this->params['action']; 
+			$guestsAco['controller'] = Inflector::camelize($this->params['controller']);
+			$guestsAco['action'] = $this->params['action'];
+		} else {
+			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined for guest access to work.';
+		}
+		return $guestsAco;
+	}
+	
+/**
+ * guestsAco = string ex. Tickets/index
+ * this could be the full path of the aco, but it is a slightly slower query
+ * $this->Acl->check($guestsAro, 'controllers/Tickets/Tickets/index') 
+ */
+	function _guestsAroAco() {
+		//if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
+		if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
+			$guestsAro = array('model' => 'UserGroup', 'foreign_key' => 5);
+			#$guestsAco = Inflector::camelize($this->params['controller']).'/'.$this->params['action']; 
+			$guestsAco['controller'] = Inflector::camelize($this->params['controller']);
+			$guestsAco['action'] = $this->params['action'];
+		} else {
+			echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined for guest access to work.';
+		}
+		return array('aro' => $guestsAro, 'aco' => $guestsAco);
+	}
+	
+	
+/**
+ * Gets the recordLevel Aro and Aco nodes
+ */
+	function _recordAco() {
+		if(!empty($this->params['pass'][0])) {
+			$recordAco = array(
+				'model' => Inflector::classify($this->params['controller']), 
+				'foreign_key' => $this->params['pass'][0],
+				);
+			return $recordAco;
+		} else {
+			return null;
 		}
 	}
 	
+	
+/**
+ * Gets the recordLevel Aro and Aco nodes
+ */
+	function _recordAroAco($userId) {
+		if(!empty($this->params['pass'][0])) {
+			$recordAro = array('model' => 'User', 'foreign_key' => $userId);
+			$recordAco = array(
+				'model' => Inflector::classify($this->params['controller']), 
+				'foreign_key' => $this->params['pass'][0],
+				);
+			return array('aro' => $recordAro, 'aco' => $recordAco);
+		} else {
+			return null;
+		}
+	}
     
 /**
  * gets user group for acl check 
@@ -794,7 +886,7 @@ class AppController extends Controller {
 	       		'_create',
 	      		)*/
      	));
-    	if(count($cn) != 0){
+    	if(!empty($cn)){
 			if($cn["ArosAco"]["_create"] == 1 ){
        			return true;
       		} else {
