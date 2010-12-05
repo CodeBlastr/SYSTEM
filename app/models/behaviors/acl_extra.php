@@ -32,13 +32,15 @@ class AclExtraBehavior extends ModelBehavior {
  * @access public
  */
 	function setup(&$model, $data = array()) {
-		if (!empty($data['RecordLevelAccess'])) {
-			$aroModel = key($data['RecordLevelAccess']);
+		if (!empty($data['RecordLevelAccess']['User'])) {
+			$aroModel = 'User';
 			$aroUsers = $data['RecordLevelAccess']['User'];
+		} else if (!empty($data['RecordLevelAccess']['UserGroup'])) {
+			$aroModel = 'UserGroup';
+			$aroUsers = $data['RecordLevelAccess']['UserGroup'];
 		} else {
 			return false;
 		}
-		
 		$model->Aro = ClassRegistry::init('Aro');
 		$model->Aco = ClassRegistry::init('Aco');
 		$model->ArosAco = ClassRegistry::init('ArosAco');

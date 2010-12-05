@@ -702,6 +702,8 @@ class AppController extends Controller {
  */
 	function isAuthorized() {	
 		$userId = $this->Auth->user('id');
+		# this allows all users in the administrators group access to everything
+		if ($this->Auth->user('user_group_id') == 1) { return true; } 
 		# check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco

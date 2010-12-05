@@ -29,13 +29,22 @@ class AppModel extends Model {
 	function beforeSave(&$model) {
 		# Start Record Level Access Save #
 		// If the model needs Record Level Access add an Aco
-		if(defined('__APP_RECORD_LEVEL_ACCESS_ENTITIES')){
+		if (!empty($this->data['RecordLevelAccess'])) {
+			# There may be a potential problem with this.
+			# It saves an ArosAco record for every record being created.
+			# For example, when creating a webpage, it also creates an Aco for the Alias
+			# Left it in as is, because we may want this.  (ie. when a contact is record level, 
+			# we probably want the user to have access to the Contact and Contact Person
+			# if a project issue is created, we probably want the user to have access to the project too.
+			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
+			$this->Behaviors->attach('AclExtra', $this->data);
+		} else if (defined('__APP_RECORD_LEVEL_ACCESS_ENTITIES')){
 			if ($this->data['RecordLevelAccess'] = $this->_isRecordLevelRecord(__APP_RECORD_LEVEL_ACCESS_ENTITIES)) {
 				$this->Behaviors->attach('Acl', array('type' => 'controlled'));
 				$this->Behaviors->attach('AclExtra', $this->data);
 			}
-		} 
-	
+		} 	
+		
 		# Start Auto Creator & Modifier Id Saving # 
 		$exists = $this->exists();
 		App::import('Component', 'Session');
@@ -171,84 +180,6 @@ class AppModel extends Model {
  */
 	function parentNode() {
 		$this->name;
-	}
-	
-	
-/**
- * This finds the id of the aco when using the action type of aco lookup.  Used for action level access control.
- *
- * @param {controller}		The controller alias.
- * @param {action}			The action alias.
- * @return {int}			The Aco node id.
- * @link					http://bin.cakephp.org/view/1223405007
- */
-	function _getAcoIdAction($controller, $action) {
-		# important note, this will not work if there are name collisions between controllers, plugin controllers
-		$acos = $this->query("
-    	  	SELECT 
-				`Aco`.`id`, 
-			    `Aco`.`parent_id`, 
-			    `Aco`.`model`, 
-			    `Aco`.`foreign_key`, 
-			    `Aco`.`alias` 
-		    FROM 
-			    `acos` AS `Aco` 
-		    LEFT JOIN `acos` AS `Aco0` ON (
-		    	`Aco0`.`alias` = '".$controller."') 
-		    LEFT JOIN `acos` AS `Aco1` ON (
-		    	`Aco1`.`lft` > `Aco0`.`lft` AND
-		        `Aco1`.`rght` < `Aco0`.`rght` AND
-		        `Aco1`.`alias` = '".$action."' AND
-        		`Aco0`.`id` = `Aco1`.`parent_id`) 
-   			WHERE ((
-		    	`Aco`.`lft` <= `Aco0`.`lft` AND
-        		`Aco`.`rght` >= `Aco0`.`rght`) OR
-				(`Aco`.`lft` <= `Aco1`.`lft` AND `Aco`.`rght` >= `Aco1`.`rght`)) 
-           ORDER BY 
-		   		`Aco`.`lft` DESC 
-			");
-		if (!empty($acos[0]['Aco']['id'])) {
-			return $acos[0]['Aco']['id'];	
-		} else {
-			return null;
-		}
-	}
-	
-/**
- * This finds the aco id of when using the record lookup type. Used for record level access control.<br />
- *
- * @param {model}			The model alias.
- * @param {foreignKey}		The id of the model being reviewed.
- * @return {int}			The Aco node id.
- */
-	function _getAcoRecordLevel($model, $foreignKey) {
-		$acos = $this->query("
-    		SELECT
-		         `Aco`.`id`,
-		         `Aco`.`parent_id`, 
-		         `Aco`.`model`, 
-		         `Aco`.`foreign_key`, 
-				 `Aco`.`alias` 
-			FROM
-        		`acos` 
-	        AS 
-	        	`Aco` 
-	        LEFT JOIN 
-	        	`acos` AS `Aco0` 
-	        ON (
-	        	`Aco`.`lft` <= `Aco0`.`lft` AND 
-	            `Aco`.`rght` >= `Aco0`.`rght`) 
-	        WHERE 
-	        	`Aco0`.`model` = '".$model."' AND 
-	            `Aco0`.`foreign_key` = ".$foreignKey." 
-	        ORDER BY 
-	            `Aco`.`lft` DESC 
-			");
-		if (!empty($acos[0]['Aco']['id'])) {
-			return $acos[0]['Aco']['id'];
-		} else {
-			return null;
-		}
 	}
 	
 	
