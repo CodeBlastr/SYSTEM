@@ -1,4 +1,27 @@
 <?php
+/**
+ * Database driven, record level access control. 
+ *
+ * This behavior when attached checks this->data and the settings table to see if the data being saved is subject to record level access control.  If it is, then this behavior creates the aros_acos record which grants that access.  To use set a variable within the settings table under the APP key named RECORD_LEVEL_ACCESS_ENTITIES.  The value for that setting should be in the Model.field format.  Example : key = APP, value = RECORD_LEVEL_ACCESS_ENTITIES:Ticket.assignee_id,Project.assignee_id,Profile.user_id;
+ *
+ *
+ * PHP versions 5
+ *
+ * Zuha(tm) : Business Management Applications (http://zuha.com)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ *
+ * Licensed under GPL v3 License
+ * Must retain the above copyright notice and release modifications publicly.
+ *
+ * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
+ * @link          http://zuha.com Zuha™ Project
+ * @package       zuha
+ * @subpackage    zuha.app.models
+ * @since         Zuha(tm) v 0.0.1
+ * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
+ * @todo		  AclExtraBehavior class should work with groups as well as users.
+ * @todo		  AclExtraBehavior needs delete functionality implemented. 
+ */
 class AclExtraBehavior extends ModelBehavior {
 
 /**
@@ -29,7 +52,7 @@ class AclExtraBehavior extends ModelBehavior {
 	}
 
 /**
- * Creates a new AROSACO node bound to this record
+ * Creates mutliple new ArosAco nodes as needed for access to the Aco entity created.
  *
  * @param boolean $created True if this is a new record
  * @return void
