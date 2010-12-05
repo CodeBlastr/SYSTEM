@@ -78,8 +78,7 @@ class AppController extends Controller {
         $this->Auth->loginRedirect = array(
 			'plugin' => null,
 			'controller' => 'users',
-			'action' => 'view',
-			'user_id' => $this->Session->read('Auth.User.id')
+			'action' => 'view'
 			);
 		
 		$this->Auth->actionPath = 'controllers/';
@@ -160,6 +159,7 @@ class AppController extends Controller {
  * using structured tags (example : {include:pageid3}) 
  * which would include the database webpage with that id in place of the tag
  * @todo We need to fix up the {element: xyz_for_layout} so that you don't have to edit app_controller to have new helpers included, or somehow switch them all over to elements (the problem with that being that elements aren't as handy for data)
+ * @todo wasn't sure if this was the right place, but we should pull all of the webpage records in one call instead of multiple if we can, and cache them for performance.
  */
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
 		$matches = array ();
@@ -730,7 +730,6 @@ class AppController extends Controller {
 					return true;
 				} else {
 					#echo ' all three checks failed';
-					#return array('message' => 'You are logged in, but access is denied for your user.');
 					$this->Session->setFlash(__('You are logged in, but access is denied for requested page.', true));
 					$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
 				}
