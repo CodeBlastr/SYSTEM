@@ -19,7 +19,7 @@
  * @subpackage    zuha.app.models
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
- * @todo		  AclExtraBehavior class should work with groups as well as users.
+ * @todo		  AclExtraBehavior class should work with groups as well as users, so that we make better use of repeat code.  Right now webpages controller has its own user group code and that could be removed, and it could be implemented better using this behavior attachment.
  * @todo		  AclExtraBehavior needs delete functionality implemented. 
  */
 class AclExtraBehavior extends ModelBehavior {
