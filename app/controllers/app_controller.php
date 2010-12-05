@@ -24,7 +24,7 @@ class AppController extends Controller {
 	
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login');
-	var $components = array('Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
 /**
@@ -124,15 +124,15 @@ class AppController extends Controller {
 /**
  * Implemented for allowing guests access through db acl control
  */	
- 		/* could not find where this is used so commented it out.  Delete if not used 12/3/2010 
- 		$this->userGroup = $this->_getUserGroupAroId(); */
 		$userId = $this->Auth->user('id');
 		if (empty($userId)) {
-			$aro = $this->_guestsAro(); // guest aro model and foreign_key
-			$aco = $this->_actionAco(); // get controller and action 
-			if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
+			$aco = $this->_getAcoPath(); // get controller and action 
+			# this first one checks record level if record level exists
+			# which it can exist and guests could still have access 
+			if ($this->Acl->check($aro, $aco)) {
 				$this->Auth->allow('*');
-			}
+			} 
 		}
 	}
 	
@@ -698,52 +698,56 @@ class AppController extends Controller {
 
 
 /**
- * Access control upgrade
- * It should fire only if the user does not have 
- * access to the current page and if they don't 
- * see if they have creator access.
+ * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in. 
  */
-	function isAuthorized() {		
+	function isAuthorized() {	
 		$userId = $this->Auth->user('id');
 		# check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
-		$aco = $this->_actionAco(); // get controller and action 
-		if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+		$aco = $this->_getAcoPath(); // get aco
+		if ($this->Acl->check($aro, $aco)) {
 			#echo 'guest access passed';
 			#return array('passed' => 1, 'message' => 'guest access passed');
 			return true;
 		} else {
 			# check user access
-			$aro = $this->_userAro($userId); // guest aro model and foreign_key
-			$aco = $this->_actionAco(); // get controller and action 
-			if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
+			$aro = $this->_userAro($userId); // user aro model and foreign_key
+			$aco = $this->_getAcoPath(); // get aco
+			if ($this->Acl->check($aro, $aco)) {
 				#echo 'user access passed';
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
-				# check user access
-				$aro = $this->_userAro($userId); // guest aro model and foreign_key
-				$aco = $this->_recordAco(); // get controller and action 
-				if ($this->{$this->modelClass}->checkAccess($aro, $aco)) {
-					#echo 'record level access passed';
-					#return array('passed' => 1, 'message' => 'record level access passed');
-					return true;
-				} else {
-					#echo ' all three checks failed';
-					$this->Session->setFlash(__('You are logged in, but access is denied for requested page.', true));
-					$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
-				}
+				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
+				$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
 			}	
 		} 
 	}
 	
 /**
  * Gets the variables used to lookup the aco id for the action type of lookup
+ * VERY IMPORTANT : If the aco is a record level type of aco (ie. model and foreign_key lookup) that means that all groups and users who have access rights must be defined.  You cannot have negative values for access permissions, and thats okay, because we deny everything by default.
+ *
+ * return {array || string}		The path to the aco to look up.
  */
-	function _actionAco() {
-		$guestsAco['controller'] = Inflector::camelize($this->params['controller']);
-		$guestsAco['action'] = $this->params['action'];
-		return $guestsAco;
+	function _getAcoPath() {
+		if (!empty($this->params['pass'][0])) {
+			# check if the record level aco exists first
+			$aco = $this->Acl->Aco->find('first', array(
+				'conditions' => array(
+					'model' => $this->modelClass, 
+					'foreign_key' => $this->params['pass'][0]
+					)
+				));
+		}
+		if(!empty($aco)) {
+			return array('model' => $this->modelClass, 'foreign_key' => $this->params['pass'][0]);
+		} else {
+			$controller = Inflector::camelize($this->params['controller']);
+			$action = $this->params['action'];
+			# $aco = 'controllers/Webpages/Webpages/view'; // you could do the full path, but the shorter path is slightly faster. But it does not allow name collisions. (the full path would allow name collisions, and be slightly slower). 
+			return $controller.'/'.$action;
+		}
 	}
 	
 /**
@@ -765,23 +769,6 @@ class AppController extends Controller {
 		}
 		return $guestsAro;
 	}
-	
-	
-/**
- * Gets the variables used in a record level Aco id lookup
- */
-	function _recordAco() {
-		if(!empty($this->params['pass'][0])) {
-			$recordAco = array(
-				'model' => Inflector::classify($this->params['controller']), 
-				'foreign_key' => $this->params['pass'][0],
-				);
-			return $recordAco;
-		} else {
-			return null;
-		}
-	}
-	
- 
+	 
 }
 ?>
