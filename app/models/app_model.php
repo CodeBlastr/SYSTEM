@@ -35,29 +35,6 @@ class AppModel extends Model {
 				$this->Behaviors->attach('AclExtra', $this->data);
 			}
 		} 
-			/* Not sure what's under here is even necessary, because moving it to beforeSave (instead of afterSave might have fixed it.
-			$aco = ClassRegistry::init('Permissions.Acore');
-			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
-			// foreign_key
-			$last_one = $this->getLastInsertID();
-			$aco_dat["Acore"]["foreign_key"] = $last_one;
-			//set the alias
-			if($this->params["plugin"] != ''){
-				//set the aco dat 
-				$aco_dat["Acore"]["alias"] = $this->params['plugin'] . '/' . $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
-			} else {
-				//set the aco dat
-				$aco_dat["Acore"]["alias"] = $this->params['controller'] . '/' . $this->params['action'] . '/' . $last_one;
-			}
-			
-			$aco_dat['Acore']['parent_id'] = $this->getAco($this->params);
-			
-			$aco_dat["Acore"]["model"] = $this->name;
-			$aco_dat["Acore"]["type"] = 'record';
-			$aco->create();
-			$aco->save($aco_dat); 
-		}	*/
-		# End Record Level Access Save #
 	
 		# Start Auto Creator & Modifier Id Saving # 
 		$exists = $this->exists();
@@ -111,112 +88,8 @@ class AppModel extends Model {
 	}
 	
 	
-/**
- * Gets the aco node
- * @param {array} params -> $this->params having problems reaching it from model
- * @param {bool} main -> Do you want the aco of the record or the action
- * @return int
- * @todo I'm relatively positive that this could be whittled down, and probably moved to the permissions plugin or something. 
- */
-	function getAco($params , $main = false){
-		$acor = ClassRegistry::init('Permissions.Acore');
-		if($params['plugin'] == ''){
-			$alias = 0;
-			if(isset($params['pass'][0])){
-				$alias = $params['pass'][0];
-			}
-			$plugin = false ;
-		} else {
-			$alias = 0;
-			if(isset($params['pass'][0])){
-				$alias = $params['pass'][0];
-			}
-			$plugin = true;
-		}
-		if($plugin){
-			//get the aco data to be able to determine the parent_id field
-			$ret_aco = $acor->find('first' , array(
-				'conditions'=>array(
-					// not sure what effects changing this might have on other parts of the system so I'm leaving reference
-					//'type' => 'plugin',
-					'type' => 'pcontroller',
-					'alias' => Inflector::camelize($params['controller'])
-				),
-				'contain' => array(),
-				'fields' => array('id'),
-				'callbacks' => false
-			));
-			// get clidren
-			$child = $acor->children($ret_aco["Acore"]["id"]);
-			if(count($ret_aco) != 0){
-				// the current id of the aco node.
-				$curr_parent = $ret_aco["Acore"]["id"];
-				// get the controller id 
-				foreach($child as $c){
-					if($c["Acore"]["alias"] == ucwords($params["controller"])){
-						$curr_parent = $c["Acore"]["id"];
-					}
-				}
-				// get the action id 
-				foreach($child as $c){
-					if($c["Acore"]["alias"] == $params["action"] && $c["Acore"]["parent_id"] == $curr_parent){
-						$curr_parent = $c["Acore"]["id"];
-					}
-				}					
-				// get the node id if set 
-				// to get the records aco id. Has to check with main. 
-				if($alias != 0 && !$main){
-					foreach($child as $c){
-						$record_num = explode('/' , $c["Acore"]["alias"]);
-						if(count($record_num) != 1){
-							if($record_num[3] == $alias)
-								$curr_parent = $c["Acore"]["id"];
-							}
-						}
-					}
-					// set the parent_id
-				return $curr_parent;
-			}
-					
-		} else {
-			//not in a plugin and getting aco dat
-			$ret_aco = $acor->find('first', array(
-				'conditions'=>array(
-					'type' => 'controller',
-					'alias' => ucwords($params['controller'])
-				),
-				'contain' => array(),
-				'fields' => array('id'),
-				'callbacks' => false
-			));
-			// get the action
-			if(count($ret_aco) != 0){
-				$child = $acor->children($ret_aco["Acore"]["id"]);
-				$curr_parent = $ret_aco["Acore"]["id"];
-				foreach($child as $c){
-					if($c["Acore"]["alias"] == $params["action"]){
-						$curr_parent = $c["Acore"]["id"];
-					}
-				}
-			// to get the records aco id. Has to check with main. 
-			if($alias != 0 && !$main){
-				foreach($child as $c){
-					$record_num = explode('/' , $c["Acore"]["alias"]);
-					if(count($record_num) != 1){
-						if($record_num[2] == $alias)
-							$curr_parent = $c["Acore"]["id"];
-						}
-					}
-				}
-			// set the parent_id
-			return $curr_parent;
-			}
-		}
-	}
-	
-	
-	# this has been saved so that we can use it when we finish of the extra condition checking in the condition model
-	# if it exists there, then delete this function
+	# This has been saved so that we can use it when we finish of the extra condition checking in the condition model
+	# If it exists there, then delete this function, but NOT until then.
 	function __checkExtraCondition($conditionTrigger) {
 		$conditionsArray = explode(',',$conditionTrigger['Condition']['condition']);
 		foreach ($conditionsArray as $conditionsArr) {
@@ -275,7 +148,8 @@ class AppModel extends Model {
 	
 	
 /**
- * What the hell is this for?  Why is there no comment about it?
+ * With this function our total_count now appears with the rest of the fields in the resulting data array.
+ * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
  */ 
 	function afterFind($results, $primary = false) {
     	if($primary == true) {
@@ -286,7 +160,7 @@ class AppModel extends Model {
     	          unset($results[$key][0]);
     	       }
     	    }
-    	}    
+    	}  
     	return $results;
 	}
 	
@@ -302,6 +176,12 @@ class AppModel extends Model {
 	
 /** 
  * Used by App Controller to check access to the requested page. 
+ * This function uses the functions which follow because we've found them to be less time intensive. 
+ * They may change in the future, but the queries were spelled out, because it was just easier to read,
+ * and probably a tad less memory used because of it as well.
+ * @param {aro} 		array containing the Aro node
+ * @param {aco}			array containing the Aco controller and action OR model and foreign key
+ * @todo				Check whether this is properly escaped in the event of an error (like !empty() or something)
  */
 	function checkAccess($aro = array(), $aco = array()) {
 		# this finds every single aco that this aro has access to 
@@ -336,7 +216,11 @@ class AppModel extends Model {
 	
 
 /**
- * This finds every single aco that this group or user has access to.
+ * This finds every single Aco that this group or user has access to.
+ *
+ * @param {model}			The Aco model.
+ * @param {foreign_key}		The Aco foreign_key
+ * @todo					We need to review this and make sure it does NOT return negatives.  (looks like it might)
  */
 	function _getAllAcos($model, $foreignKey) {
 		$allAcos = $this->query("
@@ -372,7 +256,11 @@ class AppModel extends Model {
 	
 	
 /**
- * This finds the id of the aco when using the action type of aco lookup 
+ * This finds the id of the aco when using the action type of aco lookup.  Used for action level access control.
+ *
+ * @param {controller}		The controller alias.
+ * @param {action}			The action alias.
+ * @return {int}			The Aco node id.
  */
 	function _getAcoIdAction($controller, $action) {
 		# important note, this will not work if there are name collisions between controllers, plugin controllers
@@ -407,7 +295,11 @@ class AppModel extends Model {
 	}
 	
 /**
- * This finds the aco id of when using the record lookup type.
+ * This finds the aco id of when using the record lookup type. Used for record level access control.<br />
+ *
+ * @param {model}			The model alias.
+ * @param {foreignKey}		The id of the model being reviewed.
+ * @return {int}			The Aco node id.
  */
 	function _getAcoRecordLevel($model, $foreignKey) {
 		$acos = $this->query("
@@ -440,7 +332,13 @@ class AppModel extends Model {
 	}
 	
 	
-
+/**
+ * Used to see whether the record being saved is a record which is subject to record level access control.  Executed in the beforeSave callback function of app_model.  If it is a record which is subject to record level access control, then beforeSave triggers the record level Aco and ArosAco creation.  Using the Acl behavior which make the Aco, and the AclExtra behavior which makes the AroAco using the user field which is supposed to get access as the Aro.  To set the Aros that should have access, make a setting called RECORD_LEVEL_ACCESS_ENTITY in the "settings" table of the database.
+ *
+ * @param {recordEntities}		An array of entities which should be subject to record level access control.
+ * @return {array}				An array of user ids that should have access to the record.  (ie. assignee_id, user_id)
+ * @todo						We could easily add UserGroup to this array, and control group record level access for groups per save as well.  We would need to just add a model = key into the aro lookup in acl_extra as well.
+ */
 	function _isRecordLevelRecord($recordEntities) {
 		# create the array
 		$data = $this->data;
@@ -459,7 +357,7 @@ class AppModel extends Model {
 		}
 		
 		if (!empty($userIds)) {
-			# @todo We could easily add UserGroup to this array, and control group record level access per save as well.  We would need to just add a model = key into the aro lookup in acl_extra as well.
+			# 
 			return array('User' => $userIds);
 		} else {
 			return false;
