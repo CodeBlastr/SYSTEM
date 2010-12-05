@@ -29,9 +29,11 @@ class AppModel extends Model {
 	function beforeSave(&$model) {
 		# Start Record Level Access Save #
 		// If the model needs UserLevel Access add an Aco
-		if(isset($this->userLevel) && $this->userLevel == true){
-			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
-			$this->Behaviors->attach('AclExtra', array('type' => 'both'));
+		if(defined('__APP_RECORD_LEVEL_ACCESS_ENTITIES')){
+			if ($this->data['RecordLevelAccess'] = $this->_isRecordLevelRecord(__APP_RECORD_LEVEL_ACCESS_ENTITIES)) {
+				$this->Behaviors->attach('Acl', array('type' => 'controlled'));
+				$this->Behaviors->attach('AclExtra', $this->data);
+			}
 		} 
 			/* Not sure what's under here is even necessary, because moving it to beforeSave (instead of afterSave might have fixed it.
 			$aco = ClassRegistry::init('Permissions.Acore');
@@ -532,6 +534,33 @@ class AppModel extends Model {
 			return $acos[0]['Aco']['id'];
 		} else {
 			return null;
+		}
+	}
+	
+	
+
+	function _isRecordLevelRecord($recordEntities) {
+		# create the array
+		$data = $this->data;
+		$recordEntities = explode(',', $recordEntities);
+		foreach ($recordEntities as $recordEntity) {
+			$entities = explode('.', $recordEntity);
+			foreach ($entities as $entity) {
+				if (is_array($data) && array_key_exists($entity, $data)) {
+					$value = $data[$entity];
+					$data = $value;
+					if (!is_array($value)) {
+						$userIds[] = $value;
+					}
+				}
+			}
+		}
+		
+		if (!empty($userIds)) {
+			# @todo We could easily add UserGroup to this array, and control group record level access per save as well.  We would need to just add a model = key into the aro lookup in acl_extra as well.
+			return array('User' => $userIds);
+		} else {
+			return false;
 		}
 	}
 

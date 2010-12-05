@@ -2,39 +2,27 @@
 class AclExtraBehavior extends ModelBehavior {
 
 /**
- * Creates the aros_acos record for record level access by a particular user.
- *
- * @var array
- * @access protected
- */
-	var $__typeMaps = array('both' => 'ArosAco');
-
-/**
- * Sets up the configuation for the model, and loads ACL models if they haven't been already
+ * Get the settings for saving ArosAco records related to the Aco that was last created
  *
  * @param mixed $config
  * @return void
  * @access public
  */
-	function setup(&$model, $config = array()) {
-		if (is_string($config)) {
-			$config = array('type' => $config);
-		}
-		$this->settings[$model->name] = array_merge(array('type' => 'requester'), (array)$config);
-
-		$type = $this->__typeMaps[$this->settings[$model->name]['type']];
-		if (!class_exists('AclNode')) {
-			require LIBS . 'model' . DS . 'db_acl.php';
-		}
-		if (PHP5) {
-			$model->Aro = ClassRegistry::init('Aro');
-			$model->Aco = ClassRegistry::init('Aco');
-			$model->{$type} = ClassRegistry::init($type);
+	function setup(&$model, $data = array()) {
+		if (!empty($data['RecordLevelAccess'])) {
+			$aroModel = key($data['RecordLevelAccess']);
+			$aroUsers = $data['RecordLevelAccess']['User'];
 		} else {
-			$model->Aro =& ClassRegistry::init('Aro');
-			$model->Aco =& ClassRegistry::init('Aco');
-			$model->{$type} =& ClassRegistry::init($type);
+			return false;
 		}
+		
+		$model->Aro = ClassRegistry::init('Aro');
+		$model->Aco = ClassRegistry::init('Aco');
+		$model->ArosAco = ClassRegistry::init('ArosAco');
+		
+		$this->model = $aroModel;
+		$this->users = $aroUsers;
+		
 		if (!method_exists($model, 'parentNode')) {
 			trigger_error(sprintf(__('Callback parentNode() not defined in %s', true), $model->alias), E_USER_WARNING);
 		}
@@ -48,42 +36,42 @@ class AclExtraBehavior extends ModelBehavior {
  * @access public
  */
 	function afterSave(&$model, $created) {
-		if ($model != 'User') {
-			$type = $this->__typeMaps[strtolower($this->settings[$model->alias]['type'])];
-			$parent = $model->parentNode();
-			if (!empty($parent)) {
-				$parent = $this->node($model, $parent);
-			}
+		$acoId = $model->Aco->id;
+		foreach ($this->users as $user) {
+			$aro = $model->Aro->node(array('model' => $this->model, 'foreign_key' => $user));
 			$data = array(
-				'aro_id' => $model->Aro->id,
+				'aro_id' => $aro[0]['Aro']['id'],
 				'aco_id' => $model->Aco->id,
 				'_create' => 1,
 				'_read' => 1,
 				'_update' => 1,
 				'_delete' => 1,
 			);
+			$model->ArosAco->create();
+			if($model->ArosAco->save($data));
+		}			
+			
 			# not sure if this is needed or working for saves of the non-creation type
-			if (!$created) {
+			/*if (!$created) {
 				$node = $this->node($model);
 				$data['id'] = isset($node[0][$type]['id']) ? $node[0][$type]['id'] : null;
-			}
-			$model->{$type}->create();
-			if($model->{$type}->save($data));
-		}
+			}*/
 	}
 
 /**
+ * NOT USED YET
  * Destroys the ARO/ACO node bound to the deleted record
  *
  * @return void
  * @access public
+ * @todo Make this function work.
  */
 	function afterDelete(&$model) {
-		# nothing has been done here
+		/*# nothing has been done here
 		$type = $this->__typeMaps[strtolower($this->settings[$model->name]['type'])];
 		$node = Set::extract($this->node($model), "0.{$type}.id");
 		if (!empty($node)) {
 			$model->{$type}->delete($node);
-		}
+		}*/
 	}
 }
