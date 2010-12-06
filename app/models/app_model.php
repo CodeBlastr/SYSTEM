@@ -29,13 +29,22 @@ class AppModel extends Model {
 	function beforeSave(&$model) {
 		# Start Record Level Access Save #
 		// If the model needs Record Level Access add an Aco
-		if(defined('__APP_RECORD_LEVEL_ACCESS_ENTITIES')){
+		if (!empty($this->data['RecordLevelAccess'])) {
+			# There may be a potential problem with this.
+			# It saves an ArosAco record for every record being created.
+			# For example, when creating a webpage, it also creates an Aco for the Alias
+			# Left it in as is, because we may want this.  (ie. when a contact is record level, 
+			# we probably want the user to have access to the Contact and Contact Person
+			# if a project issue is created, we probably want the user to have access to the project too.
+			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
+			$this->Behaviors->attach('AclExtra', $this->data);
+		} else if (defined('__APP_RECORD_LEVEL_ACCESS_ENTITIES')){
 			if ($this->data['RecordLevelAccess'] = $this->_isRecordLevelRecord(__APP_RECORD_LEVEL_ACCESS_ENTITIES)) {
 				$this->Behaviors->attach('Acl', array('type' => 'controlled'));
 				$this->Behaviors->attach('AclExtra', $this->data);
 			}
-		} 
-	
+		} 	
+		
 		# Start Auto Creator & Modifier Id Saving # 
 		$exists = $this->exists();
 		App::import('Component', 'Session');
@@ -171,164 +180,6 @@ class AppModel extends Model {
  */
 	function parentNode() {
 		$this->name;
-	}
-	
-	
-/** 
- * Used by App Controller to check access to the requested page. 
- * This function uses the functions which follow because we've found them to be less time intensive. 
- * They may change in the future, but the queries were spelled out, because it was just easier to read,
- * and probably a tad less memory used because of it as well.
- * @param {aro} 		array containing the Aro node
- * @param {aco}			array containing the Aco controller and action OR model and foreign key
- * @todo				Check whether this is properly escaped in the event of an error (like !empty() or something)
- */
-	function checkAccess($aro = array(), $aco = array()) {
-		# this finds every single aco that this aro has access to 
-		$acos = $this->_getAllAcos($aro['model'], $aro['foreign_key']);
-		if (!empty($aco['controller']) && !empty($aco['action'])) {
-			$acoId = $this->_getAcoIdAction($aco['controller'], $aco['action']);
-		} else if (!empty($aco['model']) && !empty($aco['foreign_key'])) {
-			$acoId = $this->_getAcoRecordLevel($aco['model'], $aco['foreign_key']);
-		}
-		#pr($acoId);
-		#pr($acos);
-		if ($this->_searchAcos($acoId, $acos)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	
-/**
- * searches the aco array to see if the aro exists
- */
-	function _searchAcos($needle, $haystacks) {
-		foreach ($haystacks as $stack) {
-			if($stack['Aco']['AcoId'] == $needle) {
-				return true;
-				break;
-			}
-		}
-		return false;
-	}
-	
-
-/**
- * This finds every single Aco that this group or user has access to.
- *
- * @param {model}			The Aco model.
- * @param {foreign_key}		The Aco foreign_key
- * @todo					We need to review this and make sure it does NOT return negatives.  (looks like it might)
- */
-	function _getAllAcos($model, $foreignKey) {
-		$allAcos = $this->query("
-			SELECT
-			    Aro.model AS AroModel,
-			    Aro.foreign_key AS AroId,
-			    Aro.alias AS AroAlias,
-			    Aco.id AS AcoId,
-			    Aco.alias AS AcoAlias,
-			    Aco.model AS AcoModel,
-			    Aco.foreign_key AS AcoForeignKey
-			FROM
-			    acos AS Aco
-			INNER JOIN
-			    acos AS AcoRule ON ( AcoRule.lft <= Aco.lft AND AcoRule.rght >= Aco.rght )
-			INNER JOIN
-			    aros_acos AS aros_acos ON ( aros_acos.aco_id = AcoRule.id )
-			INNER JOIN
-			    aros AS AroRule ON ( aros_acos.aro_id = AroRule.id )
-			INNER JOIN
-			    aros AS Aro ON ( Aro.lft >= AroRule.lft AND Aro.rght <= AroRule.rght )
-			WHERE
-			    Aro.model = '".$model."' AND
-			    Aro.foreign_key = ".$foreignKey." AND
-			    aros_acos._create = 1 
-			");
-		if (!empty($allAcos)) {
-			return $allAcos;
-		} else {
-			return null;
-		}
-	}
-	
-	
-/**
- * This finds the id of the aco when using the action type of aco lookup.  Used for action level access control.
- *
- * @param {controller}		The controller alias.
- * @param {action}			The action alias.
- * @return {int}			The Aco node id.
- */
-	function _getAcoIdAction($controller, $action) {
-		# important note, this will not work if there are name collisions between controllers, plugin controllers
-		$acos = $this->query("
-    	  	SELECT 
-				`Aco`.`id`, 
-			    `Aco`.`parent_id`, 
-			    `Aco`.`model`, 
-			    `Aco`.`foreign_key`, 
-			    `Aco`.`alias` 
-		    FROM 
-			    `acos` AS `Aco` 
-		    LEFT JOIN `acos` AS `Aco0` ON (
-		    	`Aco0`.`alias` = '".$controller."') 
-		    LEFT JOIN `acos` AS `Aco1` ON (
-		    	`Aco1`.`lft` > `Aco0`.`lft` AND
-		        `Aco1`.`rght` < `Aco0`.`rght` AND
-		        `Aco1`.`alias` = '".$action."' AND
-        		`Aco0`.`id` = `Aco1`.`parent_id`) 
-   			WHERE ((
-		    	`Aco`.`lft` <= `Aco0`.`lft` AND
-        		`Aco`.`rght` >= `Aco0`.`rght`) OR
-				(`Aco`.`lft` <= `Aco1`.`lft` AND `Aco`.`rght` >= `Aco1`.`rght`)) 
-           ORDER BY 
-		   		`Aco`.`lft` DESC 
-			");
-		if (!empty($acos[0]['Aco']['id'])) {
-			return $acos[0]['Aco']['id'];	
-		} else {
-			return null;
-		}
-	}
-	
-/**
- * This finds the aco id of when using the record lookup type. Used for record level access control.<br />
- *
- * @param {model}			The model alias.
- * @param {foreignKey}		The id of the model being reviewed.
- * @return {int}			The Aco node id.
- */
-	function _getAcoRecordLevel($model, $foreignKey) {
-		$acos = $this->query("
-    		SELECT
-		         `Aco`.`id`,
-		         `Aco`.`parent_id`, 
-		         `Aco`.`model`, 
-		         `Aco`.`foreign_key`, 
-				 `Aco`.`alias` 
-			FROM
-        		`acos` 
-	        AS 
-	        	`Aco` 
-	        LEFT JOIN 
-	        	`acos` AS `Aco0` 
-	        ON (
-	        	`Aco`.`lft` <= `Aco0`.`lft` AND 
-	            `Aco`.`rght` >= `Aco0`.`rght`) 
-	        WHERE 
-	        	`Aco0`.`model` = '".$model."' AND 
-	            `Aco0`.`foreign_key` = ".$foreignKey." 
-	        ORDER BY 
-	            `Aco`.`lft` DESC 
-			");
-		if (!empty($acos[0]['Aco']['id'])) {
-			return $acos[0]['Aco']['id'];
-		} else {
-			return null;
-		}
 	}
 	
 	
