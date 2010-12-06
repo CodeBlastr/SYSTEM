@@ -6,9 +6,9 @@ We further seek to solve the problem faced by many website systems, where in ord
 
 # December 2010 Accomplishments
 
-* #1 : We're just a few days in, and already we've accomplished a substantial performance update to ACL (access level control).  What huge headache, but its a huge piece of working code now.  Next up there, is to make it even more fine grained by allowing record level access beyond the record, and down to the action.  And with all of that fine grained control you'd think the user interface was going to be a huge monstrosity, but its unbelievable light.  You just visit the plugin you want to control access for, click a couple of checkboxes and thats it.  Permissions on the fly, down to the record level.
+* 1 : Record Level Access Control  -  We're just a few days in, and already we've accomplished a substantial performance update to ACL (access level control).  What a huge headache, but its a huge piece of working code now.  Next up on this front, is to make it even more fine grained by allowing record level access beyond the record, and down to the action.  And with all of that fine grained control you'd think the user interface was going to be a huge monstrosity, but its unbelievably light.  You just visit the plugin you want to control access for, click a couple of checkboxes and thats it.  Permissions on the fly, down to the record level.
 
-* #2 : Inline page editing.  With most CMS systems you visit the administration portion of the site to edit webpages.  With ZuHa you edit webpages while you are looking at the webpages.  INCLUDING :: menus, side bar elements, footers, etc.  You can edit a site wide element from any webpage from the CMS, and it will update the entire site instantly.  Next up on this front is the auto-saving, and drafts, and histories for webpages.  
+* 2 : Inline page editing  -  With most CMS systems you visit the administration portion of the site to edit webpages.  With ZuHa you edit webpages while you are looking at the webpages.  INCLUDING :: menus, side bar elements, footers, etc.  You can edit a site wide element from any webpage from the CMS, and it will update the entire site instantly.  Next up on this front is the auto-saving, and drafts, and histories for webpages.  
 
 Can't wait to see what the rest of December brings. 
 
