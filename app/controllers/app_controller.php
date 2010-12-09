@@ -147,8 +147,7 @@ class AppController extends Controller {
             Configure::write('debug', 0); 
 		} else if ($this->params['url']['ext'] == 'json') {
             #Configure::write('debug', 0); 
-		}
-		
+		}	
 	}
 	
 	
