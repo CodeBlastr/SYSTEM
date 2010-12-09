@@ -169,7 +169,7 @@ class AppModel extends Model {
     	          unset($results[$key][0]);
     	       }
     	    }
-    	}  
+    	}		
     	return $results;
 	}
 	
