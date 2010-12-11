@@ -143,9 +143,9 @@ class AppController extends Controller {
 		if($this->RequestHandler->isAjax()) { 
             Configure::write('debug', 0); 
         } else if ($this->RequestHandler->isXml()) {
-            Configure::write('debug', 0); 
+			$this->header('Content-Type: text/xml');
 		} else if ($this->params['url']['ext'] == 'json') {
-            #Configure::write('debug', 0); 
+            Configure::write('debug', 0); 
 		}
 	}
 	
@@ -449,8 +449,8 @@ class AppController extends Controller {
 		} else {
 			# get the standard view if it exists or show a scaffold view 
 			$extension = (!empty($this->params['url']['ext']) && $this->params['url']['ext'] != 'html' ? DS.$this->params['url']['ext'] : null);
-			$standardViewFile = ROOT.DS.'app'.DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp';
-			$standardPluginViewFile = ROOT.DS.'app'.DS.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp';
+			$standardViewFile = (file_exists(APP.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp') ? APP.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp' : ROOT.DS.'app'.DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp');
+			$standardPluginViewFile = (file_exists(APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp') ? APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp' : ROOT.DS.'app'.DS.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp');
 			if (file_exists($standardViewFile) || file_exists($standardPluginViewFile)) {
 				$this->viewPath = $this->viewPath;
 			} else {
