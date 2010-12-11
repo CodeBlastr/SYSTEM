@@ -27,6 +27,7 @@ class AppController extends Controller {
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
+	var $scaffold;
 /**
  * Fired early in the display process for defining app wide settings
  *
@@ -147,7 +148,7 @@ class AppController extends Controller {
             Configure::write('debug', 0); 
 		} else if ($this->params['url']['ext'] == 'json') {
             #Configure::write('debug', 0); 
-		}	
+		}
 	}
 	
 	
@@ -439,7 +440,9 @@ class AppController extends Controller {
 			if (file_exists($localViewFile)) {
 				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;
 			}
-		} 
+		} else {
+			$this->viewPath = 'scaffolds';
+		}
 		return $this->viewPath;
 	}
 	
