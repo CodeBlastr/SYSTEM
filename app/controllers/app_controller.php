@@ -50,7 +50,7 @@ class AppController extends Controller {
 		
 		
 		#Configure::write('Config.language', 'eng');
-		$this->viewPath = $this->_getLanguageViewFile();
+		$this->viewPath = $this->_getViewFile();
 		
 	
 /**
@@ -422,12 +422,12 @@ class AppController extends Controller {
     }
 	
 	
-	function _getLanguageViewFile() {
+	function _getViewFile() {
 		$locale = Configure::read('Config.language');
 		if ($locale && !empty($this->params['plugin'])) {
 			// put plugin view path here
-			$localViewFile = APP.'views'.DS.'locale'.DS.$locale . DS . 'plugins' . DS . $this->params['plugin'] . DS . $this->viewPath . DS . $this->params['action'] . '.ctp';
-			$localPluginViewFile = APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath . DS . $this->params['action'] . '.ctp';
+			$localViewFile = APP.'views'.DS.'locale'.DS.$locale.DS.'plugins'.DS.$this->params['plugin'].DS.$this->viewPath.DS.$this->params['action'].'.ctp';
+			$localPluginViewFile = APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
 			if (file_exists($localViewFile)) {
 				$this->viewPath = 'locale'.DS.$locale.DS.'plugins'.DS.$this->params['plugin'].DS.$this->viewPath;
 			} else if (file_exists($localPluginViewFile)) {
@@ -441,7 +441,13 @@ class AppController extends Controller {
 				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;
 			}
 		} else {
-			$this->viewPath = 'scaffolds';
+			$standardViewFile = ROOT.DS.'app'.DS.'views'.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
+			$standardPluginViewFile = ROOT.DS.'app'.DS.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
+			if (file_exists($standardViewFile) || file_exists($standardPluginViewFile)) {
+				$this->viewPath = $this->viewPath;
+			} else {
+				$this->viewPath = 'scaffolds';
+			}
 		}
 		return $this->viewPath;
 	}
