@@ -48,9 +48,7 @@ class AppController extends Controller {
 		# End Condition Check #
 		# End DO NOT DELETE #
 		
-		
-		#Configure::write('Config.language', 'eng');
-		$this->viewPath = $this->_getViewFile();
+		$this->viewPath = $this->_getView();
 		
 	
 /**
@@ -421,11 +419,19 @@ class AppController extends Controller {
 		}		
     }
 	
-	
-	function _getViewFile() {
+
+/**
+ * This function handles view files, and the numerous cases of layered views that are possible. Used in reverse order, so that you can over write files without disturbing the default view files. 
+ * Case 1 : No view file exists (default), so try using the scaffold file. (this means we can have default reusable views)
+ * Case 2 : Standard view file exists (second check), so use it.  (ie. cakephp standard paths)
+ * Case 3 : Language or Local view files (first check).  Views which are within the multi-site directories.  To use, you must set a language configuration, even if its just the default "en". 
+ *
+ * return {string}		The path to the view file.
+ */
+	function _getView() {
 		$locale = Configure::read('Config.language');
 		if ($locale && !empty($this->params['plugin'])) {
-			// put plugin view path here
+			# put plugin view path here
 			$localViewFile = APP.'views'.DS.'locale'.DS.$locale.DS.'plugins'.DS.$this->params['plugin'].DS.$this->viewPath.DS.$this->params['action'].'.ctp';
 			$localPluginViewFile = APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
 			if (file_exists($localViewFile)) {
@@ -435,12 +441,13 @@ class AppController extends Controller {
 			}
 
 		} else if ($locale) {
-			// put non-plugin view path here
+			# put non-plugin view path here
 			$localViewFile = APP.DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
 			if (file_exists($localViewFile)) {
 				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;
 			}
 		} else {
+			# get the standard view if it exists or show a scaffold view 
 			$extension = (!empty($this->params['url']['ext']) && $this->params['url']['ext'] != 'html' ? DS.$this->params['url']['ext'] : null);
 			$standardViewFile = ROOT.DS.'app'.DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp';
 			$standardPluginViewFile = ROOT.DS.'app'.DS.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp';
