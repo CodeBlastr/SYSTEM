@@ -441,8 +441,9 @@ class AppController extends Controller {
 				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;
 			}
 		} else {
-			$standardViewFile = ROOT.DS.'app'.DS.'views'.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
-			$standardPluginViewFile = ROOT.DS.'app'.DS.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
+			$extension = (!empty($this->params['url']['ext']) && $this->params['url']['ext'] != 'html' ? DS.$this->params['url']['ext'] : null);
+			$standardViewFile = ROOT.DS.'app'.DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp';
+			$standardPluginViewFile = ROOT.DS.'app'.DS.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp';
 			if (file_exists($standardViewFile) || file_exists($standardPluginViewFile)) {
 				$this->viewPath = $this->viewPath;
 			} else {
