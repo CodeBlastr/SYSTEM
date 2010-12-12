@@ -102,22 +102,10 @@ class AppController extends Controller {
 			$this->layout = 'admin';
 		}
 		
-/**
- * System wide settings are set here,
- * by gettting constants for app configuration
- */
-		$this->__getConstants();
-		
-/**
- * Used to get database driven template
- */
-		if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
-			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
-			$this->__parseIncludedPages ($defaultTemplate);
-			$this->set(compact('defaultTemplate'));
-		} else {
-			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
-		}
+		# system wide settings
+		$this->_getConstants();
+		# default template
+ 		$this->_getDefaultTemplate();
 		
 /**
  * Implemented for allowing guests access through db acl control
@@ -138,7 +126,13 @@ class AppController extends Controller {
  * This turns off debug so that ajax views don't get severly messed up
  * @todo convert to a full REST application and this might not be necessary
  */
-    function beforeRender() {
+    function beforeRender() {    
+		# this needed to be duplicated from the beforeFilter because beforeFilter doesn't fire on error pages.
+		if($this->name == 'CakeError') {
+        	$this->_getConstants();
+	 		$this->_getDefaultTemplate();
+	    }
+		
 		if($this->RequestHandler->isAjax()) { 
             Configure::write('debug', 0); 
         } else if ($this->RequestHandler->isXml()) {
@@ -181,7 +175,7 @@ class AppController extends Controller {
  * This is where we call all of the data in the "settings" table and parse
  * them into constants to be used through out the site.
  */	
-	function __getConstants(){
+	function _getConstants(){
 		//Fetching All params
 	   	$settings_array = $this->Setting->find('all');
 	   	foreach($settings_array as $key => $value){
@@ -499,6 +493,22 @@ class AppController extends Controller {
 			return null;
 		}
 	}
+
+
+/**
+ * Used for default template parsing.  Sets the defaultTemplate variable for the layout.
+ *
+ * @todo			Enable separate templates (so that you can have sitemaps easily) for the error pages.
+ */
+	function _getDefaultTemplate() {
+		if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
+			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
+			$this->__parseIncludedPages ($defaultTemplate);
+			$this->set(compact('defaultTemplate'));
+		} else {
+			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
+		}
+	}
 	
 	
 /**
@@ -748,8 +758,8 @@ class AppController extends Controller {
 	
 ################################ END ACO ADD #############################
 ##########################################################################
-
-	
+		
+		
 #################  HERE DOWN IS PERMISSIONS ##################	
 
 
