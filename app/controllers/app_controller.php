@@ -27,7 +27,6 @@ class AppController extends Controller {
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
-	var $scaffold;
 /**
  * Fired early in the display process for defining app wide settings
  *
@@ -427,9 +426,9 @@ class AppController extends Controller {
  * Case 3 : Language or Local view files (first check).  Views which are within the multi-site directories.  To use, you must set a language configuration, even if its just the default "en". 
  *
  * @return {string}		The viewPath variable
+ * @todo 				Move these next few functions to a component.
  */
 	function _getView() {
-		Configure::write('Config.language', 'eng');
 		/* order should be 
 		1. complete localized plugin or view folder with extension (not html)
 		2. localized language plugin or view folder with extension (not html)
