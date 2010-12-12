@@ -20,7 +20,7 @@
 	<div id="container">
 		<div id="header">				
 			<div id="loadingimg" style="display: none;"><?php echo $html->image('ajax-loader.gif'); ?></div>
-            <a href="/admin/" id="logo"><p>Collaborative Business Management</p><p>Grow into the business of your dreams.</p></a>
+            <a href="/admin/" id="logo"><p>Collaborative Business Management</p><p> Version : <?php echo __SYS_ZUHA_DB_VERSION; ?></p></a>
             
             <div class="login">
 			<?php 

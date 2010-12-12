@@ -1,3 +1,26 @@
+<?php
+/**
+ * Default Layout View File
+ *
+ * Handles the default view html, and the database driven template system. 
+ *
+ * PHP versions 5
+ *
+ * Zuha(tm) : Business Management Applications (http://zuha.com)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ *
+ * Licensed under GPL v3 License
+ * Must retain the above copyright notice and release modifications publicly.
+ *
+ * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
+ * @link          http://zuha.com Zuha™ Project
+ * @package       zuha
+ * @subpackage    zuha.app.views.layouts
+ * @since         Zuha(tm) v 0.0.1
+ * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
+ * @todo		  Its time to move the different template tags to a new place.  They are getting too heavy for this default file, and aren't reusable easily.  (Things like {helper: content_for_layout} etc.)
+ */
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -19,10 +42,12 @@
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>">
 
 <?php 
+	# WHEN WORKING ON ELEMENT CHECK THIS : http://blog.japanesetesting.com/2010/04/27/widgity-multi-element-designs-with-cakephp/
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
 if (!empty($defaultTemplate)) {
 	
+	# WHEN WORKING ON ELEMENT CHECK THIS : http://blog.japanesetesting.com/2010/04/27/widgity-multi-element-designs-with-cakephp/
 	# matches helper calls like {element: content_for_layout} or {element: menu_for_layout}
 	preg_match_all ("/(\{([^\}\{]*)element([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
@@ -31,7 +56,7 @@ if (!empty($defaultTemplate)) {
 		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $$element, $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
-	
+	# WHEN WORKING ON ELEMENT CHECK THIS : http://blog.japanesetesting.com/2010/04/27/widgity-multi-element-designs-with-cakephp/
 	# matches form calls like {form: Plugin.Model.Type.Limiter} for example {form: Contacts.ContactPeople.add.59}
 	preg_match_all ("/(\{([^\}\{]*)form([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;

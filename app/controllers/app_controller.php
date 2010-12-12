@@ -27,6 +27,7 @@ class AppController extends Controller {
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userGroup = '';
+	var $scaffold;
 /**
  * Fired early in the display process for defining app wide settings
  *
@@ -47,9 +48,7 @@ class AppController extends Controller {
 		# End Condition Check #
 		# End DO NOT DELETE #
 		
-		
-		#Configure::write('Config.language', 'eng');
-		$this->viewPath = $this->_getLanguageViewFile();
+		$this->viewPath = $this->_getView();
 		
 	
 /**
@@ -62,7 +61,6 @@ class AppController extends Controller {
 /**
  * Configure AuthComponent
 */
-        $this->Auth->authorize = 'actions';
 		
         $this->Auth->loginAction = array(
 			'plugin' => null,
@@ -79,13 +77,13 @@ class AppController extends Controller {
         $this->Auth->loginRedirect = array(
 			'plugin' => null,
 			'controller' => 'users',
-			'action' => 'view',
-			'user_id' => $this->Session->read('Auth.User.id')
+			'action' => 'view'
 			);
 		
 		$this->Auth->actionPath = 'controllers/';
-		
+		# pulls in the hard coded allowed actions from the current controller
 		$this->Auth->allowedActions = array('display');
+		$this->Auth->authorize = 'controller';
 		
 /**
  * Support for json file types when using json extensions
@@ -122,13 +120,20 @@ class AppController extends Controller {
 			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
 		}
 		
-		
 /**
- * Implemented for allowing guests and creators ACL control
- */
-		$this->userGroup = $this->_getUserGroupAroId();
-		$this->_getUserGroupId();
-    }
+ * Implemented for allowing guests access through db acl control
+ */	
+		$userId = $this->Auth->user('id');
+		if (empty($userId)) {
+			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
+			$aco = $this->_getAcoPath(); // get controller and action 
+			# this first one checks record level if record level exists
+			# which it can exist and guests could still have access 
+			if ($this->Acl->check($aro, $aco)) {
+				$this->Auth->allow('*');
+			} 
+		}
+	}
 	
 /**
  * This turns off debug so that ajax views don't get severly messed up
@@ -138,9 +143,9 @@ class AppController extends Controller {
 		if($this->RequestHandler->isAjax()) { 
             Configure::write('debug', 0); 
         } else if ($this->RequestHandler->isXml()) {
-            Configure::write('debug', 0); 
+			$this->header('Content-Type: text/xml');
 		} else if ($this->params['url']['ext'] == 'json') {
-            #Configure::write('debug', 0); 
+            Configure::write('debug', 0); 
 		}
 	}
 	
@@ -152,6 +157,7 @@ class AppController extends Controller {
  * using structured tags (example : {include:pageid3}) 
  * which would include the database webpage with that id in place of the tag
  * @todo We need to fix up the {element: xyz_for_layout} so that you don't have to edit app_controller to have new helpers included, or somehow switch them all over to elements (the problem with that being that elements aren't as handy for data)
+ * @todo wasn't sure if this was the right place, but we should pull all of the webpage records in one call instead of multiple if we can, and cache them for performance.
  */
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
 		$matches = array ();
@@ -413,13 +419,21 @@ class AppController extends Controller {
 		}		
     }
 	
-	
-	function _getLanguageViewFile() {
+
+/**
+ * This function handles view files, and the numerous cases of layered views that are possible. Used in reverse order, so that you can over write files without disturbing the default view files. 
+ * Case 1 : No view file exists (default), so try using the scaffold file. (this means we can have default reusable views)
+ * Case 2 : Standard view file exists (second check), so use it.  (ie. cakephp standard paths)
+ * Case 3 : Language or Local view files (first check).  Views which are within the multi-site directories.  To use, you must set a language configuration, even if its just the default "en". 
+ *
+ * return {string}		The path to the view file.
+ */
+	function _getView() {
 		$locale = Configure::read('Config.language');
 		if ($locale && !empty($this->params['plugin'])) {
-			// put plugin view path here
-			$localViewFile = APP.'views'.DS.'locale'.DS.$locale . DS . 'plugins' . DS . $this->params['plugin'] . DS . $this->viewPath . DS . $this->params['action'] . '.ctp';
-			$localPluginViewFile = APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath . DS . $this->params['action'] . '.ctp';
+			# put plugin view path here
+			$localViewFile = APP.'views'.DS.'locale'.DS.$locale.DS.'plugins'.DS.$this->params['plugin'].DS.$this->viewPath.DS.$this->params['action'].'.ctp';
+			$localPluginViewFile = APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
 			if (file_exists($localViewFile)) {
 				$this->viewPath = 'locale'.DS.$locale.DS.'plugins'.DS.$this->params['plugin'].DS.$this->viewPath;
 			} else if (file_exists($localPluginViewFile)) {
@@ -427,12 +441,22 @@ class AppController extends Controller {
 			}
 
 		} else if ($locale) {
-			// put non-plugin view path here
+			# put non-plugin view path here
 			$localViewFile = APP.DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
 			if (file_exists($localViewFile)) {
 				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;
 			}
-		} 
+		} else {
+			# get the standard view if it exists or show a scaffold view 
+			$extension = (!empty($this->params['url']['ext']) && $this->params['url']['ext'] != 'html' ? DS.$this->params['url']['ext'] : null);
+			$standardViewFile = (file_exists(APP.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp') ? APP.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp' : ROOT.DS.'app'.DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp');
+			$standardPluginViewFile = (file_exists(APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp') ? APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp' : ROOT.DS.'app'.DS.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp');
+			if (file_exists($standardViewFile) || file_exists($standardPluginViewFile)) {
+				$this->viewPath = $this->viewPath;
+			} else {
+				$this->viewPath = 'scaffolds';
+			}
+		}
 		return $this->viewPath;
 	}
 	
@@ -690,121 +714,79 @@ class AppController extends Controller {
 
 
 /**
- * Access control upgrade
- * It should fire only if the user does not have 
- * access to the current page and if they don't 
- * see if they have creator access.
+ * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in. 
  */
-	function _getUserGroupId() {
-		if ($this->Auth->user('id') != 0) {
-			if (!$this->Acl->check(array('model' => 'User', 'foreign_key' => $this->Auth->user('id')), $this->name)) {
-				# check if node has guest access 
-				if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-					if($this->_checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
-						$this->Auth->allow('*');
-					} 
-				} else {
-					echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
-				}
-				
-				
-				# user is logged in but not authorized.
-				# check if node has creator access 
-				# creator group is a system setting editable at /admin/settings
-				if($this->Auth->user('id') != 0 && !$this->Auth->isAuthorized()){
-					if (defined('__SYS_CREATORS_GROUP_ARO_ID')) {
-						if($this->_checkAccess(__SYS_CREATORS_GROUP_ARO_ID , $this->params)){
-							# check if record belongs to the user using a field like creator_id, modifier_id, assignee_id, etc
-							if($this->{$this->modelClass}->checkUserFields($this->Auth->user('id') , $this->params)){
-								# allow user
-								$this->Auth->allow('*');
-							}
-						}
-					} else {
-						echo 'In /admin/settings key: SYS, value: CREATORS_GROUP_ARO_ID must be defined';
-					}
-				}
-			}
-		} else {		
-			if (defined('__SYS_GUESTS_GROUP_ARO_ID')) {
-				if($this->_checkAccess(__SYS_GUESTS_GROUP_ARO_ID , $this->params)){
-					$this->Auth->allow('*');
-				} 
+	function isAuthorized() {	
+		$userId = $this->Auth->user('id');
+		# this allows all users in the administrators group access to everything
+		if ($this->Auth->user('user_group_id') == 1) { return true; } 
+		# check guest access
+		$aro = $this->_guestsAro(); // guest aro model and foreign_key
+		$aco = $this->_getAcoPath(); // get aco
+		if ($this->Acl->check($aro, $aco)) {
+			#echo 'guest access passed';
+			#return array('passed' => 1, 'message' => 'guest access passed');
+			return true;
+		} else {
+			# check user access
+			$aro = $this->_userAro($userId); // user aro model and foreign_key
+			$aco = $this->_getAcoPath(); // get aco
+			if ($this->Acl->check($aro, $aco)) {
+				#echo 'user access passed';
+				#return array('passed' => 1, 'message' => 'user access passed');
+				return true;
 			} else {
-				echo 'In /admin/settings key: SYS, value: GUESTS_GROUP_ARO_ID must be defined';
-			}
-		}
+				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
+				$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
+			}	
+		} 
 	}
 	
-    
 /**
- * gets user group for acl check 
+ * Gets the variables used to lookup the aco id for the action type of lookup
+ * VERY IMPORTANT : If the aco is a record level type of aco (ie. model and foreign_key lookup) that means that all groups and users who have access rights must be defined.  You cannot have negative values for access permissions, and thats okay, because we deny everything by default.
+ *
+ * return {array || string}		The path to the aco to look up.
  */
-    function _getUserGroupAroId(){
-    	#get users group
-		if($this->Auth->user('id') != 0){
-			$userModel = ClassRegistry::init('User');
-			# $userModel->recursive = 1 ;  // commented for non-use 11/2010, remove if no errors show because of it.
-			# this gets the user group id of the user
-			$uData = $userModel->find('first' , array(
-				'conditions' => array('User.id'=>$this->Auth->user('id')),
-				'contain' => array(
-					'UserGroup' => array(
-						'fields' => array(
-							'id',
-							'name'
-						)
+	function _getAcoPath() {
+		if (!empty($this->params['pass'][0])) {
+			# check if the record level aco exists first
+			$aco = $this->Acl->Aco->find('first', array(
+				'conditions' => array(
+					'model' => $this->modelClass, 
+					'foreign_key' => $this->params['pass'][0]
 					)
-				)
-				
-			));
-			
-			$permAro = ClassRegistry::init('Permissions.Arore');
-			$permAro->recursive = 0;
-			# this returns the aro id for the user group this user belongs to 
-			$arDat = $permAro->find('first' , array(
-					'conditions'=>array(
-							'Arore.foreign_key'=>$uData['UserGroup']['id']
-					), 
-					'contain'=>array(),
-					'fields'=>array('id')
-			));
-			return $arDat["Arore"]["id"];
+				));
 		}
-    }
-    
-/**
- * Used to do a double check on the aro id, for record level, and guest level access.
- * @param {int} userGroup -> The aro_id of the userGroup 
- * @todo add guest functionality here with a param 
- * @return {bool}
- */   
-    function _checkAccess($aroId , $params){
-    	$arac = ClassRegistry::init("Permissions.ArosAco");
-		$cn = $arac->find('first' , array(
-      		'conditions'=>array(
-	      		'ArosAco.aro_id' => $aroId,
-	   			/* this was changed to false to get individual records to work (not sure what other effects it will have)*/
-			  	'ArosAco.aco_id' => $this->{$this->modelClass}->getAco($params , true)
-	   			/* this was changed to true to get individual action to work (not sure what other effects it will have)
-	      		'ArosAco.aco_id' => $this->{$this->modelClass}->get_aco($params , false)*/
-	      		),
-	      	'contain'=>array(),
-	      	/*'fields'=>array(
-	       		'_create',
-	      		)*/
-     	));
-    	if(count($cn) != 0){
-			if($cn["ArosAco"]["_create"] == 1 ){
-       			return true;
-      		} else {
-       			return false; 
-      		} 
-     	} else {
-      		return false;
-     	} 
+		if(!empty($aco)) {
+			return array('model' => $this->modelClass, 'foreign_key' => $this->params['pass'][0]);
+		} else {
+			$controller = Inflector::camelize($this->params['controller']);
+			$action = $this->params['action'];
+			# $aco = 'controllers/Webpages/Webpages/view'; // you could do the full path, but the shorter path is slightly faster. But it does not allow name collisions. (the full path would allow name collisions, and be slightly slower). 
+			return $controller.'/'.$action;
+		}
 	}
 	
- 
+/**
+ * Gets the variables used for the lookup of the aro id
+ */
+	function _userAro($userId) {
+		$guestsAro = array('model' => 'User', 'foreign_key' => $userId);
+		return $guestsAro;
+	}
+	
+/**
+ * Gets the variables used for the lookup of the guest aro id
+ */
+	function _guestsAro() {
+		if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
+			$guestsAro = array('model' => 'UserGroup', 'foreign_key' => __SYS_GUESTS_USER_GROUP_ID);
+		} else {
+			echo 'In /admin/settings key: SYS, value: GUESTS_USER_GROUP_ID must be defined for guest access to work.';
+		}
+		return $guestsAro;
+	}
+	 
 }
 ?>
