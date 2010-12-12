@@ -426,38 +426,79 @@ class AppController extends Controller {
  * Case 2 : Standard view file exists (second check), so use it.  (ie. cakephp standard paths)
  * Case 3 : Language or Local view files (first check).  Views which are within the multi-site directories.  To use, you must set a language configuration, even if its just the default "en". 
  *
- * return {string}		The path to the view file.
+ * @return {string}		The viewPath variable
  */
 	function _getView() {
-		$locale = Configure::read('Config.language');
-		if ($locale && !empty($this->params['plugin'])) {
-			# put plugin view path here
-			$localViewFile = APP.'views'.DS.'locale'.DS.$locale.DS.'plugins'.DS.$this->params['plugin'].DS.$this->viewPath.DS.$this->params['action'].'.ctp';
-			$localPluginViewFile = APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
-			if (file_exists($localViewFile)) {
-				$this->viewPath = 'locale'.DS.$locale.DS.'plugins'.DS.$this->params['plugin'].DS.$this->viewPath;
-			} else if (file_exists($localPluginViewFile)) {
-				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;			
-			}
-
-		} else if ($locale) {
-			# put non-plugin view path here
-			$localViewFile = APP.DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
-			if (file_exists($localViewFile)) {
-				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;
-			}
-		} else {
-			# get the standard view if it exists or show a scaffold view 
-			$extension = (!empty($this->params['url']['ext']) && $this->params['url']['ext'] != 'html' ? DS.$this->params['url']['ext'] : null);
-			$standardViewFile = (file_exists(APP.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp') ? APP.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp' : ROOT.DS.'app'.DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp');
-			$standardPluginViewFile = (file_exists(APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp') ? APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp' : ROOT.DS.'app'.DS.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.$this->viewPath.$extension.DS.$this->params['action'].'.ctp');
-			if (file_exists($standardViewFile) || file_exists($standardPluginViewFile)) {
-				$this->viewPath = $this->viewPath;
-			} else {
-				$this->viewPath = 'scaffolds';
+		Configure::write('Config.language', 'eng');
+		/* order should be 
+		1. complete localized plugin or view folder with extension (not html)
+		2. localized language plugin or view folder with extension (not html)
+		3. root app directory plugin or view folder with extension (not html)
+		4. scaffolded directory for this action with extension (not html) */
+		$possibleLocations = array(
+			# 0 app (including sites) /plugins/wikis/views/locale/eng/wiki_categories/view.ctp
+			APP.$this->_getPlugin().DS.'views'.DS.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			# 1 app (including sites) /plugins/wikis/views/wiki_categories/view.ctp
+			APP.$this->_getPlugin().DS.'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			# 2 app (including sites) /views/locale/eng/plugins/projects/projects/index.ctp
+			APP.'views'.DS.$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			# 3 root app only /views/locale/eng/plugins/wikis/wikis/index.ctp
+			ROOT.DS.'app'.DS.'views'.DS.$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',	
+			# 4 root app only /plugins/wikis/views/locale/eng/wikis/index.ctp
+			ROOT.DS.'app'.DS.$this->_getPlugin().DS.'views'.DS.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			# 5 root app only /plugins/wikis/views/wikis/json/index.ctp
+			ROOT.DS.'app'.DS.$this->_getPlugin().DS.'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			# 6 root app only /views/scaffolds/json/view.ctp
+			ROOT.DS.'app'.DS.'views'.DS.'scaffolds'.$this->_getExtension().DS.$this->params['action'].'.ctp',		
+			);
+		$matchingViewPaths = array(
+			$this->_getLocale().DS.$this->viewPath, // 0 checked
+			$this->viewPath, // 1 checked
+			$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath, // 2 checked
+			$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath, // 3  checked
+			$this->_getLocale().DS.$this->viewPath, // 4 checked
+			$this->viewPath, // 5 checked
+			'scaffolds', // 6 checked
+			);
+		foreach ($possibleLocations as $key => $location) {
+			if (file_exists($location)) {
+				return $matchingViewPaths[$key];
+				break;
 			}
 		}
-		return $this->viewPath;
+		#pr($possibleLocations);
+		#pr($matchingViewPaths);
+	}
+	
+	function _checkViewFiles() {
+	}
+	
+	function _getExtension() {
+		 if (!empty($this->params['url']['ext']) && $this->params['url']['ext'] != 'html') {
+			 # returns /json or /xml or /rss
+			 return DS.$this->params['url']['ext']; 
+		 } else {
+			 return null;
+		 }
+	}
+	
+	function _getLocale() {
+		$locale = Configure::read('Config.language');
+		if (!empty($locale)) {
+			# returns /locale/eng or /locale/fr etc.
+			return 'locale'.DS.$locale;
+		} else {
+			return null;
+		}
+	}
+	
+	function _getPlugin() {
+		if (!empty($this->params['plugin'])) {
+			# returns plugins/orders OR plugins/projects (no starting slash because its in the APP constant)
+			return 'plugins'.DS.$this->params['plugin'];
+		} else {
+			return null;
+		}
 	}
 	
 	
