@@ -42,10 +42,12 @@
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>">
 
 <?php 
+	# WHEN WORKING ON ELEMENT CHECK THIS : http://blog.japanesetesting.com/2010/04/27/widgity-multi-element-designs-with-cakephp/
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
 if (!empty($defaultTemplate)) {
 	
+	# WHEN WORKING ON ELEMENT CHECK THIS : http://blog.japanesetesting.com/2010/04/27/widgity-multi-element-designs-with-cakephp/
 	# matches helper calls like {element: content_for_layout} or {element: menu_for_layout}
 	preg_match_all ("/(\{([^\}\{]*)element([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
@@ -54,7 +56,7 @@ if (!empty($defaultTemplate)) {
 		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $$element, $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
-	
+	# WHEN WORKING ON ELEMENT CHECK THIS : http://blog.japanesetesting.com/2010/04/27/widgity-multi-element-designs-with-cakephp/
 	# matches form calls like {form: Plugin.Model.Type.Limiter} for example {form: Contacts.ContactPeople.add.59}
 	preg_match_all ("/(\{([^\}\{]*)form([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;

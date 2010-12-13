@@ -20,7 +20,7 @@
 	<div id="container">
 		<div id="header">				
 			<div id="loadingimg" style="display: none;"><?php echo $html->image('ajax-loader.gif'); ?></div>
-            <a href="/admin/" id="logo"><p>Collaborative Business Management</p><p>Grow into the business of your dreams.</p></a>
+            <a href="/admin/" id="logo"><p>Collaborative Business Management</p><p> Version : <?php echo __SYS_ZUHA_DB_VERSION; ?></p></a>
             
             <div class="login">
 			<?php 
@@ -77,6 +77,7 @@
 				<div id="navtabs-4">
 					<?php echo $html->link(__('Orders', true), array('plugin' => 'orders', 'controller' => 'orders', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Catalogs', true), array('plugin' => 'catalogs', 'controller' => 'catalogs', 'admin' => 1)); ?>
+					<?php echo $html->link(__('Categories', true), array('plugin' => 'categories', 'controller' => 'categories', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Products', true), array('plugin' => 'catalogs', 'controller' => 'catalog_items', 'admin' => 1)); ?>
 					<?php echo $html->link(__('Invoices', true), array('plugin' => null, 'controller' => 'invoices', 'admin' => 1)); ?>
 				</div>

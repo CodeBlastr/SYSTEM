@@ -47,9 +47,7 @@ class AppController extends Controller {
 		# End Condition Check #
 		# End DO NOT DELETE #
 		
-		
-		#Configure::write('Config.language', 'eng');
-		$this->viewPath = $this->_getLanguageViewFile();
+		$this->viewPath = $this->_getView();
 		
 	
 /**
@@ -104,22 +102,10 @@ class AppController extends Controller {
 			$this->layout = 'admin';
 		}
 		
-/**
- * System wide settings are set here,
- * by gettting constants for app configuration
- */
-		$this->__getConstants();
-		
-/**
- * Used to get database driven template
- */
-		if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
-			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
-			$this->__parseIncludedPages ($defaultTemplate);
-			$this->set(compact('defaultTemplate'));
-		} else {
-			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
-		}
+		# system wide settings
+		$this->_getConstants();
+		# default template
+ 		$this->_getDefaultTemplate();
 		
 /**
  * Implemented for allowing guests access through db acl control
@@ -140,14 +126,20 @@ class AppController extends Controller {
  * This turns off debug so that ajax views don't get severly messed up
  * @todo convert to a full REST application and this might not be necessary
  */
-    function beforeRender() {
+    function beforeRender() {    
+		# this needed to be duplicated from the beforeFilter because beforeFilter doesn't fire on error pages.
+		if($this->name == 'CakeError') {
+        	$this->_getConstants();
+	 		$this->_getDefaultTemplate();
+	    }
+		
 		if($this->RequestHandler->isAjax()) { 
             Configure::write('debug', 0); 
         } else if ($this->RequestHandler->isXml()) {
-            Configure::write('debug', 0); 
+			$this->header('Content-Type: text/xml');
 		} else if ($this->params['url']['ext'] == 'json') {
-            #Configure::write('debug', 0); 
-		}	
+            Configure::write('debug', 0); 
+		}
 	}
 	
 	
@@ -183,7 +175,7 @@ class AppController extends Controller {
  * This is where we call all of the data in the "settings" table and parse
  * them into constants to be used through out the site.
  */	
-	function __getConstants(){
+	function _getConstants(){
 		//Fetching All params
 	   	$settings_array = $this->Setting->find('all');
 	   	foreach($settings_array as $key => $value){
@@ -420,27 +412,102 @@ class AppController extends Controller {
 		}		
     }
 	
-	
-	function _getLanguageViewFile() {
-		$locale = Configure::read('Config.language');
-		if ($locale && !empty($this->params['plugin'])) {
-			// put plugin view path here
-			$localViewFile = APP.'views'.DS.'locale'.DS.$locale . DS . 'plugins' . DS . $this->params['plugin'] . DS . $this->viewPath . DS . $this->params['action'] . '.ctp';
-			$localPluginViewFile = APP.'plugins'.DS.$this->params['plugin'].DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath . DS . $this->params['action'] . '.ctp';
-			if (file_exists($localViewFile)) {
-				$this->viewPath = 'locale'.DS.$locale.DS.'plugins'.DS.$this->params['plugin'].DS.$this->viewPath;
-			} else if (file_exists($localPluginViewFile)) {
-				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;			
-			}
 
-		} else if ($locale) {
-			// put non-plugin view path here
-			$localViewFile = APP.DS.'views'.DS.'locale'.DS.$locale.DS.$this->viewPath.DS.$this->params['action'].'.ctp';
-			if (file_exists($localViewFile)) {
-				$this->viewPath = 'locale'.DS.$locale.DS.$this->viewPath;
+/**
+ * This function handles view files, and the numerous cases of layered views that are possible. Used in reverse order, so that you can over write files without disturbing the default view files. 
+ * Case 1 : No view file exists (default), so try using the scaffold file. (this means we can have default reusable views)
+ * Case 2 : Standard view file exists (second check), so use it.  (ie. cakephp standard paths)
+ * Case 3 : Language or Local view files (first check).  Views which are within the multi-site directories.  To use, you must set a language configuration, even if its just the default "en". 
+ *
+ * @return {string}		The viewPath variable
+ * @todo 				Move these next few functions to a component.
+ */
+	function _getView() {
+		/* order should be 
+		1. complete localized plugin or view folder with extension (not html)
+		2. localized language plugin or view folder with extension (not html)
+		3. root app directory plugin or view folder with extension (not html)
+		4. scaffolded directory for this action with extension (not html) */
+		$possibleLocations = array(
+			# 0 app (including sites) /plugins/wikis/views/locale/eng/wiki_categories/view.ctp
+			APP.$this->_getPlugin().DS.'views'.DS.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			# 1 app (including sites) /plugins/wikis/views/wiki_categories/view.ctp
+			APP.$this->_getPlugin().DS.'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			# 2 app (including sites) /views/locale/eng/plugins/projects/projects/index.ctp
+			APP.'views'.DS.$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			# 3 root app only /views/locale/eng/plugins/wikis/wikis/index.ctp
+			ROOT.DS.'app'.DS.'views'.DS.$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',	
+			# 4 root app only /plugins/wikis/views/locale/eng/wikis/index.ctp
+			ROOT.DS.'app'.DS.$this->_getPlugin().DS.'views'.DS.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			# 5 root app only /plugins/wikis/views/wikis/json/index.ctp
+			ROOT.DS.'app'.DS.$this->_getPlugin().DS.'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			# 6 root app only /views/scaffolds/json/view.ctp
+			ROOT.DS.'app'.DS.'views'.DS.'scaffolds'.$this->_getExtension().DS.$this->params['action'].'.ctp',		
+			);
+		$matchingViewPaths = array(
+			$this->_getLocale().DS.$this->viewPath, // 0 checked
+			$this->viewPath, // 1 checked
+			$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath, // 2 checked
+			$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath, // 3  checked
+			$this->_getLocale().DS.$this->viewPath, // 4 checked
+			$this->viewPath, // 5 checked
+			'scaffolds', // 6 checked
+			);
+		foreach ($possibleLocations as $key => $location) {
+			if (file_exists($location)) {
+				return $matchingViewPaths[$key];
+				break;
 			}
-		} 
-		return $this->viewPath;
+		}
+		#pr($possibleLocations);
+		#pr($matchingViewPaths);
+	}
+	
+	function _checkViewFiles() {
+	}
+	
+	function _getExtension() {
+		 if (!empty($this->params['url']['ext']) && $this->params['url']['ext'] != 'html') {
+			 # returns /json or /xml or /rss
+			 return DS.$this->params['url']['ext']; 
+		 } else {
+			 return null;
+		 }
+	}
+	
+	function _getLocale() {
+		$locale = Configure::read('Config.language');
+		if (!empty($locale)) {
+			# returns /locale/eng or /locale/fr etc.
+			return 'locale'.DS.$locale;
+		} else {
+			return null;
+		}
+	}
+	
+	function _getPlugin() {
+		if (!empty($this->params['plugin'])) {
+			# returns plugins/orders OR plugins/projects (no starting slash because its in the APP constant)
+			return 'plugins'.DS.$this->params['plugin'];
+		} else {
+			return null;
+		}
+	}
+
+
+/**
+ * Used for default template parsing.  Sets the defaultTemplate variable for the layout.
+ *
+ * @todo			Enable separate templates (so that you can have sitemaps easily) for the error pages.
+ */
+	function _getDefaultTemplate() {
+		if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
+			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
+			$this->__parseIncludedPages ($defaultTemplate);
+			$this->set(compact('defaultTemplate'));
+		} else {
+			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
+		}
 	}
 	
 	
@@ -691,8 +758,8 @@ class AppController extends Controller {
 	
 ################################ END ACO ADD #############################
 ##########################################################################
-
-	
+		
+		
 #################  HERE DOWN IS PERMISSIONS ##################	
 
 
