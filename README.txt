@@ -10,7 +10,8 @@ We further seek to solve the problem faced by many website systems, where in ord
 
 * 2 : Inline page editing  -  With most CMS systems you visit the administration portion of the site to edit webpages.  With ZuHa you edit webpages while you are looking at the webpages.  INCLUDING :: menus, side bar elements, footers, etc.  You can edit a site wide element from any webpage from the CMS, and it will update the entire site instantly.  Next up on this front is the auto-saving, and drafts, and histories for webpages.  
 
-Can't wait to see what the rest of December brings. 
+* 3 : Any format API Functionality (default views)  - ZuHa also got a big upgrade this month regarding API functionality, as in, moving it towards a REST type of application, and reusable view code.  You can now create a single admin_edit.ctp file and it will automatically be used for all admin_edit methods that don't already have a view.  The added bonus to this upgrade is that it opened up a full API where you can easily control output formatting with a simple extension change. For example, /orders/order_transactions/view/1.xml, /orders/order_transactions.json would both automatically (without creating any new files) output the variables declared in the controller in the xml or json format.  This functionality will allow us to quickly port information from a web interface to a pdf, or rss, or mobile applications as necessary in future upgrades. 
+
 
 # November 2010 Accomplishments
 
