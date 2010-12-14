@@ -215,6 +215,7 @@ class MeioUploadBehavior extends ModelBehavior {
 		);
 		$this->defaultValidations = $this->_arrayMerge($this->defaultValidations, $messages);
 		$this->defaultOptions['validations'] = $this->defaultValidations;
+		$this->defaultOptions['dir'] = ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR.DS. 'upload{DS}{ModelName}{DS}{fieldName}';
 	}
 
 /**
@@ -1123,10 +1124,10 @@ class MeioUploadBehavior extends ModelBehavior {
  * @access protected
  */
 	function _createFolders($dir, $thumbDir, $thumbsizes) {
-		if ($dir[0] !== '/') {
+/*		if ($dir[0] !== '/') {
 			$dir = WWW_ROOT . $dir;
 		}
-		$folder = new Folder();
+*/		$folder = new Folder();
 
 		if (!$folder->cd($dir)) {
 			$folder->create($dir);
