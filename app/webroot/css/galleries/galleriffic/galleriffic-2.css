@@ -2,10 +2,10 @@
 	width: 100%;
 	overflow: hidden;
 }
-div.content {
+div.gallery-content {
 	/* The display of content is enabled using jQuery so that the slideshow content won't display unless javascript is enabled. */
 	display: none;
-	float: right;
+	/*float: right;*/
 	width: 80%; 
 	overflow: hidden;
 }
@@ -13,7 +13,7 @@ div.content a, div.navigation a {
 	text-decoration: none;
 	color: #777;
 }
-div.content a:focus, div.content a:hover, div.content a:active {
+div.gallery-content a:focus, div.content a:hover, div.content a:active {
 	text-decoration: underline;
 }
 div.controls {

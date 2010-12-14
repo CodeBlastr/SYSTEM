@@ -7,9 +7,9 @@ class GalleryHelper extends AppHelper {
     
     function displayGallery($value) {
 		if (!empty($value)) {
-			if ($value['type'] == 'Overlay Slideshow') {
+			if ($value['type'] == 'colorbox') {
 				return $this->__overlaySlideshow($value);				
-			} if ($value['type'] == 'Inline Gallery') {
+			} if ($value['type'] == 'gallerfic') {
 				return $this->__inlineGallery($value);				
 			} else {
 				echo 'invalid photogallery type';
@@ -64,7 +64,7 @@ class GalleryHelper extends AppHelper {
 		# the gallery wrapper
 		$gallery = '<!-- Start Advanced Gallery Html Containers --> 
 		<div id="inlineGallery">
-			<div id="gallery" class="content"> 
+			<div id="gallery" class="gallery-content"> 
 				<div id="controls" class="controls"></div> 
 				<div class="slideshow-container"> 
 					<div id="loading" class="loader"></div> 
