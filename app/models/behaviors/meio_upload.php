@@ -32,14 +32,14 @@ class MeioUploadBehavior extends ModelBehavior {
 		'useTable' => true,
 		'createDirectory' => true,
 		'encryptedFolder' => false,
-		'dir' => 'upload{DS}{ModelName}{DS}{fieldName}',
+		'dir' => '/upload/{ModelName}/{fieldName}',
 		'folderAsField' => null, // Can be the name of any field in $this->data
 		'uploadName' => null, // Can also be the tokens {ModelName} or {fieldName}
 		'maxSize' => 2097152, // 2MB
 		'allowedMime' => array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif', 'image/bmp', 'image/x-icon', 'image/vnd.microsoft.icon'),
 		'allowedExt' => array('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.ico'),
 		'default' => false, // Not sure what this does
-		'zoomCrop' => false, // Whether to use ZoomCrop or not with PHPThumb
+		'zoomCrop' => true, // Whether to use ZoomCrop or not with PHPThumb
 		'thumbnails' => true,
 		'thumbsizes' => array(
 			// Place any custom thumbsize in model config instead,
@@ -215,6 +215,13 @@ class MeioUploadBehavior extends ModelBehavior {
 		);
 		$this->defaultValidations = $this->_arrayMerge($this->defaultValidations, $messages);
 		$this->defaultOptions['validations'] = $this->defaultValidations;
+		
+		# Upload image by first checking where it should be uploaded to
+		if (file_exists(ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR)) {
+			$this->defaultOptions['dir'] = ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR.DS.'upload{DS}{ModelName}{DS}{fieldName}';
+		} else {
+			$this->defaultOptions['dir'] = 'upload{DS}{ModelName}{DS}{fieldName}';
+		}
 	}
 
 /**
@@ -713,7 +720,7 @@ class MeioUploadBehavior extends ModelBehavior {
 			// Put in a subfolder if the user wishes it
 			if (isset($options['folderAsField']) && !empty($options['folderAsField']) && is_string($options['folderAsField'])) {
 				$options['dir'] = $options['dir'] . DS . $data[$model->alias][$options['folderAsField']];
-				$this->__fields[$model->alias][$fieldName]['dir'] = $options['dir'];
+				 $this->__fields[$model->alias][$fieldName]['dir'] = $options['dir'];
 			}
 
 			// Check whether or not the behavior is in useTable mode
@@ -794,9 +801,8 @@ class MeioUploadBehavior extends ModelBehavior {
 				if ((count($options['thumbsizes']) > 0) && count($options['allowedExt']) > 0 && in_array($data[$model->alias][$fieldName]['type'], $this->_imageTypes)) {
 					$this->_createThumbnails($model, $data, $fieldName, $saveAs, $ext, $options);
 				}
-
 				// Update model data
-				$data[$model->alias][$options['fields']['dir']] = $options['dir'];
+				$data[$model->alias][$options['fields']['dir']] = $this->__actualUrlPath($model->alias, $fieldName);
 				$data[$model->alias][$options['fields']['mimetype']] = $data[$model->alias][$fieldName]['type'];
 				$data[$model->alias][$options['fields']['filesize']] = $data[$model->alias][$fieldName]['size'];
 				if (isset($options['uploadName']) && !empty($options['uploadName'])) {
@@ -814,6 +820,23 @@ class MeioUploadBehavior extends ModelBehavior {
 			return true;
 		}
 	}
+
+/** 
+ * Added by ZuHa team to support multiple site functionality.  It returns a directory path that is usable for calling the file name via html.
+ *
+ * @param {modelName}		The model name of the directory it was saved to.
+ * @param {fieldName}		The field name which is also a directory the image was saved to.
+ * @return {string}			The path to the uploaded file.
+ */
+	function __actualUrlPath($modelName, $fieldName) {
+		$modelName = Inflector::underscore($modelName);
+		if (file_exists(ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR)) {
+			return '/theme/default/upload/'.$modelName.'/'.$fieldName.'/';
+		} else {
+			return '/upload/'.$modelName.'/'.$fieldName.'/';
+		}
+	}
+	
 
 /**
  * Create all the thumbnails
@@ -872,7 +895,7 @@ class MeioUploadBehavior extends ModelBehavior {
 				'thumbHeight' => 225,
 				'maxDimension' => '',
 				'thumbnailQuality' => $this->__fields[$model->alias][$fieldName]['thumbnailQuality'],
-				'zoomCrop' => false
+				'zoomCrop' => true
 			),
 			$params);
 
@@ -1123,10 +1146,10 @@ class MeioUploadBehavior extends ModelBehavior {
  * @access protected
  */
 	function _createFolders($dir, $thumbDir, $thumbsizes) {
-		if ($dir[0] !== '/') {
+/*		if ($dir[0] !== '/') {
 			$dir = WWW_ROOT . $dir;
 		}
-		$folder = new Folder();
+*/		$folder = new Folder();
 
 		if (!$folder->cd($dir)) {
 			$folder->create($dir);
