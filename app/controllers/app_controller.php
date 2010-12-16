@@ -46,7 +46,6 @@ class AppController extends Controller {
 		$this->Condition->checkAndFire('is_read', $conditions, $this->data); */
 		# End Condition Check #
 		# End DO NOT DELETE #
-		
 		$this->viewPath = $this->_getView();
 		
 	
@@ -123,16 +122,17 @@ class AppController extends Controller {
 	}
 	
 /**
- * This turns off debug so that ajax views don't get severly messed up
  * @todo convert to a full REST application and this might not be necessary
  */
     function beforeRender() {    
-		# this needed to be duplicated from the beforeFilter because beforeFilter doesn't fire on error pages.
+		# this needed to be duplicated from the beforeFilter 
+		# because beforeFilter doesn't fire on error pages.
 		if($this->name == 'CakeError') {
         	$this->_getConstants();
 	 		$this->_getDefaultTemplate();
 	    }
 		
+		# This turns off debug so that ajax views don't get severly messed up
 		if($this->RequestHandler->isAjax()) { 
             Configure::write('debug', 0); 
         } else if ($this->RequestHandler->isXml()) {
@@ -430,26 +430,26 @@ class AppController extends Controller {
 		4. scaffolded directory for this action with extension (not html) */
 		$possibleLocations = array(
 			# 0 app (including sites) /plugins/wikis/views/locale/eng/wiki_categories/view.ctp
-			APP.$this->_getPlugin().DS.'views'.DS.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			APP.$this->_getPlugin(false, true).'views'.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 1 app (including sites) /plugins/wikis/views/wiki_categories/view.ctp
-			APP.$this->_getPlugin().DS.'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			APP.$this->_getPlugin(false, true).'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 2 app (including sites) /views/locale/eng/plugins/projects/projects/index.ctp
-			APP.'views'.DS.$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			APP.'views'.$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 3 root app only /views/locale/eng/plugins/wikis/wikis/index.ctp
-			ROOT.DS.'app'.DS.'views'.DS.$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',	
+			ROOT.DS.'app'.DS.'views'.$this->_getLocale().$this->_getPlugin(true, false).DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',	
 			# 4 root app only /plugins/wikis/views/locale/eng/wikis/index.ctp
-			ROOT.DS.'app'.DS.$this->_getPlugin().DS.'views'.DS.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			ROOT.DS.'app'.$this->_getPlugin(true, false).DS.'views'.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 5 root app only /plugins/wikis/views/wikis/json/index.ctp
-			ROOT.DS.'app'.DS.$this->_getPlugin().DS.'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			ROOT.DS.'app'.$this->_getPlugin(true, false).DS.'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 6 root app only /views/scaffolds/json/view.ctp
 			ROOT.DS.'app'.DS.'views'.DS.'scaffolds'.$this->_getExtension().DS.$this->params['action'].'.ctp',		
 			);
 		$matchingViewPaths = array(
-			$this->_getLocale().DS.$this->viewPath, // 0 checked
+			$this->_getLocale(true).DS.$this->viewPath, // 0 checked
 			$this->viewPath, // 1 checked
-			$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath, // 2 checked
-			$this->_getLocale().DS.$this->_getPlugin().DS.$this->viewPath, // 3  checked
-			$this->_getLocale().DS.$this->viewPath, // 4 checked
+			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 2 checked
+			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 3  checked, checked
+			$this->_getLocale(true, true).$this->viewPath, // 4 checked, checked
 			$this->viewPath, // 5 checked
 			'scaffolds', // 6 checked
 			);
@@ -459,8 +459,6 @@ class AppController extends Controller {
 				break;
 			}
 		}
-		#pr($possibleLocations);
-		#pr($matchingViewPaths);
 	}
 	
 	function _checkViewFiles() {
@@ -475,20 +473,26 @@ class AppController extends Controller {
 		 }
 	}
 	
-	function _getLocale() {
+	function _getLocale($startingDS = false, $trailingDS = false) {
 		$locale = Configure::read('Config.language');
 		if (!empty($locale)) {
 			# returns /locale/eng or /locale/fr etc.
-			return 'locale'.DS.$locale;
+			$path = (!empty($startingDS) ? DS : '');
+			$path .= 'locale'.DS.$locale;
+			$path .= (!empty($trailingDS) ? DS : '');
+			return $path;
 		} else {
 			return null;
 		}
 	}
 	
-	function _getPlugin() {
+	function _getPlugin($startingDS = false, $trailingDS = false) {
 		if (!empty($this->params['plugin'])) {
 			# returns plugins/orders OR plugins/projects (no starting slash because its in the APP constant)
-			return 'plugins'.DS.$this->params['plugin'];
+			$path = (!empty($startingDS) ? DS : '');
+			$path .= 'plugins'.DS.$this->params['plugin'];
+			$path .= (!empty($trailingDS) ? DS : '');
+			return $path;
 		} else {
 			return null;
 		}

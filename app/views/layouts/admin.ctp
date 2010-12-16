@@ -3,7 +3,7 @@
 <head>
 	<?php echo $html->charset(); ?>
 	<title>
-		<?php echo $title_for_layout; __(' : Zuha, Open Source Management'); ?>
+		<?php echo $title_for_layout; __(' : Zuha Business Management'); ?>
 	</title>
 	<?php
 		echo $this->Html->meta('icon');		
