@@ -41,22 +41,35 @@
 </head>
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>">
 
+
 <?php 
-	# WHEN WORKING ON ELEMENT CHECK THIS : http://blog.japanesetesting.com/2010/04/27/widgity-multi-element-designs-with-cakephp/
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
 if (!empty($defaultTemplate)) {
 	
-	# WHEN WORKING ON ELEMENT CHECK THIS : http://blog.japanesetesting.com/2010/04/27/widgity-multi-element-designs-with-cakephp/
-	# matches helper calls like {element: content_for_layout} or {element: menu_for_layout}
+	# matches helper calls like {helper: content_for_layout} or {helper: menu_for_layout}
+	preg_match_all ("/(\{([^\}\{]*)helper([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	$i = 0;
+	foreach ($matches[0] as $helperMatch) {
+		$helper = trim($matches[4][$i]);
+		$defaultTemplate["Webpage"]["content"] = str_replace($helperMatch, $$helper, $defaultTemplate['Webpage']['content']);
+		$i++;
+	}
+	
+	# matches element calls like {form: Plugin.Model.Type.Limiter} for example {form: Contacts.ContactPeople.add.59}
 	preg_match_all ("/(\{([^\}\{]*)element([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
 	foreach ($matches[0] as $elementMatch) {
 		$element = trim($matches[4][$i]);
-		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $$element, $defaultTemplate['Webpage']['content']);
+		if(strpos($element, '.')) { $element = explode('.', $element);  $plugin = $element[0]; $element = $element[1]; }	
+		$userId = $this->Session->read('Auth.User.id');
+		# if user exists create a user cache, else no cache  // not optimal, but a temporary fix // we may need to add caching options to the element call, ie. {element: profiles.snpsht.cache.user} - but that is getting a bit harder to swallow. But its also hard to swallow a cache directory of potentially {10} times the {Number of Users}, if you have 10 elements and they're all cached by UserId.
+		$elementCfg['cache'] = (!empty($userId) ? array('key' => $userId.$element, 'time' => '+2 days') : null);
+		$elementCfg['plugin'] = (!empty($plugin) ? $plugin : null);
+		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg), $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
-	# WHEN WORKING ON ELEMENT CHECK THIS : http://blog.japanesetesting.com/2010/04/27/widgity-multi-element-designs-with-cakephp/
+	
 	# matches form calls like {form: Plugin.Model.Type.Limiter} for example {form: Contacts.ContactPeople.add.59}
 	preg_match_all ("/(\{([^\}\{]*)form([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
