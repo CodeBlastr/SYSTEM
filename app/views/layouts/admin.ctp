@@ -14,6 +14,7 @@
 		echo $this->Html->script('addclass');
 		echo $this->Html->script('hide-text-inputs');
 		echo $this->Html->script('jquery.jeditable');
+		echo $this->Html->script('admin');
 		echo $scripts_for_layout;  // to use this specify false for the 'in-line' argument when you put javascript into views -- that will cause your view javascript to be pushed to the <head> ie. $javascript->codeBlock($functionForExemple, array('inline'=>false));
 
 	?>
