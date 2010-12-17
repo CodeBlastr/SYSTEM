@@ -10,31 +10,18 @@
 		echo $this->Html->meta('icon');		
 		echo $this->Html->css('admin');	
 		
-		
-		echo $scripts_for_layout;  // to use this specify false for the 'in-line' argument when you put javascript into views -- that will cause your view javascript to be pushed to the <head> ie. $javascript->codeBlock($functionForExemple, array('inline'=>false));
-
-	?>
-<?php /*  
-<script charset="utf-8" type="text/javascript" src="/img/admin/swfobject.js"></script>
-*/ ?>
-<!-- Default JS -->
-<script type="text/javascript"> 
-		if (typeof SKYPE == "undefined") {
-			var SKYPE = {};
-		}
-		if (typeof SKYPE.settings == "undefined") {
-			SKYPE.settings = {};
-		}
-		SKYPE.settings.assetsPath = "http://www.skypeassets.com";
-	    </script>
-<?php 
 		echo $this->Html->script('admin/jquery-1.4.2.min');
-		
 		echo $this->Html->script('admin/ifixpng');
 		echo $this->Html->script('admin/shop');
 		
 		echo $this->Html->script('jquery.jeditable');
 		echo $this->Html->script('admin');
+		
+		echo $scripts_for_layout;  // to use this specify false for the 'in-line' argument when you put javascript into views -- that will cause your view javascript to be pushed to the <head> ie. $javascript->codeBlock($functionForExemple, array('inline'=>false));
+
+	?>
+<!-- Default JS -->
+<?php 
 ?>
 </head>
 <body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
