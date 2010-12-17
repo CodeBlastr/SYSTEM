@@ -7,20 +7,20 @@ class MenuHelper extends AppHelper {
 		if (!empty($this->value)) {
 			$menu = '';
 			$menu = '
-             	<div id="col2">
-					<h2><span class="punch">Contextual</span> Nav</h2><div id="accordion">';
+             	<ul class="menu">
+					<li class="drop-holder">';
 				foreach ($this->value as $menugroup) :
-					$menu .= '<div><h3><a href="#">'.$menugroup['heading'].'</a></h3>';
+					$menu .= '<li class="drop-holder"><a href="#"><span>'.$menugroup['heading'].'</span></a>';
 						if (!empty($menugroup['items'])):
-							$menu .= '<div><ul>';
+							$menu .= '<ul class="drop">';
 							foreach ($menugroup['items'] as $item) :
 								$menu .= '<li>'.$item.'</li>';
 							endforeach;
-							$menu.= '</ul></div>';
+							$menu.= '</ul>';
 						endif;
-					$menu .= '</div>';
+					$menu .= '';
 				endforeach;
-			$menu .= '</div></div>';
+			$menu .= '</li></ul>';
 		}
 		
 		
