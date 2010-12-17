@@ -104,7 +104,7 @@ class AppController extends Controller {
 		# system wide settings
 		$this->_getConstants();
 		# default template
- 		$this->_getDefaultTemplate();
+ 		if (empty($this->params['requested'])) { $this->_getDefaultTemplate(); }
 		
 /**
  * Implemented for allowing guests access through db acl control
