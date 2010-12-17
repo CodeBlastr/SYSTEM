@@ -212,7 +212,7 @@ $('#contentWrapper div.tabs a').removeClass('active');
 $('#contentWrapper div.tabs a span.ls').addClass('fix');
 $('#contentWrapper div.tabs a span.rs').addClass('fix');*/
 
-$('#startRecommendation, #startCompare').hide();
+$('#tabTwo, #tabOne').hide();
 
 $(this).addClass('active');
 //ie6 png fix
@@ -226,12 +226,12 @@ e.preventDefault();
 $('#technicalFeatures div.tabs').tabMenu2();
 
 /* Getting started recommendations */
-$('#startRecommendation').tabMenu();
+$('#tabTwo').tabMenu();
 
 /* compare chart click */
 $('#compareChart .compareChartContent a').click(function(e){
 $('#notSelected').hide();
-$('#compareBubbleAlert div.active').hide();
+$('#sideBar div.active').hide();
 $('#'+$(this).attr('rel')).addClass('active').show();
 
 var position = $(this).position();
@@ -239,26 +239,25 @@ var top = (position.top-153);
 if(top<45){
 var arrowTop = 208-(45-top);
 top=45;
-$('#compareBubbleArrow').css('top',arrowTop+'px');
+$('#sideBarArrow').css('top',arrowTop+'px');
 }
 if(top>222){
 var arrowTop = 208+(top-257);
 top=257;
-$('#compareBubbleArrow').css('top',arrowTop+'px');
+$('#sideBarArrow').css('top',arrowTop+'px');
 }
 if(top>45 && top<257){
-   $('#compareBubbleArrow').css('top','208px');
+   $('#sideBarArrow').css('top','208px');
 }
-$('#compareBubbleAlert').css('margin-top',top+'px');
 
 $('#compareChart .compareChartContent a').removeClass('home-active').removeClass('any-active').removeClass('work-active').removeClass('work2-active');
 var className = $(this).attr('class');
 $(this).addClass(className + '-active');
-$('#compareBubbleAlert').show();
+$('#sideBar').show();
 e.preventDefault();
 });
-$('#compareBubbleAlert a.close').click(function(e){
-$('#compareBubbleAlert').hide();
+$('#sideBar a.close').click(function(e){
+$('#sideBar').hide();
 e.preventDefault();
 });
 

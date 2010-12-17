@@ -68,7 +68,7 @@ var shopCategoryName = "";
 //]]-->
 </script>
 <?php 
-		echo $this->Html->script('admin/wa-shop');
+		#echo $this->Html->script('admin/wa-shop');
 		echo $this->Html->script('admin/sha1-min');
 		
 		// getting started
@@ -328,40 +328,19 @@ $(document).ready(function(){
 */ ?>
 <div id="contentWrapper">
   <div class="contentHeading">
-	<h1><?php echo $title_for_layout; ?></h1>
+    <h1><?php echo $title_for_layout; ?></h1>
   </div>
-  
-  <div class="tabs">  
-    <a href="http://shop.skype.com/#t1" rel="startCompare" class="active"> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. wikis)</span> <span class="rs">&nbsp;</span> </a> 
-    <a href="http://shop.skype.com/#t2" rel="startRecommendation" class=""> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. user groups)</span> <span class="rs">&nbsp;</span> </a> 
-    
-    <img class="fix shadow" id="bs" src="/img/admin/shadow_knowhow_top.png" width="899" height="10" alt=""> 
-  </div>
-   
-    
-    
+  <div class="tabs"> <a href="#t1" rel="tabOne" class="active"> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. wikis)</span> <span class="rs">&nbsp;</span> </a> <a href="#t2" rel="tabTwo" class=""> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. user groups)</span> <span class="rs">&nbsp;</span> </a> <img class="fix shadow" id="bs" src="/img/admin/shadow_knowhow_top.png" width="899" height="10" alt=""> </div>
   <div class="content">
-    
-    
-    <div id="startCompare" style="display: block; ">
+    <div id="sideBar">
+      <div id="sideBarArrow"> <img src="/img/admin/compare_bubble_alert_arrow.png" width="12" height="31" alt=""> </div>
+      <a href="#" class="close"></a> <?php echo (!empty($menu_for_layout) ? $menu_for_layout : ''); ?> </div>
+    <!-- #compareBubbleAlert -->
+    <div id="tabOne" class="leftContent" style="display: block; ">
       <div id="compareChart">
-        <div id="compareBubbleAlert" style="margin-top: -54px;">
-          
-          
-          <div id="compareBubbleArrow" style="top: 208px;">
-          	<img src="/img/admin/compare_bubble_alert_arrow.png" width="12" height="31" alt="">
-          </div>
-          
-          
-          <a href="#" class="close"></a>
-          
-          <?php echo (!empty($menu_for_layout) ? $menu_for_layout : ''); ?>
-          
-        </div>
-        <!-- #compareBubbleAlert -->
         <div class="compareChartHeader">
           <ul>
-            <li class="info"> 
+            <li class="info">
               <h2>Explanation Text</h2>
               <p>Some text describing this section, so that its easy to use. (put an x button so that you can turn off hints if you want to.</p>
             </li>
@@ -369,16 +348,14 @@ $(document).ready(function(){
         </div>
         <!-- #compareChartHeader -->
         <div class="compareChartContent">
-        	<?php echo $content_for_layout; ?>
+          <?php echo $content_for_layout; ?>
+          <!-- /info-block end -->
         </div>
         <!-- #compareChartContent -->
       </div>
       <!-- #compareChart -->
     </div>
-    
-    <div id="startRecommendation" style="display: none;">
-    
-    
+    <div id="tabTwo" class="leftContent" style="display: none;">
       <div class="navigation">
         <ul class="left">
           <li><a href="#" rel="contentAtHome" class="active">Sub Tab</a></li>
@@ -387,23 +364,125 @@ $(document).ready(function(){
         </ul>
         <div class="clear"></div>
       </div>
-      
-      
-      <div id="contentAtWork" class="tabcontent">
-        <div class="mainContentArea">
-        	<p>put some content here, and some padding on the .mainContentArea </p>
-        </div>
+      <div id="contentAtHome" class="tabcontent" style="display: block; ">
+          <div class="info-block">
+            <div class="title"> <strong class="status">Status: <span>Active</span></strong> <strong>Total Hours: <span>10.00</span></strong>
+              <div class="drop-holder"> <strong>Sort by: <a href="#">Priority</a></strong>
+                <ul class="drop">
+                  <li><a href="#">Created Date</a></li>
+                  <li><a href="#">Modified Date</a></li>
+                  <li><a href="#">Complete Percent</a></li>
+                  <li><a href="#">Estimated Hours</a></li>
+                </ul>
+              </div>
+            </div>
+            <!-- /title end -->
+            <div class="post">
+              <div class="image"> <img src="/img/admin/img01.jpg" alt="image description" width="76" height="78" />
+                <div class="drop-holder"> <a href="#" class="btn">jbyrnes</a>
+                  <ul class="drop">
+                    <li><a href="#">View Profile</a></li>
+                    <li><a href="#">Private Message</a></li>
+                    <li><a href="#">User Group</a></li>
+                  </ul>
+                </div>
+              </div>
+              <!-- /image end -->
+              <div class="text">
+                <div class="links"> <a href="" class="top-button"><img src="/img/admin/ico22.gif" /></a> <a href="" class="botton-button"><img src="/img/admin/ico21.gif" /></a> </div>
+                <ul>
+                  <li>Start: <span>2010-05-19</span></li>
+                  <li>Due: <span>2010-05-20</span></li>
+                  <li>Estimated Hrs: <span>8.00</span></li>
+                  <li>Spent Hrs: <strong>14.42</strong></li>
+                  <li>% Complete: <span>99</span></li>
+                  <li>Modifiedt: <span>2010-05-19</span></li>
+                  <li> Contact: <span>Water Heater Experts</span></li>
+                </ul>
+                <p>You've received source layered source files in a different email. Client would like you to install CMS Made </p>
+                <div class="row"> <a href="#" class="add-note">ADD NOTE</a> <em>note added on 19 May at 5:30pm</em> <a href="#" class="expand">Expand</a> </div>
+              </div>
+            </div>
+            <!-- /post end -->
+            <div class="post post-reply"> <a href="#" class="close">Close</a>
+              <div class="image"> <img src="/img/admin/img02.jpg" alt="image description" width="76" height="77" />
+                <div class="drop-holder"> <a href="#" class="btn">todd</a>
+                  <ul class="drop">
+                    <li><a href="#">View Profile</a></li>
+                    <li><a href="#">Private Message</a></li>
+                    <li><a href="#">User Group</a></li>
+                  </ul>
+                </div>
+              </div>
+              <!-- /image end -->
+              <div class="text">
+                <p>You've received source layered source files in a different email. Client would like you to install CMS Made Simple and put this template over it. We had mentioned that you would have this by 4:00 pm tomorrow. </p>
+                <div class="row"> <a href="#" class="add-note">ADD NOTE</a> <em>note added on 19 May at 6:30pm</em> </div>
+              </div>
+            </div>
+            <!-- /post post-reply end -->
+            <div class="post">
+              <div class="image"> <img src="/img/admin/img01.jpg" alt="image description" width="76" height="78" />
+                <div class="drop-holder"> <a href="#" class="btn">jbyrnes</a>
+                  <ul class="drop">
+                    <li><a href="#">View Profile</a></li>
+                    <li><a href="#">Private Message</a></li>
+                    <li><a href="#">User Group</a></li>
+                  </ul>
+                </div>
+              </div>
+              <!-- /image end -->
+              <div class="text">
+                <div class="links"> <a href="" class="top-button"><img src="/img/admin/ico22.gif" /></a> <a href="" class="botton-button"><img src="/img/admin/ico21.gif" /></a> </div>
+                <ul>
+                  <li>Start: <span>2010-05-19</span></li>
+                  <li>Due: <span>2010-05-20</span></li>
+                  <li>Estimated Hrs: <span>8.00</span></li>
+                  <li>Spent Hrs: <strong>14.42</strong></li>
+                  <li>% Complete: <span>99</span></li>
+                </ul>
+                <p>You've received source layered source files in a different email. Client would like you to install CMS Made Simple and put this template over it. We had mentioned that you would have this by 4:00 pm tomorrow. </p>
+                <div class="row"> <a href="#" class="add-note">ADD NOTE</a> <em>note added on 19 May at 5:30pm</em> </div>
+              </div>
+            </div>
+            <!-- /post end -->
+            <div class="post">
+              <div class="image"> <img src="/img/admin/img01.jpg" alt="image description" width="76" height="78" />
+                <div class="drop-holder"> <a href="#" class="btn">jbyrnes</a>
+                  <ul class="drop">
+                    <li><a href="#">View Profile</a></li>
+                    <li><a href="#">Private Message</a></li>
+                    <li><a href="#">User Group</a></li>
+                  </ul>
+                </div>
+              </div>
+              <!-- /image end -->
+              <div class="text">
+                <div class="links"> <a href="" class="top-button"><img src="/img/admin/ico22.gif" /></a> <a href="" class="botton-button"><img src="/img/admin/ico21.gif" /></a> </div>
+                <ul>
+                  <li>Start: <span>2010-05-19</span></li>
+                  <li>Due: <span>2010-05-20</span></li>
+                  <li>Estimated Hrs: <span>8.00</span></li>
+                  <li>Spent Hrs: <strong>14.42</strong></li>
+                  <li>% Complete: <span>99</span></li>
+                </ul>
+                <p>You've received source layered source files in a different email. Client would like you to install CMS Made Simple and put this template over it. We had mentioned that you would have this by 4:00 pm tomorrow. </p>
+                <div class="row"> <a href="#" class="add-note">ADD NOTE</a> <em>note added on 19 May at 5:30pm</em> </div>
+              </div>
+            </div>
+            <!-- /post end -->
+          </div>
         <div class="clear"></div>
       </div>
-      <div id="contentAtHome" class="tabcontent" style="display: block; ">
+      <div id="contentAtWork" class="tabcontent">
         <div class="mainContentArea">
-        	<p>content here, and some padding on the .mainContentArea </p>
+          <p>put some content here, and some padding on the .mainContentArea </p>
         </div>
         <div class="clear"></div>
       </div>
       <div id="contentAnywhere" class="tabcontent">
         <div class="mainContentArea">
-        	<p>content, and some padding on the .mainContentArea </p>
+          <p>content, and some padding on the .mainContentArea </p>
         </div>
         <div class="clear"></div>
       </div>
@@ -489,8 +568,8 @@ $(document).ready(function(){
 </div>
 <!-- /header end -->
 <div id="main">
-  <div class="heading">
-    <?php /*
+<div class="heading">
+  <?php /*
 					<div class="info-block">
 						<div class="title">
 							<strong class="status">Status: <span>Active</span></strong>
@@ -623,7 +702,7 @@ $(document).ready(function(){
 							</div>
 						</div><!-- /post end -->
 					</div><!-- /info-block end --> */ ?>
-  </div>
-<?php # echo $this->element('sql_dump'); ?>
+</div>
+<?php  echo $this->element('sql_dump'); ?>
 </body>
 </html>
