@@ -3703,39 +3703,8 @@ div.businessRegularHeader #topSplash .lighter {
 	text-decoration:none;
 }
 /* Content container related styles */
-#container {
-	width:960px;
-	margin:0 auto;
-}
-#container.sidebar #content {
-	float:left;
-	padding:0;
-	width:720px;
-}
-#container.sidebar #sidebar {
-	float:right;
-	width:240px;
-	position:relative;
-}
 .leftContent {
 	float:left;
-	padding:0;
-	width:440px;
-	padding-left:20px;
-	padding-right:10px;
-}
-#container.twocolumn #rightContent {
-	float:right;
-	width:440px;
-	padding-left:30px;
-	padding-right:20px;
-	position:relative;
-}
-#container.splitShadow {
-	background:689px bottom no-repeat scroll url('../img/admin/sidebar_end.png');
-}
-#container.splitShadow #content {
-	background:689px top no-repeat scroll url('../img/admin/sidebar_begin.png');
 }
 .middleShadow {
 	background:470px bottom no-repeat scroll url('../img/admin/sidebar_left_end.png');
