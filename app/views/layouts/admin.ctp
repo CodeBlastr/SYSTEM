@@ -28,113 +28,14 @@
 		SKYPE.settings.assetsPath = "http://www.skypeassets.com";
 	    </script>
 <?php 
-		echo $this->Html->script('admin/jquery.min');
-		echo $this->Html->script('admin/skype-common');
-		echo $this->Html->script('admin/skype-helpers');
+		echo $this->Html->script('admin/jquery-1.4.2.min');
 		
 		echo $this->Html->script('admin/ifixpng');
 		echo $this->Html->script('admin/shop');
-		echo $this->Html->script('admin/conditional');
-		echo $this->Html->script('admin/accessories');
-		echo $this->Html->script('admin/mbox');
 		
 		echo $this->Html->script('jquery.jeditable');
 		echo $this->Html->script('admin');
 ?>
-<style>
-.mboxDefault {
-	visibility:hidden;
-}
-</style>
-<style type="text/css" media="screen">
-#skypedetectioncontainer {
-	visibility:hidden
-}
-</style>
-<?php /*
-<div class="mboxDefault" style="visibility: visible; display: block; "></div>
-<div id="mboxMarker-default-skypeShop_onClick-0" style="visibility:hidden;display:none">&nbsp;</div>
-<!-- TEMP --> */ ?>
-<?php 
-		echo $this->Html->script('admin/wa-external');
-		echo $this->Html->script('admin/wa-core');
-		# echo $this->Html->script('admin/s_code'); // site catalyst (omniture)
-?>
-<script type="text/javascript">
-//<!--[CDATA[
-var gotErrorPage = "";
-var shopProductName = "";
-var shopCategoryName = "";
-//]]-->
-</script>
-<?php 
-		#echo $this->Html->script('admin/wa-shop');
-		echo $this->Html->script('admin/sha1-min');
-		
-		// getting started
-		echo $this->Html->script('admin/en_US');
-		echo $this->Html->script('admin/JSWorld.min');
-?>
-<script type="text/javascript">
-var locale = new jsworld.Locale(POSIX_LC.en_US);
-var monFormatter = new jsworld.MonetaryFormatter(locale);
-</script>
-<script type="text/javascript"> 
-/* <![CDATA[ */
-$(document).ready(function(){ 
-
-   $('#prodPromo').data('shop',{ ProdId: '10030-AA-NA', ShopId: '29659'});      
-           
-    $('.buy_now').each(function(index) {
-        //alert(index + ': ' + $(this).attr('id') + ' Shop ID : ' + $('[id='+this.id+']').data('shop').ShopId  );
-       getShopCostButton($('[id='+this.id+']').data('shop').ProdId,$('[id='+this.id+']').data('shop').ShopId,$(this).attr('id'));
-        
-      });
-
-   function getShopCostButton(intProdId,intShopId,strDivID)
-   {  
-   
-   $.getJSON("http://shop.skype.com/proxy/proxy.php?productid="+intProdId+"&shopid="+intShopId+"&jsoncallback=?", displayShop);
-
-        function displayShop(data) {    
-         
-        var strH = ""; 
-        var strShopExclude = "";
-        var strBuyNow = "Buy now";
-        var strFrom = "from";
-        //debugger
-        //var strDeliveryCopy = "Free delivery";
-        var x = 0; 
-        // Now start cycling through our array
-        $.each(data, function(i,item){
-        
-        if (strShopExclude.indexOf(item.StoreName) == -1)
-         {
-            x = x + 1;        
-
-            if (x <= 1){                 
-                strH = strH + '<span class="buttonGreen"><a href="' + item.Url + '" class="buynow" onclick="tt_Redirect(\''+ item.Url +'\');return false;" target="_blank"><span class="text">' + strBuyNow + '<\/span><span class="rs">&nbsp;<\/span><\/a><\/span>';
-				strH = strH + '<p class="priceLrg">'+ monFormatter.format(item.Cost.replace("$","")) +'<\/p>';
-            }
-        } 
-        
-   
-        
-        }); 
-        
-        // Pop our HTML in the #images DIV 
-        $('#' + strDivID ).append(strH);
-        
-        //skypeShop.initTooltips(); 
-        // Close down the JSON call
-        }
-    }
-    
-    });
-
-
-/* ]]> */
-</script>
 </head>
 <body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
 <div id="awesomeHeader">
