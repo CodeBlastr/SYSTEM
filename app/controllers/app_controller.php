@@ -26,7 +26,7 @@ class AppController extends Controller {
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
-	var $userGroup = '';
+	var $userRole = '';
 /**
  * Fired early in the display process for defining app wide settings
  *
@@ -61,28 +61,27 @@ class AppController extends Controller {
 */
 		
         $this->Auth->loginAction = array(
-			'plugin' => null,
+			'plugin' => 'users',
 			'controller' => 'users',
 			'action' => 'login'
 			);
 		
         $this->Auth->logoutRedirect = array(
-			'plugin' => null,
+			'plugin' => 'users',
 			'controller' => 'users',
 			'action' => 'login'
 			);
         
         $this->Auth->loginRedirect = array(
-			'plugin' => null,
+			'plugin' => 'users',
 			'controller' => 'users',
-			'action' => 'view'
+			'action' => 'my',
 			);
-		
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
 		$allowedActions =  array('display');
 		$this->Auth->authorize = 'controller';
-		if ($this->allowedActions) {
+		if (!empty($this->allowedActions)) {
 			$allowedActions = array_merge($allowedActions, $this->allowedActions);
 			$this->Auth->allowedActions = $allowedActions;
 		}
@@ -777,7 +776,7 @@ class AppController extends Controller {
 	function isAuthorized() {	
 		$userId = $this->Auth->user('id');
 		# this allows all users in the administrators group access to everything
-		if ($this->Auth->user('user_group_id') == 1) { return true; } 
+		if ($this->Auth->user('user_role_id') == 1) { return true; } 
 		# check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
@@ -838,10 +837,10 @@ class AppController extends Controller {
  * Gets the variables used for the lookup of the guest aro id
  */
 	function _guestsAro() {
-		if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
-			$guestsAro = array('model' => 'UserGroup', 'foreign_key' => __SYS_GUESTS_USER_GROUP_ID);
+		if (defined('__SYS_GUESTS_USER_ROLE_ID')) {
+			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYS_GUESTS_USER_ROLE_ID);
 		} else {
-			echo 'In /admin/settings key: SYS, value: GUESTS_USER_GROUP_ID must be defined for guest access to work.';
+			echo 'In /admin/settings key: SYS, value: GUESTS_USER_ROLE_ID must be defined for guest access to work.';
 		}
 		return $guestsAro;
 	}

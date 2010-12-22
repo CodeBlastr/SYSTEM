@@ -63,7 +63,7 @@ if (!empty($defaultTemplate)) {
 		$element = trim($matches[4][$i]);
 		if(strpos($element, '.')) { $element = explode('.', $element);  $plugin = $element[0]; $element = $element[1]; }	
 		$userId = $this->Session->read('Auth.User.id');
-		# if user exists create a user cache, else no cache  // not optimal, but a temporary fix // we may need to add caching options to the element call, ie. {element: profiles.snpsht.cache.user} - but that is getting a bit harder to swallow. But its also hard to swallow a cache directory of potentially {10} times the {Number of Users}, if you have 10 elements and they're all cached by UserId.
+		# if user exists create a user cache, else no cache  // not optimal, but a temporary fix // we may need to add caching options to the element call, ie. {element: users.snpsht.cache.user} - but that is getting a bit harder to swallow. But its also hard to swallow a cache directory of potentially {10} times the {Number of Users}, if you have 10 elements and they're all cached by UserId.
 		$elementCfg['cache'] = (!empty($userId) ? array('key' => $userId.$element, 'time' => '+2 days') : null);
 		$elementCfg['plugin'] = (!empty($plugin) ? $plugin : null);
 		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg), $defaultTemplate['Webpage']['content']);
