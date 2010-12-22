@@ -32,7 +32,7 @@
         <div id="secure">
           <div class="loggedIn <?php if(!$session->read('Auth.User')) { echo 'hidden'; } ?>"> <a href="/admin/settings"><span>Settings</span></a> <span class="verticalSeparator"></span> <a href="/admin/settings"><?php echo __SYS_ZUHA_DB_VERSION; ?></a> <span class="verticalSeparator"></span> <a href="/users/logout"><span>Logout</span></a> <span class="verticalSeparator"></span>
             <p>Welcome <span class="username"><?php echo $session->read('Auth.User.username'); ?></span></p>
-            <?php echo $this->element('snpsht', array('plugin' => 'profiles', 'useGallery' => true, 'userId' => $session->read('Auth.User.id'), 'thumbAlt' => $session->read('Auth.User.username'), 'thumbTitle' => $session->read('Auth.User.username'))); ?> </div>
+            <?php echo $this->element('snpsht', array('plugin' => 'users', 'useGallery' => true, 'userId' => $session->read('Auth.User.id'), 'thumbAlt' => $session->read('Auth.User.username'), 'thumbTitle' => $session->read('Auth.User.username'))); ?> </div>
           <div class="default <?php if($session->read('Auth.User.username')) { echo 'hidden'; } ?>"> <a id="join" class="button2 altCta2" href="/users/add"><span>Sign Up</span></a> <a id="join" class="button2 altCta2" href="/users/login"><span>Sign In</span></a> </div>
         </div>
         <!-- secure -->
@@ -75,7 +75,6 @@
                     <ul>
                       <li class="title">Users</li>
                       <li><a href="/admin/users">Users</a></li>
-                      <li><a href="/admin/profiles">Profiles</a></li>
                     </ul>
                     <p class="otherFeatures"><a href="#" title="Contacts Dashboard">Contacts Dashboard</a></p>
                   </div>
@@ -218,7 +217,7 @@
   <div class="contentHeading">
     <h1><?php echo $title_for_layout; ?></h1>
   </div>
-  <div class="tabs"> <a href="#t1" rel="tabOne" class="active"> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. wikis)</span> <span class="rs">&nbsp;</span> </a> <a href="#t2" rel="tabTwo" class=""> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. user groups)</span> <span class="rs">&nbsp;</span> </a> <img class="fix shadow" id="bs" src="/img/admin/shadow_knowhow_top.png" width="899" height="10" alt=""> </div>
+  <div class="tabs"> <a href="#t1" rel="tabOne" class="active"> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. wikis)</span> <span class="rs">&nbsp;</span> </a> <a href="#t2" rel="tabTwo" class=""> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. user roles)</span> <span class="rs">&nbsp;</span> </a> <img class="fix shadow" id="bs" src="/img/admin/shadow_knowhow_top.png" width="899" height="10" alt=""> </div>
   <div class="content">
     <div id="sideBar">
       <div id="sideBarArrow"> <img src="/img/admin/compare_bubble_alert_arrow.png" width="12" height="31" alt=""> </div>
@@ -269,9 +268,9 @@
               <div class="image"> <img src="/img/admin/img01.jpg" alt="image description" width="76" height="78" />
                 <div class="drop-holder"> <a href="#" class="btn">jbyrnes</a>
                   <ul class="drop">
-                    <li><a href="#">View Profile</a></li>
+                    <li><a href="/users/users/view">View Profile</a></li>
                     <li><a href="#">Private Message</a></li>
-                    <li><a href="#">User Group</a></li>
+                    <li><a href="#">User Role</a></li>
                   </ul>
                 </div>
               </div>
@@ -298,7 +297,7 @@
                   <ul class="drop">
                     <li><a href="#">View Profile</a></li>
                     <li><a href="#">Private Message</a></li>
-                    <li><a href="#">User Group</a></li>
+                    <li><a href="#">User Role</a></li>
                   </ul>
                 </div>
               </div>
@@ -315,7 +314,7 @@
                   <ul class="drop">
                     <li><a href="#">View Profile</a></li>
                     <li><a href="#">Private Message</a></li>
-                    <li><a href="#">User Group</a></li>
+                    <li><a href="#">User Role</a></li>
                   </ul>
                 </div>
               </div>
@@ -340,7 +339,7 @@
                   <ul class="drop">
                     <li><a href="#">View Profile</a></li>
                     <li><a href="#">Private Message</a></li>
-                    <li><a href="#">User Group</a></li>
+                    <li><a href="#">User Role</a></li>
                   </ul>
                 </div>
               </div>
@@ -480,7 +479,7 @@
 									<ul class="drop">
 										<li><a href="#">View Profile</a></li>
 										<li><a href="#">Private Message</a></li>
-										<li><a href="#">User Group</a></li>
+										<li><a href="#">User Role</a></li>
 									</ul>
 								</div>
 							</div><!-- /image end -->
@@ -515,7 +514,7 @@
 									<ul class="drop">
 										<li><a href="#">View Profile</a></li>
 										<li><a href="#">Private Message</a></li>
-										<li><a href="#">User Group</a></li>
+										<li><a href="#">User Role</a></li>
 									</ul>
 								</div>
 							</div><!-- /image end -->
@@ -535,7 +534,7 @@
 									<ul class="drop">
 										<li><a href="#">View Profile</a></li>
 										<li><a href="#">Private Message</a></li>
-										<li><a href="#">User Group</a></li>
+										<li><a href="#">User Role</a></li>
 									</ul>
 								</div>
 							</div><!-- /image end -->
@@ -566,7 +565,7 @@
 									<ul class="drop">
 										<li><a href="#">View Profile</a></li>
 										<li><a href="#">Private Message</a></li>
-										<li><a href="#">User Group</a></li>
+										<li><a href="#">User Role</a></li>
 									</ul>
 								</div>
 							</div><!-- /image end -->
