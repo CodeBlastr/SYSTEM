@@ -25,11 +25,7 @@
 class UserGroupsController extends AppController {
 
 	var $name = 'UserGroups';
-	
-	function beforeFilter() {
-	    parent::beforeFilter(); 
-	    $this->Auth->allowedActions = array('build_acl', 'admin_add', 'admin_index', 'admin_delete');
-	}
+	var $allowedActions = array('build_acl', 'admin_add', 'admin_index', 'admin_delete');
 
 	function admin_index() {		
 		$this->UserGroup->recursive = 0;
