@@ -80,8 +80,12 @@ class AppController extends Controller {
 		
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
-		$this->Auth->allowedActions = array('display');
+		$allowedActions =  array('display');
 		$this->Auth->authorize = 'controller';
+		if ($this->allowedActions) {
+			$allowedActions = array_merge($allowedActions, $this->allowedActions);
+			$this->Auth->allowedActions = $allowedActions;
+		}
 		
 /**
  * Support for json file types when using json extensions
@@ -110,7 +114,7 @@ class AppController extends Controller {
  * Implemented for allowing guests access through db acl control
  */	
 		$userId = $this->Auth->user('id');
-		if (empty($userId)) {
+		if (empty($userId) && !array_search($this->params['action'], $allowedActions)) {
 			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get controller and action 
 			# this first one checks record level if record level exists
