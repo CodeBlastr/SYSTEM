@@ -15,7 +15,7 @@ class LoginHelper extends AppHelper {
 				'plugin' => 'users',
 				'controller' => 'users',
 				'action' => 'view',
-				'user_id' => $this->Session->read('Auth.User.id'),
+				$this->Session->read('Auth.User.id'),
 			), array(
 				'class' => 'login-link',
 				'id' => 'userid-link'

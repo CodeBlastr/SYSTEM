@@ -75,9 +75,8 @@ class AppController extends Controller {
         $this->Auth->loginRedirect = array(
 			'plugin' => 'users',
 			'controller' => 'users',
-			'action' => 'view'
+			'action' => 'my',
 			);
-		
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
 		$allowedActions =  array('display');
