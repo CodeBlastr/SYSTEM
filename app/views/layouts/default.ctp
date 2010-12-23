@@ -75,7 +75,8 @@ if (!empty($defaultTemplate)) {
 	$i = 0;
 	foreach ($matches[0] as $elementMatch) {
 		$formCfg['id'] = trim($matches[4][$i]);
-		$formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
+		# removed cache for forms, because you can't set it based on form inputs
+		# $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
 		$formCfg['plugin'] = 'forms';
 		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element('forms', $formCfg), $defaultTemplate['Webpage']['content']);
 		$i++;
