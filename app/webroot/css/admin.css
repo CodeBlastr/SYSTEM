@@ -895,6 +895,14 @@ div.code-coverage-results span.result-good {
 	position: relative;
 	top: 7px;
 }
+#secure .user-thumb {
+	float: right;
+}
+#secure .user-thumb img {
+	float: right;
+	max-width: 25px;
+	max-height: 25px;
+}
 * html #secure span.verticalSeparator {
 	background: url('../img/admin/header_sprite_8bit.png') no-repeat 0 -200px;
 }
