@@ -117,6 +117,9 @@
                       <li><a href="/admin/webpages">Pages</a></li>
                       <li class="sublink"><a href="/admin/forms">Forms</a></li>
                       <li class="sublink separator"><a href="/kcfinder/kcfinder">File Manager</a></li>
+                      <li ><a href="/admin/forums">Forums</a></li>
+                      <li class="sublink"><a href="/admin/forums/topics">Topics</a></li>
+                      <li class="sublink"><a href="/admin/forums/posts">Posts</a></li>
                       <li><a href="/admin/blogs">Blogs</a></li>
                       <li><a href="/admin/wikis">Wikis</a></li>
                       <li><a href="/admin/tags">Tags</a></li>
