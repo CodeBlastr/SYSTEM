@@ -794,7 +794,7 @@ class AppController extends Controller {
 				return true;
 			} else {
 				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
-				$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 			}	
 		} 
 	}
