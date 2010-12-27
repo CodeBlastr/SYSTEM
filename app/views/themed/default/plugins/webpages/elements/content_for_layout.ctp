@@ -48,26 +48,6 @@
 </style>
 <script type="text/javascript" >
 	var myStyles = new Array('tmp');
-
-    /*function fixEditorPosition () {
-        if ($(editor.container).length > 0) {
-            $(editor.container.$).addClass('system_editor'); //Add mark for our editors
-            $(editor.container.$).find('span [class=cke_toolbox]').addClass('my_cke_toolbox'); // Up toolbox
-            // Move editor into body
-            var editor_left = $(editor.container.$).position().left;
-            var editor_top  =  $(editor.container.$).position().top;
-            $(editor.container.$).css('position', 'absolute');
-            var editor_element = $(editor.container.$).detach();
-            $(document.body).append(editor_element);
-            editor_element.css({top: editor_top, left: editor_left});
-            alert('test1');
-        }
-        else {
-            setTimeout(fixEditorPosition(), 100);
-            alert('test2');
-        }
-    }*/
-
 	//TODO Fix session lose
 	function goEdit(id) {
 		if (!destroyCKE()) {
@@ -87,8 +67,14 @@
 			}
 		});
         $(document.body).append('<div id="background_layer" onclick="destroyCKE();"></div>');
-		editor = CKEDITOR.replace(id, {width: edit_width, height: edit_height, toolbarCanCollapse: false, startupFocus: true});
-        //timer = setTimeout(fixEditorPosition(), 100);
+		var editor = CKEDITOR.replace(id, {width: edit_width, height: edit_height, toolbarCanCollapse: false, startupFocus: true});
+        // Move editor into body
+        /*var editor_left = $(editor.container.$).position().left;
+        var editor_top  =  $(editor.container.$).position().top;
+        $(editor.container.$).css('position', 'absolute');
+        var editor_element = $(editor.container.$).detach();
+        $(document.body).append(editor_element);
+        editor_element.css({top: editor_top, left: editor_left});*/
         editor.setData(page_data);
         //dirty hack for fix ckeditor focus
         if ($.inArray(id, myStyles)) {
