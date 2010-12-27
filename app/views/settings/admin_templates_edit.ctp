@@ -1,8 +1,9 @@
-<div class="temlates form">
-<?php echo $form->create('Template', array('url' => '/admin/settings/templates_edit/'. $this->data['Template']['id'] + 1));?>
+<div class="templates form">
+<?php echo $form->create('Template', array('url' => '/admin/settings/templates_edit/'.($this->data['Template']['id'])));?>
 	<fieldset>
  		<legend><?php __('Edit Template');?></legend>
 	<?php
+        echo $form->input('id', array('type' => 'hidden'));
 		echo $form->input('template_id', array('type' => 'text'));
 		echo $form->input('plugin');
 		echo $form->input('controller');

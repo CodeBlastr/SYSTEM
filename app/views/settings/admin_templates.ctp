@@ -1,10 +1,6 @@
 <div class="settings index">
 <h2><?php __('Settings');?></h2>
-<?php
-echo $paginator->counter(array(
-'format' => __('Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%', true)
-));
-?></p>
+</p>
 <table cellpadding="0" cellspacing="0">
 <tr>
     <th><?php echo $paginator->sort('id');?></th>
@@ -26,7 +22,7 @@ foreach ($templates as $template):
 ?>
 	<tr<?php echo $class;?>>
         <td>
-			<?php echo $template['Template']['id'] + 1; ?>
+			<?php echo $template['Template']['id']; ?>
 		</td>
 		<td>
 			<?php echo $template['Template']['template_id']; ?>
@@ -44,17 +40,20 @@ foreach ($templates as $template):
 			<?php echo $template['Template']['parameter']; ?>
 		</td>
 		<td class="actions">
-			<?php echo $html->link(__('Edit', true), array('action' => 'templates_edit', $i)); ?>
-			<?php echo $html->link(__('Delete', true), array('action' => 'templates_delete', $i), null, sprintf(__('Are you sure you want to delete # %s?', true), $i)); ?>
+			<?php echo $html->link(__('Edit', true), array('action' => 'templates_edit', $template['Template']['id'])); ?>
+			<?php echo $html->link(__('Delete', true), array('action' => 'templates_delete', $template['Template']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $i)); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
 </table>
 </div>
 <div class="paging">
-	<?php echo $paginator->prev('<< '.__('previous', true), array(), null, array('class'=>'disabled'));?>
- | 	<?php echo $paginator->numbers();?>
-	<?php echo $paginator->next(__('next', true).' >>', array(), null, array('class' => 'disabled'));?>
+	<?php //echo $paginator->prev('<< '.__('previous', true), array(), null, array('class'=>'disabled'));
+    ?>
+ | 	<?php //echo $paginator->numbers();
+    ?>
+	<?php //echo $paginator->next(__('next', true).' >>', array(), null, array('class' => 'disabled'));
+    ?>
 </div>
 <div class="actions">
 	<ul>

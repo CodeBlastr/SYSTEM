@@ -191,7 +191,7 @@ class AppController extends Controller {
                 {
                     $templates = explode(',',$split[1]);
                     $result = array();
-                    $i = 0;
+                    $i = 1;
                     foreach($templates as $template)
                     {
                         preg_match('/\{(\d+)\}\{(\S*?)\}/i', $template, $params);
@@ -199,7 +199,7 @@ class AppController extends Controller {
                         $arr = array('id' => $i, 'template_id' => strval($params[1]),
                             'plugin' => $values[0], 'controller' => $values[1],
                                             'action' => $values[2], 'parameter' => $values[3]);
-                        $result[] = $arr;
+                        $result[$i] = $arr;
                         $i++;
                     }
                     if(!empty($result))
