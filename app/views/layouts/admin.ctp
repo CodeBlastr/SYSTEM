@@ -222,8 +222,11 @@
   <div class="tabs"> <a href="#t1" rel="tabOne" class="active"> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. wikis)</span> <span class="rs">&nbsp;</span> </a> <a href="#t2" rel="tabTwo" class=""> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. user roles)</span> <span class="rs">&nbsp;</span> </a> <img class="fix shadow" id="bs" src="/img/admin/shadow_knowhow_top.png" width="899" height="10" alt=""> </div>
   <div class="content">
     <div id="sideBar">
-      <div id="sideBarArrow"> <img src="/img/admin/compare_bubble_alert_arrow.png" width="12" height="31" alt=""> </div>
-      <a href="#" class="close"></a> <?php echo (!empty($menu_for_layout) ? $menu_for_layout : ''); ?> </div>
+      <div id="sideBarArrow"> 
+      	<img src="/img/admin/compare_bubble_alert_arrow.png" width="12" height="31" alt=""> 
+      </div>
+      <a href="#" class="close"></a> <?php echo (!empty($menu_for_layout) ? $menu_for_layout : ''); ?> 
+    </div>
     <!-- #compareBubbleAlert -->
     <div id="tabOne" class="leftContent" style="display: block; ">
       <div id="compareChart">
