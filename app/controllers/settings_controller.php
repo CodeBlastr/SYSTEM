@@ -16,7 +16,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.controllers
  * @since         Zuha(tm) v 0.0.1
@@ -26,6 +26,7 @@
 class SettingsController extends AppController {
 
 	var $name = 'Settings';
+    var $uses = array('Setting', 'Template');
 
 	function index() {
 		$this->Setting->recursive = 0;
@@ -136,5 +137,25 @@ class SettingsController extends AppController {
 		}
 	}
 
+    function admin_templates() {
+        $this->Template->records = $this->multi_templates_ids;
+        $data = $this->paginate();
+		$this->set('templates', $this->Template->find('all'));
+	}
+
+    function admin_templates_edit($id = null) {
+        if (!$id && empty($this->data)) {
+			$this->Session->setFlash(__('Invalid Setting', true));
+			$this->redirect(array('action'=>'index'));
+		}
+		if (!empty($this->data)) {
+            $this->multi_templates_ids[(int)(--$id)] = $this->data;
+			$this->Session->setFlash(__('The Setting has been saved', true));
+			//$this->redirect(array('controller'=>'admin' ,'action'=>'settings'));
+		}
+		if (empty($this->data)) {
+			$this->data['Template'] = $this->multi_templates_ids[(int)(--$id)];
+		}
+	}
 }
 ?>
