@@ -10,12 +10,12 @@
 		echo $this->Html->meta('icon');		
 		echo $this->Html->css('admin');	
 		
-		echo $this->Html->script('admin/jquery-1.4.2.min');
+		echo $this->Html->script('jquery-1.4.2.min');
 		echo $this->Html->script('admin/ifixpng');
 		echo $this->Html->script('admin/shop');
 		
 		echo $this->Html->script('jquery.jeditable');
-		echo $this->Html->script('admin');
+		echo $this->Html->script('admin/admin');
 		
 		echo $scripts_for_layout;  // to use this specify false for the 'in-line' argument when you put javascript into views -- that will cause your view javascript to be pushed to the <head> ie. $javascript->codeBlock($functionForExemple, array('inline'=>false));
 
