@@ -895,6 +895,14 @@ div.code-coverage-results span.result-good {
 	position: relative;
 	top: 7px;
 }
+#secure .user-thumb {
+	float: right;
+}
+#secure .user-thumb img {
+	float: right;
+	max-width: 25px;
+	max-height: 25px;
+}
 * html #secure span.verticalSeparator {
 	background: url('../img/admin/header_sprite_8bit.png') no-repeat 0 -200px;
 }
@@ -3949,27 +3957,27 @@ div.infobox.reviewproduct h2 {
 	min-height:38px!important;
 	height:38px;
 }
-#compareChartSmall div.compareChartContent {
+#compareChartSmall div.contentSection {
 	background:320px 0px repeat-y url('../img/admin/compare_chart_small_bg.png');
 	padding:10px 0px 70px 0px;
 }
-#compareChartSmall div.compareChartContent div {
+#compareChartSmall div.contentSection div {
 	height:54px;
 	margin-bottom:1px;
 }
-#compareChartSmall div.compareChartContent div.plugin {
+#compareChartSmall div.contentSection div.plugin {
 	background:top left no-repeat url('../img/admin//i/images/graphics/compare_small_plugin.jpg');
 }
-#compareChartSmall div.compareChartContent div.cordless {
+#compareChartSmall div.contentSection div.cordless {
 	background:top left no-repeat url('../img/admin//i/images/graphics/compare_small_cordless.jpg');
 }
-#compareChartSmall div.compareChartContent div.wifi {
+#compareChartSmall div.contentSection div.wifi {
 	background:top left no-repeat url('../img/admin//i/images/graphics/compare_small_wifi.jpg');
 }
-#compareChartSmall div.compareChartContent div.mobile {
+#compareChartSmall div.contentSection div.mobile {
 	background:top left no-repeat url('../img/admin//i/images/graphics/compare_small_mobile.jpg');
 }
-#compareChartSmall div.compareChartContent span {
+#compareChartSmall div.contentSection span {
 	display:block;
 	height:54px;
 	width:300px;/*200px;*/
@@ -3980,13 +3988,13 @@ div.infobox.reviewproduct h2 {
 	font-weight:bold;
 	padding:0px 480px 0px 0px;
 }
-#compareChartSmall div.compareChartContent span.home {
+#compareChartSmall div.contentSection span.home {
 	background:340px 0px no-repeat url('../img/admin/compare_ticks_small.gif');
 }
-#compareChartSmall div.compareChartContent span.work, #compareChartSmall div.compareChartContent span.work2 {
+#compareChartSmall div.contentSection span.work, #compareChartSmall div.contentSection span.work2 {
 	background:340px -55px no-repeat url('../img/admin/compare_ticks_small.gif');
 }
-#compareChartSmall div.compareChartContent span.any {
+#compareChartSmall div.contentSection span.any {
 	background:340px -111px no-repeat url('../img/admin/compare_ticks_small.gif');
 }
 /* Technical Features related styles */ 
@@ -5021,7 +5029,7 @@ margin: auto;
 	position:absolute;
 	margin-top:-53px;
 }
-#compareChart .compareChartContent {
+#compareChart .contentSection {
 	width:673px;
 	position:relative;
 	z-index:250;
@@ -5029,7 +5037,7 @@ margin: auto;
 	background:top left repeat-y url('../img/admin/compare_chart_bg.png') #ffffff;
 	float: left;
 }
-#compareChart .compareChartContent a {
+#compareChart .contentSection a {
 	/*display:block;
 	height:35px;
 	line-height:35px;
@@ -5037,30 +5045,30 @@ margin: auto;
 	font-size:14px;
 	font-weight:bold;*/
 }
-#compareChart .compareChartContent h2 {
+#compareChart .contentSection h2 {
 	color:#525252;
 	margin:0px;
 	padding:23px 0px 15px 0px;
 }
-#compareChart .compareChartContent a.home {
+#compareChart .contentSection a.home {
 	background:197px 0px no-repeat url('../img/admin/compare_ticks.gif');
 }
-#compareChart .compareChartContent a.work, #compareChart .compareChartContent a.work2 {
+#compareChart .contentSection a.work, #compareChart .contentSection a.work2 {
 	background:197px -38px no-repeat url('../img/admin/compare_ticks.gif');
 }
-#compareChart .compareChartContent a.any {
+#compareChart .contentSection a.any {
 	background:197px -76px no-repeat url('../img/admin/compare_ticks.gif');
 }
-#compareChart .compareChartContent a.home-active {
+#compareChart .contentSection a.home-active {
 	background:197px -114px no-repeat url('../img/admin/compare_ticks.gif');
 }
-#compareChart .compareChartContent a.work-active, #compareChart .compareChartContent a.work2-active {
+#compareChart .contentSection a.work-active, #compareChart .contentSection a.work2-active {
 	background:197px -152px no-repeat url('../img/admin/compare_ticks.gif');
 }
-#compareChart .compareChartContent a.any-active {
+#compareChart .contentSection a.any-active {
 	background:197px -190px no-repeat url('../img/admin/compare_ticks.gif');
 }
-#compareChart .compareChartContent a.home-active, #compareChart .compareChartContent a.work-active, #compareChart .compareChartContent a.work2-active, #compareChart .compareChartContent a.any-active {
+#compareChart .contentSection a.home-active, #compareChart .contentSection a.work-active, #compareChart .contentSection a.work2-active, #compareChart .contentSection a.any-active {
 	color:#3A3A3A;
 	text-decoration:none;
 	cursor:default;

@@ -188,7 +188,7 @@ class AppModel extends Model {
  *
  * @param {recordEntities}		An array of entities which should be subject to record level access control.
  * @return {array}				An array of user ids that should have access to the record.  (ie. assignee_id, user_id)
- * @todo						We could easily add UserGroup to this array, and control group record level access for groups per save as well.  We would need to just add a model = key into the aro lookup in acl_extra as well.
+ * @todo						We could easily add UserRole to this array, and control group record level access for groups per save as well.  We would need to just add a model = key into the aro lookup in acl_extra as well.
  */
 	function _isRecordLevelRecord($recordEntities) {
 		# create the array
