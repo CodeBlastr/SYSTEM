@@ -82,7 +82,7 @@ class AppController extends Controller {
 		# pulls in the hard coded allowed actions from the current controller
 		$allowedActions =  array('display');
 		$this->Auth->authorize = 'controller';
-		if ($this->allowedActions) {
+		if (!empty($this->allowedActions)) {
 			$allowedActions = array_merge($allowedActions, $this->allowedActions);
 			$this->Auth->allowedActions = $allowedActions;
 		}

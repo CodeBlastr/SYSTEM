@@ -41,7 +41,6 @@
 </head>
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>">
 
-
 <?php 
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
