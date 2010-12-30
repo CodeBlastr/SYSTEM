@@ -125,4 +125,15 @@ App::build(array(
 	    }
 	}
 	
+	function elementSettings($string) {
+		$return = array();
+		$vars = explode(',', $string);
+		foreach ($vars as $var) {
+			$var = explode('.', $var);
+			$set[$var[0]] = $var[1];
+			$return = array_merge($return, $set);
+		}
+		return $return;
+	}
+	
 ?>

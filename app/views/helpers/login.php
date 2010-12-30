@@ -12,10 +12,10 @@ class LoginHelper extends AppHelper {
 		if (!empty($user_id)) {
 			$login .= '<p>'.__('Welcome ', true);
 			$login .= $this->Html->link(__($this->Session->read('Auth.User.username'), true), array(
-				'plugin' => 'profiles',
-				'controller' => 'profiles',
+				'plugin' => 'users',
+				'controller' => 'users',
 				'action' => 'view',
-				'user_id' => $this->Session->read('Auth.User.id'),
+				$this->Session->read('Auth.User.id'),
 			), array(
 				'class' => 'login-link',
 				'id' => 'userid-link'
@@ -23,7 +23,7 @@ class LoginHelper extends AppHelper {
 			);
 			$login .= __(' - ', true);
 			$login .= $this->Html->link(__('Logout', true), array(
-				'plugin' => null,
+				'plugin' => 'users',
 				'controller' => 'users',
 				'action' => 'logout',
 			), array(
@@ -33,7 +33,7 @@ class LoginHelper extends AppHelper {
 			);
 		} else {
 			$login .= $this->Html->link(__('Sign up', true), array(
-				'plugin' => null,
+				'plugin' => 'users',
 				'controller' => 'users',
 				'action' => 'add',
 				'id' => 'login-signup',
@@ -45,7 +45,7 @@ class LoginHelper extends AppHelper {
 			);
 			$login .= __(' - ', true);
 			$login .= $this->Html->link(__('Sign in', true), array(
-				'plugin' => null,
+				'plugin' => 'users',
 				'controller' => 'users',
 				'action' => 'login',
 			), array(

@@ -16,10 +16,10 @@
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
  * @link          http://zuha.com Zuha™ Project
  * @package       zuha
- * @subpackage    zuha.app.models
+ * @subpackage    zuha.app.models.behaviors
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
- * @todo		  AclExtraBehavior class should work with groups as well as users, so that we make better use of repeat code.  Right now webpages controller has its own user group code and that could be removed, and it could be implemented better using this behavior attachment.
+ * @todo		  AclExtraBehavior class should work with groups as well as users, so that we make better use of repeat code.  Right now webpages controller has its own user role code and that could be removed, and it could be implemented better using this behavior attachment.
  * @todo		  AclExtraBehavior needs delete functionality implemented. 
  */
 class AclExtraBehavior extends ModelBehavior {
@@ -35,9 +35,9 @@ class AclExtraBehavior extends ModelBehavior {
 		if (!empty($data['RecordLevelAccess']['User'])) {
 			$aroModel = 'User';
 			$aroUsers = $data['RecordLevelAccess']['User'];
-		} else if (!empty($data['RecordLevelAccess']['UserGroup'])) {
-			$aroModel = 'UserGroup';
-			$aroUsers = $data['RecordLevelAccess']['UserGroup'];
+		} else if (!empty($data['RecordLevelAccess']['UserRole'])) {
+			$aroModel = 'UserRole';
+			$aroUsers = $data['RecordLevelAccess']['UserRole'];
 		} else {
 			return false;
 		}
