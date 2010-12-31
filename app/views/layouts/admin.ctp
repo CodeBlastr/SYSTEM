@@ -15,6 +15,7 @@
 		
 		echo $this->Html->script('jquery.jeditable');
 		echo $this->Html->script('admin/admin');
+		echo $this->Html->script('admin/jquery-ui-1.8.custom.min');
 		
 		echo $scripts_for_layout;  // to use this specify false for the 'in-line' argument when you put javascript into views -- that will cause your view javascript to be pushed to the <head> ie. $javascript->codeBlock($functionForExemple, array('inline'=>false));
 
