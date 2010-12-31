@@ -13,7 +13,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.views.layouts
  * @since         Zuha(tm) v 0.0.1
@@ -41,7 +41,6 @@
 </head>
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>">
 
-
 <?php 
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
@@ -61,10 +60,21 @@ if (!empty($defaultTemplate)) {
 	$i = 0;
 	foreach ($matches[0] as $elementMatch) {
 		$element = trim($matches[4][$i]);
-		if(strpos($element, '.')) { $element = explode('.', $element);  $plugin = $element[0]; $element = $element[1]; }	
-		$userId = $this->Session->read('Auth.User.id');
-		# if user exists create a user cache, else no cache  // not optimal, but a temporary fix // we may need to add caching options to the element call, ie. {element: users.snpsht.cache.user} - but that is getting a bit harder to swallow. But its also hard to swallow a cache directory of potentially {10} times the {Number of Users}, if you have 10 elements and they're all cached by UserId.
-		$elementCfg['cache'] = (!empty($userId) ? array('key' => $userId.$element, 'time' => '+2 days') : null);
+		# this matches a double period in the element template tag
+		if (preg_match('/([a-zA-Z0-9]*)\.([a-zA-Z0-9]*)\.([0-9]*)/', $element)) {
+			# this is used to handle plugin elements
+			$element = explode('.', $element); 
+			$instance = $element[2];
+			$plugin = $element[0];  
+			$element = $element[1]; 
+		} else if (strpos($element, '.')) {
+			# this is used to handle non plugin elements
+			$element = explode('.', $element);  
+			$plugin = $element[0];
+			$element = $element[1];  
+		}
+		# removed cache for forms, because you can't set it based on form inputs
+		# $elementCfg['cache'] = (!empty($userId) ? array('key' => $userId.$element, 'time' => '+2 days') : null);
 		$elementCfg['plugin'] = (!empty($plugin) ? $plugin : null);
 		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg), $defaultTemplate['Webpage']['content']);
 		$i++;
