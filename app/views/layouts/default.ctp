@@ -41,7 +41,6 @@
 </head>
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>">
 
-
 <?php 
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
@@ -71,9 +70,9 @@ if (!empty($defaultTemplate)) {
 		} else if (strpos($element, '.')) {
 			# this is used to handle non plugin elements
 			$element = explode('.', $element);  
-			$instance = $element[2];
+			$plugin = $element[0];
 			$element = $element[1];  
-		} 
+		}
 		# removed cache for forms, because you can't set it based on form inputs
 		# $elementCfg['cache'] = (!empty($userId) ? array('key' => $userId.$element, 'time' => '+2 days') : null);
 		$elementCfg['plugin'] = (!empty($plugin) ? $plugin : null);
