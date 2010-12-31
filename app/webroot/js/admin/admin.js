@@ -1,3 +1,136 @@
+
+//tabs with next/prev buttons
+$.fn.tabMenu = function() {
+
+	return this.each(function() {
+		var $links = $('ul.left a', this);
+		var $prev = $('ul.right a.prev', this);
+		var $next = $('ul.right a.next', this);
+		if($links.size()<=0) return false;
+
+		var current = $('a.active', this)[0] || $($links[0]).addClass('active');
+		var current_index = $links.index(current);
+		var total_links = $links.size()-1;
+
+		$links.each(function(i){
+			$(this).data('index',i);
+			$(this).click(function(e){
+				show($(this).data('index'));
+				e.preventDefault();
+			});
+		});
+
+		function show(index) {
+			//hide current
+			$('#'+$(current).attr('rel')).hide();
+			$(current).removeClass('active');
+		
+			//show selected
+			current = $($links.get(index));
+			current_index = index;
+			$(current).addClass('active');
+			$('#'+$(current).attr('rel')).show();
+	
+			//next/prev
+			if(total_links == index){
+				$next.addClass('disabled');
+				$prev.removeClass('disabled'); 
+			} else if(index == 0){
+				$prev.addClass('disabled');
+				$next.removeClass('disabled'); 
+			} else {
+				$prev.removeClass('disabled');
+				$next.removeClass('disabled'); 
+			} 
+		};
+
+		show(current_index);
+
+	});
+}
+
+//tabs with next/prev buttons
+$.fn.tabMenu2 = function() {
+
+return this.each(function() {
+var $links = $('a', this);
+if($links.size()<=0) return false;
+
+var current = $('a.active', this)[0] || $($links[0]).addClass('active');
+var current_index = $links.index(current);
+var total_links = $links.size()-1;
+
+$links.each(function(i){
+$(this).data('index',i);
+$(this).click(function(e){
+show($(this).data('index'));
+e.preventDefault();
+});
+});
+
+function show(index) { 
+//hide current
+$('#'+$(current).attr('rel')).hide();
+$(current).removeClass('active');
+
+
+//show selected
+current = $($links.get(index));
+current_index = index;
+$(current).addClass('active');
+
+
+$('#'+$(current).attr('rel')).show(); 
+
+}; 
+show(current_index);
+
+});
+}
+
+
+//onload init
+$(function() { 
+
+/* Getting started tabs */
+	$('#contentWrapper div.tabs a').click(function(e){
+	$('#contentWrapper div.tabs a').removeClass('active');
+
+	$('#tabTwo, #tabOne').hide();
+	
+	$(this).addClass('active');
+
+//ie6 png fix
+	$('#contentWrapper div.tabs a span.ls,#contentWrapper div.tabs a span.rs').removeAttr('style').ifixpng();
+		var id = $(this).attr('rel');
+	$('#'+id).show();
+	e.preventDefault();
+});
+
+/* Technical features tabs */
+	$('#technicalFeatures div.tabs').tabMenu2();
+
+/* Getting started recommendations */
+	$('#tabTwo').tabMenu();
+
+/* Sidebar closing link */
+	$('#sideBar a.close').click(function(e){
+		$('#sideBar').hide();
+		e.preventDefault();
+	});
+
+});
+
+/*IE6 image transpancy issue */
+$(document).ready(function(){
+	$('img[src$=.png], span.ls, span.rs').ifixpng();
+});
+
+
+
+
+
+
 // JavaScript Document
 
 /* hide the side bar */

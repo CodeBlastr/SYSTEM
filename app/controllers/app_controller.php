@@ -22,11 +22,15 @@
  */
 class AppController extends Controller {
 	
-    var $uses = array('Setting', 'Condition', 'Webpages.Webpage'); 
+    var $uses = array('Setting', 'Condition', 'Webpages.Webpage');
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
-	var $userGroup = '';
+	var $userRole = '';
+
+    // multiple templates
+    public $multi_templates_ids = null;
+	
 /**
  * Fired early in the display process for defining app wide settings
  *
@@ -61,23 +65,22 @@ class AppController extends Controller {
 */
 		
         $this->Auth->loginAction = array(
-			'plugin' => null,
+			'plugin' => 'users',
 			'controller' => 'users',
 			'action' => 'login'
 			);
 		
         $this->Auth->logoutRedirect = array(
-			'plugin' => null,
+			'plugin' => 'users',
 			'controller' => 'users',
 			'action' => 'login'
 			);
         
         $this->Auth->loginRedirect = array(
-			'plugin' => null,
+			'plugin' => 'users',
 			'controller' => 'users',
-			'action' => 'view'
+			'action' => 'my',
 			);
-		
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
 		$allowedActions =  array('display');
@@ -187,8 +190,28 @@ class AppController extends Controller {
 		  	# this gives you a blank value on the end, but I don't think it matters
 		  	$pairs = explode(';', $value['Setting']['value']);
 		  	foreach ($pairs as $splits) {
-				$split = explode(':', $splits); 
-			  	if(!defined($constant.'_'.$split[0]) && !empty($split[0])){
+				$split = explode(':', $splits);
+                if($split[0] === 'MULTI_TEMPLATE_IDS')
+                {
+                    $templates = explode(',',$split[1]);
+                    $result = array();
+                    $i = 1;
+                    foreach($templates as $template)
+                    {
+                        preg_match('/\{(\d+)\}\{(\S*?)\}/i', $template, $params);
+                        $values = explode('.', $params[2]);
+                        $arr = array('id' => $i, 'template_id' => strval($params[1]),
+                            'plugin' => $values[0], 'controller' => $values[1],
+                                            'action' => $values[2], 'parameter' => $values[3]);
+                        $result[$i] = $arr;
+                        $i++;
+                    }
+                    if(!empty($result))
+                        $this->multi_templates_ids = $result;
+                    else
+                        $this->multi_templates_ids = null;
+                }
+			  	elseif(!defined($constant.'_'.$split[0]) && !empty($split[0])){
 					define($constant.'_'.$split[0], $split[1]);
 			  	}
 			}
@@ -503,19 +526,67 @@ class AppController extends Controller {
 	}
 
 
+    private function orderBy(array $template_regexp) {
+        $result = array();
+        foreach ($template_regexp as $treg) {
+            $result[ $treg['order'] ] = array('regxp' => $treg['regxp'], 'id' => $treg['id']);
+        }
+        ksort($result); //??
+        return $result;
+    }
+
 /**
  * Used for default template parsing.  Sets the defaultTemplate variable for the layout.
  *
  * @todo			Enable separate templates (so that you can have sitemaps easily) for the error pages.
  */
 	function _getDefaultTemplate() {
-		if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
+        if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
+            $template_id = __APP_DEFAULT_TEMPLATE_ID;
+            if (isset($this->multi_templates_ids)) {
+                $id = null;
+                foreach ($this->multi_templates_ids as $template) {
+                    // checking plugin
+                    if($template['plugin'] == 'null' && !empty($this->params['plugin']))
+                        continue;
+                    elseif($template['plugin'] != 'null' &&
+                            $template['plugin'] != $this->params['plugin'])
+                        continue;
+
+                    // checking controller
+                    if($template['controller'] != $this->params['controller'])
+                        continue;
+
+                    // checking action
+                    if($template['action'] != $this->params['action'])
+                        continue;
+
+                    // checking id
+                    if($template['parameter'] == 'null' || (!empty($this->params['pass']) &&
+                        $template['parameter'] == $this->params['pass'][0]))
+                    {
+                        $id = $template['template_id'];
+                        break;
+                    }
+                }
+                if(isset($id))
+                    $template_id = $id;
+            }
+            $defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => $template_id)));
+            $this->__parseIncludedPages($defaultTemplate);
+            $this->set(compact('defaultTemplate'));
+        } else {
+			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
+		}
+
+
+		/*if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
 			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
 			$this->__parseIncludedPages ($defaultTemplate);
 			$this->set(compact('defaultTemplate'));
 		} else {
 			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
-		}
+		}*/
 	}
 	
 	
@@ -777,7 +848,7 @@ class AppController extends Controller {
 	function isAuthorized() {	
 		$userId = $this->Auth->user('id');
 		# this allows all users in the administrators group access to everything
-		if ($this->Auth->user('user_group_id') == 1) { return true; } 
+		if ($this->Auth->user('user_role_id') == 1) { return true; } 
 		# check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
@@ -795,7 +866,7 @@ class AppController extends Controller {
 				return true;
 			} else {
 				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
-				$this->redirect(array('plugin' => null, 'controller' => 'users', 'action' => 'login'));
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 			}	
 		} 
 	}
@@ -838,10 +909,10 @@ class AppController extends Controller {
  * Gets the variables used for the lookup of the guest aro id
  */
 	function _guestsAro() {
-		if (defined('__SYS_GUESTS_USER_GROUP_ID')) {
-			$guestsAro = array('model' => 'UserGroup', 'foreign_key' => __SYS_GUESTS_USER_GROUP_ID);
+		if (defined('__SYS_GUESTS_USER_ROLE_ID')) {
+			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYS_GUESTS_USER_ROLE_ID);
 		} else {
-			echo 'In /admin/settings key: SYS, value: GUESTS_USER_GROUP_ID must be defined for guest access to work.';
+			echo 'In /admin/settings key: SYS, value: GUESTS_USER_ROLE_ID must be defined for guest access to work.';
 		}
 		return $guestsAro;
 	}

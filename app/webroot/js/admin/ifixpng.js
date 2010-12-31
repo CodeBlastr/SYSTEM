@@ -38,14 +38,15 @@ $.ifixpng = function(customPixel) {
 $.ifixpng.pixel = customPixel;
 };
 
-$.ifixpng.getPixel = function() {
-return $.ifixpng.pixel || 'http://shop.skype.com/i/images/backgrounds/blank.gif';
-};
+//commented out so that it wouldn't make a call to skype.com
+//$.ifixpng.getPixel = function() {
+//	return $.ifixpng.pixel || 'http://shop.skype.com/i/images/backgrounds/blank.gif';
+//};
 
 var hack = {
 ltie7  : $.browser.msie && $.browser.version < 7,
 filter : function(src) {
-return "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true,sizingMethod=crop,src='"+src+"')";
+	return "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true,sizingMethod=crop,src='"+src+"')";
 }
 };
 
