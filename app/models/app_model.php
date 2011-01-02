@@ -50,7 +50,6 @@ class AppModel extends Model {
 		App::import('Component', 'Session');
 		$Session = new SessionComponent();
 		$user = $Session->read('Auth.User');
-		
 		if ( !$exists && $this->hasField('creator_id') && empty($this->data[$this->alias]['creator_id']) ) {
 			$this->data[$this->alias]['creator_id'] = $user['id'];
 		}
