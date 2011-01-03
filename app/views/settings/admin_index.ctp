@@ -56,5 +56,6 @@ foreach ($settings as $setting):
 <div class="actions">
 	<ul>
 		<li><?php echo $html->link(__('New Setting', true), array('action' => 'add')); ?></li>
+        <li><?php echo $html->link(__('View Templates', true), array('action' => 'templates')); ?></li>
 	</ul>
 </div>
