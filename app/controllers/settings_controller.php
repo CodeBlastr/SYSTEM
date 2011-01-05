@@ -150,21 +150,25 @@ class SettingsController extends AppController {
         // removing last comma
         $setting_str = substr($setting_str, 0, strlen($setting_str) - 1);
         $data = $this->Setting->find('first', array(
-            'conditions' => array('Setting.value LIKE' => '%MULTI_TEMPLATE_IDS%'),
-            'limit' => 1
+            'conditions' => array('Setting.key' => 'APP')
         ));
-        
+
         // Updating setting which contain MULTI_TEMPLATE_IDS
         $value_str = $data['Setting']['value'];
         $values = explode(';', $value_str);
+        $finded = false;
         for($i = 0; $i < count($values); $i++)
         {
             $setting = explode(':', $values[$i]);
             if($setting[0] == 'MULTI_TEMPLATE_IDS')
             {
+                $finded = true;
                 $values[$i] = implode(':',array(0 => $setting[0], 1 => $setting_str));
                 break;
             }
+        }
+        if(!$finded) {
+            $values[] = 'MULTI_TEMPLATE_IDS:'.$setting_str;
         }
         $data['Setting']['value'] = implode(';', $values);
         $this->Setting->save($data);

@@ -127,12 +127,28 @@ App::build(array(
 	
 	function elementSettings($string) {
 		$return = array();
+		preg_match_all('/(?P<key>\w+).(?P<subarray>\{[^}]*})/', $string, $matches);
+		
+		$i = 0;
+		foreach ($matches['key'] as $key) {
+			$string = str_replace($matches['subarray'][$i], $key, $string);
+			$replaces[$matches['key'][$i]] = $matches['subarray'][$i];
+			$i++;
+		}
+		
 		$vars = explode(',', $string);
 		foreach ($vars as $var) {
 			$var = explode('.', $var);
-			$set[$var[0]] = $var[1];
+			if($var[0] == $var[1]) {
+				$replaces[$var[1]] = str_replace('{', '', $replaces[$var[1]]);
+				$replaces[$var[1]] = str_replace('}', '', $replaces[$var[1]]);
+				$set[$var[0]] = $replaces[$var[1]];
+			} else {
+				$set[$var[0]] = $var[1];
+			}
 			$return = array_merge($return, $set);
 		}
+		
 		return $return;
 	}
 	
