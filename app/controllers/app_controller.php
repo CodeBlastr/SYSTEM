@@ -482,7 +482,7 @@ class AppController extends Controller {
 			);
 		foreach ($possibleLocations as $key => $location) {
 			if (file_exists($location)) {
-				return $matchingViewPaths[$key];
+				return $this->viewPath;
 				break;
 			}
 		}
