@@ -946,8 +946,8 @@ class AppController extends Controller {
  * Gets the variables used for the lookup of the guest aro id
  */
 	function _guestsAro() {
-		if (defined('__SYS_GUESTS_USER_ROLE_ID')) {
-			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYS_GUESTS_USER_ROLE_ID);
+		if (defined('__SYSTEM_GUESTS_USER_ROLE_ID')) {
+			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYSTEM_GUESTS_USER_ROLE_ID);
 		} else {
 			echo 'In /admin/settings key: SYS, value: GUESTS_USER_ROLE_ID must be defined for guest access to work.';
 		}
