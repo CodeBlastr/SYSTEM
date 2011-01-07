@@ -138,11 +138,10 @@ class SettingsController extends AppController {
 	}
 
     // Function convert array multi_templates_ids into setting parameter and save them
-    private function update_templates()
+    function _update_templates()
     {
         $setting_str = '';
-        foreach($this->multi_templates_ids as $template)
-        {
+        foreach($this->multi_templates_ids as $template) {
             $template_str = '{'.$template['template_id'].'}';
             $template_str .= '{'.$template['plugin'].'.'.$template['controller'].'.'.$template['action'].'.'.$template['parameter'].'}';
             $setting_str .= $template_str.',';
@@ -156,6 +155,11 @@ class SettingsController extends AppController {
         // Updating setting which contain MULTI_TEMPLATE_IDS
         $value_str = $data['Setting']['value'];
         $values = explode(';', $value_str);
+        foreach ($values as $key=>$val) {
+            if ($val === "") {
+                unset($values[$key]);
+            }
+        }
         $finded = false;
         for($i = 0; $i < count($values); $i++)
         {
@@ -170,7 +174,7 @@ class SettingsController extends AppController {
         if(!$finded) {
             $values[] = 'MULTI_TEMPLATE_IDS:'.$setting_str;
         }
-        $data['Setting']['value'] = implode(';', $values);
+        $data['Setting']['value'] = implode(';', $values).";";
         $this->Setting->save($data);
     }
 
@@ -187,14 +191,13 @@ class SettingsController extends AppController {
 			$this->redirect(array('action'=>'index'));
 		}
 		if (!empty($this->data)) {
-            foreach($this->data['Template'] as $key => $value )
-            {
+            foreach($this->data['Template'] as $key => $value ) {
                 $this->data['Template'][$key] = trim($value);
             }
             $this->Template->set($this->data);
             if($this->Template->validates()) {
                 $this->multi_templates_ids[$id] = $this->data['Template'];
-                $this->update_templates();
+                $this->_update_templates();
 			    $this->Session->setFlash(__('The Template has been saved', true));
 			    //$this->redirect(array('controller'=>'admin' ,'action'=>'settings'));
                 $this->redirect(array('action'=>'templates'));
@@ -214,7 +217,7 @@ class SettingsController extends AppController {
             $this->Template->set($this->data);
             if($this->Template->validates()) {
                 $this->multi_templates_ids[] = $this->data['Template'];
-                $this->update_templates();
+                $this->_update_templates();
                 $this->Session->setFlash(__('The Template has been saved', true));
                 $this->redirect(array('action'=>'templates'));
             }
@@ -237,7 +240,7 @@ class SettingsController extends AppController {
                 $new_templates[] = $this->multi_templates_ids[$i];
         }
         $this->multi_templates_ids = $new_templates;
-		$this->update_templates();
+		$this->_update_templates();
         $this->Session->setFlash(__('Template deleted', true));
         $this->redirect(array('action'=>'templates'));
 	}

@@ -14,7 +14,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app
  * @since         Zuha(tm) v 0.0.1
@@ -29,7 +29,7 @@ class AppController extends Controller {
 	var $userRole = '';
 
     // multiple templates
-    public $multi_templates_ids = null;
+    var $multi_templates_ids = null;
 	
 /**
  * Fired early in the display process for defining app wide settings
@@ -110,6 +110,7 @@ class AppController extends Controller {
 		
 		# system wide settings
 		$this->_getConstants();
+        $this->_getTemplates();
 		# default template
  		if (empty($this->params['requested'])) { $this->_getDefaultTemplate(); }
 		
@@ -136,6 +137,7 @@ class AppController extends Controller {
 		# because beforeFilter doesn't fire on error pages.
 		if($this->name == 'CakeError') {
         	$this->_getConstants();
+            $this->_getTemplates();
 	 		$this->_getDefaultTemplate();
 	    }
 		
@@ -191,27 +193,7 @@ class AppController extends Controller {
 		  	$pairs = explode(';', $value['Setting']['value']);
 		  	foreach ($pairs as $splits) {
 				$split = explode(':', $splits);
-                if($split[0] === 'MULTI_TEMPLATE_IDS')
-                {
-                    $templates = explode(',',$split[1]);
-                    $result = array();
-                    $i = 1;
-                    foreach($templates as $template)
-                    {
-                        preg_match('/\{(\d+)\}\{(\S*?)\}/i', $template, $params);
-                        $values = explode('.', $params[2]);
-                        $arr = array('id' => $i, 'template_id' => strval($params[1]),
-                            'plugin' => $values[0], 'controller' => $values[1],
-                                            'action' => $values[2], 'parameter' => $values[3]);
-                        $result[$i] = $arr;
-                        $i++;
-                    }
-                    if(!empty($result))
-                        $this->multi_templates_ids = $result;
-                    else
-                        $this->multi_templates_ids = null;
-                }
-			  	elseif(!defined($constant.'_'.$split[0]) && !empty($split[0])){
+                if(!defined($constant.'_'.$split[0]) && !empty($split[0])){
 					define($constant.'_'.$split[0], $split[1]);
 			  	}
 			}
@@ -219,7 +201,38 @@ class AppController extends Controller {
 	   # an example constant
 	   # echo __APP_DEFAULT_TEMPLATE_ID;
 	}
-	
+
+    /**
+     * @todo Add overview
+     */
+
+    function _getTemplates () {
+        if (empty($this->multi_templates_ids)) {
+            if (defined('__APP_MULTI_TEMPLATE_IDS')) {
+                $templates = explode(',', __APP_MULTI_TEMPLATE_IDS);
+                $result = array();
+                $i = 1;
+                foreach ($templates as $template) {
+                    preg_match('/\{(\d+)\}\{(\S*?)\}/i', $template, $params);
+                    $values = explode('.', $params[2]);
+                    $arr = array('id' => $i, 'template_id' => strval($params[1]),
+                        'plugin' => $values[0], 'controller' => $values[1],
+                        'action' => $values[2], 'parameter' => $values[3]);
+                    $result[$i] = $arr;
+                    $i++;
+                }
+                if (!empty($result))
+                    $this->multi_templates_ids = $result;
+                else
+                    $this->multi_templates_ids = null;
+            }
+            else {
+                $this->multi_templates_ids = null;
+            }
+        }
+    }
+
+
 /** Mail functions
  * 
  * These next two functions are used primarily in the notifications plugin
@@ -525,15 +538,17 @@ class AppController extends Controller {
 		}
 	}
 
-
-    private function orderBy(array $template_regexp) {
+    /**
+     * @todo Delete this function
+     */
+    /*function _orderBy(array $template_regexp) {
         $result = array();
         foreach ($template_regexp as $treg) {
             $result[ $treg['order'] ] = array('regxp' => $treg['regxp'], 'id' => $treg['id']);
         }
         ksort($result); //??
         return $result;
-    }
+    }*/
 
 /**
  * Used for default template parsing.  Sets the defaultTemplate variable for the layout.
@@ -544,13 +559,13 @@ class AppController extends Controller {
         if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
             $template_id = __APP_DEFAULT_TEMPLATE_ID;
             if (isset($this->multi_templates_ids)) {
-                $id = $this->findFullMatch();
+                $id = $this->_findFullMatch();
                 if($id == -1) {
-                    $id = $this->findPluginControllerActionMatch();
+                    $id = $this->_findPluginControllerActionMatch();
                     if($id == -1) {
-                        $id = $this->findPluginControllerMatch();
+                        $id = $this->_findPluginControllerMatch();
                         if($id == -1) {
-                            $id = $this->findPluginMatch();
+                            $id = $this->_findPluginMatch();
                         }
                     }
                 }
@@ -578,7 +593,7 @@ class AppController extends Controller {
      * Find's full match of the template to current url
      * @return {int}    Finded template id or -1 if no template was found
      * */
-	private function findFullMatch() {
+	function _findFullMatch() {
         $result = -1;
         foreach($this->multi_templates_ids as $template) {
              // checking plugin
@@ -608,7 +623,7 @@ class AppController extends Controller {
      * Find's plugin, controller, action match of the template to current url
      * @return {int}    Finded template id or -1 if no template was found
      * */
-	private function findPluginControllerActionMatch() {
+	function _findPluginControllerActionMatch() {
         $result = -1;
         foreach($this->multi_templates_ids as $template) {
              // checking plugin
@@ -638,7 +653,7 @@ class AppController extends Controller {
      * Find's plugin, controller match of the template to current url
      * @return {int}    Finded template id or -1 if no template was found
      * */
-	private function findPluginControllerMatch() {
+	function _findPluginControllerMatch() {
         $result = -1;
         foreach($this->multi_templates_ids as $template) {
              // checking plugin
@@ -663,7 +678,7 @@ class AppController extends Controller {
      * Find's plugin match of the template to current url
      * @return {int}    Finded template id or -1 if no template was found
      * */
-	private function findPluginMatch() {
+	function _findPluginMatch() {
         $result = -1;
         foreach($this->multi_templates_ids as $template) {
              // checking plugin
