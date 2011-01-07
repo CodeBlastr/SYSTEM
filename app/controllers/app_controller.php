@@ -22,7 +22,7 @@
  */
 class AppController extends Controller {
 	
-    var $uses = array('Setting', 'Condition', 'Webpages.Webpage');
+    var $uses = array('Condition', 'Webpages.Webpage');
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login', 'Facebook.Facebook');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'Facebook.Connect');
 	var $view = 'Theme';
