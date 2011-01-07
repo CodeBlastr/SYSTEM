@@ -196,8 +196,7 @@ class AppController extends Controller {
                     $templates = explode(',',$split[1]);
                     $result = array();
                     $i = 1;
-                    foreach($templates as $template)
-                    {
+                    foreach($templates as $template) {
                         preg_match('/\{(\d+)\}\{(\S*?)\}/i', $template, $params);
                         $values = explode('.', $params[2]);
                         $arr = array('id' => $i, 'template_id' => strval($params[1]),
