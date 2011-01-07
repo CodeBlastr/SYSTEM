@@ -23,8 +23,8 @@
 class AppController extends Controller {
 	
     var $uses = array('Setting', 'Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login', 'Facebook.Facebook');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'Facebook.Connect');
 	var $view = 'Theme';
 	var $userRole = '';
 
@@ -36,7 +36,7 @@ class AppController extends Controller {
  *
  * @todo 			Setup the condition check so that an APP constant turns it on and off.  A constant that gets turn on, when the first is_read condition is created.  It has a slight effect on performance so it should only be on if necessary.
  */
-	function beforeFilter() {	
+	function beforeFilter() {
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
