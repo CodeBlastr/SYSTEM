@@ -129,7 +129,12 @@ class AppController extends Controller {
 /**
  * @todo convert to a full REST application and this might not be necessary
  */
-    function beforeRender() {    		
+    function beforeRender() {  
+		# this needed to be duplicated from the beforeFilter 
+		# because beforeFilter doesn't fire on error pages.
+		if($this->name == 'CakeError') {
+	 		$this->_getDefaultTemplate();
+	    }  		
 		# This turns off debug so that ajax views don't get severly messed up
 		if($this->RequestHandler->isAjax()) { 
             Configure::write('debug', 0); 
