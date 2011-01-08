@@ -598,7 +598,7 @@ class AppController extends Controller {
         foreach($this->multi_templates_ids as $template) {
              // checking plugin
             if($template['plugin'] != $this->params['plugin'] ||
-               ($template['plugin'] == 'null' && !empty($this->params['plugin'])))
+               ($template['plugin'] == '' && !empty($this->params['plugin'])))
                 continue;
 
             // checking controller
@@ -628,7 +628,7 @@ class AppController extends Controller {
         foreach($this->multi_templates_ids as $template) {
              // checking plugin
             if($template['plugin'] != $this->params['plugin'] ||
-               ($template['plugin'] == 'null' && !empty($this->params['plugin'])))
+               ($template['plugin'] == '' && !empty($this->params['plugin'])))
                 continue;
 
             // checking controller
@@ -640,7 +640,7 @@ class AppController extends Controller {
                 continue;
 
             // checking id
-            if($template['parameter'] == 'null')
+            if($template['parameter'] == '')
             {
                 $result = $template['template_id'];
                 break;
@@ -658,7 +658,7 @@ class AppController extends Controller {
         foreach($this->multi_templates_ids as $template) {
              // checking plugin
             if($template['plugin'] != $this->params['plugin'] ||
-               ($template['plugin'] == 'null' && !empty($this->params['plugin'])))
+               ($template['plugin'] == '' && !empty($this->params['plugin'])))
                 continue;
 
             // checking controller
@@ -666,7 +666,7 @@ class AppController extends Controller {
                 continue;
 
             // checking action
-            if($template['action'] == 'null') {
+            if($template['action'] == '') {
                 $result = $template['template_id'];
                 break;
             }
@@ -683,11 +683,11 @@ class AppController extends Controller {
         foreach($this->multi_templates_ids as $template) {
              // checking plugin
             if($template['plugin'] != $this->params['plugin'] ||
-               ($template['plugin'] == 'null' && !empty($this->params['plugin'])))
+               ($template['plugin'] == '' && !empty($this->params['plugin'])))
                 continue;
 
             // checking controller
-            if($template['controller'] == 'null') {
+            if($template['controller'] == '') {
                 $result = $template['template_id'];
                 break;
             }
