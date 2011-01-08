@@ -23,19 +23,35 @@
 class AppController extends Controller {
 	
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login', 'Facebook.Facebook');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'Facebook.Connect');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Time');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userRole = '';
 
     // multiple templates
     public $multi_templates_ids = null;
-	
 /**
  * Fired early in the display process for defining app wide settings
  *
  * @todo 			Setup the condition check so that an APP constant turns it on and off.  A constant that gets turn on, when the first is_read condition is created.  It has a slight effect on performance so it should only be on if necessary.
  */
+	function __construct(){
+		if(defined('__APP_LOAD_APP_HELPERS')) {
+			$helpers = explode(',', __APP_LOAD_APP_HELPERS);
+			foreach ($helpers as $value) {
+				$this->helpers[] =  $value;
+			}
+		}
+		if(defined('__APP_LOAD_APP_COMPONENTS')) {
+			$components = explode(',', __APP_LOAD_APP_COMPONENTS);
+			foreach ($components as $value) {
+				$this->components[] =  $value;
+			}
+		}
+		parent::__construct();
+	}
+	
+	
 	function beforeFilter() {
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
