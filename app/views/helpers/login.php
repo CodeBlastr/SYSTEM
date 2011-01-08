@@ -23,8 +23,8 @@ class LoginHelper extends AppHelper {
 				)
 			);
 			$login .= __(' - ', true);
-			
-			if(!empty($this->Facebook)) {
+			$facebookId = $this->Session->read('Auth.User.facebook_id');
+			if(!empty($facebookId)) {
 				# use the facebook logout if it exists
 				$login .= $this->Facebook->logout(array('label' => ' Logout', 'redirect' => array('plugin' => 'users', 'controller' => 'users', 'action' => 'logout'))); 
 			} else {																	   
