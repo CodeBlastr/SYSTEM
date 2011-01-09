@@ -125,31 +125,29 @@ App::build(array(
 	    }
 	}
 	
-	function elementSettings($string) {
-		$return = array();
-		preg_match_all('/(?P<key>\w+).(?P<subarray>\{[^}]*})/', $string, $matches);
+	function __setConstants() {
+		$path = dirname(__FILE__) . DS;
 		
-		$i = 0;
-		foreach ($matches['key'] as $key) {
-			$string = str_replace($matches['subarray'][$i], $key, $string);
-			$replaces[$matches['key'][$i]] = $matches['subarray'][$i];
-			$i++;
+		if (file_exists($path .'settings.ini')) {
+			$path .= 'settings.ini';
+		} else {
+			$path .= 'defaults.ini';
 		}
 		
-		$vars = explode(',', $string);
-		foreach ($vars as $var) {
-			$var = explode('.', $var);
-			if($var[0] == $var[1]) {
-				$replaces[$var[1]] = str_replace('{', '', $replaces[$var[1]]);
-				$replaces[$var[1]] = str_replace('}', '', $replaces[$var[1]]);
-				$set[$var[0]] = $replaces[$var[1]];
-			} else {
-				$set[$var[0]] = $var[1];
+		$settings = parse_ini_file($path, true);
+		#debug($settings);
+		foreach ($settings as $key => $value) {
+			if (!defined(strtoupper($key))) {
+				if (is_array($value)) {
+					define(strtoupper($key), serialize($value));
+				} else {
+					define(strtoupper($key), $value);
+				}
 			}
-			$return = array_merge($return, $set);
 		}
-		
-		return $return;
+		#debug(get_defined_constants());
 	}
+	
+	__setConstants();
 	
 ?>

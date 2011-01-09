@@ -9,6 +9,7 @@
 /vendors
 /sites/*
 /sites/**/config/database.php
+/sites/**/config/settings.ini
 /sites/**/tmp/logs/debug.log
 /sites/**/tmp/logs/error.log
 /sites/**/tmp/cache/models/cake*
