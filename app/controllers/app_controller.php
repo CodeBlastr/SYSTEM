@@ -23,7 +23,7 @@
 class AppController extends Controller {
 	
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Time');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userRole = '';
@@ -39,7 +39,7 @@ class AppController extends Controller {
 		if(defined('__APP_LOAD_APP_HELPERS')) {
 			$helpers = explode(',', __APP_LOAD_APP_HELPERS);
 			foreach ($helpers as $value) {
-				$this->helpers[] =  $value;
+				$this->helpers[] =  $value; 
 			}
 		}
 		if(defined('__APP_LOAD_APP_COMPONENTS')) {
