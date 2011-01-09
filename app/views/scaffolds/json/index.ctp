@@ -11,5 +11,5 @@ $items = array();
 foreach($___dataForView[$indexVar] as $value) {
 	$items = $value;
 }
-echo $javascript->object($items);
+echo $this->Js->object($items);
 ?>

@@ -22,21 +22,37 @@
  */
 class AppController extends Controller {
 	
-    var $uses = array('Setting', 'Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Ajax', 'Javascript', 'Menu', 'Promo', 'Time', 'Login');
+    var $uses = array('Condition', 'Webpages.Webpage');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userRole = '';
 
     // multiple templates
     public $multi_templates_ids = null;
-	
 /**
  * Fired early in the display process for defining app wide settings
  *
  * @todo 			Setup the condition check so that an APP constant turns it on and off.  A constant that gets turn on, when the first is_read condition is created.  It has a slight effect on performance so it should only be on if necessary.
  */
-	function beforeFilter() {	
+	function __construct(){
+		if(defined('__APP_LOAD_APP_HELPERS')) {
+			$helpers = explode(',', __APP_LOAD_APP_HELPERS);
+			foreach ($helpers as $value) {
+				$this->helpers[] =  $value; 
+			}
+		}
+		if(defined('__APP_LOAD_APP_COMPONENTS')) {
+			$components = explode(',', __APP_LOAD_APP_COMPONENTS);
+			foreach ($components as $value) {
+				$this->components[] =  $value;
+			}
+		}
+		parent::__construct();
+	}
+	
+	
+	function beforeFilter() {
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
@@ -108,8 +124,6 @@ class AppController extends Controller {
 			$this->layout = 'admin';
 		}
 		
-		# system wide settings
-		$this->_getConstants();
 		# default template
  		if (empty($this->params['requested'])) { $this->_getDefaultTemplate(); }
 		
@@ -131,14 +145,12 @@ class AppController extends Controller {
 /**
  * @todo convert to a full REST application and this might not be necessary
  */
-    function beforeRender() {    
+    function beforeRender() {  
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
 		if($this->name == 'CakeError') {
-        	$this->_getConstants();
 	 		$this->_getDefaultTemplate();
-	    }
-		
+	    }  		
 		# This turns off debug so that ajax views don't get severly messed up
 		if($this->RequestHandler->isAjax()) { 
             Configure::write('debug', 0); 
@@ -176,49 +188,6 @@ class AppController extends Controller {
 		}
 	}
 	
-/** 
- * Settings for the site
- *
- * This is where we call all of the data in the "settings" table and parse
- * them into constants to be used through out the site.
- */	
-	function _getConstants(){
-		//Fetching All params
-	   	$settings_array = $this->Setting->find('all');
-	   	foreach($settings_array as $key => $value){
-			$constant = "__".$value['Setting']['key'];
-		  	# this gives you a blank value on the end, but I don't think it matters
-		  	$pairs = explode(';', $value['Setting']['value']);
-		  	foreach ($pairs as $splits) {
-				$split = explode(':', $splits);
-                if($split[0] === 'MULTI_TEMPLATE_IDS')
-                {
-                    $templates = explode(',',$split[1]);
-                    $result = array();
-                    $i = 1;
-                    foreach($templates as $template)
-                    {
-                        preg_match('/\{(\d+)\}\{(\S*?)\}/i', $template, $params);
-                        $values = explode('.', $params[2]);
-                        $arr = array('id' => $i, 'template_id' => strval($params[1]),
-                            'plugin' => $values[0], 'controller' => $values[1],
-                                            'action' => $values[2], 'parameter' => $values[3]);
-                        $result[$i] = $arr;
-                        $i++;
-                    }
-                    if(!empty($result))
-                        $this->multi_templates_ids = $result;
-                    else
-                        $this->multi_templates_ids = null;
-                }
-			  	elseif(!defined($constant.'_'.$split[0]) && !empty($split[0])){
-					define($constant.'_'.$split[0], $split[1]);
-			  	}
-			}
-		}
-	   # an example constant
-	   # echo __APP_DEFAULT_TEMPLATE_ID;
-	}
 	
 /** Mail functions
  * 
@@ -998,8 +967,8 @@ class AppController extends Controller {
  * Gets the variables used for the lookup of the guest aro id
  */
 	function _guestsAro() {
-		if (defined('__SYS_GUESTS_USER_ROLE_ID')) {
-			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYS_GUESTS_USER_ROLE_ID);
+		if (defined('__SYSTEM_GUESTS_USER_ROLE_ID')) {
+			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYSTEM_GUESTS_USER_ROLE_ID);
 		} else {
 			echo 'In /admin/settings key: SYS, value: GUESTS_USER_ROLE_ID must be defined for guest access to work.';
 		}

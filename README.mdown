@@ -51,7 +51,7 @@ In just the last 4-6 weeks we have made huge improvements to zuha, and it is muc
  
 * Ceate a database.php file in ROOT/app/config/ using ROOT/app/config/database.default.php as a template, fixing the variables with correct values. 
  
-* Import ROOT/database.sql - latest bare database dump (maybe some testing data) included.
+* Import ROOT/zuha_dirty.sql  OR ROOT/zuha_clean.sql -  We strive to keep the "clean" version as free of data as possible, and the dirty version can often include testing data that you may need to delete, but also may help with getting started. 
  
 * ZuHa works best when installed at a root domain or subdomain of a site.  (ex. myDomain.com OR subDomain.myDomain.com OR subDomain.localhost).
  
@@ -63,7 +63,7 @@ In just the last 4-6 weeks we have made huge improvements to zuha, and it is muc
  
 ## Documentation
 
-[ZuHa Foundation](http://zuha.com/) - promoting development related to ZuHa
+[ZuHa Foundation](http://zuha.org/) - promoting development related to ZuHa
 
 [ZuHa Book](http://book.zuha.com/)
 

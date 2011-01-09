@@ -10,5 +10,5 @@ $items = array();
 foreach($___dataForView[$viewVar][$model] as $key => $value) {
 	$items[$key] = $value;
 }
-echo $javascript->object($items);
+echo $this->Js->object($items);
 ?>

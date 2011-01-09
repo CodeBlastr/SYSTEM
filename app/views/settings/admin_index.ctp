@@ -9,10 +9,9 @@ echo $paginator->counter(array(
 <table cellpadding="0" cellspacing="0">
 <tr>
 	<th><?php echo $paginator->sort('id');?></th>
-	<th><?php echo $paginator->sort('key');?></th>
-	<th><?php echo $paginator->sort('value');?></th>
-	<th><?php echo $paginator->sort('created');?></th>
-	<th><?php echo $paginator->sort('modified');?></th>
+	<th><?php echo $paginator->sort('type_id');?></th>
+	<th><?php echo $paginator->sort('name');?></th>
+	<th><?php echo $paginator->sort('description');?></th>
 	<th class="actions"><?php __('Actions');?></th>
 </tr>
 <?php
@@ -28,16 +27,13 @@ foreach ($settings as $setting):
 			<?php echo $setting['Setting']['id']; ?>
 		</td>
 		<td>
-			<?php echo $setting['Setting']['key']; ?>
+			<?php echo $setting['SettingType']['name']; ?>
 		</td>
 		<td>
-			<?php echo $setting['Setting']['value']; ?>
+			<?php echo $setting['Setting']['name']; ?>
 		</td>
 		<td>
-			<?php echo $setting['Setting']['created']; ?>
-		</td>
-		<td>
-			<?php echo $setting['Setting']['modified']; ?>
+			<?php echo $setting['Setting']['description']; ?>
 		</td>
 		<td class="actions">
 			<?php echo $html->link(__('View', true), array('action' => 'view', $setting['Setting']['id'])); ?>
