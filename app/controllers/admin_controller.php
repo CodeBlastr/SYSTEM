@@ -32,6 +32,8 @@ class AdminController extends AppController {
  * @link http://book.zuha.com/zuha-app-controllers/AdminController.html
  */
     function index () {
+		App::Import('Model', 'Setting');
+		$this->Setting = new Setting;
 		$upgradesNeeded = $this->_checkIfLatestVersion();
 		if (!empty($upgradesNeeded)) {
 			$this->set('upgradeDB', $upgradesNeeded);
@@ -82,28 +84,15 @@ class AdminController extends AppController {
  * @return {bool}
  */
 	function _updateSettingVersion() {
-		App::Import('Model', 'Setting');
-		$this->Setting = new Setting;
 		$updateSettingVersionQuery = $this->Setting->find('first', array(
 			'conditions' => array(
-				'Setting.value LIKE' => '%ZUHA_DB_VERSION%',
+				'Setting.name LIKE' => '%ZUHA_DB_VERSION%',
 				),
 			));
 		$this->data['Setting']['id'] = $updateSettingVersionQuery['Setting']['id'];
-		$currentSettings = explode(';', $updateSettingVersionQuery['Setting']['value']);
+		$this->data['Setting']['value'] = __SYSTEM_ZUHA_DB_VERSION + 0.0001;
 		
-		$this->data['Setting']['value'] = '';
-		foreach ($currentSettings as $currentSetting) {
-			if (!empty($currentSetting)) {
-				if (strstr($currentSetting, 'ZUHA_DB_VERSION')) {
-					$this->data['Setting']['value'] .= 'ZUHA_DB_VERSION:'.(__SYS_ZUHA_DB_VERSION + 0.0001).';';
-				} else {
-					$this->data['Setting']['value'] .= $currentSetting.';';
-				}
-			}
-		}
-		
-		if ($this->Setting->save($this->data)) {
+		if ($this->Setting->add($this->data)) {
 			return true;
 		} else {
 			return false;
@@ -120,7 +109,7 @@ class AdminController extends AppController {
 		# the directory updated sql files are stored in.
 		$versionDirectory = ROOT . DS . 'version';
 		# system setting for the current db version
-		$databaseVersion = __SYS_ZUHA_DB_VERSION;
+		$databaseVersion = __SYSTEM_ZUHA_DB_VERSION;
 		# checks to see if there is a new db sql file
 		$fileVersion = $this->_checkFileVersion($versionDirectory);
 		if ($databaseVersion < $fileVersion) {

@@ -5,7 +5,8 @@
 	<?php
 		echo $form->input('id');
 		//echo $form->input('name');
-		echo $ajax->autocomplete('Tag.name');
+		echo 'Ajax was removed, this needs to be fixed to work the the Js Helper';
+		#echo $ajax->autocomplete('Tag.name');
 	?>
 
 	</fieldset>

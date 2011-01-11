@@ -29,7 +29,7 @@ class AppModel extends Model {
 	function beforeSave(&$model) {
 		# Start Record Level Access Save #
 		// If the model needs Record Level Access add an Aco
-		if (!empty($this->data['RecordLevelAccess'])) {
+		if (!empty($this->data['RecordLevelAccess']['UserRole'])) {
 			# There may be a potential problem with this.
 			# It saves an ArosAco record for every record being created.
 			# For example, when creating a webpage, it also creates an Aco for the Alias
@@ -50,7 +50,6 @@ class AppModel extends Model {
 		App::import('Component', 'Session');
 		$Session = new SessionComponent();
 		$user = $Session->read('Auth.User');
-		
 		if ( !$exists && $this->hasField('creator_id') && empty($this->data[$this->alias]['creator_id']) ) {
 			$this->data[$this->alias]['creator_id'] = $user['id'];
 		}

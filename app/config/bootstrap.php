@@ -125,15 +125,29 @@ App::build(array(
 	    }
 	}
 	
-	function elementSettings($string) {
-		$return = array();
-		$vars = explode(',', $string);
-		foreach ($vars as $var) {
-			$var = explode('.', $var);
-			$set[$var[0]] = $var[1];
-			$return = array_merge($return, $set);
+	function __setConstants() {
+		$path = dirname(__FILE__) . DS;
+		
+		if (file_exists($path .'settings.ini')) {
+			$path .= 'settings.ini';
+		} else {
+			$path .= 'defaults.ini';
 		}
-		return $return;
+		
+		$settings = parse_ini_file($path, true);
+		#debug($settings);
+		foreach ($settings as $key => $value) {
+			if (!defined(strtoupper($key))) {
+				if (is_array($value)) {
+					define(strtoupper($key), serialize($value));
+				} else {
+					define(strtoupper($key), $value);
+				}
+			}
+		}
+		#debug(get_defined_constants());
 	}
+	
+	__setConstants();
 	
 ?>
