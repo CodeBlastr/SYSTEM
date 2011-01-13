@@ -4,6 +4,10 @@ Our primary goal is to provide a single system that handles your business proces
 
 We further seek to solve the problem faced by many website systems, where in order to have multiple functions (like ecommerce, CRM, CMS, project management, social networking, groups, messaging, multi-user blogs, forums, events, wikis or any combination of those sub systems), you would at a minimum be forced to combine 2 systems or more into one by somehow convincing the two (or more) systems to talk each other. 
 
+# January 2011 Accomplishments
+
+* 1 : Contextual Database Driven Elements  - Menus are always a pain spot with CMS platforms, because its difficult to manage particular links appearing only on particular pages.  But with ZuHa it will be far easier than any CMS before it.  Or for that matter, using contextual elements of any kind (they don't have to be menus).  By coupling with inline context editing, this will allow you to set very custom menus if you choose (on a per page basis) and edit the items that appear in the menu for that page, by simply visiting the page, and clicking edit.  And because it uses a nice regex piece of code, you can have the menu update across as many pages as its been set for with a single update.
+
 # December 2010 Accomplishments
 
 * 1 : Record Level Access Control  -  We're just a few days in, and already we've accomplished a substantial performance update to ACL (access level control).  What a huge headache, but its a huge piece of working code now.  Next up on this front, is to make it even more fine grained by allowing record level access beyond the record, and down to the action.  And with all of that fine grained control you'd think the user interface was going to be a huge monstrosity, but its unbelievably light.  You just visit the plugin you want to control access for, click a couple of checkboxes and thats it.  Permissions on the fly, down to the record level.
@@ -11,6 +15,14 @@ We further seek to solve the problem faced by many website systems, where in ord
 * 2 : Inline page editing  -  With most CMS systems you visit the administration portion of the site to edit webpages.  With ZuHa you edit webpages while you are looking at the webpages.  INCLUDING :: menus, side bar elements, footers, etc.  You can edit a site wide element from any webpage from the CMS, and it will update the entire site instantly.  Next up on this front is the auto-saving, and drafts, and histories for webpages.  
 
 * 3 : Any format API Functionality (default views)  - ZuHa also got a big upgrade this month regarding API functionality, as in, moving it towards a REST type of application, and reusable view code.  You can now create a single admin_edit.ctp file and it will automatically be used for all admin_edit methods that don't already have a view.  The added bonus to this upgrade is that it opened up a full API where you can easily control output formatting with a simple extension change. For example, /orders/order_transactions/view/1.xml, /orders/order_transactions.json would both automatically (without creating any new files) output the variables declared in the controller in the xml or json format.  This functionality will allow us to quickly port information from a web interface to a pdf, or rss, or mobile applications as necessary in future upgrades. 
+
+* 4 : Forums - We've integrated a forums plugin and are continuing to test it in various use cases.  Since everyone knows what a forum is and what its for, there isn't a ton to write about here, but the main idea is that because it uses our ACL setup you have fine grained control over users, and who has access to which parts of the forum, making it a great conversational tool for an intranet or a public forum. 
+
+* 5 : Social Networking - ZuHa has integrated an array of social networking functions incluing, groups, profiles, walls, statuses, and following (friends).  Its not overly advanced at the moment, but the bulk of the work that is left on this is making it high customizable, because user profiles are always a very custom section of the site.  More work to do here, but its funded so will go quickly.
+
+* 6 : Image Galleries - The ZuHa image galleries are very advanced and available to every single system within ZuHa.  This plugin is a GREAT example of the power behind an all in one integrated system.  By having your systems speak to each other by default, it becomes natural for your user profiles to instantly create a gallery when they upload their avatar.  And when you add a catalog item, to make an image gallery for that catalog item.  All while instantly having this content available to any other section of the system.  So if you want, a catalog item gallery to show up in forums, or on user profiles, it is literally about a 30 character template tag that looks like this... {element: galleries.thumb.3}
+
+* 7 : Ecommerce - We're well on our way to making a whole new take on ecommerce with benefits that an all in one system has that no other ecommerce platform  has out of the box.  With all of your systems built in by default, your ecommerce site will be fully integrated into your other systems.  So if you want your social networking users to be able to post items for sale in your store... just edit the site permissions, and add a few links and you have Social Ecommerce.  This social ecommerce niche benefit was a totally unexpected but welcome benefit from the all in one system. 
 
 
 # November 2010 Accomplishments
@@ -39,7 +51,7 @@ In just the last 4-6 weeks we have made huge improvements to zuha, and it is muc
  
 * Ceate a database.php file in ROOT/app/config/ using ROOT/app/config/database.default.php as a template, fixing the variables with correct values. 
  
-* Import ROOT/database.sql - latest bare database dump (maybe some testing data) included.
+* Import ROOT/zuha_dirty.sql  OR ROOT/zuha_clean.sql -  We strive to keep the "clean" version as free of data as possible, and the dirty version can often include testing data that you may need to delete, but also may help with getting started. 
  
 * ZuHa works best when installed at a root domain or subdomain of a site.  (ex. myDomain.com OR subDomain.myDomain.com OR subDomain.localhost).
  
@@ -51,7 +63,7 @@ In just the last 4-6 weeks we have made huge improvements to zuha, and it is muc
  
 ## Documentation
 
-[ZuHa Foundation](http://zuha.com/) - promoting development related to ZuHa
+[ZuHa Foundation](http://zuha.org/) - promoting development related to ZuHa
 
 [ZuHa Book](http://book.zuha.com/)
 
