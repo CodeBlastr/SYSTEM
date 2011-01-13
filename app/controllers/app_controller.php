@@ -14,7 +14,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app
  * @since         Zuha(tm) v 0.0.1
@@ -27,9 +27,6 @@ class AppController extends Controller {
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userRole = '';
-
-    // multiple templates
-    public $multi_templates_ids = null;
 /**
  * Fired early in the display process for defining app wide settings
  *
@@ -124,8 +121,8 @@ class AppController extends Controller {
 			$this->layout = 'admin';
 		}
 		
-		# default template
- 		if (empty($this->params['requested'])) { $this->_getDefaultTemplate(); }
+		# system wide settings
+ 		if (empty($this->params['requested'])) { $this->_getTemplate(); }
 		
 /**
  * Implemented for allowing guests access through db acl control
@@ -149,7 +146,7 @@ class AppController extends Controller {
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
 		if($this->name == 'CakeError') {
-	 		$this->_getDefaultTemplate();
+	 		$this->_getTemplate();
 	    }  		
 		# This turns off debug so that ajax views don't get severly messed up
 		if($this->RequestHandler->isAjax()) { 
@@ -187,7 +184,6 @@ class AppController extends Controller {
 			$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
 		}
 	}
-	
 	
 /** Mail functions
  * 
@@ -494,37 +490,45 @@ class AppController extends Controller {
 		}
 	}
 
-
-    private function orderBy(array $template_regexp) {
+    /**
+     * @todo Delete this function
+     */
+    /*function _orderBy(array $template_regexp) {
         $result = array();
         foreach ($template_regexp as $treg) {
             $result[ $treg['order'] ] = array('regxp' => $treg['regxp'], 'id' => $treg['id']);
         }
         ksort($result); //??
         return $result;
-    }
+    }*/
 
 /**
- * Used for default template parsing.  Sets the defaultTemplate variable for the layout.
+ * Used to find the template parsing.  Sets the defaultTemplate variable for the layout.
  *
- * @todo			Enable separate templates (so that you can have sitemaps easily) for the error pages.
  */
-	function _getDefaultTemplate() {
+	function _getTemplate() {
         if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
             $template_id = __APP_DEFAULT_TEMPLATE_ID;
-            if (isset($this->multi_templates_ids)) {
-                $id = $this->findFullMatch();
-                if($id == -1) {
-                    $id = $this->findPluginControllerActionMatch();
-                    if($id == -1) {
-                        $id = $this->findPluginControllerMatch();
-                        if($id == -1) {
-                            $id = $this->findPluginMatch();
-                        }
-                    }
-                }
-                if($id != -1)
-                    $template_id = $id;
+            if (defined('__APP_MULTI_TEMPLATE_IDS')) {
+				if(is_array(unserialize(__APP_MULTI_TEMPLATE_IDS))) {
+					extract(unserialize(__APP_MULTI_TEMPLATE_IDS));
+				}
+				$i = 0;
+				if (!empty($url)) { foreach($url as $u) {
+					# check each one against the current url
+					$u = str_replace('/', '\/', $u);
+					$urlRegEx = '/'.str_replace('*', '(.*)', $u).'/';
+					if (preg_match($urlRegEx, $this->params['url']['url'])) {
+						$template_id = $templateId[$i];
+					}
+					$i++;
+				}}
+	
+				if (!empty($webpages)) { foreach ($webpages as $webpage) {
+					echo $webpage['Webpage']['content'];
+				}} else {
+					# echo 'do nothing, use default template';
+				}
             }
             $defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => $template_id)));
             $this->__parseIncludedPages($defaultTemplate);
@@ -532,122 +536,8 @@ class AppController extends Controller {
         } else {
 			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
 		}
-
-
-		/*if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
-			$defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => __APP_DEFAULT_TEMPLATE_ID)));
-			$this->__parseIncludedPages ($defaultTemplate);
-			$this->set(compact('defaultTemplate'));
-		} else {
-			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
-		}*/
 	}
 
-    /*
-     * Find's full match of the template to current url
-     * @return {int}    Finded template id or -1 if no template was found
-     * */
-	private function findFullMatch() {
-        $result = -1;
-        foreach($this->multi_templates_ids as $template) {
-             // checking plugin
-            if($template['plugin'] != $this->params['plugin'] ||
-               ($template['plugin'] == 'null' && !empty($this->params['plugin'])))
-                continue;
-
-            // checking controller
-            if($template['controller'] != $this->params['controller'])
-                continue;
-
-            // checking action
-            if($template['action'] != $this->params['action'])
-                continue;
-
-            // checking id
-            if($template['parameter'] == $this->params['pass'][0])
-            {
-                $result = $template['template_id'];
-                break;
-            }
-        }
-        return $result;
-    }
-
-    /*
-     * Find's plugin, controller, action match of the template to current url
-     * @return {int}    Finded template id or -1 if no template was found
-     * */
-	private function findPluginControllerActionMatch() {
-        $result = -1;
-        foreach($this->multi_templates_ids as $template) {
-             // checking plugin
-            if($template['plugin'] != $this->params['plugin'] ||
-               ($template['plugin'] == 'null' && !empty($this->params['plugin'])))
-                continue;
-
-            // checking controller
-            if($template['controller'] != $this->params['controller'])
-                continue;
-
-            // checking action
-            if($template['action'] != $this->params['action'])
-                continue;
-
-            // checking id
-            if($template['parameter'] == 'null')
-            {
-                $result = $template['template_id'];
-                break;
-            }
-        }
-        return $result;
-    }
-
-    /*
-     * Find's plugin, controller match of the template to current url
-     * @return {int}    Finded template id or -1 if no template was found
-     * */
-	private function findPluginControllerMatch() {
-        $result = -1;
-        foreach($this->multi_templates_ids as $template) {
-             // checking plugin
-            if($template['plugin'] != $this->params['plugin'] ||
-               ($template['plugin'] == 'null' && !empty($this->params['plugin'])))
-                continue;
-
-            // checking controller
-            if($template['controller'] != $this->params['controller'])
-                continue;
-
-            // checking action
-            if($template['action'] == 'null') {
-                $result = $template['template_id'];
-                break;
-            }
-        }
-        return $result;
-    }
-
-    /*
-     * Find's plugin match of the template to current url
-     * @return {int}    Finded template id or -1 if no template was found
-     * */
-	private function findPluginMatch() {
-        $result = -1;
-        foreach($this->multi_templates_ids as $template) {
-             // checking plugin
-            if($template['plugin'] != $this->params['plugin'] ||
-               ($template['plugin'] == 'null' && !empty($this->params['plugin'])))
-                continue;
-
-            // checking controller
-            if($template['controller'] == 'null') {
-                $result = $template['template_id'];
-                break;
-            }
-        }
-        return $result;
-    }
 /**
  * Build ACL is a function used for updating the acos table with all available plugins and controller methods.
  * 
