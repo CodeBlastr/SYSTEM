@@ -428,9 +428,9 @@ class AppController extends Controller {
 			# 2 app (including sites) /views/locale/eng/plugins/projects/projects/index.ctp
 			APP.'views'.$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 3 root app only /views/locale/eng/plugins/wikis/wikis/index.ctp
-			ROOT.DS.'app'.DS.'views'.$this->_getLocale().$this->_getPlugin(true, false).DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',	
+			ROOT.DS.'app'.DS.'views'.$this->_getLocale(true).$this->_getPlugin(true, false).DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',	
 			# 4 root app only /plugins/wikis/views/locale/eng/wikis/index.ctp
-			ROOT.DS.'app'.$this->_getPlugin(true, false).DS.'views'.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			ROOT.DS.'app'.$this->_getPlugin(true, false).DS.'views'.$this->_getLocale(true).DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 5 root app only /plugins/wikis/views/wikis/json/index.ctp
 			ROOT.DS.'app'.$this->_getPlugin(true, false).DS.'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 6 root app only /views/scaffolds/json/view.ctp
@@ -447,7 +447,7 @@ class AppController extends Controller {
 			);
 		foreach ($possibleLocations as $key => $location) {
 			if (file_exists($location)) {
-				return $this->viewPath;
+				return $this->viewPath = $matchingViewPaths[$key];
 				break;
 			}
 		}
