@@ -38,7 +38,7 @@ class Setting extends AppModel {
 /**
  * Handles the saving of settings data to the settings.ini file
  *
- * @param {data}			An array contain the setting data
+ * @param {data}		An array contain the setting data
  * @param {bool}		If set to true, it will add to the value instead of replace.
  * @return {bool}		True if the settings were saved and the file was created.
  */
