@@ -1,4 +1,5 @@
-<?php # setup standards for reuse 
+<?php 
+	# setup standards for reuse 
 	$modelClass = Inflector::classify($this->params['controller']); #ex. ContactPerson
 	$controller = $this->params['controller']; #contact_people
 	$viewVar = Inflector::variable(Inflector::singularize($this->params['controller'])); #contactPerson
