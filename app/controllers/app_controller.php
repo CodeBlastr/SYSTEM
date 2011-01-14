@@ -128,7 +128,10 @@ class AppController extends Controller {
  * Implemented for allowing guests access through db acl control
  */	
 		$userId = $this->Auth->user('id');
-		if (empty($userId) && array_search($this->params['action'], $this->Auth->allowedActions) == null) {
+		$allowed = array_search($this->params['action'], $this->Auth->allowedActions);
+		if ($allowed === 0 || $allowed > 0 ) {
+			$this->Auth->allow('*');
+		} else if (empty($userId) && empty($allowed)) {
 			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get controller and action 
 			# this first one checks record level if record level exists
@@ -136,7 +139,7 @@ class AppController extends Controller {
 			if ($this->Acl->check($aro, $aco)) {
 				$this->Auth->allow('*');
 			} 
-		}
+		} 				   
 	}
 	
 /**
@@ -813,6 +816,8 @@ class AppController extends Controller {
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
+				debug($this->params);
+				break;
 				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 			}	
