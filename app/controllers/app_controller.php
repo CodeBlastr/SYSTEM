@@ -358,7 +358,7 @@ class AppController extends Controller {
 		if($this->RequestHandler->isAjax()) {
 			$this->autoRender = $this->layout = false;
 			echo json_encode(array('success'=>($class=='flash_bad') ? FALSE : TRUE,'msg'=>"<p id='flashMessage' class='{$class}'>{$msg}</p>"));
-		exit;
+			exit;
 		}
 	
 		// set flash message & redirect
@@ -816,8 +816,6 @@ class AppController extends Controller {
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
-				debug($this->params);
-				break;
 				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 			}	
