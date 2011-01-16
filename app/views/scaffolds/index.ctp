@@ -16,13 +16,13 @@ echo $paginator->counter(array(
 	'format' => 'Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%'
 ));
 ?></p>
-<table cellpadding="0" cellspacing="0">
-<tr>
+<div class="indexContainer">
+<div class="indexRow" id="headingRow">
 <?php foreach ($indexData[0][$modelClass] as $_alias => $_field):?>
-	<th><?php echo $paginator->sort($_alias);?></th>
+	<div class="indexCell columnHeading" id="<?php echo $_alias; ?>"><?php echo $paginator->sort($_alias);?></div>
 <?php endforeach;?>
-	<th><?php __('Actions');?></th>
-</tr>
+	<div class="indexCell columnHeading" id="columnActions"><?php __('Actions');?></div>
+</div>
 <?php
 $i = 0;
 foreach ($indexData as $_modelClass) :
@@ -31,27 +31,24 @@ foreach ($indexData as $_modelClass) :
 		$class = ' class="altrow"';
 	}
 echo "\n";
-	echo "\t<tr{$class}>\n";
+	echo "\t<div class=\"indexRow {$class}\">\n";
 		foreach ($_modelClass[$modelClass] as $_alias => $_field) : 
-			echo "\t\t<td>\n\t\t\t" . $_field . " \n\t\t</td>\n";
+			echo "\t\t<div class=\"indexCell\" id=\"{$_alias}\">\n\t\t\t{$_field}\n\t\t</div>\n";
 		endforeach;
 
-		echo "\t\t<td class=\"actions\">\n";
+		echo "\t\t<div class=\"columnActions\">\n";
 		echo "\t\t\t" . $html->link(__('View', true), array('action' => 'view',$_modelClass[$modelClass]['id'] )) . "\n";
 	 	echo "\t\t\t" . $html->link(__('Edit', true), array('action' => 'edit', $_modelClass[$modelClass]['id'])) . "\n";
 	 	echo "\t\t\t" . $html->link(__('Delete', true), array('action' => 'delete', $_modelClass[$modelClass]['id']), null, __('Are you sure you want to delete', true).' #' . $_modelClass[$modelClass]['id']) . "\n";
-		echo "\t\t</td>\n";
-	echo "\t</tr>\n";
+		echo "\t\t</div>\n";
+	echo "\t</div>\n";
 endforeach;
 echo "\n";
 ?>
-</table>
 </div>
-<div class="paging">
-<?php echo "\t" . $paginator->prev('<< ' . __('previous', true), array(), null, array('class' => 'disabled')) . "\n";?>
- | <?php echo $paginator->numbers() . "\n"?>
-<?php echo "\t ". $paginator->next(__('next', true) .' >>', array(), null, array('class' => 'disabled')) . "\n";?>
 </div>
+
+<?php echo $this->element('paging');?>
 
 <?php /*
 $menuItems[] = $html->link('New '.$singularHumanName, array('action' => 'add'));
