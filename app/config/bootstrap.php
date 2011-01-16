@@ -125,6 +125,18 @@ App::build(array(
 	    }
 	}
 	
+<<<<<<< HEAD
+	function elementSettings($string) {
+		$return = array();
+		preg_match_all('/(?P<key>\w+).(?P<subarray>\{[^}]*})/', $string, $matches);
+		# This will probably work better for parsing these settings...
+        # preg_match('/\{(\d+)\}\{(\S*?)\}/i', $template, $params);		
+		$i = 0;
+		foreach ($matches['key'] as $key) {
+			$string = str_replace($matches['subarray'][$i], $key, $string);
+			$replaces[$matches['key'][$i]] = $matches['subarray'][$i];
+			$i++;
+=======
 	function __setConstants() {
 		$path = dirname(__FILE__) . DS;
 		
@@ -132,6 +144,7 @@ App::build(array(
 			$path .= 'settings.ini';
 		} else {
 			$path .= 'defaults.ini';
+>>>>>>> dev
 		}
 		
 		$settings = parse_ini_file($path, true);
