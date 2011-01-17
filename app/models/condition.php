@@ -57,6 +57,7 @@ class Condition extends AppModel {
  * @return {array}		returns an array of ids and the models to bind those to, when the conditions are met.
  */
 	function checkAndFire($type, $lookups, $data) {
+		
 		# first check a condtion for plugin, controller, model, action, extra values and type matches
 		if ($conditions = $this->checkConditions($type, $lookups)) {
 			# if those are matched traverse this data with the sub condtion to see if its a 100% match

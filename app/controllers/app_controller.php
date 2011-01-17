@@ -128,7 +128,10 @@ class AppController extends Controller {
  * Implemented for allowing guests access through db acl control
  */	
 		$userId = $this->Auth->user('id');
-		if (empty($userId) && array_search($this->params['action'], $this->Auth->allowedActions) == null) {
+		$allowed = array_search($this->params['action'], $this->Auth->allowedActions);
+		if ($allowed === 0 || $allowed > 0 ) {
+			$this->Auth->allow('*');
+		} else if (empty($userId) && empty($allowed)) {
 			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get controller and action 
 			# this first one checks record level if record level exists
@@ -136,7 +139,7 @@ class AppController extends Controller {
 			if ($this->Acl->check($aro, $aco)) {
 				$this->Auth->allow('*');
 			} 
-		}
+		} 				   
 	}
 	
 /**
@@ -355,7 +358,7 @@ class AppController extends Controller {
 		if($this->RequestHandler->isAjax()) {
 			$this->autoRender = $this->layout = false;
 			echo json_encode(array('success'=>($class=='flash_bad') ? FALSE : TRUE,'msg'=>"<p id='flashMessage' class='{$class}'>{$msg}</p>"));
-		exit;
+			exit;
 		}
 	
 		// set flash message & redirect
@@ -428,9 +431,9 @@ class AppController extends Controller {
 			# 2 app (including sites) /views/locale/eng/plugins/projects/projects/index.ctp
 			APP.'views'.$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 3 root app only /views/locale/eng/plugins/wikis/wikis/index.ctp
-			ROOT.DS.'app'.DS.'views'.$this->_getLocale().$this->_getPlugin(true, false).DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',	
+			ROOT.DS.'app'.DS.'views'.$this->_getLocale(true).$this->_getPlugin(true, false).DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',	
 			# 4 root app only /plugins/wikis/views/locale/eng/wikis/index.ctp
-			ROOT.DS.'app'.$this->_getPlugin(true, false).DS.'views'.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
+			ROOT.DS.'app'.$this->_getPlugin(true, false).DS.'views'.$this->_getLocale(true).DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 5 root app only /plugins/wikis/views/wikis/json/index.ctp
 			ROOT.DS.'app'.$this->_getPlugin(true, false).DS.'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 6 root app only /views/scaffolds/json/view.ctp
@@ -447,7 +450,7 @@ class AppController extends Controller {
 			);
 		foreach ($possibleLocations as $key => $location) {
 			if (file_exists($location)) {
-				return $this->viewPath;
+				return $this->viewPath = $matchingViewPaths[$key];
 				break;
 			}
 		}

@@ -31,7 +31,7 @@
     <fieldset>
  		<legend><?php __('Model Calling This Condition');?></legend>
     <?php
-		echo $form->input('Condition.bind_model', array('after' => ' The model calling this condition. Currently the only model supported is Workflows.Workflow', 'default' => 'Workflows.Workflow'));
+		echo $form->input('Condition.bind_model', array('after' => ' The model calling this condition. Currently the only model supported is Workflows.Workflow', 'value' => 'Workflows.Workflow'));
 	?>
 	</fieldset>
 <?php echo $form->end('Submit');?>
