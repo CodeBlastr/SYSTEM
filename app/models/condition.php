@@ -56,8 +56,7 @@ class Condition extends AppModel {
  * @param {data}		The data that we're checking against and saving if a match is made.
  * @return {array}		returns an array of ids and the models to bind those to, when the conditions are met.
  */
-	function checkAndFire($type, $lookups, $data) {
-		
+	function checkAndFire($type, $lookups, $data) {		
 		# first check a condtion for plugin, controller, model, action, extra values and type matches
 		if ($conditions = $this->checkConditions($type, $lookups)) {
 			# if those are matched traverse this data with the sub condtion to see if its a 100% match
@@ -69,7 +68,6 @@ class Condition extends AppModel {
 				}
 				$i++;
 			}
-			
 			if (!empty($triggers)) {
 				#if it is then fire all of the actions that are a 100% match
 				foreach ($triggers as $trigger) {
@@ -116,12 +114,58 @@ class Condition extends AppModel {
  * @todo 				Its pretty urgent that we turn on sub condition checks and there is a precursor written already in app_model.  We cannot publish live until this is done. 
  */	
 	function _checkSubConditions($condition, $data) {
-		if (!empty($condition['Condition']['condtion'])) {
+		if (!empty($condition['Condition']['condition'])) {
 			# check the sub condition code goes here. 
-			# if the sub condition does match return true if not return false.
+			$conditionsArray = explode(',',$condition['Condition']['condition']);
+			foreach ($conditionsArray as $conditionsArr) {
+				$conditions[] = explode('.',$conditionsArr);
+			}
+			foreach ($conditions as $condition) {
+				# check for the operator 
+				if ($condition[3] == 'null' && $condition[2] == '=') {
+					if (empty($data[$condition[0]][$condition[1]])) {
+						return true;
+					} 	
+				} else if ($condition[3] == 'null' && $condition[2] == '!=') {
+					if (!empty($data[$condition[0]][$condition[1]])) {
+						return true;
+					} 	
+				} else if ($condition[2] == '=') {
+					if ($data[$condition[0]][$condition[1]] == $condition[3]) {
+						return true;
+					} 	
+				} else if ($condition[2] == '!=') {
+					if ($data[$condition[0]][$condition[1]] != $condition[3]) {
+						return true;
+					} 			
+				} else if ($condition[2] == '<=') {
+					if ($data[$condition[0]][$condition[1]] <= $condition[3]) {
+						return true;
+					} 			
+				} else if ($condition[2] == '>=') {
+					if ($data[$condition[0]][$condition[1]] >= $condition[3]) {
+						return true;
+					} 			
+				} else if ($condition[2] == '<') {
+					if ($data[$condition[0]][$condition[1]] < $condition[3]) {
+						return true;
+					} 			
+				} else if ($condition[2] == '>') {
+					if ($data[$condition[0]][$condition[1]] > $condition[3]) {
+						return true;
+					} 				
+				} else {
+					return false;
+				}
+			}
 		} else {
 			return true;
 		}
+	}
+	
+		# This has been saved so that we can use it when we finish of the extra condition checking in the condition model
+	# If it exists there, then delete this function, but NOT until then.
+	function __checkExtraCondition($conditionTrigger) {
 	}
 	
 	
