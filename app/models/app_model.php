@@ -73,11 +73,11 @@ class AppModel extends Model {
 		#get the id that was just inserted so you can call back on it.
 		$this->data[$this->name]['id'] = $this->id;	
 		
-		if ($created == true) {
+		if ($created === true) {
 			$this->Condition->checkAndFire('is_create', array('model' => $this->name), $this->data);
 		} else {
 			$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
-			#$this->conditionCheck('is_read'); // this needs to be put into the before Filter of the 
+			#$this->conditionCheck('is_read'); // this needs to be put into the beforeFilter or beforeRender (beforeRender, would allow error pages to work too) of the 
 		}
 		# End Condition Check #
     }
@@ -93,65 +93,6 @@ class AppModel extends Model {
 		$this->data[$this->name]['id'] = $this->id;	
 		$this->Condition->checkAndFire('is_delete', array('model' => $this->name), $this->data); 
 		# End Condition Check #
-	}
-	
-	
-	# This has been saved so that we can use it when we finish of the extra condition checking in the condition model
-	# If it exists there, then delete this function, but NOT until then.
-	function __checkExtraCondition($conditionTrigger) {
-		$conditionsArray = explode(',',$conditionTrigger['Condition']['condition']);
-		foreach ($conditionsArray as $conditionsArr) {
-			$conditions[] = explode('.',$conditionsArr);
-		}
-		foreach ($conditions as $condition) {
-			# check for the operator 
-			if ($condition[3] == 'null' && $condition[2] == '=') {
-				if (empty($this->data[$condition[0]][$condition[1]])) {
-				} else {
-					$positive = false;
-				}
-			} else if ($condition[3] == 'null' && $condition[2] == '!=') {
-				if (!empty($this->data[$condition[0]][$condition[1]])) {
-				} else {
-					$positive = false;
-				}
-			} else if ($condition[2] == '=') {
-				if ($this->data[$condition[0]][$condition[1]] == $condition[3]) {
-				} else {
-					$positive = false;
-				}
-			} else if ($condition[2] == '!=') {
-				if ($this->data[$condition[0]][$condition[1]] != $condition[3]) {
-				} else {
-					$positive = false;
-				}			
-			} else if ($condition[2] == '<=') {
-				if ($this->data[$condition[0]][$condition[1]] <= $condition[3]) {
-				} else {
-					$positive = false;
-				}			
-			} else if ($condition[2] == '>=') {
-				if ($this->data[$condition[0]][$condition[1]] >= $condition[3]) {
-				} else {
-					$positive = false;
-				}			
-			} else if ($condition[2] == '<') {
-				if ($this->data[$condition[0]][$condition[1]] < $condition[3]) {
-				} else {
-					$positive = false;
-				}			
-			} else if ($condition[2] == '>') {
-				if ($this->data[$condition[0]][$condition[1]] > $condition[3]) {
-				} else {
-					$positive = false;
-				}				
-			}
-		}
-		
-		if (!isset($positive)) {
-			$positive = true;
-		} 
-		return $positive;
 	}
 	
 	

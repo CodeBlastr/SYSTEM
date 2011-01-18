@@ -38,10 +38,12 @@ class Setting extends AppModel {
 /**
  * Handles the saving of settings data to the settings.ini file
  *
- * param {data}			An array contain the setting data
- * return {bool}		True if the settings were saved and the file was created.
+ * @param {data}		An array contain the setting data
+ * @param {bool}		If set to true, it will add to the value instead of replace.
+ * @return {bool}		True if the settings were saved and the file was created.
  */
-	function add($data) {
+	function add($data, $append = false) {
+		$data = $this->_cleanSettingData($data, $append);
 		# save the data
 		if ($this->save($data)) {
 			# call all settings and write the ini file
@@ -116,6 +118,45 @@ class Setting extends AppModel {
 		} else {
 			return false;
 		}
+	}
+	
+	
+/**
+ * Checks whether the setting already exists and cleans the data array if it does.
+ * This is used mainly by outside of the model functions which don't know if the Setting exists or not.
+ *
+ * @param {array}		An array of Setting data
+ */
+	function _cleanSettingData($data, $append = false){
+		#look up the type_id, if it isn't already set
+		if (empty($data['Setting']['type_id'])) {
+			$settingType = $this->SettingType->find('first', array(
+				'conditions' => array(
+					'SettingType.name' => $data['Setting']['typeName'],
+					'SettingType.type' => 'SETTING_TYPE',
+					),
+				));
+			# set the type id into the data array
+			$data['Setting']['type_id'] = $settingType['SettingType']['id'];
+		} 
+		
+		# see if the setting already exists
+		$setting = $this->find('first', array(
+			'conditions' => array(
+				'Setting.name' => $data['Setting']['name'],
+				'Setting.type_id' => $data['Setting']['type_id'],
+				),
+			));
+		if(!empty($setting)) {
+			# if it does, then set the id, so that we over write instead of creating a new setting
+			$data['Setting']['id'] = $setting['Setting']['id'];
+		}
+		
+		if (!empty($append) && !empty($setting)) {
+			$data['Setting']['value'] = $setting['Setting']['value'].PHP_EOL.$data['Setting']['value'];
+		}
+		
+		return $data;
 	}
 }
 ?>
