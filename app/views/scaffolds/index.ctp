@@ -18,7 +18,7 @@ echo $paginator->counter(array(
 ?></p>
 <div class="indexContainer">
 <div class="indexRow" id="headingRow">
-<?php foreach ($indexData[0][$modelClass] as $_alias => $_field):?>
+<?php if (!empty($indexData[0][$modelClass])) : foreach ($indexData[0][$modelClass] as $_alias => $_field):?>
 	<div class="indexCell columnHeading" id="<?php echo $_alias; ?>"><?php echo $paginator->sort($_alias);?></div>
 <?php endforeach;?>
 	<div class="indexCell columnHeading" id="columnActions"><?php __('Actions');?></div>
@@ -42,7 +42,9 @@ echo "\n";
 	 	echo "\t\t\t" . $html->link(__('Delete', true), array('action' => 'delete', $_modelClass[$modelClass]['id']), null, __('Are you sure you want to delete', true).' #' . $_modelClass[$modelClass]['id']) . "\n";
 		echo "\t\t</div>\n";
 	echo "\t</div>\n";
-endforeach;
+endforeach; else:
+echo __('No records found.');
+endif;
 echo "\n";
 ?>
 </div>
