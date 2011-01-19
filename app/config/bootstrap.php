@@ -125,27 +125,51 @@ App::build(array(
 	    }
 	}
 	
-	function __setConstants() {
-		$path = dirname(__FILE__) . DS;
+	function __setConstants($path = null, $return = false) {
+		$path = (!empty($path) ? $path : dirname(__FILE__) . DS);
 		
 		if (file_exists($path .'settings.ini')) {
 			$path .= 'settings.ini';
 		} else {
 			$path .= 'defaults.ini';
 		}
-		
 		$settings = parse_ini_file($path, true);
-		#debug($settings);
-		foreach ($settings as $key => $value) {
-			if (!defined(strtoupper($key))) {
-				if (is_array($value)) {
-					define(strtoupper($key), serialize($value));
-				} else {
-					define(strtoupper($key), $value);
+		
+		if ($return == true) {
+			$settings = my_array_map($settings, 'parse_ini_ini');
+			return $settings;
+		} else {
+			foreach ($settings as $key => $value) {				
+				if (!defined(strtoupper($key))) {
+					if (is_array($value)) {
+						define(strtoupper($key), serialize($value));
+					} else {
+						define(strtoupper($key), $value);
+					}
 				}
 			}
 		}
 		#debug(get_defined_constants());
+	}
+	
+	function my_array_map() {
+    	$args = func_get_args();
+	    $arr = array_shift($args);
+   
+	    foreach ($args as $fn) {
+	        $nfn = create_function('&$v, $k, $fn', '$v = $fn($v);');
+	        array_walk_recursive($arr, $nfn, $fn);
+	    }
+	    return $arr;
+	}
+
+	
+	function parse_ini_ini($arg) {
+		if (strpos($arg, '[')) {
+			return parse_ini_string($arg, true);
+		} else {
+			return $arg;
+		}
 	}
 	
 	__setConstants();
