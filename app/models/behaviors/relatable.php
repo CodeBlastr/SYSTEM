@@ -14,11 +14,11 @@ class RelatableBehavior extends ModelBehavior {
 
 
 	function beforeFind(&$Model, $queryData) {
-		if (!empty($queryData['conditions']) && !empty($this->__key)) {
+		if (!empty($queryData['conditions']) && !empty($this->__key) && !empty($this->__model) && !empty($this->__foreignKey)) {
 			unset($queryData['conditions'][$Model->alias.'.'.$this->__key]);
+			$queryData['conditions'][$Model->alias.'.model'] = $this->__model;
+			$queryData['conditions'][$Model->alias.'.foreign_key'] = $this->__foreignKey;
 		}
-		$queryData['conditions'][$Model->alias.'.model'] = $this->__model;
-		$queryData['conditions'][$Model->alias.'.foreign_key'] = $this->__foreignKey;
 		return $queryData;
 	}
 }
