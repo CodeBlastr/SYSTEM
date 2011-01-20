@@ -49,7 +49,7 @@ echo "\n";
 	# show the gallery
 	if (!empty($settings['showGalleryThumb'])) :
 		echo "\t\t<div class=\"indexCell galleryThumb\">\n";
-		echo $this->element('thumb', array('plugin' => 'galleries', 'model' => $modelClass, 'foreignKey' => $categories[$i]['Category']['id'], 'showDefault' => 'false', 'thumbSize' => 'medium', 'thumbLink' => "{$prefix}/{$plugin}/{$controller}/view/".$categories[$i]['Category']['id']));
+		echo $this->element('thumb', array('plugin' => 'galleries', 'model' => $modelClass, 'foreignKey' => $indexData[$i][$modelClass]['id'], 'showDefault' => 'false', 'thumbSize' => 'medium', 'thumbLink' => "{$prefix}/{$plugin}/{$controller}/view/".$indexData[$i][$modelClass]['id']));
 		echo "</div>\n"; 
 	endif; 
 	

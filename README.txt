@@ -52,7 +52,7 @@ In just the last 4-6 weeks we have made huge improvements to zuha, and it is muc
 
 ## Installation Tips
 
-* Upload the files to the root directory 
+* Upload the files to the root directory (Your server is required to have .htaccess and mod_rewrite turned on)
  
 * Ceate a database.php file in ROOT/app/config/ using ROOT/app/config/database.default.php as a template, fixing the variables with correct values. 
  
