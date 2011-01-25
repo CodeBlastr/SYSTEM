@@ -11,7 +11,7 @@ $indexData = $___dataForView[$indexVar];
 ?>
 
 <div class="<?php echo $indexVar;?> index">
-  <h2><?php echo $humanCtrl;?></h2>
+  <h2><?php echo(!empty($settings['pageHeading']) ? $settings['pageHeading'] : $humanCtrl); ?></h2>
   <p>
     <?php
 echo $paginator->counter(array(
