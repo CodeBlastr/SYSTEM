@@ -12,6 +12,8 @@ We further seek to solve the problem faced by many website systems, where in ord
 
 * 3 : High Level View and Index Customization of System Pages - If custom forms weren't enough (note : with custom forms you can basically control the fields in your database), we put in the basic building blocks that allow you to have complete control over which information appears when viewing records or indexes of that information.  To put it simply, you will have an administration area that allows you to easily control which fields are being shown, even if its different across multiple sites, using a single view file.  It would be like, starting a blog and changing a setting (instead of paying a developer) to customize the data displayed on the index page.
 
+* 4 : Easier Content Management - Stealing a page from the wiki world, you can now add new content to your site by simply visiting the url you would like that content to reside at while logged in as an admin.  If the page does not already exist, you will be prompted to see if you would like to add that page.  Meanwhile non-admin users will still receive the 404 error page.
+
 
 # December 2010 Accomplishments
 
