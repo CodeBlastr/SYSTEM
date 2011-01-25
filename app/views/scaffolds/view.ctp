@@ -1,28 +1,37 @@
 <?php 
-	# setup standards for reuse 
-	$modelClass = Inflector::classify($this->params['controller']); #ex. ContactPerson
-	$controller = $this->params['controller']; #contact_people
-	$viewVar = Inflector::variable(Inflector::singularize($this->params['controller'])); #contactPerson
-	$humanModel = Inflector::humanize(Inflector::underscore($modelClass)); #Contact Person
-	$humanCtrl = Inflector::humanize(Inflector::underscore($controller)); #Contact People
-	# Inflector::singularize(Inflector::underscore($model)); #contact_person
-	# Inflector::variable(Inflector::pluralize($model)); #contactPeople
-	$viewData = $___dataForView[$viewVar];
+# setup view vars for reuse 
+$modelClass = Inflector::classify($this->params['controller']); #ex. ContactPerson
+$prefix = (!empty($this->params['prefix']) ? $this->params['prefix'] : null); #admin
+$plugin = (!empty($this->params['plugin']) ? $this->params['plugin'] : null); #contacts
+$controller = $this->params['controller']; #contact_people
+$viewVar = Inflector::variable(Inflector::singularize($this->params['controller'])); #contactPerson
+$humanModel = Inflector::humanize(Inflector::underscore($modelClass)); #Contact Person
+$humanCtrl = Inflector::humanize(Inflector::underscore($controller)); #Contact People
+$viewData = $___dataForView[$viewVar];
 ?>
 <div class="<?php echo $viewVar;?> view" id="catalog<?php echo $this->params['pass'][0]; ?>">
 <h2><?php echo sprintf(__("%s", true), $humanModel);?></h2>
+
 <?php
+/**
+ * Puts standardized variables from settings into a standardized view which is somewhat customizable.
+ *
+ * @todo		Make use of all of the text variables you can use, from cakephp as options.  http://book.cakephp.org/view/216/Text
+ */
 $i = 0;
-foreach ($viewData[$modelClass] as $_alias => $_field) {
+foreach ($settings['fields'] as $_alias => $_options):
+	$displayName = (!empty($_options['option']['displayName']) ? ($_options['option']['displayName'] !== 1 ? $_options['option']['displayName'] : Inflector::humanize($_alias)) : '');
+	$displayContent = (!empty($_options['option']['truncate']) ? $text->truncate($viewData[$modelClass][$_alias], $_options['option']['truncate'], array('ending' => '...', 'exact' => false, 'html' => true)) : $viewData[$modelClass][$_alias]);
+
 	$class = null;
 	if ($i++ % 2 == 0) {
-		$class = ' class="altrow"';
+		$class = ' altrow';
 	}
-	echo "<dl class=".$_alias.">";
-		echo "\t\t<dt{$class}>" . Inflector::humanize($_alias) . "</dt>\n";
-		echo "\t\t<dd{$class}>\n\t\t\t{$_field}\n&nbsp;\t\t</dd>\n";
-	echo "</dl>";
-}
+	echo "<div id=\"view{$_alias}{$viewData[$modelClass]['id']}\" class=\"viewRow {$_alias} {$class}\">";
+		echo "\t\t<div id=\"viewName{$_alias}\" class=\"viewCell name {$class}\">" . $displayName . "</div>\n";
+		echo "\t\t<div id=\"viewContent{$_alias}\" class=\"viewCell content {$class}\">\n\t\t\t". $displayContent ."\n&nbsp;\t\t</div>\n";
+	echo "</div>";
+endforeach;
 ?>
 </div>
 <?php /*
