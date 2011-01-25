@@ -4,21 +4,15 @@ $modelClass = Inflector::classify($this->params['controller']); #ex. ContactPers
 $prefix = (!empty($this->params['prefix']) ? $this->params['prefix'] : null); #admin
 $plugin = (!empty($this->params['plugin']) ? $this->params['plugin'] : null); #contacts
 $controller = $this->params['controller']; #contact_people
-$indexVar = Inflector::variable($this->params['controller']); #contactPerson
+$indexVar = Inflector::variable($this->params['controller']); #contactPeople
 $humanModel = Inflector::humanize(Inflector::underscore($modelClass)); #Contact Person
 $humanCtrl = Inflector::humanize(Inflector::underscore($controller)); #Contact People
 $indexData = $___dataForView[$indexVar];
 ?>
 
 <div class="<?php echo $indexVar;?> index">
-  <h2><?php echo $humanCtrl;?></h2>
-  <p>
-    <?php
-echo $paginator->counter(array(
-	'format' => 'Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%'
-));
-?>
-  </p>
+  <h2><?php echo(!empty($settings['pageHeading']) ? $settings['pageHeading'] : $humanCtrl); ?></h2>
+  <p><?php echo $paginator->counter(array('format' => 'Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%')); ?></p>
   <div class="indexContainer">
     <?php if (!empty($indexData)) : ?>
     <div class="indexRow" id="headingRow">
@@ -75,19 +69,6 @@ echo "\n";
   </div>
 </div>
 <?php echo $this->element('paging');?>
-
-
-
-
-
-
-
-
-
-
-
-
-
 <?php /*
 $menuItems[] = $html->link('New '.$singularHumanName, array('action' => 'add'));
 

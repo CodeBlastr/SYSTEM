@@ -21,6 +21,10 @@
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
 class AppError extends ErrorHandler{
+	
+	/** 
+	 * Handles the alias redirects if the alias exists.
+	 */
     function error404($params, $message) {
 		App::import('Model', 'Alias');
 		$this->Alias = new Alias();	
@@ -43,10 +47,13 @@ class AppError extends ErrorHandler{
 			$Dispatcher = new Dispatcher();
 	     	$Dispatcher->dispatch($url);
 		} else {
+			$this->addPageRedirect($params);
+			
 			extract($params, EXTR_OVERWRITE);
-			$this->error(array('code' => '404',
-							'name' => 'Not found',
-							'message' => sprintf(__("%s %s", true), $url, $message)));
+			$this->error(array(
+				'code' => '404',
+				'name' => 'Not found',
+				'message' => sprintf(__("%s %s", true), $url, $message)));
 			$this->_stop();
 		}
         exit;
@@ -56,6 +63,28 @@ class AppError extends ErrorHandler{
     function missingController($params) {
 		$this->error404($params, '(Error code: 9340237983)');
     }
+
+
+	/** 
+	 * Checks to see whether the user is logged in as an admin, and then redirects to the add page form 
+	 * to see if they would like to create a page for that url.
+	 *
+	 * @return		a redirect action, or false
+	 */
+	function addPageRedirect($params) {
+		# lets see if the user would like to add a page if they are an admin
+		App::import('Component', 'Session');
+		$this->Session = new SessionComponent();
+		$userRole = $this->Session->read('Auth.User.user_role_id');
+		if($userRole == 1 /* Admin user role */) {
+			App::import('Controller', 'AppController');
+			$this->AppController = new AppController();
+			$this->Session->setFlash(__('No page exists at '.$params['url'].', would you like to create it?', true) );
+			$this->AppController->redirect(array('plugin' => 'webpages', 'controller' => 'webpages', 'action'=>'add', 'alias' => $params['url']));
+		} else {
+			return false;
+		}
+	}
 	
 }
 ?>
