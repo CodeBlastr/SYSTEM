@@ -194,7 +194,7 @@ class AppController extends Controller {
  * but can be used in any plugin that needs to send email
  * @todo Alot more documentation on the notifications subject
  */	
-	function __send_mail($id, $subject = null, $message = null, $template = null) {
+	function __send_mail($id, $subject = null, $message = null, $template = null, $attachment = null) {
 		# example call :  $this->__send_mail(array('contact' => array(1, 2), 'user' => array(1, 2)));
 		if (is_array($id)) : 
 			if (is_array($id['contact'])): 
@@ -217,7 +217,7 @@ class AppController extends Controller {
     } 
 	
 			
-	function __send($id, $subject, $message, $template) {
+	function __send($id, $subject, $message, $template, $attachment = null) {
 		#$this->Email->delivery = 'debug';
 		
 		App::import('Model', 'Contact');
