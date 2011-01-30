@@ -30,7 +30,11 @@
 	</title>
 	<?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('screen');
+		if (!empty($cssFiles)) { 
+			foreach ($cssFiles as $css) { echo $this->Html->css($css['WebpageCss']['name']); } 
+		} else {
+			echo $this->Html->css('screen'); 
+		}
 		echo $this->Html->script('jquery-1.4.2.min');
 		#echo $this->Html->css('jquery-ui-1.8.1.custom');
 		echo $this->Html->script('jquery-ui-1.8.custom.min');
