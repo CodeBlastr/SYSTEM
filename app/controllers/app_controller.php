@@ -73,8 +73,6 @@ class AppController extends Controller {
  */
 		$this->theme = 'default';
 		
-		$this->set('cssFiles', $this->Webpage->WebpageCss->find('all'));
-		
 /**
  * Configure AuthComponent
 */

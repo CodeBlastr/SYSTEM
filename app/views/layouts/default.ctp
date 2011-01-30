@@ -30,8 +30,11 @@
 	</title>
 	<?php
 		echo $this->Html->meta('icon');
-		if (!empty($cssFiles)) { 
-			foreach ($cssFiles as $css) { echo $this->Html->css($css['WebpageCss']['name']); } 
+		# load in css files from settings
+		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) { 
+			foreach (unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES) as $media => $file) { 
+				echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
+			} 
 		} else {
 			echo $this->Html->css('screen'); 
 		}
