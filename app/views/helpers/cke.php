@@ -83,7 +83,7 @@ class CkeHelper extends Helper {
 				$button .= "'".$but."',";
 			}
 			$button .= "]
-					]";
+					],";
 					
 		}
 		
@@ -121,6 +121,16 @@ class CkeHelper extends Helper {
 				$output = $button;
 			}
 		}
+		
+		/**
+		 * @todo 		put this at the top so that you can get rid of all the if empty output things
+		 */
+		if (!empty($output)) {
+			$output .= "extraPlugins : 'autogrow',";
+		} else {
+			$output = "extraPlugins : 'autogrow',";
+		}
+		
 		
 		if (!empty($output)) {
 			return $output;
