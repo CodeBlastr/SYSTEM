@@ -14,7 +14,7 @@ We further seek to solve the problem faced by many website systems, where in ord
 
 * 4 : Easier Content Management - Stealing a page from the wiki world, you can now add new content to your site by simply visiting the url you would like that content to reside at while logged in as an admin.  If the page does not already exist, you will be prompted to see if you would like to add that page.  Meanwhile non-admin users will still receive the 404 error page.
 
-* 5 : Site Template Css Upload - You can now create as many css files as you need to using the user interface instead of ftp.  Even for the multi-site setups.  Now adding a template to the cms system is much easier, because you only need to copy and paste your html into a template file, and your css into a css file, and instantly your site will have a new look and feel.  
+* 5 : Easy Css Editing - You can now create as many css files as you need to using the user interface instead of ftp.  Even for the multi-site setups.  Now adding a template to the CMS system is much easier, because you only need to copy and paste your html into a template file, and your css into a css file, and instantly your site will have a new look and feel.  Add a few template tags, (like : {helper: content_for_layout}) to the html and you have a very powerful site up and running in no time.
 
 
 # December 2010 Accomplishments
