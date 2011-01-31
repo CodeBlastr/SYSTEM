@@ -75,7 +75,7 @@ class CkeHelper extends Helper {
 		
 		#button settings
 		if (!empty($settings['buttons'])) {
-			$button = "
+			$button = " 
 					toolbar :
 					[
 						[";
@@ -86,6 +86,16 @@ class CkeHelper extends Helper {
 					]";
 					
 		}
+		
+		#stylesheet settings
+		if(!empty($settings['contentsCss'])) {
+			if (!empty($output)) {
+				$output .= "contentsCss : ['".$settings['contentsCss']."'],";
+			} else {
+				$output = "contentsCss : ['".$settings['contentsCss']."'],";
+			}	
+		} 
+		
 		
 		if (!empty($color)) {
 			# add in color if it exsists
