@@ -47,8 +47,9 @@
 	?>
 </head>
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>">
-
 <?php 
+echo ($this->params['plugin'] == 'webpages' && $this->params['controller'] == 'webpages' ? $this->element('inline_editor', array('plugin' => 'webpages')) : null);
+
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
 if (!empty($defaultTemplate)) {
@@ -108,6 +109,6 @@ if (!empty($defaultTemplate)) {
 } 
 ?>
 
-<?php echo $this->element('sql_dump');  ?>       
+<?php echo $this->element('sql_dump');  ?>        
 </body>
 </html>
