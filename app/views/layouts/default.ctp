@@ -30,7 +30,14 @@
 	</title>
 	<?php
 		echo $this->Html->meta('icon');
-		echo $this->Html->css('screen');
+		# load in css files from settings
+		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) { 
+			foreach (unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES) as $media => $file) { 
+				echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
+			} 
+		} else {
+			echo $this->Html->css('screen'); 
+		}
 		echo $this->Html->script('jquery-1.4.2.min');
 		#echo $this->Html->css('jquery-ui-1.8.1.custom');
 		echo $this->Html->script('jquery-ui-1.8.custom.min');
@@ -40,8 +47,9 @@
 	?>
 </head>
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>">
-
 <?php 
+echo ($this->params['plugin'] == 'webpages' && $this->params['controller'] == 'webpages' ? $this->element('inline_editor', array('plugin' => 'webpages')) : null);
+
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
 if (!empty($defaultTemplate)) {
@@ -101,6 +109,6 @@ if (!empty($defaultTemplate)) {
 } 
 ?>
 
-<?php echo $this->element('sql_dump');  ?>       
+<?php echo $this->element('sql_dump');  ?>        
 </body>
 </html>
