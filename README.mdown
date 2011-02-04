@@ -55,6 +55,7 @@ In just the last 4-6 weeks we have made huge improvements to zuha, and it is muc
 
 
 ## Installation Tips
+* Php 5.3 or higher is required.  (Seriously, anything lower will not work.)
 
 * Upload the files to the root directory (Your server is required to have .htaccess and mod_rewrite turned on)
  
