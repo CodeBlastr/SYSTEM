@@ -66,17 +66,17 @@ class AppController extends Controller {
 		$this->viewPath = $this->_getView();
 		
 	
-/**
- * Allows us to have webroot files (css, js, etc) in the sites directories
- * Used in conjunction with the "var $view above"
- * @todo allow the use of multiple themes, database driven themes, and theme switching
- */
+		/**
+ 		 * Allows us to have webroot files (css, js, etc) in the sites directories
+ 		 * Used in conjunction with the "var $view above"
+		 * @todo allow the use of multiple themes, database driven themes, and theme switching
+ 		 */
 		$this->theme = 'default';
 		
-/**
- * Configure AuthComponent
-*/
 		
+		/**
+		 * Configure AuthComponent
+		 */		
         $this->Auth->loginAction = array(
 			'plugin' => 'users',
 			'controller' => 'users',
@@ -89,11 +89,7 @@ class AppController extends Controller {
 			'action' => 'login'
 			);
         
-        $this->Auth->loginRedirect = array(
-			'plugin' => 'users',
-			'controller' => 'users',
-			'action' => 'my',
-			);
+        $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
 		$this->Auth->allowedActions = array('display');
@@ -141,6 +137,23 @@ class AppController extends Controller {
 			} 
 		} 				   
 	}
+	
+	function _defaultLoginRedirect() {
+		if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
+			if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
+				return $urlParams;
+			} else {
+				return __APP_DEFAULT_LOGIN_REDIRECT_URL;
+			}
+		} else {
+			return array(
+				'plugin' => 'users',
+				'controller' => 'users',
+				'action' => 'my',
+			);
+		}
+	}
+	
 	
 /**
  * @todo convert to a full REST application and this might not be necessary
