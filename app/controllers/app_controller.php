@@ -187,7 +187,7 @@ class AppController extends Controller {
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
 		$matches = array ();
 		$parents[] = $webpage["Webpage"]["id"];
-		preg_match_all ("/(\{([^\}\{]*)include([^\}\{]*):([^\}\{]*)pageid([0-9]+)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
+		preg_match_all ("/(\{([^\}\{]*)page([^\}\{]*):([^\}\{]*)([0-9]+)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
 		
 		for ($i = 0; $i < sizeof ($matches[5]); $i++) {
 			if (in_array ($matches[5][$i], $parents)) {
