@@ -8,6 +8,8 @@ We further seek to solve the problem faced by many website systems, where in ord
 
 * 1 : Demo site setup. You can now demo the CMS and watch the first tutorial video.
 
+* 2 : Categories.  The full implementation of site wide categories is now setup.  A single db table now handles all categories across your site for each system.  This keeps your db nice and small and limits the number of tables needed. 
+
 
 # January 2011 Accomplishments
 
