@@ -4,6 +4,11 @@ Our primary goal is to provide a single system that handles your business proces
 
 We further seek to solve the problem faced by many website systems, where in order to have multiple functions (like ecommerce, CRM, CMS, project management, social networking, groups, messaging, multi-user blogs, forums, events, wikis or any combination of those sub systems), you would at a minimum be forced to combine 2 systems or more into one by somehow convincing the two (or more) systems to talk each other. 
 
+# February 2011 Accomplishments
+
+* 1 : Demo site setup. You can now demo the CMS and watch the first tutorial video.
+
+
 # January 2011 Accomplishments
 
 * 1 : Contextual Database Driven Elements  - Menus are always a pain spot with CMS platforms, because its difficult to manage particular links appearing only on particular pages.  But with ZuHa it will be far easier than any CMS before it.  Or for that matter, using contextual elements of any kind (they don't have to be menus).  By coupling with inline context editing, this will allow you to set very custom menus if you choose (on a per page basis) and edit the items that appear in the menu for that page, by simply visiting the page, and clicking edit.  And because it uses a nice regex piece of code, you can have the menu update across as many pages as its been set for with a single update.
