@@ -32,6 +32,7 @@
 
 
 
+<?php echo $this->element('breadcrumb')?>
 
 <?php 
 if ($this->action != 'add'):

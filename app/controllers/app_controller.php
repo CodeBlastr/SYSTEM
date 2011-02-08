@@ -23,7 +23,7 @@
 class AppController extends Controller {
 	
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time', 'Crumb');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userRole = '';
