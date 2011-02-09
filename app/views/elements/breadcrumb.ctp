@@ -8,7 +8,7 @@
  */ 
 ?>
 <?php 
-echo "Home " . __ELEMENT_BREADCRUMBS_SEPARATOR . ' ' ?>
+echo $html->link("Home ", '/') . __ELEMENT_BREADCRUMBS_SEPARATOR . ' ' ?>
 <?php
 	if ($this->params['action'] == 'index')  {
 		$humanCtrl = Inflector::humanize(Inflector::underscore($this->params['controller'])); #Contact People
