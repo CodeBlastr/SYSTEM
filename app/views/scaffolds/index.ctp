@@ -9,7 +9,7 @@ $humanModel = Inflector::humanize(Inflector::underscore($modelClass)); #Contact 
 $humanCtrl = Inflector::humanize(Inflector::underscore($controller)); #Contact People
 $indexData = $___dataForView[$indexVar];
 ?>
-<?php echo $this->element('breadcrumb')?>
+
 <div class="<?php echo $indexVar;?> index">
   <h2><?php echo(!empty($settings['pageHeading']) ? $settings['pageHeading'] : $humanCtrl); ?></h2>
   <p><?php echo $paginator->counter(array('format' => 'Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%')); ?></p>

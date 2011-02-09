@@ -9,7 +9,7 @@ $humanModel = Inflector::humanize(Inflector::underscore($modelClass)); #Contact 
 $humanCtrl = Inflector::humanize(Inflector::underscore($controller)); #Contact People
 $viewData = $___dataForView[$viewVar];
 ?>
-<?php echo $this->element('breadcrumb')?>
+
 
 
 <div class="<?php echo $viewVar;?> view" id="catalog<?php echo $this->params['pass'][0]; ?>">
