@@ -879,7 +879,7 @@ class AppController extends Controller {
  */
 	protected function sendMail($email = null, $mail = null, $template = null, $subject = null) {
 		$this->SwiftMailer->to = $email;
-		@todo: replace configure with settings.ini pick
+		// @todo: replace configure with settings.ini pick
 		$this->SwiftMailer->from = Configure::Read('Mail.from');
 		$this->SwiftMailer->fromName = Configure::Read("Mail.fromName");
 		$this->SwiftMailer->template = $template;
