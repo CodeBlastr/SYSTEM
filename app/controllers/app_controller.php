@@ -23,8 +23,8 @@
 class AppController extends Controller {
 	
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time', 'Crumb', 'SwiftMailer');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time', 'Crumb');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRole = '';
 /**
@@ -872,12 +872,13 @@ class AppController extends Controller {
  * sendMail
  *
  * Send the mail to the user.
- * $email: array of email addresses and names directed to.
+ * $email: Array - address/name pairs (e.g.: array(example@address.com => name, ...)
+ * 		String - address to send email to
  * $template to be picked from folder for email
  * set the variables for template from the view only or else send the mail variable
  * and this function will set the default text in $message['html']
  */
-	protected function sendMail($email = null, $mail = null, $template = null, $subject = null) {
+	protected function sendMail($email = null, $template = 'default', $subject = null, $mail = null) {
 		$this->SwiftMailer->to = $email;
 		// @todo: replace configure with settings.ini pick
 		$this->SwiftMailer->from = Configure::Read('Mail.from');
@@ -893,10 +894,10 @@ class AppController extends Controller {
 		}
 		
 		if (!$subject)
-			$subject = Configure::Read("Mail.{$template}.Subject");
+			$subject = 'No Subject';
 
 		//Set view variables as normal
-		$this->SwiftMailer->send($template, $subject);
+		return $this->SwiftMailer->send($template, $subject);
    }
 	
 }
