@@ -23,7 +23,7 @@
 class AppController extends Controller {
 	
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time', 'Crumb');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time', 'Crumb', 'SwiftMailer');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
 	var $view = 'Theme';
 	var $userRole = '';
@@ -867,6 +867,36 @@ class AppController extends Controller {
 		}
 		return $guestsAro;
 	}
-	 
+
+/*
+ * sendMail
+ *
+ * Send the mail to the user.
+ * $email: array of email addresses and names directed to.
+ * $template to be picked from folder for email
+ * set the variables for template from the view only or else send the mail variable
+ * and this function will set the default text in $message['html']
+ */
+	protected function sendMail($email = null, $mail = null, $template = null, $subject = null) {
+		$this->SwiftMailer->to = $email;
+		$this->SwiftMailer->from = Configure::Read('Mail.from');
+		$this->SwiftMailer->fromName = Configure::Read("Mail.fromName");
+		$this->SwiftMailer->template = $template;
+
+		$this->SwiftMailer->layout = 'email';
+		$this->SwiftMailer->sendAs = 'html';
+
+		if ($mail) {
+			$message['html'] = $mail; 
+			$this->set('message', $message);
+		}
+		
+		if (!$subject)
+			$subject = Configure::Read("Mail.{$template}.Subject");
+
+		//Set view variables as normal
+		$this->SwiftMailer->send($template, $subject);
+   }
+	
 }
 ?>
