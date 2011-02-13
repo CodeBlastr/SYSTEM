@@ -3,7 +3,7 @@ class CrumbHelper extends Helper
 {
 	var $link_class	= 'crumb_link'	;	// css class for anchor tags.
 	var $span_class	= 'crumb_span'	;	// css class for the span element .(last label).
-	var $separator	= __ELEMENT_BREADCRUMBS_SEPARATOR 			;	// separator between links.
+	var $separator	= ' ';
 	var $protocol	= 'http'			;
 	var $helpers	 = Array("Session");
 	
@@ -84,6 +84,8 @@ class CrumbHelper extends Helper
 	 */
 	function getHtml($title = null, $what_to_do=null, $level = null)
 	{
+		$this->separator = defined('__ELEMENT_BREADCRUMBS_SEPARATOR')
+			? __ELEMENT_BREADCRUMBS_SEPARATOR : ' '	;	// separator between links.
 		$this->addThisPage($title, $what_to_do, $level)	;
 	
 		$arr_links	= $this->Session->read('crumb_links') ;
