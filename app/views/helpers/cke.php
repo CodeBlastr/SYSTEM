@@ -75,7 +75,7 @@ class CkeHelper extends Helper {
 		
 		#button settings
 		if (!empty($settings['buttons'])) {
-			$button = "
+			$button = " 
 					toolbar :
 					[
 						[";
@@ -83,9 +83,19 @@ class CkeHelper extends Helper {
 				$button .= "'".$but."',";
 			}
 			$button .= "]
-					]";
+					],";
 					
 		}
+		
+		#stylesheet settings
+		if(!empty($settings['contentsCss'])) {
+			if (!empty($output)) {
+				$output .= "contentsCss : ['".$settings['contentsCss']."'],";
+			} else {
+				$output = "contentsCss : ['".$settings['contentsCss']."'],";
+			}	
+		} 
+		
 		
 		if (!empty($color)) {
 			# add in color if it exsists
@@ -111,6 +121,16 @@ class CkeHelper extends Helper {
 				$output = $button;
 			}
 		}
+		
+		/**
+		 * @todo 		put this at the top so that you can get rid of all the if empty output things
+		 */
+		if (!empty($output)) {
+			$output .= "extraPlugins : 'autogrow',";
+		} else {
+			$output = "extraPlugins : 'autogrow',";
+		}
+		
 		
 		if (!empty($output)) {
 			return $output;
