@@ -90,7 +90,7 @@ In just the last 4-6 weeks we have made huge improvements to zuha, and it is muc
 
 [About ZuHa](http://zuha.com/about)
 
-[ZuHa on CakeForge](https://cakeforge.org/projects/zuha/)
+[Submit Ideas for Zuha](http://sourceforge.net/apps/ideatorrent/zuha/)
 
 [CakePHP](http://www.cakephp.org) - the rapid development PHP framework
 
