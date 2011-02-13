@@ -10,7 +10,7 @@ $humanCtrl = Inflector::humanize(Inflector::underscore($controller)); #Contact P
 $viewData = $___dataForView[$viewVar];
 ?>
 <div class="<?php echo $viewVar;?> view" id="catalog<?php echo $this->params['pass'][0]; ?>">
-<h2><?php echo sprintf(__("%s", true), $humanModel);?></h2>
+  <h2><?php echo(!empty($settings['pageHeading']) ? ($settings['pageHeading'] != 1 ? $settings['pageHeading'] : $humanModel) : ''); ?></h2>
 
 <?php
 /**
@@ -19,9 +19,12 @@ $viewData = $___dataForView[$viewVar];
  * @todo		Make use of all of the text variables you can use, from cakephp as options.  http://book.cakephp.org/view/216/Text
  */
 $i = 0;
-foreach ($settings['fields'] as $_alias => $_options):
+foreach ($settings['fields'] as $alias => $_options):
+	$_alias = (strpos($alias, '.') ? explode('.', $alias) : $alias);
+	$_modelClass = (is_array($_alias) ? $_alias[0] : $modelClass);
+	$_alias = (is_array($_alias) ? $_alias[1] : $_alias);
 	$displayName = (!empty($_options['option']['displayName']) ? ($_options['option']['displayName'] !== 1 ? $_options['option']['displayName'] : Inflector::humanize($_alias)) : '');
-	$displayContent = (!empty($_options['option']['truncate']) ? $text->truncate($viewData[$modelClass][$_alias], $_options['option']['truncate'], array('ending' => '...', 'exact' => false, 'html' => true)) : $viewData[$modelClass][$_alias]);
+	$displayContent = (!empty($_options['option']['truncate']) ? $text->truncate($viewData[$_modelClass][$_alias], $_options['option']['truncate'], array('ending' => '...', 'exact' => false, 'html' => true)) : $viewData[$_modelClass][$_alias]);
 
 	$class = null;
 	if ($i++ % 2 == 0) {
