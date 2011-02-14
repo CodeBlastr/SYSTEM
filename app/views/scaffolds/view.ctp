@@ -22,11 +22,17 @@ $viewData = $___dataForView[$viewVar];
  * @todo		Make use of all of the text variables you can use, from cakephp as options.  http://book.cakephp.org/view/216/Text
  */
 $i = 0;
+
 foreach ($settings['fields'] as $alias => $_options):
+	# set the variables that refer to models and fields.  config file may say, contain[] = Model.field or contain[] = field
 	$_alias = (strpos($alias, '.') ? explode('.', $alias) : $alias);
 	$_modelClass = (is_array($_alias) ? $_alias[0] : $modelClass);
 	$_alias = (is_array($_alias) ? $_alias[1] : $_alias);
+	
+	# if the config has displayName = 1, then we use the field name, other wise we show displayName = {string}
 	$displayName = (!empty($_options['option']['displayName']) ? ($_options['option']['displayName'] !== 1 ? $_options['option']['displayName'] : Inflector::humanize($_alias)) : '');
+	
+	# display the content for this field, with optional truncation (more options to be added)
 	$displayContent = (!empty($_options['option']['truncate']) ? $text->truncate($viewData[$_modelClass][$_alias], $_options['option']['truncate'], array('ending' => '...', 'exact' => false, 'html' => true)) : $viewData[$_modelClass][$_alias]);
 
 	$class = null;
@@ -38,7 +44,11 @@ foreach ($settings['fields'] as $alias => $_options):
 		echo "\t\t<div id=\"viewContent{$_alias}\" class=\"viewCell content {$class}\">\n\t\t\t". $displayContent ."\n&nbsp;\t\t</div>\n";
 	echo "</div>";
 endforeach;
+
+# show the gallery if it exists (in the config you would need to have a setting for contain[] = Gallery
+echo !empty($viewData['Gallery']['id']) ? $this->element($viewData['Gallery']['type'], array('id' => $viewData['Gallery']['id'], 'plugin' => 'galleries')) : null;
 ?>
+
 </div>
 <?php /*
 <div class="actions">
