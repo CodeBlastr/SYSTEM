@@ -85,6 +85,17 @@ class AppError extends ErrorHandler{
 			return false;
 		}
 	}
-	
+
+	/*
+	 * @todo: we'll need to have a checkbox on the webpages/add or /edit which sets a page as the homepage
+	 * and then use this homepage at places such as breadcrumb element to distinguish home page.
+	 *	plugin[] = webpages
+		controller[] = webpages
+		action[] = view
+		value[] = X 
+	 */
+	/*
+	 * @todo: use something tempalatized in login element.
+	 */
 }
 ?>

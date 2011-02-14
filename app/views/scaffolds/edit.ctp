@@ -33,6 +33,7 @@
 
 
 
+
 <?php 
 if ($this->action != 'add'):
 	$menuItems[] = $html->link(__('Delete', true), array('action' => 'delete', $form->value($modelClass.'.'.$primaryKey)), null, __('Are you sure you want to delete', true).' #' . $form->value($modelClass.'.'.$primaryKey)); 
