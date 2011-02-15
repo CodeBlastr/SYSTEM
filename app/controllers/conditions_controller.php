@@ -12,7 +12,7 @@
  * PHP versions 5
  *
  * Zuha(tm) : Business Management Applications (http://zuha.com)
- * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.org)
  *
  * Licensed under GPL v3 License
  * Must retain the above copyright notice and release modifications publicly.

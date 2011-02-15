@@ -8,7 +8,7 @@
  * PHP versions 5
  *
  * Zuha(tm) : Business Management Applications (http://zuha.com)
- * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.org)
  *
  * Licensed under GPL v3 License
  * Must retain the above copyright notice and release modifications publicly.
@@ -66,17 +66,17 @@ class AppController extends Controller {
 		$this->viewPath = $this->_getView();
 		
 	
-/**
- * Allows us to have webroot files (css, js, etc) in the sites directories
- * Used in conjunction with the "var $view above"
- * @todo allow the use of multiple themes, database driven themes, and theme switching
- */
+		/**
+ 		 * Allows us to have webroot files (css, js, etc) in the sites directories
+ 		 * Used in conjunction with the "var $view above"
+		 * @todo allow the use of multiple themes, database driven themes, and theme switching
+ 		 */
 		$this->theme = 'default';
 		
-/**
- * Configure AuthComponent
-*/
 		
+		/**
+		 * Configure AuthComponent
+		 */		
         $this->Auth->loginAction = array(
 			'plugin' => 'users',
 			'controller' => 'users',
@@ -89,11 +89,7 @@ class AppController extends Controller {
 			'action' => 'login'
 			);
         
-        $this->Auth->loginRedirect = array(
-			'plugin' => 'users',
-			'controller' => 'users',
-			'action' => 'my',
-			);
+        $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
 		$this->Auth->allowedActions = array('display');
@@ -142,6 +138,23 @@ class AppController extends Controller {
 		} 				   
 	}
 	
+	function _defaultLoginRedirect() {
+		if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
+			if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
+				return $urlParams;
+			} else {
+				return __APP_DEFAULT_LOGIN_REDIRECT_URL;
+			}
+		} else {
+			return array(
+				'plugin' => 'users',
+				'controller' => 'users',
+				'action' => 'my',
+			);
+		}
+	}
+	
+	
 /**
  * @todo convert to a full REST application and this might not be necessary
  */
@@ -174,14 +187,14 @@ class AppController extends Controller {
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
 		$matches = array ();
 		$parents[] = $webpage["Webpage"]["id"];
-		preg_match_all ("/(\{([^\}\{]*)include([^\}\{]*):([^\}\{]*)pageid([0-9]+)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
+		preg_match_all ("/(\{([^\}\{]*)page([^\}\{]*):([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
 		
-		for ($i = 0; $i < sizeof ($matches[5]); $i++) {
-			if (in_array ($matches[5][$i], $parents)) {
+		for ($i = 0; $i < sizeof ($matches[4]); $i++) {
+			if (in_array ($matches[4][$i], $parents)) {
 				$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], "", $webpage["Webpage"]["content"]);
 				continue;
 			}
-			$webpage2 = $this->Webpage->find("first", array("conditions" => array( "id" => $matches[5][$i]) ) );		
+			$webpage2 = $this->Webpage->find("first", array("conditions" => array( "id" => $matches[4][$i]) ) );		
 			if(empty($webpage2) || !is_array($webpage2)) continue;
 			$this->__parseIncludedPages ($webpage2, $parents);
 			$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
@@ -194,7 +207,7 @@ class AppController extends Controller {
  * but can be used in any plugin that needs to send email
  * @todo Alot more documentation on the notifications subject
  */	
-	function __send_mail($id, $subject = null, $message = null, $template = null) {
+	function __send_mail($id, $subject = null, $message = null, $template = null, $attachment = null) {
 		# example call :  $this->__send_mail(array('contact' => array(1, 2), 'user' => array(1, 2)));
 		if (is_array($id)) : 
 			if (is_array($id['contact'])): 
@@ -217,7 +230,7 @@ class AppController extends Controller {
     } 
 	
 			
-	function __send($id, $subject, $message, $template) {
+	function __send($id, $subject, $message, $template, $attachment = null) {
 		#$this->Email->delivery = 'debug';
 		
 		App::import('Model', 'Contact');

@@ -7,8 +7,13 @@
  * Home > Categories > view
  */ 
 ?>
-<?php 
-echo $html->link("Home ", '/') . __ELEMENT_BREADCRUMBS_SEPARATOR . ' ' ?>
+<?php $home = $html->link("Home ", '/');?>
+<?php if(defined('__ELEMENT_BREADCRUMBS_SEPARATOR')) {
+	 	$home .= __ELEMENT_BREADCRUMBS_SEPARATOR . ' ';
+} 
+// @todo: find home page from setting and pass the reset here.
+echo $home;?>
+
 <?php
 	if ($this->params['action'] == 'index')  {
 		$humanCtrl = Inflector::humanize(Inflector::underscore($this->params['controller'])); #Contact People

@@ -4,6 +4,13 @@ Our primary goal is to provide a single system that handles your business proces
 
 We further seek to solve the problem faced by many website systems, where in order to have multiple functions (like ecommerce, CRM, CMS, project management, social networking, groups, messaging, multi-user blogs, forums, events, wikis or any combination of those sub systems), you would at a minimum be forced to combine 2 systems or more into one by somehow convincing the two (or more) systems to talk each other. 
 
+# February 2011 Accomplishments
+
+* 1 : Demo site setup. You can now demo the CMS and watch the first tutorial video.
+
+* 2 : Categories.  The full implementation of site wide categories is now setup.  A single db table now handles all categories across your site for each system.  This keeps your db nice and small and limits the number of tables needed. 
+
+
 # January 2011 Accomplishments
 
 * 1 : Contextual Database Driven Elements  - Menus are always a pain spot with CMS platforms, because its difficult to manage particular links appearing only on particular pages.  But with ZuHa it will be far easier than any CMS before it.  Or for that matter, using contextual elements of any kind (they don't have to be menus).  By coupling with inline context editing, this will allow you to set very custom menus if you choose (on a per page basis) and edit the items that appear in the menu for that page, by simply visiting the page, and clicking edit.  And because it uses a nice regex piece of code, you can have the menu update across as many pages as its been set for with a single update.
@@ -13,6 +20,8 @@ We further seek to solve the problem faced by many website systems, where in ord
 * 3 : High Level View and Index Customization of System Pages - If custom forms weren't enough (note : with custom forms you can basically control the fields in your database), we put in the basic building blocks that allow you to have complete control over which information appears when viewing records or indexes of that information.  To put it simply, you will have an administration area that allows you to easily control which fields are being shown, even if its different across multiple sites, using a single view file.  It would be like, starting a blog and changing a setting (instead of paying a developer) to customize the data displayed on the index page.
 
 * 4 : Easier Content Management - Stealing a page from the wiki world, you can now add new content to your site by simply visiting the url you would like that content to reside at while logged in as an admin.  If the page does not already exist, you will be prompted to see if you would like to add that page.  Meanwhile non-admin users will still receive the 404 error page.
+
+* 5 : Easy Css Editing - You can now create as many css files as you need to using the user interface instead of ftp.  Even for the multi-site setups.  Now adding a template to the CMS system is much easier, because you only need to copy and paste your html into a template file, and your css into a css file, and instantly your site will have a new look and feel.  Add a few template tags, (like : {helper: content_for_layout}) to the html and you have a very powerful site up and running in no time.
 
 
 # December 2010 Accomplishments
@@ -53,6 +62,7 @@ In just the last 4-6 weeks we have made huge improvements to zuha, and it is muc
 
 
 ## Installation Tips
+* Php 5.3 or higher is required.  (Seriously, anything lower will not work.)
 
 * Upload the files to the root directory (Your server is required to have .htaccess and mod_rewrite turned on)
  
@@ -80,7 +90,7 @@ In just the last 4-6 weeks we have made huge improvements to zuha, and it is muc
 
 [About ZuHa](http://zuha.com/about)
 
-[ZuHa on CakeForge](https://cakeforge.org/projects/zuha/)
+[Submit Ideas for Zuha](http://sourceforge.net/apps/ideatorrent/zuha/)
 
 [CakePHP](http://www.cakephp.org) - the rapid development PHP framework
 

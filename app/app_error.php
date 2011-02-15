@@ -8,7 +8,7 @@
  * PHP versions 5
  *
  * Zuha(tm) : Business Management Applications (http://zuha.com)
- * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ * Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.org)
  *
  * Licensed under GPL v3 License
  * Must retain the above copyright notice and release modifications publicly.
@@ -85,6 +85,17 @@ class AppError extends ErrorHandler{
 			return false;
 		}
 	}
-	
+
+	/*
+	 * @todo: we'll need to have a checkbox on the webpages/add or /edit which sets a page as the homepage
+	 * and then use this homepage at places such as breadcrumb element to distinguish home page.
+	 *	plugin[] = webpages
+		controller[] = webpages
+		action[] = view
+		value[] = X 
+	 */
+	/*
+	 * @todo: use something tempalatized in login element.
+	 */
 }
 ?>
