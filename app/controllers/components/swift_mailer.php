@@ -83,14 +83,14 @@ class SwiftMailerComponent extends Object {
 	 * @var String
 	 * @access Public
 	 */
-	var $smtpUsername = '';
+	var $smtpUsername = 'test@razorit.com';
 	/**
 	 * SMTP Password for connection
 	 *
 	 * @var String
 	 * @access Public
 	 */
-	var $smtpPassword = '';
+	var $smtpPassword = 'ufm2309u209';
 	/**
 	 * SMTP Host name connection
 	 *
@@ -125,14 +125,14 @@ class SwiftMailerComponent extends Object {
 	 * @var String
 	 * @access Public
 	 */
-	var $from ='';
+	var $from ='donotreply@redphone.info';
 	/**
 	 * Email from name
 	 *
 	 * @var String
 	 * @access Public
 	 */
-	var $fromName = '';
+	var $fromName = 'donotreply@redphone.info';
 	/**
 	 * Recipients
 	 *
@@ -200,6 +200,7 @@ class SwiftMailerComponent extends Object {
 	 */
 	var $postErrors = array();
 
+	var $content = null; // todo: be removed temp for layout issue;
 	/**
 	 * Initialize component
 	 *
@@ -222,7 +223,9 @@ class SwiftMailerComponent extends Object {
 	 * @access Protected
 	 */
 	function _emailBodyPart($template, $type = 'html') {
-		$viewClass = $this->__controller->view;
+// @todo: temporary comment. Needto bring this back after finding out view rendering issue;
+		$content = $this->content;
+		/*$viewClass = $this->__controller->view;
 
 		if ($viewClass != 'View') {
 			if (strpos($viewClass, '.') !== false) {
@@ -237,6 +240,7 @@ class SwiftMailerComponent extends Object {
 		$content = $View->element($this->viewPath.DS.$type.DS.$template, array('content' => ""), true);
 		$View->layoutPath = $this->viewPath.DS.$type;
 		$content = $View->renderLayout($content);
+*/
 
 		// Run content check callback
 		$this->__runCallback($content, 'checkContent');
