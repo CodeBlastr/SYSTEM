@@ -92,7 +92,7 @@ class AppController extends Controller {
         $this->Auth->loginRedirect = array(
 			'plugin' => 'users',
 			'controller' => 'users',
-			'action' => 'my',
+			'action' => 'login',
 			);
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
@@ -874,21 +874,23 @@ class AppController extends Controller {
  * Send the mail to the user.
  * $email: Array - address/name pairs (e.g.: array(example@address.com => name, ...)
  * 		String - address to send email to
- * $template to be picked from folder for email
- * set the variables for template from the view only or else send the mail variable
- * and this function will set the default text in $message['html']
+ * $subject: subject of email.
+ * $template to be picked from folder for email. By default, if $mail is given in any template, especially default, 
+ * $message['html'] in the layout will be replaced with this text. 
+ * Else modify the template from the view file and set the variables from action via $this->set
  */
-	protected function sendMail($email = null, $template = 'default', $subject = null, $mail = null) {
+	function __sendMail($email = null, $subject = null, $mail = null, $template = 'default') {
 		$this->SwiftMailer->to = $email;
 		// @todo: replace configure with settings.ini pick
-		$this->SwiftMailer->from = Configure::Read('Mail.from');
-		$this->SwiftMailer->fromName = Configure::Read("Mail.fromName");
+		$this->SwiftMailer->from = 'noreply@razorit.com';
+		$this->SwiftMailer->fromName = 'noreply@razorit.com';
 		$this->SwiftMailer->template = $template;
 
 		$this->SwiftMailer->layout = 'email';
 		$this->SwiftMailer->sendAs = 'html';
 
 		if ($mail) {
+			$this->SwiftMailer->content = $mail;
 			$message['html'] = $mail; 
 			$this->set('message', $message);
 		}
