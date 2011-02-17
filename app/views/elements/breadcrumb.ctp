@@ -22,4 +22,5 @@ echo $home;?>
 	} else {
 	   echo ucfirst($crumb->getHtml($this->params['action'], null, 'auto') );
 	}
+	echo $this->element('form', array('plugin' => 'searchable'));
 ?>
