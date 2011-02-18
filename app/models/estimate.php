@@ -14,8 +14,8 @@ class Estimate extends AppModel {
 			),
 		),
 		'is_accepted' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
+			'boolean' => array(
+				'rule' => array('boolean'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -24,8 +24,8 @@ class Estimate extends AppModel {
 			),
 		),
 		'is_archived' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
+			'boolean' => array(
+				'rule' => array('boolean'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -34,15 +34,13 @@ class Estimate extends AppModel {
 			),
 		),
 	);
-	
-	
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
 		'EstimateType' => array(
 			'className' => 'Enumeration',
 			'foreignKey' => false,
-			'conditions' => array('Enumeration.type' => 'WOOT'),
+			'conditions' => '',
 			'fields' => '',
 			'order' => ''
 		),
@@ -77,6 +75,19 @@ class Estimate extends AppModel {
 	);
 
 	var $hasMany = array(
+		'EstimateItem' => array(
+			'className' => 'EstimateItem',
+			'foreignKey' => 'estimate_id',
+			'dependent' => false,
+			'conditions' => '',
+			'fields' => '',
+			'order' => '',
+			'limit' => '',
+			'offset' => '',
+			'exclusive' => '',
+			'finderQuery' => '',
+			'counterQuery' => ''
+		),
 		'Estimated' => array(
 			'className' => 'Estimated',
 			'foreignKey' => 'estimate_id',
@@ -91,6 +102,19 @@ class Estimate extends AppModel {
 			'counterQuery' => ''
 		)
 	);
+	
+	
+	function beforeSave() {
+		# give the estimate a name for easy drop down fields in other parts
+		if (!empty($this->data['Estimate']['id'])) {
+			if (!empty($this->data['Estimate']['estimate_number'])) {
+				$this->data['Estimate']['name'] = __('Estimate: ', true).$this->data['Estimate']['estimate_number'];
+			} else {
+				$this->data['Estimate']['name'] = __('Estimate: ', true).$this->data['Estimate']['id'];
+			}
+		}
+		return true;
+	}
 
 }
 ?>

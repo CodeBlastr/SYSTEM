@@ -5,10 +5,15 @@
 	<?php
 		echo $this->Form->input('estimate_type_id');
 		echo $this->Form->input('estimate_status_id');
+		echo $this->Form->input('estimate_number');
+		echo $this->Form->input('po_number');
 		echo $this->Form->input('name');
 		echo $this->Form->input('introduction');
 		echo $this->Form->input('conclusion');
+		echo $this->Form->input('issue_date');
 		echo $this->Form->input('expiration_date');
+		echo $this->Form->input('discount');
+		echo $this->Form->input('sub_total');
 		echo $this->Form->input('total');
 		echo $this->Form->input('is_accepted');
 		echo $this->Form->input('is_archived');

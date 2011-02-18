@@ -4,7 +4,12 @@ class EstimatesController extends AppController {
 	var $name = 'Estimates';
 
 	function index() {
-		$this->Estimate->recursive = 0;
+		$this->paginate = array(
+			'contain' => array(
+				'EstimateStatus',
+				'Recipient',
+				)
+			);
 		$this->set('estimates', $this->paginate());
 	}
 
@@ -29,9 +34,8 @@ class EstimatesController extends AppController {
 		$estimateTypes = $this->Estimate->EstimateType->find('list');
 		$estimateStatuses = $this->Estimate->EstimateStatus->find('list');
 		$recipients = $this->Estimate->Recipient->find('list');
-		$creators = $this->Estimate->Creator->find('list');
-		$modifiers = $this->Estimate->Modifier->find('list');
-		$this->set(compact('estimateTypes', 'estimateStatuses', 'recipients', 'creators', 'modifiers'));
+		$estimateItemTypes = $this->Estimate->EstimateItem->EstimateItemType->find('list');
+		$this->set(compact('estimateTypes', 'estimateStatuses', 'recipients', 'estimateItemTypes'));
 	}
 
 	function edit($id = null) {

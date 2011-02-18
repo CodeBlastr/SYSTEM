@@ -5,10 +5,15 @@
 			<th><?php echo $this->Paginator->sort('id');?></th>
 			<th><?php echo $this->Paginator->sort('estimate_type_id');?></th>
 			<th><?php echo $this->Paginator->sort('estimate_status_id');?></th>
+			<th><?php echo $this->Paginator->sort('estimate_number');?></th>
+			<th><?php echo $this->Paginator->sort('po_number');?></th>
 			<th><?php echo $this->Paginator->sort('name');?></th>
 			<th><?php echo $this->Paginator->sort('introduction');?></th>
 			<th><?php echo $this->Paginator->sort('conclusion');?></th>
+			<th><?php echo $this->Paginator->sort('issue_date');?></th>
 			<th><?php echo $this->Paginator->sort('expiration_date');?></th>
+			<th><?php echo $this->Paginator->sort('discount');?></th>
+			<th><?php echo $this->Paginator->sort('sub_total');?></th>
 			<th><?php echo $this->Paginator->sort('total');?></th>
 			<th><?php echo $this->Paginator->sort('is_accepted');?></th>
 			<th><?php echo $this->Paginator->sort('is_archived');?></th>
@@ -29,16 +34,19 @@
 	?>
 	<tr<?php echo $class;?>>
 		<td><?php echo $estimate['Estimate']['id']; ?>&nbsp;</td>
-		<td>
-			<?php echo $this->Html->link($estimate['EstimateType']['name'], array('controller' => 'enumerations', 'action' => 'view', $estimate['EstimateType']['id'])); ?>
-		</td>
+		<td><?php echo $estimate['Estimate']['estimate_type_id']; ?>&nbsp;</td>
 		<td>
 			<?php echo $this->Html->link($estimate['EstimateStatus']['name'], array('controller' => 'enumerations', 'action' => 'view', $estimate['EstimateStatus']['id'])); ?>
 		</td>
+		<td><?php echo $estimate['Estimate']['estimate_number']; ?>&nbsp;</td>
+		<td><?php echo $estimate['Estimate']['po_number']; ?>&nbsp;</td>
 		<td><?php echo $estimate['Estimate']['name']; ?>&nbsp;</td>
 		<td><?php echo $estimate['Estimate']['introduction']; ?>&nbsp;</td>
 		<td><?php echo $estimate['Estimate']['conclusion']; ?>&nbsp;</td>
+		<td><?php echo $estimate['Estimate']['issue_date']; ?>&nbsp;</td>
 		<td><?php echo $estimate['Estimate']['expiration_date']; ?>&nbsp;</td>
+		<td><?php echo $estimate['Estimate']['discount']; ?>&nbsp;</td>
+		<td><?php echo $estimate['Estimate']['sub_total']; ?>&nbsp;</td>
 		<td><?php echo $estimate['Estimate']['total']; ?>&nbsp;</td>
 		<td><?php echo $estimate['Estimate']['is_accepted']; ?>&nbsp;</td>
 		<td><?php echo $estimate['Estimate']['is_archived']; ?>&nbsp;</td>

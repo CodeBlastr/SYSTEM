@@ -3,20 +3,45 @@
 	<fieldset>
  		<legend><?php __('Add Estimate'); ?></legend>
 	<?php
-		echo $this->Form->input('estimate_type_id');
-		echo $this->Form->input('estimate_status_id');
-		echo $this->Form->input('name');
-		echo $this->Form->input('introduction');
-		echo $this->Form->input('conclusion');
-		echo $this->Form->input('expiration_date');
-		echo $this->Form->input('total');
-		echo $this->Form->input('is_accepted');
-		echo $this->Form->input('is_archived');
-		echo $this->Form->input('recipient_id');
-		echo $this->Form->input('creator_id');
-		echo $this->Form->input('modifier_id');
+		echo $this->Form->input('Estimate.recipient_id');
+		echo $this->Form->input('Estimate.estimate_number');
+		echo $this->Form->input('Estimate.issue_date');
+		echo $this->Form->input('Estimate.expiration_date');
+		echo $this->Form->input('Estimate.po_number');
+		#echo $this->Form->input('Estimate.estimate_type_id');
+		#echo $this->Form->input('Estimate.estimate_status_id');
+		echo $this->Form->input('Estimate.introduction' /*, array('type' => 'richtext', 'ckeSettings' => array('buttons' => array('Bold','Italic','Underline','FontSize','TextColor','BGColor','-','NumberedList','BulletedList','Blockquote','JustifyLeft','JustifyCenter','JustifyRight','-','Link','Unlink','-', 'Image'))) */);
+		echo $this->Form->input('Estimate.conclusion' /*, array('type' => 'richtext', 'ckeSettings' => array('buttons' => array('Bold','Italic','Underline','FontSize','TextColor','BGColor','-','NumberedList','BulletedList','Blockquote','JustifyLeft','JustifyCenter','JustifyRight','-','Link','Unlink','-', 'Image')))*/);
+		echo $this->Form->input('Estimate.discount', array('after' => '%'));
+		echo $this->Form->input('Estimate.sub_total');
+		echo $this->Form->input('Estimate.total');
+		#echo $this->Form->input('Estimate.is_accepted');
+		#echo $this->Form->input('Estimate.is_archived');
 	?>
 	</fieldset>
+    
+	<fieldset>
+ 		<legend><?php __('Add Estimate Item'); ?></legend>
+	<?php
+		echo $this->Form->input('EstimateItem.estimate_item_type_id');
+		echo $this->Form->input('EstimateItem.foreign_key');
+		echo $this->Form->input('EstimateItem.model');
+		echo $this->Form->input('EstimateItem.notes');
+		echo $this->Form->input('EstimateItem.quantity');
+		echo $this->Form->input('EstimateItem.price');
+		echo $this->Form->input('EstimateItem.order');
+	?>
+	</fieldset>
+	<fieldset>
+ 		<legend><?php __('Cost'); ?></legend>
+	<?php
+		echo $this->Form->input('Estimate.discount', array('after' => '%'));
+		echo $this->Form->input('Estimate.sub_total');
+		echo $this->Form->input('Estimate.total');
+	?>
+	</fieldset>
+    
+    
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
 <div class="actions">
