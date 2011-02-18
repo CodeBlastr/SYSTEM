@@ -34,13 +34,15 @@ class Estimate extends AppModel {
 			),
 		),
 	);
+	
+	
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
 		'EstimateType' => array(
 			'className' => 'Enumeration',
-			'foreignKey' => 'estimate_type_id',
-			'conditions' => '',
+			'foreignKey' => false,
+			'conditions' => array('Enumeration.type' => 'WOOT'),
 			'fields' => '',
 			'order' => ''
 		),
