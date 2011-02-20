@@ -24,7 +24,7 @@ class AppController extends Controller {
 	
     var $uses = array('Condition', 'Webpages.Webpage');
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time', 'Crumb');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRole = '';
 /**
@@ -880,6 +880,40 @@ class AppController extends Controller {
 		}
 		return $guestsAro;
 	}
-	 
+
+/*
+ * sendMail
+ *
+ * Send the mail to the user.
+ * $email: Array - address/name pairs (e.g.: array(example@address.com => name, ...)
+ * 		String - address to send email to
+ * $subject: subject of email.
+ * $template to be picked from folder for email. By default, if $mail is given in any template, especially default, 
+ * $message['html'] in the layout will be replaced with this text. 
+ * Else modify the template from the view file and set the variables from action via $this->set
+ */
+	function __sendMail($email = null, $subject = null, $mail = null, $template = 'default') {
+		$this->SwiftMailer->to = $email;
+		// @todo: replace configure with settings.ini pick
+		$this->SwiftMailer->from = 'noreply@razorit.com';
+		$this->SwiftMailer->fromName = 'noreply@razorit.com';
+		$this->SwiftMailer->template = $template;
+
+		$this->SwiftMailer->layout = 'email';
+		$this->SwiftMailer->sendAs = 'html';
+
+		if ($mail) {
+			$this->SwiftMailer->content = $mail;
+			$message['html'] = $mail; 
+			$this->set('message', $message);
+		}
+		
+		if (!$subject)
+			$subject = 'No Subject';
+
+		//Set view variables as normal
+		return $this->SwiftMailer->send($template, $subject);
+   }
+	
 }
 ?>

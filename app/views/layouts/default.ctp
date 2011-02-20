@@ -40,10 +40,9 @@
 		}
 		echo $this->Html->script('jquery-1.4.2.min');
 		#echo $this->Html->css('jquery-ui-1.8.1.custom');
-		echo $this->Html->script('jquery-ui-1.8.custom.min');
+		#echo $this->Html->script('jquery-ui-1.8.custom.min');
 		#echo $this->Html->script('jquery.jeditable');
 		echo $scripts_for_layout;  // to use this specify false for the 'in-line' argument when you put javascript into views -- that will cause your view javascript to be pushed to the <head> ie. $this->Html->script('file name', array('inline'=>false));
-
 	?>
 </head>
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>">

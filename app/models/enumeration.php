@@ -13,6 +13,13 @@ class Enumeration extends AppModel {
 		),
 	);
 	
-	
+	function beforeFind($queryData) {
+		if (!empty($queryData['conditions'])) {
+			return $queryData;
+		} else {
+			$queryData['conditions'] = array($this->alias.'.type' => $this->alias);
+			return $queryData;
+		}
+	}
 }
 ?>
