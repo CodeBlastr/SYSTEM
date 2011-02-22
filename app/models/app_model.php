@@ -68,8 +68,7 @@ class AppModel extends Model {
  */
     function afterSave($created) {
 		# Start Condition Check #
-		App::Import('Model', 'Condition');
-		$this->Condition = new Condition;
+		$this->Condition = ClassRegistry::init('Condition');
 		#get the id that was just inserted so you can call back on it.
 		$this->data[$this->name]['id'] = $this->id;	
 		
