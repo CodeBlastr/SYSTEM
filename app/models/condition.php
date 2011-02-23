@@ -49,14 +49,14 @@ class Condition extends AppModel {
 	
 	
 /** 
- * Check the conditions table to see if the record being created, read, updated, or deleted matches any conditions. And if it is then will fire a sub condition check, and finally fire the bindModel if condtions are met.
+ * Check the conditions table to see if the record being created, read, updated, or deleted matches any conditions. And if it is then will do a sub condition check, and finally fire the bindModel if condtions are met.
  *
  * @param {type} 		Valid values are, "is_create", "is_read", "is_update", "is_delete".
  * @param {lookups}		An array with either model, or plugin, controller, action, values indexes defined.
  * @param {data}		The data that we're checking against and saving if a match is made.
  * @return {array}		returns an array of ids and the models to bind those to, when the conditions are met.
  */
-	function checkAndFire($type, $lookups, $data) {		
+	function checkAndFire($type, $lookups, $data) {
 		# first check a condtion for plugin, controller, model, action, extra values and type matches
 		if ($conditions = $this->checkConditions($type, $lookups)) {
 			# if those are matched traverse this data with the sub condtion to see if its a 100% match
@@ -71,11 +71,25 @@ class Condition extends AppModel {
 			if (!empty($triggers)) {
 				#if it is then fire all of the actions that are a 100% match
 				foreach ($triggers as $trigger) {
+					debug($lookups);
+					$data = !empty($lookups['model']) ? $this->addRecursiveData($lookups['model'], $data) : $data;
 					# fire the triggered action in the model condition is binded to
 					$this->fireAction($trigger['id'], $trigger['model'], $data);
 				}
 			}
 		}
+	}
+	
+	
+	function addRecursiveData($model, $data) {
+		$Model = ClassRegistry::init($model);
+		$Model->recursive = 1;
+		$data = $Model->find('first', array(
+			'conditions' => array(
+				"{$Model->name}.id" => $data[$Model->name]['id'],
+				),
+			));
+		return $data;
 	}
 	
 	
@@ -178,11 +192,11 @@ class Condition extends AppModel {
  * @return {array}		Returns an array of conditions.
  */	
 	function _conditionConditions($lookups) {
-		$model =(!empty($lookups['model']) ? $lookups['model'] : null);
-		$plugin =(!empty($lookups['plugin']) ? $lookups['plugin'] : null);
-		$controller =(!empty($lookups['controller']) ? $lookups['controller'] : null);
-		$action =(!empty($lookups['action']) ? $lookups['action'] : null);
-		$extraValues =(!empty($lookups['extra_values']) ? $lookups['extra_values'] : null);
+		$model = !empty($lookups['model']) ? $lookups['model'] : null;
+		$plugin = !empty($lookups['plugin']) ? $lookups['plugin'] : null;
+		$controller = !empty($lookups['controller']) ? $lookups['controller'] : null;
+		$action = !empty($lookups['action']) ? $lookups['action'] : null;
+		$extraValues = !empty($lookups['extra_values']) ? $lookups['extra_values'] : null;
 		
 		if (!empty($model)) {
 			$condition = array('Condition.model' => $model);
