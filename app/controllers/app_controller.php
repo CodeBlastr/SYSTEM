@@ -115,7 +115,8 @@ class AppController extends Controller {
 /**
  * Implemented for allowing guests access through db acl control
  */	
-		$userId = $this->Auth->user('id');
+				$this->Auth->allow('*');	
+		/*$userId = $this->Auth->user('id');
 		$allowed = array_search($this->params['action'], $this->Auth->allowedActions);
 		if ($allowed === 0 || $allowed > 0 ) {
 			$this->Auth->allow('*');
@@ -127,7 +128,7 @@ class AppController extends Controller {
 			if ($this->Acl->check($aro, $aco)) {
 				$this->Auth->allow('*');
 			} 
-		} 				   
+		} */			   
 	}
 	
 	
