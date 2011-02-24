@@ -19,7 +19,7 @@
 		echo $form->input('Condition.plugin', array('after' => ' Plugin called to match against on view'));
 		echo $form->input('Condition.controller', array('after' => ' Controller name to match on view'));
 		echo $form->input('Condition.action', array('after' => ' Controller method to match on view'));
-		echo $form->input('Condition.model', array('after' => ' The model for create, update, and view types'));
+		echo $form->input('Condition.model', array('after' => ' The model for create, update, and view types. (does not include plugin prefix)'));
 	?>
     </fieldset>
     <fieldset>
