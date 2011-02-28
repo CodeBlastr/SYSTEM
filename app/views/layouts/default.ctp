@@ -88,10 +88,10 @@ if (!empty($defaultTemplate)) {
 	}
 	
 	# matches form calls like {form: Plugin.Model.Type.Limiter} for example {form: Contacts.ContactPeople.add.59}
-	preg_match_all ("/(\{([^\}\{]*)form([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	preg_match_all ("/(\{form([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
 	foreach ($matches[0] as $elementMatch) {
-		$formCfg['id'] = trim($matches[4][$i]);
+		$formCfg['id'] = trim($matches[3][$i]);
 		# removed cache for forms, because you can't set it based on form inputs
 		# $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
 		$formCfg['plugin'] = 'forms';

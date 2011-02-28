@@ -27,25 +27,12 @@ class AppController extends Controller {
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRole = '';
-/**
- * Fired early in the display process for defining app wide settings
- *
- * @todo 			Setup the condition check so that an APP constant turns it on and off.  A constant that gets turn on, when the first is_read condition is created.  It has a slight effect on performance so it should only be on if necessary.
- */
+	
+	
 	function __construct(){
-		if(defined('__APP_LOAD_APP_HELPERS')) {
-			$helpers = explode(',', __APP_LOAD_APP_HELPERS);
-			foreach ($helpers as $value) {
-				$this->helpers[] =  $value; 
-			}
-		}
-		if(defined('__APP_LOAD_APP_COMPONENTS')) {
-			$components = explode(',', __APP_LOAD_APP_COMPONENTS);
-			foreach ($components as $value) {
-				$this->components[] =  $value;
-			}
-		}
 		parent::__construct();
+		$this->_getHelpers();
+		$this->_getComponents();
 	}
 	
 	
@@ -89,7 +76,12 @@ class AppController extends Controller {
 			'action' => 'login'
 			);
         
-        $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
+        $this->Auth->loginRedirect = array(
+			'plugin' => 'users',
+			'controller' => 'users',
+			'action' => 'login'
+			);
+
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
 		$this->Auth->allowedActions = array('display');
@@ -122,7 +114,7 @@ class AppController extends Controller {
 		
 /**
  * Implemented for allowing guests access through db acl control
- */	
+ */	$this->Auth->allow('*');
 		$userId = $this->Auth->user('id');
 		$allowed = array_search($this->params['action'], $this->Auth->allowedActions);
 		if ($allowed === 0 || $allowed > 0 ) {
@@ -135,29 +127,13 @@ class AppController extends Controller {
 			if ($this->Acl->check($aro, $aco)) {
 				$this->Auth->allow('*');
 			} 
-		} 				   
-	}
-	
-	function _defaultLoginRedirect() {
-		if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
-			if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
-				return $urlParams;
-			} else {
-				return __APP_DEFAULT_LOGIN_REDIRECT_URL;
-			}
-		} else {
-			return array(
-				'plugin' => 'users',
-				'controller' => 'users',
-				'action' => 'my',
-			);
-		}
+		} 
 	}
 	
 	
-/**
- * @todo convert to a full REST application and this might not be necessary
- */
+	/**
+	 * @todo convert to a full REST application and this might not be necessary
+	 */
     function beforeRender() {  
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
@@ -171,6 +147,26 @@ class AppController extends Controller {
 			$this->header('Content-Type: text/xml');
 		} else if ($this->params['url']['ext'] == 'json') {
             Configure::write('debug', 0); 
+		}
+	}
+	
+	
+	/**
+	 * Set the default redirect variables, using the settings table constant.
+	 */
+	function _defaultLoginRedirect() {
+		if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
+			if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
+				return $urlParams;
+			} else {
+				return __APP_DEFAULT_LOGIN_REDIRECT_URL;
+			}
+		} else {
+			return array(
+				'plugin' => 'users',
+				'controller' => 'users',
+				'action' => 'my',
+			);
 		}
 	}
 	
@@ -801,14 +797,98 @@ class AppController extends Controller {
 	
 ################################ END ACO ADD #############################
 ##########################################################################
-		
-		
-#################  HERE DOWN IS PERMISSIONS ##################	
+	
+	
+	/**
+	 * Loads helpers dynamically system wide. 
+	 *
+	 * @todo		Make this like _getComponents() and load them dynamically per view as well
+	 */
+	function _getHelpers() {
+		if(defined('__APP_LOAD_APP_HELPERS')) {
+			$helpers = explode(',', __APP_LOAD_APP_HELPERS);
+			foreach ($helpers as $value) {
+				$this->helpers[] =  $value; 
+			}
+		}
+	}
+	
+	
+	/**
+	 * Loads components dynamically using both system wide, and per controller loading abilities.
+	 *
+	 * You can create a comma separated (no spaces) list if you only need a system wide component.  If you would like to specify components on a per controller basis, then you use ControllerName[] = Plugin.Component. (ie. Projects[] = Ratings.Ratings).  If you want both per controller, and system wide, then use the key components[] = Plugin.Component for each system wide component to load.  Note: You cannot have a comma separated list, and the named list at the same time. 
+	 */
+	function _getComponents() {
+		if(defined('__APP_LOAD_APP_COMPONENTS')) {
+			$settings = __APP_LOAD_APP_COMPONENTS;
+			if ($components = @unserialize($settings)) {
+				foreach ($components as $key => $value) {
+					if ($key == 'components') {
+						foreach ($value as $val) {
+							$this->components[] = $val;
+						}
+					} else if ($key == $this->name) {
+						foreach ($value as $val) {
+							$this->components[] = $val;
+						}
+					}
+				}
+			} else {
+				$components = explode(',', $settings);
+			}
+		}
+	}
 
 
-/**
- * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in. 
- */
+	/**
+	 * sendMail
+	 *
+	 * Send the mail to the user.
+	 * $email: Array - address/name pairs (e.g.: array(example@address.com => name, ...)
+	 * 		String - address to send email to
+	 * $subject: subject of email.
+	 * $template to be picked from folder for email. By default, if $mail is given in any template, especially default, 
+	 * $message['html'] in the layout will be replaced with this text. 
+	 * Else modify the template from the view file and set the variables from action via $this->set
+	 */
+	function __sendMail($email = null, $subject = null, $mail = null, $template = 'default') {
+		$this->SwiftMailer->to = $email;
+		// @todo: replace configure with settings.ini pick
+		$this->SwiftMailer->from = 'noreply@razorit.com';
+		$this->SwiftMailer->fromName = 'noreply@razorit.com';
+		$this->SwiftMailer->template = $template;
+
+		$this->SwiftMailer->layout = 'email';
+		$this->SwiftMailer->sendAs = 'html';
+
+		if ($mail) {
+			$this->SwiftMailer->content = $mail;
+			$message['html'] = $mail; 
+			$this->set('message', $message);
+		}
+		
+		if (!$subject)
+			$subject = 'No Subject';
+
+		//Set view variables as normal
+		return $this->SwiftMailer->send($template, $subject);
+   }
+		
+		
+##############################################################
+##############################################################
+#################  HERE DOWN IS PERMISSIONS ##################
+##############################################################
+##############################################################
+##############################################################
+##############################################################
+##############################################################
+
+
+	/**
+	 * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in. 
+	 */
 	function isAuthorized() {	
 		$userId = $this->Auth->user('id');
 		# this allows all users in the administrators group access to everything
@@ -835,12 +915,12 @@ class AppController extends Controller {
 		} 
 	}
 	
-/**
- * Gets the variables used to lookup the aco id for the action type of lookup
- * VERY IMPORTANT : If the aco is a record level type of aco (ie. model and foreign_key lookup) that means that all groups and users who have access rights must be defined.  You cannot have negative values for access permissions, and thats okay, because we deny everything by default.
- *
- * return {array || string}		The path to the aco to look up.
- */
+	/**
+	 * Gets the variables used to lookup the aco id for the action type of lookup
+	 * VERY IMPORTANT : If the aco is a record level type of aco (ie. model and foreign_key lookup) that means that all groups and users who have access rights must be defined.  You cannot have negative values for access permissions, and thats okay, because we deny everything by default.
+	 *
+	 * return {array || string}		The path to the aco to look up.
+	 */
 	function _getAcoPath() {
 		if (!empty($this->params['pass'][0])) {
 			# check if the record level aco exists first
@@ -861,17 +941,19 @@ class AppController extends Controller {
 		}
 	}
 	
-/**
- * Gets the variables used for the lookup of the aro id
- */
+	
+	/**
+	 * Gets the variables used for the lookup of the aro id
+	 */
 	function _userAro($userId) {
 		$guestsAro = array('model' => 'User', 'foreign_key' => $userId);
 		return $guestsAro;
 	}
 	
-/**
- * Gets the variables used for the lookup of the guest aro id
- */
+	
+	/**
+	 * Gets the variables used for the lookup of the guest aro id
+	 */
 	function _guestsAro() {
 		if (defined('__SYSTEM_GUESTS_USER_ROLE_ID')) {
 			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYSTEM_GUESTS_USER_ROLE_ID);
@@ -880,40 +962,6 @@ class AppController extends Controller {
 		}
 		return $guestsAro;
 	}
-
-/*
- * sendMail
- *
- * Send the mail to the user.
- * $email: Array - address/name pairs (e.g.: array(example@address.com => name, ...)
- * 		String - address to send email to
- * $subject: subject of email.
- * $template to be picked from folder for email. By default, if $mail is given in any template, especially default, 
- * $message['html'] in the layout will be replaced with this text. 
- * Else modify the template from the view file and set the variables from action via $this->set
- */
-	function __sendMail($email = null, $subject = null, $mail = null, $template = 'default') {
-		$this->SwiftMailer->to = $email;
-		// @todo: replace configure with settings.ini pick
-		$this->SwiftMailer->from = 'noreply@razorit.com';
-		$this->SwiftMailer->fromName = 'noreply@razorit.com';
-		$this->SwiftMailer->template = $template;
-
-		$this->SwiftMailer->layout = 'email';
-		$this->SwiftMailer->sendAs = 'html';
-
-		if ($mail) {
-			$this->SwiftMailer->content = $mail;
-			$message['html'] = $mail; 
-			$this->set('message', $message);
-		}
-		
-		if (!$subject)
-			$subject = 'No Subject';
-
-		//Set view variables as normal
-		return $this->SwiftMailer->send($template, $subject);
-   }
 	
 }
 ?>
