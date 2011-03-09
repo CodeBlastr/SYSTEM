@@ -71,7 +71,6 @@ class Condition extends AppModel {
 			if (!empty($triggers)) {
 				#if it is then fire all of the actions that are a 100% match
 				foreach ($triggers as $trigger) {
-					debug($lookups);
 					$data = !empty($lookups['model']) ? $this->addRecursiveData($lookups['model'], $data) : $data;
 					# fire the triggered action in the model condition is binded to
 					$this->fireAction($trigger['id'], $trigger['model'], $data);
