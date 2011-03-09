@@ -63,9 +63,9 @@ class AppModel extends Model {
 	}
 		
 	
-/**
- * Condition Check, checks to see if any conditions from the conditions table were met.
- */
+	/**
+	 * Condition Check, checks to see if any conditions from the conditions table were met.
+	 */
     function afterSave($created) {
 		# Start Condition Check #
 		$this->Condition = ClassRegistry::init('Condition');

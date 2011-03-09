@@ -71,7 +71,6 @@ class Condition extends AppModel {
 			if (!empty($triggers)) {
 				#if it is then fire all of the actions that are a 100% match
 				foreach ($triggers as $trigger) {
-					debug($lookups);
 					$data = !empty($lookups['model']) ? $this->addRecursiveData($lookups['model'], $data) : $data;
 					# fire the triggered action in the model condition is binded to
 					$this->fireAction($trigger['id'], $trigger['model'], $data);
@@ -124,8 +123,7 @@ class Condition extends AppModel {
  *
  * @param {condition} 	A string of conditions in this format : Model.field.operator.value,Model.field.operator.value (An example : ContactPerson.email.!=.null,ContactPerson.contact_id.>.0)
  * @param {data}		This is all of the form submitted data, to read and see if the sub condition was met.
- * @return {bool}		Returns true if the sub conditions were met or don't exist, and false if they were not met.
- * @todo 				Its pretty urgent that we turn on sub condition checks and there is a precursor written already in app_model.  We cannot publish live until this is done. 
+ * @return {bool}		Returns true if all sub conditions were met or don't exist, and false if they were not met.
  */	
 	function _checkSubConditions($condition, $data) {
 		if (!empty($condition['Condition']['condition'])) {
@@ -138,43 +136,69 @@ class Condition extends AppModel {
 				# check for the operator 
 				if ($condition[3] == 'null' && $condition[2] == '=') {
 					if (empty($data[$condition[0]][$condition[1]])) {
-						return true;
-					} 	
+						$return = true;
+					} else {
+						$return = false;
+						break;
+					}
 				} else if ($condition[3] == 'null' && $condition[2] == '!=') {
 					if (!empty($data[$condition[0]][$condition[1]])) {
-						return true;
-					} 	
+						$return = true;
+					}  else {
+						$return = false;
+						break;
+					}	
 				} else if ($condition[2] == '=') {
 					if ($data[$condition[0]][$condition[1]] == $condition[3]) {
-						return true;
+						$return = true;
+					} else {
+						$return = false;
+						break;
 					} 	
 				} else if ($condition[2] == '!=') {
 					if ($data[$condition[0]][$condition[1]] != $condition[3]) {
-						return true;
-					} 			
+						$return = true;
+					} else {
+						$return = false;
+						break;
+					}			
 				} else if ($condition[2] == '<=') {
 					if ($data[$condition[0]][$condition[1]] <= $condition[3]) {
-						return true;
-					} 			
+						$return = true;
+					} else {
+						$return = false;
+						break;
+					}			
 				} else if ($condition[2] == '>=') {
 					if ($data[$condition[0]][$condition[1]] >= $condition[3]) {
-						return true;
-					} 			
+						$return =  true;
+					} else {
+						$return = false;
+						break;
+					}	
 				} else if ($condition[2] == '<') {
 					if ($data[$condition[0]][$condition[1]] < $condition[3]) {
-						return true;
-					} 			
+						$return = true;
+					} else {
+						$return = false;
+						break;
+					}	
 				} else if ($condition[2] == '>') {
 					if ($data[$condition[0]][$condition[1]] > $condition[3]) {
-						return true;
-					} 				
+						$return = true;
+					} else {
+						$return = false;
+						break;
+					}			
 				} else {
-					return false;
+					$return = false;
+					break;
 				}
 			}
 		} else {
-			return true;
+			$return = true;
 		}
+		return $return;
 	}
 	
 		# This has been saved so that we can use it when we finish of the extra condition checking in the condition model
