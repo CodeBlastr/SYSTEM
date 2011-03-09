@@ -63,9 +63,9 @@ class AppModel extends Model {
 	}
 		
 	
-/**
- * Condition Check, checks to see if any conditions from the conditions table were met.
- */
+	/**
+	 * Condition Check, checks to see if any conditions from the conditions table were met.
+	 */
     function afterSave($created) {
 		# Start Condition Check #
 		$this->Condition = ClassRegistry::init('Condition');
@@ -75,7 +75,7 @@ class AppModel extends Model {
 		if ($created === true) {
 			$this->Condition->checkAndFire('is_create', array('model' => $this->name), $this->data);
 		} else {
-			#$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
+			$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
 			#$this->conditionCheck('is_read'); // this needs to be put into the beforeFilter or beforeRender (beforeRender, would allow error pages to work too) of the 
 		}
 		# End Condition Check #
