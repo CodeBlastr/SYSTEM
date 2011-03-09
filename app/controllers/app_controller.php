@@ -26,7 +26,7 @@ class AppController extends Controller {
 	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time', 'Crumb');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
-	var $userRole = '';
+	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
 	
 	
 	function __construct(){
@@ -128,6 +128,10 @@ class AppController extends Controller {
 				$this->Auth->allow('*');
 			} 
 		} 
+		
+		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
+		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
+		$this->Session->write('Auth.User.user_role_id', $this->userRoleId);
 	}
 	
 	
