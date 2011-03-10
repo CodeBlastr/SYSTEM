@@ -129,9 +129,8 @@ class AppController extends Controller {
 			} 
 		} 
 		
-		#$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
-		#$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
-		#$this->Session->write('Auth.User.user_role_id', $this->userRoleId);
+		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
+		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
 	}
 	
 	
