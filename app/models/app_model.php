@@ -57,7 +57,6 @@ class AppModel extends Model {
 			$this->data[$this->alias]['modifier_id'] = $user['id'];
 		}
 		# End Auto Creator & Modifier Id Saving # 
-		
 		# you have to return true to make the save continue.
 		return true;
 	}

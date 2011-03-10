@@ -98,4 +98,12 @@
 		}
 	}
 	
+	function enum($name, $type) {
+		$Enum = ClassRegistry::init('Enumeration');
+		return $Enum->field('id', array(
+			'Enumeration.name' => $name,
+			'Enumeration.type' => $type,
+			));
+	}
+	
 ?>
