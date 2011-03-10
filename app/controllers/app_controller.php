@@ -131,6 +131,8 @@ class AppController extends Controller {
 		
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
+		# this seems to break the login (left for reference 3/9/2011) delete if its a month old
+		#$this->Session->write('Auth.User.user_role_id', $this->userRoleId);
 	}
 	
 	
