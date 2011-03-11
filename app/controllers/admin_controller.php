@@ -24,6 +24,7 @@ class AdminController extends AppController {
 
 	var $name = 'Admin';
     var $uses = array();
+	var $dbVersion = __SYSTEM_ZUHA_DB_VERSION;
 /**
  * Loads variables from section reporting to send to the view for display. 
  *
@@ -33,18 +34,20 @@ class AdminController extends AppController {
  */
     function index () {
 		$this->Setting = ClassRegistry::init('Setting');
-		$upgradesNeeded = $this->_checkIfLatestVersion();
-		if (!empty($upgradesNeeded)) {
-			$this->set('upgradeDB', $upgradesNeeded);
-		}
 		if (!empty($this->data)) {
+			$previousUpgrade = $this->_checkIfLatestVersion();
 			if($this->_upgradeDatabase($this->data)) {
+				$this->set('previousUpgrade', $previousUpgrade);
 				$this->Session->setFlash(__('Database Upgraded (you may still need to <a href="/admin/permissions/acores/build_acl">rebuild aco objects</a> (note : clicking this link may take a long time)', true));
 			} else {
 				$this->Session->setFlash(__('Invalid id for AttributeGroup', true));
 			}				
 		}
-		
+		$upgradesNeeded = $this->_checkIfLatestVersion();
+		if (!empty($upgradesNeeded)) {
+			$this->set('upgradeDB', $upgradesNeeded);
+		}
+		# test vars for use when we make the admin dashboard more useful
 		$this->set('myVar', 'something'); 
         # $this->set('topPosts', ClassRegistry::init('Post')->getTop());
         # $this->set('recentNews', ClassRegistry::init('News')->getRecent());
@@ -53,12 +56,12 @@ class AdminController extends AppController {
 		$this->layout = 'admin';
 	}
 
-/**
- * Upgrades the database using queries given
- * 
- * @param {queries} The queries to run
- * @return {bool}
- */
+	/**
+	 * Upgrades the database using queries given
+	 * 
+	 * @param {queries} The queries to run
+	 * @return {bool}
+	 */
 	function _upgradeDatabase($queries) {
 		foreach ($queries['Query'] as $query) {
 			if ($this->Setting->query($query['data'])) {
@@ -85,9 +88,10 @@ class AdminController extends AppController {
 	function _updateSettingVersion() {
 		$this->data['Setting']['typeName'] = 'System';
 		$this->data['Setting']['name'] = 'ZUHA_DB_VERSION';
-		$this->data['Setting']['value'] = __SYSTEM_ZUHA_DB_VERSION + 0.0001;
+		$this->data['Setting']['value'] = $this->dbVersion + 0.0001;
 		
 		if ($this->Setting->add($this->data)) {
+			$this->dbVersion = $this->dbVersion + 0.0001;
 			return true;
 		} else {
 			return false;
@@ -95,21 +99,19 @@ class AdminController extends AppController {
 	}
 	
 
-/**
- * Checks to see if the the current database if up to date, and if not gets the next sql file to import
- * 
- * @return file name to import
- */
+	/**
+	 * Checks to see if the the current database if up to date, and if not gets the next sql file to import
+	 * 
+	 * @return file name to import
+	 */
 	function _checkIfLatestVersion() {
 		# the directory updated sql files are stored in.
 		$versionDirectory = ROOT . DS . 'version';
-		# system setting for the current db version
-		$databaseVersion = __SYSTEM_ZUHA_DB_VERSION;
 		# checks to see if there is a new db sql file
 		$fileVersion = $this->_checkFileVersion($versionDirectory);
-		if ($databaseVersion < $fileVersion) {
+		if ($this->dbVersion < $fileVersion) {
 			# file name from file version
-			$importFileName = $versionDirectory . DS . number_format(($databaseVersion + 0.0001), 4) . '.sql';
+			$importFileName = $versionDirectory . DS . number_format(($this->dbVersion + 0.0001), 4) . '.sql';
 			return $this->_mysqlImport($importFileName);
 		} else {
 			return false;
