@@ -90,6 +90,7 @@ class Setting extends AppModel {
  * We need to make sure that ini sections appear after all straight values in the ini file
  */
  	function finishIniData($settings) {
+		$writeData = '';
 		foreach ($settings as $setting) {
 			$writeData .= PHP_EOL.'[__';
 			$writeData .= strtoupper($setting['SettingType']['name']);
@@ -110,8 +111,8 @@ class Setting extends AppModel {
 	function writeSettingsIniData() {
 		# move this inside of the save fi statement 
 		App::import('Core', 'File');
-		$file = new File;
-		$file->path = CONFIGS.'settings.ini';
+		$file = new File(CONFIGS.'settings.ini');
+		#$file->path = CONFIGS.'settings.ini';
 		$writeData = $this->prepareSettingsIniData();
 		if($file->write($file->prepare($writeData))) {
 			return true;
