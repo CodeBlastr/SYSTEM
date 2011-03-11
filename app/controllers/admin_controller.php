@@ -32,8 +32,7 @@ class AdminController extends AppController {
  * @link http://book.zuha.com/zuha-app-controllers/AdminController.html
  */
     function index () {
-		App::Import('Model', 'Setting');
-		$this->Setting = new Setting;
+		$this->Setting = ClassRegistry::init('Setting');
 		$upgradesNeeded = $this->_checkIfLatestVersion();
 		if (!empty($upgradesNeeded)) {
 			$this->set('upgradeDB', $upgradesNeeded);
@@ -118,23 +117,18 @@ class AdminController extends AppController {
 	}
 	
 
-/**
- * Gets the latest db file version by checking the /version directory for the latest sql file. Works if we always make sure that the file names are sequential, in the X.XXXX.sql format.
- * 
- * @todo For safety we should check to make sure the file name is well formatted.
- * @todo Seems there is a cake core Folder component which would make this folder reading more concise (App::Import('Core', 'File', 'Folder'); 
- * @param {versionDirectory} The queries to run
- * @return latest version number of files or false if directory is empty
- */
+	/**
+	 * Gets the latest db file version by checking the /version directory for the latest sql file. Works if we always make sure that the file names are sequential, in the X.XXXX.sql format.
+	 * 
+	 * @todo For safety we should check to make sure the file name is well formatted.
+	 * @todo Seems there is a cake core Folder component which would make this folder reading more concise (App::Import('Core', 'File', 'Folder'); 
+	 * @param {versionDirectory}  Where the version sql files are located
+	 * @return latest version number of files or false if directory is empty
+	 */
 	function _checkFileVersion($versionDirectory) {
-		# Open a known directory, and proceed to read its contents
+		# Get the last file (by alphabetical sorting) in the version directory
 		if (is_dir($versionDirectory)) {
-		    if ($dh = opendir($versionDirectory)) {
-		        while (($file = readdir($dh)) !== false) {
-					$fileVersionNumber = str_replace('.sql', '', $file);
-		        }
-		        closedir($dh);
-		    }
+			$fileVersionNumber = str_replace('.sql', '', end(scandir($versionDirectory)));
 		}
 		if (!empty($fileVersionNumber)) {
 			return $fileVersionNumber;
