@@ -24,8 +24,8 @@
 class AppController extends Controller {
 	
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time', 'Crumb','Facebook.Facebook');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer','Facebook.Connect');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
 	
