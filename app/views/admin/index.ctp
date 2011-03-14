@@ -49,4 +49,19 @@ if (!empty($upgradeDB)) {
 </div>
 <?php 
 }
+
+if (!empty($previousUpgrade)) {
+?>
+<div id="databaseUpgrades">
+	<h2>Upgrade Queries Ran</h2>
+    <h6>The following database queries we're just ran.</h6>
+	<?php 
+	echo $form->create('Admin', array('url' => '/admin/')); 	
+	$n = 0;
+	foreach ($previousUpgrade as $query) { ?>
+	    <p><?php echo $query; ?></p>
+	<?php }	?>
+</div>
+<?php 
+}
 ?>
