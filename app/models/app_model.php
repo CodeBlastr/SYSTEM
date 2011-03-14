@@ -68,7 +68,8 @@ class AppModel extends Model {
  */
     function afterSave($created) {
 		# Start Condition Check #
-		$this->Condition = ClassRegistry::init('Condition');
+		App::Import('Model', 'Condition');
+		$this->Condition = new Condition;
 		#get the id that was just inserted so you can call back on it.
 		$this->data[$this->name]['id'] = $this->id;	
 		
@@ -156,8 +157,9 @@ class AppModel extends Model {
 
 	/*
 	 * __uid
-	 * returns a 40 digit random key and adds the prefix if provided.
-	 * $table : array(Model => action)  if uniqueness is required across any table and column
+	 * returns a 6 digit random key and adds the prefix if provided.
+	 * $table : array(Model => action)
+	 *  if uniqueness is required across any table and column
 	 */
     function __uid($prefix = null, $table = null) {
         // creates a 6 digit key
@@ -175,9 +177,7 @@ class AppModel extends Model {
 		            return $uid;
 		        }
 	        }
-    	} else {
-			return $uid;
-		}
+    	}
     }
 }
 
