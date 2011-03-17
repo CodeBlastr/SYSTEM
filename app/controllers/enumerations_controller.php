@@ -43,7 +43,7 @@ class EnumerationsController extends AppController {
 		$this->paginate = array(
 			'order' => array(
 				'Enumeration.type' => 'ASC',
-				'Enumeration.weight' => 'DESC',
+				'Enumeration.weight' => 'ASC',
 				'Enumeration.name' => 'ASC',
 			)
 		);
@@ -128,7 +128,6 @@ class EnumerationsController extends AppController {
 			$enumerationTypes[$enumeration['Enumeration']['type']] = $enumeration['Enumeration']['type'];
 		}
 		$this->set('enumerationTypes',$enumerationTypes);
-		$this->render('admin_add');
 	}
 	
 	function admin_delete($id=null) {

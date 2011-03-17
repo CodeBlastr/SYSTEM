@@ -33,7 +33,7 @@
  * In production mode, flash messages redirect after a time interval.
  * In development mode, you need to click the flash message to continue.
  */
-	Configure::write('debug', 0);
+	Configure::write('debug', 2);
 
 /**
  * CakePHP Log Level:
@@ -300,3 +300,11 @@
  *
  */
 	Cache::config('default', array('engine' => 'File'));
+	
+// facebook config
+Configure::write('Facebook.appId', '174466695926689');
+Configure::write('Facebook.apiKey', 'e4efb82f303ae825d4828fd7ab6e7585');
+Configure::write('Facebook.secret', '743faec5dfe17b5273301458d5ac0ed9');
+Configure::write('Facebook.cookie', true);
+	
+	

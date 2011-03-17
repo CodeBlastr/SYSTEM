@@ -20,10 +20,11 @@
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
+//Note : Enable CURL PHP in php.ini file to use Facebook.Connect component of facebook plugin: Faheem
 class AppController extends Controller {
 	
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time', 'Crumb');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
@@ -36,7 +37,7 @@ class AppController extends Controller {
 	}
 	
 	
-	function beforeFilter() {
+	function beforeFilter() {		
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
