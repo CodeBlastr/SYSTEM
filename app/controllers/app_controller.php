@@ -188,14 +188,14 @@ class AppController extends Controller {
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
 		$matches = array ();
 		$parents[] = $webpage["Webpage"]["id"];
-		preg_match_all ("/(\{([^\}\{]*)page([^\}\{]*):([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
+		preg_match_all ("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
 		
-		for ($i = 0; $i < sizeof ($matches[4]); $i++) {
-			if (in_array ($matches[4][$i], $parents)) {
+		for ($i = 0; $i < sizeof ($matches[2]); $i++) {
+			if (in_array ($matches[2][$i], $parents)) {
 				$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], "", $webpage["Webpage"]["content"]);
 				continue;
 			}
-			$webpage2 = $this->Webpage->find("first", array("conditions" => array( "id" => $matches[4][$i]) ) );		
+			$webpage2 = $this->Webpage->find("first", array("conditions" => array( "id" => $matches[2][$i]) ) );		
 			if(empty($webpage2) || !is_array($webpage2)) continue;
 			$this->__parseIncludedPages ($webpage2, $parents);
 			$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
