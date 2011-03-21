@@ -48,7 +48,8 @@
  *    Configure::write('log', E_ERROR | E_WARNING);
  *    Configure::write('log', E_ALL ^ E_NOTICE);
  */
-	Configure::write('log', true);
+	Configure::write('log', E_ALL ^ E_NOTICE);
+	//Configure::write('log', true);
 
 /**
  * Application wide charset encoding
