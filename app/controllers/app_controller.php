@@ -28,6 +28,7 @@ class AppController extends Controller {
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
+	var $userId = '';
 	
 	
 	function __construct(){
@@ -119,7 +120,7 @@ class AppController extends Controller {
 		$allowed = array_search($this->params['action'], $this->Auth->allowedActions);
 		if ($allowed === 0 || $allowed > 0 ) {
 			$this->Auth->allow('*');
-		} else if (empty($userId) && empty($allowed)) {
+		} else if (empty($this->userId) && empty($allowed)) {
 			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get controller and action 
 			# this first one checks record level if record level exists
@@ -810,9 +811,21 @@ class AppController extends Controller {
 	 */
 	function _getHelpers() {
 		if(defined('__APP_LOAD_APP_HELPERS')) {
-			$helpers = explode(',', __APP_LOAD_APP_HELPERS);
-			foreach ($helpers as $value) {
-				$this->helpers[] =  $value; 
+			$settings = __APP_LOAD_APP_HELPERS;
+			if ($helpers = @unserialize($settings)) {
+				foreach ($helpers as $key => $value) {
+					if ($key == 'helpers') {
+						foreach ($value as $val) {
+							$this->helpers[] = $val;
+						}
+					} else if ($key == $this->name) {
+						foreach ($value as $val) {
+							$this->helpers[] = $val;
+						}
+					}
+				}
+			} else {
+				$helpers = explode(',', $settings);
 			}
 		}
 	}
@@ -894,9 +907,9 @@ class AppController extends Controller {
 	 * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in. 
 	 */
 	function isAuthorized() {	
-		$userId = $this->Auth->user('id');
+		$this->userId = $this->Auth->user('id');
 		# this allows all users in the administrators group access to everything
-		if ($this->Auth->user('user_role_id') == 1) { return true; } 
+		if ($this->userRoleId == 1) { return true; } 
 		# check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
@@ -906,7 +919,7 @@ class AppController extends Controller {
 			return true;
 		} else {
 			# check user access
-			$aro = $this->_userAro($userId); // user aro model and foreign_key
+			$aro = $this->_userAro($this->userId); // user aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get aco
 			if ($this->Acl->check($aro, $aco)) {
 				#echo 'user access passed';
