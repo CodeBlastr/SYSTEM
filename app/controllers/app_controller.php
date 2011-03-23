@@ -827,7 +827,7 @@ class AppController extends Controller {
 					}
 				}
 			} else {
-				$this->helpers = explode(',', $settings);
+				$this->helpers = array_merge($this->helpers, explode(',', $settings));
 			}
 		}
 	}
@@ -854,7 +854,7 @@ class AppController extends Controller {
 					}
 				}
 			} else {
-				$this->components = explode(',', $settings);
+				$this->components = array_merge($this->components, explode(',', $settings));
 			}
 		}
 	}
