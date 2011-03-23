@@ -117,6 +117,8 @@ class AppController extends Controller {
 		/**
 		 * Implemented for allowing guests access through db acl control
 		 */ #$this->Auth->allow('*');
+		 
+		$this->userId = $this->Auth->user('id');
 		$allowed = array_search($this->params['action'], $this->Auth->allowedActions);
 		if ($allowed === 0 || $allowed > 0 ) {
 			$this->Auth->allow('*');
@@ -825,7 +827,7 @@ class AppController extends Controller {
 					}
 				}
 			} else {
-				$helpers = explode(',', $settings);
+				$this->helpers = explode(',', $settings);
 			}
 		}
 	}
@@ -852,7 +854,7 @@ class AppController extends Controller {
 					}
 				}
 			} else {
-				$components = explode(',', $settings);
+				$this->components = explode(',', $settings);
 			}
 		}
 	}
@@ -907,7 +909,6 @@ class AppController extends Controller {
 	 * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in. 
 	 */
 	function isAuthorized() {	
-		$this->userId = $this->Auth->user('id');
 		# this allows all users in the administrators group access to everything
 		if ($this->userRoleId == 1) { return true; } 
 		# check guest access
