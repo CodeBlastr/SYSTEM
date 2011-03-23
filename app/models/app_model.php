@@ -57,19 +57,17 @@ class AppModel extends Model {
 			$this->data[$this->alias]['modifier_id'] = $user['id'];
 		}
 		# End Auto Creator & Modifier Id Saving # 
-		
 		# you have to return true to make the save continue.
 		return true;
 	}
 		
 	
-/**
- * Condition Check, checks to see if any conditions from the conditions table were met.
- */
+	/**
+	 * Condition Check, checks to see if any conditions from the conditions table were met.
+	 */
     function afterSave($created) {
 		# Start Condition Check #
-		App::Import('Model', 'Condition');
-		$this->Condition = new Condition;
+		$this->Condition = ClassRegistry::init('Condition');
 		#get the id that was just inserted so you can call back on it.
 		$this->data[$this->name]['id'] = $this->id;	
 		
@@ -157,9 +155,8 @@ class AppModel extends Model {
 
 	/*
 	 * __uid
-	 * returns a 6 digit random key and adds the prefix if provided.
-	 * $table : array(Model => action)
-	 *  if uniqueness is required across any table and column
+	 * returns a 40 digit random key and adds the prefix if provided.
+	 * $table : array(Model => action)  if uniqueness is required across any table and column
 	 */
     function __uid($prefix = null, $table = null) {
         // creates a 6 digit key
@@ -177,7 +174,9 @@ class AppModel extends Model {
 		            return $uid;
 		        }
 	        }
-    	}
+    	} else {
+			return $uid;
+		}
     }
 }
 

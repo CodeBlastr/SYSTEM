@@ -24,10 +24,10 @@
 class AppController extends Controller {
 	
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time', 'Crumb','Facebook.Facebook');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer','Facebook.Connect');
+	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
-	var $userRole = '';
+	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
 	
 	
 	function __construct(){
@@ -92,20 +92,20 @@ class AppController extends Controller {
 			$this->Auth->allowedActions = $allowedActions;
 		}
 		
-/**
- * Support for json file types when using json extensions
- */
+		/**
+		 * Support for json file types when using json extensions
+		 */
 		$this->RequestHandler->setContent('json', 'text/x-json');
 		
-/**
- * @todo 	create this function, so that conditions can fire on the view of records
-		$this->checkConditions($plugin, $controller, $action, $extraValues);
- */
+		/**
+		 * @todo 	create this function, so that conditions can fire on the view of records
+				$this->checkConditions($plugin, $controller, $action, $extraValues);
+		 */
 		
 		
-/**
- * Used to show admin layout for admin pages
- */
+		/**
+		 * Used to show admin layout for admin pages
+		 */
 		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
 			$this->layout = 'admin';
 		}
@@ -113,9 +113,9 @@ class AppController extends Controller {
 		# system wide settings
  		if (empty($this->params['requested'])) { $this->_getTemplate(); }
 		
-/**
- * Implemented for allowing guests access through db acl control
- */	
+		/**
+		 * Implemented for allowing guests access through db acl control
+		 */ #$this->Auth->allow('*');
 		$userId = $this->Auth->user('id');
 		$allowed = array_search($this->params['action'], $this->Auth->allowedActions);
 		if ($allowed === 0 || $allowed > 0 ) {
@@ -129,6 +129,11 @@ class AppController extends Controller {
 				$this->Auth->allow('*');
 			} 
 		} 
+		
+		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
+		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
+		# this seems to break the login (left for reference 3/9/2011) delete if its a month old
+		#$this->Session->write('Auth.User.user_role_id', $this->userRoleId);
 	}
 	
 	
@@ -172,15 +177,14 @@ class AppController extends Controller {
 	}
 	
 	
-/** 
- * Database driven template system
- *
- * Using this function we can create pages within pages in the database
- * using structured tags (example : {include:pageid3}) 
- * which would include the database webpage with that id in place of the tag
- * @todo We need to fix up the {element: xyz_for_layout} so that you don't have to edit app_controller to have new helpers included, or somehow switch them all over to elements (the problem with that being that elements aren't as handy for data)
- * @todo wasn't sure if this was the right place, but we should pull all of the webpage records in one call instead of multiple if we can, and cache them for performance.
- */
+	/** 
+	 * Database driven template system
+	 *
+	 * Using this function we can create pages within pages in the database
+	 * using structured tags (example : {include:pageid3}) 
+	 * which would include the database webpage with that id in place of the tag
+	 * @todo wasn't sure if this was the right place, but we should pull all of the webpage records in one call instead of multiple if we can, and cache them for performance.
+	 */
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
 		$matches = array ();
 		$parents[] = $webpage["Webpage"]["id"];

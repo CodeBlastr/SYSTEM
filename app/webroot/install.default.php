@@ -112,7 +112,6 @@ input {
   <!-- end #sidebar1 --></div>
   <div id="mainContent">
   <?php 
-  print_r($_POST);
   	if (isset($_POST['database'])) {
 		$host = $_POST['host'];
 		$login = $_POST['login'];
