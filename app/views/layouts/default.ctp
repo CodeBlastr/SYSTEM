@@ -87,6 +87,7 @@ if (!empty($defaultTemplate)) {
 		# removed cache for forms, because you can't set it based on form inputs
 		# $elementCfg['cache'] = (!empty($userId) ? array('key' => $userId.$element, 'time' => '+2 days') : null);
 		$elementCfg['plugin'] = (!empty($plugin) ? $plugin : null);
+		$elementCfg['element_arg'] = $instance ;
 		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg), $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
