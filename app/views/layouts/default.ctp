@@ -22,6 +22,7 @@
  */
 ?>
 <!doctype html>
+<html>
 <?php if(!empty($facebook)) { echo $facebook->html(); } ?>
 <!-- <html xmlns="http://www.w3.org/1999/xhtml"> -->
 	<head>
@@ -87,7 +88,7 @@ if (!empty($defaultTemplate)) {
 		# removed cache for forms, because you can't set it based on form inputs
 		# $elementCfg['cache'] = (!empty($userId) ? array('key' => $userId.$element, 'time' => '+2 days') : null);
 		$elementCfg['plugin'] = (!empty($plugin) ? $plugin : null);
-		$elementCfg['element_arg'] = $instance ;
+		$elementCfg['instance'] = (!empty($instance) ? $instance : null);
 		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg), $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
@@ -113,6 +114,6 @@ if (!empty($defaultTemplate)) {
 } 
 ?>
 <?php  if(!empty($facebook)) { echo $facebook->init(); } ?>
-<?php echo $this->element('sql_dump');  ?>        
+<?php echo $this->element('sql_dump');  ?>    
 </body>
 </html>
