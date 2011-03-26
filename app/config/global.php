@@ -106,7 +106,6 @@
 			));
 	}
 	
-	
  	function pluginize($name) {
 		# list of models and controllers to rename to the corresponding plugin
 		$allowed = array(

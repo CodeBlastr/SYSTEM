@@ -30,7 +30,6 @@ class AppController extends Controller {
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
 	var $userId = '';
 	
-	
 	function __construct(){
 		parent::__construct();
 		$this->_getHelpers();
@@ -117,7 +116,6 @@ class AppController extends Controller {
 		/**
 		 * Implemented for allowing guests access through db acl control
 		 */ #$this->Auth->allow('*');
-		 
 		$this->userId = $this->Auth->user('id');
 		$allowed = array_search($this->params['action'], $this->Auth->allowedActions);
 		if ($allowed === 0 || $allowed > 0 ) {
@@ -827,7 +825,7 @@ class AppController extends Controller {
 					}
 				}
 			} else {
-				$this->helpers = explode(',', $settings);
+				$this->helpers = array_merge($this->helpers, explode(',', $settings));
 			}
 		}
 	}
@@ -854,7 +852,7 @@ class AppController extends Controller {
 					}
 				}
 			} else {
-				$this->components = explode(',', $settings);
+				$this->components = array_merge($this->components, explode(',', $settings));
 			}
 		}
 	}
