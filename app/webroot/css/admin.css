@@ -416,7 +416,6 @@ form div.submit {
 label {
 	display: block;
 	padding-right: 20px;
-	float: left;
 	width: 200px;
 	white-space: nowrap;
 	overflow: hidden;
