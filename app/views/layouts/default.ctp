@@ -50,7 +50,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<!-- Adding "maximum-scale=1" fixes the Mobile Safari auto-zoom bug: http://filamentgroup.com/examples/iosScaleBug/ -->
 </head>
-<body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" lang="en">
+<body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" id="<?php echo !empty($this->params['pass'][0]) ? strtolower($this->params['controller'].'_'.$this->params['action'].'_'.$this->params['pass'][0]) : strtolower($this->params['controller'].'_'.$this->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
+<content id="corewrap">
 <?php 
 echo ($this->params['plugin'] == 'webpages' && $this->params['controller'] == 'webpages' ? $this->element('inline_editor', array('plugin' => 'webpages')) : null);
 
@@ -114,6 +115,7 @@ if (!empty($defaultTemplate)) {
 } 
 ?>
 <?php  if(!empty($facebook)) { echo $facebook->init(); } ?>
-<?php echo $this->element('sql_dump');  ?>    
+<?php echo $this->element('sql_dump');  ?>  
+</content>  
 </body>
 </html>
