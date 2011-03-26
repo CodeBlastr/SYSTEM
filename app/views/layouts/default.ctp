@@ -19,6 +19,7 @@
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  * @todo		  Its time to move the different template tags to a new place.  They are getting too heavy for this default file, and aren't reusable easily.  (Things like {helper: content_for_layout} etc.)
+ * @todo		Make it so that if no default template exists that you still do a content_for_layout
  */
 ?>
 <!doctype html>
@@ -41,7 +42,14 @@
 		} else {
 			echo $this->Html->css('screen'); 
 		}
-		echo $this->Html->script('jquery-1.4.2.min');
+		# load in js files from settings
+		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
+			foreach (unserialize(__WEBPAGES_DEFAULT_JS_FILENAMES) as $media => $file) { 
+				echo $this->Html->script($file); 
+			} 
+		} else {
+			echo $this->Html->script('jquery-1.4.2.min');
+		}
 		#echo $this->Html->css('jquery-ui-1.8.1.custom');
 		#echo $this->Html->script('jquery-ui-1.8.custom.min');
 		#echo $this->Html->script('jquery.jeditable');
