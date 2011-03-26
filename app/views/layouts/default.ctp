@@ -21,14 +21,16 @@
  * @todo		  Its time to move the different template tags to a new place.  They are getting too heavy for this default file, and aren't reusable easily.  (Things like {helper: content_for_layout} etc.)
  */
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!doctype html>
+<html>
 <?php if(!empty($facebook)) { echo $facebook->html(); } ?>
 <!-- <html xmlns="http://www.w3.org/1999/xhtml"> -->
-<head>
+	<head>
 	<?php echo $this->Html->charset(); ?>
-	<title>
-		<?php echo $title_for_layout; ?>
-	</title>
+	<title><?php echo $title_for_layout; ?></title>
+    <!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
 	<?php
 		echo $this->Html->meta('icon');
 		# load in css files from settings
@@ -45,8 +47,10 @@
 		#echo $this->Html->script('jquery.jeditable');
 		echo $scripts_for_layout;  // to use this specify false for the 'in-line' argument when you put javascript into views -- that will cause your view javascript to be pushed to the <head> ie. $this->Html->script('file name', array('inline'=>false));
 	?>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<!-- Adding "maximum-scale=1" fixes the Mobile Safari auto-zoom bug: http://filamentgroup.com/examples/iosScaleBug/ -->
 </head>
-<body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>">
+<body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" lang="en">
 <?php 
 echo ($this->params['plugin'] == 'webpages' && $this->params['controller'] == 'webpages' ? $this->element('inline_editor', array('plugin' => 'webpages')) : null);
 
@@ -84,7 +88,7 @@ if (!empty($defaultTemplate)) {
 		# removed cache for forms, because you can't set it based on form inputs
 		# $elementCfg['cache'] = (!empty($userId) ? array('key' => $userId.$element, 'time' => '+2 days') : null);
 		$elementCfg['plugin'] = (!empty($plugin) ? $plugin : null);
-		$elementCfg['element_arg'] = $instance ;
+		$elementCfg['instance'] = (!empty($instance) ? $instance : null);
 		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg), $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
@@ -110,6 +114,6 @@ if (!empty($defaultTemplate)) {
 } 
 ?>
 <?php  if(!empty($facebook)) { echo $facebook->init(); } ?>
-<?php echo $this->element('sql_dump');  ?>        
+<?php echo $this->element('sql_dump');  ?>    
 </body>
 </html>
