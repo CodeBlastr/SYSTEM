@@ -106,4 +106,20 @@
 			));
 	}
 	
+	
+ 	function pluginize($name) {
+		# list of models and controllers to rename to the corresponding plugin
+		$allowed = array(
+			'Category' => 'categories',
+			'Categories' => 'categories',
+			'CatalogItem' => 'catalogs',
+			'CatalogItems' => 'catalogs',
+			'catalog_items' => 'catalogs',
+			);
+		if (!empty($allowed[$name])) {
+			return $allowed[$name];
+		} else {
+			return $name;
+		}
+	}
 ?>

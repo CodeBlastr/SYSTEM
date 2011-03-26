@@ -28,6 +28,7 @@ class AppController extends Controller {
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
+	var $userId = '';
 	
 	
 	function __construct(){
@@ -116,11 +117,12 @@ class AppController extends Controller {
 		/**
 		 * Implemented for allowing guests access through db acl control
 		 */ #$this->Auth->allow('*');
-		$userId = $this->Auth->user('id');
+		 
+		$this->userId = $this->Auth->user('id');
 		$allowed = array_search($this->params['action'], $this->Auth->allowedActions);
 		if ($allowed === 0 || $allowed > 0 ) {
 			$this->Auth->allow('*');
-		} else if (empty($userId) && empty($allowed)) {
+		} else if (empty($this->userId) && empty($allowed)) {
 			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get controller and action 
 			# this first one checks record level if record level exists
@@ -188,14 +190,14 @@ class AppController extends Controller {
 	function __parseIncludedPages (&$webpage, $parents = array ()) {
 		$matches = array ();
 		$parents[] = $webpage["Webpage"]["id"];
-		preg_match_all ("/(\{([^\}\{]*)page([^\}\{]*):([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
+		preg_match_all ("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
 		
-		for ($i = 0; $i < sizeof ($matches[4]); $i++) {
-			if (in_array ($matches[4][$i], $parents)) {
+		for ($i = 0; $i < sizeof ($matches[2]); $i++) {
+			if (in_array ($matches[2][$i], $parents)) {
 				$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], "", $webpage["Webpage"]["content"]);
 				continue;
 			}
-			$webpage2 = $this->Webpage->find("first", array("conditions" => array( "id" => $matches[4][$i]) ) );		
+			$webpage2 = $this->Webpage->find("first", array("conditions" => array( "id" => $matches[2][$i]) ) );		
 			if(empty($webpage2) || !is_array($webpage2)) continue;
 			$this->__parseIncludedPages ($webpage2, $parents);
 			$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
@@ -811,9 +813,21 @@ class AppController extends Controller {
 	 */
 	function _getHelpers() {
 		if(defined('__APP_LOAD_APP_HELPERS')) {
-			$helpers = explode(',', __APP_LOAD_APP_HELPERS);
-			foreach ($helpers as $value) {
-				$this->helpers[] =  $value; 
+			$settings = __APP_LOAD_APP_HELPERS;
+			if ($helpers = @unserialize($settings)) {
+				foreach ($helpers as $key => $value) {
+					if ($key == 'helpers') {
+						foreach ($value as $val) {
+							$this->helpers[] = $val;
+						}
+					} else if ($key == $this->name) {
+						foreach ($value as $val) {
+							$this->helpers[] = $val;
+						}
+					}
+				}
+			} else {
+				$this->helpers = array_merge($this->helpers, explode(',', $settings));
 			}
 		}
 	}
@@ -840,7 +854,7 @@ class AppController extends Controller {
 					}
 				}
 			} else {
-				$components = explode(',', $settings);
+				$this->components = array_merge($this->components, explode(',', $settings));
 			}
 		}
 	}
@@ -895,9 +909,8 @@ class AppController extends Controller {
 	 * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in. 
 	 */
 	function isAuthorized() {	
-		$userId = $this->Auth->user('id');
 		# this allows all users in the administrators group access to everything
-		if ($this->Auth->user('user_role_id') == 1) { return true; } 
+		if ($this->userRoleId == 1) { return true; } 
 		# check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
@@ -907,7 +920,7 @@ class AppController extends Controller {
 			return true;
 		} else {
 			# check user access
-			$aro = $this->_userAro($userId); // user aro model and foreign_key
+			$aro = $this->_userAro($this->userId); // user aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get aco
 			if ($this->Acl->check($aro, $aco)) {
 				#echo 'user access passed';
