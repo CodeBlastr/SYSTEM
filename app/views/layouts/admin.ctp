@@ -39,7 +39,8 @@
         <div id="zuhaLogo" class="ir"><a href="/admin"> <span></span></a> </div>
         <div id="globalNav">
           <nav>
-            <ul>              <li id="HTMLID" class="first fourColumns"> <a href="/admin" title="All features">Dashboard<span></span></a>
+            <ul>              
+            <li id="HTMLID" class="first fourColumns"> <a href="/admin" title="All features">Dashboard<span></span></a>
                 <div class="pointer"></div>
                 <div class="sub">
                   <div class="menu">
@@ -56,7 +57,7 @@
                   </div>
                 </div>
               </li>
-              <li class=" fourColumns"> <a href="/admin/contacts" title="Contacts">Contacts<span></span></a>
+              <li class="fourColumns"> <a href="/admin/contacts" title="Contacts">Contacts<span></span></a>
                 <div class="pointer"></div>
                 <div class="sub">
                   <div class="menu">
@@ -79,7 +80,7 @@
                   </div>
                 </div>
               </li>
-              <li class=" singleColumn"> <a href="/admin/projects" title="Projects">Projects<span></span></a>
+              <li class="singleColumn"> <a href="/admin/projects" title="Projects">Projects<span></span></a>
                 <div class="pointer"></div>
                 <div class="sub">
                   <div class="menu">
@@ -93,7 +94,7 @@
                   </div>
                 </div>
               </li>
-              <li class=" singleColumn"> <a href="/admin/catalogs" title="Accessories homepage">Ecommerce<span></span></a>
+              <li class="singleColumn"> <a href="/admin/catalogs" title="Accessories homepage">Ecommerce<span></span></a>
                 <div class="pointer"></div>
                 <div class="sub">
                   <div class="menu">
@@ -108,26 +109,35 @@
                   </div>
                 </div>
               </li>
-              <li class="singleColumn"> <a href="/admin/webpages" title="Content">Content<span></span></a>
+              <li class="fourColumns"> <a href="/admin/webpages" title="Content">Content<span></span></a>
                 <div class="pointer"></div>
                 <div class="sub">
                   <div class="menu">
                     <ul>
-                      <li><a href="/admin/webpages">Pages</a></li>
-                      <li class="sublink"><a href="/admin/forms">Forms</a></li>
-                      <li class="sublink separator"><a href="/kcfinder/kcfinder">File Manager</a></li>
-                      <li ><a href="/admin/forums">Forums</a></li>
-                      <li class="sublink"><a href="/admin/forums/topics">Topics</a></li>
-                      <li class="sublink"><a href="/admin/forums/posts">Posts</a></li>
-                      <li><a href="/admin/blogs">Blogs</a></li>
-                      <li><a href="/admin/wikis">Wikis</a></li>
-                      <li><a href="/admin/tags">Tags</a></li>
+                      <li class="title">Webpages</li>
+                      <li><a href="/admin/webpages/type:pages/">Pages</a></li>
+                      <li><a href="/admin/webpages/type:templates/">Templates</a></li>
+                      <li class="separator"><a href="/admin/webpages/type:elements/">Elements</a></li>
+                      <li><a href="/js/kcfinder/browse.php?type=images&kcfinderuploadDir=<?php echo SITE_DIR; ?>&CKEditor=WebpageContent&CKEditorFuncNum=4&langCode=en">File Manager</a></li>
                     </ul>
-                    <p class="otherFeatures"><a href="#" title="Contact Dashboard">Contact Dashboard</a></p>
+                    <ul>
+                      <li class="title">Extensions</li>
+                      <li><a href="/admin/forum/home">Forums</a></li>
+                      <li><a href="/admin/blogs">Blogs</a></li>
+                      <li class="separator"><a href="/admin/wikis">Wikis</a></li>
+                      <li><a href="/admin/forms">Forms</a></li>
+                    </ul>
+                    <ul>
+                      <li class="title">Labels</li>
+                      <li><a href="/admin/categories">Categories</a></li>
+                      <li><a href="/admin/tags">Tags</a></li>
+                      <li><a href="/admin/enumerations">Enumerations</a></li>
+                    </ul>
+                    <p class="otherFeatures"><a href="#" title="Content Dashboard">Content Dashboard</a></p>
                   </div>
                 </div>
               </li>
-              <li class=" singleColumn"> <a href="/admin/notifications/notification_templates" title="Marketing">Marketing<span></span></a>
+              <li class="singleColumn"> <a href="/admin/notifications/notification_templates" title="Marketing">Marketing<span></span></a>
                 <div class="pointer"></div>
                 <div class="sub">
                   <div class="menu">
