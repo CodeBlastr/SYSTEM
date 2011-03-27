@@ -47,13 +47,54 @@
                     <ul>
                       <li class="title">Permissions</li>
                       <li><a href="/admin/permissions/acores">Permissions</a></li>
-                      <li><a href="/admin/users">Users</a></li>
                     </ul>
                     <ul>
                       <li class="title">Settings</li>
                       <li><a href="/admin/settings">System Settings</a></li>
                     </ul>
+                    <ul>
+                      <li class="title">Reports</li>
+                      <li><a href="/admin/reports">Analytics</a></li>
+                      <li><a href="/admin/reports">Reports</a></li>
+                    </ul>
                     <p class="otherFeatures"><a href="/" title="Public Site">Public Site</a></p>
+                  </div>
+                </div>
+              </li>
+              <li class="twoColumn"> <a href="/admin/projects" title="Users">Users<span></span></a>
+                <div class="pointer"></div>
+                <div class="sub">
+                  <div class="menu">
+                    <ul>
+                      <li class="title">Social</li>
+                      <li><a href="/admin/users/">All Users</a></li>
+                      <li><a href="/admin/users/profiles/">Profiles</a></li>
+                      <li><a href="/admin/users/user_groups">Groups</a></li>
+                      <li><a href="/admin/users/user_statuses">Statuses</a></li>
+                      <li><a href="/admin/users/user_walls">Walls</a></li>
+                      <li><a href="/admin/messages">Messages</a></li>
+                    </ul>
+                    <ul>
+                      <li class="title">Feedback</li>
+                      <li><a href="/admin/comments">Comments</a></li>
+                      <li><a href="/admin/ratings">Ratings</a></li>
+                      <li><a href="/admin/tickets">Tickets</a></li>
+                      <li><a href="/admin/invite">Invites</a></li>
+                    </ul>
+                    <p class="otherFeatures"><a href="#" title="Users Dashboard">Users Dashboard</a></p>
+                  </div>
+                </div>
+              </li>
+              <li class="singleColumn"> <a href="/admin/notifications/notification_templates" title="Marketing">Marketing<span></span></a>
+                <div class="pointer"></div>
+                <div class="sub">
+                  <div class="menu">
+                    <ul>
+                      <li><a href="/admin/notifications/notification_templates">Notifications</a></li>
+                      <li><a href="/admin/conditions">Conditions</a></li>
+                      <li><a href="/admin/workflows">Workflows</a></li>
+                    </ul>
+                    <p class="otherFeatures"><a href="#" title="Marketing Dashboard">Marketing Dashboard</a></p>
                   </div>
                 </div>
               </li>
@@ -88,6 +129,8 @@
                       <li><a href="/admin/projects">Projects</a></li>
                       <li><a href="/admin/timesheets">Timesheets</a></li>
                       <li><a href="/admin/tickets">Tickets</a></li>
+                      <li><a href="/admin/tasks">Tasks</a></li>
+                      <li><a href="/admin/estimates">Estimates</a></li>
                       <li><a href="/admin/priorities">Priorities</a></li>
                     </ul>
                     <p class="otherFeatures"><a href="#" title="Projects Dashboard">Projects Dashboard</a></p>
@@ -122,8 +165,10 @@
                     </ul>
                     <ul>
                       <li class="title">Extensions</li>
-                      <li><a href="/admin/forum/home">Forums</a></li>
                       <li><a href="/admin/blogs">Blogs</a></li>
+                      <li ><a href="/admin/faqs">Faqs</a></li>
+                      <li ><a href="/admin/forum/home">Forums</a></li>
+                      <li ><a href="/admin/maps">Maps</a></li>
                       <li class="separator"><a href="/admin/wikis">Wikis</a></li>
                       <li><a href="/admin/forms">Forms</a></li>
                     </ul>
@@ -133,20 +178,12 @@
                       <li><a href="/admin/tags">Tags</a></li>
                       <li><a href="/admin/enumerations">Enumerations</a></li>
                     </ul>
-                    <p class="otherFeatures"><a href="#" title="Content Dashboard">Content Dashboard</a></p>
-                  </div>
-                </div>
-              </li>
-              <li class="singleColumn"> <a href="/admin/notifications/notification_templates" title="Marketing">Marketing<span></span></a>
-                <div class="pointer"></div>
-                <div class="sub">
-                  <div class="menu">
                     <ul>
-                      <li><a href="/admin/notifications/notification_templates">Notifications</a></li>
-                      <li><a href="/admin/conditions">Conditions</a></li>
-                      <li><a href="/admin/workflows">Workflows</a></li>
+                      <li class="title">Elements</li>
+                      <li><a href="/admin/favorites">Favorites</a></li>
+                      <li><a href="/admin/galleries">Galleries</a></li>
                     </ul>
-                    <p class="otherFeatures"><a href="#" title="Marketing Dashboard">Marketing Dashboard</a></p>
+                    <p class="otherFeatures"><a href="#" title="Content Dashboard">Content Dashboard</a></p>
                   </div>
                 </div>
               </li>
