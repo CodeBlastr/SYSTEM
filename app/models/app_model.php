@@ -24,8 +24,10 @@ class AppModel extends Model {
 	var $actsAs = array('Containable');
 	var $recursive = -1;
 	
-
-
+	/**
+	 * Manipulate data before it is saved.
+	 * @todo		Move this record level access stuff to a behavior
+	 */
 	function beforeSave(&$model) {
 		# Start Record Level Access Save #
 		// If the model needs Record Level Access add an Aco
@@ -80,9 +82,10 @@ class AppModel extends Model {
 		# End Condition Check #
     }
 	
-/**
- * Condition Check, checks to see if any conditions from the conditions table were met.
- */
+	
+	/**
+	 * Condition Check, checks to see if any conditions from the conditions table were met.
+	 */
     function afterDelete() {
 		# Start Condition Check #
 		App::Import('Model', 'Condition');
@@ -94,10 +97,10 @@ class AppModel extends Model {
 	}
 	
 	
-/**
- * With this function our total_count now appears with the rest of the fields in the resulting data array.
- * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
- */ 
+	/**
+	 * With this function our total_count now appears with the rest of the fields in the resulting data array.
+	 * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
+	 */ 
 	function afterFind($results, $primary = false) {
     	if($primary == true) {
     	   if(Set::check($results, '0.0')) {
