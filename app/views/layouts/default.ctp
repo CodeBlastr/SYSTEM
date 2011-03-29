@@ -19,6 +19,7 @@
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  * @todo		  Its time to move the different template tags to a new place.  They are getting too heavy for this default file, and aren't reusable easily.  (Things like {helper: content_for_layout} etc.)
+ * @todo		Make it so that if no default template exists that you still do a content_for_layout
  */
 ?>
 <!doctype html>
@@ -41,7 +42,14 @@
 		} else {
 			echo $this->Html->css('screen'); 
 		}
-		echo $this->Html->script('jquery-1.4.2.min');
+		# load in js files from settings
+		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
+			foreach (unserialize(__WEBPAGES_DEFAULT_JS_FILENAMES) as $media => $file) { 
+				echo $this->Html->script($file); 
+			} 
+		} else {
+			echo $this->Html->script('jquery-1.4.2.min');
+		}
 		#echo $this->Html->css('jquery-ui-1.8.1.custom');
 		#echo $this->Html->script('jquery-ui-1.8.custom.min');
 		#echo $this->Html->script('jquery.jeditable');
@@ -50,7 +58,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<!-- Adding "maximum-scale=1" fixes the Mobile Safari auto-zoom bug: http://filamentgroup.com/examples/iosScaleBug/ -->
 </head>
-<body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" lang="en">
+<body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" id="<?php echo !empty($this->params['pass'][0]) ? strtolower($this->params['controller'].'_'.$this->params['action'].'_'.$this->params['pass'][0]) : strtolower($this->params['controller'].'_'.$this->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
+<content id="corewrap">
 <?php 
 echo ($this->params['plugin'] == 'webpages' && $this->params['controller'] == 'webpages' ? $this->element('inline_editor', array('plugin' => 'webpages')) : null);
 
@@ -114,6 +123,7 @@ if (!empty($defaultTemplate)) {
 } 
 ?>
 <?php  if(!empty($facebook)) { echo $facebook->init(); } ?>
-<?php echo $this->element('sql_dump');  ?>    
+<?php echo $this->element('sql_dump');  ?>  
+</content>  
 </body>
 </html>
