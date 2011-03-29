@@ -18,6 +18,7 @@
  * @subpackage    zuha.app.models
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
+ * @todo		  Make it so that we list all of the settings available, and only if they have a value do we write it to the ini file. 
  */
 class Setting extends AppModel {
 

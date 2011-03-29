@@ -8,6 +8,7 @@ $indexVar = Inflector::variable($this->params['controller']); #contactPeople
 $humanModel = Inflector::humanize(Inflector::underscore($modelClass)); #Contact Person
 $humanCtrl = Inflector::humanize(Inflector::underscore($controller)); #Contact People
 $indexData = $___dataForView[$indexVar];
+$galleryThumbSize = !empty($settings['galleryThumbSize']) ? $settings['galleryThumbSize'] : 'medium';
 ?>
 
 <div class="<?php echo $indexVar;?> index">
@@ -43,7 +44,7 @@ echo "\n";
 	# show the gallery
 	if (!empty($settings['showGalleryThumb'])) :
 		echo "\t\t<div class=\"indexCell galleryThumb\">\n";
-		echo $this->element('thumb', array('plugin' => 'galleries', 'model' => $modelClass, 'foreignKey' => $indexData[$i][$modelClass]['id'], 'showDefault' => 'false', 'thumbSize' => 'medium', 'thumbLink' => "{$prefix}/{$plugin}/{$controller}/view/".$indexData[$i][$modelClass]['id']));
+		echo $this->element('thumb', array('plugin' => 'galleries', 'model' => $modelClass, 'foreignKey' => $indexData[$i][$modelClass]['id'], 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => "{$prefix}/{$plugin}/{$controller}/view/".$indexData[$i][$modelClass]['id']));
 		echo "</div>\n"; 
 	endif; 
 	
