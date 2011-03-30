@@ -4,11 +4,52 @@ Our primary goal is to provide a single system that handles your business proces
 
 We further seek to solve the problem faced by many website systems, where in order to have multiple functions (like ecommerce, CRM, CMS, project management, social networking, groups, messaging, multi-user blogs, forums, events, wikis or any combination of those sub systems), you would at a minimum be forced to combine 2 systems or more into one by somehow convincing the two (or more) systems to talk each other. 
 
+# March 2011 Accomplishments
+
+Another solid month of development is near being put in the history books.  But just checkout the accomplishments...
+
+* 1 : Favorites.  You can not add any object to a favorites or wish list. 
+
+* 2 : Calendars.  The beginning of a calendars tool has been scaffolded.  With the idea that calendars are for display of data, and events would be a separate plugin which would be that data.  This also allows us to easily create calendars from any other object, including Project Issues, Contact Opportunities, Priorities, Tasks, etc. 
+
+* 3 : Events.  Create events, event profiles, event venues, and event seating framework db structure started.  With the understanding that calendars would simply be a way of displaying when these events occur and probably link through to the actual event profile. 
+
+* 4 : Invites.  In order to invite people using your facebook friends or email.
+
+* 5 : New Gallery Type Added.  We have implemented a new gallery to which supports zoom.  This should make a great addition to the ecommerce section as well as for just regular galleries of merchandise. 
+
+* 6 : Credits.  You can now use credits instead of money to checkout.  You can also earn credits as a user for any action on the site by using conditions and workflows. 
+
+* 7 : Maps.  A google maps tie in has been developed for inputting multiple locations, and then running a search which returns a map with those locations as markers.  It includes marker text/html so that you can also specify what text is in the marker. 
+
+* 8 : Deal A Day Ecommerce.  You can now use a simple template tag on your homepage to make a deal a day website using the exisitng ecommerce platform.  
+
+* 9 : Rss.  The beginning of an rss feed aggregator has been developed for outputting page content based on many rss feeds, and a news section so that you can attach any object to the news, and therefore output an rss feed of the latest updates to your site. 
+
+* 10 : Payment Options.  New payment options for Authorize.net ARB, Authorize.net CIM, and Paypal, and credits added. 
+
+* 11 : Shipping Options. New calculated shipping option for FedEx added. 
+
+
 # February 2011 Accomplishments
 
-* 1 : Demo site setup. You can now demo the CMS and watch the first tutorial video.
+* 1 : Demo site setup. You can now demo the CMS and watch the first tutorial video.  [Update] A second tutorial video is available on the demo site : http://demo.zuha.com
 
 * 2 : Categories.  The full implementation of site wide categories is now setup.  A single db table now handles all categories across your site for each system.  This keeps your db nice and small and limits the number of tables needed. 
+
+* 3 : Estimates.  Now along with projects, you can have a stand alone estimate that may become a project, and/or many estimates for a single project so that the beginning work is done to support a freelancer / guru type of site, and for simply sending estimates to your existing or potential clients. 
+
+* 4 : Facebook.  You can now login via facebook, invite via facebook, and all other Facebook connect options.  
+
+* 5 : Ratings.  You can now attach ratings and comments along with those ratings to any object in the database.  So if you want to add ratings for projects, catalog items, webpages, or even other comments its as simple as attaching the behavior and adding the ratings element.
+
+* 6 : Search.  A configurable search option for making any object within your site searchable.  Return results from webpages, catalog items, projects, and configure how they display, and drill down for results from only a single section to return more results. 
+
+* 7 : Tags.  Tag anything has been implemented, but not overly tested.  The ability is there but actual use cases need to be tested for full endorsement. 
+
+* 8 : Wikis Reworked.  In order to take advantage of the categories plugin, we have reworked wikis and gotten rid of wiki_categories.
+
+* 9 : Workflows Retested and Upgraded.  Our application building functionality is getting more and more use and is really turning out to be a super-powerful piece of code for building very high functionality in a fraction of the time. 
 
 
 # January 2011 Accomplishments

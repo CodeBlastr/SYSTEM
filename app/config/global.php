@@ -114,6 +114,9 @@
 			'CatalogItem' => 'catalogs',
 			'CatalogItems' => 'catalogs',
 			'catalog_items' => 'catalogs',
+			'GalleryImage' => 'galleries',
+			'GalleryImages' => 'galleries',
+			'gallery_images' => 'galleries',
 			);
 		if (!empty($allowed[$name])) {
 			return $allowed[$name];

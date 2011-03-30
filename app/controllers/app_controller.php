@@ -37,7 +37,7 @@ class AppController extends Controller {
 	}
 	
 	
-	function beforeFilter() {		
+	function beforeFilter() {	
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
@@ -802,12 +802,11 @@ class AppController extends Controller {
 	
 ################################ END ACO ADD #############################
 ##########################################################################
-	
+		
 	
 	/**
-	 * Loads helpers dynamically system wide. 
+	 * Loads helpers dynamically system wide, and per controller loading abilities.
 	 *
-	 * @todo		Make this like _getComponents() and load them dynamically per view as well
 	 */
 	function _getHelpers() {
 		if(defined('__APP_LOAD_APP_HELPERS')) {
@@ -819,9 +818,7 @@ class AppController extends Controller {
 							$this->helpers[] = $val;
 						}
 					} else if ($key == $this->name) {
-						foreach ($value as $val) {
-							$this->helpers[] = $val;
-						}
+						$this->helpers[] = $value;
 					}
 				}
 			} else {
