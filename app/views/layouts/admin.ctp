@@ -158,9 +158,9 @@
                   <div class="menu">
                     <ul>
                       <li class="title">Webpages</li>
-                      <li><a href="/admin/webpages/type:pages/">Pages</a></li>
-                      <li><a href="/admin/webpages/type:templates/">Templates</a></li>
-                      <li class="separator"><a href="/admin/webpages/type:elements/">Elements</a></li>
+                      <li><a href="/admin/webpages/webpages/index/type:page_content/">Pages</a></li>
+                      <li><a href="/admin/webpages/webpages/index/type:template/">Templates</a></li>
+                      <li class="separator"><a href="/admin/webpages/webpages/index/type:element/">Elements</a></li>
                       <li><a href="/js/kcfinder/browse.php?type=images&kcfinderuploadDir=<?php echo SITE_DIR; ?>&CKEditor=WebpageContent&CKEditorFuncNum=4&langCode=en">File Manager</a></li>
                     </ul>
                     <ul>
