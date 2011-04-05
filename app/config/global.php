@@ -98,13 +98,44 @@
 		}
 	}
 	
-	function enum($name, $type) {
+	/**
+	 * Convenience function for finding enumerations
+	 *
+	 * @param {string} 		The type string (ie. PRICETYPE, SETTING_TYPE), if null we find all enumerations.
+	 * @param {mixed}		A string or an array of names to find.  If null we find all for the type, if string we find a single enum, if an array we find all which match both the type and the array of names.
+	 */
+	function enum($type = null, $name = null) {
 		$Enum = ClassRegistry::init('Enumeration');
-		return $Enum->field('id', array(
-			'Enumeration.name' => $name,
-			'Enumeration.type' => $type,
-			));
+		if (!empty($type)) {
+			if (empty($name)) {
+				# find a list of enumerations of this type
+				return $Enum->find('list', array(
+					'conditions' => array(
+						'Enumeration.type' => $type,
+						),
+					));
+			} else if (is_string($name)) {
+				# find the single enum which matches the type and the name
+				return $Enum->field('id', array(
+					'Enumeration.type' => $type,
+					'Enumeration.name' => $name,
+					));
+			} else {
+				# find all of an array of names by type
+				# note name could be an array or a string
+				return $Enum->find('list', array(
+					'conditions' => array(
+						'Enumeration.type' => $type,
+						'Enumeration.name' => $name,
+						),
+					));
+			} 
+		} else {
+			# find all enumerations
+			return $Enum->find('list');
+		}
 	}
+	
 	
  	function pluginize($name) {
 		# list of models and controllers to rename to the corresponding plugin
