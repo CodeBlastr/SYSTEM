@@ -14,5 +14,6 @@
 /sites/**/tmp/cache/views/cake*
 /sites/**/tmp/cache/views/element*
 /sites/**/tmp/cache/cake*
+/sites/*
 \.*
 \_*

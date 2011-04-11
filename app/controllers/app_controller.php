@@ -38,7 +38,6 @@ class AppController extends Controller {
 	
 	
 	function beforeFilter() {	
-	break;
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
