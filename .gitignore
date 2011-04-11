@@ -6,10 +6,7 @@
 /app/tmp/cache/views/cake*
 /app/tmp/cache/cake*
 /plugins
-/vendors
-/sites/*
 /sites/**/config/database.php
-/sites/**/config/settings.ini
 /sites/**/tmp/logs/debug.log
 /sites/**/tmp/logs/error.log
 /sites/**/tmp/cache/models/cake*
@@ -17,6 +14,5 @@
 /sites/**/tmp/cache/views/cake*
 /sites/**/tmp/cache/views/element*
 /sites/**/tmp/cache/cake*
-/sites/bootstrap.php
 \.*
 \_*
