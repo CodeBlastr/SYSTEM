@@ -44,7 +44,7 @@ echo "\n";
 	# show the gallery
 	if (!empty($settings['showGalleryThumb'])) :
 		echo "\t\t<div class=\"indexCell galleryThumb\">\n";
-		echo $this->element('thumb', array('plugin' => 'galleries', 'model' => $modelClass, 'foreignKey' => $indexData[$i][$modelClass]['id'], 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => "{$prefix}/{$plugin}/{$controller}/view/".$indexData[$i][$modelClass]['id']));
+		echo $this->element('thumb', array('plugin' => 'galleries', 'model' => $_modelClass['Gallery']['model'], 'foreignKey' => $_modelClass['Gallery']['foreign_key'], 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => "{$prefix}/{$plugin}/{$controller}/view/".$indexData[$i][$modelClass]['id']));
 		echo "</div>\n"; 
 	endif; 
 	
