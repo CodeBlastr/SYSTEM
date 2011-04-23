@@ -37,6 +37,11 @@ class AppController extends Controller {
 	}
 	
 	
+	/**
+	 * Handles the variables and functions that fire before all other controllers
+	 * 
+	 * @todo		There is a problem with the acl check, when using a site wide template tag for an element which is not allowed.  It redirects you to the login page like it should, but the login page also has that template tag, so it is an infinite loop that is hard to debug. 
+	 */
 	function beforeFilter() {	
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
@@ -123,7 +128,11 @@ class AppController extends Controller {
 			# which it can exist and guests could still have access 
 			if ($this->Acl->check($aro, $aco)) {
 				$this->Auth->allow('*');
-			} 
+			} else {
+				debug($aro);
+				debug($aco);
+				break;
+			}
 		} 
 		
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
