@@ -128,10 +128,6 @@ class AppController extends Controller {
 			# which it can exist and guests could still have access 
 			if ($this->Acl->check($aro, $aco)) {
 				$this->Auth->allow('*');
-			} else {
-				debug($aro);
-				debug($aco);
-				break;
 			}
 		} 
 		
