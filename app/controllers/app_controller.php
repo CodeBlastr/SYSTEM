@@ -507,23 +507,12 @@ class AppController extends Controller {
 			return null;
 		}
 	}
-
-    /**
-     * @todo Delete this function
-     */
-    /*function _orderBy(array $template_regexp) {
-        $result = array();
-        foreach ($template_regexp as $treg) {
-            $result[ $treg['order'] ] = array('regxp' => $treg['regxp'], 'id' => $treg['id']);
-        }
-        ksort($result); //??
-        return $result;
-    }*/
-
-/**
- * Used to find the template parsing.  Sets the defaultTemplate variable for the layout.
- *
- */
+	
+	
+	/**
+	 * Used to find the template parsing.  Sets the defaultTemplate variable for the layout.
+	 *
+	 */
 	function _getTemplate() {
         if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
             $template_id = __APP_DEFAULT_TEMPLATE_ID;
