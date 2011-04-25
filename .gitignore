@@ -15,5 +15,6 @@
 /sites/**/tmp/cache/views/element*
 /sites/**/tmp/cache/cake*
 /sites/*
+settings.ini
 \.*
 \_*
