@@ -808,7 +808,13 @@ class AppController extends Controller {
 							$this->helpers[] = $val;
 						}
 					} else if ($key == $this->name) {
-						$this->helpers[] = $value;
+						if (is_array($value)) {
+							foreach ($value as $val) {
+								$this->helpers[] = $val;
+							}
+						} else {
+							$this->helpers[] = $value;
+						}							
 					}
 				}
 			} else {
@@ -833,8 +839,12 @@ class AppController extends Controller {
 							$this->components[] = $val;
 						}
 					} else if ($key == $this->name) {
-						foreach ($value as $val) {
-							$this->components[] = $val;
+						if (is_array($value)) {
+							foreach ($value as $val) {
+								$this->components[] = $val;
+							}
+						} else {
+							$this->components[] = $value;
 						}
 					}
 				}
