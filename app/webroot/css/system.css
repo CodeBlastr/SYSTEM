@@ -1,0 +1,25 @@
+/* 
+This is a system css file to define default css rules so that new sites are at least legible.  
+The css placed here should be easily over written even with simple css rules for site css.
+Note that the class names could be updated and change often.
+*/
+
+
+
+/* Threaded Blog Comment Layout */
+.comment {
+	clear: both;
+	margin: .5em 0;
+	border: 1px solid #CCC;
+	padding: .5em;
+}
+.comment .avatar, .comment .username, .comment .meta {
+	float: left;
+}
+.comment .avatar img {
+	width: 45px;
+	height: 45px;
+}
+.comment .body {
+	clear: both;
+}
