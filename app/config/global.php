@@ -10,6 +10,10 @@
      * @param  array        array that has the keys which should be kept in the master array
      * @return array/mixed  cleand master array
      */
+	Configure::write('Recaptcha.publicKey', '6Lc5xsMSAAAAAAoP0DkzEcoBHvHeQ2mO506mHnRY');
+	Configure::write('Recaptcha.privateKey', '6Lc5xsMSAAAAADJmj-bruuzCYXOeSg5Mf7JTyW3e');
+
+	 
     function myIntersect($master, $mask) {
         if (!is_array($master)) { return $master; }
         foreach ($master as $k => $v) {

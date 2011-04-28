@@ -23,8 +23,7 @@
  */
 ?>
 <!doctype html>
-<html>
-<?php if(!empty($facebook)) { echo $facebook->html(); } ?>
+<?php if(!empty($facebook)) { echo $facebook->html(); } else { echo '<html>'; } ?>
 <!-- <html xmlns="http://www.w3.org/1999/xhtml"> -->
 	<head>
 	<?php echo $this->Html->charset(); ?>
@@ -35,6 +34,7 @@
 	<?php
 		echo $this->Html->meta('icon');
 		# load in css files from settings
+		echo $this->Html->css('system', 'stylesheet', array('media' => 'all')); 
 		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) { 
 			foreach (unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES) as $media => $file) { 
 				echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
