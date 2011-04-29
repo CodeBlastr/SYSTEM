@@ -3,7 +3,27 @@
 class MenuHelper extends AppHelper {
     var $value = '';
 
-    function afterRender() {
+	
+	function afterRender() {
+		
+		
+        /*App::import('Component', 'Acl');
+		$Acl = new AclComponent();
+		App::import('Controller', 'AppController');
+		$Controller = new AppController;
+		
+		
+			#$aro = $Controller->_guestsAro(); // guests group aro model and foreign_key
+			#$aco = $Controller->_getAcoPath(); // get controller and action 
+			#debug($aro);
+			#debug($aco);
+			#break;
+			# this first one checks record level if record level exists
+			# which it can exist and guests could still have access 
+			#if ($this->Acl->check($aro, $aco)) {
+			#	$this->Auth->allow('*');
+			#}*/
+		
 		if (!empty($this->value)) {
 			$menu = '';
 			$menu = '
@@ -23,21 +43,7 @@ class MenuHelper extends AppHelper {
 			$menu .= '</li></ul>';
 		}
 		
-		
-		/*
-		if (is_array($this->value)) {
-			$menuitems .= '<div id="accordion">';
-			foreach ($this->value as $value) {
-				if(is_array($value)){
-					$menuitems .= '<li id="'.$value['itemid'].'" style="'.$value['style'].'">'.$value['item'].'</li>';
-				} else {
-					$menuitems .= '<li>'.$value.'</li>';
-				}
-			}
-			$menuitems .= '</div>';
-		}
-		*/
-		
+				
 		
 		if (!empty($menu)) {
        	   $view = ClassRegistry::getObject('view');
@@ -47,6 +53,7 @@ class MenuHelper extends AppHelper {
 	       $view->set('menu_for_layout', '');
 		}
     }
+
 
     function setValue($value) {
         $this->value = $value;

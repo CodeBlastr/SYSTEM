@@ -23,14 +23,16 @@
 //Note : Enable CURL PHP in php.ini file to use Facebook.Connect component of facebook plugin: Faheem
 class AppController extends Controller {
 	
+	var $userId = '';
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time');
+	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
-	var $userId = '';
+	var $params = array();
 	
 	function __construct(){
+		$this->helpers['Html'] =  array('aro' => 'alsdkfjasd'/*$this->_guestsAro()*/);
 		parent::__construct();
 		$this->_getHelpers();
 		$this->_getComponents();
