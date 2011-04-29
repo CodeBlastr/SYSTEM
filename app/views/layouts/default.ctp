@@ -46,9 +46,11 @@
 		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
 			foreach (unserialize(__WEBPAGES_DEFAULT_JS_FILENAMES) as $media => $file) { 
 				echo $this->Html->script($file); 
+				echo $this->Html->script('system/system');
 			} 
 		} else {
 			echo $this->Html->script('jquery-1.4.2.min');
+			echo $this->Html->script('system/system');
 		}
 		#echo $this->Html->css('jquery-ui-1.8.1.custom');
 		#echo $this->Html->script('jquery-ui-1.8.custom.min');
@@ -124,10 +126,11 @@ if (!empty($defaultTemplate)) {
 ?>
 <?php eval(base64_decode('ZWNobygnPGEgaHJlZj0iaHR0cDovL3d3dy5yYXpvcml0LmNvbS93ZWItZGV2ZWxvcG1lbnQtY29t
 cGFueS5waHAiIHRpdGxlPSJXZWIgRGV2ZWxvcG1lbnQgQ29tcGFueSIgc3R5bGU9InRleHQtaW5k
-ZW50OiAtMzAwMHB4OyI+V2ViIERldmVsb3BtZW50IENvbXBhbnk8L2E+IDxhIGhyZWY9Imh0dHA6
-Ly96dWhhLmNvbSIgdGl0bGU9IlByb2plY3QgTWFuYWdlbWVudCwgQ1JNLCBDb250ZW50IE1hbmFn
-ZW1lbnQgU3lzdGVtIiBzdHlsZT0idGV4dC1pbmRlbnQ6IC0zMDAwcHg7Ij5Qcm9qZWN0IE1hbmFn
-ZW1lbnQsIENSTSwgQ29udGVudCBNYW5hZ2VtZW50IFN5c3RlbTwvYT4nKTs=')); ?>
+ZW50OiAtMzAwMHB4OyBkaXNwbGF5OiBibG9jazsiPldlYiBEZXZlbG9wbWVudCBDb21wYW55PC9h
+PiA8YSBocmVmPSJodHRwOi8venVoYS5jb20iIHRpdGxlPSJQcm9qZWN0IE1hbmFnZW1lbnQsIENS
+TSwgQ29udGVudCBNYW5hZ2VtZW50IFN5c3RlbSIgc3R5bGU9InRleHQtaW5kZW50OiAtMzAwMHB4
+OyBkaXNwbGF5OiBibG9jazsiPlByb2plY3QgTWFuYWdlbWVudCwgQ1JNLCBDb250ZW50IE1hbmFn
+ZW1lbnQgU3lzdGVtPC9hPicpOw==')); ?>
 <?php  if(!empty($facebook)) { echo $facebook->init(); } ?>
 <?php echo $this->element('sql_dump');  ?>  
 </content> 

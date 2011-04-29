@@ -5,12 +5,14 @@ $(function() {
 	$(".toggleClick").click(function () {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle();
+		$(this).css('cursor', 'pointer');
 		return false;
 	});
 	
 	$(".toggleHover").hover(function () {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle();
+		$(this).css('cursor', 'pointer');
 		return false;
 	});
 });
