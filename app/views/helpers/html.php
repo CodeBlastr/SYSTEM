@@ -375,18 +375,18 @@ class HtmlHelper extends AppHelper {
 	 * @param [array] 
 	 */
 	function _getAcoPath($url) {
-		if (!empty($url[0])) {
+		if (!empty($url['pass'][0])) {
 			$Aco = ClassRegistry::init('Aco');
 			# check if the record level aco exists first
 			$aco = $Aco->find('first', array(
 				'conditions' => array(
 					'model' => Inflector::classify($url['controller']), 
-					'foreign_key' => $url[0]
+					'foreign_key' => $url['pass'][0]
 					)
 				));
 		}
 		if(!empty($aco)) {
-			return array('model' => $this->modelClass, 'foreign_key' => $url[0]);
+			return array('model' => 'User', 'foreign_key' => $url['pass'][0]);
 		} else {
 			$prefix = $this->aclPath;
 			$plugin = !empty($url['plugin']) ? Inflector::camelize($url['plugin']).'/' : null;
