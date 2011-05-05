@@ -22,7 +22,8 @@
  * @todo		Make it so that if no default template exists that you still do a content_for_layout
  */
 ?>
-<!doctype html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php if(!empty($facebook)) { echo $facebook->html(); } else { echo '<html>'; } ?>
 <!-- <html xmlns="http://www.w3.org/1999/xhtml"> -->
 	<head>
@@ -61,7 +62,7 @@
 	<!-- Adding "maximum-scale=1" fixes the Mobile Safari auto-zoom bug: http://filamentgroup.com/examples/iosScaleBug/ -->
 </head>
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" id="<?php echo !empty($this->params['pass'][0]) ? strtolower($this->params['controller'].'_'.$this->params['action'].'_'.$this->params['pass'][0]) : strtolower($this->params['controller'].'_'.$this->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
-<content id="corewrap">
+<div id="corewrap">
 <?php 
 echo ($this->params['plugin'] == 'webpages' && $this->params['controller'] == 'webpages' ? $this->element('inline_editor', array('plugin' => 'webpages')) : null);
 
@@ -133,6 +134,6 @@ OyBkaXNwbGF5OiBibG9jazsiPlByb2plY3QgTWFuYWdlbWVudCwgQ1JNLCBDb250ZW50IE1hbmFn
 ZW1lbnQgU3lzdGVtPC9hPicpOw==')); ?>
 <?php  if(!empty($facebook)) { echo $facebook->init(); } ?>
 <?php echo $this->element('sql_dump');  ?>  
-</content> 
+</div> 
 </body>
 </html>
