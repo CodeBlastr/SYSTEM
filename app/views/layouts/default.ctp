@@ -27,6 +27,7 @@
 <?php if(!empty($facebook)) { echo $facebook->html(); } else { echo '<html>'; } ?>
 <!-- <html xmlns="http://www.w3.org/1999/xhtml"> -->
 	<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
 	<?php echo $this->Html->charset(); ?>
 	<title><?php echo $title_for_layout; ?></title>
     <!--[if lt IE 9]>
