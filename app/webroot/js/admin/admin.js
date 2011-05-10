@@ -116,9 +116,9 @@ $(function() {
 /* Sidebar closing link */
 	$('#sideBar a.close').click(function(e){
 		$('#sideBar').hide();
+		$('.leftContent').css('width', 'auto');
 		e.preventDefault();
 	});
-
 });
 
 /*IE6 image transpancy issue */

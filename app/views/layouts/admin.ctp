@@ -29,12 +29,6 @@
   <header>
     <div id="header">
       <div class="middleContent">
-        <div id="secure">
-          <div class="loggedIn <?php if(!$session->read('Auth.User')) { echo 'hidden'; } ?>"> <a href="/admin/settings"><span>Settings</span></a> <span class="verticalSeparator"></span> <a href="/admin/settings"><?php echo __SYSTEM_ZUHA_DB_VERSION; ?></a> <span class="verticalSeparator"></span> <a href="/admin/users/users/logout"><span>Logout</span></a> <span class="verticalSeparator"></span>
-            <p>Welcome <span class="username"><?php echo $session->read('Auth.User.username'); ?></span></p>
-            <?php echo $this->element('snpsht', array('plugin' => 'users', 'useGallery' => true, 'userId' => $session->read('Auth.User.id'), 'thumbAlt' => $session->read('Auth.User.username'), 'thumbTitle' => $session->read('Auth.User.username'))); ?> </div>
-          <div class="default <?php if($session->read('Auth.User.username')) { echo 'hidden'; } ?>"> <a id="join" class="button2 altCta2" href="/users/add"><span>Sign Up</span></a> <a id="join" class="button2 altCta2" href="/users/login"><span>Sign In</span></a> </div>
-        </div>
         <!-- secure -->
         <div id="zuhaLogo" class="ir"><a href="/admin"> <span></span></a> </div>
         <div id="globalNav">
@@ -196,6 +190,14 @@
             <!-- #googleSearchForm -->
           </div>
         </div>
+        <div id="secure">
+          <div class="loggedIn <?php if(!$session->read('Auth.User')) { echo 'hidden'; } ?>"> <a href="/admin/settings"><span>Settings</span></a> <span class="verticalSeparator"></span> <a href="/admin/settings"><?php echo __SYSTEM_ZUHA_DB_VERSION; ?></a> <span class="verticalSeparator"></span> <a href="/admin/users/users/logout"><span>Logout</span></a> <span class="verticalSeparator"></span>
+		  
+		  	<?php echo $this->element('snpsht', array('plugin' => 'users', 'useGallery' => true, 'userId' => $session->read('Auth.User.id'), 'thumbAlt' => $session->read('Auth.User.username'), 'thumbTitle' => $session->read('Auth.User.username'))); ?>
+            <p>Welcome <span class="username"><?php echo $session->read('Auth.User.username'); ?></span></p>
+             </div>
+          <div class="default <?php if($session->read('Auth.User.username')) { echo 'hidden'; } ?>"> <a id="join" class="button2 altCta2" href="/users/add"><span>Sign Up</span></a> <a id="join" class="button2 altCta2" href="/users/login"><span>Sign In</span></a> </div>
+        </div>
       </div>
     </div>
   </header>
@@ -266,7 +268,7 @@
   <div class="contentHeading">
     <h1><?php echo $title_for_layout; ?></h1>
   </div>
-  <div class="tabs"> <!--a href="#t1" rel="tabOne" class="active"> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. wikis)</span> <span class="rs">&nbsp;</span> </a> <a href="#t2" rel="tabTwo" class=""> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. user roles)</span> <span class="rs">&nbsp;</span> </a> <img class="fix shadow" id="bs" src="/img/admin/shadow_knowhow_top.png" width="899" height="10" alt=""--> </div>
+  <div class="tabs"> <a href="#t1" rel="tabOne" class="active"> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. wikis)</span> <span class="rs">&nbsp;</span> </a> <a href="#t2" rel="tabTwo" class=""> <span class="ls">&nbsp;</span> <span class="text">Sub Tab (ie. user roles)</span> <span class="rs">&nbsp;</span> </a> <img class="fix shadow" id="bs" src="/img/admin/shadow_knowhow_top.png" width="899" height="10" alt=""> </div>
   <div class="content">
     <div id="sideBar">
       <div id="sideBarArrow"> 
