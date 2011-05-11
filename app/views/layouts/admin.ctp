@@ -5,35 +5,29 @@
 <head>
 <?php echo $html->charset(); ?>
 <title><?php echo $title_for_layout; __(' : Zuha Business Management'); ?></title>
-<!--[if lt IE 7]><?php echo $this->Html->css('lt7'); ?><![endif]-->
 <?php
-		echo $this->Html->meta('icon');
-		echo $this->Html->css('admin/ui_design');
-		echo $this->Html->css('admin/early_zuha');
-		echo $this->Html->css('admin/admin');		
+	echo $this->Html->meta('icon');
 		
-		echo $this->Html->script('jquery-1.4.2.min');
-		
-		echo $this->Html->script('jquery.jeditable');
-		echo $this->Html->script('admin/admin');
-		echo $this->Html->script('admin/jquery-ui-1.8.custom.min');
-		
-		echo $scripts_for_layout;  // to use this specify false for the 'in-line' argument when you put javascript into views -- that will cause your view javascript to be pushed to the <head> ie. $javascript->codeBlock($functionForExemple, array('inline'=>false));
-
-	?>
-<!-- Default JS -->
-<?php 
+	echo $this->Html->css('admin/ui_design');
+	echo $this->Html->css('admin/early_zuha');
+	echo $this->Html->css('admin/admin');		
+	
+	echo $this->Html->script('jquery-1.4.2.min');
+	
+	echo $this->Html->script('jquery.jeditable');
+	echo $this->Html->script('admin/admin');
+	echo $this->Html->script('admin/jquery-ui-1.8.custom.min');
+	
+	echo $scripts_for_layout;  
 ?>
 </head>
 <body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
 <div id="awesomeHeader">
-  <header>
     <div id="header">
       <div class="middleContent">
         <!-- secure -->
         <div id="zuhaLogo" class="ir"><a href="/admin"><span>Zuha Business Manager</span></a> </div>
         <div id="globalNav">
-          <nav>
             <ul>
               <li id="HTMLID" class="first fourColumns"> <a href="/admin" title="All features">Dashboard<span></span></a>
                 <div class="pointer"></div>
@@ -132,7 +126,7 @@
                   </div>
                 </div>
               </li>
-              <li class="singleColumn"> <a href="/admin/catalogs" title="Accessories homepage">Ecommerce<span></span></a>
+              <li class="singleColumn"> <a href="/admin/catalogs">Ecommerce<span></span></a>
                 <div class="pointer"></div>
                 <div class="sub">
                   <div class="menu">
@@ -183,7 +177,6 @@
                 </div>
               </li>
             </ul>
-          </nav>
           <div class="searchfield">
             <form id="searchForm" method="get" action="#">
               <input type="text" value="Search" id="searchInput" name="q" title="Search" class="grayOut toggleTitle" />
@@ -198,22 +191,9 @@
         </div>
       </div>
     </div>
-  </header>
 </div>
-<?php $messaage = $session->flash(); if($messaage) { ?>
-<div id="alertStripe">
-  <div class="wrap">
-    <div class="text"> <img src="/img/admin/alertstrip_tick_green.png" width="11" height="9" alt=""> <?php echo $messaage; ?></div>
-  </div>
-</div>
-<?php } ?>
-<?php $auth = $session->flash('auth'); if($auth) { ?>
-<div id="alertStripe">
-  <div class="wrap">
-    <div class="text"> <img src="/img/admin/alertstrip_tick_green.png" width="11" height="9" alt=""> <?php echo $auth; ?> </div>
-  </div>
-</div>
-<?php } ?>
+<?php echo $this->Session->flash(); ?>
+<?php echo $this->Session->flash('auth'); ?>
 <div id="contentWrapper">
   <div class="contentHeading">
     <h1><?php echo $title_for_layout; ?></h1>
