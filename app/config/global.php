@@ -152,6 +152,7 @@
 			'GalleryImage' => 'galleries',
 			'GalleryImages' => 'galleries',
 			'gallery_images' => 'galleries',
+			'Banner' => 'banners',
 			);
 		if (!empty($allowed[$name])) {
 			return $allowed[$name];
