@@ -19,6 +19,7 @@ $(function() {
 	    });
 	});
 	
+	
 	/* site wide toggle, set the click elements class to toggleClick, 
 	   and the name attribute to the id of the element you want to toggle */
 	$(".toggleClick").click(function () {
