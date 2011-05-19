@@ -35,29 +35,48 @@
 	<![endif]-->
 	<?php
 		echo $this->Html->meta('icon');
+		
 		# load in css files from settings
 		echo $this->Html->css('system', 'stylesheet', array('media' => 'all')); 
-		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) { 
-			foreach (unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES) as $media => $file) { 
-				echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
+		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
+			$i = 0;
+			foreach (unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES) as $media => $files) { 
+				foreach ($files as $file) {
+					if (strpos($file, ',')) {
+						if (strpos($file, $defaultTemplate['Webpage']['id'].',') === 0) {
+							$file = str_replace($defaultTemplate['Webpage']['id'].',', '', $file);
+							echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
+						}
+					} else {
+						echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
+					}
+				}
+				$i++;
 			} 
 		} else {
 			echo $this->Html->css('screen'); 
 		}
+		
 		# load in js files from settings
+		echo $this->Html->script('jquery-1.6.min');
+		echo $this->Html->script('system/system');
 		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
-			foreach (unserialize(__WEBPAGES_DEFAULT_JS_FILENAMES) as $media => $file) { 
-				echo $this->Html->script($file); 
-				echo $this->Html->script('system/system');
+			$i = 0;
+			foreach (unserialize(__WEBPAGES_DEFAULT_JS_FILENAMES) as $media => $files) { 
+				foreach ($files as $file) {
+					if (strpos($file, ',')) {
+						if (strpos($file, $defaultTemplate['Webpage']['id'].',') === 0) {
+							$file = str_replace($defaultTemplate['Webpage']['id'].',', '', $file);
+							echo $this->Html->script($file);
+						}
+					} else {
+						echo $this->Html->script($file);
+					}
+				}
+				$i++;
 			} 
-		} else {
-			echo $this->Html->script('jquery-1.4.2.min');
-			echo $this->Html->script('system/system');
-		}
-		#echo $this->Html->css('jquery-ui-1.8.1.custom');
-		#echo $this->Html->script('jquery-ui-1.8.custom.min');
-		#echo $this->Html->script('jquery.jeditable');
-		echo $scripts_for_layout;  // to use this specify false for the 'in-line' argument when you put javascript into views -- that will cause your view javascript to be pushed to the <head> ie. $this->Html->script('file name', array('inline'=>false));
+		} 
+		echo $scripts_for_layout;  
 	?>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<!-- Adding "maximum-scale=1" fixes the Mobile Safari auto-zoom bug: http://filamentgroup.com/examples/iosScaleBug/ -->
