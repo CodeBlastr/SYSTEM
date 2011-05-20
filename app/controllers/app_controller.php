@@ -71,7 +71,9 @@ class AppController extends Controller {
 		
 		/**
 		 * Configure AuthComponent
-		 */		
+		 */
+		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? unserialize(__APP_DEFAULT_LOGIN_ERROR_MESSAGE) : array('message'=> 'Please register or login to access that feature.');
+		$this->Auth->authError = $authError['message'];
         $this->Auth->loginAction = array(
 			'plugin' => 'users',
 			'controller' => 'users',

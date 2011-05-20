@@ -15,4 +15,23 @@ $().ready(function() {
 		$(this).css('cursor', 'pointer');
 		return false;
 	});
+	
+	// reusable select box update
+	// requires json attribute, which is equal to the relative url to call
+	// requires element attribute, which is equal to select (other types in other functions)
+	// requires rel attribute, which is the target id of the select box to update
+	$('select[element="select"]').change(function(){
+		var url = '/' + $(this).attr('json') + '/' + $(this).val() + '.json';
+		var target = $(this).attr('rel');
+		$.getJSON(url, function(data){
+			var items = [];	
+ 			$.each(data, function(key, val) {
+				items += '<option value="' + val['name'] + '">' + val['name'] + '</option>';
+			});
+			$('#' +  target).html(items);
+			if ($.isFunction(window.selectCallBack)) { selectCallBack(data); }
+	    });
+	});
+	
+	
 });
