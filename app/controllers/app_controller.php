@@ -71,7 +71,8 @@ class AppController extends Controller {
 		
 		/**
 		 * Configure AuthComponent
-		 */		
+		 */
+		$this->Auth->defaults['authError'] = 'Please register';
         $this->Auth->loginAction = array(
 			'plugin' => 'users',
 			'controller' => 'users',
