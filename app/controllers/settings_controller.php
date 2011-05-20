@@ -57,6 +57,11 @@ class SettingsController extends AppController {
 			));
 		$this->set(compact('types')); 
 	}
+	
+	function admin_names($typeId = null) {
+		$settings = $this->Setting->getNames($typeId);
+		$this->set(compact('settings'));
+	}
 
 	function admin_edit($id = null) {
 		if (!$id && empty($this->data)) {
