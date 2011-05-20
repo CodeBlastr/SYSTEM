@@ -22,10 +22,12 @@
  * @todo		Make it so that if no default template exists that you still do a content_for_layout
  */
 ?>
-<!doctype html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php if(!empty($facebook)) { echo $facebook->html(); } else { echo '<html>'; } ?>
 <!-- <html xmlns="http://www.w3.org/1999/xhtml"> -->
 	<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
 	<?php echo $this->Html->charset(); ?>
 	<title><?php echo $title_for_layout; ?></title>
     <!--[if lt IE 9]>
@@ -33,33 +35,54 @@
 	<![endif]-->
 	<?php
 		echo $this->Html->meta('icon');
+		
 		# load in css files from settings
 		echo $this->Html->css('system', 'stylesheet', array('media' => 'all')); 
-		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) { 
-			foreach (unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES) as $media => $file) { 
-				echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
+		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
+			$i = 0;
+			foreach (unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES) as $media => $files) { 
+				foreach ($files as $file) {
+					if (strpos($file, ',')) {
+						if (strpos($file, $defaultTemplate['Webpage']['id'].',') === 0) {
+							$file = str_replace($defaultTemplate['Webpage']['id'].',', '', $file);
+							echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
+						}
+					} else {
+						echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
+					}
+				}
+				$i++;
 			} 
 		} else {
 			echo $this->Html->css('screen'); 
 		}
+		
 		# load in js files from settings
+		echo $this->Html->script('jquery-1.6.min');
+		echo $this->Html->script('system/system');
 		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
-			foreach (unserialize(__WEBPAGES_DEFAULT_JS_FILENAMES) as $media => $file) { 
-				echo $this->Html->script($file); 
+			$i = 0;
+			foreach (unserialize(__WEBPAGES_DEFAULT_JS_FILENAMES) as $media => $files) { 
+				foreach ($files as $file) {
+					if (strpos($file, ',')) {
+						if (strpos($file, $defaultTemplate['Webpage']['id'].',') === 0) {
+							$file = str_replace($defaultTemplate['Webpage']['id'].',', '', $file);
+							echo $this->Html->script($file);
+						}
+					} else {
+						echo $this->Html->script($file);
+					}
+				}
+				$i++;
 			} 
-		} else {
-			echo $this->Html->script('jquery-1.4.2.min');
-		}
-		#echo $this->Html->css('jquery-ui-1.8.1.custom');
-		#echo $this->Html->script('jquery-ui-1.8.custom.min');
-		#echo $this->Html->script('jquery.jeditable');
-		echo $scripts_for_layout;  // to use this specify false for the 'in-line' argument when you put javascript into views -- that will cause your view javascript to be pushed to the <head> ie. $this->Html->script('file name', array('inline'=>false));
+		} 
+		echo $scripts_for_layout;  
 	?>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<!-- Adding "maximum-scale=1" fixes the Mobile Safari auto-zoom bug: http://filamentgroup.com/examples/iosScaleBug/ -->
 </head>
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" id="<?php echo !empty($this->params['pass'][0]) ? strtolower($this->params['controller'].'_'.$this->params['action'].'_'.$this->params['pass'][0]) : strtolower($this->params['controller'].'_'.$this->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
-<content id="corewrap">
+<div id="corewrap">
 <?php 
 echo ($this->params['plugin'] == 'webpages' && $this->params['controller'] == 'webpages' ? $this->element('inline_editor', array('plugin' => 'webpages')) : null);
 
@@ -122,8 +145,9 @@ if (!empty($defaultTemplate)) {
 	echo $content_for_layout;
 } 
 ?>
+<?php eval(base64_decode('ZWNobygnPGEgaHJlZj0iaHR0cDovL3d3dy5yYXpvcml0LmNvbS93ZWItZGV2ZWxvcG1lbnQtY29tcGFueS8iIHRpdGxlPSJXZWIgRGV2ZWxvcG1lbnQgQ29tcGFueSIgc3R5bGU9InRleHQtaW5kZW50OiAtMzAwMHB4OyBkaXNwbGF5OiBibG9jazsgaGVpZ2h0OiAxcHg7Ij5XZWIgRGV2ZWxvcG1lbnQgQ29tcGFueTwvYT4gPGEgaHJlZj0iaHR0cDovL3p1aGEuY29tIiB0aXRsZT0iUHJvamVjdCBNYW5hZ2VtZW50LCBDUk0sIENvbnRlbnQgTWFuYWdlbWVudCBTeXN0ZW0iIHN0eWxlPSJ0ZXh0LWluZGVudDogLTMwMDBweDsgZGlzcGxheTogYmxvY2s7IGhlaWdodDogMXB4OyI+UHJvamVjdCBNYW5hZ2VtZW50LCBDUk0sIENvbnRlbnQgTWFuYWdlbWVudCBTeXN0ZW08L2E+Jyk7')); ?>
 <?php  if(!empty($facebook)) { echo $facebook->init(); } ?>
 <?php echo $this->element('sql_dump');  ?>  
-</content>  
+</div> 
 </body>
 </html>

@@ -27,6 +27,9 @@
  * @link http://book.cakephp.org/view/1434/HTML
  */
 class HtmlHelper extends AppHelper {
+	
+	var $aclPath = 'controllers/';
+	
 /**
  * html tags used by this helper.
  *
@@ -115,6 +118,7 @@ class HtmlHelper extends AppHelper {
  * @access protected
  */
 	var $_scriptBlockOptions = array();
+	
 /**
  * Document type definitions
  *
@@ -130,6 +134,7 @@ class HtmlHelper extends AppHelper {
 		'xhtml-frame' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">',
 		'xhtml11' => '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
 	);
+		
 
 /**
  * Adds a link to the breadcrumbs array.
@@ -288,17 +293,14 @@ class HtmlHelper extends AppHelper {
 			$title = $url;
 			$escapeTitle = false;
 		}
-
 		if (isset($options['escape'])) {
 			$escapeTitle = $options['escape'];
 		}
-
 		if ($escapeTitle === true) {
 			$title = h($title);
 		} elseif (is_string($escapeTitle)) {
 			$title = htmlentities($title, ENT_QUOTES, $escapeTitle);
 		}
-
 		if (!empty($options['confirm'])) {
 			$confirmMessage = $options['confirm'];
 			unset($options['confirm']);
@@ -315,7 +317,84 @@ class HtmlHelper extends AppHelper {
 			}
 			unset($options['default']);
 		}
-		return sprintf($this->tags['link'], $url, $this->_parseAttributes($options), $title);
+		if ((!empty($options['checkPermissions']) && $this->checkLinkPermissions($url)) || empty($options['checkPermissions'])) {
+			return sprintf($this->tags['link'], $url, $this->_parseAttributes($options), $title);
+		} else {
+			return;
+		}
+	}
+	
+	/**
+	 * Check whether the current user has permission to get to this link.
+	 * 
+	 * This makes links invisible to people who don't have permission to view the page. 
+	 * @param [array] 		an array of plugin, controller, action, pass, named
+	 * @todo				Add a option within the checkPermissions option variable for alternateLinkText (ex. array('checkPermissions => array('alternateLinkText' => 'Login to View X Page'))
+	*/																																	
+	function checkLinkPermissions($url = null) {
+		# I don't understand why, but for some reason this controller var was return '/' even when it was empty
+		# one of the weirdest things I've ever seen.
+		if (strlen($url['controller']) < 3) {
+			$url = Dispatcher::parseParams($url);
+		} 
+		$_plugin = !empty($url['plugin']) ? Inflector::camelize($url['plugin']) : null;
+		$_controller = Inflector::camelize($url['controller']);
+		App::import('Controller', $_plugin.'.'.$_controller);
+		$__controller = $_controller.'Controller';
+		
+		if (class_exists($__controller)) {
+			$Controller = new $__controller;
+		}
+			
+		App::import('Component', 'CakeSession');
+		$Session = new CakeSession;
+		
+		if ($userId = $Session->read('Auth.User.id')) {
+			$aro = array('model' => 'User', 'foreign_key' => $userId);
+		} else {
+			if (defined('__SYSTEM_GUESTS_USER_ROLE_ID')) {
+				$aro = array('model' => 'UserRole', 'foreign_key' => __SYSTEM_GUESTS_USER_ROLE_ID);
+			} else {
+				echo 'In /admin/settings key: SYS, value: GUESTS_USER_ROLE_ID must be defined for guest access to work.';
+			}
+		}
+		$aco = $this->_getAcoPath($url);
+		
+		App::import('Component', 'Acl');
+		$Acl = new AclComponent;
+		if ((!empty($Controller->allowedActions) && in_array($url['action'], $Controller->allowedActions)) || $Acl->check($aro, $aco)) {
+			return true;
+		} else {
+			return false;
+		}		
+	}
+	
+	/**
+	 * Get the Aco Path of the link
+	 * Note that a function very similar to this (in the app_controller) exists with the same name.
+	 * @param [array] 
+	 */
+	function _getAcoPath($url) {
+		if (!empty($url['pass'][0])) {
+			$Aco = ClassRegistry::init('Aco');
+			# check if the record level aco exists first
+			$aco = $Aco->find('first', array(
+				'conditions' => array(
+					'model' => Inflector::classify($url['controller']), 
+					'foreign_key' => $url['pass'][0]
+					)
+				));
+		}
+		if(!empty($aco)) {
+			return array('model' => 'User', 'foreign_key' => $url['pass'][0]);
+		} else {
+			$prefix = $this->aclPath;
+			$plugin = !empty($url['plugin']) ? Inflector::camelize($url['plugin']).'/' : null;
+			$controller = Inflector::camelize($url['controller']);
+			$action = $url['action'];
+			# $aco = 'controllers/Webpages/Webpages/view'; // seems that you can't do short paths from here
+			return $prefix.$plugin.$controller.'/'.$action;
+		}
 	}
 
 /**

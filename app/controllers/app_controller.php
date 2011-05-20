@@ -23,14 +23,16 @@
 //Note : Enable CURL PHP in php.ini file to use Facebook.Connect component of facebook plugin: Faheem
 class AppController extends Controller {
 	
+	var $userId = '';
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Html', 'Text', 'Form', 'Js', 'Time');
+	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
-	var $userId = '';
+	var $params = array();
 	
 	function __construct(){
+		$this->helpers['Html'] =  array('aro' => 'alsdkfjasd'/*$this->_guestsAro()*/);
 		parent::__construct();
 		$this->_getHelpers();
 		$this->_getComponents();
@@ -69,7 +71,8 @@ class AppController extends Controller {
 		
 		/**
 		 * Configure AuthComponent
-		 */		
+		 */
+		$this->Auth->defaults['authError'] = 'Please register';
         $this->Auth->loginAction = array(
 			'plugin' => 'users',
 			'controller' => 'users',
@@ -922,6 +925,9 @@ class AppController extends Controller {
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
+				#debug($aro);
+				#debug($aco);
+				#break;
 				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 			}	
