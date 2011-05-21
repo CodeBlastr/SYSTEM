@@ -8,8 +8,6 @@
 		echo $form->input('name');
 		echo $form->input('value');
 		echo $form->input('description');
-		echo $form->input('plugin', array('after' => 'Convenience limiter'));
-		echo $form->input('model', array('after' => 'Convenience limiter'));
 	?>
 	</fieldset>
 <?php echo $form->end('Submit');?>

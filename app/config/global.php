@@ -105,13 +105,20 @@
 	/**
 	 * Convenience function for finding enumerations
 	 *
-	 * @param {string} 		The type string (ie. PRICETYPE, SETTING_TYPE), if null we find all enumerations.
+	 * @param {mixed} 		The type string (ie. PRICETYPE, SETTING_TYPE), if null we find all enumerations. If an integer then we return the single exact enum being called.
 	 * @param {mixed}		A string or an array of names to find.  If null we find all for the type, if string we find a single enum, if an array we find all which match both the type and the array of names.
 	 */
 	function enum($type = null, $name = null) {
 		$Enum = ClassRegistry::init('Enumeration');
 		if (!empty($type)) {
-			if (empty($name)) {
+			if (is_numeric($type)) {
+				# find a single enum because we have an id number
+				return $Enum->find('list', array(
+					'conditions' => array(
+						'Enumeration.id' => $type,
+						),
+					));
+			} else if (empty($name)) {
 				# find a list of enumerations of this type
 				return $Enum->find('list', array(
 					'conditions' => array(
@@ -160,4 +167,5 @@
 			return $name;
 		}
 	}
+
 ?>

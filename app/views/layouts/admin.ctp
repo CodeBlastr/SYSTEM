@@ -12,7 +12,7 @@
 	echo $this->Html->css('admin/early_zuha');
 	echo $this->Html->css('admin/admin');		
 	
-	echo $this->Html->script('jquery-1.4.2.min');
+	echo $this->Html->script('jquery-1.6.min');
 	
 	echo $this->Html->script('jquery.jeditable');
 	echo $this->Html->script('admin/admin');
