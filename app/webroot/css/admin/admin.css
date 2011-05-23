@@ -690,7 +690,7 @@ html.rtl #globalNav li .pointer {
 	position:relative;
 	/*margin-right:45px;
 	margin-left:20px;*/
-	margin: 0;
+	margin: 0 0 10px 0;
 	width: 90%;
 	min-width: 800px;
 }
