@@ -5,9 +5,9 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 	background:transparent none repeat scroll 0 0;
 	border:0 none;
 	font-family:inherit;
-	font-size:98%;
 	font-style:inherit;
 	font-weight:inherit;
+	font-size: 98%;
 	margin:0;
 	outline-color:-moz-use-text-color;
 	outline-style:none;
@@ -34,12 +34,12 @@ blockquote, q {
 
 
 body {
-	line-height: 1.4em; /* 19px */
+	line-height: 1.2em; 
 	font-family: Helvetica, Arial, sans-serif;
 	background: #FDFDFD;
 }
 p {
-	margin: 0 0 1.357em 0;
+	margin: 0 0 0.357em 0;
 	color: #3a3a3a;
 }
 strong {
@@ -49,8 +49,7 @@ em {
 	font-style: italic;
 }
 a {
-	font-weight: bold;
-	color: #36F;
+	color: #648EDD;
 	text-decoration: none;
 }
 a:hover {
@@ -68,38 +67,37 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 	background: #fff;
-	border: 1px solid #ccc;
 	clear: both;
 	color: #333;
 	margin-bottom: 10px;
 	width: 100%;
 }
 th {
-	background: #E8E8E8;
-	border:1px solid #bbb;
-	font-weight: bold;
+	border-bottom:1px solid #bbb;
+	text-transform: uppercase;
 	padding: 2px 4px;
+	color: #CCC;
+	font-size: 89%;
 }
 th a {
 	display: block;
 	text-decoration: none;
-	color: #333;
+	color: #CCC;
+}
+th a:visited {
+	color: #CCC;
 }
 th a:hover {
-	background: #E4E4E4;
 	color: #333;
 	text-decoration: none;
 }
-th a:visited {
-	color: #333;
-}
 
 td {
-	background: #EEE;
 	border-bottom: 1px solid #ccc;
-	padding: 8px 5px;
+	padding: 2px 40px 2px 2px;
 	/*text-align: center;*/
 	vertical-align: top;
+	white-space: nowrap;
 }
 tr.altrow td {
 	background: #FFF;
@@ -230,7 +228,7 @@ Zuha logo
 	background: url('../../img/admin/header_sprite_8bit.png') no-repeat 0 -200px;
 }
 #secure a#join,  #secure a#addCredit {
-	color: #36F;
+	color: #648EDD;
 	text-shadow: none;
 }
 #secure a:last-child {
@@ -245,6 +243,52 @@ Zuha logo
 #secure a#join:hover {
 	text-decoration: none;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -423,7 +467,7 @@ Primary navigation
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-	border: 1px solid #36F;
+	border: 1px solid #648EDD;
 	-webkit-box-shadow: 0 0 10px #777;
 	-moz-box-shadow: 0 0 10px #777;
 	box-shadow: 0 0 10px #777;
@@ -457,7 +501,7 @@ Primary navigation
 	margin: 0;
 	padding: 0;
 	line-height: 14px;
-	color: #36F;
+	color: #648EDD;
 	text-decoration: none;
 }
 #globalNav li .sub .menu .otherFeatures a:hover {
@@ -498,7 +542,7 @@ Primary navigation
 #globalNav li .sub .menu ul li a {
 	background: none;
 	float: none;
-	color: #36F;
+	color: #648EDD;
 	text-shadow: none;
 	text-decoration: none;
 	padding: 4px 0;
@@ -624,8 +668,9 @@ html.rtl #globalNav li .pointer {
 /* Content Css */ 
 
 /* Content container related styles */
-.leftContent {
+.leftContent, .ui-tabs-panel {
 	float:left;
+	clear: left;
 }
 /* Wrapper related styles */ 
 #contentWrapper {
@@ -640,119 +685,118 @@ html.rtl #globalNav li .pointer {
 	overflow:hidden;
 	position:relative;
 }
-#contentWrapper div.tabs {
+#contentWrapper div#tabs {
 	height:30px;
 	position:relative;
 	/*margin-right:45px;
 	margin-left:20px;*/
-	margin: auto;
+	margin: 0;
 	width: 90%;
 	min-width: 800px;
 }
-.contentHeading {
+h1.contentHeading {
 	position: relative;
 	top: 5px;
 	margin: 0 10px 0 0;
-}
-.contentHeading h1 {
 	float:left;
 	font-weight:bold;
-	font-size:15px;
-	color:#b0b4b5;
+	font-size:20px;
+	z-index: 100;
 }
-#contentWrapper div.tabs img.shadow {
+#tabs ul, #tabs li {
+	display: inline;
+}
+#contentWrapper div#tabs img.shadow {
 	position:absolute;
 	top:19px;
-	left:-37px;
+	left:0px;
 }
-#contentWrapper div.tabs a {
+#contentWrapper div#tabs a {
 	display:block;
-	margin:0px 0px 0px 5px;
+	margin: 0;
 	height:28px;
 	white-space:nowrap;
 	float:left;
-	color:#36F;
+	color:#648EDD;
 	text-decoration:none;
 	position:relative;
 }
-#contentWrapper div.tabs a span.ls {
+#contentWrapper div#tabs span.ls {
 	display:block;
 	width:10px;
 	height:28px;
 	float:left;
 	/*background:top left no-repeat url('../../img/admin/tab_inactive_left.png');*/
 }
-#contentWrapper div.tabs a span.rs {
+#contentWrapper div#tabs span.rs {
 	display:block;
 	width:10px;
 	height:28px;
 	float:left;
 	/*background:top left no-repeat url('../../img/admin/tab_inactive_right.png');*/
 }
-#contentWrapper div.tabs a span.text {
+#contentWrapper div#tabs a span.text {
 	display:block;
-	color:#36F;
+	color:#648EDD;
 	font-size:12px;
 	font-weight:bold;
 	padding:8px 10px 0 10px;
 	float:left;
 	cursor:pointer;
 }
-#contentWrapper div.tabs a.active {
+#contentWrapper div#tabs a.active {
 	z-index:300;
 	color:#525252;
 }
-#contentWrapper div.tabs a.active span.ls {
+#contentWrapper div#tabs span.ls {
 	background:top left no-repeat url('../../img/admin/tab_active_left.png');
 }
-#contentWrapper div.tabs a.active span.rs {
+#contentWrapper div#tabs span.rs {
 	background:top left no-repeat url('../../img/admin/tab_active_right.png');
 }
-#contentWrapper div.tabs a.active span.text {
+#contentWrapper div#tabs a.active span.text {
 	background-color:#FFFFFF;
 	color:#525252;
 	padding:8px 10px 9px 10px;
 }
-#tabTwo {
-	display:none;
-}
-#tabTwo .navigation {
+#navigation {
 	margin: 0;
 	padding:10px 0px 0px 0px;
-	border-bottom:1px solid #36F;
 	float: left;
+	width: 99%;
 }
-#tabTwo .navigation ul {
+#navigation ul {
 	list-style:none;
 }
-#tabTwo .navigation ul li {
+#navigation ul li {
 	float:left;
 }
-#tabTwo .navigation ul.left {
+#navigation ul.left {
 	float:left;
 }
-#tabTwo .navigation ul.left a {
+#navigation ul.left a {
 	color:#696969;
 	font-weight:bold;
 	text-decoration:none;
 	display:block;
-	line-height:35px;
 	padding:0px 10px 5px 10px;
-	margin-right:60px;
 }
-#tabTwo .navigation ul.left a.active {
-	color:#36F;
+#navigation ul.left a.active {
+	color:#648EDD;
 	background:center bottom no-repeat scroll url('../../img/admin/bullet_blue.png');
 }
-#tabTwo .tabcontent {
+.tabcontent {
 	margin:30px 0 40px 0;
 	display:none;
 }
-#tabOne {
+{
 	display:none;
 }
 .leftContent {
 	width: 77%;
+	min-width: 765px;
+}
+.ui-tabs-panel {
 	min-width: 765px;
 }
 #sideBar {
@@ -794,7 +838,7 @@ html.rtl #globalNav li .pointer {
 	z-index:280;
 	margin:10px 0px 0px 0px;
 	padding:0;
-	border-bottom:1px solid #36F;
+	border-bottom:1px solid #648EDD;
 	display: none;
 }
 #compareChart .compareChartHeader li {
@@ -812,7 +856,6 @@ html.rtl #globalNav li .pointer {
 	position:relative;
 	z-index:250;
 	float: left;
-	padding: 10px 0;
 	width: 100%;
 }
 
@@ -869,7 +912,7 @@ html.rtl #globalNav li .pointer {
 #footer {
 	display: block;
 	height: 47px;
-	background-color: #36F;
+	background-color: #648EDD;
 }
 #footer span.footerHeading {
 	display: block;
@@ -906,7 +949,7 @@ html.rtl #globalNav li .pointer {
 	line-height: 21px;
 }
 #footerMenu ul li a {
-	color: #36F;
+	color: #648EDD;
 	text-decoration: none;
 }
 #footerMenu ul li a:hover {
@@ -919,7 +962,7 @@ html.rtl #globalNav li .pointer {
 	line-height: 30px;
 	margin-bottom: 5px;
 	font-size: 14px;
-	color: #36F;
+	color: #648EDD;
 	font-weight: bold;
 }
 div#bottomNavigation {
@@ -932,7 +975,7 @@ div#bottomNavigation {
 }
 div#bottomNavigation a {
 	text-decoration: none;
-	color: #36F;
+	color: #648EDD;
 	padding: 0 4px;
 	font-weight: normal;
 }
