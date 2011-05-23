@@ -379,9 +379,6 @@ div.code-coverage-results span.result-good {
 	padding: 0;
 	clear: both;
 }
-.data h6 {
-	float: left;
-}
 .action {
 	float: right;
 	clear: right;
@@ -518,17 +515,6 @@ div.code-coverage-results span.result-good {
 }
 .toggleClick:hover {
 	background: #EAEAEA;
-}
-#toggleSidebar {
-	color: #000;
-	text-decoration: none;
-	cursor: text;
-	display: block;
-	position: absolute;
-	top: 0;
-	right: -24%;
-	z-index: 100;
-	font-size: .8em;
 }
 .hide {
 	display: none;

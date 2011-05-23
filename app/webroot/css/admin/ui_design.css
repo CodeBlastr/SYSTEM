@@ -4,36 +4,6 @@
 /* ADDED FROM CODE MY CONCEPT / ALWIN DESIGN */
 
 /* info-block */
-.info-block{width:100%;}
-.info-block .title{
-	/*background:#d2d2d2 url('../../img/admin/bg-title.gif') repeat-x;*/
-	width:100%;
-	float: left;
-}
-.info-block .title:after{
-	clear:both;
-	content:"";
-	display:block;
-}
-.info-block .title strong{
-	float:left;
-	color:#535353;
-	font-size:11px;
-	line-height:14px;
-	padding:8px 31px 8px 12px;
-	background:url('../../img/admin/sep03.gif') no-repeat 100% 60%;
-}
-.info-block .title a,
-.info-block .title span{color:#007eff;}
-.info-block .title a{
-	padding:0 11px 0 0;
-	background:url('../../img/admin/bullet01.gif') no-repeat 100% 50%;
-}
-.info-block .title .drop-holder{float:right;}
-.info-block .title .drop-holder strong{
-	background:none;
-	padding-right:21px;
-}
 .drop-holder.hover,
 .drop-holder:hover{position:relative;}
 .drop-holder.hover .drop,
@@ -85,23 +55,6 @@
 	text-decoration:none;
 }
 /* post */
-.post{
-	height:1%;
-	border-bottom:1px solid #dfdfdf;
-	padding:11px 17px 10px 10px;
-	float: left;
-}
-.post:after{
-	clear:both;
-	content:"";
-	display:block;
-}
-.post .image{
-	float:left;
-	width:78px;
-	margin:0 10px 0 0;
-}
-* html .post .image{margin-right:7px;}
 .post .image img{
 	display:block;
 	border:1px solid #000;
@@ -121,11 +74,6 @@
 	text-decoration:none;
 	background-position:0 -15px;
 }
-.post .text{
-  overflow:hidden;
-  padding:0 40px 0 0;
-  position:relative;
-}
 .post .text .links {
   position:absolute;
   right:0;
@@ -135,52 +83,97 @@
 	overflow:visible;
 	height:1%;
 }
-.post .text ul{
-	width:100%;
-	overflow:hidden;
-	margin:0 0 9px -14px;
-	border-bottom:1px solid #d7d7d7;
-	padding-bottom:3px;
+
+
+
+/* New Stuff */
+.info-block {
+	display: table;
+	width: 99%;
 }
-.post .text ul{
-	font-size: 12px;
+.post{
+	float: left;
+	width: 99%;
+	display: table-row;
+	padding: 5px 0;
+	position: relative;
 }
-.post .text ul li{
+.post .image{
+	width:78px;
+	margin:0 10px 0 0;
+	display: table-cell;
+}
+.post .viewData{
+	padding: 2px 8px;
+	display: table-cell;
+	vertical-align: top;
+}
+.post .viewData ul li{
 	float:left;
-	padding:8px 15px 0;
-	background:url('../../img/admin/sep04.gif') no-repeat 0 85%;
-	line-height:14px;
+	padding: 0 30px 0 0;
 }
-.post .text ul span{
-	color:#007eff;
-	font-weight:bold;
+.post .viewData ul li.metaDataPriorityDetail {
+	padding: 0;
+	float: right !important;
 }
-.post p{margin:0 0 5px;}
-.post .row{
-	width:100%;
-	overflow:hidden;
+.post .metaData {
+	width: 99%;
+	overflow: hidden;
+	background: #E6EDF9;
+	padding: 0px 8px;
+	
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	box-shadow: 1px 1px 1px #777777;
+    -moz-box-shadow: 1px 1px 2px #777777;
+	-webkit-box-shadow: 1px 1px 2px #777777;
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');
 }
-.post .row a {
-	font-size: 10px !important;
-	line-height: 14px !important;
+.post .metaDataLabel, .post .metaDataLabel a {
+	color: #06C;
 }
-.post .add-note{
-	float:left;
-	font-weight:bold;
-	color:#fff;
-	padding:4px 20px 2px 7px;
-	cursor:pointer;
-	background:url('../../img/admin/btn-add-note.gif') no-repeat;
-	width:60px;
-	height:16px;
-	margin:0 10px 0 6px;
-	display:inline;
+.post .metaDataDetail {
+	font-weight: bold;
 }
-.post em{
-	float:left;
-	color:#b2b2b2;
-	padding-top:4px;
+.post .recordData {
+	float: left;
+	padding: 3px;
+	width: 100%;
 }
+.post .actions {
+	position: absolute;
+	top: 2px;
+	right: 8px;
+}
+.post .actions a {
+	padding: 0 0 0 20px;
+	font-size: 11px;
+}
+.ui-tabs-hide {
+	display: none;
+}
+
+.data h6 {
+	padding: 4px 12px;
+	background: #E6EDF9;
+	margin: 0 0 8px 0;
+	font-weight: bold;
+	
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	box-shadow: 1px 1px 1px #777777;
+    -moz-box-shadow: 1px 1px 2px #777777;
+	-webkit-box-shadow: 1px 1px 2px #777777;
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');
+}
+
+
+
+
+
+
+
+
 .post-reply{
 	padding-left:45px;
 	background:url('../../img/admin/ico-lvl2.gif') no-repeat 15px 7px;
