@@ -13,12 +13,13 @@
 	position:absolute;
 	width:152px;
 	top:15px;
-	left:0;
+	right:0;
 	padding:0;
-	z-index:99;
+	z-index:300;
 	display:none;
 	background: #fff;
 	border: 1px solid #999;
+	font-weight: bold;
 }
 .info-block .title .drop{
 	top:24px;
@@ -30,9 +31,13 @@
 .drop li{
 	width:100%;
 	overflow:hidden;
-	font-size:17px;
 	line-height:21px;
 	vertical-align:middle;
+	font-weight: bold;
+}
+.indexDrop {
+	display: inline;
+	float: right;
 }
 .info-block .title .drop a, .drop a, .info-block .title .drop a:visited, .drop a:visited {
 	display:block;
@@ -40,7 +45,7 @@
 	height:1%;
 	background:none;
 	color:#000;
-	font-size: 12px;
+	font-weight: normal;
 	text-decoration: none;
 	color: #000;
 }
@@ -54,12 +59,12 @@
 	background:#D7E4FF;
 	text-decoration:none;
 }
-/* post */
-.post .image img{
+/* indexRow */
+.indexRow .image img{
 	display:block;
 	border:1px solid #000;
 }
-.post .image .btn{
+.indexRow .image .btn{
 	display:block;
 	background:url('../../img/admin/btn01.gif') no-repeat;
 	width:55px;
@@ -70,16 +75,16 @@
 }
 .drop-holder.hover .btn,
 .drop-holder:hover .btn,
-.post .image .btn:hover{
+.indexRow .image .btn:hover{
 	text-decoration:none;
 	background-position:0 -15px;
 }
-.post .text .links {
+.indexRow .text .links {
   position:absolute;
   right:0;
   width:29px;
 }
-* html .post .text{
+* html .indexRow .text{
 	overflow:visible;
 	height:1%;
 }
@@ -91,36 +96,48 @@
 	display: table;
 	width: 99%;
 }
-.post{
+.indexRow{
 	float: left;
 	width: 99%;
 	display: table-row;
-	padding: 5px 0;
 	position: relative;
 }
-.post .image{
-	width:78px;
-	margin:0 10px 0 0;
+.indexRow .image{
+	padding: 0 5px 5px 0;
 	display: table-cell;
 }
-.post .viewData{
-	padding: 2px 8px;
+.indexRow .indexCell{
+	padding: 2px 3px;
 	display: table-cell;
 	vertical-align: top;
 }
-.post .viewData ul li{
+.indexContainer {
+	width: 100%;
+	border-bottom: 1px solid #CCC;
+}
+.indexContainer .indexRow:last-child  {
+	display: block;
+	width: 100%;
+}
+.indexContainer .indexRow:last-child .indexCell {
+	display: block;
+	width: 100%;
+}
+.indexRow .indexCell ul li{
 	float:left;
 	padding: 0 30px 0 0;
 }
-.post .viewData ul li.metaDataPriorityDetail {
+.indexRow .indexCell ul li.metaDataPriorityDetail {
 	padding: 0;
 	float: right !important;
 }
-.post .metaData {
+.indexRow .metaData {
 	width: 99%;
-	overflow: hidden;
-	background: #E6EDF9;
+	overflow: auto;
 	padding: 0px 8px;
+}
+.view .indexRow .metaData {
+	background: #E6EDF9;
 	
 	-moz-border-radius: 10px;
 	border-radius: 10px;
@@ -129,23 +146,29 @@
 	-webkit-box-shadow: 1px 1px 2px #777777;
 	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');
 }
-.post .metaDataLabel, .post .metaDataLabel a {
-	color: #06C;
+.indexRow .metaDataLabel, .indexRow .metaDataLabel a {
+	/*color: #06C;*/
+	color: #999;
 }
-.post .metaDataDetail {
+.indexRow .metaDataDetail {
 	font-weight: bold;
+	font-size: 13px;
 }
-.post .recordData {
+.indexRow .recordData {
 	float: left;
 	padding: 3px;
 	width: 100%;
 }
-.post .actions {
+.indexRow .recordData h3 {
+	font-size: 20px;
+	display: inline;
+}
+.indexRow .actions {
 	position: absolute;
 	top: 2px;
 	right: 8px;
 }
-.post .actions a {
+.indexRow .actions a {
 	padding: 0 0 0 20px;
 	font-size: 11px;
 }
@@ -174,16 +197,16 @@
 
 
 
-.post-reply{
+.indexRow-reply{
 	padding-left:45px;
 	background:url('../../img/admin/ico-lvl2.gif') no-repeat 15px 7px;
 	position:relative;
 }
-.post-reply .text{
+.indexRow-reply .text{
 	padding-top:32px;
 	background:none;
 }
-.post-reply .close{
+.indexRow-reply .close{
 	position:absolute;
 	top:6px;
 	right:12px;
@@ -194,7 +217,7 @@
 	overflow:hidden;
 	z-index:1;
 }
-.post .text .row .expand{
+.indexRow .text .row .expand{
 	background:url('../../img/admin/btn-expand.gif') no-repeat scroll 0 0 transparent;
 	bottom:0;
 	display:none;
@@ -207,4 +230,4 @@
 	z-index:1;
 }
 
-* html .post-reply .close{right:11px;}
+* html .indexRow-reply .close{right:11px;}
