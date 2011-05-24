@@ -4,6 +4,19 @@ Our primary goal is to provide a single system that handles your business proces
 
 We further seek to solve the problem faced by many website systems, where in order to have multiple functions (like ecommerce, CRM, CMS, project management, social networking, groups, messaging, multi-user blogs, forums, events, wikis or any combination of those sub systems), you would at a minimum be forced to combine 2 systems or more into one by somehow convincing the two (or more) systems to talk each other. 
 
+# April & May 2011 Accomplishments
+
+These two months have been all about ecommerce.  Deal a day, social ecommerce, wish lists, shipping modules, payment modules and more.
+
+* 1 : Ecommerce Improvements.  You can not add any object to a favorites or wish list. 
+
+* 2 : Wish Lists.  You can now add any item to a wish list to save for later review.  (These wish lists can easily have multiple types, with names like, favorites, saved, or whatever your heart desires. 
+
+* 3 : Payment modules.  Auto recurring billing, paypal, authorize only, chained paypal payments.
+
+* 4 : Shipping modules.  New free shipping module added. 
+
+
 # March 2011 Accomplishments
 
 Another solid month of development is near being put in the history books.  But just checkout the accomplishments...
