@@ -58,7 +58,7 @@
 		}
 		
 		# load in js files from settings
-		echo $this->Html->script('jquery-1.6.min');
+		echo $this->Html->script('jquery-1.5.2.min');
 		echo $this->Html->script('system/system');
 		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
 			$i = 0;

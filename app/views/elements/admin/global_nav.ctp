@@ -102,16 +102,23 @@
                   </div>
                 </div>
               </li>
-              <li class="singleColumn"> <a href="/admin/catalogs">Ecommerce<span></span></a>
+              <li class="fourColumns"> <a href="/admin/catalogs">Ecommerce<span></span></a>
                 <div class="pointer"></div>
                 <div class="sub">
                   <div class="menu">
                     <ul>
-                      <li><a href="/admin/catalogs">Catalogs</a></li>
-                      <li><a href="/admin/categories">Categories</a></li>
-                      <li><a href="/admin/catalogs/catalog_items">Products</a></li>
+                      <li class="title">Catalogs</li>
+                      <li><a href="/admin/catalogs/catalog_items">All Products</a></li>
+                    </ul>
+                    <ul>
+                      <li class="title">Orders</li>
                       <li><a href="/admin/order_items">Orders</a></li>
                       <li><a href="/admin/invoices">Invoices</a></li>
+                    </ul>
+                    <ul>
+                      <li class="title">Setup</li>
+                      <li><a href="/admin/catalogs">Catalogs</a></li>
+                      <li><a href="/admin/categories/categories/categorized/type:Catalog">Assign Categories</a></li>
                     </ul>
                     <p class="otherFeatures"><a href="#" title="Ecommerce Dashboard">Ecommerce Dashboard</a></p>
                   </div>
