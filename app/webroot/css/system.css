@@ -4,6 +4,17 @@ The css placed here should be easily over written even with simple css rules for
 Note that the class names could be updated and change often.
 */
 
+/* Site Errors */
+.siteUpgradeNeeded {
+	position: absolute;
+	top: 0;
+	left: 0; 
+	z-index: 999999999999999;
+	background: #FC9;
+	padding: 3px;
+	color: #C00;
+	font-weight: bold;
+}
 
 
 /* Threaded Blog Comment Layout */
