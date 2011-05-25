@@ -146,6 +146,10 @@ class AppController extends Controller {
 	 * @todo convert to a full REST application and this might not be necessary
 	 */
     function beforeRender() {  
+		/**
+		 * Check whether the site is sync'd up 
+		 */
+		$this->_siteStatus();
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
 		if($this->name == 'CakeError') {
@@ -826,6 +830,26 @@ class AppController extends Controller {
 			}
 		}
 	}
+	
+	/** 
+	 * Checks whether the settings are synced up between defaults and the current settings file. 
+	 * The idea is, if they aren't in sync then your database is out of date and you need a warning message.
+	 * 
+	 * @todo	I think we need to put $uses = 'Setting' into the app model.  (please communicate whether you agree)
+	 * @todo 	We're now loading these settings files two times on every page load (or more).  This needs to be optimized.
+	 */
+	 function _siteStatus() {
+		 App::import('Core', 'File');
+		 $fileSettings = new File(CONFIGS.'settings.ini');
+		 $fileDefaults = new File(CONFIGS.'defaults.ini');
+		 
+		 $settings = $fileSettings->read();
+		 $defaults = $fileDefaults->read();
+		 
+		 if ($settings != $defaults) {
+			 echo '<div class="siteUpgradeNeeded">Site settings are out of date.  Please <a href="/admin">upgrade database</a>. <br> If you think the defaults.ini file is out of date <a href="/admin/settings/update_defaults/">update defaults</a>. <br> If you think the settings.ini file is out of date <a href="/admin/settings/update_settings/">update settings</a></div>';
+		 }
+	 }
 	
 	
 	/**
