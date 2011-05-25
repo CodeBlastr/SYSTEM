@@ -60,6 +60,10 @@ class AppController extends Controller {
 		# End DO NOT DELETE #
 		$this->viewPath = $this->_getView();
 		
+		/**
+		 * Check whether the site is sync'd up 
+		 */
+		$this->_siteStatus();
 	
 		/**
  		 * Allows us to have webroot files (css, js, etc) in the sites directories
