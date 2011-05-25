@@ -39,6 +39,7 @@ $(function() {
 	$('#sideBar a.close').click(function(e){
 		$('#sideBar').hide();
 		$('.leftContent').css('width', '100%');
+		$('.ui-tabs-panel').css('width', '100%');
 		e.preventDefault();
 	});
 	
@@ -112,4 +113,5 @@ $.fn.tabMenu = function() {
 		show(current_index);
 
 	});
+
 }

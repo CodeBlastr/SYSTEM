@@ -28,6 +28,26 @@ class SettingsController extends AppController {
 	var $name = 'Settings';
     var $uses = array('Setting', 'Template');
 
+
+	function admin_update_defaults() {
+		if ($this->Setting->writeDefaultsIniData()) {
+			$this->Session->setFlash(__('Defaults update successful.', true));
+			$this->redirect($this->referer());
+		} else {
+			$this->Session->setFlash(__('Defaults update failed. Please, try again.', true));
+		}
+		
+	}
+	
+	function admin_update_settings() {
+		if ($this->Setting->writeSettingsIniData()) {
+			$this->Session->setFlash(__('Settings update successful.', true));
+			$this->redirect($this->referer());
+		} else {
+			$this->Session->setFlash(__('Settings update failed. Please, try again.', true));
+		}
+	}
+	
 	function admin_index() {
 		$this->Setting->recursive = 0;
 		$this->set('settings', $this->paginate());
