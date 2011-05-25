@@ -60,6 +60,7 @@
 
 </div>
 <?php echo $this->Element('admin/footer_nav'); ?>
-<?php  echo $this->Element('sql_dump'); ?>
+<?php echo $this->Element('sql_dump');  ?>  
+<?php echo $dbSyncError; ?>
 </body>
 </html>

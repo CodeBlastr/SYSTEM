@@ -63,7 +63,7 @@ class AppController extends Controller {
 		/**
 		 * Check whether the site is sync'd up 
 		 */
-		$this->_siteStatus();
+		$this->_siteStatus();		
 	
 		/**
  		 * Allows us to have webroot files (css, js, etc) in the sites directories
@@ -150,10 +150,6 @@ class AppController extends Controller {
 	 * @todo convert to a full REST application and this might not be necessary
 	 */
     function beforeRender() {  
-		/**
-		 * Check whether the site is sync'd up 
-		 */
-		$this->_siteStatus();
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
 		if($this->name == 'CakeError') {
@@ -167,6 +163,13 @@ class AppController extends Controller {
 		} else if ($this->params['url']['ext'] == 'json') {
             Configure::write('debug', 0); 
 		}
+	}
+	
+	function afterFilter() {
+		/**
+		 * Check whether the site is sync'd up 
+		 */
+		$this->_siteStatus();
 	}
 	
 	
@@ -851,7 +854,7 @@ class AppController extends Controller {
 		 $defaults = $fileDefaults->read();
 		 
 		 if ($settings != $defaults) {
-			 echo '<div class="siteUpgradeNeeded">Site settings are out of date.  Please <a href="/admin">upgrade database</a>. <br> If you think the defaults.ini file is out of date <a href="/admin/settings/update_defaults/">update defaults</a>. <br> If you think the settings.ini file is out of date <a href="/admin/settings/update_settings/">update settings</a></div>';
+		 	$this->set('dbSyncError', '<div class="siteUpgradeNeeded">Site settings are out of date.  Please <a href="/admin">upgrade database</a>. <br> If you think the defaults.ini file is out of date <a href="/admin/settings/update_defaults/">update defaults</a>. <br> If you think the settings.ini file is out of date <a href="/admin/settings/update_settings/">update settings</a></div>');
 		 }
 	 }
 	
