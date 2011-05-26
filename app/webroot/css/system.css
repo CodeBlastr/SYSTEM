@@ -15,8 +15,30 @@ Note that the class names could be updated and change often.
 	color: #C00;
 	font-weight: bold;
 }
+.message {
+    background: #FCEFE4;
+    border: 2px solid #F90;
+    width: 90%;
+    padding: 1em;
+    color: #C60;
+    font-weight: bold;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    border-radius:8px;
+}
 
 
+.hide {
+	display: none;
+}
+.hide form {
+	display: block;
+	background: #f0f0f0;
+}
+.edit:hover {
+	background: #FFC;
+}
+	
 /* Threaded Blog Comment Layout */
 .comment {
 	clear: both;
@@ -33,4 +55,8 @@ Note that the class names could be updated and change often.
 }
 .comment .body {
 	clear: both;
+}
+
+.helperText {
+	display: none;
 }

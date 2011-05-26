@@ -53,7 +53,7 @@
         <div class="gridCol12">
           <div id="footerNavigation"> <a href="http://zuha.org/">About us</a> - <a href="http://zuha.org/">Blogs</a> - <a href="http://zuha.org/">Developers</a> - <a href="http://zuha.org/">Jobs</a> - <a href="http://zuha.org/">Rates</a></div>
           <!-- #footerNavigation -->
-          <div id="legalLinks"> <a href="http://zuha.org/">Privacy policy</a> - <a href="http://zuha.org">Legal</a> <span>&copy; 2010 Zuha Foundation</span> </div>
+          <div id="legalLinks"> <a href="http://zuha.org/">Privacy policy</a> - <a href="http://zuha.org">Legal</a> <span>&copy; 2010 Zuha Foundation</span> <a id="fontSize1">A</a> <a id="fontSize2">A</a> <a id="fontSize3">A</a></div>
           <!-- #legalLinks -->
         </div>
       </div>
