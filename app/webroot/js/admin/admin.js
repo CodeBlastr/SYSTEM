@@ -2,6 +2,7 @@
 //onload init
 $(function() { 
 	
+	
 	// reusable select box update
 	// requires json attribute, which is equal to the relative url to call
 	// requires element attribute, which is equal to select (other types in other functions)
@@ -58,60 +59,36 @@ $(function() {
 	
 	});
 
-	/* Getting started recommendations */
-	$('#tabTwo').tabMenu();
 
-});
-
-
-
-// Tabs
-$.fn.tabMenu = function() {
-
-	return this.each(function() {
-		var $links = $('ul.left a', this);
-		var $prev = $('ul.right a.prev', this);
-		var $next = $('ul.right a.next', this);
-		if($links.size()<=0) return false;
-
-		var current = $('a.active', this)[0] || $($links[0]).addClass('active');
-		var current_index = $links.index(current);
-		var total_links = $links.size()-1;
-
-		$links.each(function(i){
-			$(this).data('index',i);
-			$(this).click(function(e){
-				show($(this).data('index'));
-				e.preventDefault();
-			});
-		});
-
-		function show(index) {
-			//hide current
-			$('#'+$(current).attr('rel')).hide();
-			$(current).removeClass('active');
-		
-			//show selected
-			current = $($links.get(index));
-			current_index = index;
-			$(current).addClass('active');
-			$('#'+$(current).attr('rel')).show();
+	/* hides form elements except the legend (click the legend to show form elements
+  	$('legend').siblings().hide();
 	
-			//next/prev
-			if(total_links == index){
-				$next.addClass('disabled');
-				$prev.removeClass('disabled'); 
-			} else if(index == 0){
-				$prev.addClass('disabled');
-				$next.removeClass('disabled'); 
-			} else {
-				$prev.removeClass('disabled');
-				$next.removeClass('disabled'); 
-			} 
-		};
-
-		show(current_index);
-
+  	$('legend').click(function(){
+    	$(this).siblings().slideToggle("slow");
+    });*/
+		
+	$('#tabs').tabs();	
+	$('#navigation').tabs();
+	/* make the current tab have the class active
+	$('#tabs a').click(function() {
+		$('#tabs a').removeClass('active');
+		$(this).addClass('active');
 	});
-
-}
+	$('#navigation a').click(function() {
+		$('#navigation a').removeClass('active');
+		$(this).addClass('active');
+	});**/
+	
+	
+	/* Font size changer */
+	$('#fontSize1').click(function(e){
+		$('body').css('font-size', '0.8em');
+	});
+	$('#fontSize2').click(function(e){
+		$('body').css('font-size', '1.5em');
+	});
+	$('#fontSize3').click(function(e){
+		$('body').css('font-size', '2.2em');
+	});
+	
+});

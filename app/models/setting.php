@@ -122,6 +122,25 @@ class Setting extends AppModel {
 		}
 	}
 	
+
+/**
+ * This function writes the defaults.ini file, assuming that it is because the settings.ini has been fully upgraded to the latest version. 
+ *
+ * return {string}		A string of data used to write to the settings.ini file.
+ */
+	function writeDefaultsIniData() {
+		# move this inside of the save fi statement 
+		App::import('Core', 'File');
+		$file = new File(CONFIGS.'defaults.ini');
+		#$file->path = CONFIGS.'settings.ini';
+		$writeData = $this->prepareSettingsIniData();
+		if($file->write($file->prepare($writeData))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	
 /**
  * Checks whether the setting already exists and cleans the data array if it does.
