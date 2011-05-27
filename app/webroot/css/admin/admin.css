@@ -460,6 +460,7 @@ div.paging span a {
 #header {
 	float: left;
 	width: 100%;
+	padding: 0.8em 0;
 }
 
 
@@ -478,7 +479,7 @@ Primary navigation
 }
 #globalNav li a {
 	color: #666;
-	padding: 0 9%;
+	padding: 0 0.7em;
 	float: left;
 	text-shadow: 0 1px 0 #fff;
 	border-top: 1px solid #E8E8E8;
@@ -727,10 +728,6 @@ Primary navigation
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');
 	max-width: 99%;
 }
-#content .drop-holder {
-	display: inline;
-	margin: 0.5em 0 0 0.5em;
-}
 #content .index .metaData { 
     background: none;  
     -moz-border-radius: none;
@@ -903,6 +900,9 @@ Primary navigation
 }
 .indexDrop {
 	display: inline;
+	margin: 0.5em 0 0 0.5em;
+}
+.indexDrop:first-child {
 	float: right;
 }
 .info-block .title .drop a, .drop a, .info-block .title .drop a:visited, .drop a:visited {
