@@ -137,10 +137,5 @@
         <form id="searchForm" method="get" action="#">
           <input type="text" value="Search" id="searchInput" name="q" title="Search" class="grayOut toggleTitle" />       </form>
       </div>
-      <div id="secure">
-        <div class="loggedIn <?php if(!$session->read('Auth.User')) { echo 'hidden'; } ?>"> <a href="/admin/settings"><span><?php echo __SYSTEM_ZUHA_DB_VERSION; ?></span></a> <a href="/admin/users/users/logout"><span>Logout</span></a> <?php echo $this->element('snpsht', array('plugin' => 'users', 'useGallery' => true, 'userId' => $session->read('Auth.User.id'), 'thumbAlt' => $session->read('Auth.User.username'), 'thumbTitle' => $session->read('Auth.User.username'))); ?> <span> Welcome <span class="username"><?php echo $session->read('Auth.User.username'); ?></span></span>
-        </div>
-        <div class="default <?php if($session->read('Auth.User.username')) { echo 'hidden'; } ?>"> <a id="join" class="button2 altCta2" href="/users/add"><span>Sign Up</span></a> <a id="join" class="button2 altCta2" href="/users/login"><span>Sign In</span></a> </div>
-      </div>
     </div>
   </div>

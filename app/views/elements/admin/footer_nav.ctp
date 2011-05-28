@@ -2,7 +2,20 @@
 <div id="awesomeFooter">
   <footer>
     <div class="gridContainer" id="footer">
-      <div class="gridRow"> <span class="footerHeading">Grow w zuha</span> </div>
+      <div class="gridRow">
+        <div class="footerHeading">
+            <ul class="loggedIn <?php if(!$session->read('Auth.User')) { echo 'hide'; } ?>"> 
+            	<li><?php echo $this->element('snpsht', array('plugin' => 'users', 'useGallery' => true, 'userId' => $session->read('Auth.User.id'), 'thumbAlt' => $session->read('Auth.User.username'), 'thumbTitle' => $session->read('Auth.User.username'))); ?></li>
+                <li><span>Welcome <span><?php echo $session->read('Auth.User.username'); ?></span></span> </li>
+                <li><a href="/admin/users/users/logout"><span>Logout</span></a> </li>
+                <li><a href="/admin/settings"><span><?php echo 'Zuha Version: '.__SYSTEM_ZUHA_DB_VERSION; ?></span></a></li>
+            </ul>
+            <ul class="loggedOut <?php if($session->read('Auth.User.username')) { echo 'hide'; } ?> ">
+                <li> <a href="/users/users/register"><span>Sign Up</span></a></li>
+                <li><a href="/users/users/login"><span>Sign In</span></a></li>
+            </ul>
+          </div>
+      </div>
     </div>
     <div class="gridContainer" id="footerMenu">
       <nav>
