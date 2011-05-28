@@ -36,7 +36,8 @@ Note that the class names could be updated and change often.
 	background: #f0f0f0;
 }
 .edit:hover {
-	background: #FFC;
+	background: #FF6;
+	color: #333;
 }
 	
 /* Threaded Blog Comment Layout */

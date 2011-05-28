@@ -25,14 +25,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php if(!empty($facebook)) { echo $facebook->html(); } else { echo '<html>'; } ?>
-<!-- <html xmlns="http://www.w3.org/1999/xhtml"> -->
 	<head>
-    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    
 	<?php echo $this->Html->charset(); ?>
 	<title><?php echo $title_for_layout; ?></title>
     <!--[if lt IE 9]>
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
+	<meta name="robots" content="index, follow" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    <meta name="viewport" content="width=device-width1"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
 	<?php
 		echo $this->Html->meta('icon');
 		
@@ -78,8 +81,6 @@
 		} 
 		echo $scripts_for_layout;  
 	?>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-	<!-- Adding "maximum-scale=1" fixes the Mobile Safari auto-zoom bug: http://filamentgroup.com/examples/iosScaleBug/ -->
 </head>
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" id="<?php echo !empty($this->params['pass'][0]) ? strtolower($this->params['controller'].'_'.$this->params['action'].'_'.$this->params['pass'][0]) : strtolower($this->params['controller'].'_'.$this->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
 <div id="corewrap">

@@ -5,6 +5,13 @@
 <head>
 <?php echo $html->charset(); ?>
 <title><?php echo $title_for_layout; __(' : Zuha Business Management'); ?></title>
+    <!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<meta name="robots" content="index, follow" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+    <meta name="viewport" content="width=device-width"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
 <?php
 	echo $this->Html->meta('icon');
 	
@@ -19,7 +26,6 @@
 	echo $this->Html->script('admin/jquery.truncator');
 	echo $scripts_for_layout;  
 ?>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
 </head>
 <body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
 <div id="siteWrap"> <?php echo $this->Element('admin/global_nav'); ?>
