@@ -1,64 +1,10 @@
-@charset "utf-8";
-/* CSS Document */
-
 /* ADDED FROM CODE MY CONCEPT / ALWIN DESIGN */
 
-/* info-block */
-.drop-holder.hover,
-.drop-holder:hover{position:relative;}
-.drop-holder.hover .drop,
-.drop-holder:hover .drop{display:block;}
-/* drop-down */
-.drop{
-	position:absolute;
-	width:152px;
-	top:15px;
-	right:0;
-	padding:0;
-	z-index:300;
-	display:none;
-	background: #fff;
-	border: 1px solid #999;
-	font-weight: bold;
-}
-.info-block .title .drop{
-	top:24px;
-	left:auto;
-	right:16px;
-	text-align:right;
-	background:none repeat scroll 0 0 #FFFFFF;
-}
-.drop li{
-	width:100%;
-	overflow:hidden;
-	line-height:21px;
-	vertical-align:middle;
-	font-weight: bold;
-}
-.indexDrop {
-	display: inline;
-	float: right;
-}
-.info-block .title .drop a, .drop a, .info-block .title .drop a:visited, .drop a:visited {
-	display:block;
-	padding:2px 0 2px 12px;
-	height:1%;
-	background:none;
-	color:#000;
-	font-weight: normal;
-	text-decoration: none;
-	color: #000;
-}
-.info-block .title .drop a, .info-block .title .drop a:visited{
-	padding:2px 12px 2px 0;
-	font-size: 12px;
-	text-decoration: none;
-}
-.info-block .title .drop a:hover,
-.drop a:hover{
-	background:#D7E4FF;
-	text-decoration:none;
-}
+
+
+
+
+
 /* indexRow */
 .indexRow .image img{
 	display:block;
@@ -84,10 +30,6 @@
   right:0;
   width:29px;
 }
-* html .indexRow .text{
-	overflow:visible;
-	height:1%;
-}
 
 
 
@@ -96,46 +38,11 @@
 	display: table;
 	width: 99%;
 }
-.indexRow{
-	float: left;
-	width: 99%;
-	display: table-row;
-	position: relative;
-}
-.indexRow .image{
-	padding: 0 5px 5px 0;
-	display: table-cell;
-}
-.indexRow .indexCell{
-	padding: 2px 3px;
-	display: table-cell;
-	vertical-align: top;
-}
-.indexContainer {
-	width: 100%;
-	border-bottom: 1px solid #CCC;
-}
-.indexContainer .indexRow:last-child  {
-	display: block;
-	width: 100%;
-}
-.indexContainer .indexRow:last-child .indexCell {
-	display: block;
-	width: 100%;
-}
-.indexRow .indexCell ul li{
-	float:left;
-	padding: 0 30px 0 0;
-}
-.indexRow .indexCell ul li.metaDataPriorityDetail {
-	padding: 0;
-	float: right !important;
-}
-.indexRow .metaData {
-	width: 99%;
-	overflow: auto;
-	padding: 0px 8px;
-}
+
+
+
+
+
 .view .indexRow .metaData {
 	background: #E6EDF9;
 	
@@ -152,7 +59,7 @@
 }
 .indexRow .metaDataDetail {
 	font-weight: bold;
-	font-size: 13px;
+	/*font-size: 13px;*/
 }
 .indexRow .recordData {
 	float: left;
@@ -160,7 +67,7 @@
 	width: 100%;
 }
 .indexRow .recordData h3 {
-	font-size: 20px;
+	/*font-size: 20px;*/
 	display: inline;
 }
 .indexRow .actions {
@@ -170,7 +77,7 @@
 }
 .indexRow .actions a {
 	padding: 0 0 0 20px;
-	font-size: 11px;
+	/*font-size: 11px;*/
 }
 .ui-tabs-hide {
 	display: none;

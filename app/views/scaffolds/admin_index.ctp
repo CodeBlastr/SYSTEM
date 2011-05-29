@@ -16,7 +16,9 @@ $indexData = $___dataForView[$indexVar];
   <div class="indexContainer">
     <?php if (!empty($indexData)) : ?>
     <div class="indexRow" id="headingRow">
+      <div class="indexCell image">
       <?php if (!empty($settings['showGalleryThumb'])) { ?>
+      </div>
       <div class="indexCell columnHeading">Image</div>
       <?php } ?>
       <?php $i = 0; foreach ($settings['fields'] as $_alias): ?>
