@@ -78,4 +78,3 @@ if (!empty($previousUpgrade)) {
     <p class="otherFeatures"><a href="/" title="Public Site">Public Site</a></p>
   </div>
 </div>
-<a href="#" id="helpOpen">Turn Help Text On</a>

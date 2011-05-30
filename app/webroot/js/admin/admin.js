@@ -5,15 +5,20 @@ $(function() {
 	/* Helper Text show statement */
 	if ($.cookie('hideHelperText') == null) {
 		$('#helperText').show();
-	}	
+		$('#helpOpen').hide();
+	} else {		
+		$('#helpOpen').show();
+	}
 	/* Helper Text links */
 	$('#helpClose').click(function(e){
 		$.cookie('hideHelperText', 1, { expires: 999 });
 		$('#helperText').hide('slow');
+		$('#helpOpen').show();
 	});
 	$('#helpOpen').click(function(e){
 		$.cookie('hideHelperText', null);
 		$('#helperText').show('slow');
+		$('#helpOpen').hide();
 	});
 	
 	
