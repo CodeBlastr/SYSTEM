@@ -58,24 +58,6 @@
             </div>
           </div>
         </li>
-        <li> <a href="#"><span>Marketing</span></a>
-          <div class="sub">
-            <div class="menu">
-              <ul>
-                <li class="title">Tools</li>
-                <li><a href="/admin/notifications/notification_templates">Notifications</a></li>
-                <li><a href="/admin/conditions">Conditions</a></li>
-                <li class="separator"><a href="/admin/workflows">Workflows</a></li>
-              </ul>
-              <ul>
-                <li class="title">Reporting</li>
-                <li><a href="/admin/reports">Analytics</a></li>
-                <li class="separator"><a href="/admin/reports">Custom Reports</a></li>
-              </ul>
-              <p class="other"><a href="#" title="Marketing Dashboard">Dashboard</a></p>
-            </div>
-          </div>
-        </li>
         <li class="endColumn"> <a href="#"><span>Sales</span></a>
           <div class="sub">
             <div class="menu">
@@ -104,7 +86,25 @@
             </div>
           </div>
         </li>
-        <li class="endColumn"> <a href="/admin/projects" title="Projects"><span>Support</span></a>
+        <li> <a href="#"><span>Marketing</span></a>
+          <div class="sub">
+            <div class="menu">
+              <ul>
+                <li class="title">Tools</li>
+                <li><a href="/admin/notifications/notification_templates">Notifications</a></li>
+                <li><a href="/admin/conditions">Conditions</a></li>
+                <li class="separator"><a href="/admin/workflows">Workflows</a></li>
+              </ul>
+              <ul>
+                <li class="title">Reporting</li>
+                <li><a href="/admin/reports">Analytics</a></li>
+                <li class="separator"><a href="/admin/reports">Custom Reports</a></li>
+              </ul>
+              <p class="other"><a href="#" title="Marketing Dashboard">Dashboard</a></p>
+            </div>
+          </div>
+        </li>
+        <li class="endColumn"> <a href="#"><span>Support</span></a>
           <div class="sub">
             <div class="menu">
               <ul>
@@ -118,7 +118,7 @@
                 <li class="title">Support</li>
                 <li class="separator"><a href="/admin/tickets">Tickets</a></li>
               </ul>
-              <p class="other"><a href="#" title="Projects Dashboard">Dashboard</a></p>
+              <p class="other"><a href="#" title="Support Dashboard">Dashboard</a></p>
             </div>
           </div>
         </li>
@@ -127,14 +127,14 @@
             <div class="menu">
               <ul>
                 <li class="title">Users</li>
-                <li><a href="/admin/users/">All Users</a></li>
+                <li class="separator"><a href="#">All Users</a></li>
               </ul>
               <ul>
                 <li class="title">Social</li>
                 <li><a href="/admin/users/user_groups">Groups</a></li>
                 <li><a href="/admin/users/user_statuses">Statuses</a></li>
                 <li><a href="/admin/users/user_walls">Walls</a></li>
-                <li><a href="/admin/messages">Messages</a></li>
+                <li class="separator"><a href="/admin/messages">Messages</a></li>
               </ul>
               <p class="other"><a href="#" title="Users Dashboard">Dashboard</a></p>
             </div>
