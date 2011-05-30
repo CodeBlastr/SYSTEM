@@ -6,13 +6,15 @@ $(function() {
 	if ($.cookie('hideHelperText') == null) {
 		$('#helperText').show();
 	}	
-	/* Helper Text closing link */
+	/* Helper Text links */
 	$('#helpClose').click(function(e){
 		$.cookie('hideHelperText', 1, { expires: 999 });
 		$('#helperText').hide('slow');
 	});
-	/* Turns Helper Text back on (reload twice 
-	$.cookie('hideHelperText', null, { expires: 999 }); */
+	$('#helpOpen').click(function(e){
+		$.cookie('hideHelperText', null);
+		$('#helperText').show('slow');
+	});
 	
 	
 	// reusable select box update
