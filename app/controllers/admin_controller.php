@@ -55,6 +55,11 @@ class AdminController extends AppController {
         # $this->set('topSellingProducts', ClassRegistry::init('Product')->getTopSellers());
 		$this->layout = 'admin';
 	}
+	
+	function admin_files_image() {
+	}
+	function admin_files_files() {
+	}
 
 	/**
 	 * Upgrades the database using queries given

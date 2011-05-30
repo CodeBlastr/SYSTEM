@@ -3,7 +3,7 @@
 
 	<p>Thank you for the suggestion.</p>
     
-<?php } else if ($this->params['prefix'] == 'admin' && $this->params['plugin'] == 'users' && $this->params['controller'] == 'user_groups' && $this->params['action'] == 'admin_index') { ?>
+<?php } else if ($this->params['plugin'] == 'users' && $this->params['controller'] == 'user_groups' && $this->params['action'] == 'admin_index') { ?> 
 
 	<p>Group users into departments and/or and group themselves for social networking. <a href="#" class="toggleClick" name="helperForm">Suggest Help Text Improvement</a></p>
     
