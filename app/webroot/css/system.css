@@ -27,7 +27,9 @@ Note that the class names could be updated and change often.
     border-radius:8px;
 }
 
-
+.toggleClick, .toggleHover {
+	cursor: pointer;
+}
 .hide {
 	display: none;
 }
@@ -39,6 +41,7 @@ Note that the class names could be updated and change often.
 	background: #FF6;
 	color: #333;
 }
+
 	
 /* Threaded Blog Comment Layout */
 .comment {
@@ -56,8 +59,4 @@ Note that the class names could be updated and change often.
 }
 .comment .body {
 	clear: both;
-}
-
-.helperText {
-	display: none;
 }

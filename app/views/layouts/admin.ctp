@@ -18,17 +18,18 @@
 	echo $this->Html->css('system');
 	echo $this->Html->css('admin/jquery-ui-1.8.13.custom');
 	echo $this->Html->css('admin/admin');
-	
+	# no rhyme or reason about the directory structure here, needs to be cleaned up at some point
 	echo $this->Html->script('jquery-1.5.2.min');
 	echo $this->Html->script('admin/admin');
 	echo $this->Html->script('admin/jquery-ui-1.8.13.custom.min');
 	echo $this->Html->script('jquery.jeditable');
 	echo $this->Html->script('admin/jquery.truncator');
+	echo $this->Html->script('system/jquery.cookie');
 	echo $scripts_for_layout;  
 ?>
 </head>
 <body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
-<div id="siteWrap"> <?php echo $this->Element('admin/global_nav'); ?>
+<div id="siteWrap"> <?php echo $this->Element('admin/header_nav'); ?>
   <div id="tabs">
     <h1><?php echo !empty($page_title_for_layout) ? $page_title_for_layout : null; ?></h1>
     <ul id="leadTab">
@@ -42,14 +43,7 @@
         <div id="sideBarArrow"> <img src="/img/admin/compare_bubble_alert_arrow.png" width="12" height="31" alt=""> </div>
         <a href="#" class="close"></a> <?php echo (!empty($menu_for_layout) ? $menu_for_layout : ''); ?> </div>
       <div id="contentWrap"> <?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?>
-        <div class="helperText">
-          <ul>
-            <li class="info">
-              <h2>Explanation Text</h2>
-              <p>Some text describing this section, so that its easy to use. (put an x button so that you can turn off hints if you want to.</p>
-            </li>
-          </ul>
-        </div>
+		<?php echo $this->Element('admin/helper_text'); ?>
         <!-- #compareChartHeader -->
         <div class="contentSection"> <?php echo $content_for_layout; ?> </div>
         <!-- #compareChart -->
