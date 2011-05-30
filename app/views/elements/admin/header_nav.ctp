@@ -82,6 +82,7 @@
               <ul>
                 <li class="title">Catalogs</li>
                 <li><a href="/admin/catalogs/catalog_items">All Products</a></li>
+                <li><a href="/admin/reports/reports">Reports</a></li>
               </ul>
               <ul>
                 <li class="title">Orders</li>

@@ -1,5 +1,5 @@
 <div id="helperText">
-<?php if ($_GET['e'] == 'sent') { ?>
+<?php if (isset($_GET['e']) && $_GET['e'] == 'sent') { ?>
 
 	<p>Thank you for the suggestion.</p>
     
