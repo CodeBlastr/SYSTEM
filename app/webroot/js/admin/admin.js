@@ -2,6 +2,18 @@
 //onload init
 $(function() { 
 	
+	/* Helper Text show statement */
+	if ($.cookie('hideHelperText') == null) {
+		$('#helperText').show();
+	}	
+	/* Helper Text closing link */
+	$('#helpClose').click(function(e){
+		$.cookie('hideHelperText', 1, { expires: 999 });
+		$('#helperText').hide('slow');
+	});
+	/* Turns Helper Text back on (reload twice 
+	$.cookie('hideHelperText', null, { expires: 999 }); */
+	
 	
 	// reusable select box update
 	// requires json attribute, which is equal to the relative url to call
@@ -33,15 +45,6 @@ $(function() {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle();
 		return false;
-	});
-	
-	
-	/* Sidebar closing link */
-	$('#sideBar a.close').click(function(e){
-		$('#sideBar').hide();
-		$('.leftContent').css('width', '100%');
-		$('.ui-tabs-panel').css('width', '100%');
-		e.preventDefault();
 	});
 	
 	
