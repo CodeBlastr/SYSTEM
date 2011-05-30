@@ -26,6 +26,9 @@ Note that the class names could be updated and change often.
     -webkit-border-radius:8px;
     border-radius:8px;
 }
+.error-message {
+	color: #C00;
+}
 
 .toggleClick, .toggleHover {
 	cursor: pointer;
