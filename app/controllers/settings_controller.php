@@ -84,10 +84,10 @@ class SettingsController extends AppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->data) && empty($this->params['named'])) {
 			$this->Session->setFlash(__('Invalid Setting', true));
 			$this->redirect(array('action'=>'index'));
-		}
+		} 
 		if (!empty($this->data)) {
 			if ($this->Setting->add($this->data)) {
 				$this->Session->setFlash(__('The Setting has been saved', true));
@@ -95,6 +95,17 @@ class SettingsController extends AppController {
 			} else {
 				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true));
 			}
+		}
+		if (!empty($this->params['named'])) {
+			$this->data = $this->Setting->find('first', array(
+				'conditions' => array(
+					'type_id' => enum(null, $this->params['named']['type']), 
+					'name' => $this->params['named']['name'],
+					),
+				));
+			$this->set('typeId', enum(null, $this->params['named']['type'])); 
+			$this->data['Setting']['name'] = $this->params['named']['name'];
+			$this->data['Setting']['description'] = $this->Setting->getDescription($this->params['named']['type'], $this->params['named']['name']); 
 		}
 		if (empty($this->data)) {
 			$this->data = $this->Setting->read(null, $id);

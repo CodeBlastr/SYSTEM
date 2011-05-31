@@ -1,9 +1,16 @@
+<!-- /views/elements/admin/helper_text.ctp -->
+<?php $url = $this->params['plugin'].'.'.$this->params['controller'].'.'.$this->params['action']; ?>
+
 <div id="helperText">
 <?php if (!empty($_GET['e']) && $_GET['e'] == 'sent') { ?>
 
 	<p>Thank you for the suggestion.</p>
     
-<?php } else if ($this->params['plugin'] == 'users' && $this->params['controller'] == 'user_groups' && $this->params['action'] == 'admin_index') { ?>
+<?php } else if (!empty($helper_text_for_layout)) { ?>
+		
+     <?php echo $helper_text_for_layout; ?>
+        
+<?php } else if ($url == 'users.user_groups.admin_index') { ?>
 
 	<p>Group users into departments and/or and group themselves for social networking. <a href="#" class="toggleClick" name="helperForm">Suggest Help Text Improvement</a></p>
     

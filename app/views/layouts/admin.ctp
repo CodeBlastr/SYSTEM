@@ -38,13 +38,16 @@
     </ul>
     <div id="content">
       <div id="contentWrap"> <?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?>
-		<?php echo $this->Element('admin/helper_text'); ?>
+      	<?php $helper_text_for_layout = !empty($helper_text_for_layout) ? $helper_text_for_layout : null; ?>
+		<?php echo $this->Element('admin/helper_text', array('overwrite' => $helper_text_for_layout)); ?>
         <!-- #compareChartHeader -->
         <div class="contentSection"> <?php echo $content_for_layout; ?> </div>
         <!-- #compareChart -->
       </div>
     </div>
   </div>
-  <?php echo $this->Element('admin/footer_nav'); ?> <?php echo $this->Element('sql_dump');  ?> <?php echo $dbSyncError; ?> </div>
+  <?php echo $this->Element('admin/footer_nav'); ?>
+  <?php echo $this->Element('sql_dump');  ?>
+  <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> </div>
 </body>
 </html>

@@ -86,7 +86,7 @@
             </div>
           </div>
         </li>
-        <li> <a href="#"><span>Marketing</span></a>
+        <li> <a href="/admin/reports/reports/dashboard"><span>Marketing</span></a>
           <div class="sub">
             <div class="menu">
               <ul>
@@ -98,9 +98,9 @@
               <ul>
                 <li class="title">Reporting</li>
                 <li><a href="/admin/reports">Analytics</a></li>
-                <li class="separator"><a href="/admin/reports">Custom Reports</a></li>
+                <li class="separator"><a href="/admin/reports">Reports</a></li>
               </ul>
-              <p class="other"><a href="#" title="Marketing Dashboard">Dashboard</a></p>
+              <p class="other"><a href="/admin/reports/reports/dashboard" title="Marketing Dashboard">Dashboard</a></p>
             </div>
           </div>
         </li>
@@ -122,12 +122,12 @@
             </div>
           </div>
         </li>
-        <li class="endColumn"> <a href="/admin/users" title="Users"><span>Users</span></a>
+        <li class="endColumn"> <a href="#" title="Users"><span>Users</span></a>
           <div class="sub">
             <div class="menu">
               <ul>
                 <li class="title">Users</li>
-                <li class="separator"><a href="#">All Users</a></li>
+                <li class="separator"><a href="/admin/users">All Users</a></li>
               </ul>
               <ul>
                 <li class="title">Social</li>
@@ -145,6 +145,8 @@
             <div class="menu">
               <ul>
                 <li class="title">App Builder</li>
+                <li><a href="/admin/permissions/acores">Permissions</a></li>
+                <li><a href="/admin/settings">Site Settings</a></li>
                 <li><a href="/admin/forms">Custom Forms</a></li>
                 <li><a href="/admin/conditions">Conditions</a></li>
                 <li class="separator"><a href="/admin/workflows">Workflows</a></li>

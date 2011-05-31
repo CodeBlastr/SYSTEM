@@ -1,17 +1,18 @@
 <div class="settings form">
-<?php echo $form->create('Setting');?>
+<?php echo $form->create('Setting'); ?>
 	<fieldset>
  		<legend><?php __('Edit Setting');?></legend>
-	<?php
+		<?php
 		echo $form->input('id');
-		echo $form->input('type_id', array('label' => $html->link('Type', '/admin/enumerations/add')));
+		echo !empty($typeId) ? $form->hidden('type_id', array('value' => $typeId)) : $form->input('type_id', array('label' => $html->link('Type', '/admin/enumerations/add')));
 		echo $form->input('name');
 		echo $form->input('value');
 		echo $form->input('description');
-	?>
+		echo $form->end('Submit');
+		?>
 	</fieldset>
-<?php echo $form->end('Submit');?>
 </div>
+
 <div class="actions">
 	<ul>
 		<li><?php echo $html->link(__('Delete', true), array('action' => 'delete', $form->value('Setting.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $form->value('Setting.id'))); ?></li>
