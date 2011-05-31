@@ -19,7 +19,7 @@
                 <li><a href="/admin/admin/files_image">Images</a></li>
                 <li class="separator"><a href="/admin/admin/files_files">Documents</a></li>
               </ul>
-           	  <p class="other"><a href="#" title="Design Dashboard">Dashboard</a></p>
+              <p class="other"><a href="#" title="Design Dashboard">Dashboard</a></p>
             </div>
           </div>
         </li>
