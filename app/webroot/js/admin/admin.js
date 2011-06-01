@@ -5,14 +5,22 @@ $(function() {
 	/* Helper Text show statement */
 	if ($.cookie('hideHelperText') == null) {
 		$('#helperText').show();
-	}	
-	/* Helper Text closing link */
+		$('#helpOpen').hide();
+	} else {		
+		$('#helpOpen').slideDown();
+	}
+	/* Helper Text links */
 	$('#helpClose').click(function(e){
 		$.cookie('hideHelperText', 1, { expires: 999 });
-		$('#helperText').hide('slow');
+		$('#helperText').slideUp('slow');
+		$('#helpOpen').show();
 	});
-	/* Turns Helper Text back on (reload twice 
-	$.cookie('hideHelperText', null, { expires: 999 }); */
+	$('#helpOpen').click(function(e){
+		$.cookie('hideHelperText', null);
+		$('#helperText').slideDown('slow');
+		$('#helpOpen').hide();
+	});
+	
 	
 	
 	// reusable select box update
@@ -37,7 +45,7 @@ $(function() {
 	   and the name attribute to the id of the element you want to toggle */
 	$(".toggleClick").click(function () {
 		var currentName = $(this).attr('name');
-		$('#'+currentName).toggle();
+		$('#'+currentName).toggle('slow');
 		return false;
 	});
 	
@@ -84,14 +92,20 @@ $(function() {
 	
 	
 	/* Font size changer */
+	if ($.cookie('fontSize') != null) {
+		$('body').css('font-size', $.cookie('fontSize'));
+	}
 	$('#fontSize1').click(function(e){
 		$('body').css('font-size', '0.8em');
+		$.cookie('fontSize', '0.8em', { expires: 999 });
 	});
 	$('#fontSize2').click(function(e){
 		$('body').css('font-size', '1.5em');
+		$.cookie('fontSize', '1.5em', { expires: 999 });
 	});
 	$('#fontSize3').click(function(e){
 		$('body').css('font-size', '2.2em');
+		$.cookie('fontSize', '2.2em', { expires: 999 });
 	});
 	
 });

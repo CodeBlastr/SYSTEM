@@ -21,26 +21,20 @@
  */
 ?>
 
- something and then...
-
-<?php echo $myVar; ?>
-
-... should be between the dots.
-
-
+something and then... <?php echo $myVar; ?> ... should be between the dots.
 <?php 
 if (!empty($upgradeDB)) {
 ?>
 <div id="databaseUpgrades">
-	<h2>Database Upgrade Needed</h2>
-    <h6>The following database queries should run.</h6>
-	<?php 
+  <h2>Database Upgrade Needed</h2>
+  <h6>The following database queries should run.</h6>
+  <?php 
 	echo $form->create('Admin', array('url' => '/admin/')); 	
 	$n = 0;
 	foreach ($upgradeDB as $query) { 
 	?>
-	    <p><?php echo $query; ?></p>
-    <?php
+  <p><?php echo $query; ?></p>
+  <?php
 		echo $form->input('Query.'.$n.'.data', array('type' => 'hidden', 'value' => $query)); 
 		$n++;
 	}
@@ -53,36 +47,34 @@ if (!empty($upgradeDB)) {
 if (!empty($previousUpgrade)) {
 ?>
 <div id="databaseUpgrades">
-	<h2>Upgrade Queries Ran</h2>
-    <h6>The following database queries we're just ran.</h6>
-	<?php 
+  <h2>Upgrade Queries Ran</h2>
+  <h6>The following database queries we're just ran.</h6>
+  <?php 
 	echo $form->create('Admin', array('url' => '/admin/')); 	
 	$n = 0;
 	foreach ($previousUpgrade as $query) { ?>
-	    <p><?php echo $query; ?></p>
-	<?php }	?>
+  <p><?php echo $query; ?></p>
+  <?php }	?>
 </div>
 <?php 
 }
 ?>
-
-
- <div class="pointer"></div>
-                <div class="sub">
-                  <div class="menu">
-                    <ul>
-                      <li class="title">Permissions</li>
-                      <li><a href="/admin/permissions/acores">Permissions</a></li>
-                    </ul>
-                    <ul>
-                      <li class="title">Settings</li>
-                      <li><a href="/admin/settings">System Settings</a></li>
-                    </ul>
-                    <ul>
-                      <li class="title">Reports</li>
-                      <li><a href="/admin/reports">Analytics</a></li>
-                      <li><a href="/admin/reports">Reports</a></li>
-                    </ul>
-                    <p class="otherFeatures"><a href="/" title="Public Site">Public Site</a></p>
-                  </div>
-                </div>
+<div class="pointer"></div>
+<div class="sub">
+  <div class="menu">
+    <ul>
+      <li class="title">Permissions</li>
+      <li><a href="/admin/permissions/acores">Permissions</a></li>
+    </ul>
+    <ul>
+      <li class="title">Settings</li>
+      <li><a href="/admin/settings">System Settings</a></li>
+    </ul>
+    <ul>
+      <li class="title">Reports</li>
+      <li><a href="/admin/reports">Analytics</a></li>
+      <li><a href="/admin/reports">Reports</a></li>
+    </ul>
+    <p class="otherFeatures"><a href="/" title="Public Site">Public Site</a></p>
+  </div>
+</div>

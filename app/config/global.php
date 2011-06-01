@@ -141,6 +141,12 @@
 						),
 					));
 			} 
+		} else if (!empty($name)) {
+			# find all of an array of names by type
+			# note name could be an array or a string
+			return $Enum->field('id', array(
+				'Enumeration.name' => $name,
+				));
 		} else {
 			# find all enumerations
 			return $Enum->find('list');

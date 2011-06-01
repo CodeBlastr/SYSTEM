@@ -475,10 +475,10 @@ div.paging span a {
 Primary navigation
 */
 #globalNav {
-	position: relative;
 }
 #globalNav ul {
 	float: left;
+	position: relative;
 }
 #globalNav li {
 	float: left;
@@ -545,7 +545,7 @@ Primary navigation
 	margin: 0 0 5% 0;
 	border-bottom: 1px solid #e7e7e7;
 }
-#globalNav li .sub .menu ul li a {
+#globalNav li .sub .menu a {
 	background: none;
 	float: none;
 	color: #648EDD;
@@ -563,8 +563,8 @@ Primary navigation
 	background: none;
 	padding: 0;
 }
-#globalNav li.fourColumns .sub {
-	left: 3em;
+#globalNav li.endColumn .sub {
+	right: 1em;
 }
 #globalNav li:hover .pointer {
 	display: block;
@@ -596,6 +596,9 @@ Primary navigation
 #globalNav li .sub .menu .other a:hover {
 	background: none;
 }
+
+
+
 
 
 /* Search Form */
