@@ -28,6 +28,9 @@
  */
  
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+	Router::connect('/sitemap', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'index')); 
+	Router::connect('/sitemap/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps')); 
+	Router::connect('/robots/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'robot'));
 	/*
 	# shorten up plugin urls
 	$controllerKey = false;
