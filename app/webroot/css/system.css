@@ -15,8 +15,37 @@ Note that the class names could be updated and change often.
 	color: #C00;
 	font-weight: bold;
 }
+.message {
+    background: #FCEFE4;
+    border: 2px solid #F90;
+    padding: 1em;
+	margin: 1em;
+    color: #C60;
+    font-weight: bold;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-radius:5px;
+}
+.error-message {
+	color: #C00;
+}
 
+.toggleClick, .toggleHover {
+	cursor: pointer;
+}
+.hide {
+	display: none;
+}
+.hide form {
+	display: block;
+	background: #f0f0f0;
+}
+.edit:hover {
+	background: #FF6;
+	color: #333;
+}
 
+	
 /* Threaded Blog Comment Layout */
 .comment {
 	clear: both;

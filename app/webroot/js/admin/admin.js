@@ -2,6 +2,27 @@
 //onload init
 $(function() { 
 	
+	/* Helper Text show statement */
+	if ($.cookie('hideHelperText') == null) {
+		$('#helperText').show();
+		$('#helpOpen').hide();
+	} else {		
+		$('#helpOpen').slideDown();
+	}
+	/* Helper Text links */
+	$('#helpClose').click(function(e){
+		$.cookie('hideHelperText', 1, { expires: 999 });
+		$('#helperText').slideUp('slow');
+		$('#helpOpen').show();
+	});
+	$('#helpOpen').click(function(e){
+		$.cookie('hideHelperText', null);
+		$('#helperText').slideDown('slow');
+		$('#helpOpen').hide();
+	});
+	
+	
+	
 	// reusable select box update
 	// requires json attribute, which is equal to the relative url to call
 	// requires element attribute, which is equal to select (other types in other functions)
@@ -24,7 +45,7 @@ $(function() {
 	   and the name attribute to the id of the element you want to toggle */
 	$(".toggleClick").click(function () {
 		var currentName = $(this).attr('name');
-		$('#'+currentName).toggle();
+		$('#'+currentName).toggle('slow');
 		return false;
 	});
 	
@@ -32,15 +53,6 @@ $(function() {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle();
 		return false;
-	});
-	
-	
-	/* Sidebar closing link */
-	$('#sideBar a.close').click(function(e){
-		$('#sideBar').hide();
-		$('.leftContent').css('width', '100%');
-		$('.ui-tabs-panel').css('width', '100%');
-		e.preventDefault();
 	});
 	
 	
@@ -58,60 +70,42 @@ $(function() {
 	
 	});
 
-	/* Getting started recommendations */
-	$('#tabTwo').tabMenu();
 
-});
-
-
-
-// Tabs
-$.fn.tabMenu = function() {
-
-	return this.each(function() {
-		var $links = $('ul.left a', this);
-		var $prev = $('ul.right a.prev', this);
-		var $next = $('ul.right a.next', this);
-		if($links.size()<=0) return false;
-
-		var current = $('a.active', this)[0] || $($links[0]).addClass('active');
-		var current_index = $links.index(current);
-		var total_links = $links.size()-1;
-
-		$links.each(function(i){
-			$(this).data('index',i);
-			$(this).click(function(e){
-				show($(this).data('index'));
-				e.preventDefault();
-			});
-		});
-
-		function show(index) {
-			//hide current
-			$('#'+$(current).attr('rel')).hide();
-			$(current).removeClass('active');
-		
-			//show selected
-			current = $($links.get(index));
-			current_index = index;
-			$(current).addClass('active');
-			$('#'+$(current).attr('rel')).show();
+	/* hides form elements except the legend (click the legend to show form elements
+  	$('legend').siblings().hide();
 	
-			//next/prev
-			if(total_links == index){
-				$next.addClass('disabled');
-				$prev.removeClass('disabled'); 
-			} else if(index == 0){
-				$prev.addClass('disabled');
-				$next.removeClass('disabled'); 
-			} else {
-				$prev.removeClass('disabled');
-				$next.removeClass('disabled'); 
-			} 
-		};
-
-		show(current_index);
-
+  	$('legend').click(function(){
+    	$(this).siblings().slideToggle("slow");
+    });*/
+		
+	$('#tabs').tabs();	
+	$('#navigation').tabs();
+	/* make the current tab have the class active
+	$('#tabs a').click(function() {
+		$('#tabs a').removeClass('active');
+		$(this).addClass('active');
 	});
-
-}
+	$('#navigation a').click(function() {
+		$('#navigation a').removeClass('active');
+		$(this).addClass('active');
+	});**/
+	
+	
+	/* Font size changer */
+	if ($.cookie('fontSize') != null) {
+		$('body').css('font-size', $.cookie('fontSize'));
+	}
+	$('#fontSize1').click(function(e){
+		$('body').css('font-size', '0.8em');
+		$.cookie('fontSize', '0.8em', { expires: 999 });
+	});
+	$('#fontSize2').click(function(e){
+		$('body').css('font-size', '1.5em');
+		$.cookie('fontSize', '1.5em', { expires: 999 });
+	});
+	$('#fontSize3').click(function(e){
+		$('body').css('font-size', '2.2em');
+		$.cookie('fontSize', '2.2em', { expires: 999 });
+	});
+	
+});

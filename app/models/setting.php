@@ -23,6 +23,11 @@
 class Setting extends AppModel {
 
 	var $name = 'Setting';
+	// instead of storing available settings in a database we store all of the available settings here
+	var $names = array();
+	
+	
+	
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $belongsTo = array(
@@ -35,6 +40,82 @@ class Setting extends AppModel {
 		)
 	);
 	
+	
+	function __construct() {
+		parent::__construct();
+		$this->names = array(
+				  'Orders' => array(
+						array(
+							'name' => 'DEFAULT_PAYMENT',
+							'description' => 'Defines default payment option for the site. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AUTHORIZE',
+							),
+						array(
+							'name' => 'ENABLE_PAYMENT_OPTIONS',
+							'description' => 'Defines the options which should be shown	in the dropdown of payment mode for the app. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AUTHORIZE = Authorize'.PHP_EOL.'AUTHORIZEONLY = "Authorize Only"'.PHP_EOL.'PAYPAL = Paypal'.PHP_EOL.'CREDIT= Credit',
+							),
+						array(
+							'name' => 'TRANSACTIONS_AUTHORIZENET_LOGIN_ID',
+							'description' => 'Defines the login to access payment api of Authorize.net. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'463h3f98f4u89',
+							),
+						array(
+							'name' => 'TRANSACTIONS_AUTHORIZENET_TRANSACTION_KEY',
+							'description' => 'Defines the transaction key to access payment api of Authorize.net. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'48fj0j2389ur02983ur',
+							),
+						array(
+							'name' => 'PAYPAL',
+							'description' => 'Defines the credentials to Access payment api of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = webpro_126328478_biz_api1.example.com'.PHP_EOL.'API_PASSWORD = 9294399233'.PHP_EOL.'API_SIGNATURE = ApJtg.JrUW0YLN.tPmmGiu-exM.va778w7f873mX29QghYJnTf'.PHP_EOL.'API_ENDPOINT = https://api-3t.sandbox.paypal.com/nvp'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
+							),
+						array(
+							'name' => 'ENABLE_SHIPPING',
+							'description' => 'Defines the shipping option Enable/Disable for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'false',
+							),
+						array(
+							'name' => 'SHIPPING_FEDEX_ACCOUNT_NO',
+							'description' => 'Defines the account number for access Fedex api for shipping.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'510087526',
+							),
+						array(
+							'name' => 'SHIPPING_FEDEX_METER_NO',
+							'description' => 'Defines the meter number to access Fedex api for shipping.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'118538458',
+							),
+						array(
+							'name' => 'SHIP_DROP_OFF_TYPE',
+							'description' => 'Defines the default shipping type, drop off type'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'REGULARPICKUP',
+							),
+						array(
+							'name' => 'SHIP_SERVICE',
+							'description' => 'Defines the default shipping service'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY',
+							),
+						array(
+							'name' => 'SHIP_FROM_STATE',
+							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'CA',
+							),
+						array(
+							'name' => 'SHIP_FROM_ZIP',
+							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'95451',
+							),
+						array(
+							'name' => 'SHIP_FROM_COUNTRY',
+							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'US',
+							),
+						array(
+							'name' => 'FEDEX',
+							'description' => 'Define Enabled Shipping Service options the following variable defines the options which should be display	in the dropdown of shipping type for the app.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY = STANDARD'.PHP_EOL.'INTERNATIONALFIRST = "INTERNATIONAL FLAT FEE"'.PHP_EOL.'FEDEX1DAYFREIGHT = "NEXT DAY"',
+							),
+						),
+				  'App' => array(
+						array(
+							'name' => 'DEFAULT_LOGIN_ERROR_MESSAGE',
+							'description' => 'Defines the message visitors see if they are not logged in and reach a restricted page. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'message = "Please become a registered user to access that feature."',
+							),
+						),
+				  'Reports' => array(
+						array(
+							'name' => 'ANALYTICS',
+							'description' => 'Defines the Google Analytics information for tracking traffic and displaying reports.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'setAccount = UA-999999-9'.PHP_EOL.'setDomainName = .domain.com'.PHP_EOL.'userName = google@account-login.com'.PHP_EOL.'password = mySecurePassword',
+							),
+						),
+				  );
+	}
 	
 /**
  * Handles the saving of settings data to the settings.ini file
@@ -189,75 +270,7 @@ class Setting extends AppModel {
 	function getNames($typeId = null) {
 		if (!empty($typeId)) {
 			$preFix = enum($typeId);
-			
-			$names = array(
-				  'Orders' => array(
-						array(
-							'name' => 'DEFAULT_PAYMENT',
-							'description' => 'Defines default payment option for the site. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AUTHORIZE',
-							),
-						array(
-							'name' => 'ENABLE_PAYMENT_OPTIONS',
-							'description' => 'Defines the options which should be shown	in the dropdown of payment mode for the app. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AUTHORIZE = Authorize'.PHP_EOL.'AUTHORIZEONLY = "Authorize Only"'.PHP_EOL.'PAYPAL = Paypal'.PHP_EOL.'CREDIT= Credit',
-							),
-						array(
-							'name' => 'TRANSACTIONS_AUTHORIZENET_LOGIN_ID',
-							'description' => 'Defines the login to access payment api of Authorize.net. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'463h3f98f4u89',
-							),
-						array(
-							'name' => 'TRANSACTIONS_AUTHORIZENET_TRANSACTION_KEY',
-							'description' => 'Defines the transaction key to access payment api of Authorize.net. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'48fj0j2389ur02983ur',
-							),
-						array(
-							'name' => 'PAYPAL',
-							'description' => 'Defines the credentials to Access payment api of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = webpro_126328478_biz_api1.example.com'.PHP_EOL.'API_PASSWORD = 9294399233'.PHP_EOL.'API_SIGNATURE = ApJtg.JrUW0YLN.tPmmGiu-exM.va778w7f873mX29QghYJnTf'.PHP_EOL.'API_ENDPOINT = https://api-3t.sandbox.paypal.com/nvp'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
-							),
-						array(
-							'name' => 'ENABLE_SHIPPING',
-							'description' => 'Defines the shipping option Enable/Disable for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'false',
-							),
-						array(
-							'name' => 'SHIPPING_FEDEX_ACCOUNT_NO',
-							'description' => 'Defines the account number for access Fedex api for shipping.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'510087526',
-							),
-						array(
-							'name' => 'SHIPPING_FEDEX_METER_NO',
-							'description' => 'Defines the meter number to access Fedex api for shipping.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'118538458',
-							),
-						array(
-							'name' => 'SHIP_DROP_OFF_TYPE',
-							'description' => 'Defines the default shipping type, drop off type'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'REGULARPICKUP',
-							),
-						array(
-							'name' => 'SHIP_SERVICE',
-							'description' => 'Defines the default shipping service'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY',
-							),
-						array(
-							'name' => 'SHIP_FROM_STATE',
-							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'CA',
-							),
-						array(
-							'name' => 'SHIP_FROM_ZIP',
-							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'95451',
-							),
-						array(
-							'name' => 'SHIP_FROM_COUNTRY',
-							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'US',
-							),
-						array(
-							'name' => 'FEDEX',
-							'description' => 'Define Enabled Shipping Service options the following variable defines the options which should be display	in the dropdown of shipping type for the app.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY = STANDARD'.PHP_EOL.'INTERNATIONALFIRST = "INTERNATIONAL FLAT FEE"'.PHP_EOL.'FEDEX1DAYFREIGHT = "NEXT DAY"',
-							),
-						),
-				  'App' => array(
-						array(
-							'name' => 'DEFAULT_LOGIN_ERROR_MESSAGE',
-							'description' => 'Defines the message visitors see if they are not logged in and reach a restricted page. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'message = "Please become a registered user to access that feature."',
-							),
-						),
-				  );
-			
-			return $names[$preFix[$typeId]];
+			return $this->names[$preFix[$typeId]];
 		}
 	
 		/* This is a really helpful piece of code, but I don't know where to put it for reuse
@@ -267,6 +280,22 @@ class Setting extends AppModel {
    		$dbo = $this->getDatasource();
 	    $logs = $dbo->_queriesLog;
     	debug(end($logs)); */
+	}
+	
+	
+	/**
+	 * Return the description for a particular setting
+	 *
+	 * @param {string}		A string of the setting type 
+	 * @param {string}		A string containing the setting name
+	 */
+	function getDescription($typeName, $name) {
+		foreach ($this->names[$typeName] as $setting) {
+			if ($setting['name'] == $name) {
+				$description = $setting['description'];
+			}
+		}
+		return $description;
 	}
 }
 ?>
