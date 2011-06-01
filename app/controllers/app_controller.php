@@ -141,8 +141,6 @@ class AppController extends Controller {
 		
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
-		# this seems to break the login (left for reference 3/9/2011) delete if its a month old
-		#$this->Session->write('Auth.User.user_role_id', $this->userRoleId);
 	}
 	
 	
@@ -938,7 +936,7 @@ class AppController extends Controller {
 	/**
 	 * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in. 
 	 */
-	function isAuthorized() {	
+	function isAuthorized() {
 		# this allows all users in the administrators group access to everything
 		if ($this->userRoleId == 1) { return true; } 
 		# check guest access
