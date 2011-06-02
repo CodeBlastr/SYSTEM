@@ -44,7 +44,7 @@ class AppController extends Controller {
 	 * 
 	 * @todo		There is a problem with the acl check, when using a site wide template tag for an element which is not allowed.  It redirects you to the login page like it should, but the login page also has that template tag, so it is an infinite loop that is hard to debug. 
 	 */
-	function beforeFilter() {	
+	function beforeFilter() {
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
