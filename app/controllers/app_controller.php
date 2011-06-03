@@ -44,7 +44,7 @@ class AppController extends Controller {
 	 * 
 	 * @todo		There is a problem with the acl check, when using a site wide template tag for an element which is not allowed.  It redirects you to the login page like it should, but the login page also has that template tag, so it is an infinite loop that is hard to debug. 
 	 */
-	function beforeFilter() {	
+	function beforeFilter() {
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
@@ -141,8 +141,6 @@ class AppController extends Controller {
 		
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
-		# this seems to break the login (left for reference 3/9/2011) delete if its a month old
-		#$this->Session->write('Auth.User.user_role_id', $this->userRoleId);
 	}
 	
 	
@@ -938,7 +936,7 @@ class AppController extends Controller {
 	/**
 	 * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in. 
 	 */
-	function isAuthorized() {	
+	function isAuthorized() {
 		# this allows all users in the administrators group access to everything
 		if ($this->userRoleId == 1) { return true; } 
 		# check guest access

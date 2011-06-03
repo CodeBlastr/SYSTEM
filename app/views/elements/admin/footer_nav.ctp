@@ -12,6 +12,9 @@
           <li> <a href="/users/users/register"><span>Sign Up</span></a></li>
           <li><a href="/users/users/login"><span>Sign In</span></a></li>
         </ul>
+        <ul>
+        	<li><a href="#" id="helpOpen">Turn Help Text On</a></li>
+        </ul>
       </div>
     </div>
   </div>

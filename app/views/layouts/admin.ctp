@@ -16,17 +16,18 @@
 	echo $this->Html->css('system');
 	echo $this->Html->css('admin/jquery-ui-1.8.13.custom');
 	echo $this->Html->css('admin/admin');
-	
+	# no rhyme or reason about the directory structure here, needs to be cleaned up at some point
 	echo $this->Html->script('jquery-1.5.2.min');
 	echo $this->Html->script('admin/admin');
 	echo $this->Html->script('admin/jquery-ui-1.8.13.custom.min');
 	echo $this->Html->script('jquery.jeditable');
 	echo $this->Html->script('admin/jquery.truncator');
+	echo $this->Html->script('system/jquery.cookie');
 	echo $scripts_for_layout;  
 ?>
 </head>
 <body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
-<div id="siteWrap"> <?php echo $this->Element('admin/global_nav'); ?>
+<div id="siteWrap"> <?php echo $this->Element('admin/header_nav'); ?>
   <div id="tabs">
     <h1><?php echo !empty($page_title_for_layout) ? $page_title_for_layout : null; ?></h1>
     <ul id="leadTab">
@@ -37,20 +38,16 @@
     </ul>
     <div id="content">
       <div id="contentWrap"> <?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?>
-        <div class="helperText">
-          <ul>
-            <li class="info">
-              <h2>Explanation Text</h2>
-              <p>Some text describing this section, so that its easy to use. (put an x button so that you can turn off hints if you want to.</p>
-            </li>
-          </ul>
-        </div>
+      	<?php $helper_text_for_layout = !empty($helper_text_for_layout) ? $helper_text_for_layout : null; ?>
+		<?php echo $this->Element('admin/helper_text', array('overwrite' => $helper_text_for_layout)); ?>
         <!-- #compareChartHeader -->
-        <div class="contentSection"> <?php echo $content_for_layout; ?> </div>
+        <div class="contentSection"> <?php echo $content_for_layout; ?><?php echo $menu_for_layout; ?> </div>
         <!-- #compareChart -->
       </div>
     </div>
   </div>
-  <?php echo $this->Element('admin/footer_nav'); ?> <?php echo $this->Element('sql_dump');  ?> <?php echo $dbSyncError; ?> </div>
+  <?php echo $this->Element('admin/footer_nav'); ?>
+  <?php echo $this->Element('sql_dump');  ?>
+  <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> </div>
 </body>
 </html>

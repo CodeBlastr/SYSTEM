@@ -294,23 +294,21 @@ form {
 	margin: 0.5em;
 }
 fieldset {
-	padding: 0 !important;
-	margin: 0 0 20px 0 !important;
+	padding: 0;
+	margin: 0 0 20px 0;
 }
 fieldset legend {
 	border-bottom: 1px solid #CCC;
 	width: 100%;
 }
 fieldset fieldset {
-	margin-top: 0px;
-	margin-bottom: 20px;
+	margin: 0 0 20px 0;
 	padding: 16px 10px;
 }
 fieldset fieldset legend {
 	font-weight: normal;
 }
 fieldset fieldset div {
-	clear: left;
 	margin: 0 20px;
 }
 form div {
@@ -475,10 +473,10 @@ div.paging span a {
 Primary navigation
 */
 #globalNav {
-	position: relative;
 }
 #globalNav ul {
 	float: left;
+	position: relative;
 }
 #globalNav li {
 	float: left;
@@ -545,7 +543,7 @@ Primary navigation
 	margin: 0 0 5% 0;
 	border-bottom: 1px solid #e7e7e7;
 }
-#globalNav li .sub .menu ul li a {
+#globalNav li .sub .menu a {
 	background: none;
 	float: none;
 	color: #648EDD;
@@ -563,8 +561,8 @@ Primary navigation
 	background: none;
 	padding: 0;
 }
-#globalNav li.fourColumns .sub {
-	left: 3em;
+#globalNav li.endColumn .sub {
+	right: 1em;
 }
 #globalNav li:hover .pointer {
 	display: block;
@@ -598,11 +596,14 @@ Primary navigation
 }
 
 
+
+
+
 /* Search Form */
 .searchfield {
 	width: 165px;
 	float: right;
-	margin: -0.8em 1em 0 0;
+	margin: -0.8em 1em 0 0;margin: -0.8em 1em 0 0;
 }
 .searchfield input {
 	padding-left: 20px;
@@ -818,6 +819,27 @@ Primary navigation
 	position: relative;
 }
 
+/* helper text */
+#helperText {
+	display: none;
+	position: relative;
+	border: 2px solid #090;
+    background: #EBFBE2;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin: 1em;
+	padding: 1em;
+}
+#helperText #helpClose {
+	position: absolute;
+	top: 0.2em;
+	right: 0.5em;
+}
+#helperText a {
+	display: block;
+	font-size: 0.7em;
+}
+
 
 /* extra navigation tabs */
 
@@ -825,9 +847,6 @@ Primary navigation
 	margin: 0;
 	overflow: auto;
 }
-
-
-
 
 
 

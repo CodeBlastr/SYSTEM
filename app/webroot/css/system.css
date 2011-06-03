@@ -19,17 +19,20 @@ Note that the class names could be updated and change often.
     background: #FCEFE4;
     border: 2px solid #F90;
     padding: 1em;
+	margin: 1em;
     color: #C60;
     font-weight: bold;
-    -moz-border-radius:8px;
-    -webkit-border-radius:8px;
-    border-radius:8px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-radius:5px;
 }
 .error-message {
 	color: #C00;
 }
 
-
+.toggleClick, .toggleHover {
+	cursor: pointer;
+}
 .hide {
 	display: none;
 }
@@ -41,6 +44,7 @@ Note that the class names could be updated and change often.
 	background: #FF6;
 	color: #333;
 }
+
 	
 /* Threaded Blog Comment Layout */
 .comment {
@@ -58,8 +62,4 @@ Note that the class names could be updated and change often.
 }
 .comment .body {
 	clear: both;
-}
-
-.helperText {
-	display: none;
 }
