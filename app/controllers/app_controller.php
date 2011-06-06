@@ -162,13 +162,6 @@ class AppController extends Controller {
 		}
 	}
 	
-	function afterFilter() {
-		/**
-		 * Check whether the site is sync'd up 
-		 */
-		$this->_siteStatus();
-	}
-	
 	
 	/**
 	 * Set the default redirect variables, using the settings table constant.
