@@ -835,17 +835,19 @@ class AppController extends Controller {
 	 * @todo	I think we need to put $uses = 'Setting' into the app model.  (please communicate whether you agree)
 	 * @todo 	We're now loading these settings files two times on every page load (or more).  This needs to be optimized.
 	 */
-	 function _siteStatus() {
-		 if ($this->userRoleId == 1) {
-			 App::import('Core', 'File');
-			 $fileSettings = new File(CONFIGS.'settings.ini');
-			 $fileDefaults = new File(CONFIGS.'defaults.ini');
+	function _siteStatus() {
+		if ($this->userRoleId == 1) {
+			$fileSettings = new File(CONFIGS.'settings.ini');
+			$fileDefaults = new File(CONFIGS.'defaults.ini');
+			# the settings file doesn't exist sometimes, and thats fine
+			if ($settings = $fileSettings->read()) {
+				App::import('Core', 'File');
+				 
+				$defaults = $fileDefaults->read();
 			 
-			 $settings = $fileSettings->read();
-			 $defaults = $fileDefaults->read();
-			 
-			 if ($settings != $defaults) {
-			 	$this->set('dbSyncError', '<div class="siteUpgradeNeeded">Site settings are out of date.  Please <a href="/admin">upgrade database</a>. <br> If you think the defaults.ini file is out of date <a href="/admin/settings/update_defaults/">update defaults</a>. <br> If you think the settings.ini file is out of date <a href="/admin/settings/update_settings/">update settings</a></div>');
+				if ($settings != $defaults) {
+				 	$this->set('dbSyncError', '<div class="siteUpgradeNeeded">Site settings are out of date.  Please <a href="/admin">upgrade database</a>. <br> If you think the defaults.ini file is out of date <a href="/admin/settings/update_defaults/">update defaults</a>. <br> If you think the settings.ini file is out of date <a href="/admin/settings/update_settings/">update settings</a></div>');
+				 }
 			 }
 		 }
 	 }
