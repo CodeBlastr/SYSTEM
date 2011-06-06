@@ -59,12 +59,7 @@ class AppController extends Controller {
 		# End Condition Check #
 		# End DO NOT DELETE #
 		$this->viewPath = $this->_getView();
-		
-		/**
-		 * Check whether the site is sync'd up 
-		 */
-		$this->_siteStatus();		
-	
+			
 		/**
  		 * Allows us to have webroot files (css, js, etc) in the sites directories
  		 * Used in conjunction with the "var $view above"
@@ -141,6 +136,10 @@ class AppController extends Controller {
 		
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
+		/**
+		 * Check whether the site is sync'd up 
+		 */
+		$this->_siteStatus();	
 	}
 	
 	
@@ -844,15 +843,17 @@ class AppController extends Controller {
 	 * @todo 	We're now loading these settings files two times on every page load (or more).  This needs to be optimized.
 	 */
 	 function _siteStatus() {
-		 App::import('Core', 'File');
-		 $fileSettings = new File(CONFIGS.'settings.ini');
-		 $fileDefaults = new File(CONFIGS.'defaults.ini');
-		 
-		 $settings = $fileSettings->read();
-		 $defaults = $fileDefaults->read();
-		 
-		 if ($settings != $defaults) {
-		 	$this->set('dbSyncError', '<div class="siteUpgradeNeeded">Site settings are out of date.  Please <a href="/admin">upgrade database</a>. <br> If you think the defaults.ini file is out of date <a href="/admin/settings/update_defaults/">update defaults</a>. <br> If you think the settings.ini file is out of date <a href="/admin/settings/update_settings/">update settings</a></div>');
+		 if ($this->userRoleId == 1) {
+			 App::import('Core', 'File');
+			 $fileSettings = new File(CONFIGS.'settings.ini');
+			 $fileDefaults = new File(CONFIGS.'defaults.ini');
+			 
+			 $settings = $fileSettings->read();
+			 $defaults = $fileDefaults->read();
+			 
+			 if ($settings != $defaults) {
+			 	$this->set('dbSyncError', '<div class="siteUpgradeNeeded">Site settings are out of date.  Please <a href="/admin">upgrade database</a>. <br> If you think the defaults.ini file is out of date <a href="/admin/settings/update_defaults/">update defaults</a>. <br> If you think the settings.ini file is out of date <a href="/admin/settings/update_settings/">update settings</a></div>');
+			 }
 		 }
 	 }
 	
