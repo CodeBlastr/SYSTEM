@@ -41,7 +41,7 @@
       	<?php $helper_text_for_layout = !empty($helper_text_for_layout) ? $helper_text_for_layout : null; ?>
 		<?php echo $this->Element('admin/helper_text', array('overwrite' => $helper_text_for_layout)); ?>
         <!-- #compareChartHeader -->
-        <div class="contentSection"> <?php echo $content_for_layout; ?> </div>
+        <div class="contentSection"> <?php echo $content_for_layout; ?><?php echo $menu_for_layout; ?> </div>
         <!-- #compareChart -->
       </div>
     </div>
