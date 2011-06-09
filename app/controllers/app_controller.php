@@ -25,7 +25,7 @@ class AppController extends Controller {
 	
 	var $userId = '';
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Menus.MenuTree');
+	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Menus.Tree');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
@@ -542,18 +542,40 @@ class AppController extends Controller {
 					# echo 'do nothing, use default template';
 				}
             }
-            $defaultTemplate = $this->Webpage->find('first', array(
-				'conditions' => array(
-					'id' => $template_id,
-					),
-				'contain' => array(
-					'Menu' => array(
-						'conditions' => array(
-							'Menu.menu_id' => null,
+			
+			if ($this->userRoleId = 1) {
+				$db = ConnectionManager::getDataSource('default');
+				$tables = $db->listSources();
+				# this is a check to see if this site is upgraded, it can be removed after all sites are upgraded 6/9/2011
+				if (array_search('menus', $tables)) { 
+					# this allows the admin to edit menus
+					$this->Webpage->bindModel(array(
+						'hasMany' => array(
+							'Menu' => array(
+								'className' => 'Menus.Menu', 
+								'foreignKey' => '', 
+								'conditions' => 'Menu.menu_id is null',
+								),
 							),
-						),
-					),
-				));
+						));
+						$conditions = array('conditions' => array(
+							'id' => $template_id,
+								),
+							'contain' => array(
+								'Menu' => array(
+									'conditions' => array(
+										'Menu.menu_id' => null,
+										),
+									),
+								));
+				} else {
+					$conditions = array('conditions' => array('id' => $template_id));
+				}
+			} else {
+				$conditions = array('conditions' => array('id' => $template_id));
+			}
+			# get the template (not always the default template)
+            $defaultTemplate = $this->Webpage->find('first', $conditions);
             $this->__parseIncludedPages($defaultTemplate);
             $this->set(compact('defaultTemplate'));
         } else {
