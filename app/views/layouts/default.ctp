@@ -91,21 +91,21 @@ $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
 if (!empty($defaultTemplate)) {
 	
-	# matches helper calls like {helper: content_for_layout} or {helper: menu_for_layout}
-	preg_match_all ("/(\{([^\}\{]*)helper([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	# matches helper template tags like {helper: content_for_layout} or {helper: menu_for_layout}
+	preg_match_all ("/(\{helper: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
 	foreach ($matches[0] as $helperMatch) {
-		$helper = trim($matches[4][$i]);
+		$helper = trim($matches[3][$i]);
 		$defaultTemplate["Webpage"]["content"] = str_replace($helperMatch, $$helper, $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
 	
-	# matches element calls like {form: Plugin.Model.Type.Limiter} for example {form: Contacts.ContactPeople.add.59}
-	preg_match_all ("/(\{([^\}\{]*)element([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	# matches element template tags like {element: plugin.name.Instance} for example {element: contacts.recent.2}
+	preg_match_all ("/(\{element: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
 	foreach ($matches[0] as $elementMatch) {
-		$element = trim($matches[4][$i]);
-		# this matches a double period in the element template tag
+		$element = trim($matches[3][$i]);
+		# this matches two separate periods in the element template tag
 		if (preg_match('/([a-zA-Z0-9]*)\.([a-zA-Z0-9]*)\.([0-9]*)/', $element)) {
 			# this is used to handle plugin elements
 			$element = explode('.', $element); 
@@ -126,15 +126,27 @@ if (!empty($defaultTemplate)) {
 		$i++;
 	}
 	
-	# matches form calls like {form: Plugin.Model.Type.Limiter} for example {form: Contacts.ContactPeople.add.59}
-	preg_match_all ("/(\{form([^\}\{]*):([^\}\{]*)([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	# matches form template tags {form: Id/type} for example {form: 1/edit}
+	preg_match_all ("/(\{form: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
-	foreach ($matches[0] as $elementMatch) {
+	foreach ($matches[0] as $formMatch) {
 		$formCfg['id'] = trim($matches[3][$i]);
 		# removed cache for forms, because you can't set it based on form inputs
 		# $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
 		$formCfg['plugin'] = 'forms';
-		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element('forms', $formCfg), $defaultTemplate['Webpage']['content']);
+		$defaultTemplate["Webpage"]["content"] = str_replace($formMatch, $this->element('forms', $formCfg), $defaultTemplate['Webpage']['content']);
+		$i++;
+	}
+	
+	# matches menu template tags like {menu: Id} for example {menu: 3}
+	preg_match_all ("/(\{menu: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	$i = 0;
+	foreach ($matches[0] as $menuMatch) {
+		$menuCfg['id'] = trim($matches[3][$i]);
+		# removed cache temporarily
+		# $menuCfg['cache'] = array('key' => 'menu-'.$menuCfg['id'], 'time' => '+999 days');
+		$menuCfg['plugin'] = 'menus';
+		$defaultTemplate["Webpage"]["content"] = str_replace($menuMatch, $this->element('menus', $menuCfg), $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
 	

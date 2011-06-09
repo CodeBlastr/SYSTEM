@@ -25,7 +25,7 @@ class AppController extends Controller {
 	
 	var $userId = '';
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time');
+	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Menus.MenuTree');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
