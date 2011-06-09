@@ -114,6 +114,32 @@ class Setting extends AppModel {
 							'description' => 'Defines the Google Analytics information for tracking traffic and displaying reports.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'setAccount = UA-999999-9'.PHP_EOL.'setDomainName = .domain.com'.PHP_EOL.'userName = google@account-login.com'.PHP_EOL.'password = mySecurePassword',
 							),
 						),
+				  'Gallery' => array(
+						array(
+							'name' => 'DEFAULT_THUMB_WIDTH',
+							'description' => 'Defines the medium thumbnail width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'120',
+							),
+						array(
+							'name' => 'DEFAULT_THUMB_HEIGHT',
+							'description' => 'Defines the medium thumbnail height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'90',
+							),
+						array(
+							'name' => 'IMAGE_DEFAULT_THUMB_WIDTH',
+							'description' => 'Defines the small thumbnail width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
+							),
+						array(
+							'name' => 'IMAGE_DEFAULT_THUMB_HEIGHT',
+							'description' => 'Defines the small thumbnail height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
+							),
+						array(
+							'name' => 'IMAGE_DEFAULT_FULL_WIDTH',
+							'description' => 'Defines the full size image width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
+							),
+						array(
+							'name' => 'IMAGE_DEFAULT_FULL_HEIGHT',
+							'description' => 'Defines the full size image height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
+							),
+						),
 				  );
 	}
 	
