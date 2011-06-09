@@ -542,7 +542,18 @@ class AppController extends Controller {
 					# echo 'do nothing, use default template';
 				}
             }
-            $defaultTemplate = $this->Webpage->find('first', array('conditions' => array('id' => $template_id)));
+            $defaultTemplate = $this->Webpage->find('first', array(
+				'conditions' => array(
+					'id' => $template_id,
+					),
+				'contain' => array(
+					'Menu' => array(
+						'conditions' => array(
+							'Menu.menu_id' => null,
+							),
+						),
+					),
+				));
             $this->__parseIncludedPages($defaultTemplate);
             $this->set(compact('defaultTemplate'));
         } else {
