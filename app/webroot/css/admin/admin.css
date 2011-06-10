@@ -301,6 +301,9 @@ fieldset legend {
 	border-bottom: 1px solid #CCC;
 	width: 100%;
 }
+fieldset legend.toggleClick:hover {
+	background: #eaeaea;
+}
 fieldset fieldset {
 	margin: 0 0 20px 0;
 	padding: 16px 10px;

@@ -82,12 +82,12 @@ $(function() {
 	});
 
 
-	/* hides form elements except the legend (click the legend to show form elements
-  	$('legend').siblings().hide();
+	// hides form elements except the legend (click the legend to show form elements
+  	$('legend.toggleClick').siblings().hide();
 	
-  	$('legend').click(function(){
+  	$('legend.toggleClick').click(function(){
     	$(this).siblings().slideToggle("slow");
-    });*/
+    });
 		
 	$('#tabs').tabs();	
 	$('#navigation').tabs();
