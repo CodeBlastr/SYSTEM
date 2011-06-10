@@ -13,7 +13,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.models
  * @since         Zuha(tm) v 0.0.1
@@ -66,37 +66,53 @@ class Setting extends AppModel {
 							'description' => 'Defines the credentials to Access payment api of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = webpro_126328478_biz_api1.example.com'.PHP_EOL.'API_PASSWORD = 9294399233'.PHP_EOL.'API_SIGNATURE = ApJtg.JrUW0YLN.tPmmGiu-exM.va778w7f873mX29QghYJnTf'.PHP_EOL.'API_ENDPOINT = https://api-3t.sandbox.paypal.com/nvp'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
 							),
 						array(
+							'name' => 'PAYPAL_ADAPTIVE',
+							'description' => 'Defines the credentials to Access payment api of Paypal for Adaptive payment methods.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = pro2_1306331130_biz_api1.enbake.com'.PHP_EOL.'API_PASSWORD = 1306331152'.PHP_EOL.'API_SIGNATURE = A8p31ikyPTksXuHA3gAY-vp4j5.uAaEj4E89F8jscaqMIfjpaXVNe4cJ'.PHP_EOL.'API_ENDPOINT = https://svcs.sandbox.paypal.com/AdaptivePayments'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
+							),	
+						array(
+							'name' => 'CHAINED_PAYMENT',
+							'description' => 'Defines the values to Access chained payment of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'returnUrl = "http://dealpops.zuha.com"'.PHP_EOL.'cancelUrl = "http://dealpops.zuha.com"'.PHP_EOL.'receiverPrimaryArray[] = ""'.PHP_EOL.'receiverInvoiceIdArray[] = ""'.PHP_EOL.'feesPayer = ""'.PHP_EOL.'ipnNotificationUrl = ""'.PHP_EOL.'memo = ""'.PHP_EOL.'pin = ""'.PHP_EOL.'preapprovalKey = ""'.PHP_EOL.'reverseAllParallelPaymentsOnError = ""'.PHP_EOL.'senderEmail = "pro2_1306331130_biz@enbake.com"',
+							),
+						array(
+							'name' => 'LOCATIONS',
+							'description' => 'Defines the users to whom the payment should divided using chained payment.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'syracuse[] =  40,syracuse@example.com'.PHP_EOL.'syracuse[] = 40,adagency@example.com',
+							),
+						array(
 							'name' => 'ENABLE_SHIPPING',
 							'description' => 'Defines the shipping option Enable/Disable for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'false',
 							),
 						array(
-							'name' => 'SHIPPING_FEDEX_ACCOUNT_NO',
-							'description' => 'Defines the account number for access Fedex api for shipping.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'510087526',
+							'name' => 'SHIPPING_FEDEX_USER_CREDENTIAL',
+							'description' => 'Defines the shipping fedex user credentials for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'UserCredential["Key"] = "BWw8o4cRu1z7NZZU"'.PHP_EOL.'UserCredential["Password"] = "CjV3icwSEDDpgFiTFweIkaEAc"',
 							),
 						array(
-							'name' => 'SHIPPING_FEDEX_METER_NO',
-							'description' => 'Defines the meter number to access Fedex api for shipping.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'118538458',
+							'name' => 'SHIPPING_FEDEX_CLIENT_DETAIL',
+							'description' => 'Defines the shipping fedex client credentials for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AccountNumber = "510087585"'.PHP_EOL.'MeterNumber = "100061554"',
 							),
 						array(
-							'name' => 'SHIP_DROP_OFF_TYPE',
-							'description' => 'Defines the default shipping type, drop off type'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'REGULARPICKUP',
+							'name' => 'SHIPPING_FEDEX_VERSION',
+							'description' => 'Defines the shipping fedex version.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'ServiceId = "crs"'.PHP_EOL.'Major = 9'.PHP_EOL.'Intermediate = 0'.PHP_EOL.'Minor = 0',
 							),
 						array(
-							'name' => 'SHIP_SERVICE',
-							'description' => 'Defines the default shipping service'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY',
+							'name' => 'SHIPPING_FEDEX_REQUESTED_SHIPMENT_SHIPPER',
+							'description' => 'Defines the shipping fedex default ship from address for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'Address["City"] = ""'.PHP_EOL.'Address["StateOrProvinceCode"] = "CA"'.PHP_EOL.'Address["PostalCode"] = "95451"'.PHP_EOL.'Address["CountryCode"] = "US"',
 							),
 						array(
-							'name' => 'SHIP_FROM_STATE',
-							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'CA',
+							'name' => 'SHIPPING_FEDEX_REQUESTED_SHIPMENT',
+							'description' => 'Defines the shipping fedex settings for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'DropoffType = REGULAR_PICKUP'.PHP_EOL.'ServiceType = FEDEX_GROUND'.PHP_EOL.'PackagingType = YOUR_PACKAGING'.PHP_EOL.'RateRequestTypes = ACCOUNT'.PHP_EOL.'RateRequestTypes = LIST'.PHP_EOL.'PackageDetail = INDIVIDUAL_PACKAGES',
 							),
 						array(
-							'name' => 'SHIP_FROM_ZIP',
-							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'95451',
+							'name' => 'SHIPPING_FEDEX_WEIGHT_UNIT',
+							'description' => 'Defines the shipping fedex weight unit for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'LB',
 							),
 						array(
-							'name' => 'SHIP_FROM_COUNTRY',
-							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'US',
+							'name' => 'SHIPPING_FEDEX_DIMENSIONS_UNIT',
+							'description' => 'Defines the shipping fedex dimension unit for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'IN',
 							),
+						array(
+							'name' => 'SHIPPING_FEDEX_DEFAULT_WEIGHT',
+							'description' => 'Defines the shipping fedex default weight if the weight is not givven for item for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'2.0',
+							),				
 						array(
 							'name' => 'FEDEX',
 							'description' => 'Define Enabled Shipping Service options the following variable defines the options which should be display	in the dropdown of shipping type for the app.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY = STANDARD'.PHP_EOL.'INTERNATIONALFIRST = "INTERNATIONAL FLAT FEE"'.PHP_EOL.'FEDEX1DAYFREIGHT = "NEXT DAY"',
