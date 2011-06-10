@@ -5,6 +5,15 @@ $().ready(function() {
 	$(".toggleClick").click(function () {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle();
+		$('.'+currentName).toggle();
+		$(this).css('cursor', 'pointer');
+		return false;
+	});
+	
+	$(".showClick").click(function () {
+		var currentName = $(this).attr('name');
+		$('#'+currentName).show('slow');
+		$('.'+currentName).show('slow');
 		$(this).css('cursor', 'pointer');
 		return false;
 	});
