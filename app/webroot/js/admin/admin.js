@@ -1,6 +1,15 @@
 
 //onload init
 $(function() { 
+	// modal dialog windows
+	$(".dialog").click(function(e){
+		var url = $(this).attr("href");
+		$("#siteWrap").append("<div id='dialogLoad' style='background: #fff;'></div>");
+		$("#dialogLoad").load(url).dialog({
+			modal:true,
+			});
+		return false;
+	});
 	
 	/* Helper Text show statement */
 	if ($.cookie('hideHelperText') == null) {
@@ -46,12 +55,14 @@ $(function() {
 	$(".toggleClick").click(function () {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle('slow');
+		$('.'+currentName).toggle('slow');
 		return false;
 	});
 	
 	$(".toggleHover").hover(function () {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle();
+		$('.'+currentName).toggle();
 		return false;
 	});
 	
