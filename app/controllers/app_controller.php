@@ -183,31 +183,6 @@ class AppController extends Controller {
 	}
 	
 	
-	/** 
-	 * Database driven template system
-	 *
-	 * Using this function we can create pages within pages in the database
-	 * using structured tags (example : {include:pageid3}) 
-	 * which would include the database webpage with that id in place of the tag
-	 * @todo wasn't sure if this was the right place, but we should pull all of the webpage records in one call instead of multiple if we can, and cache them for performance.
-	 */
-	function __parseIncludedPages (&$webpage, $parents = array ()) {
-		$matches = array ();
-		$parents[] = $webpage["Webpage"]["id"];
-		preg_match_all ("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
-		
-		for ($i = 0; $i < sizeof ($matches[2]); $i++) {
-			if (in_array ($matches[2][$i], $parents)) {
-				$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], "", $webpage["Webpage"]["content"]);
-				continue;
-			}
-			$webpage2 = $this->Webpage->find("first", array("conditions" => array( "id" => $matches[2][$i]) ) );		
-			if(empty($webpage2) || !is_array($webpage2)) continue;
-			$this->__parseIncludedPages ($webpage2, $parents);
-			$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
-		}
-	}
-	
 /** Mail functions
  * 
  * These next two functions are used primarily in the notifications plugin
@@ -576,7 +551,7 @@ class AppController extends Controller {
 			}
 			# get the template (not always the default template)
             $defaultTemplate = $this->Webpage->find('first', $conditions);
-            $this->__parseIncludedPages($defaultTemplate);
+            $this->Webpage->parseIncludedPages($defaultTemplate);
             $this->set(compact('defaultTemplate'));
         } else {
 			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
