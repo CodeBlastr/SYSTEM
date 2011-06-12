@@ -255,8 +255,7 @@ class Setting extends AppModel {
 		#$file->path = CONFIGS.'settings.ini';
 		$writeData = $this->prepareSettingsIniData();
 		if($file->write($file->prepare($writeData))) {
-			$file = new File(CONFIGS.'defaults.ini');
-			if($file->write($file->prepare($writeData))) {
+			if($this->writeDefaultsIniData()) {
 				return true;
 			} else {
 				return false;
