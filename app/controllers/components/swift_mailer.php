@@ -83,14 +83,14 @@ class SwiftMailerComponent extends Object {
 	 * @var String
 	 * @access Public
 	 */
-	var $smtpUsername = 'test@razorit.com';
+	var $smtpUsername = 'zuha-testing@razorit.com';
 	/**
 	 * SMTP Password for connection
 	 *
 	 * @var String
 	 * @access Public
 	 */
-	var $smtpPassword = 'ufm2309u209';
+	var $smtpPassword = 'US(D*FUw23j';
 	/**
 	 * SMTP Host name connection
 	 *

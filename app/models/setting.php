@@ -44,6 +44,12 @@ class Setting extends AppModel {
 	function __construct() {
 		parent::__construct();
 		$this->names = array(
+				  'System' => array(
+						array(
+							'name' => 'SMTP',
+							'description' => 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'smtpUsername = xyz@example.com'.PHP_EOL.'smtpPassword = XXXXXXX'.PHP_EOL.'smtpHost = smtp.example.com'.PHP_EOL.'from = myemail@example.com'.PHP_EOL.'fromName = "My Name"',
+							),
+						),
 				  'Orders' => array(
 						array(
 							'name' => 'DEFAULT_PAYMENT',
@@ -320,6 +326,13 @@ class Setting extends AppModel {
 			$data['Setting']['value'] = $setting['Setting']['value'].PHP_EOL.$data['Setting']['value'];
 		}
 		
+		// some values need to be encrypted.  We do that here (@todo put this in its own two functions.  One for "encode" function, and one for which settings should be encoded, so that we can specify all settings which need encryption, and reuse this instead of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well. 
+		if ($data['Setting']['name'] == 'SMTP') {
+			$data['Setting']['value'] = 'smtp = "'.base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'))).'"';
+			#$data['Setting']['value'] = 'smtp = "'.base64_encode(gzcompress($data['Setting']['value'])).'"';
+			#$data['Setting']['value'] = base64_decode($data['Setting']['value']);
+			#$data['Setting']['value'] = Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'));
+		}
 		return $data;
 	}
 	
