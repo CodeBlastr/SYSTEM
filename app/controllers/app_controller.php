@@ -107,14 +107,7 @@ class AppController extends Controller {
 				$this->checkConditions($plugin, $controller, $action, $extraValues);
 		 */
 		
-		
-		/**
-		 * Used to show admin layout for admin pages
-		 */
-		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
-			$this->layout = 'admin';
-		}
-		
+			
 				
 		/**
 		 * Implemented for allowing guests access through db acl control
@@ -141,6 +134,13 @@ class AppController extends Controller {
 		 */
 		# template settings
  		if (empty($this->params['requested'])) { $this->_getTemplate(); }
+		/**
+		 * Used to show admin layout for admin pages
+		 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
+		 */
+		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
+			$this->layout = 'default';
+		}
 		/**
 		 * Check whether the site is sync'd up 
 		 */
@@ -554,6 +554,7 @@ class AppController extends Controller {
 	 * @todo 		Move this to the webpage model.
 	 */
 	function _getTemplate() {
+		
 		if (defined('__APP_TEMPLATES')) :
 			$settings = unserialize(__APP_TEMPLATES);
 			$i = 0; 
@@ -628,10 +629,17 @@ class AppController extends Controller {
 		endif;
 		
 		$conditions = $this->templateConditions();
-		$template = $this->Webpage->find('first', $conditions);
-        $this->Webpage->parseIncludedPages($template);
+		$templated = $this->Webpage->find('first', $conditions);
+        $this->Webpage->parseIncludedPages($templated);
 		
-        $this->set('defaultTemplate', $template);
+        $this->set('defaultTemplate', $templated);
+		
+		# the __APP_DEFAULT_TEMPLATE_ID is deprecated and will be removed
+		if (!empty($this->templateId) && !defined('__APP_DEFAULT_TEMPLATE_ID')) :
+			$this->layout = 'custom';
+		elseif (defined('__APP_DEFAULT_TEMPLATE_ID')) :
+			$this->layout = 'custom';
+		endif;
 	}
 	
 	
