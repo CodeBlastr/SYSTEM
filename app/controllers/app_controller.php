@@ -125,24 +125,28 @@ class AppController extends Controller {
 			}
 		} 
 		
+		/*
+		 * Below here (in this function) are things that have to come after the final userRoleId is determined
+		 */
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
 		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 		
 		$this->viewPath = $this->_getView();
-		/*
-		 * Below here (in this function) are things that have to come after the final userRoleId is determined
-		 */
-		# template settings
- 		if (empty($this->params['requested'])) { $this->_getTemplate(); }
+		 
 		/**
 		 * Used to show admin layout for admin pages
 		 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
-		 */
-		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
+		 */		 
+		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
+			// this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
-		}
+		elseif(empty($this->params['requested']) && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') : 
+			// this else if makes so that extensions still get parsed
+			$this->_getTemplate();
+		endif;
+		
 		/**
 		 * Check whether the site is sync'd up 
 		 */
@@ -999,7 +1003,7 @@ class AppController extends Controller {
 	 *
 	 * Send the mail to the user.
 	 * $email: Array - address/name pairs (e.g.: array(example@address.com => name, ...)
-	 * 		String - address to send email to
+	 * String - address to send email to
 	 * $subject: subject of email.
 	 * $template to be picked from folder for email. By default, if $mail is given in any template, especially default, 
 	 * $message['html'] in the layout will be replaced with this text. 
