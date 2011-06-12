@@ -135,6 +135,10 @@ class Setting extends AppModel {
 							'name' => 'LOGOUT_REDIRECT_URL',
 							'description' => 'Defines the url users go to after logging out. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/goodbye/',
 							),
+						array(
+							'name' => 'REGISTRATION_EMAIL_VERIFICATION',
+							'description' => 'Defines whether registration requires email verification before the account is approved. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'anything (If this setting exists at all, then verification is required.)',
+							),
 						),
 				  'Reports' => array(
 						array(
