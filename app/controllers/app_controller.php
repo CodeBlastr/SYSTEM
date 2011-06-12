@@ -25,7 +25,8 @@ class AppController extends Controller {
 	
 	var $userId = '';
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Menus.Tree');
+	# Menu is DEPRECATED and will be removed in future versions.
+	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Menus.Tree', 'Menu');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
@@ -547,8 +548,6 @@ class AppController extends Controller {
 						# echo 'do nothing, use default template';
 					}
 	            }
-			} else {
-				echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
 			}
 			
 		endif;

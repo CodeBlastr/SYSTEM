@@ -218,7 +218,7 @@ class Setting extends AppModel {
 			}
 		}
 		
-		$writeData .= $this->finishIniData($holdSettings);
+		$writeData .= !empty($holdSettings) ? $this->finishIniData($holdSettings) : '';
 		return $writeData;
 	}
 	

@@ -434,6 +434,7 @@ input[type=submit]:hover {
 	-webkit-box-shadow: 0 0 1em #090;
 	-moz-box-shadow: 0 0 1em #090;
 	box-shadow: 0 0 1em #090;
+	cursor: pointer;
 }
 
 
