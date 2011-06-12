@@ -83,28 +83,28 @@ class SwiftMailerComponent extends Object {
 	 * @var String
 	 * @access Public
 	 */
-	var $smtpUsername = 'zuha-testing@razorit.com';
+	var $smtpUsername = '';
 	/**
 	 * SMTP Password for connection
 	 *
 	 * @var String
 	 * @access Public
 	 */
-	var $smtpPassword = 'US(D*FUw23j';
+	var $smtpPassword = '';
 	/**
 	 * SMTP Host name connection
 	 *
 	 * @var String
 	 * @access Public
 	 */
-	var $smtpHost = 'smtp.gmail.com';
+	var $smtpHost = '';
 	/**
 	 * SMTP port (e.g.: 25 for open, 465 for ssl, etc.)
 	 *
 	 * @var Integer
 	 * @access Public
 	 */
-	var $smtpPort = 465;
+	var $smtpPort = '';
 	/**
 	 * Seconds before timeout occurs
 	 *
@@ -125,14 +125,14 @@ class SwiftMailerComponent extends Object {
 	 * @var String
 	 * @access Public
 	 */
-	var $from ='donotreply@redphone.info';
+	var $from ='';
 	/**
 	 * Email from name
 	 *
 	 * @var String
 	 * @access Public
 	 */
-	var $fromName = 'donotreply@redphone.info';
+	var $fromName = '';
 	/**
 	 * Recipients
 	 *
@@ -209,6 +209,20 @@ class SwiftMailerComponent extends Object {
 	 */
 	function initialize(&$controller) {
 		$this->__controller = $controller;
+		# get the smtp settings (required for sending email)
+		if (defined('__SYSTEM_SMTP')) :
+			extract(unserialize(__SYSTEM_SMTP));
+			$smtp = base64_decode($smtp);
+			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
+			$smtp = parse_ini_string($smtp);
+		endif;
+		
+		$this->smtpUsername = !empty($smtp['smtpUsername']) ? $smtp['smtpUsername'] : $this->smtpUsername;
+		$this->smtpPassword = !empty($smtp['smtpPassword']) ? $smtp['smtpPassword'] : $this->smtpPassword;
+		$this->smtpHost = !empty($smtp['smtpHost']) ? $smtp['smtpHost'] : $this->smtpHost;
+		$this->smtpPort = !empty($smtp['smtpPort']) ? $smtp['smtpPort'] : $this->smtpPort;
+		$this->from = !empty($smtp['from']) ? $smtp['from'] : $this->from;
+		$this->fromName = !empty($smtp['fromName']) ? $smtp['fromName'] : $this->fromName;
 	}
 
 	/**
