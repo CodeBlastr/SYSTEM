@@ -25,11 +25,14 @@ class AppController extends Controller {
 	
 	var $userId = '';
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Menus.Tree');
+	# Menu is DEPRECATED and will be removed in future versions.
+	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Menus.Tree', 'Menu');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
+	var $userRoleName = 'guests';
 	var $params = array();
+	var $templateId = '';
 	
 	function __construct(){
 		$this->helpers['Html'] =  array('aro' => 'alsdkfjasd'/*$this->_guestsAro()*/);
@@ -58,7 +61,6 @@ class AppController extends Controller {
 		$this->Condition->checkAndFire('is_read', $conditions, $this->data); */
 		# End Condition Check #
 		# End DO NOT DELETE #
-		$this->viewPath = $this->_getView();
 			
 		/**
  		 * Allows us to have webroot files (css, js, etc) in the sites directories
@@ -78,14 +80,12 @@ class AppController extends Controller {
 			'controller' => 'users',
 			'action' => 'login'
 			);
-		
-        $this->Auth->logoutRedirect = array(
+		        
+        $this->Auth->loginRedirect = array(
 			'plugin' => 'users',
 			'controller' => 'users',
 			'action' => 'login'
 			);
-        
-        $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
@@ -106,17 +106,8 @@ class AppController extends Controller {
 				$this->checkConditions($plugin, $controller, $action, $extraValues);
 		 */
 		
-		
-		/**
-		 * Used to show admin layout for admin pages
-		 */
-		if(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
-			$this->layout = 'admin';
-		}
-		
-		# system wide settings
- 		if (empty($this->params['requested'])) { $this->_getTemplate(); }
-		
+			
+				
 		/**
 		 * Implemented for allowing guests access through db acl control
 		 */ #$this->Auth->allow('*');
@@ -135,11 +126,28 @@ class AppController extends Controller {
 		} 
 		
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
+		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
+		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
+		
+		$this->viewPath = $this->_getView();
+		/*
+		 * Below here (in this function) are things that have to come after the final userRoleId is determined
+		 */
+		# template settings
+ 		if (empty($this->params['requested'])) { $this->_getTemplate(); }
+		/**
+		 * Used to show admin layout for admin pages
+		 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
+		 */
+		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') {
+			$this->layout = 'default';
+		}
 		/**
 		 * Check whether the site is sync'd up 
 		 */
 		$this->_siteStatus();	
+		
 	}
 	
 	
@@ -162,25 +170,6 @@ class AppController extends Controller {
 		}
 	}
 	
-	
-	/**
-	 * Set the default redirect variables, using the settings table constant.
-	 */
-	function _defaultLoginRedirect() {
-		if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
-			if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
-				return $urlParams;
-			} else {
-				return __APP_DEFAULT_LOGIN_REDIRECT_URL;
-			}
-		} else {
-			return array(
-				'plugin' => 'users',
-				'controller' => 'users',
-				'action' => 'my',
-			);
-		}
-	}
 	
 	
 /** Mail functions
@@ -413,15 +402,10 @@ class AppController extends Controller {
  * @todo 				Move these next few functions to a component.
  */
 	function _getView() {
-		/* order should be 
-		1. complete localized plugin or view folder with extension (not html)
-		2. localized language plugin or view folder with extension (not html)
-		3. root app directory plugin or view folder with extension (not html)
-		4. scaffolded directory for this action with extension (not html) */
 		$possibleLocations = array(
-			# 0 app (including sites) /plugins/wikis/views/locale/eng/wiki_categories/view.ctp
-			APP.$this->_getPlugin(false, true).'views'.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
-			# 1 app (including sites) /plugins/wikis/views/wiki_categories/view.ctp
+			# 0 app (including sites) /plugins/wikis/views/locale/eng/wikis/wiki_categories/view.ctp
+			APP.'views'.$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath.$this->_getExtension().DS.$this->userRoleName.DS.$this->params['action'].'.ctp',
+			# 1 app (including sites) /plugins/wikis/views/wikis/wiki_categories/view.ctp
 			APP.$this->_getPlugin(false, true).'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 2 app (including sites) /views/locale/eng/plugins/projects/projects/index.ctp
 			APP.'views'.$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
@@ -435,24 +419,23 @@ class AppController extends Controller {
 			ROOT.DS.'app'.DS.'views'.DS.'scaffolds'.$this->_getExtension().DS.$this->params['action'].'.ctp',		
 			);
 		$matchingViewPaths = array(
-			$this->_getLocale(true).DS.$this->viewPath, // 0 checked
-			$this->viewPath, // 1 checked
-			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 2 checked
-			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 3  checked, checked
-			$this->_getLocale(true, true).$this->viewPath, // 4 checked, checked
-			$this->viewPath, // 5 checked
-			'scaffolds', // 6 checked
+			$this->_getLocale(true).DS.$this->_getPlugin(true, true).$this->viewPath.DS.$this->userRoleName, // 0 
+			$this->viewPath, // 1 
+			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 2 
+			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 3  
+			$this->_getLocale(true, true).$this->viewPath, // 4 
+			$this->viewPath, // 5 
+			'scaffolds', // 6 
 			);
-		foreach ($possibleLocations as $key => $location) {
-			if (file_exists($location)) {
+		
+		foreach ($possibleLocations as $key => $location) :
+			if (file_exists($location)) :
 				return $this->viewPath = $matchingViewPaths[$key];
 				break;
-			}
-		}
+			endif;
+		endforeach;
 	}
 	
-	function _checkViewFiles() {
-	}
 	
 	function _getExtension() {
 		 if (!empty($this->params['url']['ext']) && $this->params['url']['ext'] != 'html') {
@@ -490,73 +473,192 @@ class AppController extends Controller {
 	
 	
 	/**
-	 * Used to find the template parsing.  Sets the defaultTemplate variable for the layout.
+	 * Used to find the template and makes a call to parse all page views.  Sets the defaultTemplate variable for the layout.
+	 * 
+	 * This function parses the settings for templates, in order to decide which template to use, based on url, and user role.
 	 *
+	 * @todo 		Move this to the webpage model.
 	 */
 	function _getTemplate() {
-        if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
-            $template_id = __APP_DEFAULT_TEMPLATE_ID;
-            if (defined('__APP_MULTI_TEMPLATE_IDS')) {
-				if(is_array(unserialize(__APP_MULTI_TEMPLATE_IDS))) {
-					extract(unserialize(__APP_MULTI_TEMPLATE_IDS));
-				}
-				$i = 0;
-				if (!empty($url)) { foreach($url as $u) {
-					# check each one against the current url
-					$u = str_replace('/', '\/', $u);
-					$urlRegEx = '/'.str_replace('*', '(.*)', $u).'/';
-					if (preg_match($urlRegEx, $this->params['url']['url'])) {
-						$template_id = $templateId[$i];
-					}
-					$i++;
-				}}
-	
-				if (!empty($webpages)) { foreach ($webpages as $webpage) {
-					echo $webpage['Webpage']['content'];
-				}} else {
-					# echo 'do nothing, use default template';
-				}
-            }
+		
+		if (defined('__APP_TEMPLATES')) :
+			$settings = unserialize(__APP_TEMPLATES);
+			$i = 0; 
+			foreach ($settings['template'] as $setting) :
+				$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
+				$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
+				$templates[$i]['urls'] = $templates[$i]['urls'] == '""' ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
+				$i++;
+			endforeach;
 			
-			if ($this->userRoleId = 1) {
-				$db = ConnectionManager::getDataSource('default');
-				$tables = $db->listSources();
-				# this is a check to see if this site is upgraded, it can be removed after all sites are upgraded 6/9/2011
-				if (array_search('menus', $tables)) { 
-					# this allows the admin to edit menus
-					$this->Webpage->bindModel(array(
-						'hasMany' => array(
-							'Menu' => array(
-								'className' => 'Menus.Menu', 
-								'foreignKey' => '', 
-								'conditions' => 'Menu.menu_id is null',
-								),
-							),
-						));
-						$conditions = array('conditions' => array(
-							'id' => $template_id,
-								),
-							'contain' => array(
-								'Menu' => array(
-									'conditions' => array(
-										'Menu.menu_id' => null,
-										),
-									),
-								));
-				} else {
-					$conditions = array('conditions' => array('id' => $template_id));
-				}
-			} else {
-				$conditions = array('conditions' => array('id' => $template_id));
+			foreach ($templates as $key => $template) : 
+				// check urls first so that we don't accidentally use a default template before a template set for this url.
+				if (!empty($template['urls'])) : 
+					// note : this over rides isDefault, so if its truly a default template, don't set urls
+					$this->templateId = $this->urlTemplate($template);
+					// get rid of template values so we don't have to check them twice
+					unset($templates[$key]);
+				endif;
+				
+				if (!empty($this->templateId)) :
+					// as soon as we have the first template that matches, end this loop
+					break;
+				endif;
+				
+			endforeach;	
+			
+			if (!empty($templates) && empty($this->templateId)) : foreach ($templates as $key => $template) :
+			
+				if (!empty($template['isDefault'])) :
+					$this->templateId = $template['templateId'];
+					$this->templateId = !empty($template['userRoles']) ? $this->userTemplate($template) : $this->templateId;
+				endif;
+				
+				if (!empty($this->templateId)) :
+					// as soon as we have the first template that matches, end this loop
+					break;
+				endif;
+				
+			endforeach; endif;
+				
+		elseif (empty($this->templateId)) :
+		
+			# THIS ELSE IF IS DEPRECATED 6/11/2011 : Will be removed in future versions
+			# it was for use when there were two template related constants, which have now been combined into one.
+			if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
+           		$this->templateId = __APP_DEFAULT_TEMPLATE_ID;
+	            if (defined('__APP_MULTI_TEMPLATE_IDS')) {
+					if(is_array(unserialize(__APP_MULTI_TEMPLATE_IDS))) {
+						extract(unserialize(__APP_MULTI_TEMPLATE_IDS));
+					}
+					$i = 0;
+					if (!empty($url)) { foreach($url as $u) {
+						# check each one against the current url
+						$u = str_replace('/', '\/', $u);
+						$urlRegEx = '/'.str_replace('*', '(.*)', $u).'/';
+						if (preg_match($urlRegEx, $this->params['url']['url'])) {
+							$this->templateId = $templateId[$i];
+						}
+						$i++;
+					}}
+		
+					if (!empty($webpages)) { foreach ($webpages as $webpage) {
+						echo $webpage['Webpage']['content'];
+					}} else {
+						# echo 'do nothing, use default template';
+					}
+	            }
 			}
-			# get the template (not always the default template)
-            $defaultTemplate = $this->Webpage->find('first', $conditions);
-            $this->Webpage->parseIncludedPages($defaultTemplate);
-            $this->set(compact('defaultTemplate'));
-        } else {
-			echo 'In /admin/settings key: APP, value: DEFAULT_TEMPLATE_ID is not defined';
-		}
+			
+		endif;
+		
+		$conditions = $this->templateConditions();
+		$templated = $this->Webpage->find('first', $conditions);
+        $this->Webpage->parseIncludedPages($templated);
+		
+        $this->set('defaultTemplate', $templated);
+		
+		# the __APP_DEFAULT_TEMPLATE_ID is deprecated and will be removed
+		if (!empty($this->templateId) && !defined('__APP_DEFAULT_TEMPLATE_ID')) :
+			$this->layout = 'custom';
+		elseif (defined('__APP_DEFAULT_TEMPLATE_ID')) :
+			$this->layout = 'custom';
+		endif;
 	}
+	
+	
+	/**
+	 * check if the template selected is available to the current users role
+	 * 
+	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
+	 */
+	function userTemplate($data) {
+		// check if the url being requested matches any template settings for user roles
+		if (!empty($data['userRoles'])) : 
+			foreach ($data['userRoles'] as $userRole) :
+				if ($userRole == $this->userRoleId) :
+					$templateId = $data['templateId'];
+				endif;
+			endforeach;
+		elseif (!empty($data['templateId'])) :
+			$templateId = $data['templateId'];
+		endif;
+		
+		if (!empty($templateId)) : 
+			return $templateId;
+		else :
+			return null;
+		endif;
+	}
+	
+	/**
+	 * check if the selected template is available to the current url
+	 *
+	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
+	 */
+	function urlTemplate($data) {
+		// check if the url being requested matches any template settings for specific urls
+		if (!empty($data['urls'])) : 
+			$i=0;
+			foreach ($data['urls'] as $url) :
+				$urlString = str_replace('/', '\/', $url);
+				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
+				if (preg_match($urlRegEx, $this->params['url']['url'])) :
+					$templateId = !empty($data['userRoles']) ? $this->userTemplate($data) : $data['templateId'];
+				endif;
+			$i++; 
+			endforeach; 
+		endif;
+		
+		if (!empty($templateId)) : 
+			return $templateId;
+		else :
+			return null;
+		endif;
+	}
+	
+	
+	
+	/**
+	 * Add conditions based on user role for the template
+	 *
+	 * @todo		Make slideDock menu available to anyone with permissions to $webpages->edit().  Not just admin
+	 */
+	function templateConditions() {
+		# contain the menus for output into the slideDock if its the admin user
+		if ($this->userRoleId == 1) :
+			$db = ConnectionManager::getDataSource('default');
+			$tables = $db->listSources();
+			# this is a check to see if this site is upgraded, it can be removed after all sites are upgraded 6/9/2011
+			if (array_search('menus', $tables)) { 
+				# this allows the admin to edit menus
+				$this->Webpage->bindModel(array(
+					'hasMany' => array(
+						'Menu' => array(
+							'className' => 'Menus.Menu', 
+							'foreignKey' => '', 
+							'conditions' => 'Menu.menu_id is null',
+							),
+						),
+					));
+					return array('conditions' => array(
+						'id' => $this->templateId,
+							),
+						'contain' => array(
+							'Menu' => array(
+								'conditions' => array(
+									'Menu.menu_id' => null,
+									),
+								),
+							));
+			} else {
+				return array('conditions' => array('id' => $this->templateId));
+			}
+		else :
+			return array('conditions' => array('id' => $this->templateId));
+		endif;
+	}
+
 
 /**
  * Build ACL is a function used for updating the acos table with all available plugins and controller methods.

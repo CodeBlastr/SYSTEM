@@ -1,6 +1,15 @@
 
 //onload init
 $(function() { 
+	// modal dialog windows
+	$(".dialog").click(function(e){
+		var url = $(this).attr("href");
+		$("#siteWrap").append("<div id='dialogLoad' style='background: #fff;'></div>");
+		$("#dialogLoad").load(url).dialog({
+			modal:true,
+			});
+		return false;
+	});
 	
 	/* Helper Text show statement */
 	if ($.cookie('hideHelperText') == null) {
@@ -46,12 +55,14 @@ $(function() {
 	$(".toggleClick").click(function () {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle('slow');
+		$('.'+currentName).toggle('slow');
 		return false;
 	});
 	
 	$(".toggleHover").hover(function () {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle();
+		$('.'+currentName).toggle();
 		return false;
 	});
 	
@@ -71,12 +82,12 @@ $(function() {
 	});
 
 
-	/* hides form elements except the legend (click the legend to show form elements
-  	$('legend').siblings().hide();
+	// hides form elements except the legend (click the legend to show form elements
+  	$('legend.toggleClick').siblings().hide();
 	
-  	$('legend').click(function(){
+  	$('legend.toggleClick').click(function(){
     	$(this).siblings().slideToggle("slow");
-    });*/
+    });
 		
 	$('#tabs').tabs();	
 	$('#navigation').tabs();
