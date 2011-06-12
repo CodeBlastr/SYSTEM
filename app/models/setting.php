@@ -123,6 +123,10 @@ class Setting extends AppModel {
 							'name' => 'DEFAULT_LOGIN_ERROR_MESSAGE',
 							'description' => 'Defines the message visitors see if they are not logged in and reach a restricted page. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'message = "Please become a registered user to access that feature."',
 							),
+						array(
+							'name' => 'TEMPLATES',
+							'description' => 'Defines the settings for site templates. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'template[] = A Serialized Array : Please use application tools to set',
+							),
 						),
 				  'Reports' => array(
 						array(
@@ -239,7 +243,12 @@ class Setting extends AppModel {
 		#$file->path = CONFIGS.'settings.ini';
 		$writeData = $this->prepareSettingsIniData();
 		if($file->write($file->prepare($writeData))) {
-			return true;
+			$file = new File(CONFIGS.'defaults.ini');
+			if($file->write($file->prepare($writeData))) {
+				return true;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
