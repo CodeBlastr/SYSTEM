@@ -127,6 +127,14 @@ class Setting extends AppModel {
 							'name' => 'TEMPLATES',
 							'description' => 'Defines the settings for site templates. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'template[] = A Serialized Array : Please use application tools to set',
 							),
+						array(
+							'name' => 'LOGIN_REDIRECT_URL',
+							'description' => 'Defines the url users go to after logging in. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/tickets/tickets/add/',
+							),
+						array(
+							'name' => 'LOGOUT_REDIRECT_URL',
+							'description' => 'Defines the url users go to after logging out. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/goodbye/',
+							),
 						),
 				  'Reports' => array(
 						array(

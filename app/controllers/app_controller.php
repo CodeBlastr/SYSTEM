@@ -29,6 +29,7 @@ class AppController extends Controller {
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
+	var $userRoleName = 'guests';
 	var $params = array();
 	var $templateId = '';
 	
@@ -59,7 +60,6 @@ class AppController extends Controller {
 		$this->Condition->checkAndFire('is_read', $conditions, $this->data); */
 		# End Condition Check #
 		# End DO NOT DELETE #
-		$this->viewPath = $this->_getView();
 			
 		/**
  		 * Allows us to have webroot files (css, js, etc) in the sites directories
@@ -79,14 +79,12 @@ class AppController extends Controller {
 			'controller' => 'users',
 			'action' => 'login'
 			);
-		
-        $this->Auth->logoutRedirect = array(
+		        
+        $this->Auth->loginRedirect = array(
 			'plugin' => 'users',
 			'controller' => 'users',
 			'action' => 'login'
 			);
-        
-        $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
@@ -127,8 +125,11 @@ class AppController extends Controller {
 		} 
 		
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
+		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
+		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 		
+		$this->viewPath = $this->_getView();
 		/*
 		 * Below here (in this function) are things that have to come after the final userRoleId is determined
 		 */
@@ -168,25 +169,6 @@ class AppController extends Controller {
 		}
 	}
 	
-	
-	/**
-	 * Set the default redirect variables, using the settings table constant.
-	 */
-	function _defaultLoginRedirect() {
-		if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
-			if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
-				return $urlParams;
-			} else {
-				return __APP_DEFAULT_LOGIN_REDIRECT_URL;
-			}
-		} else {
-			return array(
-				'plugin' => 'users',
-				'controller' => 'users',
-				'action' => 'my',
-			);
-		}
-	}
 	
 	
 /** Mail functions
@@ -419,15 +401,10 @@ class AppController extends Controller {
  * @todo 				Move these next few functions to a component.
  */
 	function _getView() {
-		/* order should be 
-		1. complete localized plugin or view folder with extension (not html)
-		2. localized language plugin or view folder with extension (not html)
-		3. root app directory plugin or view folder with extension (not html)
-		4. scaffolded directory for this action with extension (not html) */
 		$possibleLocations = array(
-			# 0 app (including sites) /plugins/wikis/views/locale/eng/wiki_categories/view.ctp
-			APP.$this->_getPlugin(false, true).'views'.$this->_getLocale().DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
-			# 1 app (including sites) /plugins/wikis/views/wiki_categories/view.ctp
+			# 0 app (including sites) /plugins/wikis/views/locale/eng/wikis/wiki_categories/view.ctp
+			APP.'views'.$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath.$this->_getExtension().DS.$this->userRoleName.DS.$this->params['action'].'.ctp',
+			# 1 app (including sites) /plugins/wikis/views/wikis/wiki_categories/view.ctp
 			APP.$this->_getPlugin(false, true).'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
 			# 2 app (including sites) /views/locale/eng/plugins/projects/projects/index.ctp
 			APP.'views'.$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
@@ -441,24 +418,23 @@ class AppController extends Controller {
 			ROOT.DS.'app'.DS.'views'.DS.'scaffolds'.$this->_getExtension().DS.$this->params['action'].'.ctp',		
 			);
 		$matchingViewPaths = array(
-			$this->_getLocale(true).DS.$this->viewPath, // 0 checked
-			$this->viewPath, // 1 checked
-			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 2 checked
-			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 3  checked, checked
-			$this->_getLocale(true, true).$this->viewPath, // 4 checked, checked
-			$this->viewPath, // 5 checked
-			'scaffolds', // 6 checked
+			$this->_getLocale(true).DS.$this->_getPlugin(true, true).$this->viewPath.DS.$this->userRoleName, // 0 
+			$this->viewPath, // 1 
+			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 2 
+			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 3  
+			$this->_getLocale(true, true).$this->viewPath, // 4 
+			$this->viewPath, // 5 
+			'scaffolds', // 6 
 			);
-		foreach ($possibleLocations as $key => $location) {
-			if (file_exists($location)) {
+		
+		foreach ($possibleLocations as $key => $location) :
+			if (file_exists($location)) :
 				return $this->viewPath = $matchingViewPaths[$key];
 				break;
-			}
-		}
+			endif;
+		endforeach;
 	}
 	
-	function _checkViewFiles() {
-	}
 	
 	function _getExtension() {
 		 if (!empty($this->params['url']['ext']) && $this->params['url']['ext'] != 'html') {
@@ -492,57 +468,6 @@ class AppController extends Controller {
 		} else {
 			return null;
 		}
-	}
-	
-	
-	/**
-	 * check if the template selected is available to the current users role
-	 * 
-	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
-	 */
-	function userTemplate($data) {
-		// check if the url being requested matches any template settings for user roles
-		if (!empty($data['userRoles'])) : 
-			foreach ($data['userRoles'] as $userRole) :
-				if ($userRole == $this->userRoleId) :
-					$templateId = $data['templateId'];
-				endif;
-			endforeach;
-		elseif (!empty($data['templateId'])) :
-			$templateId = $data['templateId'];
-		endif;
-		
-		if (!empty($templateId)) : 
-			return $templateId;
-		else :
-			return null;
-		endif;
-	}
-	
-	/**
-	 * check if the selected template is available to the current url
-	 *
-	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
-	 */
-	function urlTemplate($data) {
-		// check if the url being requested matches any template settings for specific urls
-		if (!empty($data['urls'])) : 
-			$i=0;
-			foreach ($data['urls'] as $url) :
-				$urlString = str_replace('/', '\/', $url);
-				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
-				if (preg_match($urlRegEx, $this->params['url']['url'])) :
-					$templateId = !empty($data['userRoles']) ? $this->userTemplate($data) : $data['templateId'];
-				endif;
-			$i++; 
-			endforeach; 
-		endif;
-		
-		if (!empty($templateId)) : 
-			return $templateId;
-		else :
-			return null;
-		endif;
 	}
 	
 	
@@ -639,6 +564,57 @@ class AppController extends Controller {
 			$this->layout = 'custom';
 		elseif (defined('__APP_DEFAULT_TEMPLATE_ID')) :
 			$this->layout = 'custom';
+		endif;
+	}
+	
+	
+	/**
+	 * check if the template selected is available to the current users role
+	 * 
+	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
+	 */
+	function userTemplate($data) {
+		// check if the url being requested matches any template settings for user roles
+		if (!empty($data['userRoles'])) : 
+			foreach ($data['userRoles'] as $userRole) :
+				if ($userRole == $this->userRoleId) :
+					$templateId = $data['templateId'];
+				endif;
+			endforeach;
+		elseif (!empty($data['templateId'])) :
+			$templateId = $data['templateId'];
+		endif;
+		
+		if (!empty($templateId)) : 
+			return $templateId;
+		else :
+			return null;
+		endif;
+	}
+	
+	/**
+	 * check if the selected template is available to the current url
+	 *
+	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
+	 */
+	function urlTemplate($data) {
+		// check if the url being requested matches any template settings for specific urls
+		if (!empty($data['urls'])) : 
+			$i=0;
+			foreach ($data['urls'] as $url) :
+				$urlString = str_replace('/', '\/', $url);
+				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
+				if (preg_match($urlRegEx, $this->params['url']['url'])) :
+					$templateId = !empty($data['userRoles']) ? $this->userTemplate($data) : $data['templateId'];
+				endif;
+			$i++; 
+			endforeach; 
+		endif;
+		
+		if (!empty($templateId)) : 
+			return $templateId;
+		else :
+			return null;
 		endif;
 	}
 	
