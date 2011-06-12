@@ -26,8 +26,6 @@ class Setting extends AppModel {
 	// instead of storing available settings in a database we store all of the available settings here
 	var $names = array();
 	
-	
-	
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $belongsTo = array(
