@@ -251,6 +251,33 @@ class AppController extends Controller {
 	}
 	
 	
+	function __admin_ajax_edit($id = null) {
+		// being used by invoices_controller for sure
+    	if ($this->data) :
+			# This will not work for multiple fields, and is meant for a form with a single value to update
+			# Create the model name from the controller requested in the url
+			$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
+	        # These apparently aren't necessary. Left for reference.
+	        //App::import('Model', $model);
+	        //$this->$model = new $model();
+	        # Working to determine if there is a sub model needed, for proper display of updated info
+	        # For example Project->ProjectStatusType, this is typically denoted by if the field name has _id in it, becuase that means it probably refers to another database table.
+    	    foreach ($this->data[$model] as $key => $value) :
+	        	# weeding out if the form data is id, because id is standard
+	            if($key != 'id') :
+	           		# we need to refer back to the actual field name ie. project_status_type_id
+		            $fieldName = $key;
+		            # if the data from the form has a field name with _id in it.  ie. project_status_type_id
+		            if (strpos($key, '_id')) :
+		  	            $submodel = Inflector::camelize(str_replace('_id', '', $key));
+		     	        # These apparently aren't necessary. Left for reference.
+		        	    //App::import('Model', $submodel);
+		            	//$this->$submodel = new $submodel();
+			        endif;
+				endif;
+	    	endforeach;
+		endif;
+	}
 
 	/**
 	 * This function handles view files, and the numerous cases of layered views that are possible. Used in reverse order, so that you can over write files without disturbing the default view files. 
