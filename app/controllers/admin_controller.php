@@ -25,13 +25,15 @@ class AdminController extends AppController {
 	var $name = 'Admin';
     var $uses = array();
 	var $dbVersion = __SYSTEM_ZUHA_DB_VERSION;
-/**
- * Loads variables from section reporting to send to the view for display. 
- *
- * Example: $this->set('topPosts', ClassRegistry::init('Post')->getTop());
- *
- * @link http://book.zuha.com/zuha-app-controllers/AdminController.html
- */
+
+
+	/**
+	 * Loads variables from section reporting to send to the view for display. 
+	 *
+	 * Example: $this->set('topPosts', ClassRegistry::init('Post')->getTop());
+	 *
+	 * @link http://book.zuha.com/zuha-app-controllers/AdminController.html
+	 */
     function index () {
 		$this->Setting = ClassRegistry::init('Setting');
 		if (!empty($this->data)) {
