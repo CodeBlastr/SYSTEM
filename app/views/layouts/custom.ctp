@@ -41,6 +41,7 @@
 		
 		# load in css files from settings
 		echo $this->Html->css('system', 'stylesheet', array('media' => 'all')); 
+		echo $this->Html->css('admin/jquery-ui-1.8.13.custom');
 		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
 			$i = 0;
 			foreach (unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES) as $media => $files) { 
@@ -62,6 +63,7 @@
 		
 		# load in js files from settings
 		echo $this->Html->script('jquery-1.5.2.min');
+		echo $this->Html->script('admin/jquery-ui-1.8.13.custom.min');
 		echo $this->Html->script('system/system');
 		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
 			$i = 0;

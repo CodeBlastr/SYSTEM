@@ -69,7 +69,8 @@ $(function() {
 		$.getJSON(url, function(data){
 			var items = [];	
  			$.each(data, function(key, val) {
-				items += '<option value="' + val['name'] + '">' + val['name'] + '</option>';
+				if (val['value']) { value = val['value']; } else { val['name']; }
+				items += '<option value="' + value + '">' + val['name'] + '</option>';
 			});
 			$('#' +  target).html(items);
 			if ($.isFunction(window.selectCallBack)) { selectCallBack(data); }
