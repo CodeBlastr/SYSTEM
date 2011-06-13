@@ -114,11 +114,66 @@ class AppModel extends Model {
     	return $results;
 	}
 	
-		
 	
-/**
- * Don't know what this is for, I'd like to see a comment placed.
- */
+	function listPlugins() {
+		# App::objects('plugin');  Does this, we may just delete if not used soon. (though it might be useful)
+		return array(
+			'AclExtras' => 'AclExtras',
+   			'AclMenu' => 'AclMenu',
+		    'Affiliates' => 'Affiliates',
+		    'ApiGenerator' => 'ApiGenerator',
+		    'ApiGenerator' => 'ApiGenerator',
+		    'Blogs' => 'Blogs',
+		    'Calendars' => 'Calendars',
+		    'Catalogs' => 'Catalogs',
+		    'Categories' => 'Categories',
+		    'Comments' => 'Comments',
+		    'Contacts' => 'Contacts',
+		    'Credits' => 'Credits',
+		    'Estimates' => 'Estimates',
+		    'Events' => 'Events',
+		    'Facebook' => 'Facebook',
+		    'Faqs' => 'Faqs',
+		    'Favorites' => 'Favorites',
+		    'Forms' => 'Forms',
+		    'Forum' => 'Forum',
+		    'Galleries' => 'Galleries',
+		    'Invite' => 'Invite',
+		    'Invoices' => 'Invoices',
+		    'Locations' => 'Locations',
+		    'Maps' => 'Maps',
+		    'Menus' => 'Menus',
+		    'Messages' => 'Messages',
+		    'News' => 'News',
+		    'Notifications' => 'Notifications',
+		    'Orders' => 'Orders',
+		    'Permissions' => 'Permissions',
+		    'Priorities' => 'Priorities',
+		    'Projects' => 'Projects',
+		    'Ratings' => 'Ratings',
+		    'Recaptcha' => 'Recaptcha',
+		    'Reports' => 'Reports',
+		    'Rss' => 'Rss',
+		    'Search' => 'Search',
+		    'Searchable' => 'Searchable',
+		    'Shipping' => 'Shipping',
+		    'Sitemaps' => 'Sitemaps',
+		    'Social' => 'Social',
+		    'Tags' => 'Tags',
+		    'Tasks' => 'Tasks',
+		    'Tickets' => 'Tickets',
+		    'Timesheets' => 'Timesheets',
+		    'Users' => 'Users',
+		    'Utils' => 'Utils',
+		    'Webpages' => 'Webpages',
+		    'Wikis' => 'Wikis',
+		    'Workflows' => 'Workflows',
+		);
+	}
+	
+	/**
+	 * Don't know what this is for, I'd like to see a comment placed.
+	 */
 	function parentNode() {
 		$this->name;
 	}

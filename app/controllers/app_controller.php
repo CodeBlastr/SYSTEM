@@ -139,6 +139,7 @@ class AppController extends Controller {
 		 * Used to show admin layout for admin pages
 		 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
 		 */		 
+		
 		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
 			// this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
@@ -151,7 +152,6 @@ class AppController extends Controller {
 		 * Check whether the site is sync'd up 
 		 */
 		$this->_siteStatus();	
-		
 	}
 	
 	
@@ -162,6 +162,10 @@ class AppController extends Controller {
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
 		if($this->name == 'CakeError') {
+			$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
+			$this->userRoleName = $this->Session->read('Auth.UserRole.name');
+			$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
+			$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 	 		$this->_getTemplate();
 	    }  		
 		# This turns off debug so that ajax views don't get severly messed up
@@ -175,6 +179,13 @@ class AppController extends Controller {
 	}
 	
 	
+	/**
+	 * List plugins
+	 */
+	function _list_plugins() {
+		$this->set('plugins', $this->listPlugins);
+	}
+		
 	
 	/**
 	 * Convenience admin_add 
@@ -193,68 +204,6 @@ class AppController extends Controller {
 			}
 		}
 	}
-	
-	
-	/**
-	 * Convenience admin_ajax_edit 
-	 * The goal is to make less code necessary in individual controllers 
-	 * and have more reusable code.
-	 */
-	function __admin_ajax_edit($id = null) {
-        if ($this->data) {
-			# This will not work for multiple fields, and is meant for a form with a single value to update
-			# Create the model name from the controller requested in the url
-			$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
-			# These apparently aren't necessary. Left for reference.
-			//App::import('Model', $model);
-			//$this->$model = new $model();
-			# Working to determine if there is a sub model needed, for proper display of updated info
-			# For example Project->ProjectStatusType, this is typically denoted by if the field name has _id in it, becuase that means it probably refers to another database table.
-			foreach ($this->data[$model] as $key => $value) {
-				# weeding out if the form data is id, because id is standard
-			    if($key != 'id') {
-					# we need to refer back to the actual field name ie. project_status_type_id
-					$fieldName = $key;
-					# if the data from the form has a field name with _id in it.  ie. project_status_type_id
-					if (strpos($key, '_id')) {
-						$submodel = Inflector::camelize(str_replace('_id', '', $key));
-						# These apparently aren't necessary. Left for reference.
-						//App::import('Model', $submodel);
-						//$this->$submodel = new $submodel();
-					}
-				}
-			}
-			
-            $this->$model->id = $this->data[$model]['id'];
-			$fieldValue = $this->data[$model][$fieldName];
-			
-			# save the data here
-        	if ($this->$model->saveField($fieldName, $fieldValue, true)) { 
-				# if a submodel is needed this is where we use it
-				if (!empty($submodel)) {
-					# get the default display field otherwise leave as the standard 'name' field
-					if (!empty($this->$model->$submodel->displayField)){					
-		                $displayField = $this->$model->$submodel->displayField; 
-		            } else {
-		                $displayField = 'name';
-		            }
-					echo $this->$model->$submodel->field($displayField, array('id' => $fieldValue));
-					# we should have this echo statement sent to a view file for proper mvc structure. Left for reference
-					//$this->set('displayValue', $displayValue);
-				} else {
-					echo $fieldValue;
-					# we should have this echo statement sent to a view file for proper mvc structure. Left for reference
-					//$this->set('displayValue', $displayValue);
-				}
-			# not sure that this would spit anything out.
-			} else {
-				$this->set('error', true);
-				echo $error;
-			}
-		}
-		$this->render(false);
-	}	
-	
 	
 	
 	/**
@@ -302,46 +251,6 @@ class AppController extends Controller {
 	}
 	
 	
-	/**
-	 * Convenience Ajax List Method (Fill Select Drop Downs) for Editable Fields
-	 * The goal is to make less code necessary in individual controllers 
-	 * and have more reusable code.
-	 * 
-	 * @return a filled <select> with <options>
-	 */
-    function __ajax_list($id = null){	
-		# get the model from the controller being requested
-		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
-		# check for empty values and set them to null
-		foreach ($this->params['named'] as $key => $value ) {
-			if(empty($this->params['named'][$key])) {
-				$this->params['named'][$key] = null;
-			}
-		}
-		# set the conditions by the named parameters - ex. project_id:1
-		$conditions = am($this->params['named']);
-		#find the list with given parameter conditions
-    	$list =  $this->$model->find('list', array('conditions' => $conditions));
-		#display the drop down
-		$this->str = '<option value="">-- Select --</option>';
-        foreach ($list as $key => $value){
-            $this->str .= "<option value=".$key.">".$value."</option>";
-        }		
-		if ($this->params['url']['ext'] == 'json') {
-			echo '{';
-			foreach ($list as $key => $value) {
-				echo '"'.$key.'":"'.$value.'",';
-			}			
-			echo '}';
-			$this->render(false);
-		} else {
-        	$this->set('data', $this->str);  
-			$list = $this->str;
-			echo $list;
-			$this->render(false);
-		}		
-    }
-	
 
 	/**
 	 * This function handles view files, and the numerous cases of layered views that are possible. Used in reverse order, so that you can over write files without disturbing the default view files. 
@@ -378,7 +287,6 @@ class AppController extends Controller {
 			$this->viewPath, // 5 
 			'scaffolds', // 6 
 			);
-		
 		foreach ($possibleLocations as $key => $location) :
 			if (file_exists($location)) :
 				return $this->viewPath = $matchingViewPaths[$key];
