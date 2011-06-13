@@ -1,6 +1,23 @@
 // JavaScript Document
 
 $().ready(function() {
+	// datepicker for date selection
+	$('.datepicker').datepicker({
+		dateFormat: 'yy-mm-dd',
+		changeMonth: true,
+		changeYear: true,
+	});
+	
+	$('.datetimepicker').datetimepicker({
+		//ampm: true,
+		dateFormat: 'yy-mm-dd',
+		timeformat: 'hh:mm:ss'
+	});
+	
+	$('.timepicker').timepicker({
+		//ampm: true,
+		timeformat: 'hh:mm:ss'
+	});
 	// modal dialog windows
 	// needs jquery-ui loaded to work
 	$(".dialog").click(function(e){
