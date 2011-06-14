@@ -213,13 +213,10 @@ class AppController extends Controller {
 	 * @param int $id
 	 * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
 	 */
-	function __admin_delete($id=null) {
-		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
-		App::import('Model', $model);
-		$this->$model = new $model();
+	function __delete($model = null, $id = null) {
 		// set default class & message for setFlash
 		$class = 'flash_bad';
-		$msg   = 'Invalid List Id';
+		$msg   = 'Invalid Id';
 		
 		// check id is valid
 		if($id!=null && is_numeric($id)) {
@@ -241,7 +238,7 @@ class AppController extends Controller {
 		// output JSON on AJAX request
 		if($this->RequestHandler->isAjax()) {
 			$this->autoRender = $this->layout = false;
-			echo json_encode(array('success'=>($class=='flash_bad') ? FALSE : TRUE,'msg'=>"<p id='flashMessage' class='{$class}'>{$msg}</p>"));
+			echo json_encode(array('success' => ($class=='flash_bad') ? FALSE : TRUE,'msg'=>"<p id='flashMessage' class='{$class}'>{$msg}</p>"));
 			exit;
 		}
 	
@@ -387,7 +384,7 @@ class AppController extends Controller {
 				// check urls first so that we don't accidentally use a default template before a template set for this url.
 				if (!empty($template['urls'])) : 
 					// note : this over rides isDefault, so if its truly a default template, don't set urls
-					$this->templateId = $this->urlTemplate($template);
+					$this->templateId = $this->_urlTemplate($template);
 					// get rid of template values so we don't have to check them twice
 					unset($templates[$key]);
 				endif;
@@ -403,7 +400,7 @@ class AppController extends Controller {
 			
 				if (!empty($template['isDefault'])) :
 					$this->templateId = $template['templateId'];
-					$this->templateId = !empty($template['userRoles']) ? $this->userTemplate($template) : $this->templateId;
+					$this->templateId = !empty($template['userRoles']) ? $this->_userTemplate($template) : $this->templateId;
 				endif;
 				
 				if (!empty($this->templateId)) :
@@ -444,7 +441,7 @@ class AppController extends Controller {
 			
 		endif;
 		
-		$conditions = $this->templateConditions();
+		$conditions = $this->_templateConditions();
 		$templated = $this->Webpage->find('first', $conditions);
         $this->Webpage->parseIncludedPages($templated);
 		
@@ -464,7 +461,7 @@ class AppController extends Controller {
 	 * 
 	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
 	 */
-	function userTemplate($data) {
+	function _userTemplate($data) {
 		// check if the url being requested matches any template settings for user roles
 		if (!empty($data['userRoles'])) : 
 			foreach ($data['userRoles'] as $userRole) :
@@ -488,7 +485,7 @@ class AppController extends Controller {
 	 *
 	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
 	 */
-	function urlTemplate($data) {
+	function _urlTemplate($data) {
 		// check if the url being requested matches any template settings for specific urls
 		if (!empty($data['urls'])) : 
 			$i=0;
@@ -496,7 +493,7 @@ class AppController extends Controller {
 				$urlString = str_replace('/', '\/', $url);
 				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
 				if (preg_match($urlRegEx, $this->params['url']['url'])) :
-					$templateId = !empty($data['userRoles']) ? $this->userTemplate($data) : $data['templateId'];
+					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateId'];
 				endif;
 			$i++; 
 			endforeach; 
@@ -516,7 +513,7 @@ class AppController extends Controller {
 	 *
 	 * @todo		Make slideDock menu available to anyone with permissions to $webpages->edit().  Not just admin
 	 */
-	function templateConditions() {
+	function _templateConditions() {
 		# contain the menus for output into the slideDock if its the admin user
 		if ($this->userRoleId == 1) :
 			$db = ConnectionManager::getDataSource('default');
