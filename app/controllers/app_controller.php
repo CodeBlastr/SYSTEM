@@ -213,13 +213,10 @@ class AppController extends Controller {
 	 * @param int $id
 	 * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
 	 */
-	function __admin_delete($id=null) {
-		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
-		App::import('Model', $model);
-		$this->$model = new $model();
+	function __delete($model = null, $id = null) {
 		// set default class & message for setFlash
 		$class = 'flash_bad';
-		$msg   = 'Invalid List Id';
+		$msg   = 'Invalid Id';
 		
 		// check id is valid
 		if($id!=null && is_numeric($id)) {
@@ -241,7 +238,7 @@ class AppController extends Controller {
 		// output JSON on AJAX request
 		if($this->RequestHandler->isAjax()) {
 			$this->autoRender = $this->layout = false;
-			echo json_encode(array('success'=>($class=='flash_bad') ? FALSE : TRUE,'msg'=>"<p id='flashMessage' class='{$class}'>{$msg}</p>"));
+			echo json_encode(array('success' => ($class=='flash_bad') ? FALSE : TRUE,'msg'=>"<p id='flashMessage' class='{$class}'>{$msg}</p>"));
 			exit;
 		}
 	
@@ -251,6 +248,65 @@ class AppController extends Controller {
 	}
 	
 	
+	/**
+	 * Convenience admin_ajax_edit 
+	 * The goal is to make less code necessary in individual controllers 
+	 * and have more reusable code.
+	 */
+	function __admin_ajax_edit($id = null) {
+        if ($this->data) {
+			# This will not work for multiple fields, and is meant for a form with a single value to update
+			# Create the model name from the controller requested in the url
+			$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
+			# These apparently aren't necessary. Left for reference.
+			//App::import('Model', $model);
+			//$this->$model = new $model();
+			# Working to determine if there is a sub model needed, for proper display of updated info
+			# For example Project->ProjectStatusType, this is typically denoted by if the field name has _id in it, becuase that means it probably refers to another database table.
+			foreach ($this->data[$model] as $key => $value) {
+				# weeding out if the form data is id, because id is standard
+			    if($key != 'id') {
+					# we need to refer back to the actual field name ie. project_status_type_id
+					$fieldName = $key;
+					# if the data from the form has a field name with _id in it.  ie. project_status_type_id
+					if (strpos($key, '_id')) {
+						$submodel = Inflector::camelize(str_replace('_id', '', $key));
+						# These apparently aren't necessary. Left for reference.
+						//App::import('Model', $submodel);
+						//$this->$submodel = new $submodel();
+					}
+				}
+			}
+			
+            $this->$model->id = $this->data[$model]['id'];
+			$fieldValue = $this->data[$model][$fieldName];
+			
+			# save the data here
+        	if ($this->$model->saveField($fieldName, $fieldValue, true)) { 
+				# if a submodel is needed this is where we use it
+				if (!empty($submodel)) {
+					# get the default display field otherwise leave as the standard 'name' field
+					if (!empty($this->$model->$submodel->displayField)){					
+		                $displayField = $this->$model->$submodel->displayField; 
+		            } else {
+		                $displayField = 'name';
+		            }
+					echo $this->$model->$submodel->field($displayField, array('id' => $fieldValue));
+					# we should have this echo statement sent to a view file for proper mvc structure. Left for reference
+					//$this->set('displayValue', $displayValue);
+				} else {
+					echo $fieldValue;
+					# we should have this echo statement sent to a view file for proper mvc structure. Left for reference
+					//$this->set('displayValue', $displayValue);
+				}
+			# not sure that this would spit anything out.
+			} else {
+				$this->set('error', true);
+				echo $error;
+			}
+		}
+		$this->render(false);
+	}	
 
 	/**
 	 * This function handles view files, and the numerous cases of layered views that are possible. Used in reverse order, so that you can over write files without disturbing the default view files. 
@@ -360,7 +416,7 @@ class AppController extends Controller {
 				// check urls first so that we don't accidentally use a default template before a template set for this url.
 				if (!empty($template['urls'])) : 
 					// note : this over rides isDefault, so if its truly a default template, don't set urls
-					$this->templateId = $this->urlTemplate($template);
+					$this->templateId = $this->_urlTemplate($template);
 					// get rid of template values so we don't have to check them twice
 					unset($templates[$key]);
 				endif;
@@ -376,7 +432,7 @@ class AppController extends Controller {
 			
 				if (!empty($template['isDefault'])) :
 					$this->templateId = $template['templateId'];
-					$this->templateId = !empty($template['userRoles']) ? $this->userTemplate($template) : $this->templateId;
+					$this->templateId = !empty($template['userRoles']) ? $this->_userTemplate($template) : $this->templateId;
 				endif;
 				
 				if (!empty($this->templateId)) :
@@ -417,7 +473,7 @@ class AppController extends Controller {
 			
 		endif;
 		
-		$conditions = $this->templateConditions();
+		$conditions = $this->_templateConditions();
 		$templated = $this->Webpage->find('first', $conditions);
         $this->Webpage->parseIncludedPages($templated);
 		
@@ -437,7 +493,7 @@ class AppController extends Controller {
 	 * 
 	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
 	 */
-	function userTemplate($data) {
+	function _userTemplate($data) {
 		// check if the url being requested matches any template settings for user roles
 		if (!empty($data['userRoles'])) : 
 			foreach ($data['userRoles'] as $userRole) :
@@ -461,7 +517,7 @@ class AppController extends Controller {
 	 *
 	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
 	 */
-	function urlTemplate($data) {
+	function _urlTemplate($data) {
 		// check if the url being requested matches any template settings for specific urls
 		if (!empty($data['urls'])) : 
 			$i=0;
@@ -469,7 +525,7 @@ class AppController extends Controller {
 				$urlString = str_replace('/', '\/', $url);
 				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
 				if (preg_match($urlRegEx, $this->params['url']['url'])) :
-					$templateId = !empty($data['userRoles']) ? $this->userTemplate($data) : $data['templateId'];
+					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateId'];
 				endif;
 			$i++; 
 			endforeach; 
@@ -489,7 +545,7 @@ class AppController extends Controller {
 	 *
 	 * @todo		Make slideDock menu available to anyone with permissions to $webpages->edit().  Not just admin
 	 */
-	function templateConditions() {
+	function _templateConditions() {
 		# contain the menus for output into the slideDock if its the admin user
 		if ($this->userRoleId == 1) :
 			$db = ConnectionManager::getDataSource('default');

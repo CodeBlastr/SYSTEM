@@ -1,6 +1,33 @@
 
 //onload init
 $(function() { 
+		   
+	// datepicker for date selection
+	$('.datepicker').datepicker({
+		dateFormat: 'yy-mm-dd',
+		changeMonth: true,
+		changeYear: true,
+	});
+	
+	$('.datetimepicker').datetimepicker({
+		//ampm: true,
+		//showSecond: true,
+		dateFormat: 'yy-mm-dd',
+		stepHour: 1,
+		stepMinute: 10,
+		stepSecond: 10,
+		timeformat: 'hh:mm:ss'
+	});
+	
+	$('.timepicker').timepicker({
+		//ampm: true,
+		//showSecond: true,
+		stepHour: 1,
+		stepMinute: 10,
+		stepSecond: 10,
+		timeformat: 'hh:mm:ss'
+	});
+	
 	// modal dialog windows
 	$(".dialog").click(function(e){
 		var url = $(this).attr("href");
@@ -42,7 +69,8 @@ $(function() {
 		$.getJSON(url, function(data){
 			var items = [];	
  			$.each(data, function(key, val) {
-				items += '<option value="' + val['name'] + '">' + val['name'] + '</option>';
+				if (val['value']) { value = val['value']; } else { val['name']; }
+				items += '<option value="' + value + '">' + val['name'] + '</option>';
 			});
 			$('#' +  target).html(items);
 			if ($.isFunction(window.selectCallBack)) { selectCallBack(data); }

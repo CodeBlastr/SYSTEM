@@ -295,7 +295,7 @@ form {
 }
 fieldset {
 	padding: 0;
-	margin: 0 0 20px 0;
+	margin: 0 0 3em 0;
 }
 fieldset legend {
 	border-bottom: 1px solid #CCC;
@@ -305,8 +305,9 @@ fieldset legend.toggleClick:hover {
 	background: #eaeaea;
 }
 fieldset fieldset {
-	margin: 0 0 20px 0;
-	padding: 16px 10px;
+	margin: 0;
+	padding: 0.5em 2em;
+	clear: both;
 }
 fieldset fieldset legend {
 	font-weight: normal;
@@ -345,10 +346,6 @@ label {
 label a {
 	color: #333;
 }
-button {
-	background: none;
-	border: none;
-}
 input, textarea, select {
 	padding: 2px;
 	background: #f5f5f5;
@@ -383,6 +380,10 @@ select {
 	clear: both;
 	vertical-align: text-bottom;
 	padding: 1px;
+	min-width: 153px;
+}
+.ui-datepicker-title select {
+	min-width: 1px;
 }
 select[multiple=multiple] {
 	width: 100%;
@@ -405,12 +406,12 @@ input[type=checkbox] {
 input[type=radio] {
 	float:left;
 	width:auto;
-	margin: 0 3px 7px 0;
+	margin: .1em 0.5em .1em;
 }
 div.radio label {
 	margin: 0 0 6px 20px;
 }
-input[type=submit] {
+input[type=submit], button, .button {
     border: 1px solid #03C;
 	padding: 0.4em 1.2em;
 	-moz-border-radius: 1em;
@@ -436,7 +437,7 @@ input[type=submit]:active {
 	-moz-box-shadow: 0 0 1em #777;
 	box-shadow: 0 0 1em #777;
 }
-input[type=submit]:hover {
+input[type=submit]:hover, button:hover, .button:hover {
 	background: #EBFBE2;
 	color: #666;
     border: 1px solid #093;

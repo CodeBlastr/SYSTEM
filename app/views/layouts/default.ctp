@@ -18,11 +18,11 @@
 	echo $this->Html->css('admin/admin');
 	# no rhyme or reason about the directory structure here, needs to be cleaned up at some point
 	echo $this->Html->script('jquery-1.5.2.min');
-	echo $this->Html->script('admin/admin');
 	echo $this->Html->script('admin/jquery-ui-1.8.13.custom.min');
 	echo $this->Html->script('jquery.jeditable');
 	echo $this->Html->script('admin/jquery.truncator');
 	echo $this->Html->script('system/jquery.cookie');
+	echo $this->Html->script('admin/admin');
 	echo $scripts_for_layout;  
 ?>
 </head>
