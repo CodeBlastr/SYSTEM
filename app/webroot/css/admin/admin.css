@@ -347,7 +347,8 @@ label a {
 	color: #333;
 }
 input, textarea, select {
-	padding: 2px;
+	padding: 0.5em;
+	min-width: 21em;
 	background: #f5f5f5;
 	border: 1px solid #AAA;
 	-webkit-border-radius:3px;
@@ -379,8 +380,7 @@ textarea {
 select {
 	clear: both;
 	vertical-align: text-bottom;
-	padding: 1px;
-	min-width: 153px;
+	padding: 0.5em;
 }
 .ui-datepicker-title select {
 	min-width: 1px;
@@ -620,7 +620,7 @@ Primary navigation
 	margin: -0.8em 1em 0 0;margin: -0.8em 1em 0 0;
 }
 .searchfield input {
-	padding-left: 20px;
+	padding: 0.3em 0.3em 0.3em 1.5em;
 	background: #fff url('../../img/admin/admin_sprite.png') no-repeat -590px -151px;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -630,6 +630,7 @@ Primary navigation
 	-moz-box-shadow: 0 0 10px #777;
 	box-shadow: 0 0 10px #777;
 	width: 140px;
+	min-width: 0;
 	color: #666666;
 	-webkit-font-smoothing: antialiased;
 	outline: none;
