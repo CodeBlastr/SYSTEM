@@ -9,8 +9,8 @@
             <div class="menu">
               <ul>
                 <li class="title">Design</li>
-                <li><a href="/admin/webpages/webpages/index/type:template/">Templates</a></li>
-                <li><a href="/admin/webpages/webpages/index/type:element/">Elements</a></li>
+                <li><a href="/webpages/webpages/index/type:template/">Templates</a></li>
+                <li><a href="/webpages/webpages/index/type:element/">Elements</a></li>
                 <li><a href="/admin/webpages/webpage_csses">Css Files</a></li>
                 <li class="separator"><a href="/admin/webpages/webpage_jses">Js Files</a></li>
               </ul>
@@ -28,7 +28,7 @@
             <div class="menu">
               <ul>
                 <li class="title">Content</li>
-                <li><a href="/admin/webpages/webpages/index/type:page_content/">Webpages</a></li>
+                <li><a href="/webpages/webpages/index/type:page_content/">Webpages</a></li>
                 <li><a href="/admin/admin/files_image">Images</a></li>
                 <li class="separator"><a href="/admin/admin/files_files">Documents</a></li>
                 <li class="separator"><a href="/admin/forms">Custom Forms</a></li>
