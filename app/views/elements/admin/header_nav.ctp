@@ -109,7 +109,7 @@
             <div class="menu">
               <ul>
                 <li class="title">Projects</li>
-                <li><a href="/admin/projects">Projects</a></li>
+                <li><a href="/projects">Projects</a></li>
                 <li><a href="/admin/timesheets">Timesheets</a></li>
                 <li><a href="/admin/tasks">Tasks</a></li>
                 <li class="separator"><a href="/admin/priorities">Priorities</a></li>
