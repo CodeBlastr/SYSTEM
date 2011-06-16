@@ -413,7 +413,8 @@ div.radio label {
 }
 input[type=submit], button, .button {
     border: 1px solid #03C;
-	padding: 0.4em 1.2em;
+	/*padding: 0.4em 1.2em;*/
+	padding: 0.2em 2em;
 	-moz-border-radius: 1em;
 	border-radius: 1em;
 	font-weight: bold;
@@ -446,7 +447,9 @@ input[type=submit]:hover, button:hover, .button:hover {
 	box-shadow: 0 0 1em #090;
 	cursor: pointer;
 }
-
+.button {
+	margin: 0.3em 0.5em;
+}
 
 
 /* Paging */
@@ -831,6 +834,9 @@ Primary navigation
 }
 .contentSection {
 	position: relative;
+}
+.contentSection ul {
+	margin: 0 0 0 2em;
 }
 
 /* helper text */
