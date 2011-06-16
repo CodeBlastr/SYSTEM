@@ -30,6 +30,8 @@ class AppController extends Controller {
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
+	// update this so that it uses the full list of actual user roles
+	var $userRoles = array('administrators', 'guests');
 	var $userRoleName = 'guests';
 	var $params = array();
 	var $templateId = '';
@@ -69,7 +71,11 @@ class AppController extends Controller {
  		 */
 		$this->theme = 'default';
 		
-		
+		/**
+		 * For use with administrators, and being able to view the site as if they were in a different user role at anytime.
+		 */
+		$this->set('editorUserRoles', $this->userRoles);
+		 
 		/**
 		 * Configure AuthComponent
 		 */
@@ -81,11 +87,7 @@ class AppController extends Controller {
 			'action' => 'login'
 			);
 		        
-        $this->Auth->loginRedirect = array(
-			'plugin' => 'users',
-			'controller' => 'users',
-			'action' => 'login'
-			);
+        $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
@@ -185,7 +187,23 @@ class AppController extends Controller {
 	function _list_plugins() {
 		$this->set('plugins', $this->listPlugins);
 	}
-		
+	
+	
+	function _defaultLoginRedirect() { 
+		if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) { 
+	      	if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) { 
+				return $urlParams; 
+			} else { 
+				return __APP_DEFAULT_LOGIN_REDIRECT_URL; 
+			} 
+		} else { 
+			return array( 
+				'plugin' => 'users', 
+				'controller' => 'users', 
+				'action' => 'my', 
+			); 
+		} 
+	} 
 	
 	/**
 	 * Convenience admin_add 
@@ -495,9 +513,13 @@ class AppController extends Controller {
 	 */
 	function _userTemplate($data) {
 		// check if the url being requested matches any template settings for user roles
+		
+		# set a new template id if the session is over writing it
+		$currentUserRole = $this->Session->read('viewingRole') ? $this->Session->read('viewingRole') : $this->userRoleId;
+			
 		if (!empty($data['userRoles'])) : 
 			foreach ($data['userRoles'] as $userRole) :
-				if ($userRole == $this->userRoleId) :
+				if ($userRole == $currentUserRole) :
 					$templateId = $data['templateId'];
 				endif;
 			endforeach;
@@ -547,7 +569,7 @@ class AppController extends Controller {
 	 */
 	function _templateConditions() {
 		# contain the menus for output into the slideDock if its the admin user
-		if ($this->userRoleId == 1) :
+		if ($this->userRoleId == 1) :		
 			$db = ConnectionManager::getDataSource('default');
 			$tables = $db->listSources();
 			# this is a check to see if this site is upgraded, it can be removed after all sites are upgraded 6/9/2011
