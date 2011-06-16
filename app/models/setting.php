@@ -176,6 +176,12 @@ class Setting extends AppModel {
 							'description' => 'Defines the full size image height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
 							),
 						),
+				  'Element' => array(
+						array(
+							'name' => 'PROJECTS_MOST_WATCHED',
+							'description' => 'Defines setting variables for the most watched module.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'moduleTitle = "My Custom Title"'.PHP_EOL.'numberOfProjects = 5',
+							),
+						),
 				  );
 	}
 	
