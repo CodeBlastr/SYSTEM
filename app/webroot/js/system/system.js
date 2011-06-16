@@ -1,6 +1,7 @@
 // JavaScript Document
 
 $().ready(function() {
+				   
 	// datepicker for date selection
 	$('.datepicker').datepicker({
 		dateFormat: 'yy-mm-dd',

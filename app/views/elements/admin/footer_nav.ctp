@@ -13,6 +13,9 @@
           <li><a href="/users/users/login"><span>Sign In</span></a></li>
         </ul>
         <ul>
+        	<?php foreach ($editorUserRoles as $role) : ?>
+        	<li><a href="/users/user_roles/display_role/<?php echo $role; ?>">View page as <?php echo Inflector::singularize($role); ?></li>
+            <?php endforeach; ?>
         	<li><a href="#" id="helpOpen">Turn Help Text On</a></li>
         </ul>
       </div>

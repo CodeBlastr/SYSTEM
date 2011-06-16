@@ -26,7 +26,7 @@ class ThreadHelper extends AppHelper {
       {
         $output .= "</li>";
       }
-    }$70 
+    } 
     $output .= $tabs . "</ul>";
     
     return $output;

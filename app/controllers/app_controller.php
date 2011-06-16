@@ -30,6 +30,8 @@ class AppController extends Controller {
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
+	// update this so that it uses the full list of actual user roles
+	var $userRoles = array('administrators', 'guests');
 	var $userRoleName = 'guests';
 	var $params = array();
 	var $templateId = '';
@@ -69,7 +71,11 @@ class AppController extends Controller {
  		 */
 		$this->theme = 'default';
 		
-		
+		/**
+		 * For use with administrators, and being able to view the site as if they were in a different user role at anytime.
+		 */
+		$this->set('editorUserRoles', $this->userRoles);
+		 
 		/**
 		 * Configure AuthComponent
 		 */
@@ -81,11 +87,7 @@ class AppController extends Controller {
 			'action' => 'login'
 			);
 		        
-        $this->Auth->loginRedirect = array(
-			'plugin' => 'users',
-			'controller' => 'users',
-			'action' => 'login'
-			);
+        $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
@@ -185,7 +187,23 @@ class AppController extends Controller {
 	function _list_plugins() {
 		$this->set('plugins', $this->listPlugins);
 	}
-		
+	
+	
+	function _defaultLoginRedirect() { 
+		if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) { 
+	      	if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) { 
+				return $urlParams; 
+			} else { 
+				return __APP_DEFAULT_LOGIN_REDIRECT_URL; 
+			} 
+		} else { 
+			return array( 
+				'plugin' => 'users', 
+				'controller' => 'users', 
+				'action' => 'my', 
+			); 
+		} 
+	} 
 	
 	/**
 	 * Convenience admin_add 
@@ -248,33 +266,65 @@ class AppController extends Controller {
 	}
 	
 	
+	/**
+	 * Convenience admin_ajax_edit 
+	 * The goal is to make less code necessary in individual controllers 
+	 * and have more reusable code.
+	 */
 	function __admin_ajax_edit($id = null) {
-		// being used by invoices_controller for sure
-    	if ($this->data) :
+        if ($this->data) {
 			# This will not work for multiple fields, and is meant for a form with a single value to update
 			# Create the model name from the controller requested in the url
 			$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
-	        # These apparently aren't necessary. Left for reference.
-	        //App::import('Model', $model);
-	        //$this->$model = new $model();
-	        # Working to determine if there is a sub model needed, for proper display of updated info
-	        # For example Project->ProjectStatusType, this is typically denoted by if the field name has _id in it, becuase that means it probably refers to another database table.
-    	    foreach ($this->data[$model] as $key => $value) :
-	        	# weeding out if the form data is id, because id is standard
-	            if($key != 'id') :
-	           		# we need to refer back to the actual field name ie. project_status_type_id
-		            $fieldName = $key;
-		            # if the data from the form has a field name with _id in it.  ie. project_status_type_id
-		            if (strpos($key, '_id')) :
-		  	            $submodel = Inflector::camelize(str_replace('_id', '', $key));
-		     	        # These apparently aren't necessary. Left for reference.
-		        	    //App::import('Model', $submodel);
-		            	//$this->$submodel = new $submodel();
-			        endif;
-				endif;
-	    	endforeach;
-		endif;
-	}
+			# These apparently aren't necessary. Left for reference.
+			//App::import('Model', $model);
+			//$this->$model = new $model();
+			# Working to determine if there is a sub model needed, for proper display of updated info
+			# For example Project->ProjectStatusType, this is typically denoted by if the field name has _id in it, becuase that means it probably refers to another database table.
+			foreach ($this->data[$model] as $key => $value) {
+				# weeding out if the form data is id, because id is standard
+			    if($key != 'id') {
+					# we need to refer back to the actual field name ie. project_status_type_id
+					$fieldName = $key;
+					# if the data from the form has a field name with _id in it.  ie. project_status_type_id
+					if (strpos($key, '_id')) {
+						$submodel = Inflector::camelize(str_replace('_id', '', $key));
+						# These apparently aren't necessary. Left for reference.
+						//App::import('Model', $submodel);
+						//$this->$submodel = new $submodel();
+					}
+				}
+			}
+			
+            $this->$model->id = $this->data[$model]['id'];
+			$fieldValue = $this->data[$model][$fieldName];
+			
+			# save the data here
+        	if ($this->$model->saveField($fieldName, $fieldValue, true)) { 
+				# if a submodel is needed this is where we use it
+				if (!empty($submodel)) {
+					# get the default display field otherwise leave as the standard 'name' field
+					if (!empty($this->$model->$submodel->displayField)){					
+		                $displayField = $this->$model->$submodel->displayField; 
+		            } else {
+		                $displayField = 'name';
+		            }
+					echo $this->$model->$submodel->field($displayField, array('id' => $fieldValue));
+					# we should have this echo statement sent to a view file for proper mvc structure. Left for reference
+					//$this->set('displayValue', $displayValue);
+				} else {
+					echo $fieldValue;
+					# we should have this echo statement sent to a view file for proper mvc structure. Left for reference
+					//$this->set('displayValue', $displayValue);
+				}
+			# not sure that this would spit anything out.
+			} else {
+				$this->set('error', true);
+				echo $error;
+			}
+		}
+		$this->render(false);
+	}	
 
 	/**
 	 * This function handles view files, and the numerous cases of layered views that are possible. Used in reverse order, so that you can over write files without disturbing the default view files. 
@@ -463,9 +513,13 @@ class AppController extends Controller {
 	 */
 	function _userTemplate($data) {
 		// check if the url being requested matches any template settings for user roles
+		
+		# set a new template id if the session is over writing it
+		$currentUserRole = $this->Session->read('viewingRole') ? $this->Session->read('viewingRole') : $this->userRoleId;
+			
 		if (!empty($data['userRoles'])) : 
 			foreach ($data['userRoles'] as $userRole) :
-				if ($userRole == $this->userRoleId) :
+				if ($userRole == $currentUserRole) :
 					$templateId = $data['templateId'];
 				endif;
 			endforeach;
@@ -515,7 +569,7 @@ class AppController extends Controller {
 	 */
 	function _templateConditions() {
 		# contain the menus for output into the slideDock if its the admin user
-		if ($this->userRoleId == 1) :
+		if ($this->userRoleId == 1) :		
 			$db = ConnectionManager::getDataSource('default');
 			$tables = $db->listSources();
 			# this is a check to see if this site is upgraded, it can be removed after all sites are upgraded 6/9/2011
