@@ -9,8 +9,8 @@
             <div class="menu">
               <ul>
                 <li class="title">Design</li>
-                <li><a href="/admin/webpages/webpages/index/type:template/">Templates</a></li>
-                <li><a href="/admin/webpages/webpages/index/type:element/">Elements</a></li>
+                <li><a href="/webpages/webpages/index/type:template/">Templates</a></li>
+                <li><a href="/webpages/webpages/index/type:element/">Elements</a></li>
                 <li><a href="/admin/webpages/webpage_csses">Css Files</a></li>
                 <li class="separator"><a href="/admin/webpages/webpage_jses">Js Files</a></li>
               </ul>
@@ -28,7 +28,7 @@
             <div class="menu">
               <ul>
                 <li class="title">Content</li>
-                <li><a href="/admin/webpages/webpages/index/type:page_content/">Webpages</a></li>
+                <li><a href="/webpages/webpages/index/type:page_content/">Webpages</a></li>
                 <li><a href="/admin/admin/files_image">Images</a></li>
                 <li class="separator"><a href="/admin/admin/files_files">Documents</a></li>
                 <li class="separator"><a href="/admin/forms">Custom Forms</a></li>
@@ -80,7 +80,7 @@
               </ul>
               <ul>
                 <li class="title">Products</li>
-                <li class="separator"><a href="/admin/catalogs/catalog_items">Products</a></li>
+                <li class="separator"><a href="/catalogs/catalog_items">Products</a></li>
               </ul>
               <p class="other"><a href="#" title="Sales Dashboard">Dashboard</a></p>
             </div>
@@ -109,7 +109,7 @@
             <div class="menu">
               <ul>
                 <li class="title">Projects</li>
-                <li><a href="/admin/projects">Projects</a></li>
+                <li><a href="/projects">Projects</a></li>
                 <li><a href="/admin/timesheets">Timesheets</a></li>
                 <li><a href="/admin/tasks">Tasks</a></li>
                 <li class="separator"><a href="/admin/priorities">Priorities</a></li>

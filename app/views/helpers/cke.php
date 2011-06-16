@@ -1,4 +1,9 @@
 <?php 
+/**
+ * A helper for loading ckeditor and the config variables for it. 
+ *
+ * @todo 		Need to set default variables, like $this->uiColor, instead of the return thing from the __config function.
+ */
 class CkeHelper extends Helper { 
 
     var $helpers = Array('Html', 'Javascript'); 
@@ -25,7 +30,11 @@ class CkeHelper extends Helper {
 		$configuration = $this->__config($settings);
 		
         $code = "
-  			var field = CKEDITOR.replace( '".$did."', {".$configuration."});
+  			$('#".$did."').ckeditor(function(){ 
+				$('.cke_toolbox').hide();
+				$('.cke_toolbox_collapser').addClass('cke_toolbox_collapser_min');
+				}, 
+				{".$configuration."});
         "; 
         return $this->Html->scriptBlock($code);  
     } 
@@ -130,7 +139,7 @@ class CkeHelper extends Helper {
 		} else {
 			$output = "extraPlugins : 'autogrow',";
 		}
-		
+				
 		
 		if (!empty($output)) {
 			return $output;

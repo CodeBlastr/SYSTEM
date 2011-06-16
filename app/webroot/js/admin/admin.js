@@ -1,6 +1,42 @@
 
 //onload init
 $(function() { 
+		   
+	// datepicker for date selection
+	$('.datepicker').datepicker({
+		dateFormat: 'yy-mm-dd',
+		changeMonth: true,
+		changeYear: true,
+	});
+	
+	$('.datetimepicker').datetimepicker({
+		//ampm: true,
+		//showSecond: true,
+		dateFormat: 'yy-mm-dd',
+		stepHour: 1,
+		stepMinute: 10,
+		stepSecond: 10,
+		timeformat: 'hh:mm:ss'
+	});
+	
+	$('.timepicker').timepicker({
+		//ampm: true,
+		//showSecond: true,
+		stepHour: 1,
+		stepMinute: 10,
+		stepSecond: 10,
+		timeformat: 'hh:mm:ss'
+	});
+	
+	// modal dialog windows
+	$(".dialog").click(function(e){
+		var url = $(this).attr("href");
+		$("#siteWrap").append("<div id='dialogLoad' style='background: #fff;'></div>");
+		$("#dialogLoad").load(url).dialog({
+			modal:true,
+			});
+		return false;
+	});
 	
 	/* Helper Text show statement */
 	if ($.cookie('hideHelperText') == null) {
@@ -33,7 +69,8 @@ $(function() {
 		$.getJSON(url, function(data){
 			var items = [];	
  			$.each(data, function(key, val) {
-				items += '<option value="' + val['name'] + '">' + val['name'] + '</option>';
+				if (val['value']) { value = val['value']; } else { value = val['name']; }
+				items += '<option value="' + value + '">' + val['name'] + '</option>';
 			});
 			$('#' +  target).html(items);
 			if ($.isFunction(window.selectCallBack)) { selectCallBack(data); }
@@ -46,12 +83,14 @@ $(function() {
 	$(".toggleClick").click(function () {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle('slow');
+		$('.'+currentName).toggle('slow');
 		return false;
 	});
 	
 	$(".toggleHover").hover(function () {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle();
+		$('.'+currentName).toggle();
 		return false;
 	});
 	
@@ -71,12 +110,12 @@ $(function() {
 	});
 
 
-	/* hides form elements except the legend (click the legend to show form elements
-  	$('legend').siblings().hide();
+	// hides form elements except the legend (click the legend to show form elements
+  	$('legend.toggleClick').siblings().hide();
 	
-  	$('legend').click(function(){
+  	$('legend.toggleClick').click(function(){
     	$(this).siblings().slideToggle("slow");
-    });*/
+    });
 		
 	$('#tabs').tabs();	
 	$('#navigation').tabs();
