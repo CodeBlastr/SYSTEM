@@ -131,7 +131,7 @@ class AppModel extends Model {
 		# defaultRemove originally done for this page : /admin/categories/categories/add/ 
 		# if you add items for removal from this list make sure that they should also be removed from there
 		# or customize the categories_controller so that listModels() function to not merge
-		$defaultRemove = array('Affiliated', 'Catalog Items Catalog Category', 'Category', 'Category Option', 'Catalog Item Price', 'Estimated', 'Form', 'Form Fieldset', 'Form Input', 'Forum', 'Forum Category', 'Poll', 'Poll Option', 'Poll Vote', 'Post', 'Setting', 'Topic', 'Invite', 'Invoices Catalog Item', 'Invoices Timesheet', 'Notification', 'Notification Template', 'Favorite', 'Privilege', 'Requestor', 'Section', 'Search Index', 'TicketDepartmentsAssignee', 'Workflow', 'Workflow Item', 'Workflow Event', 'Workflow Item Event');
+		$defaultRemove = array('Affiliated', 'Catalog Items Catalog Category', 'Category', 'Categorized', 'Category Option', 'Catalog Item Price', 'Estimated', 'Form', 'Form Fieldset', 'Form Input', 'Forum', 'Forum Category', 'Poll', 'Poll Option', 'Poll Vote', 'Post', 'Setting', 'Topic', 'Invite', 'Invoices Catalog Item', 'Invoices Timesheet', 'Notification', 'Notification Template', 'Favorite', 'Privilege', 'Requestor', 'Section', 'Search Index', 'TicketDepartmentsAssignee', 'Workflow', 'Workflow Item', 'Workflow Event', 'Workflow Item Event');
 		$remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
 		
 		$plugins = $this->listPlugins();
