@@ -159,6 +159,8 @@
 		$allowed = array(
 			'Category' => 'categories',
 			'Categories' => 'categories',
+			'Catalog' => 'catalogs',
+			'Catalogs' => 'catalogs',
 			'CatalogItem' => 'catalogs',
 			'CatalogItems' => 'catalogs',
 			'catalog_items' => 'catalogs',
