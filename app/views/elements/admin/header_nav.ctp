@@ -80,7 +80,7 @@
               </ul>
               <ul>
                 <li class="title">Products</li>
-                <li class="separator"><a href="/admin/catalogs/catalog_items">Products</a></li>
+                <li class="separator"><a href="/catalogs/catalog_items">Products</a></li>
               </ul>
               <p class="other"><a href="#" title="Sales Dashboard">Dashboard</a></p>
             </div>
