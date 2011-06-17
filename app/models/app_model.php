@@ -115,61 +115,41 @@ class AppModel extends Model {
 	}
 	
 	
-	function listPlugins() {
-		# App::objects('plugin');  Does this, we may just delete if not used soon. (though it might be useful)
-		return array(
-			'AclExtras' => 'AclExtras',
-   			'AclMenu' => 'AclMenu',
-		    'Affiliates' => 'Affiliates',
-		    'ApiGenerator' => 'ApiGenerator',
-		    'ApiGenerator' => 'ApiGenerator',
-		    'Blogs' => 'Blogs',
-		    'Calendars' => 'Calendars',
-		    'Catalogs' => 'Catalogs',
-		    'Categories' => 'Categories',
-		    'Comments' => 'Comments',
-		    'Contacts' => 'Contacts',
-		    'Credits' => 'Credits',
-		    'Estimates' => 'Estimates',
-		    'Events' => 'Events',
-		    'Facebook' => 'Facebook',
-		    'Faqs' => 'Faqs',
-		    'Favorites' => 'Favorites',
-		    'Forms' => 'Forms',
-		    'Forum' => 'Forum',
-		    'Galleries' => 'Galleries',
-		    'Invite' => 'Invite',
-		    'Invoices' => 'Invoices',
-		    'Locations' => 'Locations',
-		    'Maps' => 'Maps',
-		    'Menus' => 'Menus',
-		    'Messages' => 'Messages',
-		    'News' => 'News',
-		    'Notifications' => 'Notifications',
-		    'Orders' => 'Orders',
-		    'Permissions' => 'Permissions',
-		    'Priorities' => 'Priorities',
-		    'Projects' => 'Projects',
-		    'Ratings' => 'Ratings',
-		    'Recaptcha' => 'Recaptcha',
-		    'Reports' => 'Reports',
-		    'Rss' => 'Rss',
-		    'Search' => 'Search',
-		    'Searchable' => 'Searchable',
-		    'Shipping' => 'Shipping',
-		    'Sitemaps' => 'Sitemaps',
-		    'Social' => 'Social',
-		    'Tags' => 'Tags',
-		    'Tasks' => 'Tasks',
-		    'Tickets' => 'Tickets',
-		    'Timesheets' => 'Timesheets',
-		    'Users' => 'Users',
-		    'Utils' => 'Utils',
-		    'Webpages' => 'Webpages',
-		    'Wikis' => 'Wikis',
-		    'Workflows' => 'Workflows',
-		);
+	function listPlugins($remove = array(), $merge = true) {
+		$defaultRemove = array('Acl Extras', 'Api Generator', 'Recaptcha');
+		$remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
+		$plugins = App::objects('plugin');
+		foreach ($plugins as $plugin) : 
+			$return[$plugin] = Inflector::humanize(Inflector::underscore($plugin));
+		endforeach;
+		
+		return array_diff($return, $remove);
 	}
+	
+	
+	function listModels($pluginPath = null, $remove = array(), $merge = true) {
+		# defaultRemove originally done for this page : /admin/categories/categories/add/ 
+		# if you add items for removal from this list make sure that they should also be removed from there
+		# or customize the categories_controller so that listModels() function to not merge
+		$defaultRemove = array('Affiliated', 'Catalog Items Catalog Category', 'Category', 'Category Option', 'Catalog Item Price', 'Estimated', 'Form', 'Form Fieldset', 'Form Input', 'Forum', 'Forum Category', 'Poll', 'Poll Option', 'Poll Vote', 'Post', 'Setting', 'Topic', 'Invite', 'Invoices Catalog Item', 'Invoices Timesheet', 'Notification', 'Notification Template', 'Favorite', 'Privilege', 'Requestor', 'Section', 'Search Index', 'TicketDepartmentsAssignee', 'Workflow', 'Workflow Item', 'Workflow Event', 'Workflow Item Event');
+		$remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
+		
+		$plugins = $this->listPlugins();
+		foreach ($plugins as $plugin) : 
+			$pluginPaths[] = App::pluginPath($plugin);
+		endforeach;
+		
+		foreach ($pluginPaths as $pluginPath) :
+			$models = !empty($models) ? array_merge($models, App::objects('model', $pluginPath . 'models' . DS, false)) : App::objects('model', $pluginPath . 'models' . DS, false);
+		endforeach;
+		
+		foreach ($models as $model) :
+			$return[$model] = Inflector::humanize(Inflector::underscore($model));
+		endforeach;
+		
+		return array_diff($return, $remove);
+	}
+	
 	
 	/**
 	 * Don't know what this is for, I'd like to see a comment placed.
