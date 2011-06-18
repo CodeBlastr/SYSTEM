@@ -324,6 +324,9 @@ form div.input {
 	float: left;
 	padding: 0.4em;
 }
+form div.input.checkbox {
+	padding: 3em 0.4em 0 0.4em;
+}
 form div.richtext {
 	display: block;
 	clear: both;
@@ -396,9 +399,12 @@ input[type=checkbox] {
 	float: left;
 	margin: 0px 6px 7px 0px;
 	width: auto;
+	min-width: 0;
 }
 .checkbox label {
 	width: auto;
+	padding-right: 0.1em;
+	display: inline;
 }
 .checkbox label:hover {
 	background: #D7E3EA;
@@ -430,6 +436,7 @@ input[type=submit], button, .button {
 	-webkit-box-shadow: 0 0 10px #777;
 	-moz-box-shadow: 0 0 10px #777;
 	box-shadow: 0 0 10px #777;
+	min-width: 0;
 }
 input[type=submit]:active {
 	color: #666;
