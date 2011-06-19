@@ -114,10 +114,10 @@ $(function() {
   	$('legend.toggleClick').siblings().hide();
 	
   	$('legend.toggleClick').click(function(){
-    	$(this).siblings().slideToggle("slow");
+    	$(this).siblings().slideToggle("toggle");
     });
 		
-	$('#tabs').tabs();	
+	$('#tabs').tabs({fx:{height: "toggle"}});	
 	$('#navigation').tabs();
 	/* make the current tab have the class active
 	$('#tabs a').click(function() {

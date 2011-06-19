@@ -263,6 +263,7 @@ td.actions a {
 	display: table;
 	width: 100%;
 	padding: 0.5em 0;
+	min-width: 300px;
 }
 .indexRow{
 	float: left;
@@ -274,6 +275,9 @@ td.actions a {
 .indexCell{
 	float: left;
 	position: relative;
+}
+.indexCell .indexCell {
+	clear: left;
 }
 .indexRow .indexCell ul li{
 	float:left;
@@ -759,6 +763,7 @@ Primary navigation
     -moz-box-shadow: none;
     -webkit-box-shadow: none;
     filter: none;
+	padding: 0;
 }
 #content .metaData ul {
 	list-style-type: none;
@@ -942,6 +947,7 @@ Primary navigation
 	top: 0.7em;
 	width:10em;
 	padding:0;
+	margin:0 !important;
 	z-index:300;
 	display: none;
 	background: #fff;
