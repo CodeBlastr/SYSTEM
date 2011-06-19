@@ -671,14 +671,16 @@ Primary navigation
 #tabs h1 {
 	float:left;
 	font-weight: bold;
-	font-size: 1em;
+	font-size: 1.8em;
 	margin: 0 0 0 1em;
-	position: relative;
-	top: 0.6em;
 	color: #FFF;
 }
 #tabs h1 a {
 	color: #FFF;
+}
+#tabs h1 small, #tabs h1 small a {
+	color: #CCC;
+	font-weight: normal;
 }
 #tabs img.shadow {
 	position:absolute;
@@ -727,27 +729,27 @@ Primary navigation
 	font-size: 1.2em;
 	text-shadow: 0 1px 0 #fff;
 	
-    -moz-border-radius: 5px;
+    /*-moz-border-radius: 5px;
     border-radius: 5px;
     box-shadow: 1px 1px 1px #777777;
     -moz-box-shadow: 1px 1px 2px #777777;
     -webkit-box-shadow: 1px 1px 2px #777777;
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');*/
 }
 #content .viewHeading:hover {
 	background: #E6EDF9;
 }
 #content .metaData {
     background: #EBFBE2;
-	margin: 0.15em 0 0.5em 0;
-	padding: 0.3em;
+	margin: 0em 0 0.5em 0;
+	padding: 1.5em;
 	float: left;    
-    -moz-border-radius: 10px;
+   /* -moz-border-radius: 10px;
     border-radius: 10px;
     box-shadow: 1px 1px 1px #777777;
     -moz-box-shadow: 1px 1px 2px #777777;
     -webkit-box-shadow: 1px 1px 2px #777777;
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');*/
 }
 #content .index .metaData { 
     background: none;  
@@ -875,6 +877,7 @@ Primary navigation
 #navigation {
 	margin: 0;
 	overflow: auto;
+	padding: 0.5em 1em;
 }
 #navigation ul {
 	margin: 0;
