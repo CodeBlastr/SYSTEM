@@ -350,6 +350,7 @@ label a {
 	color: #333;
 }
 input, textarea, select {
+	float: left;
 	padding: 0.5em;
 	min-width: 21em;
 	background: #f5f5f5;
