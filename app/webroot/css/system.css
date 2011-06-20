@@ -49,17 +49,21 @@ Note that the class names could be updated and change often.
 /* Threaded Blog Comment Layout */
 .comment {
 	clear: both;
-	margin: .5em 0;
 	border: 1px solid #CCC;
+	margin: .5em 0;
 	padding: .5em;
+	float: left;
 }
-.comment .avatar, .comment .username, .comment .meta {
+.comment .avatar, .comment .full_name, .comment .meta {
 	float: left;
 }
 .comment .avatar img {
-	width: 45px;
-	height: 45px;
+	width: 3em;
+	height: 3em;
 }
 .comment .body {
 	clear: both;
+}
+.comments .tree-block li {
+	list-style-type: none;
 }
