@@ -45,6 +45,21 @@ class AppController extends Controller {
 	
 	
 	/**
+	 * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
+	 */
+	function redirect($url, $status = null, $exit = true) {
+		if (!empty($this->data['Success']['redirect']) && $status == 'success') :
+			return parent::redirect($this->data['Success']['redirect'], $status, $exit);
+		elseif (!empty($this->data['Error']['redirect']) && $status == 'error') :
+			return parent::redirect($this->data['Error']['redirect'], $status, $exit);
+		elseif (!empty($this->data['Override']['redirect'])) :
+			return parent::redirect($this->data['Override']['redirect'], $status, $exit);	
+		else : 
+			return parent::redirect($url, $status, $exit);
+		endif;
+	}
+	
+	/**
 	 * Handles the variables and functions that fire before all other controllers
 	 * 
 	 * @todo		There is a problem with the acl check, when using a site wide template tag for an element which is not allowed.  It redirects you to the login page like it should, but the login page also has that template tag, so it is an infinite loop that is hard to debug. 
