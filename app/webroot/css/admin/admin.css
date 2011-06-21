@@ -884,7 +884,6 @@ Primary navigation
 
 #navigation {
 	margin: 0;
-	overflow: auto;
 	padding: 0.5em 1em;
 	border: 1px solid #DDDDDD;
 	border-radius: 2px 2px 2px 2px;

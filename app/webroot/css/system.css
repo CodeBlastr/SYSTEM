@@ -55,7 +55,6 @@ Note that the class names could be updated and change often.
 	border: 1px solid #CCC;
 	margin: .5em 0;
 	padding: .5em;
-	float: left;
 }
 .comment .avatar, .comment .full_name, .comment .meta {
 	float: left;
