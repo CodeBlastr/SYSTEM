@@ -110,7 +110,11 @@ endforeach;
 </div>
 <?php echo $this->Element('paging'); ?> <?php echo $this->Element('ajax_edit',  array('editFields' => $editFields)); ?>
 <?php 
-else : 
-	echo $this->Element('start',  array('plugin' => $pluginName));
+else : // show a default message pulled as an element called start, from the plugin folder you're in.
+?>
+<div class="index noItems">
+	<?php echo empty($noItems) ? $this->Element('start',  array('plugin' => $pluginName)) : $noItems; ?>
+</div>
+<?php
 endif;
 ?>

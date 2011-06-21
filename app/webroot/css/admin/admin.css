@@ -266,17 +266,22 @@ td.actions a {
 	min-width: 300px;
 }
 .indexRow{
+	display: table-row;
 	float: left;
-	position: relative;
+	clear: both;
 	width: 100%;
+	/*float: left;*/
+	/*position: relative;*/
 	border-bottom: 1px solid #CCC;
 	padding: 0.5em 0;
 }
 .indexCell{
-	float: left;
+	display: table-cell;
 	position: relative;
+	padding: 0 0.2em;
 }
 .indexCell .indexCell {
+	display: block;
 	clear: left;
 }
 .indexRow .indexCell ul li{
@@ -292,6 +297,7 @@ td.actions a {
 /* Forms */
 form {
 	clear: both;
+	overflow: auto;
 }
 .hide form {
 	background: #E6EDF9;
@@ -299,7 +305,7 @@ form {
 }
 fieldset {
 	padding: 0;
-	margin: 0 0 3em 0;
+	margin: 0 0 0 0;
 }
 fieldset legend {
 	border-bottom: 1px solid #CCC;
@@ -441,6 +447,7 @@ input[type=submit], button, .button {
 	-moz-box-shadow: 0 0 10px #777;
 	box-shadow: 0 0 10px #777;
 	min-width: 0;
+	margin: 0.5em;
 }
 input[type=submit]:active {
 	color: #666;
@@ -629,7 +636,7 @@ Primary navigation
 
 /* Search Form */
 .searchfield {
-	width: 165px;
+	width: 177px;
 	float: right;
 	margin: -0.8em 1em 0 0;margin: -0.8em 1em 0 0;
 }
@@ -690,7 +697,7 @@ Primary navigation
 	top:1.9em;
 	left:0;
 }
-#tabs ul#leadTab {
+#tabs ul#leadTab, #tabs .tab {
 	background: transparent;
 	border: none;
 	border-radius: none;
@@ -700,7 +707,7 @@ Primary navigation
 	top: 0;
 }
 #tabs ul#leadTab li:first-child {
-	margin: 0 0 0 1em;
+	margin: 0 0.2em 0 1em;
 }
 
 
@@ -791,9 +798,7 @@ Primary navigation
 	margin: 0 0 0.5em 0;
 }
 #content .image {
-	min-width: 16px;
-	min-height: 16px;
-	margin: 0 0.5em 0.5em 0;
+	min-width: 1em;
 }
 #content .index .image img {
 	float: left;
@@ -939,9 +944,11 @@ Primary navigation
 	display:block;
 }
 .drop-holder {
-	float: left;
-	position: absolute;
+	position: relative;
 	bottom: 0;
+	left: 0;
+	height: 1px;
+	width: 1px;
 }
 .drop, div.actions ul {
 	position: absolute;

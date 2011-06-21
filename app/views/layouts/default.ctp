@@ -29,13 +29,8 @@
 <body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
 <div id="siteWrap"> <?php echo $this->Element('admin/header_nav'); ?>
   <div id="tabs">
-    <h1><?php echo !empty($page_title_for_layout) ? $page_title_for_layout : null; ?></h1>
-    <ul id="leadTab" class="tabs">
-      <li><a href="#contentWrap"><span><?php echo !empty($tab_title_for_layout) ? $tab_title_for_layout : $title_for_layout; ?></span></a></li>
-      <?php if (!empty($tabs_for_layout)) : foreach ($tabs_for_layout as $tab) : ?>
-      <li><a href="<?php echo $tab['link']; ?>" title="<?php echo $tab['linkText']; ?>"><span><?php echo $tab['linkText']; ?></span></a></li>
-      <?php endforeach; endif; ?>
-    </ul>
+    <?php echo $this->Element($this->params['controller'].'/page_title', array('plugin' => $this->params['plugin'])); ?>
+    <?php echo $this->Element($this->params['controller'].'/tabs', array('plugin' => $this->params['plugin'])); ?>
     <div id="content">
       <div id="contentWrap"> <?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?>
       	<?php $helper_text_for_layout = !empty($helper_text_for_layout) ? $helper_text_for_layout : null; ?>
