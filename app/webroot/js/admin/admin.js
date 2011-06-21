@@ -118,7 +118,7 @@ $(function() {
     });
 		
 	$('#tabs').tabs({fx:{height: "toggle"}});	
-	$('#navigation').tabs();
+	$('.tabs').parent().tabs();
 	/* make the current tab have the class active
 	$('#tabs a').click(function() {
 		$('#tabs a').removeClass('active');
