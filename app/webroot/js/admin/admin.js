@@ -117,8 +117,8 @@ $(function() {
     	$(this).siblings().slideToggle("toggle");
     });
 		
-	$('#tabs').tabs({fx:{height: "toggle"}});	
-	$('.tabs').parent().tabs();
+	//$('#tabs').tabs({fx:{height: "toggle"}});	
+	$('.tabs').parent().tabs({fx:{height: "toggle"}});
 	/* make the current tab have the class active
 	$('#tabs a').click(function() {
 		$('#tabs a').removeClass('active');

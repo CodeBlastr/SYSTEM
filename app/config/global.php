@@ -168,6 +168,7 @@
 			'GalleryImage' => 'galleries',
 			'GalleryImages' => 'galleries',
 			'gallery_images' => 'galleries',
+			'Used' => 'users',
 			'User' => 'users',
 			);
 		if (!empty($allowed[$name])) {

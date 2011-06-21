@@ -1,11 +1,11 @@
 <?php 
 # setup defaults
 $modelName = !empty($modelName) ? $modelName : Inflector::classify($this->params['controller']); // ContactPerson
-$pluginName = !empty($pluginName) ? $pluginName : !empty($this->params['plugin']) ? $this->params['plugin'] : null; // contacts
-$controller = $this->params['controller']; // contact_people, projects
+$pluginName = !empty($pluginName) ? $pluginName : !empty($modelName) ? pluginize($modelName) : null; // contacts
+$controller = Inflector::tableize($modelName); // contact_people, projects
 if (!empty($data)) : 
 	# setup defaults
-	$indexVar = Inflector::variable($this->params['controller']); // contactPeople, projects
+	$indexVar = Inflector::variable($controller); // contactPeople, projects
 	$humanModel = Inflector::humanize(Inflector::underscore($modelName)); // Contact Person
 	$humanCtrl = Inflector::humanize(Inflector::underscore($controller)); // Contact People
 	if (!empty($showGallery)) : 
@@ -22,11 +22,11 @@ if (!empty($data)) :
     <?php
 $i = 0;
 foreach ($data as $dat):
-	$id = $dat[$modelName]['id'];
+	$id = !empty($dat[$modelName]['id']) ? $dat[$modelName]['id'] : null;
 	unset($dat[$modelName]['id']);
-	$name = $dat[$modelName][$displayName];
+	$name = !empty($dat[$modelName][$displayName]) ? $dat[$modelName][$displayName] : null;
 	unset($dat[$modelName][$displayName]);
-	$description = $dat[$modelName][$displayDescription];
+	$description = !empty($dat[$modelName][$displayDescription]) ? $dat[$modelName][$displayDescription] : null;
 	unset($dat[$modelName][$displayDescription]);
 	
 	$class = null;
@@ -49,7 +49,7 @@ foreach ($data as $dat):
       <div class="indexCell">
         <div class="indexCell">
           <div class="recorddat">
-            <h3> <?php echo $html->link($name, array('action' => 'view', $id), array('escape' => false)); ?></h3>
+            <h3> <?php echo $html->link($name, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'view', $id), array('escape' => false)); ?></h3>
           </div>
         </div>
         <div class="indexCell">
@@ -60,11 +60,13 @@ foreach ($data as $dat):
             <?php endforeach; ?>
           </ul>
         </div>
+        <?php if (!empty($displayDescription)) : ?>
         <div class="indexCell">
           <div class="recorddat">
             <div class="truncate"> <span name="<?php echo $displayDescription; ?>" class="edit" id="<?php echo $id; ?>"><?php echo $description; ?></span> </div>
           </div>
         </div>
+        <?php endif; ?>
       </div>
     </div>
     <?php

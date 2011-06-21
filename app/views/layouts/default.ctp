@@ -30,10 +30,10 @@
 <div id="siteWrap"> <?php echo $this->Element('admin/header_nav'); ?>
   <div id="tabs">
     <h1><?php echo !empty($page_title_for_layout) ? $page_title_for_layout : null; ?></h1>
-    <ul id="leadTab">
+    <ul id="leadTab" class="tabs">
       <li><a href="#contentWrap"><span><?php echo !empty($tab_title_for_layout) ? $tab_title_for_layout : $title_for_layout; ?></span></a></li>
       <?php if (!empty($tabs_for_layout)) : foreach ($tabs_for_layout as $tab) : ?>
-      <li><a href="<?php echo $tab['link']; ?>"><span><?php echo $tab['linkText']; ?></span></a></li>
+      <li><a href="<?php echo $tab['link']; ?>" title="<?php echo $tab['linkText']; ?>"><span><?php echo $tab['linkText']; ?></span></a></li>
       <?php endforeach; endif; ?>
     </ul>
     <div id="content">
