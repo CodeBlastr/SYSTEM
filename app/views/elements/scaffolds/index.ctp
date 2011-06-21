@@ -102,6 +102,8 @@ endforeach;
 	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
     <li><?php echo $paginator->sort($keyName);?></li>
     <?php endif; endforeach; ?>
+    <li><?php echo __('Action'); ?></li>
+    <li><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
   </ul>
 </div>
 <?php echo $this->Element('paging'); ?> <?php echo $this->Element('ajax_edit',  array('editFields' => $editFields)); ?>
