@@ -8,6 +8,9 @@ if (!empty($data)) :
 	$indexVar = Inflector::variable($controller); // contactPeople, projects
 	$humanModel = Inflector::humanize(Inflector::underscore($modelName)); // Contact Person
 	$humanCtrl = Inflector::humanize(Inflector::underscore($controller)); // Contact People
+	$linkPluginName = !empty($linkPluginName) ? $linkPluginName : $pluginName;
+	$linkControllerName = !empty($linkControllerName) ? $linkControllerName : $controller;
+	$linkActionName = !empty($linkActionName) ? $linkActionName : 'view';
 	if (!empty($showGallery)) : 
 		$galleryModel = !empty($galleryModel) ? $galleryModel : $modelName;
 		$galleryModelName = is_array($galleryModel) ? $galleryModel['name'] : $galleryModel;
@@ -36,20 +39,20 @@ foreach ($data as $dat):
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
       <div class="indexCell image"> <span>
-        <?php echo !empty($showGallery) ? $this->Element('thumb', array('plugin' => 'galleries', 'model' => $galleryModelName, 'foreignKey' => $dat[$galleryModelAlias][$galleryForeignKey], 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.pluginize($galleryModelName).'/'.Inflector::tableize($galleryModelName).'/view/'.$dat[$galleryModelAlias][$galleryForeignKey])) : null; ?>
+        <?php echo !empty($showGallery) ? $this->Element('thumb', array('plugin' => 'galleries', 'model' => $galleryModelName, 'foreignKey' => $dat[$galleryModelAlias][$galleryForeignKey], 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$linkPluginName.'/'.$linkControllerName.'/'.$linkActionName.'/'.$dat[$galleryModelAlias][$galleryForeignKey])) : null; ?>
         </span>
         <div class="drop-holder indexDrop"> <span><img src="/img/admin/btn-down.png" /></span>
           <ul class="drop">
-            <li><?php echo $html->link('View', array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'view', $id)); ?></li>
-            <li><?php echo $html->link('Edit', array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'edit', $id)); ?></li>
-            <li><?php echo $html->link('Delete', array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
+            <li><?php echo $html->link('View', array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => $linkActionName, $id)); ?></li>
+            <li><?php echo $html->link('Edit', array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => 'edit', $id)); ?></li>
+            <li><?php echo $html->link('Delete', array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
           </ul>
         </div>
       </div>
       <div class="indexCell">
         <div class="indexCell">
           <div class="recorddat">
-            <h3> <?php echo $html->link($name, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'view', $id), array('escape' => false)); ?></h3>
+            <h3> <?php echo $html->link($name, array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => $linkActionName, $id), array('escape' => false)); ?></h3>
           </div>
         </div>
         <div class="indexCell">
