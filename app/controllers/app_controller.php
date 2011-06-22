@@ -262,7 +262,7 @@ class AppController extends Controller {
 	
 		// set flash message & redirect
 		$this->Session->setFlash(__($msg, true));
-		$this->redirect(Controller::referer());
+		$this->redirect(Controller::$this->referer());
 	}
 	
 	
