@@ -45,6 +45,21 @@ class AppController extends Controller {
 	
 	
 	/**
+	 * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
+	 */
+	function redirect($url, $status = null, $exit = true) {
+		if (!empty($this->data['Success']['redirect']) && $status == 'success') :
+			return parent::redirect($this->data['Success']['redirect'], $status, $exit);
+		elseif (!empty($this->data['Error']['redirect']) && $status == 'error') :
+			return parent::redirect($this->data['Error']['redirect'], $status, $exit);
+		elseif (!empty($this->data['Override']['redirect'])) :
+			return parent::redirect($this->data['Override']['redirect'], $status, $exit);	
+		else : 
+			return parent::redirect($url, $status, $exit);
+		endif;
+	}
+	
+	/**
 	 * Handles the variables and functions that fire before all other controllers
 	 * 
 	 * @todo		There is a problem with the acl check, when using a site wide template tag for an element which is not allowed.  It redirects you to the login page like it should, but the login page also has that template tag, so it is an infinite loop that is hard to debug. 
@@ -135,7 +150,6 @@ class AppController extends Controller {
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 		
-		$this->viewPath = $this->_getView();
 		 
 		/**
 		 * Used to show admin layout for admin pages
@@ -155,7 +169,6 @@ class AppController extends Controller {
 		 */
 		$this->_siteStatus();	
 	}
-	
 	
 	/**
 	 * @todo convert to a full REST application and this might not be necessary
@@ -326,90 +339,6 @@ class AppController extends Controller {
 		$this->render(false);
 	}	
 
-	/**
-	 * This function handles view files, and the numerous cases of layered views that are possible. Used in reverse order, so that you can over write files without disturbing the default view files. 
-	 * Case 1 : No view file exists (default), so try using the scaffold file. (this means we can have default reusable views)
-	 * Case 2 : Standard view file exists (second check), so use it.  (ie. cakephp standard paths)
-	 * Case 3 : Language or Local view files (first check).  Views which are within the multi-site directories.  To use, you must set a language configuration, even if its just the default "en". 
-	 *
-	 * @return {string}		The viewPath variable
-	 * @todo 				Move these next few functions to a component.
-	 */
-	function _getView() {
-		$possibleLocations = array(
-			# 0 app (including sites) /plugins/wikis/views/locale/eng/wikis/wiki_categories/view.ctp
-			APP.'views'.$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath.$this->_getExtension().DS.$this->userRoleName.DS.$this->params['action'].'.ctp',
-			# 1 app (including sites) /plugins/wikis/views/wikis/wiki_categories/view.ctp
-			APP.$this->_getPlugin(false, true).'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
-			# 2 app (including sites) /views/locale/eng/plugins/projects/projects/index.ctp
-			APP.'views'.$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
-			# 3 root app only /views/locale/eng/plugins/wikis/wikis/index.ctp
-			ROOT.DS.'app'.DS.'views'.$this->_getLocale(true).$this->_getPlugin(true, false).DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',	
-			# 4 root app only /plugins/wikis/views/locale/eng/wikis/index.ctp
-			ROOT.DS.'app'.$this->_getPlugin(true, false).DS.'views'.$this->_getLocale(true).DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
-			# 5 root app only /plugins/wikis/views/wikis/json/index.ctp
-			ROOT.DS.'app'.$this->_getPlugin(true, false).DS.'views'.DS.$this->viewPath.$this->_getExtension().DS.$this->params['action'].'.ctp',
-			# 6 root app only /views/scaffolds/json/view.ctp
-			ROOT.DS.'app'.DS.'views'.DS.'scaffolds'.$this->_getExtension().DS.$this->params['action'].'.ctp',		
-			);
-		$matchingViewPaths = array(
-			$this->_getLocale(true).DS.$this->_getPlugin(true, true).$this->viewPath.DS.$this->userRoleName, // 0 
-			$this->viewPath, // 1 
-			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 2 
-			$this->_getLocale(true).$this->_getPlugin(true, true).$this->viewPath, // 3  
-			$this->_getLocale(true, true).$this->viewPath, // 4 
-			$this->viewPath, // 5 
-			'scaffolds', // 6 
-			);
-		foreach ($possibleLocations as $key => $location) :
-			if (file_exists($location)) :
-				return $this->viewPath = $matchingViewPaths[$key];
-				break;
-			endif;
-		endforeach;
-	}
-	
-	
-	function _getExtension() {
-		 if (!empty($this->params['url']['ext']) && $this->params['url']['ext'] != 'html') {
-			 # returns /json or /xml or /rss
-			 return DS.$this->params['url']['ext']; 
-		 } else {
-			 return null;
-		 }
-	}
-	
-	function _getLocale($startingDS = false, $trailingDS = false) {
-		$locale = Configure::read('Config.language');
-		if (!empty($locale)) {
-			# returns /locale/eng or /locale/fr etc.
-			$path = (!empty($startingDS) ? DS : '');
-			$path .= 'locale'.DS.$locale;
-			$path .= (!empty($trailingDS) ? DS : '');
-			return $path;
-		} else {
-			return null;
-		}
-	}
-	
-	function _getPlugin($startingDS = false, $trailingDS = false) {
-		if (!empty($this->params['plugin'])) {
-			# returns plugins/orders OR plugins/projects (no starting slash because its in the APP constant)
-			$path = (!empty($startingDS) ? DS : '');
-			$path .= 'plugins'.DS.$this->params['plugin'];
-			$path .= (!empty($trailingDS) ? DS : '');
-			return $path;
-		} else {
-			return null;
-		}
-	}
-	
-	##########################################################
-	##########################################################
-	###########  END getView() related functions #############
-	##########################################################
-	##########################################################
-	
 	
 	/**
 	 * Used to find the template and makes a call to parse all page views.  Sets the defaultTemplate variable for the layout.
@@ -722,9 +651,6 @@ class AppController extends Controller {
 		return $this->SwiftMailer->send($template, $subject);
    }
 		
-
-
-
 
 ##############################################################
 ##############################################################

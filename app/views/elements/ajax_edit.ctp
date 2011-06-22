@@ -10,7 +10,7 @@ $(function() {
 			$plugin = '';
 		}
 	?>
-    $(".edit[name='<?php echo $editField['name']; ?>'][id='<?php echo $editField['tagId']; ?>']").editable('/admin/<?php echo $plugin; ?><?php echo $editField['controller']; ?>/ajax_edit', {
+    $(".edit[name='<?php echo $editField['name']; ?>'][id='<?php echo $editField['tagId']; ?>']").editable('/<?php echo $plugin; ?><?php echo $editField['controller']; ?>/ajax_edit', {
          id        : '<?php echo $editField['fieldId']; ?>',
          name      : '<?php echo $editField['fieldName']; ?>',
 		 <?php if (isset($editField['loadurl'])) { ?>

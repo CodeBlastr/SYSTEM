@@ -42,8 +42,10 @@ App::build(array(
 		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'models'.DS
 		),
     'views' => array(
+		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
 		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'views'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'views'.DS
+		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'views'.DS,
+		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'scaffolds'.DS,
 		),
 	'controllers' => array(
 		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'controllers'.DS,
