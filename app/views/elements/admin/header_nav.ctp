@@ -11,8 +11,8 @@
                 <li class="title">Design</li>
                 <li><a href="/webpages/webpages/index/type:template/">Templates</a></li>
                 <li><a href="/webpages/webpages/index/type:element/">Elements</a></li>
-                <li><a href="/admin/webpages/webpage_csses">Css Files</a></li>
-                <li class="separator"><a href="/admin/webpages/webpage_jses">Js Files</a></li>
+                <li><a href="/webpages/webpage_csses">Css Files</a></li>
+                <li class="separator"><a href="/webpages/webpage_jses">Js Files</a></li>
               </ul>
               <ul>
                 <li class="title">Files</li>
