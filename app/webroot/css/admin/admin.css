@@ -411,6 +411,9 @@ input[type=checkbox] {
 	width: auto;
 	min-width: 0;
 }
+.select .checkbox {
+	float: left;
+}
 .checkbox label {
 	width: auto;
 	padding-right: 0.1em;

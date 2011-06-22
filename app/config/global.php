@@ -168,6 +168,7 @@
 			'GalleryImage' => 'galleries',
 			'GalleryImages' => 'galleries',
 			'gallery_images' => 'galleries',
+			'Project' => 'projects',
 			'Used' => 'users',
 			'User' => 'users',
 			);
