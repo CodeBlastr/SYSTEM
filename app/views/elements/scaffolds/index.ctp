@@ -117,6 +117,11 @@ else : // show a default message pulled as an element called start, from the plu
 ?>
 <div class="index noItems">
 	<?php echo empty($noItems) ? $this->Element('start',  array('plugin' => $pluginName)) : $noItems; ?>
+	<div class="actions"> <img src="/img/admin/btn-down.png" />
+	  <ul class="drop">
+	    <li><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
+	  </ul>
+	</div>
 </div>
 <?php
 endif;
