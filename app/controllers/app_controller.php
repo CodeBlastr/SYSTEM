@@ -473,9 +473,11 @@ class AppController extends Controller {
 		if (!empty($data['urls'])) : 
 			$i=0;
 			foreach ($data['urls'] as $url) :
-				$urlString = str_replace('/', '\/', $url);
+				$urlString = str_replace('/', '\/', trim($url));
 				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
-				if (preg_match($urlRegEx, $this->params['url']['url'])) :
+				$url = $this->params['url']['url'];
+				$urlCompare = strpos($url, '/') == 0 ? substr($url, 1) : $url;
+				if (preg_match($urlRegEx, $urlCompare)) :
 					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateId'];
 				endif;
 			$i++; 
