@@ -157,6 +157,7 @@
  	function pluginize($name) {
 		# list of models and controllers to rename to the corresponding plugin
 		$allowed = array(
+			'Banner' => 'banners',
 			'Category' => 'categories',
 			'Categories' => 'categories',
 			'Catalog' => 'catalogs',
@@ -167,12 +168,14 @@
 			'GalleryImage' => 'galleries',
 			'GalleryImages' => 'galleries',
 			'gallery_images' => 'galleries',
-			'Banner' => 'banners',
+			'Project' => 'projects',
+			'Used' => 'users',
+			'User' => 'users',
 			);
 		if (!empty($allowed[$name])) {
 			return $allowed[$name];
 		} else {
-			return $name;
+			return Inflector::tableize($name);
 		}
 	}
 

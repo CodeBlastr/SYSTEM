@@ -23,19 +23,14 @@
 	echo $this->Html->script('admin/jquery.truncator');
 	echo $this->Html->script('system/jquery.cookie');
 	echo $this->Html->script('admin/admin');
-	echo $scripts_for_layout;  
+	echo $scripts_for_layout;
 ?>
 </head>
 <body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
 <div id="siteWrap"> <?php echo $this->Element('admin/header_nav'); ?>
   <div id="tabs">
-    <h1><?php echo !empty($page_title_for_layout) ? $page_title_for_layout : null; ?></h1>
-    <ul id="leadTab">
-      <li><a href="#contentWrap"><span><?php echo $title_for_layout; ?></span></a></li>
-      <?php if (!empty($tabs_for_layout)) : foreach ($tabs_for_layout as $tab) : ?>
-      <li><a href="<?php echo $tab['link']; ?>"><span><?php echo $tab['linkText']; ?></span></a></li>
-      <?php endforeach; endif; ?>
-    </ul>
+    <?php echo $this->Element('page_title'); ?>
+    <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array('plugin' => $this->params['plugin'])) : ''; ?>
     <div id="content">
       <div id="contentWrap"> <?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?>
       	<?php $helper_text_for_layout = !empty($helper_text_for_layout) ? $helper_text_for_layout : null; ?>
