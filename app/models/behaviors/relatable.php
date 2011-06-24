@@ -1,4 +1,9 @@
 <?php
+/**
+ * Relatable Behavior
+ *
+ * @todo	It looks like this was used once (in forums) and was dropped.  Probably should delete this file all together. Not even sure what it was for.  6/18/2011
+ */
 class RelatableBehavior extends ModelBehavior {
 
 	var $__model = '';
