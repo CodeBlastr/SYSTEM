@@ -193,11 +193,11 @@ class Setting extends AppModel {
 				  'Users' => array(
 						array(
 							'name' => 'PAID_EXPIRED_ROLE_ID',
-							'description' => 'Defines setting variables for the expired user role.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'users',
+							'description' => 'Defines setting variables for the expired user role id.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'3',
 							),
 						array(
 							'name' => 'PAID_ROLE_ID',
-							'description' => 'Defines setting variables for the paid user role.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'administrators',
+							'description' => 'Defines setting variables for the paid user role id.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
 							),
 						array(
 							'name' => 'PAID_ROLE_REDIRECT',
