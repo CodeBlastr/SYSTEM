@@ -27,7 +27,7 @@ menu, footer, header, nav, section, summary, time, mark, audio, video {
 	outline-color:-moz-use-text-color;
 	outline-style:none;
 	outline-width:0;
-	vertical-align: top;
+	vertical-align: baseline;
 }
 :focus {
 	outline: 0;
@@ -279,6 +279,7 @@ td.actions a {
 	display: table-cell;
 	position: relative;
 	padding: 0 0.2em;
+	vertical-align: top;
 }
 .indexCell .indexCell {
 	display: block;
