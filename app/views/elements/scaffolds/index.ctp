@@ -57,9 +57,19 @@ foreach ($data as $dat):
         </div>
         <div class="indexCell">
           <ul class="metaData">
-            <?php foreach($dat[$modelName] as $keyName => $keyValue) : ?>
-            <?php if (strtotime($keyValue)) : $keyValue = $time->timeAgoInWords($keyValue); endif; // human readable dates ?>
-            <li><span class="metaDataLabel"> <?php echo Inflector::humanize($keyName).' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
+            <?php foreach($dat[$modelName] as $keyName => $keyValue) : 
+			# over write the keyValue if its belongsTo associated record to display (ie. assignee_id = full_name)
+			if (array_key_exists(Inflector::humanize(str_replace('_id', '', $keyName)), $associations)) :
+				$displayField = $associations[Inflector::humanize(str_replace('_id', '', $keyName))]['displayField'];
+				$keyName = Inflector::humanize(str_replace('_id', '', $keyName));
+				$keyValue = $dat[Inflector::humanize(str_replace('_id', '', $keyName))][$displayField]; 
+			else : 
+				$keyName = Inflector::humanize($keyName);
+			endif;
+			# if its a date parse it into words
+			if (strtotime($keyValue)) : $keyValue = $time->timeAgoInWords($keyValue); endif; // human readable dates 
+			?>
+            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
             <?php endforeach; ?>
           </ul>
         </div>
@@ -74,7 +84,7 @@ foreach ($data as $dat):
     </div>
     <?php
   # used for ajax editing
-  # needs to be here because it hsa to be before the forech ends
+  # needs to be here because it has to be before the forech ends
   $editFields[] =  array(
 	'name' => $displayDescription,
 	'tagId' => $id,
