@@ -43,9 +43,9 @@ foreach ($data as $dat):
         </span>
         <div class="drop-holder indexDrop"> <span><img src="/img/admin/btn-down.png" /></span>
           <ul class="drop">
-            <li><?php echo $html->link('View', array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => $linkActionName, $id)); ?></li>
-            <li><?php echo $html->link('Edit', array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => 'edit', $id)); ?></li>
-            <li><?php echo $html->link('Delete', array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
+          	<?php if(!empty($actions)) : foreach ($actions as $action) : ?>
+            <li><?php echo str_replace('{id}', $id, $action); ?></li>
+            <?php endforeach; endif; ?>
           </ul>
         </div>
       </div>
