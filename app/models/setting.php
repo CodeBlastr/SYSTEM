@@ -150,7 +150,11 @@ class Setting extends AppModel {
 						array(
 							'name' => 'MEMBERSHIP_CATALOG_ITEM_REDIRECT',
 							'description' => 'Defines the url for new regiter members to choose a membership plan. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/catalogs/catalog_items/view/48',
-							),	
+							),
+						array(
+							'name' => 'DEFAULT_TEMPLATE_ID',
+							'description' => 'Defines the settings for default site templates. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
+							),		
 						),	
 				  'Reports' => array(
 						array(
