@@ -1,6 +1,8 @@
 // JavaScript Document
 
 $().ready(function() {
+	
+	$(".draggable").draggable();
 				   
 	// datepicker for date selection
 	$('.datepicker').datepicker({

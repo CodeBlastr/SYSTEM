@@ -87,7 +87,7 @@
 <body class="<?php echo $this->params['controller']; echo ($session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" id="<?php echo !empty($this->params['pass'][0]) ? strtolower($this->params['controller'].'_'.$this->params['action'].'_'.$this->params['pass'][0]) : strtolower($this->params['controller'].'_'.$this->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
 <div id="corewrap">
 <?php 
-echo $this->Element('inline_editor', array('plugin' => 'webpages'));
+echo $this->Element('modal_editor', array('plugin' => 'webpages'));
 
 $flash_for_layout = $session->flash();
 $flash_auth_for_layout = $session->flash('auth');
