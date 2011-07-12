@@ -110,7 +110,7 @@
               <ul>
                 <li class="title">Projects</li>
                 <li><a href="/projects">Projects</a></li>
-                <li><a href="/admin/timesheets">Timesheets</a></li>
+                <li><a href="/timesheets">Timesheets</a></li>
                 <li><a href="/tasks/tasks/my">Tasks</a></li>
               </ul>
               <ul>

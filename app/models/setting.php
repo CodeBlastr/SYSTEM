@@ -143,7 +143,19 @@ class Setting extends AppModel {
 							'name' => 'REGISTRATION_EMAIL_VERIFICATION',
 							'description' => 'Defines whether registration requires email verification before the account is approved. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'anything (If this setting exists at all, then verification is required.)',
 							),
-						),
+						array(
+							'name' => 'DEFAULT_LOGIN_REDIRECT_URL',
+							'description' => 'Defines the url users go to after logging in. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/members/members/is_member/',
+							),
+						array(
+							'name' => 'MEMBERSHIP_CATALOG_ITEM_REDIRECT',
+							'description' => 'Defines the url for new regiter members to choose a membership plan. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/catalogs/catalog_items/view/48',
+							),
+						array(
+							'name' => 'DEFAULT_TEMPLATE_ID',
+							'description' => 'Defines the settings for default site templates. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
+							),		
+						),	
 				  'Reports' => array(
 						array(
 							'name' => 'ANALYTICS',
@@ -182,6 +194,20 @@ class Setting extends AppModel {
 							'description' => 'Defines setting variables for the most watched module.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'moduleTitle = "My Custom Title"'.PHP_EOL.'numberOfProjects = 5',
 							),
 						),
+				  'Users' => array(
+						array(
+							'name' => 'PAID_EXPIRED_ROLE_ID',
+							'description' => 'Defines setting variables for the expired user role id.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'3',
+							),
+						array(
+							'name' => 'PAID_ROLE_ID',
+							'description' => 'Defines setting variables for the paid user role id.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
+							),
+						array(
+							'name' => 'PAID_ROLE_REDIRECT',
+							'description' => 'Defines setting variables for the paid user role redirect.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/users/users/my',
+							),		
+						),		
 				  );
 	}
 	

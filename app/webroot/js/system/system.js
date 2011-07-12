@@ -1,6 +1,8 @@
 // JavaScript Document
 
 $().ready(function() {
+	
+	$(".draggable").draggable({ handle: ".handle" });
 				   
 	// datepicker for date selection
 	$('.datepicker').datepicker({
@@ -72,7 +74,7 @@ $().ready(function() {
 		$.getJSON(url, function(data){
 			var items = [];	
  			$.each(data, function(key, val) {
-				if (val['value']) { value = val['value']; } else { val['name']; }
+				if (val['value']) { value = val['value']; } else { value = val['name']; }
 				items += '<option value="' + value + '">' + val['name'] + '</option>';
 			});
 			$('#' +  target).html(items);

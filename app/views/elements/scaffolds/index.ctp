@@ -8,9 +8,9 @@ if (!empty($data)) :
 	$indexVar = Inflector::variable($controller); // contactPeople, projects
 	$humanModel = Inflector::humanize(Inflector::underscore($modelName)); // Contact Person
 	$humanCtrl = Inflector::humanize(Inflector::underscore($controller)); // Contact People
-	$linkPluginName = !empty($linkPluginName) ? $linkPluginName : $pluginName;
-	$linkControllerName = !empty($linkControllerName) ? $linkControllerName : $controller;
-	$linkActionName = !empty($linkActionName) ? $linkActionName : 'view';
+	$link['pluginName'] = !empty($link['pluginName']) ? $link['pluginName'] : $pluginName;
+	$link['controllerName'] = !empty($link['controllerName']) ? $link['controllerName'] : $controller;
+	$link['actionName'] = !empty($link['actionName']) ? $link['actionName'] : 'view';
 	if (!empty($showGallery)) : 
 		$galleryModel = !empty($galleryModel) ? $galleryModel : $modelName;
 		$galleryModelName = is_array($galleryModel) ? $galleryModel['name'] : $galleryModel;
@@ -39,27 +39,41 @@ foreach ($data as $dat):
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
       <div class="indexCell image"> <span>
-        <?php echo !empty($showGallery) ? $this->Element('thumb', array('plugin' => 'galleries', 'model' => $galleryModelName, 'foreignKey' => $dat[$galleryModelAlias][$galleryForeignKey], 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$linkPluginName.'/'.$linkControllerName.'/'.$linkActionName.'/'.$dat[$galleryModelAlias][$galleryForeignKey])) : null; ?>
+        <?php echo !empty($showGallery) ? $this->Element('thumb', array('plugin' => 'galleries', 'model' => $galleryModelName, 'foreignKey' => $dat[$galleryModelAlias][$galleryForeignKey], 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$dat[$galleryModelAlias][$galleryForeignKey])) : null; ?>
         </span>
         <div class="drop-holder indexDrop"> <span><img src="/img/admin/btn-down.png" /></span>
           <ul class="drop">
-            <li><?php echo $html->link('View', array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => $linkActionName, $id)); ?></li>
-            <li><?php echo $html->link('Edit', array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => 'edit', $id)); ?></li>
-            <li><?php echo $html->link('Delete', array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
+          	<?php if(!empty($actions)) : foreach ($actions as $action) : ?>
+            <li><?php echo str_replace('{id}', $id, $action); ?></li>
+            <?php endforeach; else: ?>
+            <li><?php echo $html->link('View', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
+            <li><?php echo $html->link('Edit', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
+            <li><?php echo $html->link('Delete', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li> 
+			<?php endif; ?>
           </ul>
         </div>
       </div>
       <div class="indexCell">
         <div class="indexCell">
           <div class="recorddat">
-            <h3> <?php echo $html->link($name, array('plugin' => $linkPluginName, 'controller' => $linkControllerName, 'action' => $linkActionName, $id), array('escape' => false)); ?></h3>
+            <h3> <?php echo $html->link($name, array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id), array('escape' => false)); ?></h3>
           </div>
         </div>
         <div class="indexCell">
           <ul class="metaData">
-            <?php foreach($dat[$modelName] as $keyName => $keyValue) : ?>
-            <?php if (strtotime($keyValue)) : $keyValue = $time->timeAgoInWords($keyValue); endif; // human readable dates ?>
-            <li><span class="metaDataLabel"> <?php echo Inflector::humanize($keyName).' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
+            <?php foreach($dat[$modelName] as $keyName => $keyValue) : 
+			# over write the keyValue if its belongsTo associated record to display (ie. assignee_id = full_name)
+			if (array_key_exists(Inflector::humanize(str_replace('_id', '', $keyName)), $associations)) :
+				$displayField = $associations[Inflector::humanize(str_replace('_id', '', $keyName))]['displayField'];
+				$keyName = Inflector::humanize(str_replace('_id', '', $keyName));
+				$keyValue = $dat[Inflector::humanize(str_replace('_id', '', $keyName))][$displayField]; 
+			else : 
+				$keyName = Inflector::humanize($keyName);
+			endif;
+			# if its a date parse it into words
+			if (strtotime($keyValue)) : $keyValue = $time->timeAgoInWords($keyValue); endif; // human readable dates 
+			?>
+            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
             <?php endforeach; ?>
           </ul>
         </div>
@@ -74,7 +88,7 @@ foreach ($data as $dat):
     </div>
     <?php
   # used for ajax editing
-  # needs to be here because it hsa to be before the forech ends
+  # needs to be here because it has to be before the forech ends
   $editFields[] =  array(
 	'name' => $displayDescription,
 	'tagId' => $id,
