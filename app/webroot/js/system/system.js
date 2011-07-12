@@ -2,7 +2,7 @@
 
 $().ready(function() {
 	
-	$(".draggable").draggable();
+	$(".draggable").draggable({ handle: ".handle" });
 				   
 	// datepicker for date selection
 	$('.datepicker').datepicker({
