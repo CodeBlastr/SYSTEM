@@ -164,6 +164,10 @@ class Setting extends AppModel {
 						),
 				  'Gallery' => array(
 						array(
+							'name' => 'DEFAULT_TYPE', 
+							'description' => 'Defines the type of gallery used if no other is specified.'.PHP_EOL.PHP_EOL.'Example value: '.PHP_EOL.'gallerific',
+							),
+						array(
 							'name' => 'DEFAULT_THUMB_WIDTH',
 							'description' => 'Defines the medium thumbnail width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'120',
 							),
