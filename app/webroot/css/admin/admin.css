@@ -9,7 +9,7 @@
 
 html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, 
 p, blockquote, pre, a, abbr, address, cite, code, del, dfn, em, 
-img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, hr, 
+img, ins, kbd, q, samp, small, sub, sup, var, b, i, hr, 
 dl, dt, dd, ol, ul, li, fieldset, form, label, legend, 
 table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, figure, figcaption, hgroup, 
@@ -27,7 +27,7 @@ menu, footer, header, nav, section, summary, time, mark, audio, video {
 	outline-color:-moz-use-text-color;
 	outline-style:none;
 	outline-width:0;
-	vertical-align:baseline;
+	vertical-align: baseline;
 }
 :focus {
 	outline: 0;
@@ -64,11 +64,11 @@ a img {border: 0;}
 }
 
 .bigger, h3 {
-	font-size: 1.6em;
+	font-size: 1.4em;
 }
 
 .big, h4 {
-	font-size: 2em;
+	font-size: 1.2em;
 }
 
 body {
@@ -77,7 +77,7 @@ body {
 }
 
 .small, small {
-	font-size: 0.5em;
+	font-size: 0.7em;
 }
 
 /* Selection colours (easy to forget) */
@@ -263,17 +263,27 @@ td.actions a {
 	display: table;
 	width: 100%;
 	padding: 0.5em 0;
+	min-width: 300px;
 }
 .indexRow{
+	display: table-row;
 	float: left;
-	position: relative;
+	clear: both;
 	width: 100%;
+	/*float: left;*/
+	/*position: relative;*/
 	border-bottom: 1px solid #CCC;
 	padding: 0.5em 0;
 }
 .indexCell{
-	float: left;
+	display: table-cell;
 	position: relative;
+	padding: 0 0.2em;
+	vertical-align: top;
+}
+.indexCell .indexCell {
+	display: block;
+	clear: left;
 }
 .indexRow .indexCell ul li{
 	float:left;
@@ -288,6 +298,7 @@ td.actions a {
 /* Forms */
 form {
 	clear: both;
+	overflow: auto;
 }
 .hide form {
 	background: #E6EDF9;
@@ -295,18 +306,20 @@ form {
 }
 fieldset {
 	padding: 0;
-	margin: 0 0 20px 0;
+	margin: 0 0 0 0;
 }
 fieldset legend {
 	border-bottom: 1px solid #CCC;
 	width: 100%;
+	font-weight: bold;
+}
+fieldset legend.toggleClick:hover {
+	background: #eaeaea;
 }
 fieldset fieldset {
-	margin: 0 0 20px 0;
-	padding: 16px 10px;
-}
-fieldset fieldset legend {
-	font-weight: normal;
+	margin: 0;
+	padding: 0.5em 2em;
+	clear: both;
 }
 fieldset fieldset div {
 	margin: 0 20px;
@@ -319,6 +332,9 @@ form div.input {
 	color: #444;
 	float: left;
 	padding: 0.4em;
+}
+form div.input.checkbox {
+	padding: 3em 0.4em 0 0.4em;
 }
 form div.richtext {
 	display: block;
@@ -342,12 +358,10 @@ label {
 label a {
 	color: #333;
 }
-button {
-	background: none;
-	border: none;
-}
 input, textarea, select {
-	padding: 2px;
+	float: left;
+	padding: 0.5em;
+	min-width: 21em;
 	background: #f5f5f5;
 	border: 1px solid #AAA;
 	-webkit-border-radius:3px;
@@ -364,13 +378,26 @@ input:focus, select:focus, textarea:focus {
 input[type="text"] {
 	clear: both;
 }
-textarea {
+.textarea {
+	/* if you change this check /workflows/workflows/add to see if the change looks good there too */
 	clear: both;
+	width: 50%;
+	min-width: 300px;
+	height: 9em;
+}
+textarea {
+	/* if you change this check /workflows/workflows/add to see if the change looks good there too */
+	width: 96%;
+	height: 7em;
 }
 select {
 	clear: both;
 	vertical-align: text-bottom;
-	padding: 1px;
+	padding: 0.5em;
+}
+.ui-datepicker-title select {
+	min-width: 1px;
+	clear: none;
 }
 select[multiple=multiple] {
 	width: 100%;
@@ -383,9 +410,15 @@ input[type=checkbox] {
 	float: left;
 	margin: 0px 6px 7px 0px;
 	width: auto;
+	min-width: 0;
+}
+.select .checkbox {
+	float: left;
 }
 .checkbox label {
 	width: auto;
+	padding-right: 0.1em;
+	display: inline;
 }
 .checkbox label:hover {
 	background: #D7E3EA;
@@ -393,14 +426,15 @@ input[type=checkbox] {
 input[type=radio] {
 	float:left;
 	width:auto;
-	margin: 0 3px 7px 0;
+	margin: .1em 0.5em .1em;
 }
 div.radio label {
 	margin: 0 0 6px 20px;
 }
-input[type=submit] {
+input[type=submit], button, .button {
     border: 1px solid #03C;
-	padding: 0.4em 1.2em;
+	/*padding: 0.4em 1.2em;*/
+	padding: 0.2em 2em;
 	-moz-border-radius: 1em;
 	border-radius: 1em;
 	font-weight: bold;
@@ -416,6 +450,8 @@ input[type=submit] {
 	-webkit-box-shadow: 0 0 10px #777;
 	-moz-box-shadow: 0 0 10px #777;
 	box-shadow: 0 0 10px #777;
+	min-width: 0;
+	margin: 0.5em;
 }
 input[type=submit]:active {
 	color: #666;
@@ -424,15 +460,18 @@ input[type=submit]:active {
 	-moz-box-shadow: 0 0 1em #777;
 	box-shadow: 0 0 1em #777;
 }
-input[type=submit]:hover {
+input[type=submit]:hover, button:hover, .button:hover {
 	background: #EBFBE2;
 	color: #666;
     border: 1px solid #093;
 	-webkit-box-shadow: 0 0 1em #090;
 	-moz-box-shadow: 0 0 1em #090;
 	box-shadow: 0 0 1em #090;
+	cursor: pointer;
 }
-
+.button {
+	margin: 0.3em 0.5em;
+}
 
 
 /* Paging */
@@ -601,12 +640,12 @@ Primary navigation
 
 /* Search Form */
 .searchfield {
-	width: 165px;
+	width: 177px;
 	float: right;
 	margin: -0.8em 1em 0 0;margin: -0.8em 1em 0 0;
 }
 .searchfield input {
-	padding-left: 20px;
+	padding: 0.3em 0.3em 0.3em 1.5em;
 	background: #fff url('../../img/admin/admin_sprite.png') no-repeat -590px -151px;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -616,6 +655,7 @@ Primary navigation
 	-moz-box-shadow: 0 0 10px #777;
 	box-shadow: 0 0 10px #777;
 	width: 140px;
+	min-width: 0;
 	color: #666666;
 	-webkit-font-smoothing: antialiased;
 	outline: none;
@@ -645,21 +685,23 @@ Primary navigation
 #tabs h1 {
 	float:left;
 	font-weight: bold;
-	font-size: 1em;
+	font-size: 1.8em;
 	margin: 0 0 0 1em;
-	position: relative;
-	top: 0.6em;
 	color: #FFF;
 }
 #tabs h1 a {
 	color: #FFF;
+}
+#tabs h1 small, #tabs h1 small a {
+	color: #CCC;
+	font-weight: normal;
 }
 #tabs img.shadow {
 	position:absolute;
 	top:1.9em;
 	left:0;
 }
-#tabs ul#leadTab {
+#tabs ul#leadTab, #tabs .tab {
 	background: transparent;
 	border: none;
 	border-radius: none;
@@ -669,7 +711,7 @@ Primary navigation
 	top: 0;
 }
 #tabs ul#leadTab li:first-child {
-	margin: 0 0 0 1em;
+	margin: 0 0.2em 0 1em;
 }
 
 
@@ -701,20 +743,20 @@ Primary navigation
 	font-size: 1.2em;
 	text-shadow: 0 1px 0 #fff;
 	
-    -moz-border-radius: 5px;
+    /*-moz-border-radius: 5px;
     border-radius: 5px;
     box-shadow: 1px 1px 1px #777777;
     -moz-box-shadow: 1px 1px 2px #777777;
     -webkit-box-shadow: 1px 1px 2px #777777;
-    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');*/
 }
 #content .viewHeading:hover {
 	background: #E6EDF9;
 }
 #content .metaData {
     background: #EBFBE2;
-	margin: 0.15em 0 0.5em 0;
-	padding: 0.3em;
+	margin: 0em 0 0.5em 0;
+	padding: 1.5em;
 	float: left;    
     -moz-border-radius: 10px;
     border-radius: 10px;
@@ -731,6 +773,7 @@ Primary navigation
     -moz-box-shadow: none;
     -webkit-box-shadow: none;
     filter: none;
+	padding: 0;
 }
 #content .metaData ul {
 	list-style-type: none;
@@ -759,9 +802,7 @@ Primary navigation
 	margin: 0 0 0.5em 0;
 }
 #content .image {
-	min-width: 16px;
-	min-height: 16px;
-	margin: 0 0.5em 0.5em 0;
+	min-width: 1em;
 }
 #content .index .image img {
 	float: left;
@@ -816,7 +857,9 @@ Primary navigation
     visibility: visible;
 }
 .contentSection {
-	position: relative;
+}
+.contentSection ul {
+	margin: 0 0 0 2em;
 }
 
 /* helper text */
@@ -845,7 +888,13 @@ Primary navigation
 
 #navigation {
 	margin: 0;
-	overflow: auto;
+	padding: 0.5em 1em;
+	border: 1px solid #DDDDDD;
+	border-radius: 2px 2px 2px 2px;
+	color: #444444;
+}
+#navigation ul {
+	margin: 0;
 }
 
 
@@ -898,15 +947,18 @@ Primary navigation
 	display:block;
 }
 .drop-holder {
-	float: left;
-	position: absolute;
+	position: relative;
 	bottom: 0;
+	left: 0;
+	height: 1px;
+	width: 1px;
 }
 .drop, div.actions ul {
 	position: absolute;
 	top: 0.7em;
 	width:10em;
 	padding:0;
+	margin:0 !important;
 	z-index:300;
 	display: none;
 	background: #fff;

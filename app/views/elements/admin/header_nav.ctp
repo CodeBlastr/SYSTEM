@@ -9,10 +9,10 @@
             <div class="menu">
               <ul>
                 <li class="title">Design</li>
-                <li><a href="/admin/webpages/webpages/index/type:template/">Templates</a></li>
-                <li><a href="/admin/webpages/webpages/index/type:element/">Elements</a></li>
-                <li><a href="/admin/webpages/webpage_csses">Css Files</a></li>
-                <li class="separator"><a href="/admin/webpages/webpage_jses">Js Files</a></li>
+                <li><a href="/webpages/webpages/index/type:template/">Templates</a></li>
+                <li><a href="/webpages/webpages/index/type:element/">Elements</a></li>
+                <li><a href="/webpages/webpage_csses">Css Files</a></li>
+                <li class="separator"><a href="/webpages/webpage_jses">Js Files</a></li>
               </ul>
               <ul>
                 <li class="title">Files</li>
@@ -28,7 +28,7 @@
             <div class="menu">
               <ul>
                 <li class="title">Content</li>
-                <li><a href="/admin/webpages/webpages/index/type:page_content/">Webpages</a></li>
+                <li><a href="/webpages/webpages/index/type:page_content/">Webpages</a></li>
                 <li><a href="/admin/admin/files_image">Images</a></li>
                 <li class="separator"><a href="/admin/admin/files_files">Documents</a></li>
                 <li class="separator"><a href="/admin/forms">Custom Forms</a></li>
@@ -36,8 +36,8 @@
               <ul>
                 <li class="title">Feedback</li>
                 <li><a href="/admin/comments">Comments</a></li>
-                <li><a href="/admin/ratings">Ratings</a></li>
-                <li class="separator"><a href="/admin/invite">Invites</a></li>
+                <li>Ratings (coming soon)</li>
+                <li class="separator"><!--a href="/invite/invites/invitation"-->Invites (coming soon)</li>
               </ul>
               <ul>
                 <li class="title">Extended</li>
@@ -63,24 +63,24 @@
             <div class="menu">
               <ul>
                 <li class="title">Contacts</li>
-                <li><a href="/admin/contacts">All Contacts</a></li>
-                <li><a href="/admin/contacts/contact_people">People</a></li>
-                <li class="separator"><a href="/admin/contacts/contact_companies">Companies</a></li>
+                <li><a href="/contacts">All Contacts</a></li>
+                <li><a href="/contacts/contact_people">People</a></li>
+                <li class="separator"><a href="/contacts/contact_companies">Companies</a></li>
               </ul>
               <ul>
                 <li class="title">Tracking</li>
-                <li><a href="/admin/contacts/contact_opportunities">Opportunities</a></li>
-                <li class="separator"><a href="/admin/contacts/contact_activities">Activities</a></li>
+                <li><!--a href="/admin/contacts/contact_opportunities"-->Opportunities (coming soon)</li>
+                <li class="separator"><a href="/contacts/contact_activities">Activities</a></li>
               </ul>
               <ul>
                 <li class="title">Sales</li>
                 <li><a href="/admin/estimates">Estimates</a></li>
                 <li><a href="/admin/invoices">Invoices</a></li>
-                <li class="separator"><a href="/admin/orders">Orders</a></li>
+                <li class="separator"><a href="/admin/orders/order_transactions/">Orders</a></li>
               </ul>
               <ul>
                 <li class="title">Products</li>
-                <li class="separator"><a href="/admin/catalogs/catalog_items">Products</a></li>
+                <li class="separator"><a href="/catalogs/catalog_items">Products</a></li>
               </ul>
               <p class="other"><a href="#" title="Sales Dashboard">Dashboard</a></p>
             </div>
@@ -93,7 +93,7 @@
                 <li class="title">Tools</li>
                 <li><a href="/admin/notifications/notification_templates">Notifications</a></li>
                 <li><a href="/admin/conditions">Conditions</a></li>
-                <li class="separator"><a href="/admin/workflows">Workflows</a></li>
+                <li class="separator"><a href="/workflows">Workflows</a></li>
               </ul>
               <ul>
                 <li class="title">Reporting</li>
@@ -109,10 +109,9 @@
             <div class="menu">
               <ul>
                 <li class="title">Projects</li>
-                <li><a href="/admin/projects">Projects</a></li>
-                <li><a href="/admin/timesheets">Timesheets</a></li>
-                <li><a href="/admin/tasks">Tasks</a></li>
-                <li class="separator"><a href="/admin/priorities">Priorities</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/timesheets">Timesheets</a></li>
+                <li><a href="/tasks/tasks/my">Tasks</a></li>
               </ul>
               <ul>
                 <li class="title">Support</li>
@@ -127,14 +126,14 @@
             <div class="menu">
               <ul>
                 <li class="title">Users</li>
-                <li class="separator"><a href="/admin/users">All Users</a></li>
+                <li class="separator"><a href="/users">All Users</a></li>
               </ul>
               <ul>
                 <li class="title">Social</li>
-                <li><a href="/admin/users/user_groups">Groups</a></li>
-                <li><a href="/admin/users/user_statuses">Statuses</a></li>
-                <li><a href="/admin/users/user_walls">Walls</a></li>
-                <li class="separator"><a href="/admin/messages">Messages</a></li>
+                <li><a href="/users/user_groups">Groups</a></li>
+                <li><a href="/users/user_statuses">Statuses</a></li>
+                <li><a href="/users/user_walls">Walls</a></li>
+                <li class="separator"><a href="/messages">Messages</a></li>
               </ul>
               <p class="other"><a href="#" title="Users Dashboard">Dashboard</a></p>
             </div>
@@ -145,11 +144,11 @@
             <div class="menu">
               <ul>
                 <li class="title">App Builder</li>
-                <li><a href="/admin/permissions/acores">Permissions</a></li>
+                <li><a href="/privileges">Permissions</a></li>
                 <li><a href="/admin/settings">Site Settings</a></li>
                 <li><a href="/admin/forms">Custom Forms</a></li>
                 <li><a href="/admin/conditions">Conditions</a></li>
-                <li class="separator"><a href="/admin/workflows">Workflows</a></li>
+                <li class="separator"><a href="/workflows">Workflows</a></li>
               </ul>
             </div>
           </div>

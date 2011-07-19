@@ -13,7 +13,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.models
  * @since         Zuha(tm) v 0.0.1
@@ -25,8 +25,6 @@ class Setting extends AppModel {
 	var $name = 'Setting';
 	// instead of storing available settings in a database we store all of the available settings here
 	var $names = array();
-	
-	
 	
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
@@ -44,6 +42,12 @@ class Setting extends AppModel {
 	function __construct() {
 		parent::__construct();
 		$this->names = array(
+				  'System' => array(
+						array(
+							'name' => 'SMTP',
+							'description' => 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'smtpUsername = xyz@example.com'.PHP_EOL.'smtpPassword = "XXXXXXX"'.PHP_EOL.'smtpHost = smtp.example.com'.PHP_EOL.'smtpPort = XXX'.PHP_EOL.'from = myemail@example.com'.PHP_EOL.'fromName = "My Name"',
+							),
+						),
 				  'Orders' => array(
 						array(
 							'name' => 'DEFAULT_PAYMENT',
@@ -66,37 +70,53 @@ class Setting extends AppModel {
 							'description' => 'Defines the credentials to Access payment api of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = webpro_126328478_biz_api1.example.com'.PHP_EOL.'API_PASSWORD = 9294399233'.PHP_EOL.'API_SIGNATURE = ApJtg.JrUW0YLN.tPmmGiu-exM.va778w7f873mX29QghYJnTf'.PHP_EOL.'API_ENDPOINT = https://api-3t.sandbox.paypal.com/nvp'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
 							),
 						array(
+							'name' => 'PAYPAL_ADAPTIVE',
+							'description' => 'Defines the credentials to Access payment api of Paypal for Adaptive payment methods.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = pro2_1306331130_biz_api1.enbake.com'.PHP_EOL.'API_PASSWORD = 1306331152'.PHP_EOL.'API_SIGNATURE = A8p31ikyPTksXuHA3gAY-vp4j5.uAaEj4E89F8jscaqMIfjpaXVNe4cJ'.PHP_EOL.'API_ENDPOINT = https://svcs.sandbox.paypal.com/AdaptivePayments'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
+							),	
+						array(
+							'name' => 'CHAINED_PAYMENT',
+							'description' => 'Defines the values to Access chained payment of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'returnUrl = "http://dealpops.zuha.com"'.PHP_EOL.'cancelUrl = "http://dealpops.zuha.com"'.PHP_EOL.'receiverPrimaryArray[] = ""'.PHP_EOL.'receiverInvoiceIdArray[] = ""'.PHP_EOL.'feesPayer = ""'.PHP_EOL.'ipnNotificationUrl = ""'.PHP_EOL.'memo = ""'.PHP_EOL.'pin = ""'.PHP_EOL.'preapprovalKey = ""'.PHP_EOL.'reverseAllParallelPaymentsOnError = ""'.PHP_EOL.'senderEmail = "pro2_1306331130_biz@enbake.com"',
+							),
+						array(
+							'name' => 'LOCATIONS',
+							'description' => 'Defines the users to whom the payment should divided using chained payment.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'syracuse[] =  40,syracuse@example.com'.PHP_EOL.'syracuse[] = 40,adagency@example.com',
+							),
+						array(
 							'name' => 'ENABLE_SHIPPING',
 							'description' => 'Defines the shipping option Enable/Disable for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'false',
 							),
 						array(
-							'name' => 'SHIPPING_FEDEX_ACCOUNT_NO',
-							'description' => 'Defines the account number for access Fedex api for shipping.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'510087526',
+							'name' => 'SHIPPING_FEDEX_USER_CREDENTIAL',
+							'description' => 'Defines the shipping fedex user credentials for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'UserCredential["Key"] = "BWw8o4cRu1z7NZZU"'.PHP_EOL.'UserCredential["Password"] = "CjV3icwSEDDpgFiTFweIkaEAc"',
 							),
 						array(
-							'name' => 'SHIPPING_FEDEX_METER_NO',
-							'description' => 'Defines the meter number to access Fedex api for shipping.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'118538458',
+							'name' => 'SHIPPING_FEDEX_CLIENT_DETAIL',
+							'description' => 'Defines the shipping fedex client credentials for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AccountNumber = "510087585"'.PHP_EOL.'MeterNumber = "100061554"',
 							),
 						array(
-							'name' => 'SHIP_DROP_OFF_TYPE',
-							'description' => 'Defines the default shipping type, drop off type'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'REGULARPICKUP',
+							'name' => 'SHIPPING_FEDEX_VERSION',
+							'description' => 'Defines the shipping fedex version.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'ServiceId = "crs"'.PHP_EOL.'Major = 9'.PHP_EOL.'Intermediate = 0'.PHP_EOL.'Minor = 0',
 							),
 						array(
-							'name' => 'SHIP_SERVICE',
-							'description' => 'Defines the default shipping service'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY',
+							'name' => 'SHIPPING_FEDEX_REQUESTED_SHIPMENT_SHIPPER',
+							'description' => 'Defines the shipping fedex default ship from address for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'Address["City"] = ""'.PHP_EOL.'Address["StateOrProvinceCode"] = "CA"'.PHP_EOL.'Address["PostalCode"] = "95451"'.PHP_EOL.'Address["CountryCode"] = "US"',
 							),
 						array(
-							'name' => 'SHIP_FROM_STATE',
-							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'CA',
+							'name' => 'SHIPPING_FEDEX_REQUESTED_SHIPMENT',
+							'description' => 'Defines the shipping fedex settings for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'DropoffType = REGULAR_PICKUP'.PHP_EOL.'ServiceType = FEDEX_GROUND'.PHP_EOL.'PackagingType = YOUR_PACKAGING'.PHP_EOL.'RateRequestTypes = ACCOUNT'.PHP_EOL.'RateRequestTypes = LIST'.PHP_EOL.'PackageDetail = INDIVIDUAL_PACKAGES',
 							),
 						array(
-							'name' => 'SHIP_FROM_ZIP',
-							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'95451',
+							'name' => 'SHIPPING_FEDEX_WEIGHT_UNIT',
+							'description' => 'Defines the shipping fedex weight unit for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'LB',
 							),
 						array(
-							'name' => 'SHIP_FROM_COUNTRY',
-							'description' => 'Defines the from address, the shipping will calculate.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'US',
+							'name' => 'SHIPPING_FEDEX_DIMENSIONS_UNIT',
+							'description' => 'Defines the shipping fedex dimension unit for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'IN',
 							),
+						array(
+							'name' => 'SHIPPING_FEDEX_DEFAULT_WEIGHT',
+							'description' => 'Defines the shipping fedex default weight if the weight is not givven for item for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'2.0',
+							),				
 						array(
 							'name' => 'FEDEX',
 							'description' => 'Define Enabled Shipping Service options the following variable defines the options which should be display	in the dropdown of shipping type for the app.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY = STANDARD'.PHP_EOL.'INTERNATIONALFIRST = "INTERNATIONAL FLAT FEE"'.PHP_EOL.'FEDEX1DAYFREIGHT = "NEXT DAY"',
@@ -107,7 +127,35 @@ class Setting extends AppModel {
 							'name' => 'DEFAULT_LOGIN_ERROR_MESSAGE',
 							'description' => 'Defines the message visitors see if they are not logged in and reach a restricted page. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'message = "Please become a registered user to access that feature."',
 							),
-						),
+						array(
+							'name' => 'TEMPLATES',
+							'description' => 'Defines the settings for site templates. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'template[] = A Serialized Array : Please use application tools to set',
+							),
+						array(
+							'name' => 'LOGIN_REDIRECT_URL',
+							'description' => 'Defines the url users go to after logging in. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/tickets/tickets/add/',
+							),
+						array(
+							'name' => 'LOGOUT_REDIRECT_URL',
+							'description' => 'Defines the url users go to after logging out. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/goodbye/',
+							),
+						array(
+							'name' => 'REGISTRATION_EMAIL_VERIFICATION',
+							'description' => 'Defines whether registration requires email verification before the account is approved. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'anything (If this setting exists at all, then verification is required.)',
+							),
+						array(
+							'name' => 'DEFAULT_LOGIN_REDIRECT_URL',
+							'description' => 'Defines the url users go to after logging in. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/members/members/is_member/',
+							),
+						array(
+							'name' => 'MEMBERSHIP_CATALOG_ITEM_REDIRECT',
+							'description' => 'Defines the url for new regiter members to choose a membership plan. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/catalogs/catalog_items/view/48',
+							),
+						array(
+							'name' => 'DEFAULT_TEMPLATE_ID',
+							'description' => 'Defines the settings for default site templates. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
+							),		
+						),	
 				  'Reports' => array(
 						array(
 							'name' => 'ANALYTICS',
@@ -115,6 +163,10 @@ class Setting extends AppModel {
 							),
 						),
 				  'Gallery' => array(
+						array(
+							'name' => 'DEFAULT_TYPE', 
+							'description' => 'Defines the type of gallery used if no other is specified.'.PHP_EOL.PHP_EOL.'Example value: '.PHP_EOL.'gallerific',
+							),
 						array(
 							'name' => 'DEFAULT_THUMB_WIDTH',
 							'description' => 'Defines the medium thumbnail width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'120',
@@ -140,6 +192,26 @@ class Setting extends AppModel {
 							'description' => 'Defines the full size image height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
 							),
 						),
+				  'Element' => array(
+						array(
+							'name' => 'PROJECTS_MOST_WATCHED',
+							'description' => 'Defines setting variables for the most watched module.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'moduleTitle = "My Custom Title"'.PHP_EOL.'numberOfProjects = 5',
+							),
+						),
+				  'Users' => array(
+						array(
+							'name' => 'PAID_EXPIRED_ROLE_ID',
+							'description' => 'Defines setting variables for the expired user role id.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'3',
+							),
+						array(
+							'name' => 'PAID_ROLE_ID',
+							'description' => 'Defines setting variables for the paid user role id.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
+							),
+						array(
+							'name' => 'PAID_ROLE_REDIRECT',
+							'description' => 'Defines setting variables for the paid user role redirect.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/users/users/my',
+							),		
+						),		
 				  );
 	}
 	
@@ -190,7 +262,7 @@ class Setting extends AppModel {
 			}
 		}
 		
-		$writeData .= $this->finishIniData($holdSettings);
+		$writeData .= !empty($holdSettings) ? $this->finishIniData($holdSettings) : '';
 		return $writeData;
 	}
 	
@@ -223,7 +295,11 @@ class Setting extends AppModel {
 		#$file->path = CONFIGS.'settings.ini';
 		$writeData = $this->prepareSettingsIniData();
 		if($file->write($file->prepare($writeData))) {
-			return true;
+			if($this->writeDefaultsIniData()) {
+				return true;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
@@ -284,6 +360,13 @@ class Setting extends AppModel {
 			$data['Setting']['value'] = $setting['Setting']['value'].PHP_EOL.$data['Setting']['value'];
 		}
 		
+		// some values need to be encrypted.  We do that here (@todo put this in its own two functions.  One for "encode" function, and one for which settings should be encoded, so that we can specify all settings which need encryption, and reuse this instead of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well. 
+		if ($data['Setting']['name'] == 'SMTP') {
+			$data['Setting']['value'] = 'smtp = "'.base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'))).'"';
+			#$data['Setting']['value'] = 'smtp = "'.base64_encode(gzcompress($data['Setting']['value'])).'"';
+			#$data['Setting']['value'] = base64_decode($data['Setting']['value']);
+			#$data['Setting']['value'] = Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'));
+		}
 		return $data;
 	}
 	

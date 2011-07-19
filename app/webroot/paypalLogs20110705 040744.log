@@ -1,0 +1,42 @@
+begin . . mc_gross ==> 100.00 
+ .  .  . . outstanding_balance ==> 0.00 
+ .  .  . . period_type ==>  Regular 
+ .  .  . . next_payment_date ==> 03:00:00 Aug 05, 2011 PDT 
+ .  .  . . protection_eligibility ==> Ineligible 
+ .  .  . . payment_cycle ==> Monthly 
+ .  .  . . tax ==> 0.00 
+ .  .  . . payer_id ==> TNB75PV947MJC 
+ .  .  . . payment_date ==> 04:12:42 Jul 05, 2011 PDT 
+ .  .  . . payment_status ==> Completed 
+ .  .  . . product_name ==> testing for arb leasesimple 
+ .  .  . . charset ==> windows-1252 
+ .  .  . . recurring_payment_id ==> I-V90T211NMDLV 
+ .  .  . . first_name ==> test 
+ .  .  . . mc_fee ==> 3.20 
+ .  .  . . notify_version ==> 3.1 
+ .  .  . . amount_per_cycle ==> 100.00 
+ .  .  . . payer_status ==> unverified 
+ .  .  . . currency_code ==> USD 
+ .  .  . . business ==> pro2_1306331130_biz@enbake.com 
+ .  .  . . verify_sign ==> Amm7esRra2S7MhBkrQxsJmsbxUdnAM6Zd2yvnNL560OMbwKNXo4wNZ93 
+ .  .  . . initial_payment_amount ==> 0.00 
+ .  .  . . profile_status ==> Active 
+ .  .  . . amount ==> 100.00 
+ .  .  . . txn_id ==> 1RS66700VP217143R 
+ .  .  . . payment_type ==> instant 
+ .  .  . . last_name ==> Test 
+ .  .  . . receiver_email ==> pro2_1306331130_biz@enbake.com 
+ .  .  . . payment_fee ==> 3.20 
+ .  .  . . receiver_id ==> G2V2VJVXQ6EB2 
+ .  .  . . txn_type ==> recurring_payment 
+ .  .  . . mc_currency ==> USD 
+ .  .  . . residence_country ==> US 
+ .  .  . . test_ipn ==> 1 
+ .  .  . . receipt_id ==> 4880-3772-2926-4865 
+ .  .  . . transaction_subject ==>  
+ .  .  . . payment_gross ==> 100.00 
+ .  .  . . shipping ==> 0.00 
+ .  .  . . product_type ==> 1 
+ .  .  . . time_created ==> 06:54:25 Jul 04, 2011 PDT 
+ .  .  . . ipn_track_id ==> DmtSIA-vQOQBx7mXcY0O-g 
+ .  . 

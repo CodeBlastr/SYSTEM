@@ -114,11 +114,46 @@ class AppModel extends Model {
     	return $results;
 	}
 	
-		
 	
-/**
- * Don't know what this is for, I'd like to see a comment placed.
- */
+	function listPlugins($remove = array(), $merge = true) {
+		$defaultRemove = array('Acl Extras', 'Api Generator', 'Recaptcha');
+		$remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
+		$plugins = App::objects('plugin');
+		foreach ($plugins as $plugin) : 
+			$return[$plugin] = Inflector::humanize(Inflector::underscore($plugin));
+		endforeach;
+		
+		return array_diff($return, $remove);
+	}
+	
+	
+	function listModels($pluginPath = null, $remove = array(), $merge = true) {
+		# defaultRemove originally done for this page : /admin/categories/categories/add/ 
+		# if you add items for removal from this list make sure that they should also be removed from there
+		# or customize the categories_controller so that listModels() function to not merge
+		$defaultRemove = array('Affiliated', 'Catalog Items Catalog Category', 'Category', 'Categorized', 'Category Option', 'Catalog Item Price', 'Estimated', 'Form', 'Form Fieldset', 'Form Input', 'Forum', 'Forum Category', 'Poll', 'Poll Option', 'Poll Vote', 'Post', 'Setting', 'Topic', 'Invite', 'Invoices Catalog Item', 'Invoices Timesheet', 'Notification', 'Notification Template', 'Favorite', 'Privilege', 'Requestor', 'Section', 'Search Index', 'TicketDepartmentsAssignee', 'Workflow', 'Workflow Item', 'Workflow Event', 'Workflow Item Event');
+		$remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
+		
+		$plugins = $this->listPlugins();
+		foreach ($plugins as $plugin) : 
+			$pluginPaths[] = App::pluginPath($plugin);
+		endforeach;
+		
+		foreach ($pluginPaths as $pluginPath) :
+			$models = !empty($models) ? array_merge($models, App::objects('model', $pluginPath . 'models' . DS, false)) : App::objects('model', $pluginPath . 'models' . DS, false);
+		endforeach;
+		
+		foreach ($models as $model) :
+			$return[$model] = Inflector::humanize(Inflector::underscore($model));
+		endforeach;
+		
+		return array_diff($return, $remove);
+	}
+	
+	
+	/**
+	 * Don't know what this is for, I'd like to see a comment placed.
+	 */
 	function parentNode() {
 		$this->name;
 	}
@@ -182,5 +217,4 @@ class AppModel extends Model {
 		}
     }
 }
-
 ?>

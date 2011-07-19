@@ -25,13 +25,15 @@ class AdminController extends AppController {
 	var $name = 'Admin';
     var $uses = array();
 	var $dbVersion = __SYSTEM_ZUHA_DB_VERSION;
-/**
- * Loads variables from section reporting to send to the view for display. 
- *
- * Example: $this->set('topPosts', ClassRegistry::init('Post')->getTop());
- *
- * @link http://book.zuha.com/zuha-app-controllers/AdminController.html
- */
+
+
+	/**
+	 * Loads variables from section reporting to send to the view for display. 
+	 *
+	 * Example: $this->set('topPosts', ClassRegistry::init('Post')->getTop());
+	 *
+	 * @link http://book.zuha.com/zuha-app-controllers/AdminController.html
+	 */
     function index () {
 		$this->Setting = ClassRegistry::init('Setting');
 		if (!empty($this->data)) {
@@ -53,7 +55,7 @@ class AdminController extends AppController {
         # $this->set('recentNews', ClassRegistry::init('News')->getRecent());
         # $this->set('topEmployees', ClassRegistry::init('Employee')->getTopPerformers());
         # $this->set('topSellingProducts', ClassRegistry::init('Product')->getTopSellers());
-		$this->layout = 'admin';
+		$this->layout = 'default';
 	}
 	
 	function admin_files_image() {
@@ -201,5 +203,6 @@ class AdminController extends AppController {
 			}
 		}
 	}
+	
 }
 ?>
