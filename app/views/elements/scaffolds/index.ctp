@@ -63,7 +63,7 @@ foreach ($data as $dat):
           <ul class="metaData">
             <?php foreach($dat[$modelName] as $keyName => $keyValue) : 
 			# over write the keyValue if its belongsTo associated record to display (ie. assignee_id = full_name)
-			if (array_key_exists(Inflector::humanize(str_replace('_id', '', $keyName)), $associations)) :
+			if (!empty($associations) && array_key_exists(Inflector::humanize(str_replace('_id', '', $keyName)), $associations)) :
 				$displayField = $associations[Inflector::humanize(str_replace('_id', '', $keyName))]['displayField'];
 				$keyName = Inflector::humanize(str_replace('_id', '', $keyName));
 				$keyValue = $dat[Inflector::humanize(str_replace('_id', '', $keyName))][$displayField]; 
