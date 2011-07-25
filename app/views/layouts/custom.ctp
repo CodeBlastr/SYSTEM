@@ -82,7 +82,7 @@
 			} 
 		} 
 		echo $scripts_for_layout;
-		if (defined('__REPORTS_ANALYTICS')) {
+		if (defined('__REPORTS_ANALYTICS')) :
 			echo $this->Element('analytics', array('plugin' => 'reports'));
 		endif;
 	?>
