@@ -361,12 +361,12 @@ class Setting extends AppModel {
 		}
 		
 		// some values need to be encrypted.  We do that here (@todo put this in its own two functions.  One for "encode" function, and one for which settings should be encoded, so that we can specify all settings which need encryption, and reuse this instead of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well. 
-		if ($data['Setting']['name'] == 'SMTP') {
+		if ($data['Setting']['name'] == 'SMTP' && !parse_ini_string($data['Setting']['name'])) :
 			$data['Setting']['value'] = 'smtp = "'.base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'))).'"';
 			#$data['Setting']['value'] = 'smtp = "'.base64_encode(gzcompress($data['Setting']['value'])).'"';
 			#$data['Setting']['value'] = base64_decode($data['Setting']['value']);
 			#$data['Setting']['value'] = Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'));
-		}
+		endif;
 		return $data;
 	}
 	

@@ -250,7 +250,7 @@ class AppController extends Controller {
 		$msg   = 'Invalid Id';
 		
 		// check id is valid
-		if($id!=null && is_numeric($id)) {
+		if(!empty($id)) {
 			// get the Item
 			$item = $this->$model->read(null,$id);
 			
@@ -263,6 +263,8 @@ class AppController extends Controller {
 				} else {
 					$msg = 'There was a problem deleting your Item, please try again';
 				}
+			} else {
+				$msg = 'Id not found';
 			}
 		}
 	
