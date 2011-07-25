@@ -24,6 +24,9 @@
 	echo $this->Html->script('system/jquery.cookie');
 	echo $this->Html->script('admin/admin');
 	echo $scripts_for_layout;
+	if (defined('__REPORTS_ANALYTICS')) :
+		echo $this->Element('analytics', array('plugin' => 'reports'));
+	endif;
 ?>
 </head>
 <body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
