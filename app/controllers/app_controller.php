@@ -250,7 +250,7 @@ class AppController extends Controller {
 		$msg   = 'Invalid Id';
 		
 		// check id is valid
-		if($id!=null && is_numeric($id)) {
+		if(!empty($id)) {
 			// get the Item
 			$item = $this->$model->read(null,$id);
 			
@@ -263,6 +263,8 @@ class AppController extends Controller {
 				} else {
 					$msg = 'There was a problem deleting your Item, please try again';
 				}
+			} else {
+				$msg = 'Id not found';
 			}
 		}
 	
@@ -352,14 +354,14 @@ class AppController extends Controller {
 		if (defined('__APP_TEMPLATES')) :
 			$settings = unserialize(__APP_TEMPLATES);
 			$i = 0; 
-			foreach ($settings['template'] as $setting) :
+			if (!empty($settings['template'])) : foreach ($settings['template'] as $setting) :
 				$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
 				$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
 				$templates[$i]['urls'] = $templates[$i]['urls'] == '""' ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
 				$i++;
-			endforeach;
+			endforeach; endif;
 			
-			foreach ($templates as $key => $template) : 
+			if (!empty($templates)) : foreach ($templates as $key => $template) : 
 				// check urls first so that we don't accidentally use a default template before a template set for this url.
 				if (!empty($template['urls'])) : 
 					// note : this over rides isDefault, so if its truly a default template, don't set urls
@@ -373,7 +375,7 @@ class AppController extends Controller {
 					break;
 				endif;
 				
-			endforeach;	
+			endforeach; endif;	
 			
 			if (!empty($templates) && empty($this->templateId)) : foreach ($templates as $key => $template) :
 			

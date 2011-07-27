@@ -44,8 +44,16 @@ class Setting extends AppModel {
 		$this->names = array(
 				  'System' => array(
 						array(
+							'name' => 'GUESTS_USER_ROLE_ID',
+							'description' => 'Defines the user role the system should use for guest access. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'5',
+							),
+						array(
 							'name' => 'SMTP',
 							'description' => 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'smtpUsername = xyz@example.com'.PHP_EOL.'smtpPassword = "XXXXXXX"'.PHP_EOL.'smtpHost = smtp.example.com'.PHP_EOL.'smtpPort = XXX'.PHP_EOL.'from = myemail@example.com'.PHP_EOL.'fromName = "My Name"',
+							),
+						array(
+							'name' => 'ZUHA_DB_VERSION ',
+							'description' => 'Defines the current version of the database.  Used to determine if an upgrade is needed. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'0.0123',
 							),
 						),
 				  'Orders' => array(
@@ -124,12 +132,20 @@ class Setting extends AppModel {
 						),
 				  'App' => array(
 						array(
+							'name' => 'DEFAULT_USER_REGISTRATION_ROLE_ID',
+							'description' => 'Defines the role users will be assigned by default when they register as a new users at yourdomain.com/users/users/register.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'3',
+							),
+						array(
 							'name' => 'DEFAULT_LOGIN_ERROR_MESSAGE',
 							'description' => 'Defines the message visitors see if they are not logged in and reach a restricted page. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'message = "Please become a registered user to access that feature."',
 							),
 						array(
 							'name' => 'TEMPLATES',
-							'description' => 'Defines the settings for site templates. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'template[] = A Serialized Array : Please use application tools to set',
+							'description' => 'Defines which user roles and urls templates will be used at. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'template[] = A Serialized Array : You must use the template edit pages to set',
+							),
+						array(
+							'name' => 'LOAD_APP_HELPERS',
+							'description' => 'Defines which helpers should be loaded and when they should be loaded. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'Menu',
 							),
 						array(
 							'name' => 'LOGIN_REDIRECT_URL',
@@ -163,6 +179,10 @@ class Setting extends AppModel {
 							),
 						),
 				  'Gallery' => array(
+						array(
+							'name' => 'DEFAULT_TYPE', 
+							'description' => 'Defines the type of gallery used if no other is specified.'.PHP_EOL.PHP_EOL.'Example value: '.PHP_EOL.'gallerific',
+							),
 						array(
 							'name' => 'DEFAULT_THUMB_WIDTH',
 							'description' => 'Defines the medium thumbnail width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'120',
@@ -357,12 +377,12 @@ class Setting extends AppModel {
 		}
 		
 		// some values need to be encrypted.  We do that here (@todo put this in its own two functions.  One for "encode" function, and one for which settings should be encoded, so that we can specify all settings which need encryption, and reuse this instead of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well. 
-		if ($data['Setting']['name'] == 'SMTP') {
+		if ($data['Setting']['name'] == 'SMTP' && !parse_ini_string($data['Setting']['name'])) :
 			$data['Setting']['value'] = 'smtp = "'.base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'))).'"';
 			#$data['Setting']['value'] = 'smtp = "'.base64_encode(gzcompress($data['Setting']['value'])).'"';
 			#$data['Setting']['value'] = base64_decode($data['Setting']['value']);
 			#$data['Setting']['value'] = Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'));
-		}
+		endif;
 		return $data;
 	}
 	
