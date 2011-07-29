@@ -39,7 +39,7 @@ class MeioUploadBehavior extends ModelBehavior {
 		'allowedMime' => array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif', 'image/bmp', 'image/x-icon', 'image/vnd.microsoft.icon'),
 		'allowedExt' => array('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.ico'),
 		'default' => false, // Not sure what this does
-		'zoomCrop' => true, // Whether to use ZoomCrop or not with PHPThumb
+		'zoomCrop' => false, // Whether to use ZoomCrop or not with PHPThumb
 		'thumbnails' => true,
 		'thumbsizes' => array(
 			// Place any custom thumbsize in model config instead,
@@ -895,7 +895,7 @@ class MeioUploadBehavior extends ModelBehavior {
 				'thumbHeight' => 225,
 				'maxDimension' => '',
 				'thumbnailQuality' => $this->__fields[$model->alias][$fieldName]['thumbnailQuality'],
-				'zoomCrop' => true
+				'zoomCrop' => false
 			),
 			$params);
 

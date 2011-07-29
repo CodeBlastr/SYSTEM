@@ -1,28 +1,0 @@
-begin . . payment_cycle ==> Monthly 
- .  .  . . txn_type ==> recurring_payment_profile_created 
- .  .  . . last_name ==> deepak 
- .  .  . . next_payment_date ==> 03:00:00 Jul 07, 2011 PDT 
- .  .  . . residence_country ==> US 
- .  .  . . initial_payment_amount ==> 0.00 
- .  .  . . currency_code ==> USD 
- .  .  . . time_created ==> 07:38:25 Jul 06, 2011 PDT 
- .  .  . . verify_sign ==> AMO7qchI8N7xqJNB6Y9bCkHZWeUvAYuCKxVR326m4CaeLHxYXcfNblxk 
- .  .  . . period_type ==>  Regular 
- .  .  . . payer_status ==> unverified 
- .  .  . . test_ipn ==> 1 
- .  .  . . tax ==> 0.00 
- .  .  . . first_name ==> deepak 
- .  .  . . receiver_email ==> pro2_1306331130_biz@enbake.com 
- .  .  . . payer_id ==> TNB75PV947MJC 
- .  .  . . product_type ==> 1 
- .  .  . . shipping ==> 0.00 
- .  .  . . amount_per_cycle ==> 50.00 
- .  .  . . profile_status ==> Active 
- .  .  . . charset ==> windows-1252 
- .  .  . . notify_version ==> 3.1 
- .  .  . . amount ==> 50.00 
- .  .  . . outstanding_balance ==> 0.00 
- .  .  . . recurring_payment_id ==> I-37C63KJJE1JY 
- .  .  . . product_name ==> testing for arb leasesimple 
- .  .  . . ipn_track_id ==> XNV9VTS7EW.pTv5phUsaZA 
- .  . 
