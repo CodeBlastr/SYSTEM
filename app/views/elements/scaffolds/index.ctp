@@ -44,7 +44,7 @@ foreach ($data as $dat):
         <div class="drop-holder indexDrop"> <span><img src="/img/admin/btn-down.png" /></span>
           <ul class="drop">
           	<?php if(!empty($actions)) : foreach ($actions as $action) : ?>
-            <li><?php echo str_replace('{id}', $id, $action); ?></li>
+            <li><?php $patterns = array('/{/', '/}/', '/\[/', '/\]/'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.preg_replace($patterns, $replaces, $action).'\';'; eval($action); ?></li>
             <?php endforeach; else: ?>
             <li><?php echo $html->link('View', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
             <li><?php echo $html->link('Edit', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
