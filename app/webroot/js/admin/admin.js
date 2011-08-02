@@ -39,20 +39,20 @@ $(function() {
 	});
 	
 	/* Helper Text show statement */
-	if ($.cookie('hideHelperText') == null) {
+	if ($.cookie('showHelperText')) {
+		$('#helpOpen').slideDown();
+	} else {		
 		$('#helperText').show();
 		$('#helpOpen').hide();
-	} else {		
-		$('#helpOpen').slideDown();
 	}
 	/* Helper Text links */
 	$('#helpClose').click(function(e){
-		$.cookie('hideHelperText', 1, { expires: 999 });
+		$.cookie('showHelperText', null);
 		$('#helperText').slideUp('slow');
 		$('#helpOpen').show();
 	});
 	$('#helpOpen').click(function(e){
-		$.cookie('hideHelperText', null);
+		$.cookie('showHelperText', 1, { expires: 999 });
 		$('#helperText').slideDown('slow');
 		$('#helpOpen').hide();
 	});
