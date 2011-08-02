@@ -743,7 +743,7 @@ class AppController extends Controller {
 		if (defined('__SYSTEM_GUESTS_USER_ROLE_ID')) {
 			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYSTEM_GUESTS_USER_ROLE_ID);
 		} else {
-			echo 'In /admin/settings key: SYS, value: GUESTS_USER_ROLE_ID must be defined for guest access to work.';
+			echo 'In /admin/settings key: SYSTEM, value: GUESTS_USER_ROLE_ID must be defined for guest access to work.';
 		}
 		return $guestsAro;
 	}
