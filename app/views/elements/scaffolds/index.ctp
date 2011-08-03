@@ -62,18 +62,25 @@ foreach ($data as $dat):
         <div class="indexCell">
           <ul class="metaData">
             <?php foreach($dat[$modelName] as $keyName => $keyValue) : 
+			# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
+			$_keyName = $keyName;
+			$keyName = Inflector::humanize(str_replace('_id', '', $keyName)); 
+       		if(strpos($_keyName, '_') && is_array($dat[$modelName][str_replace(' ', '', $keyName)])) :  
+			else :
 			# over write the keyValue if its belongsTo associated record to display (ie. assignee_id = full_name)
-			if (!empty($associations) && array_key_exists(Inflector::humanize(str_replace('_id', '', $keyName)), $associations)) :
+			if (!empty($associations) && array_key_exists($keyName, $associations)) :
 				$displayField = $associations[Inflector::humanize(str_replace('_id', '', $keyName))]['displayField'];
-				$keyName = Inflector::humanize(str_replace('_id', '', $keyName));
-				$keyValue = $dat[Inflector::humanize(str_replace('_id', '', $keyName))][$displayField]; 
-			else : 
-				$keyName = Inflector::humanize($keyName);
+				# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
+				$keyValue = is_array($dat[$modelName][$keyName]) && !empty($dat[$modelName][$keyName][$displayField]) ? 
+						$dat[$modelName][$keyName][$displayField] : 
+						(!empty($dat[$keyName][$displayField]) ? $dat[$keyName][$displayField] : null); 
 			endif;
+			$keyName = Inflector::humanize($keyName);
 			# if its a date parse it into words
 			if (strtotime($keyValue)) : $keyValue = $time->timeAgoInWords($keyValue); endif; // human readable dates 
 			?>
-            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
+            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>        
+	        <?php endif; ?>
             <?php endforeach; ?>
           </ul>
         </div>
