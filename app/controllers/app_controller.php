@@ -94,7 +94,7 @@ class AppController extends Controller {
 		/**
 		 * Configure AuthComponent
 		 */
-		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? unserialize(__APP_DEFAULT_LOGIN_ERROR_MESSAGE) : array('message'=> 'Please register or login to access that feature.');
+		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : array('message'=> 'Please register or login to access that feature.');
 		$this->Auth->authError = $authError['message'];
         $this->Auth->loginAction = array(
 			'plugin' => 'users',
@@ -282,11 +282,11 @@ class AppController extends Controller {
 	
 	
 	/**
-	 * Convenience admin_ajax_edit 
+	 * Convenience __ajax_edit 
 	 * The goal is to make less code necessary in individual controllers 
 	 * and have more reusable code.
 	 */
-	function __admin_ajax_edit($id = null) {
+	function __ajax_edit($id = null) {
         if ($this->data) {
 			# This will not work for multiple fields, and is meant for a form with a single value to update
 			# Create the model name from the controller requested in the url
@@ -743,7 +743,7 @@ class AppController extends Controller {
 		if (defined('__SYSTEM_GUESTS_USER_ROLE_ID')) {
 			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYSTEM_GUESTS_USER_ROLE_ID);
 		} else {
-			echo 'In /admin/settings key: SYS, value: GUESTS_USER_ROLE_ID must be defined for guest access to work.';
+			echo 'In /admin/settings key: SYSTEM, value: GUESTS_USER_ROLE_ID must be defined for guest access to work.';
 		}
 		return $guestsAro;
 	}

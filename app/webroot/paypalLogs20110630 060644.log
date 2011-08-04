@@ -1,28 +1,0 @@
-begin . . payment_cycle ==> Monthly 
- .  .  . . txn_type ==> recurring_payment_profile_cancel 
- .  .  . . last_name ==> test 
- .  .  . . next_payment_date ==> N/A 
- .  .  . . residence_country ==> US 
- .  .  . . initial_payment_amount ==> 0.00 
- .  .  . . currency_code ==> USD 
- .  .  . . time_created ==> 06:41:42 Jun 30, 2011 PDT 
- .  .  . . verify_sign ==> A.XGNq4GP2NT-xAIU1-yrNz.ArAyAPkUW5IYluKW3mGC-10DhmbmL0QT 
- .  .  . . period_type ==>  Regular 
- .  .  . . payer_status ==> unverified 
- .  .  . . test_ipn ==> 1 
- .  .  . . tax ==> 0.00 
- .  .  . . first_name ==> enbake 
- .  .  . . receiver_email ==> pro2_1306331130_biz@enbake.com 
- .  .  . . payer_id ==> TNB75PV947MJC 
- .  .  . . product_type ==> 1 
- .  .  . . shipping ==> 0.00 
- .  .  . . amount_per_cycle ==> 50.00 
- .  .  . . profile_status ==> Cancelled 
- .  .  . . charset ==> windows-1252 
- .  .  . . notify_version ==> 3.1 
- .  .  . . amount ==> 50.00 
- .  .  . . outstanding_balance ==> 0.00 
- .  .  . . recurring_payment_id ==> I-4CU2AKU79UWM 
- .  .  . . product_name ==> testing for arb leasesimple 
- .  .  . . ipn_track_id ==> TPPXbIW9QEunYxZB4XBGHg 
- .  . 

@@ -137,7 +137,7 @@ class Setting extends AppModel {
 							),
 						array(
 							'name' => 'DEFAULT_LOGIN_ERROR_MESSAGE',
-							'description' => 'Defines the message visitors see if they are not logged in and reach a restricted page. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'message = "Please become a registered user to access that feature."',
+							'description' => 'Defines the message visitors see if they are not logged in and reach a restricted page. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'"Please become a registered user to access that feature."',
 							),
 						array(
 							'name' => 'TEMPLATES',

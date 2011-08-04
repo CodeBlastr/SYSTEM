@@ -1,43 +1,0 @@
-begin . . x_response_code ==> 1 
- .  .  . . x_response_reason_code ==> 1 
- .  .  . . x_response_reason_text ==> This transaction has been approved. 
- .  .  . . x_avs_code ==> Y 
- .  .  . . x_auth_code ==> 3FW37T 
- .  .  . . x_trans_id ==> 2161135586 
- .  .  . . x_method ==> CC 
- .  .  . . x_card_type ==> Visa 
- .  .  . . x_account_number ==> XXXX1111 
- .  .  . . x_first_name ==> enbake 
- .  .  . . x_last_name ==> test 
- .  .  . . x_company ==>  
- .  .  . . x_address ==> ljkkljkj jkjk 
- .  .  . . x_city ==> jkjk 
- .  .  . . x_state ==> jk 
- .  .  . . x_zip ==> jkjklj 
- .  .  . . x_country ==> kljj 
- .  .  . . x_phone ==>  
- .  .  . . x_fax ==>  
- .  .  . . x_email ==> email@example.com 
- .  .  . . x_invoice_num ==> none 
- .  .  . . x_description ==> Test transaction for ValidateCustomerPaymentProfile. 
- .  .  . . x_type ==> auth_only 
- .  .  . . x_cust_id ==> none 
- .  .  . . x_ship_to_first_name ==> none 
- .  .  . . x_ship_to_last_name ==> none 
- .  .  . . x_ship_to_company ==> none 
- .  .  . . x_ship_to_address ==> none 
- .  .  . . x_ship_to_city ==> none 
- .  .  . . x_ship_to_state ==> none 
- .  .  . . x_ship_to_zip ==> none 
- .  .  . . x_ship_to_country ==> none 
- .  .  . . x_amount ==> 0.00 
- .  .  . . x_tax ==> 0.00 
- .  .  . . x_duty ==> 0.00 
- .  .  . . x_freight ==> 0.00 
- .  .  . . x_tax_exempt ==> FALSE 
- .  .  . . x_po_num ==> none 
- .  .  . . x_MD5_Hash ==> 34A0213C66817BF5D52361FEBD10B063 
- .  .  . . x_cvv2_resp_code ==>  
- .  .  . . x_cavv_response ==> 2 
- .  .  . . x_test_request ==> false 
- .  . 

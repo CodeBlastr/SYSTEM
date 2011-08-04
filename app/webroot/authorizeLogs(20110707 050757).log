@@ -1,43 +1,0 @@
-begin . . x_response_code ==> 3 
- .  .  . . x_response_reason_code ==> 11 
- .  .  . . x_response_reason_text ==> A duplicate transaction has been submitted. 
- .  .  . . x_avs_code ==> P 
- .  .  . . x_auth_code ==>  
- .  .  . . x_trans_id ==> 0 
- .  .  . . x_method ==> CC 
- .  .  . . x_card_type ==> Visa 
- .  .  . . x_account_number ==> XXXX1111 
- .  .  . . x_first_name ==> enbake 
- .  .  . . x_last_name ==> test 
- .  .  . . x_company ==>  
- .  .  . . x_address ==> dfjkkjk kjk 
- .  .  . . x_city ==> jkjkj 
- .  .  . . x_state ==> kjk 
- .  .  . . x_zip ==> jkjkjk 
- .  .  . . x_country ==> jkjkj 
- .  .  . . x_phone ==>  
- .  .  . . x_fax ==>  
- .  .  . . x_email ==>  
- .  .  . . x_invoice_num ==>  
- .  .  . . x_description ==>  
- .  .  . . x_type ==> auth_only 
- .  .  . . x_cust_id ==> 144 
- .  .  . . x_ship_to_first_name ==>  
- .  .  . . x_ship_to_last_name ==>  
- .  .  . . x_ship_to_company ==>  
- .  .  . . x_ship_to_address ==>  
- .  .  . . x_ship_to_city ==>  
- .  .  . . x_ship_to_state ==>  
- .  .  . . x_ship_to_zip ==>  
- .  .  . . x_ship_to_country ==>  
- .  .  . . x_amount ==> 110.00 
- .  .  . . x_tax ==> 0.00 
- .  .  . . x_duty ==> 0.00 
- .  .  . . x_freight ==> 0.00 
- .  .  . . x_tax_exempt ==> FALSE 
- .  .  . . x_po_num ==>  
- .  .  . . x_MD5_Hash ==> BE28FF6E7045EC8B7840FFFD2615B14D 
- .  .  . . x_cvv2_resp_code ==>  
- .  .  . . x_cavv_response ==>  
- .  .  . . x_test_request ==> false 
- .  . 
