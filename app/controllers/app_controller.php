@@ -282,11 +282,11 @@ class AppController extends Controller {
 	
 	
 	/**
-	 * Convenience admin_ajax_edit 
+	 * Convenience __ajax_edit 
 	 * The goal is to make less code necessary in individual controllers 
 	 * and have more reusable code.
 	 */
-	function __admin_ajax_edit($id = null) {
+	function __ajax_edit($id = null) {
         if ($this->data) {
 			# This will not work for multiple fields, and is meant for a form with a single value to update
 			# Create the model name from the controller requested in the url

@@ -25,8 +25,9 @@ if (!empty($data)) :
     <?php
 $i = 0;
 foreach ($data as $dat):
-	$id = !empty($dat[$modelName]['id']) ? $dat[$modelName]['id'] : null;
-	unset($dat[$modelName]['id']);
+	$displayId = !empty($displayId) ? $displayId : 'id';
+	$id = !empty($dat[$modelName][$displayId]) ? $dat[$modelName][$displayId] : null;
+	unset($dat[$modelName][$displayId]);
 	$name = !empty($dat[$modelName][$displayName]) ? $dat[$modelName][$displayName] : null;
 	unset($dat[$modelName][$displayName]);
 	$description = !empty($dat[$modelName][$displayDescription]) ? $dat[$modelName][$displayDescription] : null;
@@ -64,14 +65,15 @@ foreach ($data as $dat):
             <?php foreach($dat[$modelName] as $keyName => $keyValue) : 
 			# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
 			$_keyName = $keyName;
-			$keyName = Inflector::humanize(str_replace('_id', '', $keyName)); 
-       		if(strpos($_keyName, '_') && is_array($dat[$modelName][str_replace(' ', '', $keyName)])) :  
+			$humanKeyName = Inflector::humanize(str_replace('_id', '', $keyName)); 
+			$keyName = str_replace(' ', '', Inflector::humanize(str_replace('_id', '', $keyName))); 
+       		if(strpos($_keyName, '_') && !empty($dat[$modelName][str_replace(' ', '', $keyName)]) && is_array($dat[$modelName][str_replace(' ', '', $keyName)])) :  
 			else :
 			# over write the keyValue if its belongsTo associated record to display (ie. assignee_id = full_name)
 			if (!empty($associations) && array_key_exists($keyName, $associations)) :
 				$displayField = $associations[Inflector::humanize(str_replace('_id', '', $keyName))]['displayField'];
 				# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
-				$keyValue = is_array($dat[$modelName][$keyName]) && !empty($dat[$modelName][$keyName][$displayField]) ? 
+				$keyValue = !empty($dat[$modelName][$keyName][$displayField]) && is_array($dat[$modelName][$keyName]) ? 
 						$dat[$modelName][$keyName][$displayField] : 
 						(!empty($dat[$keyName][$displayField]) ? $dat[$keyName][$displayField] : null); 
 			endif;
