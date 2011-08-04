@@ -207,6 +207,11 @@ class Setting extends AppModel {
 							'name' => 'IMAGE_DEFAULT_FULL_HEIGHT',
 							'description' => 'Defines the full size image height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
 							),
+						array(
+							'name' => 'RESIZE_OR_CROP',
+							'description' => 'Defines whether images will be resized or cropped when uploaded.  Resize is the default.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'crop',
+							),
+
 						),
 				  'Element' => array(
 						array(
