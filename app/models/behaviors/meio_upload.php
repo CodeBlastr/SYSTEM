@@ -35,7 +35,7 @@ class MeioUploadBehavior extends ModelBehavior {
 		'dir' => '/upload/{ModelName}/{fieldName}',
 		'folderAsField' => null, // Can be the name of any field in $this->data
 		'uploadName' => null, // Can also be the tokens {ModelName} or {fieldName}
-		'maxSize' => 2097152, // 2MB
+		'maxSize' => 7097152, // 7MB
 		'allowedMime' => array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif', 'image/bmp', 'image/x-icon', 'image/vnd.microsoft.icon'),
 		'allowedExt' => array('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.ico'),
 		'default' => false, // Not sure what this does
