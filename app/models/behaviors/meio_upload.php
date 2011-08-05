@@ -889,7 +889,6 @@ class MeioUploadBehavior extends ModelBehavior {
  * @access protected
  */
 	function _createThumbnail(&$model, $source, $target, $fieldName, $params = array()) {
-		debug($params);
 		# zuha added to have a setting for whether to resize or crop
 		$zoomCrop = defined('__GALLERY_RESIZE_OR_CROP') && __GALLERY_RESIZE_OR_CROP == 'crop' ? true : false;
 		$params = array_merge(
