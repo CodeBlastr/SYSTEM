@@ -1,8 +1,8 @@
 <?php 
 # setup defaults
 $modelName = !empty($modelName) ? $modelName : Inflector::classify($this->params['controller']); // ContactPerson
-$pluginName = !empty($pluginName) ? $pluginName : !empty($modelName) ? pluginize($modelName) : null; // contacts
-$controller = Inflector::tableize($modelName); // contact_people, projects
+$pluginName = !empty($pluginName) ? $pluginName : pluginize($modelName); // contacts
+$controller = !empty($controller) ? $controller : Inflector::tableize($modelName); // contact_people, projects
 if (!empty($data)) : 
 	# setup defaults
 	$indexVar = Inflector::variable($controller); // contactPeople, projects
@@ -26,7 +26,7 @@ if (!empty($data)) :
 $i = 0;
 foreach ($data as $dat):
 	#this value needs to be set here in case we unset it a few lines after.
-	$galleryForeignKey = $dat[$galleryModelAlias][$galleryForeignKeyField];
+	$galleryForeignKey = !empty($showGallery) ? $dat[$galleryModelAlias][$galleryForeignKeyField] : null;
 	$displayId = !empty($displayId) ? $displayId : 'id';
 	$id = !empty($dat[$modelName][$displayId]) ? $dat[$modelName][$displayId] : null;
 	unset($dat[$modelName][$displayId]);
@@ -46,7 +46,7 @@ foreach ($data as $dat):
         </span>
         <div class="drop-holder indexDrop"> <span><img src="/img/admin/btn-down.png" /></span>
           <ul class="drop">
-          	<?php if(!empty($actions)) : foreach ($actions as $action) : ?>
+          	<?php if(is_array($actions)) : foreach ($actions as $action) : ?>
             <li><?php $patterns = array('/{/', '/}/', '/\[/', '/\]/'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.preg_replace($patterns, $replaces, $action).'\';'; eval($action); ?></li>
             <?php endforeach; else: ?>
             <li><?php echo $html->link('View', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
