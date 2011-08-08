@@ -124,7 +124,7 @@ endforeach;
 ?>
   </div>
 </div>
-<div class="actions"> <img src="/img/admin/btn-down.png" />
+<div id="<?php echo $modelName; ?>Actions" class="actions"> <img src="/img/admin/btn-down.png" />
   <ul class="drop">
     <li><?php echo __('Sort by');?></li>
     <?php foreach ($data[0][$modelName] as $keyName => $keyValue) :  
