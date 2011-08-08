@@ -39,7 +39,7 @@ $(function() {
 	});
 	
 	/* Helper Text show statement */
-	if ($.cookie('showHelperText')) {
+	if ($.cookie('showHelperText') == null) {
 		$('#helpOpen').slideDown();
 	} else {		
 		$('#helperText').show();
@@ -139,12 +139,12 @@ $(function() {
 		$.cookie('fontSize', '0.8em', { expires: 999 });
 	});
 	$('#fontSize2').click(function(e){
-		$('body').css('font-size', '1.5em');
-		$.cookie('fontSize', '1.5em', { expires: 999 });
+		$('body').css('font-size', '1.3em');
+		$.cookie('fontSize', '1.3em', { expires: 999 });
 	});
 	$('#fontSize3').click(function(e){
-		$('body').css('font-size', '2.2em');
-		$.cookie('fontSize', '2.2em', { expires: 999 });
+		$('body').css('font-size', '1.6em');
+		$.cookie('fontSize', '1.6em', { expires: 999 });
 	});
 	
 });

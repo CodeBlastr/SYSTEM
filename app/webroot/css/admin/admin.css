@@ -73,7 +73,7 @@ a img {border: 0;}
 
 body {
 	font-family: sans-serif;
-	font-size: 0.8em;
+	font-size: 1.3em;
 }
 
 .small, small {
@@ -640,7 +640,7 @@ Primary navigation
 
 /* Search Form */
 .searchfield {
-	width: 177px;
+	width: 9em;
 	float: right;
 	margin: -0.8em 1em 0 0;margin: -0.8em 1em 0 0;
 }
@@ -724,6 +724,7 @@ Primary navigation
 	background: #fff;
 	padding: 0.5em 1em ;
 	overflow: auto;
+	min-height: 18em;
 }
 #content .index .recordData h3 {
 	float: left;
@@ -1048,7 +1049,6 @@ div.actions h3 {
 /* Footer Area */
 #footer {
 	display: block;
-	height: 3.5em;
 	background: #0C71F5 url('../../img/admin/background-wave.jpg'); 
 }
 #footer .footerHeading {
@@ -1162,6 +1162,7 @@ div#bottomNavigation div#legalLinks span {
     width: 140px;
 }
 .gridCol12 {
+	width: 100%;
 }
 
 #fontSize1 {
