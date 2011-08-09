@@ -307,14 +307,40 @@ form {
 fieldset {
 	padding: 0;
 	margin: 0 0 0 0;
-}
+} 
 fieldset legend {
 	border-bottom: 1px solid #CCC;
-	width: 100%;
 	font-weight: bold;
+	
+	
+    border: 1px solid #03C;
+	/*padding: 0.4em 1.2em;*/
+	padding: 0.2em 2em;
+	-moz-border-radius: 1em;
+	border-radius: 1em;
+	font-weight: bold;
+	color: #FFF;
+	/* For WebKit (Safari, Google Chrome etc) */
+	background: -webkit-gradient(linear, left top, left bottom, from(#2CB7F8), to(#1191F6));
+	/* For Mozilla/Gecko (Firefox etc) */
+	background: -moz-linear-gradient(top, #2CB7F8, #1191F6);
+	/* For Internet Explorer 5.5 - 7 */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#2CB7F8, endColorstr=#1191F6);
+	/* For Internet Explorer 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#2CB7F8, endColorstr=#1191F6)";
+	-webkit-box-shadow: 0 0 10px #777;
+	-moz-box-shadow: 0 0 10px #777;
+	box-shadow: 0 0 0.5em #777;
+	min-width: 0;
+	margin: 0.5em;
 }
 fieldset legend.toggleClick:hover {
-	background: #eaeaea;
+	color: #666;
+    border: 1px solid #093;
+	-webkit-box-shadow: 0 0 1em #090;
+	-moz-box-shadow: 0 0 1em #090;
+	box-shadow: 0 0 0.5em #090;
+	cursor: pointer;
 }
 fieldset fieldset {
 	margin: 0;
