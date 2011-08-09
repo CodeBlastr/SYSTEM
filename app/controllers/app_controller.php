@@ -99,7 +99,8 @@ class AppController extends Controller {
         $this->Auth->loginAction = array(
 			'plugin' => 'users',
 			'controller' => 'users',
-			'action' => 'login'
+			'action' => 'login',
+			'admin' => 0,
 			);
 		        
         $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
