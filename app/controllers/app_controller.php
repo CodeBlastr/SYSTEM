@@ -122,8 +122,6 @@ class AppController extends Controller {
 		 * @todo 	create this function, so that conditions can fire on the view of records
 				$this->checkConditions($plugin, $controller, $action, $extraValues);
 		 */
-		
-			
 				
 		/**
 		 * Implemented for allowing guests access through db acl control

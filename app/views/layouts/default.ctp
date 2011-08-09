@@ -31,21 +31,19 @@
 </head>
 <body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
 <div id="siteWrap"> <?php echo $this->Element('admin/header_nav'); ?>
-  <div id="tabs">
-    <?php echo $this->Element('page_title'); ?>
-    <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array('plugin' => $this->params['plugin'])) : ''; ?>
+  <div id="tabs"> <?php echo $this->Element('page_title'); ?> <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array('plugin' => $this->params['plugin'])) : ''; ?>
     <div id="content">
-      <div id="contentWrap"> <?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?>
-      	<?php $helper_text_for_layout = !empty($helper_text_for_layout) ? $helper_text_for_layout : null; ?>
-		<?php echo $this->Element('admin/helper_text', array('overwrite' => $helper_text_for_layout)); ?>
-        <!-- #compareChartHeader -->
-        <div class="contentSection"> <?php echo $content_for_layout; ?><?php echo $menu_for_layout; ?> </div>
-        <!-- #compareChart -->
+      <div id="contentWrap">
+        <div id="navigation"> <?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?>
+          <?php $helper_text_for_layout = !empty($helper_text_for_layout) ? $helper_text_for_layout : null; ?>
+          <?php echo $this->Element('admin/helper_text', array('overwrite' => $helper_text_for_layout)); ?>
+          <!-- #compareChartHeader -->
+          <div class="contentSection"> <?php echo $content_for_layout; ?><?php echo $menu_for_layout; ?> </div>
+          <!-- #compareChart -->
+        </div>
       </div>
     </div>
   </div>
-  <?php echo $this->Element('admin/footer_nav'); ?>
-  <?php echo $this->Element('sql_dump');  ?>
-  <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> </div>
+  <?php echo $this->Element('admin/footer_nav'); ?> <?php echo $this->Element('sql_dump');  ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> </div>
 </body>
 </html>

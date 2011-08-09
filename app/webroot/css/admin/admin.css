@@ -964,7 +964,19 @@ Primary navigation
 
 
 
-
+/* Activities Plugin */
+ul.activites, ul.activities li {
+	list-style-type: none;
+	margin: 0.4em;
+}
+ul.activities li.activity span.activityModel {
+	font-size: 0.8em;
+	background: #FC9;
+	padding: 0.2em;
+}
+ul.activities li.activity span.activityName {
+	font-weight: bold;
+}
 
 
 
