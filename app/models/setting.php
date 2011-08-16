@@ -129,6 +129,10 @@ class Setting extends AppModel {
 							'name' => 'FEDEX',
 							'description' => 'Define Enabled Shipping Service options the following variable defines the options which should be display	in the dropdown of shipping type for the app.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY = STANDARD'.PHP_EOL.'INTERNATIONALFIRST = "INTERNATIONAL FLAT FEE"'.PHP_EOL.'FEDEX1DAYFREIGHT = "NEXT DAY"',
 							),
+						array(
+							'name' => 'FLAT_SHIPPING_RATE',
+							'description' => 'Define Flat Shipping Rate for the complete order.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'99',
+							),	
 						),
 				  'App' => array(
 						array(
