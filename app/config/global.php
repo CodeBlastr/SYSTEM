@@ -14,6 +14,17 @@
 	Configure::write('Recaptcha.privateKey', '6Lc5xsMSAAAAADJmj-bruuzCYXOeSg5Mf7JTyW3e');
 
 	 
+	
+	/**
+	 * Function for formatting the pricing of an item.
+	 *
+	 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet. 
+	 */
+	function formatPrice($price) {
+		return number_format($price, 2);
+	}
+	
+	
     function myIntersect($master, $mask) {
         if (!is_array($master)) { return $master; }
         foreach ($master as $k => $v) {

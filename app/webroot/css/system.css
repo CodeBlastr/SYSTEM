@@ -69,3 +69,9 @@ Note that the class names could be updated and change often.
 .comments .tree-block li {
 	list-style-type: none;
 }
+
+
+/* Very light form styling */
+.select .checkbox {
+	display: block;
+}
