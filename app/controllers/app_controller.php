@@ -690,9 +690,9 @@ class AppController extends Controller {
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
-				#debug($aro);
-				#debug($aco);
-				#break;
+				debug($aro);
+				debug($aco);
+				break;
 				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 			}	
