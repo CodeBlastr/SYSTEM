@@ -747,5 +747,20 @@ class AppController extends Controller {
 		return $guestsAro;
 	}
 	
+		
+	function authentication(){
+		$this->layout = false;
+		$this->autoRender = false;
+
+		$data = ($this->data);
+		$data['requireAuth'] = 0;
+		$allowed = array_search($this->data['action'], $this->Auth->allowedActions);
+		
+		if ($allowed === 0 || $allowed > 0 ) {
+			$this->Auth->allow('*');
+			$data['requireAuth'] = 1;
+		}
+		echo json_encode($data);			
+	}
 }
 ?>

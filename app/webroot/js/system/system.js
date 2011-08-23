@@ -41,12 +41,15 @@ $().ready(function() {
     });
 	
 	/* site wide toggle, set the click elements class to toggleClick, and the name attribute to the id of the element you want to toggle */
-	$(".toggleClick").click(function () {
+	$(".toggleClick").click(function (e) {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle();
 		$('.'+currentName).toggle();
 		$(this).css('cursor', 'pointer');
 		return false;
+		// todo: to check this change for leasesimple cases where call should remain in progress for other
+		// classes to handle changes.
+		//e.preventDefault();
 	});
 	
 	$(".showClick").click(function () {
@@ -81,6 +84,4 @@ $().ready(function() {
 			if ($.isFunction(window.selectCallBack)) { selectCallBack(data); }
 	    });
 	});
-	
-	
 });
