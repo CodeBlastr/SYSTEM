@@ -167,6 +167,8 @@ if (!empty($defaultTemplate)) {
 <?php  if(!empty($facebook)) { echo $facebook->init(); } ?>
 <?php #echo round((getMicroTime() - $_SERVER['REQUEST_TIME']) * 1000) ?>
 </div> 
+<?php echo $this->Html->link('Projects', array('plugin' => null, 'controller' => 'projects')); ?>
+<?php echo $this->element("ajax-login"); ?>
 <?php echo $this->element('sql_dump');  ?>  
 <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?>
 </body>

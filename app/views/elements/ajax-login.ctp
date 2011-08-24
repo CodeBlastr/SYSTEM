@@ -3,9 +3,9 @@
 	echo $this->Html->script('/galleries/js/fancybox/jquery.fancybox-1.3.4.pack');	
 	echo $this->Html->css('/galleries/css/fancybox/jquery.fancybox-1.3.4');	
 
-	$auth_user_id = $this->Session->read('Auth.User.id');?>
+	$userId = $this->Session->read('Auth.User.id');?>
 
-<?php if (!isset($auth_user_id)) {?>
+<?php if (!isset($userId)) {?>
 <script>
 	$("#loginss").fancybox({
 		'scrolling'	: 'no',
@@ -46,7 +46,7 @@
     	echo $form->input('password', array('label' => 'Password '));
     	echo $html->tag('span', '', array('id' => 'mesg','', 'style' => 'color:red;'));
     	echo $form->submit('Login', array('id'=>'login_form_submit'));
-    	 echo $form->end();
+    	echo $form->end();
 	?>
 </div>
 

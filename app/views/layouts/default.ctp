@@ -12,7 +12,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <?php
 	echo $this->Html->meta('icon');
-	
 	echo $this->Html->css('system');
 	echo $this->Html->css('admin/jquery-ui-1.8.13.custom');
 	echo $this->Html->css('admin/admin');
