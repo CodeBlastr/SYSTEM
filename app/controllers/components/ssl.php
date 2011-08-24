@@ -21,4 +21,4 @@ class SslComponent extends Object {
         return env('SERVER_NAME').$port.env('REQUEST_URI');
     }
 }
-?> 
+?>
