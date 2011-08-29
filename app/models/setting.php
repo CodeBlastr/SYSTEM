@@ -136,6 +136,10 @@ class Setting extends AppModel {
 						array(
 							'name' => 'FLAT_SHIPPING_RATE',
 							'description' => 'Define Flat Shipping Rate for the complete order.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'99',
+							),
+						array(
+							'name' => 'SSL',
+							'description' => 'Defines whether to use ssl during the checkout, and you can place some html to show trust logos.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'ssl = 1'.PHP_EOL.'trustLogos = "enter some html to use in the trust logos area"',
 							),	
 						),
 				  'App' => array(

@@ -690,9 +690,9 @@ class AppController extends Controller {
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
-				debug($aro);
-				debug($aco);
-				break;
+				#debug($aro);
+				#debug($aco);
+				#break;
 				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 			}	
@@ -747,5 +747,20 @@ class AppController extends Controller {
 		return $guestsAro;
 	}
 	
+		
+	function authentication(){
+		$this->layout = false;
+		$this->autoRender = false;
+
+		$data = ($this->data);
+		$data['requireAuth'] = 0;
+		$allowed = array_search($this->data['action'], $this->Auth->allowedActions);
+		
+		if ($allowed === 0 || $allowed > 0 ) {
+			$this->Auth->allow('*');
+			$data['requireAuth'] = 1;
+		}
+		echo json_encode($data);			
+	}
 }
 ?>
