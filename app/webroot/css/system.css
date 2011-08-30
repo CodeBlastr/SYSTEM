@@ -69,3 +69,15 @@ Note that the class names could be updated and change often.
 .comments .tree-block li {
 	list-style-type: none;
 }
+
+
+/* Very light form styling */
+.select .checkbox {
+	display: block;
+}
+
+/* /orders/order_transactions/checkout */
+#creditCardInfo .input.select { float: left; }
+#creditCardInfo .input.text { clear: left; }
+#OrderTransactionCardExpMonth { width: 45px !important; }
+#OrderTransactionCardExpYear { width: 75px !important; }

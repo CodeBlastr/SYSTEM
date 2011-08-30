@@ -74,8 +74,12 @@ class Setting extends AppModel {
 							'description' => 'Defines the transaction key to access payment api of Authorize.net. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'48fj0j2389ur02983ur',
 							),
 						array(
+							'name' => 'TRANSACTIONS_AUTHORIZENET_MODE',
+							'description' => 'Defines whether authorize.net is in test mode.  Any value at all, means its in test mode, otherwise it is live. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
+							),
+						array(
 							'name' => 'PAYPAL',
-							'description' => 'Defines the credentials to Access payment api of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = webpro_126328478_biz_api1.example.com'.PHP_EOL.'API_PASSWORD = 9294399233'.PHP_EOL.'API_SIGNATURE = ApJtg.JrUW0YLN.tPmmGiu-exM.va778w7f873mX29QghYJnTf'.PHP_EOL.'API_ENDPOINT = https://api-3t.sandbox.paypal.com/nvp'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
+							'description' => 'Defines the credentials to Access Paypal Payment PRO : https://www.paypal.com/us/cgi-bin/webscr?cmd=_profile-api-add-direct-access.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = webpro_126328478_biz_api1.example.com'.PHP_EOL.'API_PASSWORD = 9294399233'.PHP_EOL.'API_SIGNATURE = ApJtg.JrUW0YLN.tPmmGiu-exM.va778w7f873mX29QghYJnTf'.PHP_EOL.'API_ENDPOINT = https://api-3t.sandbox.paypal.com/nvp'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
 							),
 						array(
 							'name' => 'PAYPAL_ADAPTIVE',
@@ -129,6 +133,14 @@ class Setting extends AppModel {
 							'name' => 'FEDEX',
 							'description' => 'Define Enabled Shipping Service options the following variable defines the options which should be display	in the dropdown of shipping type for the app.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY = STANDARD'.PHP_EOL.'INTERNATIONALFIRST = "INTERNATIONAL FLAT FEE"'.PHP_EOL.'FEDEX1DAYFREIGHT = "NEXT DAY"',
 							),
+						array(
+							'name' => 'FLAT_SHIPPING_RATE',
+							'description' => 'Define Flat Shipping Rate for the complete order.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'99',
+							),
+						array(
+							'name' => 'SSL',
+							'description' => 'Defines whether to use ssl during the checkout, and you can place some html to show trust logos.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'ssl = 1'.PHP_EOL.'trustLogos = "enter some html to use in the trust logos area"',
+							),	
 						),
 				  'App' => array(
 						array(
@@ -207,6 +219,11 @@ class Setting extends AppModel {
 							'name' => 'IMAGE_DEFAULT_FULL_HEIGHT',
 							'description' => 'Defines the full size image height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
 							),
+						array(
+							'name' => 'RESIZE_OR_CROP',
+							'description' => 'Defines whether images will be resized or cropped when uploaded.  Resize is the default.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'crop',
+							),
+
 						),
 				  'Element' => array(
 						array(

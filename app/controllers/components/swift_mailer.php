@@ -83,28 +83,28 @@ class SwiftMailerComponent extends Object {
 	 * @var String
 	 * @access Public
 	 */
-	var $smtpUsername = '';
+	var $smtpUsername = 'email1@enbake.com';
 	/**
 	 * SMTP Password for connection
 	 *
 	 * @var String
 	 * @access Public
 	 */
-	var $smtpPassword = '';
+	var $smtpPassword = 'testing';
 	/**
 	 * SMTP Host name connection
 	 *
 	 * @var String
 	 * @access Public
 	 */
-	var $smtpHost = '';
+	var $smtpHost = 'smtp.gmail.com';
 	/**
 	 * SMTP port (e.g.: 25 for open, 465 for ssl, etc.)
 	 *
 	 * @var Integer
 	 * @access Public
 	 */
-	var $smtpPort = '';
+	var $smtpPort = '465';
 	/**
 	 * Seconds before timeout occurs
 	 *
@@ -216,7 +216,7 @@ class SwiftMailerComponent extends Object {
 			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
 			$smtp = parse_ini_string($smtp);
 		endif;
-		
+
 		$this->smtpUsername = !empty($smtp['smtpUsername']) ? $smtp['smtpUsername'] : $this->smtpUsername;
 		$this->smtpPassword = !empty($smtp['smtpPassword']) ? $smtp['smtpPassword'] : $this->smtpPassword;
 		$this->smtpHost = !empty($smtp['smtpHost']) ? $smtp['smtpHost'] : $this->smtpHost;

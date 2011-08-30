@@ -1,8 +1,8 @@
 <?php 
 # setup defaults
 $modelName = !empty($modelName) ? $modelName : Inflector::classify($this->params['controller']); // ContactPerson
-$pluginName = !empty($pluginName) ? $pluginName : !empty($modelName) ? pluginize($modelName) : null; // contacts
-$controller = Inflector::tableize($modelName); // contact_people, projects
+$pluginName = !empty($pluginName) ? $pluginName : pluginize($modelName); // contacts
+$controller = !empty($controller) ? $controller : Inflector::tableize($modelName); // contact_people, projects
 if (!empty($data)) : 
 	# setup defaults
 	$indexVar = Inflector::variable($controller); // contactPeople, projects
@@ -15,7 +15,7 @@ if (!empty($data)) :
 		$galleryModel = !empty($galleryModel) ? $galleryModel : $modelName;
 		$galleryModelName = is_array($galleryModel) ? $galleryModel['name'] : $galleryModel;
 		$galleryModelAlias = is_array($galleryModel) ? $galleryModel['alias'] : $galleryModel;
-		$galleryForeignKey = !empty($galleryForeignKey) ? $galleryForeignKey : 'user_id';
+		$galleryForeignKeyField = !empty($galleryForeignKey) ? $galleryForeignKey : 'user_id';
 		$galleryThumbSize = !empty($settings['galleryThumbSize']) ? $settings['galleryThumbSize'] : 'medium';
 	endif;
 ?>
@@ -25,6 +25,8 @@ if (!empty($data)) :
     <?php
 $i = 0;
 foreach ($data as $dat):
+	#this value needs to be set here in case we unset it a few lines after.
+	$galleryForeignKey = !empty($showGallery) ? $dat[$galleryModelAlias][$galleryForeignKeyField] : null;
 	$displayId = !empty($displayId) ? $displayId : 'id';
 	$id = !empty($dat[$modelName][$displayId]) ? $dat[$modelName][$displayId] : null;
 	unset($dat[$modelName][$displayId]);
@@ -40,11 +42,11 @@ foreach ($data as $dat):
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
       <div class="indexCell image"> <span>
-        <?php echo !empty($showGallery) ? $this->Element('thumb', array('plugin' => 'galleries', 'model' => $galleryModelName, 'foreignKey' => $dat[$galleryModelAlias][$galleryForeignKey], 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$dat[$galleryModelAlias][$galleryForeignKey])) : null; ?>
+        <?php echo !empty($showGallery) ? $this->Element('thumb', array('plugin' => 'galleries', 'model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey)) : null; ?>
         </span>
         <div class="drop-holder indexDrop"> <span><img src="/img/admin/btn-down.png" /></span>
           <ul class="drop">
-          	<?php if(!empty($actions)) : foreach ($actions as $action) : ?>
+          	<?php if(is_array($actions)) : foreach ($actions as $action) : ?>
             <li><?php $patterns = array('/{/', '/}/', '/\[/', '/\]/'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.preg_replace($patterns, $replaces, $action).'\';'; eval($action); ?></li>
             <?php endforeach; else: ?>
             <li><?php echo $html->link('View', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
@@ -122,7 +124,7 @@ endforeach;
 ?>
   </div>
 </div>
-<div class="actions"> <img src="/img/admin/btn-down.png" />
+<div id="<?php echo $modelName; ?>Actions" class="actions"> <img src="/img/admin/btn-down.png" />
   <ul class="drop">
     <li><?php echo __('Sort by');?></li>
     <?php foreach ($data[0][$modelName] as $keyName => $keyValue) :  

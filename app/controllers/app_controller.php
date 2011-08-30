@@ -99,7 +99,8 @@ class AppController extends Controller {
         $this->Auth->loginAction = array(
 			'plugin' => 'users',
 			'controller' => 'users',
-			'action' => 'login'
+			'action' => 'login',
+			'admin' => 0,
 			);
 		        
         $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
@@ -122,8 +123,6 @@ class AppController extends Controller {
 		 * @todo 	create this function, so that conditions can fire on the view of records
 				$this->checkConditions($plugin, $controller, $action, $extraValues);
 		 */
-		
-			
 				
 		/**
 		 * Implemented for allowing guests access through db acl control
@@ -748,5 +747,20 @@ class AppController extends Controller {
 		return $guestsAro;
 	}
 	
+		
+	function authentication(){
+		$this->layout = false;
+		$this->autoRender = false;
+
+		$data = ($this->data);
+		$data['requireAuth'] = 0;
+		$allowed = array_search($this->data['action'], $this->Auth->allowedActions);
+		
+		if ($allowed === 0 || $allowed > 0 ) {
+			$this->Auth->allow('*');
+			$data['requireAuth'] = 1;
+		}
+		echo json_encode($data);			
+	}
 }
 ?>

@@ -35,7 +35,7 @@ class MeioUploadBehavior extends ModelBehavior {
 		'dir' => '/upload/{ModelName}/{fieldName}',
 		'folderAsField' => null, // Can be the name of any field in $this->data
 		'uploadName' => null, // Can also be the tokens {ModelName} or {fieldName}
-		'maxSize' => 2097152, // 2MB
+		'maxSize' => 7097152, // 7MB
 		'allowedMime' => array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif', 'image/bmp', 'image/x-icon', 'image/vnd.microsoft.icon'),
 		'allowedExt' => array('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.ico'),
 		'default' => false, // Not sure what this does
@@ -46,7 +46,7 @@ class MeioUploadBehavior extends ModelBehavior {
 		),
 		'thumbnailQuality' => 75, // Global Thumbnail Quality
 		'thumbnailDir' => 'thumb',
-		'useImageMagick' => false,
+		'useImageMagick' => true,
 		'imageMagickPath' => '/usr/bin/convert', // Path to imageMagick on your server
 		'fields' => array(
 			'dir' => 'dir',
@@ -889,16 +889,17 @@ class MeioUploadBehavior extends ModelBehavior {
  * @access protected
  */
 	function _createThumbnail(&$model, $source, $target, $fieldName, $params = array()) {
+		# zuha added to have a setting for whether to resize or crop
+		$zoomCrop = defined('__GALLERY_RESIZE_OR_CROP') && __GALLERY_RESIZE_OR_CROP == 'crop' ? true : false;
 		$params = array_merge(
 			array(
 				'thumbWidth' => 150,
 				'thumbHeight' => 225,
 				'maxDimension' => '',
 				'thumbnailQuality' => $this->__fields[$model->alias][$fieldName]['thumbnailQuality'],
-				'zoomCrop' => false
+				'zoomCrop' => $zoomCrop
 			),
 			$params);
-
 		// Import phpThumb class
 		App::import('Vendor','phpthumb', array('file' => 'phpThumb'.DS.'phpthumb.class.php'));
 
