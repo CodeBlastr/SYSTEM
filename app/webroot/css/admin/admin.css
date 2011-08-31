@@ -311,8 +311,9 @@ fieldset {
 fieldset legend {
 	border-bottom: 1px solid #CCC;
 	font-weight: bold;
+}
 	
-	
+fieldset legend.toggleClick {
     border: 1px solid #03C;
 	/*padding: 0.4em 1.2em;*/
 	padding: 0.2em 2em;
@@ -751,6 +752,10 @@ Primary navigation
 	padding: 0.5em 1em ;
 	overflow: auto;
 	min-height: 18em;
+}
+#content h1 {
+	color: #000;
+	margin: 0;
 }
 #content .index .recordData h3 {
 	float: left;
