@@ -41,7 +41,7 @@
               </ul>
               <ul>
                 <li class="title">Extended</li>
-                <li><a href="/admin/blogs">Blogs</a></li>
+                <li><a href="/blogs">Blogs</a></li>
                 <li ><a href="/admin/faqs">Faqs</a></li>
                 <li ><a href="/admin/forum/forum_home">Forums</a></li>
                 <li ><a href="/admin/maps">Maps</a></li>
