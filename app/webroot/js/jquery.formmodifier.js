@@ -16,18 +16,18 @@
 
 	   var obj = this;
 	   var options = $.extend({
-		   	formid:null,	// The id of the form.
-		   	cloneRow:false,	// Whether to clone some existing row for html.
-		   	actionElem:'.action', // Which element triggers the row addition action.
-	       	cloneElem:null,	// Which element to clone, if cloneRow is set.
-	       	cloneHTML:null,	// if cloneRow is not set, then this html is used for new row.
-	       	isParent:true,	// if the form container is parent of the cloneElem.
-	       	wrapElem:'div',	// What should be the wrapper element.
-	       	labelPrefix:'Row ', // What should be the prefix for the added row
-	       	labelDiv:'#label',	// The div containing the label.
-	       	child: '.formRow',	// The class of the child.
-	       	canDeleteLast: false,	// If a user can delete the last available row.
-			appendTo:null
+		   	formid			:		null,	// The id of the form.
+		   	cloneRow		:		false,	// Whether to clone some existing row for html.
+		   	actionElem		:		'.action', // Which element triggers the row addition action.
+	       	cloneElem		:		null,	// Which element to clone, if cloneRow is set.
+	       	cloneHTML		:		null,	// if cloneRow is not set, then this html is used for new row.
+	       	isParent		:		true,	// if the form container is parent of the cloneElem.
+	       	wrapElem		:		'div',	// What should be the wrapper element.
+	       	labelPrefix		:		'Row ', // What should be the prefix for the added row
+	       	labelDiv		:		'#label',	// The div containing the label.
+	       	child			:		'.formRow',	// The class of the child.
+	       	canDeleteLast	:		false,	// If a user can delete the last available row.
+			appendTo		:		null
 	   }, settings || {});
 	
 	   /*
@@ -56,7 +56,7 @@
 	           			
 	           		});
 
-					newElem.find('input, select, textarea').each(function() {
+					newElem.find('input, select, textarea, div, td, span').each(function() {
 	           			var id = $(this).attr('id');
 	           			var newId = id.replace(/\d+/, nodeCount);
 	
