@@ -37,17 +37,84 @@
 			}
 		});
 	});
+
+	$("#register_submit").live("click", function(e) {
+		$('.requiredFancyBoxField').each(function(){
+			$('#' + $(this).attr('id') + 'Error').hide();
+			if($(this).val() == '' && $(this).attr('id') != '') {
+				$('#' + $(this).attr('id') + 'Error').show();
+				e.preventDefault();
+			}
+		});
+	});
+
 </script>
-<a href ="#login_form" id ="loginss"></a>
-<div style="display:none">
-	<?php
-    	echo $form->create('User', array('id' => 'login_form', 'action' => 'login'));
-    	echo $form->input('username');
-    	echo $form->input('password', array('label' => 'Password '));
-    	echo $html->tag('span', '', array('id' => 'mesg','', 'style' => 'color:red;'));
-    	echo $form->submit('Login', array('id'=>'login_form_submit'));
-    	echo $form->end();
+<a href ="#login_page" id ="loginss"></a>
+<div id="login_page" style="width: 675px; height: 310px; padding:20px 20px;">
+	<fieldset style="float: left; padding:20px; width: 310px;">
+	<h1><?php echo __('Welcome.', true); ?></h1>
+	<h3><?php echo __('Please register or login to access this page.', true); ?></h3>
+	<?php 
+		if(defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) { 
+			echo $form->create('User', array('type' => 'file', 'id' => 'register_form', 'action' => 'register'));
+			echo $form->input('Contact.id', array('type' => 'hidden')); 
+			
+			if (!empty($this->params['named']['user'])) {
+				echo $form->input('User.id', array('type' => 'hidden', 'value' => $this->params['named']['user']));
+			} else {
+				if(defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) { 
+					echo $form->input('User.contact_type', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE));
+				} else {
+					echo $form->input('User.contact_type', array('type' => 'hidden', 'value' => 'person'));
+				}
+				if(defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) {
+					echo $form->input('User.user_role_id', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_ROLE_ID));
+				} else {
+					echo $form->input('User.user_role_id');
+				}
 	?>
+				<label> <b>EMAIL OR USERNAME :</b> </label>
+			<?php 			
+				echo $form->input('User.username', array('label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
+			?>
+				<div id="UserUsernameError" style="display: none;"><font color="red"> Username Is Required. </font></div>
+				<label> <b>PASSWORD :</b> </label>
+			<?php 
+				echo $form->input('User.password', array('label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
+			?>
+				<div id="UserPasswordError" style="display: none;"><font color="red">  Password Is Required. </font></div>
+				<label> <b>CONFIRM PASSWORD :</b> </label>
+			<?php 	
+				echo $form->input('User.confirm_password', array('type' => 'password', 'label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
+			?>
+				<div id="UserConfirmPasswordError" style="display: none;"><font color="red"> Confirm Password Is Required. </font></div>
+			<?php 	
+				echo $form->submit('Submit', array('id'=>'register_submit'));
+			} // end named user if
+			echo $form->end(); 
+		} else {
+			__('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID must be defined for public user registrations to work.');
+		}
+	?>
+	</fieldset>
+	<fieldset style="background-color: #E5E5E5; float:right; padding:20px 20px 70px ">
+		<h2><?php echo __('Already Registered?', true); ?></h1>
+		<h3><?php echo __('Please login here.', true); ?></h3>
+		<?php
+	    	echo $form->create('User', array('id' => 'login_form', 'action' => 'login'));
+	    ?>
+		    <label> <b>EMAIL OR USERNAME :</b> </label>
+	    <?php 	
+	    	echo $form->input('username', array('label' => false, 'size' => 30));
+	    ?>
+		    <label> <b>PASSWORD :</b> </label>
+	    <?php 	
+	    	echo $form->input('password', array('label' => false, 'size' => 30));
+	    	echo $html->tag('span', '', array('id' => 'mesg','', 'style' => 'color:red;'));
+	    	echo $form->submit('Submit', array('id'=>'login_form_submit', 'div' => array('style' => 'float:right;')));
+	    	echo $form->end();
+	    ?>
+	</fieldset>
 </div>
 
 <script>
@@ -76,6 +143,7 @@ $().ready(function() {
 	    });
 		
 	});
+	
 });
 </script>
 <?php }?>
