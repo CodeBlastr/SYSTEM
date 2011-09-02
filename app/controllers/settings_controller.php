@@ -52,7 +52,6 @@ class SettingsController extends AppController {
 		$this->paginate = array(
 			'fields' => array(
 				'id',
-				'type',
 				'displayName',
 				'description',
 				),

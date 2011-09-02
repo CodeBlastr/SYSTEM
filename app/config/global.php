@@ -185,8 +185,10 @@
 			'Project' => 'projects',
 			'Used' => 'users',
 			'User' => 'users',
+			'Setting' => '',
+			'Settings' => '',
 			);
-		if (!empty($allowed[$name])) {
+		if ($allowed[$name] !== null) {
 			return $allowed[$name];
 		} else {
 			return Inflector::tableize($name);
