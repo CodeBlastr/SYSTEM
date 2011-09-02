@@ -74,9 +74,9 @@
               </ul>
               <ul>
                 <li class="title">Sales</li>
-                <li><a href="/admin/estimates">Estimates</a></li>
-                <li><a href="/admin/invoices">Invoices</a></li>
-                <li class="separator"><a href="/admin/orders/order_transactions/">Orders</a></li>
+                <li><a href="/estimates">Estimates</a></li>
+                <li><a href="/invoices">Invoices</a></li>
+                <li class="separator"><a href="/orders/order_transactions/">Orders</a></li>
               </ul>
               <ul>
                 <li class="title">Products</li>
@@ -144,8 +144,8 @@
             <div class="menu">
               <ul>
                 <li class="title">App Builder</li>
-                <li><a href="/privileges">Permissions</a></li>
-                <li><a href="/admin/settings">Site Settings</a></li>
+                <li><a href="/privileges">Privileges</a></li>
+                <li><a href="/admin/settings">Settings</a></li>
                 <li><a href="/admin/forms">Custom Forms</a></li>
                 <li><a href="/admin/conditions">Conditions</a></li>
                 <li class="separator"><a href="/workflows">Workflows</a></li>
