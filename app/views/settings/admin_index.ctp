@@ -9,7 +9,7 @@ echo $paginator->counter(array(
 <table cellpadding="0" cellspacing="0">
 <tr>
 	<th><?php echo $paginator->sort('id');?></th>
-	<th><?php echo $paginator->sort('type_id');?></th>
+	<th><?php echo $paginator->sort('type');?></th>
 	<th><?php echo $paginator->sort('name');?></th>
 	<th><?php echo $paginator->sort('description');?></th>
 	<th class="actions"><?php __('Actions');?></th>
@@ -27,7 +27,7 @@ foreach ($settings as $setting):
 			<?php echo $setting['Setting']['id']; ?>
 		</td>
 		<td>
-			<?php echo $setting['SettingType']['name']; ?>
+			<?php echo $setting['Setting']['type']; ?>
 		</td>
 		<td>
 			<?php echo $setting['Setting']['name']; ?>
