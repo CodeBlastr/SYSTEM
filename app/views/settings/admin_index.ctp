@@ -1,3 +1,6 @@
+<?php echo $this->Element('scaffolds/index', array('data' => $settings)); ?>
+
+<?php /*
 <div class="settings index">
 <h2><?php __('Settings');?></h2>
 <p>
@@ -32,7 +35,7 @@ foreach ($settings as $setting):
 		<td>
 			<?php echo $setting['Setting']['name']; ?>
 		</td>
-		<td>
+		<td class="truncate">
 			<?php echo $setting['Setting']['description']; ?>
 		</td>
 		<td class="actions">
@@ -54,4 +57,4 @@ foreach ($settings as $setting):
 		<li><?php echo $html->link(__('New Setting', true), array('action' => 'add')); ?></li>
         <li><?php echo $html->link(__('View Templates', true), array('action' => 'templates')); ?></li>
 	</ul>
-</div>
+</div> */ ?>

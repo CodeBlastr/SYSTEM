@@ -27,8 +27,12 @@ class Setting extends AppModel {
 	var $names = array();
 		
 	
-	function __construct() {
-		parent::__construct();
+	function __construct($id = false, $table = null, $ds = null) {
+    	parent::__construct($id, $table, $ds);
+	    $this->virtualFields['displayName'] = sprintf('CONCAT(%s.type, " ", %s.name)', $this->alias, $this->alias);
+		$this->displayField = 'displayName';
+		
+		
 		$this->names = array(
 				  'System' => array(
 						array(

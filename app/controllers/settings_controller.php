@@ -48,9 +48,23 @@ class SettingsController extends AppController {
 		}
 	}
 	
-	function admin_index() {
-		$this->Setting->recursive = 0;
+	function admin_index() {		
+		$this->paginate = array(
+			'fields' => array(
+				'id',
+				'type',
+				'displayName',
+				'description',
+				),
+			'order' => array(
+				'Setting.type',
+				'Setting.name',
+				),
+			'limit' => 25,
+			);
 		$this->set('settings', $this->paginate());
+		$this->set('displayName', 'displayName');
+		$this->set('displayDescription', 'description'); 
 	}
 
 	function admin_view($id = null) {
