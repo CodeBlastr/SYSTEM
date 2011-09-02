@@ -56,7 +56,7 @@
 	           			
 	           		});
 
-					newElem.find('input, select, textarea, div, td, span').each(function() {
+					newElem.find('input, select, textarea, div, td, span, a').each(function() {
 	           			var id = $(this).attr('id');
 	           			var newId = id.replace(/\d+/, nodeCount);
 	
@@ -94,7 +94,7 @@
 							   $(options.cloneElem).each(function(index) {
 								   $(this).find(options.labelDiv).html(options.labelPrefix+(index+1)+':');
 								   
-								   $(this).find('input, select, textarea').each(function() {
+								   $(this).find('input, select, textarea, div, td, span, a').each(function() {
 					           			var name = $(this).attr('name');
 					           			var newName = name.replace(/\d+/, index);
 					
