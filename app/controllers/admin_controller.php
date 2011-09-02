@@ -42,7 +42,7 @@ class AdminController extends AppController {
 				$this->set('previousUpgrade', $previousUpgrade);
 				$this->Session->setFlash(__('Database Upgraded (you may still need to <a href="/admin/permissions/acores/build_acl">rebuild aco objects</a> (note : clicking this link may take a long time)', true));
 			} else {
-				$this->Session->setFlash(__('Invalid id for AttributeGroup', true));
+				$this->Session->setFlash(__('Invalid Database Upgrade', true));
 			}				
 		}
 		$upgradesNeeded = $this->_checkIfLatestVersion();
@@ -50,7 +50,7 @@ class AdminController extends AppController {
 			$this->set('upgradeDB', $upgradesNeeded);
 		}
 		# test vars for use when we make the admin dashboard more useful
-		$this->set('myVar', 'something'); 
+		$this->set('myVar', 'Configurable admin dashboard and reports coming soon.'); 
         # $this->set('topPosts', ClassRegistry::init('Post')->getTop());
         # $this->set('recentNews', ClassRegistry::init('News')->getRecent());
         # $this->set('topEmployees', ClassRegistry::init('Employee')->getTopPerformers());
@@ -94,6 +94,7 @@ class AdminController extends AppController {
  */
 	function _updateSettingVersion() {
 		$this->data['Setting']['typeName'] = 'System';
+		$this->data['Setting']['type'] = 'System';
 		$this->data['Setting']['name'] = 'ZUHA_DB_VERSION';
 		$this->data['Setting']['value'] = $this->dbVersion + 0.0001;
 		

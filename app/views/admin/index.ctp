@@ -21,7 +21,7 @@
  */
 ?>
 
-something and then... <?php echo $myVar; ?> ... should be between the dots.
+<?php echo $myVar; ?>
 <?php 
 if (!empty($upgradeDB)) {
 ?>
@@ -59,22 +59,3 @@ if (!empty($previousUpgrade)) {
 <?php 
 }
 ?>
-<div class="pointer"></div>
-<div class="sub">
-  <div class="menu">
-    <ul>
-      <li class="title">Permissions</li>
-      <li><a href="/admin/permissions/acores">Permissions</a></li>
-    </ul>
-    <ul>
-      <li class="title">Settings</li>
-      <li><a href="/admin/settings">System Settings</a></li>
-    </ul>
-    <ul>
-      <li class="title">Reports</li>
-      <li><a href="/admin/reports">Analytics</a></li>
-      <li><a href="/admin/reports">Reports</a></li>
-    </ul>
-    <p class="otherFeatures"><a href="/" title="Public Site">Public Site</a></p>
-  </div>
-</div>

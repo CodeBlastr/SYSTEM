@@ -69,8 +69,8 @@
               </ul>
               <ul>
                 <li class="title">Tracking</li>
-                <li><!--a href="/admin/contacts/contact_opportunities"-->Opportunities (coming soon)</li>
-                <li class="separator"><a href="/contacts/contact_activities">Activities</a></li>
+                <li><!--a href="/contacts/contacts/tasks"-->Leads (coming soon)</li>
+                <li class="separator"><!--a href="/contacts/contacts/messages/"-->Activities (coming soon)</li>
               </ul>
               <ul>
                 <li class="title">Sales</li>

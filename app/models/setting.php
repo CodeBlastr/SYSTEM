@@ -369,7 +369,7 @@ class Setting extends AppModel {
 		$setting = $this->find('first', array(
 			'conditions' => array(
 				'Setting.name' => $data['Setting']['name'],
-				'Setting.type_id' => $data['Setting']['type_id'],
+				'Setting.type' => $data['Setting']['type'],
 				),
 			));
 		if(!empty($setting)) {
