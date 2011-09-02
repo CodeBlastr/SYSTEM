@@ -56,7 +56,7 @@
 	           			
 	           		});
 
-					newElem.find('input, select, textarea, div, td, span, a').each(function() {
+					newElem.find('input, select, textarea, div, td, tr, span, a').each(function() {
 	           			var id = $(this).attr('id');
 	           			var newId = id.replace(/\d+/, nodeCount);
 	
