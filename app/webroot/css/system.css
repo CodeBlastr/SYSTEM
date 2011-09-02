@@ -81,3 +81,31 @@ Note that the class names could be updated and change often.
 #creditCardInfo .input.text { clear: left; }
 #OrderTransactionCardExpMonth { width: 45px !important; }
 #OrderTransactionCardExpYear { width: 75px !important; }
+
+
+/* Specific for invoices /invoices/invoices/add */
+.lineTotal {
+	text-align: right;
+}
+.invoiceTotal {
+	text-align: right;
+}
+.invoiceTotal ul, .invoiceTotal li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.invoiceTotal input, .invoiceTotal label {
+	float: none;
+	float: none;
+	clear: none;
+	display: inline;
+	min-width: 5em;
+	text-align: right;
+	border: none;
+	background: #FFF;
+}
+.invoiceTotal input {
+	font-size: 1em;
+}
+	
