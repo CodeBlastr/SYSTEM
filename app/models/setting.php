@@ -232,6 +232,10 @@ class Setting extends AppModel {
 							'name' => 'PROJECTS_MOST_WATCHED',
 							'description' => 'Defines setting variables for the most watched module.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'moduleTitle = "My Custom Title"'.PHP_EOL.'numberOfProjects = 5',
 							),
+						array(
+							'name' => 'BLOGS_LATEST',
+							'description' => 'Defines setting variables for the latest blog posts module.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'moduleTitle = "My Custom Title"'.PHP_EOL.'numberOfPosts = 5'.PHP_EOL.'blogID = 1',
+							),
 						),
 				  'Users' => array(
 						array(
