@@ -75,6 +75,10 @@ Note that the class names could be updated and change often.
 .select .checkbox {
 	display: block;
 }
+input[type=radio], input[type=checkbox] {
+	width:auto;
+	min-width: 0;
+}
 
 /* /orders/order_transactions/checkout */
 #creditCardInfo .input.select { float: left; }
@@ -107,5 +111,12 @@ Note that the class names could be updated and change often.
 }
 .invoiceTotal input {
 	font-size: 1em;
+}
+.invoiceProjects {
+	display: block;
+	float: left;
+}
+.generate .projects {
+	clear: both;
 }
 	

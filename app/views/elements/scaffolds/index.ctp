@@ -44,7 +44,7 @@ foreach ($data as $dat):
       <div class="indexCell image"> <span>
         <?php echo !empty($showGallery) ? $this->Element('thumb', array('plugin' => 'galleries', 'model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey)) : null; ?>
         </span>
-        <div class="drop-holder indexDrop"> <span><img src="/img/admin/btn-down.png" /></span>
+        <div class="drop-holder indexDrop actions">
           <ul class="drop">
           	<?php if(!empty($actions) && is_array($actions)) : foreach ($actions as $action) : ?>
             <li><?php $patterns = array('/{/', '/}/', '/\[/', '/\]/'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.preg_replace($patterns, $replaces, $action).'\';'; eval($action); ?></li>
@@ -124,7 +124,7 @@ endforeach;
 ?>
   </div>
 </div>
-<div id="<?php echo $modelName; ?>Actions" class="actions"> <img src="/img/admin/btn-down.png" />
+<div id="<?php echo $modelName; ?>Actions" class="index actions">
   <ul class="drop">
     <li><?php echo __('Sort by');?></li>
     <?php foreach ($data[0][$modelName] as $keyName => $keyValue) :  
@@ -132,17 +132,23 @@ endforeach;
 	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
     <li><?php echo $paginator->sort($keyName);?></li>
     <?php endif; endforeach; ?>
+    <?php if (!empty($pageActions)) : ?> <li><?php echo __('Action'); ?></li> <?php foreach ($pageActions as $pageAction) : ?>
+    <li><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
+    <?php endforeach; else : ?>
     <li><?php echo __('Action'); ?></li>
     <li><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
+    <?php endif; ?>
   </ul>
 </div>
 <?php echo $this->Element('paging'); ?> <?php echo $this->Element('ajax_edit',  array('editFields' => $editFields)); ?>
+
+
 <?php 
 else : // show a default message pulled as an element called start, from the plugin folder you're in.
 ?>
 <div class="index noItems">
 	<?php echo empty($noItems) ? $this->Element('start',  array('plugin' => $pluginName)) : $noItems; ?>
-	<div class="actions"> <img src="/img/admin/btn-down.png" />
+	<div class="actions">
 	  <ul class="drop">
 	    <li><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
 	  </ul>

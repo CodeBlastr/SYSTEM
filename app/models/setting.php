@@ -191,6 +191,10 @@ class Setting extends AppModel {
 							'name' => 'DEFAULT_CONCLUSION',
 							'description' => 'Defines the default conclusion, or invoice terms to clients when creating an invoice. Can be easily over written during invoice creation.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'"Due in Net 30. Mail your payment here, etc..."',
 							),
+						array(
+							'name' => 'DEFAULT_RATE',
+							'description' => 'Defines the default hourly rate for invoices.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'18.50',
+							),
 						),
 				  'Gallery' => array(
 						array(

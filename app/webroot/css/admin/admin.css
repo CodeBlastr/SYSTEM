@@ -472,6 +472,7 @@ input[type=radio] {
 	float:left;
 	width:auto;
 	margin: .1em 0.5em .1em;
+	min-width: 0;
 }
 div.radio label {
 	margin: 0 0 6px 20px;
@@ -783,6 +784,7 @@ Primary navigation
 	float: left;
 	margin: 0 1em 0 0.5em;
 }
+
 #content .recordData .image {
 	float: left;
 }
@@ -1009,7 +1011,7 @@ ul.activities li.activity span.activityName {
 	display:block;
 }
 .drop-holder {
-	position: relative;
+	position: relative !important;
 	bottom: 0;
 	left: 0;
 	height: 1px;
@@ -1017,8 +1019,6 @@ ul.activities li.activity span.activityName {
 }
 .drop, div.actions ul {
 	position: absolute;
-	top: 0.7em;
-	width:10em;
 	padding:0;
 	margin:0 !important;
 	z-index:300;
@@ -1027,6 +1027,10 @@ ul.activities li.activity span.activityName {
 	border: 1px solid #999;
 	font-weight: bold;
 	float: left;
+	width:10em !important;
+}
+div.indexCell div.drop-holder ul.drop {
+	left: 0 !important;
 }
 .pageDrop, div.actions ul {
 	float: right;
@@ -1083,6 +1087,9 @@ div.actions {
 	width: 20px;
 	height: 20px;
 	background: url('../../img/admin/btn-down.png') no-repeat;
+}
+div.actions ul {
+	display: none;
 }
 div.actions h3 {
 	display: none;
@@ -1237,4 +1244,18 @@ div#bottomNavigation div#legalLinks span {
 #fontSize3 {
 	font-size: 2.2em;
 	cursor: pointer;
+}
+
+/* Invoice Specific */
+.invoices .projects:after {   
+	content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.invoices .projects span.lastInvoiceDate {
+	display: block;
+}
+.invoiceProjects {
 }
