@@ -76,10 +76,14 @@ class Setting extends AppModel {
 						array(
 							'name' => 'PAYPAL_ADAPTIVE',
 							'description' => 'Defines the credentials to Access payment api of Paypal for Adaptive payment methods.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = pro2_1306331130_biz_api1.enbake.com'.PHP_EOL.'API_PASSWORD = 1306331152'.PHP_EOL.'API_SIGNATURE = A8p31ikyPTksXuHA3gAY-vp4j5.uAaEj4E89F8jscaqMIfjpaXVNe4cJ'.PHP_EOL.'API_ENDPOINT = https://svcs.sandbox.paypal.com/AdaptivePayments'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
-							),	
+							),
 						array(
 							'name' => 'CHAINED_PAYMENT',
-							'description' => 'Defines the values to Access chained payment of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'returnUrl = "http://dealpops.zuha.com"'.PHP_EOL.'cancelUrl = "http://dealpops.zuha.com"'.PHP_EOL.'receiverPrimaryArray[] = ""'.PHP_EOL.'receiverInvoiceIdArray[] = ""'.PHP_EOL.'feesPayer = ""'.PHP_EOL.'ipnNotificationUrl = ""'.PHP_EOL.'memo = ""'.PHP_EOL.'pin = ""'.PHP_EOL.'preapprovalKey = ""'.PHP_EOL.'reverseAllParallelPaymentsOnError = ""'.PHP_EOL.'senderEmail = "pro2_1306331130_biz@enbake.com"',
+							'description' => 'Defines the values to Access chained payment of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'returnUrl = "http://xyz.zuha.com"'.PHP_EOL.'cancelUrl = "http://xyz.zuha.com"'.PHP_EOL.'receiverPrimaryArray[] = ""'.PHP_EOL.'receiverInvoiceIdArray[] = ""'.PHP_EOL.'feesPayer = ""'.PHP_EOL.'ipnNotificationUrl = ""'.PHP_EOL.'memo = ""'.PHP_EOL.'pin = ""'.PHP_EOL.'preapprovalKey = ""'.PHP_EOL.'reverseAllParallelPaymentsOnError = ""'.PHP_EOL.'senderEmail = "pro2_1306331130_biz@example.com"',
+							),
+						array(
+							'name' => 'CHECKOUT_REDIRECT',
+							'description' => 'Defines where to redirect to after a successful checkout.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'"/thank-you/"',
 							),
 						array(
 							'name' => 'LOCATIONS',
