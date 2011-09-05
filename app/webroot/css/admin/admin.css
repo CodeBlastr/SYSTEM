@@ -1257,8 +1257,11 @@ div#bottomNavigation div#legalLinks span {
 .invoices .projects span.lastInvoiceDate {
 	display: block;
 }
-.invoice.view tr#totals td p, .invoice.view table tr td:last-child {
+.invoice.view table tr td:last-child {
 	text-align: right;
+}
+.invoice .invoiceIntroduction, .invoice .invoiceConclusion {
+	font-size: 0.7em;
 }
 .invoiceProjects {
 }
