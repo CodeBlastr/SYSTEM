@@ -1,6 +1,10 @@
 // JavaScript Document
 
 $().ready(function() {
+				   
+	$(".helpBox").click(function() {
+		alert($(this).attr("title"));
+    });
 	
 	$(".draggable").draggable({ handle: ".handle" });
 				   
