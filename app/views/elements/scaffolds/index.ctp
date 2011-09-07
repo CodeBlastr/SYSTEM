@@ -81,7 +81,7 @@ foreach ($data as $dat):
 			endif;
 			$keyName = Inflector::humanize($keyName);
 			# if its a date parse it into words
-			if (strtotime($keyValue)) : $keyValue = $time->timeAgoInWords($keyValue); endif; // human readable dates 
+			if ($keyValue == date('Y-m-d h:i:s', strtotime($keyValue)) || $keyValue == date('Y-m-d', strtotime($keyValue))) : $keyValue = $time->timeAgoInWords($keyValue); endif; // human readable dates 
 			?>
             <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>        
 	        <?php endif; ?>
