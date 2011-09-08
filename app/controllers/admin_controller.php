@@ -93,7 +93,6 @@ class AdminController extends AppController {
  * @return {bool}
  */
 	function _updateSettingVersion() {
-		$this->data['Setting']['typeName'] = 'System';
 		$this->data['Setting']['type'] = 'System';
 		$this->data['Setting']['name'] = 'ZUHA_DB_VERSION';
 		$this->data['Setting']['value'] = $this->dbVersion + 0.0001;
