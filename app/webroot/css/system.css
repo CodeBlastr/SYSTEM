@@ -83,8 +83,8 @@ input[type=radio], input[type=checkbox] {
 /* /orders/order_transactions/checkout */
 #creditCardInfo .input.select { float: left; }
 #creditCardInfo .input.text { clear: left; }
-#OrderTransactionCardExpMonth { width: 45px !important; }
-#OrderTransactionCardExpYear { width: 75px !important; }
+#OrderTransactionCardExpMonth { width: 45px !important; float: left !important; }
+#OrderTransactionCardExpYear { width: 75px !important; float: left !important; clear: none !important; }
 
 
 /* Specific for invoices /invoices/invoices/add */
