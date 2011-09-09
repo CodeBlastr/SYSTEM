@@ -190,6 +190,7 @@
 			'User' => 'users',
 			'Setting' => '',
 			'Settings' => '',
+			'Member' => 'members',
 			);
 		if ($allowed[$name] !== null) {
 			return $allowed[$name];
