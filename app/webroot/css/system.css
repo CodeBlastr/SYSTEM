@@ -26,7 +26,7 @@ Note that the class names could be updated and change often.
     -webkit-border-radius:5px;
     border-radius:5px;
 }
-.error-message {
+.error-message, .error {
 	color: #C00;
 }
 
