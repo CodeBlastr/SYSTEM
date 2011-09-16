@@ -1,2 +1,1 @@
-
-  <iframe src="http://razorit.localhost/js/kcfinder/browse.php?type=files&amp;kcfinderuploadDir=razorit.com&amp;CKEditor=WebpageContent&amp;CKEditorFuncNum=4&amp;langCode=en" width="100%" height="500px"></iframe>
+<iframe src="http://<?php echo $_SERVER['HTTP_HOST']; ?>/js/kcfinder/browse.php?type=files&amp;kcfinderuploadDir=<?php echo SITE_DIR; ?>&amp;CKEditor=WebpageContent&amp;CKEditorFuncNum=4&amp;langCode=en" width="100%" height="500px"></iframe>

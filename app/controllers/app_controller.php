@@ -423,7 +423,8 @@ class AppController extends Controller {
 		
 		$conditions = $this->_templateConditions();
 		$templated = $this->Webpage->find('first', $conditions);
-        $this->Webpage->parseIncludedPages($templated);
+		$userRoleId = $this->Session->read('Auth.User.user_role_id');
+        $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId);
 		
         $this->set('defaultTemplate', $templated);
 		
