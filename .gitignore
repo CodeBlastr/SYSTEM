@@ -5,6 +5,7 @@
 /app/tmp/cache/persistent/cake*
 /app/tmp/cache/views/cake*
 /app/tmp/cache/cake*
+\#*.*\#
 /plugins
 /sites/**/config/database.php
 /sites/**/tmp/logs/debug.log
@@ -18,3 +19,4 @@
 settings.ini
 \.*
 \_*
+*\~
