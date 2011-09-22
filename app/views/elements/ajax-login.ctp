@@ -121,7 +121,13 @@
 <script>
 $().ready(function() {
 
-	$("a").click(function (e) {
+	// Creating custom :internal selector
+	$.expr[':'].internal = function(obj){
+	    return !obj.href.match(/^mailto\:/)
+	            && (obj.hostname == location.hostname);
+	};
+
+	$("a:internal").click(function (e) {
 		url = $(this).attr('href');
 
 		// if '#' or 'fancy box' dont show this
