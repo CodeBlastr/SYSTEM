@@ -25,22 +25,14 @@ class Setting extends AppModel {
 	var $name = 'Setting';
 	// instead of storing available settings in a database we store all of the available settings here
 	var $names = array();
+		
 	
-
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
-	var $belongsTo = array(
-		'SettingType' => array(
-			'className' => 'Enumeration',
-			'foreignKey' => 'type_id',
-			'conditions' => array('SettingType.type' => 'SETTING_TYPE'),
-			'fields' => '',
-			'order' => ''
-		)
-	);
-	
-	
-	function __construct() {
-		parent::__construct();
+	function __construct($id = false, $table = null, $ds = null) {
+    	parent::__construct($id, $table, $ds);
+	    $this->virtualFields['displayName'] = sprintf('CONCAT(%s.type, " ", %s.name)', $this->alias, $this->alias);
+		$this->displayField = 'displayName';
+		
+		
 		$this->names = array(
 				  'System' => array(
 						array(
@@ -84,10 +76,14 @@ class Setting extends AppModel {
 						array(
 							'name' => 'PAYPAL_ADAPTIVE',
 							'description' => 'Defines the credentials to Access payment api of Paypal for Adaptive payment methods.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = pro2_1306331130_biz_api1.enbake.com'.PHP_EOL.'API_PASSWORD = 1306331152'.PHP_EOL.'API_SIGNATURE = A8p31ikyPTksXuHA3gAY-vp4j5.uAaEj4E89F8jscaqMIfjpaXVNe4cJ'.PHP_EOL.'API_ENDPOINT = https://svcs.sandbox.paypal.com/AdaptivePayments'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
-							),	
+							),
 						array(
 							'name' => 'CHAINED_PAYMENT',
-							'description' => 'Defines the values to Access chained payment of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'returnUrl = "http://dealpops.zuha.com"'.PHP_EOL.'cancelUrl = "http://dealpops.zuha.com"'.PHP_EOL.'receiverPrimaryArray[] = ""'.PHP_EOL.'receiverInvoiceIdArray[] = ""'.PHP_EOL.'feesPayer = ""'.PHP_EOL.'ipnNotificationUrl = ""'.PHP_EOL.'memo = ""'.PHP_EOL.'pin = ""'.PHP_EOL.'preapprovalKey = ""'.PHP_EOL.'reverseAllParallelPaymentsOnError = ""'.PHP_EOL.'senderEmail = "pro2_1306331130_biz@enbake.com"',
+							'description' => 'Defines the values to Access chained payment of Paypal.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'returnUrl = "http://xyz.zuha.com"'.PHP_EOL.'cancelUrl = "http://xyz.zuha.com"'.PHP_EOL.'receiverPrimaryArray[] = ""'.PHP_EOL.'receiverInvoiceIdArray[] = ""'.PHP_EOL.'feesPayer = ""'.PHP_EOL.'ipnNotificationUrl = ""'.PHP_EOL.'memo = ""'.PHP_EOL.'pin = ""'.PHP_EOL.'preapprovalKey = ""'.PHP_EOL.'reverseAllParallelPaymentsOnError = ""'.PHP_EOL.'senderEmail = "pro2_1306331130_biz@example.com"',
+							),
+						array(
+							'name' => 'CHECKOUT_REDIRECT',
+							'description' => 'Defines where to redirect to after a successful checkout.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'"/thank-you/"',
 							),
 						array(
 							'name' => 'LOCATIONS',
@@ -190,6 +186,20 @@ class Setting extends AppModel {
 							'description' => 'Defines the Google Analytics information for tracking traffic and displaying reports.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'setAccount = UA-999999-9'.PHP_EOL.'setDomainName = .domain.com'.PHP_EOL.'userName = google@account-login.com'.PHP_EOL.'password = mySecurePassword',
 							),
 						),
+				  'Invoices' => array(
+						array(
+							'name' => 'DEFAULT_INTRODUCTION',
+							'description' => 'Defines the default notes to clients when creating an invoice. Can be easily over written during invoice creation.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'"Thank you for your business."',
+							),
+						array(
+							'name' => 'DEFAULT_CONCLUSION',
+							'description' => 'Defines the default conclusion, or invoice terms to clients when creating an invoice. Can be easily over written during invoice creation.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'"Due in Net 30. Mail your payment here, etc..."',
+							),
+						array(
+							'name' => 'DEFAULT_RATE',
+							'description' => 'Defines the default hourly rate for invoices.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'18.50',
+							),
+						),
 				  'Gallery' => array(
 						array(
 							'name' => 'DEFAULT_TYPE', 
@@ -229,6 +239,10 @@ class Setting extends AppModel {
 						array(
 							'name' => 'PROJECTS_MOST_WATCHED',
 							'description' => 'Defines setting variables for the most watched module.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'moduleTitle = "My Custom Title"'.PHP_EOL.'numberOfProjects = 5',
+							),
+						array(
+							'name' => 'BLOGS_LATEST',
+							'description' => 'Defines setting variables for the latest blog posts module.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'moduleTitle = "My Custom Title"'.PHP_EOL.'numberOfPosts = 5'.PHP_EOL.'blogID = 1',
 							),
 						),
 				  'Users' => array(
@@ -277,16 +291,14 @@ class Setting extends AppModel {
  * return {string}		A string of data used to write to the settings.ini file.
  */
 	function prepareSettingsIniData() {
-		$settings = $this->find('all', array(
-			'contain' => 'SettingType'
-			));
+		$settings = $this->find('all');
 		$writeData = '; Do not edit this file, instead go to /admin/settings and edit or add settings'.PHP_EOL.PHP_EOL;
 		foreach ($settings as $setting) {
 			if (strpos($setting['Setting']['value'], '=')) {
 				$holdSettings[] = $setting;
 			} else {
 				$writeData .= '__';
-				$writeData .= strtoupper($setting['SettingType']['name']);
+				$writeData .= strtoupper($setting['Setting']['type']);
 				$writeData .= '_';
 				$writeData .= strtoupper($setting['Setting']['name']);
 				$writeData .= ' = ';
@@ -306,7 +318,7 @@ class Setting extends AppModel {
 		$writeData = '';
 		foreach ($settings as $setting) {
 			$writeData .= PHP_EOL.'[__';
-			$writeData .= strtoupper($setting['SettingType']['name']);
+			$writeData .= strtoupper($setting['Setting']['type']);
 			$writeData .= '_';
 			$writeData .= strtoupper($setting['Setting']['name']).']'.PHP_EOL;
 			$writeData .= $setting['Setting']['value'];
@@ -364,24 +376,12 @@ class Setting extends AppModel {
  *
  * @param {array}		An array of Setting data
  */
-	function _cleanSettingData($data, $append = false){
-		#look up the type_id, if it isn't already set
-		if (empty($data['Setting']['type_id'])) {
-			$settingType = $this->SettingType->find('first', array(
-				'conditions' => array(
-					'SettingType.name' => $data['Setting']['typeName'],
-					'SettingType.type' => 'SETTING_TYPE',
-					),
-				));
-			# set the type id into the data array
-			$data['Setting']['type_id'] = $settingType['SettingType']['id'];
-		} 
-		
+	function _cleanSettingData($data, $append = false){		
 		# see if the setting already exists
 		$setting = $this->find('first', array(
 			'conditions' => array(
 				'Setting.name' => $data['Setting']['name'],
-				'Setting.type_id' => $data['Setting']['type_id'],
+				'Setting.type' => $data['Setting']['type'],
 				),
 			));
 		if(!empty($setting)) {
@@ -409,10 +409,10 @@ class Setting extends AppModel {
 	 *
 	 * @todo 	We need to do a much better grouping of these setting names. Settings which need to be set together should not have different constants used.  Instead they should have different values which are sub values to the constant.
 	 */
-	function getNames($typeId = null) {
-		if (!empty($typeId)) {
-			$preFix = enum($typeId);
-			return $this->names[$preFix[$typeId]];
+	function getNames($typeName = null) {
+		if (!empty($typeName)) {
+			#$preFix = enum($typeName);
+			return $this->names[$typeName];
 		}
 	
 		/* This is a really helpful piece of code, but I don't know where to put it for reuse
@@ -438,6 +438,15 @@ class Setting extends AppModel {
 			}
 		}
 		return $description;
+	}
+	
+	
+	function types() {
+		foreach ($this->names as $key => $value) :
+			$types[$key] = $key;
+		endforeach;
+		
+		return $types;
 	}
 }
 ?>

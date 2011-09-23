@@ -48,9 +48,22 @@ class SettingsController extends AppController {
 		}
 	}
 	
-	function admin_index() {
-		$this->Setting->recursive = 0;
+	function admin_index() {		
+		$this->paginate = array(
+			'fields' => array(
+				'id',
+				'displayName',
+				'description',
+				),
+			'order' => array(
+				'Setting.type',
+				'Setting.name',
+				),
+			'limit' => 25,
+			);
 		$this->set('settings', $this->paginate());
+		$this->set('displayName', 'displayName');
+		$this->set('displayDescription', 'description'); 
 	}
 
 	function admin_view($id = null) {
@@ -70,16 +83,12 @@ class SettingsController extends AppController {
 				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true));
 			}
 		}
-		$types = $this->Setting->SettingType->find('list', array(
-			'conditions' => array(
-				'SettingType.type' => 'SETTING_TYPE'
-				),
-			));
+		$types = $this->Setting->types();
 		$this->set(compact('types')); 
 	}
 	
-	function admin_names($typeId = null) {
-		$settings = $this->Setting->getNames($typeId);
+	function admin_names($typeName = null) {
+		$settings = $this->Setting->getNames($typeName);
 		$this->set(compact('settings'));
 	}
 
@@ -110,11 +119,7 @@ class SettingsController extends AppController {
 		if (empty($this->data)) {
 			$this->data = $this->Setting->read(null, $id);
 		}
-		$types = $this->Setting->SettingType->find('list', array(
-			'conditions' => array(
-				'SettingType.type' => 'SETTING_TYPE'
-				),
-			));
+		$types = $this->Setting->types();
 		$this->set(compact('types')); 
 	}
 

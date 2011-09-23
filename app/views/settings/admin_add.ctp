@@ -4,9 +4,9 @@
  		<legend><?php __('Add Setting');?></legend>
 	<?php
 		// this is the first instance of our use of the updated select drop down which uses ajax to update other fields. We are attempting to make reusable form elements that can encompass the ajax part as well as the normal automagic form element config. element = the type of field being created or updated, json = the url to call with the value of this element, rel = the target id of the element to update
-		echo $form->input('Setting.type_id', array(
+		echo $form->input('Setting.type', array(
 												   'empty' => true, 
-												   'label' => $html->link('Type', '/admin/enumerations/add'), 
+												   'label' => 'Type', 
 												   'ajax' => array(
 																   'element' => 'select',
 																   'json' => 'admin/settings/names', 
@@ -41,8 +41,8 @@ function selectCallBack(data) {
 
 $(function() { 
 	$('#SettingName').change(function(){
-		var url = '/' + $('#SettingTypeId').attr('json') + '/' + $('#SettingTypeId').val() + '.json';
-		var target = $('#SettingTypeId').attr('rel');
+		var url = '/' + $('#SettingType').attr('json') + '/' + $('#SettingType').val() + '.json';
+		var target = $('#SettingType').attr('rel');
 		$.getJSON(url, function(data){
 			selectCallBack(data);
 	    });

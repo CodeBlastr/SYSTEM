@@ -4,7 +4,7 @@
  		<legend><?php __('Edit Setting');?></legend>
 		<?php
 		echo $form->input('id');
-		echo !empty($typeId) ? $form->hidden('type_id', array('value' => $typeId)) : $form->input('type_id', array('label' => $html->link('Type', '/admin/enumerations/add')));
+		echo $form->input('type');
 		echo $form->input('name');
 		echo $form->input('value');
 		echo $form->input('description');
