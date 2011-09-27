@@ -107,7 +107,7 @@ class AppController extends Controller {
 
 		$this->Auth->actionPath = 'controllers/';
 		# pulls in the hard coded allowed actions from the current controller
-		$this->Auth->allowedActions = array('display');
+		$this->Auth->allowedActions = array('display', 'runcron');
 		$this->Auth->authorize = 'controller';
 		if (!empty($this->allowedActions)) {
 			$allowedActions = array_merge($this->Auth->allowedActions, $this->allowedActions);
@@ -762,6 +762,9 @@ class AppController extends Controller {
 			$data['requireAuth'] = 1;
 		}
 		echo json_encode($data);			
+	}
+	
+	function runcron()	{
 	}
 }
 ?>
