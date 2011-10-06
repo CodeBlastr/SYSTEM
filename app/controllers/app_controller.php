@@ -27,7 +27,7 @@ class AppController extends Controller {
     var $uses = array('Condition', 'Webpages.Webpage');
 	# Menu is DEPRECATED and will be removed in future versions.
 	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Menus.Tree', 'Menu');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer', 'Security');
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
 	// update this so that it uses the full list of actual user roles
@@ -153,15 +153,30 @@ class AppController extends Controller {
 		/**
 		 * Used to show admin layout for admin pages
 		 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
-		 */		 
-		
+		 */
 		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
-			// this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
+			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
+		elseif(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
+			# this elseif checks to see if the user role has a specific view file
+			$this->layout = 'default';
+			$this->params['action'] = str_replace('admin_', '', $this->params['action']);
+			# $this->viewPath = $this->Session->read('Auth.User.view').DS.$this->params['controller'];
+			$viewPaths = App::path('views');
+			foreach ($viewPaths as $path) :
+				$paths[] = !empty($this->params['plugin']) ? str_replace(DS.'views', DS.'plugins'.DS.$this->params['plugin'].DS.'views', $path) : $path;
+			endforeach;
+			foreach ($paths as $path) :
+				debug($this->Session->read('Auth.User.view'));
+				if (file_exists($path.'blah'.DS.$this->viewPath.DS.$this->params['action'].'.ctp')) :
+					$this->viewPath = 'blah'.DS.$this->params['controller'];
+				endif;
+			endforeach;
 		elseif(empty($this->params['requested']) && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') : 
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		endif;
+		
 		
 		/**
 		 * Check whether the site is sync'd up 
@@ -172,7 +187,7 @@ class AppController extends Controller {
 	/**
 	 * @todo convert to a full REST application and this might not be necessary
 	 */
-    function beforeRender() {  
+    function beforeRender() {
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
 		if($this->name == 'CakeError') {
