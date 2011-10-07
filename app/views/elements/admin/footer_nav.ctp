@@ -3,7 +3,7 @@
     <div class="gridRow">
       <div class="footerHeading">
         <ul class="loggedIn <?php if(!$session->read('Auth.User')) { echo 'hide'; } ?>">
-          <li><?php echo $this->element('snpsht', array('plugin' => 'users', 'useGallery' => true, 'userId' => $session->read('Auth.User.id'), 'thumbAlt' => $session->read('Auth.User.username'), 'thumbTitle' => $session->read('Auth.User.username'))); ?></li>
+          <li><?php echo $this->Element('snpsht', array('plugin' => 'users', 'useGallery' => true, 'userId' => $session->read('Auth.User.id'), 'thumbAlt' => $session->read('Auth.User.username'), 'thumbTitle' => $session->read('Auth.User.username'))); ?></li>
           <li><span>Welcome <span><?php echo $session->read('Auth.User.username'); ?></span></span> </li>
           <li><a href="/users/users/logout"><span>Logout</span></a> </li>
           <li><a href="/admin/settings"><span><?php echo 'Zuha Version: '.__SYSTEM_ZUHA_DB_VERSION; ?></span></a></li>
@@ -13,9 +13,9 @@
           <li><a href="/users/users/login"><span>Sign In</span></a></li>
         </ul>
         <ul>
-        	<?php foreach ($editorUserRoles as $role) : ?>
+        	<?php /* foreach ($editorUserRoles as $role) : ?>
         	<li><a href="/users/user_roles/display_role/<?php echo $role; ?>">View page as <?php echo Inflector::singularize($role); ?></li>
-            <?php endforeach; ?>
+            <?php endforeach; */ ?>
         	<li><a href="#" id="helpOpen">Turn Help Text On</a></li>
         </ul>
       </div>

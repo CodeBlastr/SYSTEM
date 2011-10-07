@@ -150,33 +150,7 @@ class AppController extends Controller {
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 		
 		 
-		/**
-		 * Used to show admin layout for admin pages
-		 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
-		 */
-		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
-			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
-			$this->layout = 'default';
-		elseif(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
-			# this elseif checks to see if the user role has a specific view file
-			$this->layout = 'default';
-			$this->params['action'] = str_replace('admin_', '', $this->params['action']);
-			# $this->viewPath = $this->Session->read('Auth.User.view').DS.$this->params['controller'];
-			$viewPaths = App::path('views');
-			foreach ($viewPaths as $path) :
-				$paths[] = !empty($this->params['plugin']) ? str_replace(DS.'views', DS.'plugins'.DS.$this->params['plugin'].DS.'views', $path) : $path;
-			endforeach;
-			foreach ($paths as $path) :
-				debug($this->Session->read('Auth.User.view'));
-				if (file_exists($path.'blah'.DS.$this->viewPath.DS.$this->params['action'].'.ctp')) :
-					$this->viewPath = 'blah'.DS.$this->params['controller'];
-				endif;
-			endforeach;
-		elseif(empty($this->params['requested']) && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') : 
-			// this else if makes so that extensions still get parsed
-			$this->_getTemplate();
-		endif;
-		
+		$this->_siteTemplate();
 		
 		/**
 		 * Check whether the site is sync'd up 
@@ -355,16 +329,48 @@ class AppController extends Controller {
 		$this->render(false);
 	}	
 
-	
+
+	/**
+	 * Used to show admin layout for admin pages & userRole views if they exist
+	 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
+	 */
+	function _siteTemplate() {
+		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
+			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
+			$this->layout = 'default';
+		elseif(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
+			if ($this->params['prefix'] == $this->Session->read('Auth.User.view_prefix')) :
+				# this elseif checks to see if the user role has a specific view file
+				$this->layout = 'default';
+				$this->params['action'] = str_replace('admin_', '', $this->params['action']);
+				# $this->viewPath = $this->Session->read('Auth.User.view').DS.$this->params['controller'];
+				$viewPaths = App::path('views');
+				foreach ($viewPaths as $path) :
+					$paths[] = !empty($this->params['plugin']) ? str_replace(DS.'views', DS.'plugins'.DS.$this->params['plugin'].DS.'views', $path) : $path;
+				endforeach;
+				foreach ($paths as $path) :
+					if (file_exists($path.$this->Session->read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->params['action'].'.ctp')) :
+						$this->viewPath = $this->Session->read('Auth.User.view_prefix').DS.$this->params['controller'];
+					endif;
+				endforeach;
+			else : 
+				$this->Session->setFlash(__('Section access restricted.', true));
+				$this->redirect($this->referer());
+			endif;			
+		elseif (empty($this->params['requested']) && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') : 
+			// this else if makes so that extensions still get parsed
+			$this->_getTemplate();
+		endif;
+	}
+
+
 	/**
 	 * Used to find the template and makes a call to parse all page views.  Sets the defaultTemplate variable for the layout.
-	 * 
 	 * This function parses the settings for templates, in order to decide which template to use, based on url, and user role.
 	 *
 	 * @todo 		Move this to the webpage model.
 	 */
 	function _getTemplate() {
-		
 		if (defined('__APP_TEMPLATES')) :
 			$settings = unserialize(__APP_TEMPLATES);
 			$i = 0; 
@@ -389,24 +395,19 @@ class AppController extends Controller {
 					break;
 				endif;
 				
-			endforeach; endif;	
-			
+			endforeach; endif;
 			if (!empty($templates) && empty($this->templateId)) : foreach ($templates as $key => $template) :
-			
 				if (!empty($template['isDefault'])) :
 					$this->templateId = $template['templateId'];
 					$this->templateId = !empty($template['userRoles']) ? $this->_userTemplate($template) : $this->templateId;
-				endif;
-				
+				endif;				
 				if (!empty($this->templateId)) :
 					// as soon as we have the first template that matches, end this loop
 					break;
-				endif;
-				
+				endif;				
 			endforeach; endif;
 				
 		elseif (empty($this->templateId)) :
-		
 			# THIS ELSE IF IS DEPRECATED 6/11/2011 : Will be removed in future versions
 			# it was for use when there were two template related constants, which have now been combined into one.
 			if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
@@ -433,14 +434,12 @@ class AppController extends Controller {
 					}
 	            }
 			}
-			
 		endif;
 		
 		$conditions = $this->_templateConditions();
 		$templated = $this->Webpage->find('first', $conditions);
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
         $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId);
-		
         $this->set('defaultTemplate', $templated);
 		
 		# the __APP_DEFAULT_TEMPLATE_ID is deprecated and will be removed
