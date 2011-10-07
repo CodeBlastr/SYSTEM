@@ -9,7 +9,7 @@
             <div class="menu">
               <ul>
                 <li class="title">Design</li>
-                <li><a href="/webpages/webpages/index/type:template/">Templates</a></li>
+                <li><?php echo $this->Html->link('Templates', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'template')); ?></li>
                 <li><a href="/webpages/webpages/index/type:element/">Elements</a></li>
                 <li><a href="/webpages/webpage_csses">Css Files</a></li>
                 <li class="separator"><a href="/webpages/webpage_jses">Js Files</a></li>
@@ -126,7 +126,8 @@
             <div class="menu">
               <ul>
                 <li class="title">Users</li>
-                <li class="separator"><a href="/users">All Users</a></li>
+                <li><a href="/users">All Users</a></li>
+                <li class="separator"><?php echo $this->Html->link('User Roles', array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'index')); ?></li>
               </ul>
               <ul>
                 <li class="title">Social</li>
