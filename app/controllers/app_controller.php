@@ -27,7 +27,7 @@ class AppController extends Controller {
     var $uses = array('Condition', 'Webpages.Webpage');
 	# Menu is DEPRECATED and will be removed in future versions.
 	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Menus.Tree', 'Menu');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer', 'Security');
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'Email', 'RegisterCallbacks', 'SwiftMailer', /*'Security' Desktop Login Stops Working When This is On*/);
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
 	// update this so that it uses the full list of actual user roles
