@@ -79,8 +79,8 @@
                 <li class="separator"><a href="/orders/order_transactions/">Orders</a></li>
               </ul>
               <ul>
-                <li class="title">Products</li>
-                <li class="separator"><a href="/catalogs/catalog_items">Products</a></li>
+                <li class="title">Catalogs</li>
+                <li class="separator"><?php echo $this->Html->link('Dashboard', array('plugin' => 'catalogs', 'controller' => 'catalogs', 'action' => 'dashboard')); ?></li>
               </ul>
               <p class="other"><a href="#" title="Sales Dashboard">Dashboard</a></p>
             </div>
