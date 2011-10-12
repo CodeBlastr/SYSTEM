@@ -20,30 +20,6 @@
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
 ?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" class="no-js">
-<head>
-<?php echo $html->charset(); ?>
-<title><?php echo $title_for_layout; __(' : Zuha Business Management'); ?></title>
-<!--[if lt IE 9]>
-		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-<meta name="robots" content="index, follow" />
-<meta http-equiv="X-UA-Compatible" content="IE=8" />
-<meta name="viewport" content="width=device-width"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<?php
-	echo $this->Html->meta('icon');
-	echo $this->Html->css('system');
-	echo $this->Html->css('admin/mobi');
-	
-	# no rhyme or reason about the directory structure here, needs to be cleaned up at some point
-	echo $this->Html->script('jquery-1.5.2.min');
-	echo $this->Html->script('admin/jquery-ui-1.8.13.custom.min');
-?>
-</head>
-<body class="<?php echo $this->params['controller']; ?><?php if($session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
-<div class="content">
   <?php 
 if (!empty($upgradeDB)) {
 ?>
@@ -81,7 +57,6 @@ if (!empty($previousUpgrade)) {
   <?php 
 }
 ?>
-  <div id="jqm-homeheader"> <img src="/img/admin/logo.png" alt=""/> </div>
   <!-- /homeheader -->
   <div class="accordion">
   	<ul class="accordion">
@@ -141,13 +116,8 @@ if (!empty($previousUpgrade)) {
         <!--li class="title">Catalogs</li-->
                 <li class="separator"><a href="/catalogs/catalogs/dashboard">Dashboard</a></li>
               </ul>
-              <p class="other"><a href="#" title="Sales Dashboard">Dashboard</a></p>
-            </div>
-          </div>
         </li>
         <li> <a href="/admin/reports/reports/dashboard"><span>Marketing</span></a>
-          <div class="sub">
-            <div class="menu">
               <ul>
                 <li class="title">Tools</li>
                 <li><a href="/admin/notifications/notification_templates">Notifications</a></li>
@@ -159,13 +129,8 @@ if (!empty($previousUpgrade)) {
                 <li><a href="/admin/reports">Analytics</a></li>
                 <li class="separator"><a href="/admin/reports">Reports</a></li>
               </ul>
-              <p class="other"><a href="/admin/reports/reports/dashboard" title="Marketing Dashboard">Dashboard</a></p>
-            </div>
-          </div>
         </li>
         <li class="endColumn"> <a href="#"><span>Support</span></a>
-          <div class="sub">
-            <div class="menu">
               <ul>
                 <li class="title">Projects</li>
                 <li><a href="/projects">Projects</a></li>
@@ -176,13 +141,8 @@ if (!empty($previousUpgrade)) {
                 <li class="title">Support</li>
                 <li class="separator"><a href="/admin/tickets">Tickets</a></li>
               </ul>
-              <p class="other"><a href="#" title="Support Dashboard">Dashboard</a></p>
-            </div>
-          </div>
         </li>
         <li class="endColumn"> <a href="#" title="Users"><span>Users</span></a>
-          <div class="sub">
-            <div class="menu">
               <ul>
                 <li class="title">Users</li>
                 <li><a href="/users">All Users</a></li>
@@ -195,13 +155,8 @@ if (!empty($previousUpgrade)) {
                 <li><a href="/users/user_walls">Walls</a></li>
                 <li class="separator"><a href="/messages">Messages</a></li>
               </ul>
-              <p class="other"><a href="#" title="Users Dashboard">Dashboard</a></p>
-            </div>
-          </div>
         </li>
         <li class="endColumn"> <a href="/admin/webpages" title="Content"><span>Extend</span></a>
-          <div class="sub">
-            <div class="menu">
               <ul>
                 <li class="title">App Builder</li>
                 <li><a href="/privileges">Privileges</a></li>
@@ -210,8 +165,6 @@ if (!empty($previousUpgrade)) {
                 <li><a href="/admin/conditions">Conditions</a></li>
                 <li class="separator"><a href="/workflows">Workflows</a></li>
               </ul>
-            </div>
-          </div>
         </li>
       </ul>
   

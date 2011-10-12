@@ -55,7 +55,6 @@ class AdminController extends AppController {
         # $this->set('topEmployees', ClassRegistry::init('Employee')->getTopPerformers());
         # $this->set('topSellingProducts', ClassRegistry::init('Product')->getTopSellers());
 		$this->layout = 'admin';
-		$this->layout = '';
 	}
 	
 	function admin_files_image() {

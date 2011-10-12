@@ -19,6 +19,11 @@ $(function() {
 		timeformat: 'hh:mm:ss'
 	});
 	
+	$(".accordion" ).accordion({
+			collapsible: true
+	});
+	
+	
 	$('.timepicker').timepicker({
 		//ampm: true,
 		//showSecond: true,
@@ -129,6 +134,17 @@ $(function() {
 		$(this).addClass('active');
 	});**/
 	
+	
+	/* Index pages */ 
+	
+	$(".indexCell .indexCell").hide();
+	
+	$(".indexCell .indexCell:first-child").show();
+	
+	$(".indexCell .indexCell:first-child").click(function (e) {
+		$(this).siblings().slideToggle("toggle");
+		e.preventDefault();
+	});
 	
 	/* Font size changer */
 	if ($.cookie('fontSize') != null) {
