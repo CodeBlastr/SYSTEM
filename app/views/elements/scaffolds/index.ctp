@@ -126,17 +126,17 @@ endforeach;
 </div>
 <div id="<?php echo $modelName; ?>Actions" class="index actions">
   <ul class="drop">
-    <li><?php echo __('Sort by');?></li>
+    <li class="actionHeading"><?php echo __('Sort by');?></li>
     <?php foreach ($data[0][$modelName] as $keyName => $keyValue) :  
 	   # unset these vars, because they are for scaffolding only
 	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
-    <li><?php echo $paginator->sort($keyName);?></li>
+    <li class="actionItem"><?php echo $paginator->sort($keyName);?></li>
     <?php endif; endforeach; ?>
     <?php if (!empty($pageActions)) : ?> <li><?php echo __('Action'); ?></li> <?php foreach ($pageActions as $pageAction) : ?>
-    <li><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
+    <li class="actionItem"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
     <?php endforeach; else : ?>
-    <li><?php echo __('Action'); ?></li>
-    <li><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
+    <li class="actionHeading"><?php echo __('Action'); ?></li>
+    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
     <?php endif; ?>
   </ul>
 </div>
@@ -150,7 +150,7 @@ else : // show a default message pulled as an element called start, from the plu
 	<?php echo empty($noItems) ? $this->Element('start',  array('plugin' => $pluginName)) : $noItems; ?>
 	<div class="actions">
 	  <ul class="drop">
-	    <li><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
+	    <li class="actionItem"><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
 	  </ul>
 	</div>
 </div>

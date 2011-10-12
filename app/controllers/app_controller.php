@@ -337,11 +337,11 @@ class AppController extends Controller {
 	function _siteTemplate() {
 		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
 			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
-			$this->layout = 'default';
+			$this->layout = 'admin';
 		elseif(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
 			if ($this->params['prefix'] == $this->Session->read('Auth.User.view_prefix')) :
 				# this elseif checks to see if the user role has a specific view file
-				$this->layout = 'default';
+				$this->layout = 'admin';
 				$this->params['action'] = str_replace('admin_', '', $this->params['action']);
 				# $this->viewPath = $this->Session->read('Auth.User.view').DS.$this->params['controller'];
 				$viewPaths = App::path('views');
