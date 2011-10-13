@@ -100,7 +100,7 @@ $(function() {
 	});
 	
 	
-	/* Tabs */
+	/* Tabs 
 	$('#contentWrapper div.tabs a').click(function(e){
 		$('#contentWrapper div.tabs a').removeClass('active');
 		$('#tabTwo, #tabOne').hide();
@@ -112,7 +112,7 @@ $(function() {
 			$('#'+id).show();
 			e.preventDefault();
 	
-	});
+	});*/
 
 
 	// hides form elements except the legend (click the legend to show form elements
@@ -123,7 +123,7 @@ $(function() {
     });
 		
 	//$('#tabs').tabs({fx:{height: "toggle"}});	
-	$('.tabs').parent().tabs({fx:{height: "toggle"}});
+	//$('.tabs').parent().tabs({fx:{height: "toggle"}});
 	/* make the current tab have the class active
 	$('#tabs a').click(function() {
 		$('#tabs a').removeClass('active');
@@ -155,12 +155,32 @@ $(function() {
 		$.cookie('fontSize', '0.8em', { expires: 999 });
 	});
 	$('#fontSize2').click(function(e){
-		$('body').css('font-size', '1.3em');
-		$.cookie('fontSize', '1.3em', { expires: 999 });
+		$('body').css('font-size', '1em');
+		$.cookie('fontSize', '1em', { expires: 999 });
 	});
 	$('#fontSize3').click(function(e){
 		$('body').css('font-size', '1.6em');
 		$.cookie('fontSize', '1.6em', { expires: 999 });
 	});
 	
+	
+	
+	/* Stick Footer */
+	positionFooter(); 
+	function positionFooter(){
+		var padding_top = $("#awesomeFooter").css("padding-top").replace("px", "");
+		var page_height = $(document.body).height() - padding_top;
+		var window_height = $(window).height();
+		var difference = window_height - page_height;
+		if (difference < 0) 
+			difference = 0;
+ 
+		$("#awesomeFooter").css({
+			padding: difference + "px 0 0 0"
+		})
+	}
+ 
+	$(window)
+		.resize(positionFooter)
+
 });

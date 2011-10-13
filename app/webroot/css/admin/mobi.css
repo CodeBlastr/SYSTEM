@@ -58,7 +58,7 @@ a img {
 }
 body {
 	font-family: sans-serif;
-	font-size: 1.3em;
+	font-size: 1em;
 }
 .small, small {
 	font-size: 0.7em;
@@ -249,7 +249,6 @@ td.actions a {
 	border-bottom: 1px solid #ccc;
 	background: #eee;
 	color: #444;
-	cursor: pointer;
 	text-shadow: 0 1px 1px #f6f6f6;
 	text-decoration: none;
 	background-image: -moz-linear-gradient(top, #fdfdfd, #eeeeee);
@@ -272,7 +271,6 @@ td.actions a {
 	position: relative;
 	padding: 0 0.2em;
 	vertical-align: top;
-	font-size: 0.8em;
 }
 .indexCell .indexCell {
 	display: block;
@@ -281,6 +279,10 @@ td.actions a {
 }
 .indexCell .indexCell:last-child {
 	padding-bottom: 2em;
+}
+.indexCell .indexCell .metaData {
+	padding: 0em 0 1.2em 0 !important;
+	border-bottom: 0 none !important;
 }
 .indexCell .indexCell .actions {
 	display: block;
@@ -301,7 +303,7 @@ td.actions a {
 	-moz-box-sizing: content-box;
 	-moz-user-select: none;
 	color: #2E4987;
-	cursor: default;
+	cursor: pointer;
 	min-height: 25px;
 	text-align: center;
 	text-shadow: 0 1px 0 #FFFFFF;
@@ -320,9 +322,6 @@ td.actions a {
 	float:left;
 	padding: 0 30px 0 0;
 }
-
-
-
 /* Forms */
 form {
 	clear: both;
@@ -551,7 +550,7 @@ div.paging {
 	margin-bottom: 2em;
 	clear: both;
 	padding: 0.5em;
-	font-size: 0.65em;
+	font-size: 0.85em;
 }
 div.paging div.disabled {
 	color: #ddd;
@@ -586,7 +585,7 @@ div.paging span a {
 }
 #quickNav h1 {
 	text-align: center;
-	font-size: 0.85em;
+	font-size: 1em;
 	display: block;
 	margin: .6em 90px .8em;
 	padding: 0;
@@ -677,44 +676,46 @@ div.paging span a {
 
 
 /* Tabs */ 
-#tabs {
-	float: left;
-	position: relative;
-	padding: 0;
-	border: none;
+.tab {
+	display: table;
 	width: 100%;
+	padding: 0;
+	font-size: 1em;
+	border-radius: 0 none !important;
+	-webkit-border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
 }
-#tabs h1 {
-	float:left;
-	font-weight: bold;
-	font-size: 1.8em;
-	margin: 0 0 0 1em;
-	color: #FFF;
+.tab ul {
+	display: table-row;
+	background: none;
+	border-radius: 0 none !important;
+	-webkit-border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
 }
-#tabs h1 a {
-	color: #FFF;
+.tab ul li {
+	display: table-cell;
+	float: none !important;
+	text-align: center;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAsCAIAAAArRUU2AAAAOElEQVQIW2O6+egX0///DEwMDAxM/xkYEOz/ED7DfwQbhUZWB1fzH87+hyGHykfRi2Y2AzIb1V0AEFlAz5gMk7cAAAAASUVORK5CYII=") repeat-x scroll 0 0 transparent !important;
+    color: #182647;
+    font: bold 16px Arial;
+    text-shadow: 0 1px 0 #FFFFFF;
+	padding: 0.8em 0 !important;
+	margin: 0 !important;
 }
-#tabs h1 small, #tabs h1 small a {
-	color: #CCC;
-	font-weight: normal;
+.tab ul li a {
+	float: none !important;
+	padding: 0 !important;
 }
-#tabs img.shadow {
-	position:absolute;
-	top:1.9em;
-	left:0;
+.tab ul li.ui-state-active a {
+	color: #86B5F4 !important;
 }
-#tabs ul#leadTab, #tabs .tab {
-	background: transparent;
-	border: none;
-	border-radius: none;
-	padding: 0.3em 0 0 0;
+.ui-helper-clearfix:after {
+	content: none;
+	display: none;
 }
-#tabs ul#leadTab li {
-	top: 0;
-}
-#tabs ul#leadTab li:first-child {
-	margin: 0 0.2em 0 1em;
-}
+
+
 /* Start Content CSS */
 #siteContent {
 	position: relative;
@@ -723,7 +724,7 @@ div.paging span a {
 	clear: both;
 	background: #fff;
 	overflow: auto;
-	padding-top: 2.5em;
+	padding-top: 3.2em;
 }
 #content h1 {
 	color: #000;
@@ -756,16 +757,9 @@ div.paging span a {
 	background: #E6EDF9;
 }
 #content .metaData {
-	background: #EBFBE2;
 	margin: 0em 0 0.5em 0;
-	padding: 1.5em;
-	float: left;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-	box-shadow: 1px 1px 1px #777777;
-	-moz-box-shadow: 1px 1px 2px #777777;
-	-webkit-box-shadow: 1px 1px 2px #777777;
- filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#777777');
+	padding: 0.5em;
+	border-bottom: 1px solid #CCC;
 }
 #content .index .metaData {
 	background: none;
@@ -776,7 +770,7 @@ div.paging span a {
 	-webkit-box-shadow: none;
 	filter: none;
 	padding: 0;
-    color: #CCC;
+	color: #CCC;
 }
 #content .metaData ul {
 	list-style-type: none;
@@ -796,6 +790,7 @@ div.paging span a {
 #content .recordData {
 	clear: both;
 	margin: 0 0 0.5em 0;
+	padding: 0.5em;
 }
 #content .image {
 	min-width: 1em;
@@ -930,7 +925,7 @@ ul.activities li.activity span.activityName {
 	cursor: pointer;
 	text-shadow: 0 -1px 1px #145072;
 	text-decoration: none;
-	font-size: 0.6em;
+	font-size: 0.75em;
 	padding: 2em 0 1em 0;
 }
 .actions h3 {
@@ -960,7 +955,7 @@ ul.activities li.activity span.activityName {
 #awesomeFooter {
 	position: relative;
 	clear: both;
-	font-size: 0.6em;
+	font-size: 0.75em;
 	border-top: 1px solid #eaeaea;
 }
 /* Footer Area */
