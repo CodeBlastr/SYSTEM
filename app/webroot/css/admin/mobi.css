@@ -1056,3 +1056,13 @@ div#bottomNavigation div#legalLinks span {
 }
 .invoiceProjects {
 }
+
+
+/* Admin Homepage Specific */
+
+.admin  #content {
+	padding-top: 0;
+}
+.admin  .contentSection ul {
+	margin: 0;
+}

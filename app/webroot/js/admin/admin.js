@@ -20,7 +20,8 @@ $(function() {
 	});
 	
 	$(".accordion" ).accordion({
-			collapsible: true
+			collapsible: true,
+			autoHeight: false
 	});
 	
 	
