@@ -164,7 +164,7 @@ $(function() {
 	});
 	
 	
-	
+	/* Layout Fixes */
 	/* Stick Footer */
 	positionFooter(); 
 	function positionFooter(){
@@ -182,5 +182,8 @@ $(function() {
  
 	$(window)
 		.resize(positionFooter)
+		
+	/* Wider than containing box */
+	
 
 });

@@ -45,9 +45,9 @@
   </div>
   <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array('plugin' => $this->params['plugin'])) : ''; ?>
   <div id="siteContent">
-    <div id="navigation"> <?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?> </div>
     <div id="contentWrap">
       <div id="content">
+		<?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?>
         <?php $helper_text_for_layout = !empty($helper_text_for_layout) ? $helper_text_for_layout : null; ?>
         <?php echo $this->Element('admin/helper_text', array('overwrite' => $helper_text_for_layout)); ?>
         <!-- #compareChartHeader -->

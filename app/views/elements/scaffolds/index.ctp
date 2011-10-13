@@ -80,6 +80,7 @@ foreach ($data as $dat):
             <div class="truncate"> <span name="<?php echo $displayDescription; ?>" class="edit" id="<?php echo $id; ?>"><?php echo $description; ?></span> </div>
           </div>
         </div>
+        <?php endif; ?>
         <div class="indexCell">
           <div class="drop-holder indexDrop actions">
             <ul class="drop">
@@ -88,14 +89,13 @@ foreach ($data as $dat):
                 <?php $patterns = array('/{/', '/}/', '/\[/', '/\]/'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.preg_replace($patterns, $replaces, $action).'\';'; eval($action); ?>
               </li>
               <?php endforeach; else: ?>
-              <li><?php echo $html->link('View', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
-              <li><?php echo $html->link('Edit', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
-              <li><?php echo $html->link('Delete', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
+              <li><?php echo $this->Html->link('View', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
+              <li><?php echo $this->Html->link('Edit', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
+              <li><?php echo $this->Html->link('Delete', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
               <?php endif; ?>
             </ul>
           </div>
         </div>
-        <?php endif; ?>
       </div>
     </div>
     <?php
@@ -129,7 +129,6 @@ endforeach;
   <ul class="drop">
     <li class="actionHeading"><?php echo __('Sort by');?></li>
     <?php foreach ($data[0][$modelName] as $keyName => $keyValue) :  
-	   # unset these vars, because they are for scaffolding only
 	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
     <li class="actionItem"><?php echo $paginator->sort($keyName);?></li>
     <?php endif; endforeach; ?>
