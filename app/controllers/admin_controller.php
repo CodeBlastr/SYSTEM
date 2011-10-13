@@ -50,12 +50,11 @@ class AdminController extends AppController {
 			$this->set('upgradeDB', $upgradesNeeded);
 		}
 		# test vars for use when we make the admin dashboard more useful
-		$this->set('myVar', 'Configurable admin dashboard and reports coming soon.'); 
         # $this->set('topPosts', ClassRegistry::init('Post')->getTop());
         # $this->set('recentNews', ClassRegistry::init('News')->getRecent());
         # $this->set('topEmployees', ClassRegistry::init('Employee')->getTopPerformers());
         # $this->set('topSellingProducts', ClassRegistry::init('Product')->getTopSellers());
-		$this->layout = 'default';
+		$this->layout = 'admin';
 	}
 	
 	function admin_files_image() {

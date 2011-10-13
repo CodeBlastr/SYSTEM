@@ -28,12 +28,12 @@ class ConditionsController extends AppController {
 
 	var $name = 'Conditions';
 
-	function admin_index() {
+	function index() {
 		$this->Condition->recursive = 0;
 		$this->set('conditions', $this->paginate());
 	}
 
-	function admin_view($id = null) {
+	function view($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid Condition.', true));
 			$this->redirect(array('action'=>'index'));
@@ -41,7 +41,7 @@ class ConditionsController extends AppController {
 		$this->set('condition', $this->Condition->read(null, $id));
 	}
 
-	function admin_edit($id = null) {
+	function edit($id = null) {
 		if (!empty($this->data)) {
 			if ($this->Condition->save($this->data)) {
 				$this->Session->setFlash(__('The Condition has been saved', true));
@@ -55,7 +55,7 @@ class ConditionsController extends AppController {
 		}
 	}
 
-	function admin_delete($id = null) {
+	function delete($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for Condition', true));
 			$this->redirect(array('action'=>'index'));

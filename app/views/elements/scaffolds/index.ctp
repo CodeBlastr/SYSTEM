@@ -41,21 +41,7 @@ foreach ($data as $dat):
 	}
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
-      <div class="indexCell image"> <span>
-        <?php echo !empty($showGallery) ? $this->Element('thumb', array('plugin' => 'galleries', 'model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey)) : null; ?>
-        </span>
-        <div class="drop-holder indexDrop actions">
-          <ul class="drop">
-          	<?php if(!empty($actions) && is_array($actions)) : foreach ($actions as $action) : ?>
-            <li><?php $patterns = array('/{/', '/}/', '/\[/', '/\]/'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.preg_replace($patterns, $replaces, $action).'\';'; eval($action); ?></li>
-            <?php endforeach; else: ?>
-            <li><?php echo $html->link('View', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
-            <li><?php echo $html->link('Edit', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
-            <li><?php echo $html->link('Delete', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li> 
-			<?php endif; ?>
-          </ul>
-        </div>
-      </div>
+      <div class="indexCell image"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('plugin' => 'galleries', 'model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey)) : null; ?> </span> </div>
       <div class="indexCell">
         <div class="indexCell">
           <div class="recorddat">
@@ -83,8 +69,8 @@ foreach ($data as $dat):
 			# if its a date parse it into words
 			if ($keyValue == date('Y-m-d h:i:s', strtotime($keyValue)) || $keyValue == date('Y-m-d', strtotime($keyValue))) : $keyValue = $time->timeAgoInWords($keyValue); endif; // human readable dates 
 			?>
-            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>        
-	        <?php endif; ?>
+            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
+            <?php endif; ?>
             <?php endforeach; ?>
           </ul>
         </div>
@@ -95,6 +81,21 @@ foreach ($data as $dat):
           </div>
         </div>
         <?php endif; ?>
+        <div class="indexCell">
+          <div class="drop-holder indexDrop actions">
+            <ul class="drop">
+              <?php if(!empty($actions) && is_array($actions)) : foreach ($actions as $action) : ?>
+              <li>
+                <?php $patterns = array('/{/', '/}/', '/\[/', '/\]/'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.preg_replace($patterns, $replaces, $action).'\';'; eval($action); ?>
+              </li>
+              <?php endforeach; else: ?>
+              <li><?php echo $this->Html->link('View', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
+              <li><?php echo $this->Html->link('Edit', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
+              <li><?php echo $this->Html->link('Delete', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
+              <?php endif; ?>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
     <?php
@@ -126,33 +127,31 @@ endforeach;
 </div>
 <div id="<?php echo $modelName; ?>Actions" class="index actions">
   <ul class="drop">
-    <li><?php echo __('Sort by');?></li>
+    <li class="actionHeading"><?php echo __('Sort by');?></li>
     <?php foreach ($data[0][$modelName] as $keyName => $keyValue) :  
-	   # unset these vars, because they are for scaffolding only
 	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
-    <li><?php echo $paginator->sort($keyName);?></li>
+    <li class="actionItem"><?php echo $paginator->sort($keyName);?></li>
     <?php endif; endforeach; ?>
-    <?php if (!empty($pageActions)) : ?> <li><?php echo __('Action'); ?></li> <?php foreach ($pageActions as $pageAction) : ?>
-    <li><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
-    <?php endforeach; else : ?>
+    <?php if (!empty($pageActions)) : ?>
     <li><?php echo __('Action'); ?></li>
-    <li><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
+    <?php foreach ($pageActions as $pageAction) : ?>
+    <li class="actionItem"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
+    <?php endforeach; else : ?>
+    <li class="actionHeading"><?php echo __('Action'); ?></li>
+    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
     <?php endif; ?>
   </ul>
 </div>
 <?php echo $this->Element('paging'); ?> <?php echo $this->Element('ajax_edit',  array('editFields' => $editFields)); ?>
-
-
 <?php 
 else : // show a default message pulled as an element called start, from the plugin folder you're in.
 ?>
-<div class="index noItems">
-	<?php echo empty($noItems) ? $this->Element('start',  array('plugin' => $pluginName)) : $noItems; ?>
-	<div class="actions">
-	  <ul class="drop">
-	    <li><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
-	  </ul>
-	</div>
+<div class="index noItems"> <?php echo empty($noItems) ? $this->Element('start',  array('plugin' => $pluginName)) : $noItems; ?>
+  <div class="actions">
+    <ul class="drop">
+      <li class="actionItem"><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
+    </ul>
+  </div>
 </div>
 <?php
 endif;

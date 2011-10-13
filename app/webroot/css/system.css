@@ -5,6 +5,9 @@ Note that the class names could be updated and change often.
 */
 
 /* Site Errors */
+#databaseUpgrades {
+	padding: 15px;
+}
 .siteUpgradeNeeded {
 	position: absolute;
 	top: 0;
@@ -119,4 +122,134 @@ input[type=radio], input[type=checkbox] {
 .generate .projects {
 	clear: both;
 }
+
+
+
+/* admin navigation */
+#slidedock {
+	width: 100%;
+}
+#slidedock_content {
+	clear: both;
+	background: #333;
+	height: 100%;
+	min-width: 240px;
+	border-bottom: 1px solid #039;
+	padding: 0;
+	margin: 0;
+}
+#slidedock_content ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+#slidedock_content ul li {
+	display: inline;
+	position: relative;
+	padding: 0;
+	margin: 0;
+}
+#slidedock_content ul li a {
+	padding: 0 .5em 0 0.25em;
+	color: #CCC;
+	cursor: pointer;
+	font-size: 0.64em;
+	text-transform: capitalize;
+	border-right: 1px solid #333;
+}
+/* sub nav */
+#slidedock_content ul li ul {
+	display: none;
+	position: absolute;
+	top: 1.3em;
+	left: -0.3em;
+	background: #eaeaea;
+	color: #000;
+	border: 1px solid #000;
+	width: 10em;
+	padding: 0;
+	margin: 0;
+}
+#slidedock_content ul li:hover ul, #slidedock_content ul li ul:hover {
+	display: block;
+}
+#slidedock_content ul li ul li {
+	display: block;
+	font-size: 0.75em;
+	text-transform: uppercase;
+}
+#slidedock_content ul li ul li.separator {
+	border-bottom: 1px solid #666;
+}
+#slidedock_content ul li ul li a {
+	border-right: none;
+	border-bottom: 1px solid #000;
+}
+#slidedock_content ul li ul li a:last-child {
+	border: none;
+}
+#slidedock_content ul li ul li a:hover {
+	color: #333;
+}
+
+/* editor */
+#background_layer {
+	position: fixed;
+	background-color: #666;
+	opacity: 0.8;
+	filter: alpha(opacity=70);
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 99;
+}
+.hover_div  {
+	min-height: 2em;
+}
+.hover_include {
+	background-color: #FF9;
+	border: 1px dashed #F00;
+	filter: alpha(opacity=70);
+	z-index: 99999;
+	opacity: 0.7;
+	position: absolute;/*border: 1px solid black;*/
+    }
+.hover_include:before {
+	content: "Click to edit content.";
+}
+.global_edit_area .hover_include:before {
+	content: "Click to edit global box.";
+}
+#modalEditorWrap {
+	position: fixed;
+	top: -5000px;
+	left: -5000px;
+	z-index: 100;
+	width: 80%;
+	height: 60%;
+}
+#modalEditorWrap .closeEditor {
+	color: #000;
+	font-size: 14px;
+	text-shadow: 1px 1px #fff;
+	cursor: pointer;
+	padding: 0em 0.2em 0 0em;
+	float: left;
+	margin: 0 0 0 -1em;
+	font-family: Verdana, Geneva, sans-serif;
+}
+#modalEditorWrap .handle {
+	font-size: 20px;
+	color: #999;
+	text-shadow: 1px 1px #fff;
+	cursor:move;
+	padding: 0em 0.2em 0.2em 0.2em;
+	float: left;
+	clear: left;
+	margin: 0 0 0 -1em;
+}
+#modalEditorWrap .closeEditor:hover, #modalEditorWrap .handle:hover {
+	color: #C00;
+}
+
 	
