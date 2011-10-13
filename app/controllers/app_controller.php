@@ -96,12 +96,13 @@ class AppController extends Controller {
 		 */
 		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : array('message'=> 'Please register or login to access that feature.');
 		$this->Auth->authError = $authError['message'];
-        $this->Auth->loginAction = array(
+        /*This was removed so that loginMeta would work, when called from the users_controller.login() function.  If you change this, make sure that the loginMeta() function still works.
+		$this->Auth->loginAction = array(
 			'plugin' => 'users',
 			'controller' => 'users',
 			'action' => 'login',
 			'admin' => 0,
-			);
+			);*/
 		        
         $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 
@@ -162,23 +163,28 @@ class AppController extends Controller {
 	 * @todo convert to a full REST application and this might not be necessary
 	 */
     function beforeRender() {
+		if ($this->params['url']['url'] == 'users/login') : 
+			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+		endif;
+		
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
-		if($this->name == 'CakeError') {
+		if($this->name == 'CakeError') :
 			$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
 			$this->userRoleName = $this->Session->read('Auth.UserRole.name');
 			$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
 			$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 	 		$this->_getTemplate();
-	    }  		
+	    endif;
+		
 		# This turns off debug so that ajax views don't get severly messed up
-		if($this->RequestHandler->isAjax()) { 
+		if($this->RequestHandler->isAjax()) :
             Configure::write('debug', 0); 
-        } else if ($this->RequestHandler->isXml()) {
+        elseif ($this->RequestHandler->isXml()) :
 			$this->header('Content-Type: text/xml');
-		} else if ($this->params['url']['ext'] == 'json') {
+		elseif ($this->params['url']['ext'] == 'json') :
             Configure::write('debug', 0); 
-		}
+		endif;
 	}
 	
 	

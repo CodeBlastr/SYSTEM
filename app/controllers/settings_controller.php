@@ -29,7 +29,7 @@ class SettingsController extends AppController {
     var $uses = array('Setting', 'Template');
 
 
-	function admin_update_defaults() {
+	function update_defaults() {
 		if ($this->Setting->writeDefaultsIniData()) {
 			$this->Session->setFlash(__('Defaults update successful.', true));
 			$this->redirect($this->referer());
@@ -39,7 +39,7 @@ class SettingsController extends AppController {
 		
 	}
 	
-	function admin_update_settings() {
+	function update_settings() {
 		if ($this->Setting->writeSettingsIniData()) {
 			$this->Session->setFlash(__('Settings update successful.', true));
 			$this->redirect($this->referer());
@@ -48,7 +48,7 @@ class SettingsController extends AppController {
 		}
 	}
 	
-	function admin_index() {		
+	function index() {		
 		$this->paginate = array(
 			'fields' => array(
 				'id',
@@ -66,7 +66,7 @@ class SettingsController extends AppController {
 		$this->set('displayDescription', 'description'); 
 	}
 
-	function admin_view($id = null) {
+	function view($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid Setting.', true));
 			$this->redirect(array('action'=>'index'));
@@ -74,7 +74,7 @@ class SettingsController extends AppController {
 		$this->set('setting', $this->Setting->read(null, $id));
 	}
 
-	function admin_add() {
+	function add() {
 		if (!empty($this->data)) {
 			if ($this->Setting->add($this->data)) {
 				$this->Session->setFlash(__('The Setting has been saved', true));
@@ -87,12 +87,12 @@ class SettingsController extends AppController {
 		$this->set(compact('types')); 
 	}
 	
-	function admin_names($typeName = null) {
+	function names($typeName = null) {
 		$settings = $this->Setting->getNames($typeName);
 		$this->set(compact('settings'));
 	}
 
-	function admin_edit($id = null) {
+	function edit($id = null) {
 		if (!$id && empty($this->data) && empty($this->params['named'])) {
 			$this->Session->setFlash(__('Invalid Setting', true));
 			$this->redirect(array('action'=>'index'));
@@ -123,7 +123,7 @@ class SettingsController extends AppController {
 		$this->set(compact('types')); 
 	}
 
-	function admin_delete($id = null) {
+	function delete($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for Setting', true));
 			$this->redirect(array('action'=>'index'));
