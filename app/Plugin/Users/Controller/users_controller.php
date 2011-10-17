@@ -30,9 +30,27 @@ class UsersController extends UsersAppController {
 	/**
 	 * Public login function to verify access to restricted areas.
 	 */
-	function login() {
+	public function login() {
+    	if ($this->Auth->login()) {
+			try {
+				$result = $this->User->loginMeta($this->data);
+				if ($result) {
+		       		return $this->redirect($this->Auth->redirect());
+				} else {
+					$this->data = $result;
+				}
+			} catch (Exception $e) {
+				$this->Session->setFlash($e->getMessage());
+				$this->Auth->logout();
+			}
+	    } else {
+	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
+	    }
+	}
+	
+	/*function login() {
 		#$user['User'] = ($this->Session->read('Auth.User'));	
-		if (!empty($this->data) /*!empty($user['User'])*/ ) {
+		if (!empty($this->data)) {
 			try {
 				$result = $this->User->loginMeta($this->data);
 				#$this->Session->write('Auth', $result);
@@ -52,7 +70,7 @@ class UsersController extends UsersAppController {
 				$this->Auth->logout();
 			}
 		}
-    }	
+    }	*/
 
 
     function logout() {
