@@ -12,16 +12,6 @@
      */
 	Configure::write('Recaptcha.publicKey', '6Lc5xsMSAAAAAAoP0DkzEcoBHvHeQ2mO506mHnRY');
 	Configure::write('Recaptcha.privateKey', '6Lc5xsMSAAAAADJmj-bruuzCYXOeSg5Mf7JTyW3e');
-
-
-	/**
-	 * Plugins need to be loaded manually, you can either load them one by one or all of them in a single call
-	 * Uncomment one of the lines below, as you need. make sure you read the documentation on CakePlugin to use more
-	 * advanced ways of loading plugins
-	 * 
-	 * CakePlugin::load('DebugKit'); //Loads a single plugin named DebugKit
-	 */
-	 CakePlugin::loadAll(); // Loads all plugins at once
 	 
 	
 	/**

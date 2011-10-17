@@ -38,11 +38,32 @@
 		define('ROOT', dirname(dirname(dirname(__FILE__))));
 	}
 /**
+* For multi site setups 
+* There are two methods for hosting multiple sites
+* Easy method : create a folder called /sites/myDomain.com 
+* (replacing myDomain with actual domain name that will be used)
+* Named method : care a folder called /sites/AnyName
+* and define the urls that will resolve to that sites folder
+* in the file /sites/bootstrap.php
+*/
+	if (file_exists(ROOT . DS . 'sites' . DS . 'bootstrap.php')) {
+		include(ROOT . DS . 'sites' . DS . 'bootstrap.php');
+	} 
+	if (!defined('SITE_DIR')) {
+		define('SITE_DIR', $_SERVER['HTTP_HOST']);
+	} 
+	
+/**
  * The actual directory name for the "app".
  *
  */
+	
 	if (!defined('APP_DIR')) {
-		define('APP_DIR', basename(dirname(dirname(__FILE__))));
+		if (file_exists(ROOT.DS.'sites' . DS . SITE_DIR)) {
+			define('APP_DIR', 'sites' .DS . SITE_DIR);
+		} else {
+			define('APP_DIR', basename(dirname(dirname(__FILE__))));
+		}
 	}
 
 /**
