@@ -130,4 +130,3 @@ App::build(array(
 	 * CakePlugin::load('DebugKit'); //Loads a single plugin named DebugKit
 	 */
 	 CakePlugin::loadAll(); // Loads all plugins at once
-	App::uses('AppExceptionHandler', 'Lib');

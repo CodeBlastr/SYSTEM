@@ -1,14 +1,24 @@
 <?php
-
 class AppExceptionHandler {
 	
-	public static function handle($error) {
-		debug($error->getCode());
-		echo 'Oh noes! ' . $error->getMessage();
-        $this->sendEmail();
-    }
+	public $var = 'test';
+	
+    public function handle($error) {
+		debug($this->var);
+	}
 	
 	/*
+		debug($error->getCode());
+        echo 'Oh noes! ' . $error->getMessage();
+        if ($error instanceof MissingControllerException) {
+			echo 'alskdjflaksjdf';
+			debug($this->var);
+			debug('missing controller alskdfjalskdfj laskdfj ');
+		}
+    }
+	
+	
+	
     public static function handleError($code, $description, $file = null, $line = null, $context = null) {
         echo 'There has been an error!';
 		error_reporting(E_ALL);
