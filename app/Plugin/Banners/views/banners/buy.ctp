@@ -8,14 +8,14 @@
 <?php 
 	echo $this->Html->script('admin/jquery-ui-1.8.13.custom.min');
 	echo $this->Html->css('admin/jquery-ui-1.8.13.custom');
-	echo $form->create('Banner');
+	echo $this->Form->create('Banner');
 ?>
 <h1><?php __($this->params['named']['bannerType'].' Ad Builder'); ?></h1>
 <fieldset id="step1">
   <?php
-	echo $form->hidden('banner_position_id', array('value' => $bannerPositionId));
-	echo $form->hidden('customer_id', array('value' => $this->Session->read('Auth.User.id'))); 
-	echo $form->input('location', array('empty' => true, 'class' => 'text-1 BannerLocation', 
+	echo $this->Form->hidden('banner_position_id', array('value' => $bannerPositionId));
+	echo $this->Form->hidden('customer_id', array('value' => $this->Session->read('Auth.User.id'))); 
+	echo $this->Form->input('location', array('empty' => true, 'class' => 'text-1 BannerLocation', 
 			'div' => array('class' => 'text-inputs')));
 	echo $this->Html->link('Place Offer', '#', array('id' => 'go', 'class' => 'submit1'));
 	?>
@@ -31,8 +31,8 @@
   </fieldset>
   <!-- week/month fields for advertiser -->
   <?php echo $this->element('buy_period', array('plugin' => 'banners', 'instance' => 2)); 	
-	  echo $form->input('schedule_start_date', array('type' => 'text', 'label' => 'Choose Date', 'id' => 'BannerStartDate', 'class' => 'text-1'));
-	  echo $form->input('schedule_end_date', array('type' => 'text', 'id' => 'BannerEndDate')); ?>
+	  echo $this->Form->input('schedule_start_date', array('type' => 'text', 'label' => 'Choose Date', 'id' => 'BannerStartDate', 'class' => 'text-1'));
+	  echo $this->Form->input('schedule_end_date', array('type' => 'text', 'id' => 'BannerEndDate')); ?>
   <div id="BannerDemographic" style="display:none"></div>
   <fieldset id = "selection" style="display:none">
     <table>
@@ -42,10 +42,10 @@
         <th>Selected Age Group</th>
       </tr>
       <tr>
-        <td><?php echo $form->input('Banner.gender', array('readonly'=>true,
+        <td><?php echo $this->Form->input('Banner.gender', array('readonly'=>true,
 						    				'id'=>'BannerGender', 'div'=>false, 'label'=>false, 
 						    				'style' => 'text-align:center;width:180px'))?></td>
-        <td><?php echo $form->input('Banner.age_group', array('readonly'=>true,
+        <td><?php echo $this->Form->input('Banner.age_group', array('readonly'=>true,
 						    					'id'=>'BannerAgeGroup', 'div'=>false, 'label'=>false,
 					    						'style' => 'text-align:center;width:180px'))?></td>
       </tr>

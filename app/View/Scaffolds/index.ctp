@@ -85,7 +85,7 @@ foreach ($associations as $_type => $_data) {
 }
 		
 // set the contextual menu items
-$menu->setValue(
+$this->Menu->setValue(
 	array(
 		array(
 			'heading' => $singularHumanName,

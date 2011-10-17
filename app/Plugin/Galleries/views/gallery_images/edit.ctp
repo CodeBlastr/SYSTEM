@@ -1,27 +1,27 @@
 <div class="galleryImages form">
   <h2><?php __('Edit '); echo $this->data['GalleryImage']['caption']; ?></h2>
   <img src="<?php echo $this->data['GalleryImage']['dir'].'thumb/small/'.$this->data['GalleryImage']['filename']; ?>" />	    
-<?php echo $form->create('GalleryImage', array('enctype'=>'multipart/form-data'));?>
+<?php echo $this->Form->create('GalleryImage', array('enctype'=>'multipart/form-data'));?>
 	<fieldset>
  		<legend><?php __('Edit Image'); ?></legend>
 	<?php
-		echo $form->input('GalleryImage.id');
-		echo $form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $this->data['GalleryImage']['gallery_id']));
-		echo $form->input('GalleryImage.filename', array('type' => 'file'));
-		echo $form->input('GalleryImage.caption', array('type' => 'text'));
-		echo $form->input('GalleryImage.description', array('type' => 'richtext'));
-		#echo $form->input('GalleryImage.alt');
-		echo $form->input('dir', array('type' => 'hidden'));
-	    echo $form->input('mimetype', array('type' => 'hidden'));
-	    echo $form->input('filesize', array('type' => 'hidden'));
-		echo $form->end('Submit');
+		echo $this->Form->input('GalleryImage.id');
+		echo $this->Form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $this->data['GalleryImage']['gallery_id']));
+		echo $this->Form->input('GalleryImage.filename', array('type' => 'file'));
+		echo $this->Form->input('GalleryImage.caption', array('type' => 'text'));
+		echo $this->Form->input('GalleryImage.description', array('type' => 'richtext'));
+		#echo $this->Form->input('GalleryImage.alt');
+		echo $this->Form->input('dir', array('type' => 'hidden'));
+	    echo $this->Form->input('mimetype', array('type' => 'hidden'));
+	    echo $this->Form->input('filesize', array('type' => 'hidden'));
+		echo $this->Form->end('Submit');
 	?>
     </fieldset>
 </div>
 
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Galleries',
 		'items' => array(

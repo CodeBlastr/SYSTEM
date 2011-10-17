@@ -1,5 +1,5 @@
 <div class="userRoles form">
-<?php echo $form->create('UserRole');?>
+<?php echo $this->Form->create('UserRole');?>
 	<fieldset>
  		<legend><?php __('Add UserRole');?></legend>
 	<?php
@@ -7,11 +7,11 @@
 		echo $this->Form->input('view_prefix', array('empty' => '-- Option View Access --'));
 	?>
 	</fieldset>
-<?php echo $form->end('Submit');?>
+<?php echo $this->Form->end('Submit');?>
 </div>
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'User Roles',
 		'items' => array(

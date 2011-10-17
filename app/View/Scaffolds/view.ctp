@@ -155,7 +155,7 @@ $otherSingularVar = Inflector::variable($_alias);
 <?php 
 		
 // set the contextual menu items
-$menu->setValue($menuItems);
+$this->Menu->setValue($menuItems);
 */ ?>
 
 

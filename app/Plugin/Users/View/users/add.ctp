@@ -1,20 +1,20 @@
 <div id="user-add" class="users form">
     
-<?php echo $form->create('User');?>
+<?php echo $this->Form->create('User');?>
 	<fieldset>
  		<legend><?php __('Add User');?></legend>
 	<?php
-		echo $form->input('username');
-		echo $form->input('password');
-		echo $form->input('user_role_id');
+		echo $this->Form->input('username');
+		echo $this->Form->input('password');
+		echo $this->Form->input('user_role_id');
 	?>
 	</fieldset>
-<?php echo $form->end('Submit');?>
+<?php echo $this->Form->end('Submit');?>
 </div>
 
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Users',
 		'items' => array(

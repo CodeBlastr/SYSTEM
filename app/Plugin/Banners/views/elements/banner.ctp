@@ -16,7 +16,7 @@ if (!empty($banner)) {
 	echo $this->Html->css('/banners/css/jquery.countdown.css');
 	?>
 		<div id="content">
-			<?php echo $form->hidden('id', array('value' => $banner['Banner']['id'])); ?>
+			<?php echo $this->Form->hidden('id', array('value' => $banner['Banner']['id'])); ?>
 			<h2><?php echo $banner['Banner']['name']; ?></h2>
 				<p><?php echo $banner['Banner']['description']; ?></p>
 			<div id="galleryThumb">
@@ -43,7 +43,7 @@ if (!empty($banner)) {
 				<?php 
 					$url = array('plugin' => 'banners', 'controller'=>'banners' , 
 														'action'=>'redeemed', $banner['Banner']['id']);
- 					echo $form->submit('Redeem', 
+ 					echo $this->Form->submit('Redeem', 
  							array('onclick' => "location.href='".$this->Html->url($url)."'"));
  				?> 
 			</div>

@@ -1,17 +1,17 @@
 Not available yet take from RFDF 
 <div class="users form">
-<?php echo $form->create('User');?>
+<?php echo $this->Form->create('User');?>
 	<fieldset>
  		<legend><?php __('Add User');?></legend>
 	<?php
-		echo $form->input('username');
-		echo $form->input('User.email');
-		echo $form->input('User.password', array('value' => ''));
-		echo $form->input('User.confirm_password', array('value' => '', 'type' => 'password'));
-		echo $form->input('user_role_id');
+		echo $this->Form->input('username');
+		echo $this->Form->input('User.email');
+		echo $this->Form->input('User.password', array('value' => ''));
+		echo $this->Form->input('User.confirm_password', array('value' => '', 'type' => 'password'));
+		echo $this->Form->input('user_role_id');
 	?>
 	</fieldset>
-<?php echo $form->end('Submit');?>
+<?php echo $this->Form->end('Submit');?>
 </div>
 <div class="actions">
 	<ul>

@@ -1,45 +1,45 @@
 <h1>Manage Condtion</h1>
 <div class="conditions form">
-<?php echo $form->create('Condition', array('action' => 'edit'));?>
+<?php echo $this->Form->create('Condition', array('action' => 'edit'));?>
 	<fieldset>
  		<legend><?php __('Internal Condition Description');?></legend>
 	<?php
-		echo $form->input('Condition.id');
-		echo $form->input('Condition.name');
-		echo $form->input('Condition.description');
+		echo $this->Form->input('Condition.id');
+		echo $this->Form->input('Condition.name');
+		echo $this->Form->input('Condition.description');
 	?>
     </fieldset>
     <fieldset>
  		<legend><?php __('When This Condition is Triggered');?></legend>
    	<?php
-		echo $form->input('Condition.is_create', array('label' => 'Fire when record is created.'));
-		echo $form->input('Condition.is_read', array('label' => 'Fire when record is viewed.'));
-		echo $form->input('Condition.is_update', array('label' => 'Fire when record is udpated.'));
-		echo $form->input('Condition.is_delete', array('label' => 'Fire when record is deleted.'));
-		echo $form->input('Condition.plugin', array('after' => ' Plugin called to match against on view'));
-		echo $form->input('Condition.controller', array('after' => ' Controller name to match on view'));
-		echo $form->input('Condition.action', array('after' => ' Controller method to match on view'));
-		echo $form->input('Condition.model', array('after' => ' The model for create, update, and view types. (does not include plugin prefix)'));
+		echo $this->Form->input('Condition.is_create', array('label' => 'Fire when record is created.'));
+		echo $this->Form->input('Condition.is_read', array('label' => 'Fire when record is viewed.'));
+		echo $this->Form->input('Condition.is_update', array('label' => 'Fire when record is udpated.'));
+		echo $this->Form->input('Condition.is_delete', array('label' => 'Fire when record is deleted.'));
+		echo $this->Form->input('Condition.plugin', array('after' => ' Plugin called to match against on view'));
+		echo $this->Form->input('Condition.controller', array('after' => ' Controller name to match on view'));
+		echo $this->Form->input('Condition.action', array('after' => ' Controller method to match on view'));
+		echo $this->Form->input('Condition.model', array('after' => ' The model for create, update, and view types. (does not include plugin prefix)'));
 	?>
     </fieldset>
     <fieldset>
  		<legend><?php __('Extra Sub Conditions');?></legend>
     <?php
-		echo $form->input('Condition.condition', array('label' => 'Sub Condtions', 'after' => ' Sub-conditions to match against. Model.field.operator.value,Model.field.operator.value'));
+		echo $this->Form->input('Condition.condition', array('label' => 'Sub Condtions', 'after' => ' Sub-conditions to match against. Model.field.operator.value,Model.field.operator.value'));
 	?>
     </fieldset>
     <fieldset>
  		<legend><?php __('Model Calling This Condition');?></legend>
     <?php
-		echo $form->input('Condition.bind_model', array('after' => ' The model calling this condition. Currently the only model supported is Workflows.Workflow', 'value' => 'Workflows.Workflow'));
+		echo $this->Form->input('Condition.bind_model', array('after' => ' The model calling this condition. Currently the only model supported is Workflows.Workflow', 'value' => 'Workflows.Workflow'));
 	?>
 	</fieldset>
-<?php echo $form->end('Submit');?>
+<?php echo $this->Form->end('Submit');?>
 </div>
 
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Conditions',
 		'items' => array(

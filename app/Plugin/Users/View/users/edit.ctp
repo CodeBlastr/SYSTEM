@@ -1,24 +1,24 @@
 <div id="users-edit" class="users edit">
 <?php 
-	echo $form->create('User', array('enctype'=>'multipart/form-data')); 	
-	echo $form->input('User.id');
+	echo $this->Form->create('User', array('enctype'=>'multipart/form-data')); 	
+	echo $this->Form->input('User.id');
 	if (!empty($this->params['named']['cpw'])) {
-		echo $form->input('User.username', array('type' => 'hidden'));
-		echo $form->input('User.user_role_id', array('type' => 'hidden'));
-		echo $form->input('User.password', array('value' => ''));
-		echo $form->input('User.confirm_password', array('value' => '', 'type' => 'password'));
+		echo $this->Form->input('User.username', array('type' => 'hidden'));
+		echo $this->Form->input('User.user_role_id', array('type' => 'hidden'));
+		echo $this->Form->input('User.password', array('value' => ''));
+		echo $this->Form->input('User.confirm_password', array('value' => '', 'type' => 'password'));
 	} else {
 		?>
 		<h3>User Profile Info </h3>
 		<?php
 		echo $this->element('snpsht', array('useGallery' => true, 'userId' => $this->data['User']['id'], 'thumbSize' => 'medium', 'thumbLink' => 'default')); 
-		echo $form->input('User.first_name');
-		echo $form->input('User.last_name');
-		echo $form->input('User.username');
-		echo $form->input('User.email');
-		echo $form->input('User.user_role_id', array('type' => 'hidden'));
+		echo $this->Form->input('User.first_name');
+		echo $this->Form->input('User.last_name');
+		echo $this->Form->input('User.username');
+		echo $this->Form->input('User.email');
+		echo $this->Form->input('User.user_role_id', array('type' => 'hidden'));
 	}
-	echo $form->end('Submit');
+	echo $this->Form->end('Submit');
 ?>
 
 <?php
@@ -39,11 +39,11 @@
 
 <?php 
 // set the contextual menu items
-$menu->setValue(array(array(
+$this->Menu->setValue(array(array(
 		'heading' => 'Users',
 		'items' => array(
 			$this->Html->link(__('View User', true), array('action' => 'view', $this->data['User']['id'])),
-			$this->Html->link(__('Change Password', true), array($form->value('User.id'), 'cpw' => 1)),
+			$this->Html->link(__('Change Password', true), array($this->Form->value('User.id'), 'cpw' => 1)),
 			)
 		),
 ));

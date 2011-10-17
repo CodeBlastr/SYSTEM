@@ -10,10 +10,10 @@
 		echo '<h3>Now you can select a period of dates with one click</h3>';
 		echo '<table><tr><td>';
 	
-		echo $form->button('Week', array('type'=>'button', 'value' => 'week', 
+		echo $this->Form->button('Week', array('type'=>'button', 'value' => 'week', 
 						'class' => 'BannerDateOption submit2'));
 		echo '</td><td>';
-		echo $form->button('Month', array('type'=>'button', 'value' => 'month', 
+		echo $this->Form->button('Month', array('type'=>'button', 'value' => 'month', 
 						'class' => 'BannerDateOption submit2'));
 		echo '</td>';	
 	} 

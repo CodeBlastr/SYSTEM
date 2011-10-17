@@ -13,7 +13,7 @@
 <?php echo $this->Form->end('Update ' . $parent['Section']['alias'] . ' Actions');?>
 
 <?php $group_count = count($groups)?>
-<?php echo $form->create('Privilege' , array('url'=> array('plugin'=> 'privileges', 'controller'=> 'privileges', 'action'=> 'add')))?>
+<?php echo $this->Form->create('Privilege' , array('url'=> array('plugin'=> 'privileges', 'controller'=> 'privileges', 'action'=> 'add')))?>
 <table>
   <tr>
     <th>Action</th>
@@ -45,24 +45,24 @@
     					
     					?>
 		    			<?php if($has_check):?>		
-		    				<td><?php echo $form->input($field_name , array('type'=>'checkbox' , 'label'=>'' , 'checked'=>'true'));?></td>
+		    				<td><?php echo $this->Form->input($field_name , array('type'=>'checkbox' , 'label'=>'' , 'checked'=>'true'));?></td>
 		    			<?php else:?>
-		    				<td><?php echo $form->input($field_name , array('type'=>'checkbox' , 'label'=>''));?></td>
+		    				<td><?php echo $this->Form->input($field_name , array('type'=>'checkbox' , 'label'=>''));?></td>
 		    			<?php endif;?>
 		    		<?php endif;?>
 	    		<?php else:?>
 	    			<?php if($groups[$i]["UserRole"]['id'] != 1):?>
-	    				<td><?php echo $form->input($field_name , array('type'=>'checkbox' , 'label'=>''));?></td>
+	    				<td><?php echo $this->Form->input($field_name , array('type'=>'checkbox' , 'label'=>''));?></td>
 	    			<?php endif;?>
 	    		<?php endif;?>
     <?php endfor;?>  
 	<!--td>
-  		<?php echo $form->input('userFields', array('type' => 'select', 'options' => $userFields, 'multiple' => 'checkbox', 'label' => '', 'div' => false)); ?>
+  		<?php echo $this->Form->input('userFields', array('type' => 'select', 'options' => $userFields, 'multiple' => 'checkbox', 'label' => '', 'div' => false)); ?>
     </td-->
   </tr>
 <?php endforeach;?>
 </table>
-<?php echo $form->end('Update Privileges');?>
+<?php echo $this->Form->end('Update Privileges');?>
 
 
 

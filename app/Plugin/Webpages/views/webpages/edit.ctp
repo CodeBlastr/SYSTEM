@@ -1,20 +1,20 @@
 <div class="webpages form">
-<?php echo $form->create('Webpage');?>
+<?php echo $this->Form->create('Webpage');?>
   <fieldset>
     <legend class="toggleClick">
     <?php __('Search Engine Optimization');?>
     </legend>
     <?php 
-		echo $form->input('Webpage.id');
-		echo $form->input('Alias.id');
-		echo $form->input('Alias.value', array('type' => 'hidden', 'value' => $form->value('Webpage.id')));
-		echo $form->input('Alias.name', array('label' => 'SEO Url (unique)'));
-		echo $form->input('Alias.plugin', array('type' => 'hidden', 'value' => 'webpages'));
-		echo $form->input('Alias.controller', array('type' => 'hidden', 'value' => 'webpages'));
-		echo $form->input('Alias.action', array('type' => 'hidden', 'value' => 'view'));
-		echo $form->input('Webpage.title', array('label' => 'SEO Title'));
-		echo $form->input('Webpage.keywords', array('label' => 'SEO Keywords'));
-		echo $form->input('Webpage.description', array('label' => 'SEO Description'));
+		echo $this->Form->input('Webpage.id');
+		echo $this->Form->input('Alias.id');
+		echo $this->Form->input('Alias.value', array('type' => 'hidden', 'value' => $this->Form->value('Webpage.id')));
+		echo $this->Form->input('Alias.name', array('label' => 'SEO Url (unique)'));
+		echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => 'webpages'));
+		echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => 'webpages'));
+		echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => 'view'));
+		echo $this->Form->input('Webpage.title', array('label' => 'SEO Title'));
+		echo $this->Form->input('Webpage.keywords', array('label' => 'SEO Keywords'));
+		echo $this->Form->input('Webpage.description', array('label' => 'SEO Description'));
 	?>
   </fieldset>
   <fieldset>
@@ -22,7 +22,7 @@
     <?php __('Access Rights');?>
     </legend>
     <?php 
-		echo $form->input('RecordLevelAccess.UserRole', array('label' => '', 'type' => 'select', 'multiple' => true, 'options' => $userRoles, 'between' => 'Customize page access. (Note : Uses global settings by default)'));
+		echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => '', 'type' => 'select', 'multiple' => true, 'options' => $userRoles, 'between' => 'Customize page access. (Note : Uses global settings by default)'));
 	?>
   </fieldset>
   <fieldset>
@@ -30,33 +30,33 @@
     <?php __('Add Webpage');?>
     </legend>
     <?php
-		echo $form->input('type', array('default' => 'page_content'));
+		echo $this->Form->input('type', array('default' => 'page_content'));
 	?>
     <fieldset>
       <legend>
       <?php __('Template Settings'); ?>
       </legend>
       <?php
-		echo $form->input('is_default', array('type' => 'checkbox'));
-		echo $form->input('template_urls', array('type' => 'textarea', 'value' => $templateUrls, 'after' => ' <br>One url per line. (ex. /tickets/tickets/view/*)'));
-		echo $form->input('user_roles', array('type' => 'select', 'options' => $userRoles, 'multiple' => 'checkbox'));
+		echo $this->Form->input('is_default', array('type' => 'checkbox'));
+		echo $this->Form->input('template_urls', array('type' => 'textarea', 'value' => $templateUrls, 'after' => ' <br>One url per line. (ex. /tickets/tickets/view/*)'));
+		echo $this->Form->input('user_roles', array('type' => 'select', 'options' => $userRoles, 'multiple' => 'checkbox'));
 	?>
     </fieldset>
     <?php
-		echo $form->input('Webpage.name');
-		echo $form->input('Webpage.content', array('type' => 'richtext', 'ckeSettings' => $ckeSettings));
+		echo $this->Form->input('Webpage.name');
+		echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'ckeSettings' => $ckeSettings));
 	?>
   </fieldset>
-  <?php echo $form->end('Save Webpage');?> </div>
+  <?php echo $this->Form->end('Save Webpage');?> </div>
 <?php
-$menu->setValue(
+$this->Menu->setValue(
 	array(
 		  array('heading' => 'Webpages',
 			'items' => array(
 				$this->Html->link(__('Webpage List', true), array('controller' => 'webpages', 'action' => 'index')),
 				$this->Html->link(__('Add Webpage', true), array('controller' => 'webpages', 'action' => 'add'), array('title' => 'Add Webpage')),
 				$this->Html->link(__('View Webpage', true), array('controller' => 'webpages', 'action' => 'view', $this->data['Webpage']['id'])),
-				$this->Html->link(__('Delete', true), array('action' => 'delete', $form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $form->value('Webpage.id'))),
+				$this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Webpage.id'))),
 					 )
 				)
 		  )

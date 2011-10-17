@@ -27,10 +27,10 @@
 if($is_self):?>
 <div id="status-add" class="form">
 <?php 
-	echo $form->create('UserStatus', array('action' => 'add'));
-	echo $form->input('UserStatus.status', array('type' => 'text'));
-	echo $form->input('UserStatus.user_id', array('type' => 'hidden', 'value' => $user['User']['id']));
-	echo $form->end('Update');
+	echo $this->Form->create('UserStatus', array('action' => 'add'));
+	echo $this->Form->input('UserStatus.status', array('type' => 'text'));
+	echo $this->Form->input('UserStatus.user_id', array('type' => 'hidden', 'value' => $user['User']['id']));
+	echo $this->Form->end('Update');
 ?>
 </div>
 <?php endif;*/ ?>
@@ -62,7 +62,7 @@ foreach ($followedUsers as $followedUser) {
 This menu needs a lot of work.  I'm not sure how to handle it, and its important
 because it is different for every single site.  */
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Users',
 		'items' => array(

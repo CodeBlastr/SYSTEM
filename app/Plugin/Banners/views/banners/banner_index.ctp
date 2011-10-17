@@ -1,7 +1,7 @@
 <div class="banners index form">
   <?php 
  		echo $this->Html->script('system/jquery.validate.min');
-		echo $form->create('Banner');
+		echo $this->Form->create('Banner');
 	?>
   <div id="jags"></div>
   <div id="nav"> <?php echo $this->Html->image("../images/banner.png");?> </div>
@@ -11,11 +11,11 @@
       <div id="summary">
         <p>...and we will serve up a Daily Deal appropriate tailored just for you!</p>
       </div>
-      <?php echo $form->hidden('gender'); 
-				echo $form->input('email', array('class' => 'required email'));
-				echo $form->submit('Male', array('value' => 'M', 'id' => 'male',
+      <?php echo $this->Form->hidden('gender'); 
+				echo $this->Form->input('email', array('class' => 'required email'));
+				echo $this->Form->submit('Male', array('value' => 'M', 'id' => 'male',
 												'class' => 'BannerDemographicGender demographic'));
-				echo $form->submit('Female', array('value' => 'F', 
+				echo $this->Form->submit('Female', array('value' => 'F', 
 												'class' => 'BannerDemographicGender demographic'));
 				?> </div>
   </div>
@@ -26,15 +26,15 @@
         <p>...and we will serve up a Daily Deal appropriate tailored just for you!</p>
       </div>
       <?php
-						echo $form->hidden('age_group');  	
+						echo $this->Form->hidden('age_group');  	
 						foreach($age_group as $ageGroup) {
-								echo $form->submit($ageGroup, array('value' => $ageGroup, 
+								echo $this->Form->submit($ageGroup, array('value' => $ageGroup, 
 									'class' => 'BannerDemographicAgeGroup demographic'));
 						}
 						if(isset($this->params['named']['location'])){
-							echo $form->hidden('location', array('value' => $this->params['named']['location']));	
+							echo $this->Form->hidden('location', array('value' => $this->params['named']['location']));	
 						} else {
-							echo $form->hidden('location', array('value' => $location));					
+							echo $this->Form->hidden('location', array('value' => $location));					
 						}	
 					?>
     </div>

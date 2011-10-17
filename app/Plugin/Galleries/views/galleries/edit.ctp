@@ -1,16 +1,16 @@
 <div class="galleries form">
   <h2><?php __('Edit '); echo $gallery['Gallery']['name']; __(' Gallery '); ?></h2>
-<?php echo $form->create('Gallery', array('enctype'=>'multipart/form-data'));?>
+<?php echo $this->Form->create('Gallery', array('enctype'=>'multipart/form-data'));?>
 	<fieldset id="galleryFields">
  		<legend class="toggleClick"><?php __('Edit Gallery Info'); ?></legend>
 		<?php
-		echo $form->input('Gallery.id');
-		echo $form->input('Gallery.name');
-		echo $form->input('Gallery.type', array('empty' => true));
-		echo $form->input('Gallery.model', array('type' => 'hidden'));
-		echo $form->input('Gallery.foreign_key', array('type' => 'hidden'));
-		echo $form->input('Gallery.description', array('type' => 'richtext'));
-		echo $form->end('Submit');
+		echo $this->Form->input('Gallery.id');
+		echo $this->Form->input('Gallery.name');
+		echo $this->Form->input('Gallery.type', array('empty' => true));
+		echo $this->Form->input('Gallery.model', array('type' => 'hidden'));
+		echo $this->Form->input('Gallery.foreign_key', array('type' => 'hidden'));
+		echo $this->Form->input('Gallery.description', array('type' => 'richtext'));
+		echo $this->Form->end('Submit');
 		?>
     </fieldset>
     
@@ -18,29 +18,29 @@
 	<?php echo $this->element($gallery['Gallery']['type'], array('plugin' => 'galleries', 'id' => $gallery['Gallery']['id'])); ?>
 
     
-<?php echo $form->create('GalleryImage', array('enctype'=>'multipart/form-data'));?>
+<?php echo $this->Form->create('GalleryImage', array('enctype'=>'multipart/form-data'));?>
 	<fieldset>
  		<legend><?php __('Add Image'); ?></legend>
 	<?php
-		echo $form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $gallery['Gallery']['id']));
-		echo $form->input('Gallery.model', array('type' => 'hidden'));
-		echo $form->input('Gallery.foreign_key', array('type' => 'hidden'));
-		echo $form->input('GalleryImage.filename', array('type' => 'file'));
-		echo $form->input('GalleryImage.caption', array('type' => 'text'));
-		echo $form->input('GalleryImage.description', array('type' => 'richtext'));
-		#echo $form->input('GalleryImage.alt');
-		echo $form->input('dir', array('type' => 'hidden'));
-	    echo $form->input('mimetype', array('type' => 'hidden'));
-	    echo $form->input('filesize', array('type' => 'hidden'));
+		echo $this->Form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $gallery['Gallery']['id']));
+		echo $this->Form->input('Gallery.model', array('type' => 'hidden'));
+		echo $this->Form->input('Gallery.foreign_key', array('type' => 'hidden'));
+		echo $this->Form->input('GalleryImage.filename', array('type' => 'file'));
+		echo $this->Form->input('GalleryImage.caption', array('type' => 'text'));
+		echo $this->Form->input('GalleryImage.description', array('type' => 'richtext'));
+		#echo $this->Form->input('GalleryImage.alt');
+		echo $this->Form->input('dir', array('type' => 'hidden'));
+	    echo $this->Form->input('mimetype', array('type' => 'hidden'));
+	    echo $this->Form->input('filesize', array('type' => 'hidden'));
 	?>
     </fieldset>
-<?php echo $form->end('Submit'); ?>
+<?php echo $this->Form->end('Submit'); ?>
     
   
 </div>
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Galleries',
 		'items' => array(

@@ -51,7 +51,7 @@ foreach ($users as $user):
 
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Users',
 		'items' => array(

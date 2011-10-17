@@ -176,13 +176,13 @@ endif;
         <p class="action"><?php echo $this->Html->link(__('Add Detail', true), array('controller' => 'contact_details', 'action' => 'edit', 'contact_id' => $contact['Contact']['id']), array('class' => 'toggleClick', 'name' => 'adddetailform')); ?></p>
         <ul class="contactinfo datalist">
 		  <li class="hide" id="adddetailform">
-			<?php echo $form->create('ContactDetail', array('url'=> array('action'=>'add')));?>
+			<?php echo $this->Form->create('ContactDetail', array('url'=> array('action'=>'add')));?>
 				<?php
-					echo $form->input('contact_id', array('type' => 'hidden', 'value' => $contact['Contact']['id'])); 
-					echo $form->input('contact_detail_type_id', array('label' => $this->Html->link(__('Detail Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTDETAIL', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Detail List')))); 
-					echo $form->input('value');
+					echo $this->Form->input('contact_id', array('type' => 'hidden', 'value' => $contact['Contact']['id'])); 
+					echo $this->Form->input('contact_detail_type_id', array('label' => $this->Html->link(__('Detail Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTDETAIL', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Detail List')))); 
+					echo $this->Form->input('value');
 				?>
-			<?php echo $form->end('Submit');?>
+			<?php echo $this->Form->end('Submit');?>
 		  </li>	
 <?php
 if ($contact['Contact']['ContactDetail']) : 
@@ -201,18 +201,18 @@ endif;
         <p class="action"><?php echo $this->Html->link(__('Add Address', true), array('controller' => 'contact_addresses', 'action' => 'edit', 'contact_id' => $contact['Contact']['id']), array('class' => 'toggleClick', 'name' => 'addaddressform')); ?></p>	
         <ul class="address datalist">
 		  <li class="hide" id="addaddressform">
-			<?php echo $form->create('ContactAddress', array('url'=> array('action'=>'add')));?>
+			<?php echo $this->Form->create('ContactAddress', array('url'=> array('action'=>'add')));?>
 				<?php
-					echo $form->input('contact_id', array('type' => 'hidden', 'value' => $contact['Contact']['id'])); 
-					echo $form->input('contact_address_type_id', array('label' => $this->Html->link(__('Address Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTADDRESS', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Address List')))); 
-					echo $form->input('street1'); 
-					echo $form->input('street2');
-					echo $form->input('city');
-					echo $form->input('state_id', array('label' => $this->Html->link(__('State', true), array('plugin' => null, 'controller' => 'states', 'action' => 'index', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit State List'))));
-					echo $form->input('zip_postal');
-					echo $form->input('country_id', array('label' => $this->Html->link(__('Country', true), array('plugin' => null, 'controller' => 'countries', 'action' => 'index', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Country List'))));
+					echo $this->Form->input('contact_id', array('type' => 'hidden', 'value' => $contact['Contact']['id'])); 
+					echo $this->Form->input('contact_address_type_id', array('label' => $this->Html->link(__('Address Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTADDRESS', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Address List')))); 
+					echo $this->Form->input('street1'); 
+					echo $this->Form->input('street2');
+					echo $this->Form->input('city');
+					echo $this->Form->input('state_id', array('label' => $this->Html->link(__('State', true), array('plugin' => null, 'controller' => 'states', 'action' => 'index', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit State List'))));
+					echo $this->Form->input('zip_postal');
+					echo $this->Form->input('country_id', array('label' => $this->Html->link(__('Country', true), array('plugin' => null, 'controller' => 'countries', 'action' => 'index', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Country List'))));
 				?>
-			<?php echo $form->end('Submit');?>
+			<?php echo $this->Form->end('Submit');?>
 		  </li>	
 <?php if ($contact['Contact']['ContactAddress']) : ?>
 			<?php foreach ($contact['Contact']['ContactAddress'] as $address) : ?>
@@ -245,14 +245,14 @@ endif;
         <p class="action"><?php echo $this->Html->link(__('Add Activity', true), array('controller' => 'contact_activities', 'action' => 'edit', 'contact_id' => $contact['Contact']['id']), array('class' => 'toggleClick', 'name' => 'addactivityform')); ?></p>	
 		<ul class="activity datalist">
 		  <li class="hide" id="addactivityform">
-			<?php echo $form->create('ContactActivity', array('url'=> array('action'=>'add')));?>
+			<?php echo $this->Form->create('ContactActivity', array('url'=> array('action'=>'add')));?>
 				<?php
-					echo $form->input('contact_id', array('type' => 'hidden', 'value' => $contact['Contact']['id'])); 
-					echo $form->input('contact_activity_type_id', array('label' => $this->Html->link(__('Activity Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTACTIVITY', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Activity List')))); 
-					echo $form->input('name', array('label' => 'Subject')); 
-					echo $form->input('description');
+					echo $this->Form->input('contact_id', array('type' => 'hidden', 'value' => $contact['Contact']['id'])); 
+					echo $this->Form->input('contact_activity_type_id', array('label' => $this->Html->link(__('Activity Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTACTIVITY', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Activity List')))); 
+					echo $this->Form->input('name', array('label' => 'Subject')); 
+					echo $this->Form->input('description');
 				?>
-			<?php echo $form->end('Submit');?>
+			<?php echo $this->Form->end('Submit');?>
 <?php if ($contact['Contact']['ContactActivity']) :  ?>
 			<?php foreach ($contact['Contact']['ContactActivity'] as $activity) : ?>
 					<li><strong><?php __($activity['ContactActivityType']['name'].' Subject: '); echo $this->Html->link(__($activity['name'], true), array('controller'=> 'contact_activities', 'action' => 'edit', $activity['id'])); ?></strong><p class="action"><?php echo $this->Html->link(__('Delete', true), array('plugin' => 'contacts', 'controller' => 'contact_activities', 'action' => 'delete', $activity['id']), null, 'Are you sure you want to delete'); ?></p>
@@ -272,16 +272,16 @@ endif;
         <p class="action"><?php echo $this->Html->link(__('Add Opportunity', true), array('controller' => 'contact_opportunities', 'action' => 'edit', 'contact_id' => $contact['Contact']['id']), array('class' => 'toggleClick', 'name' => 'addopportunityform')); ?></p>	
         <div class="opportunity datalist">
 		  <div class="hide" id="addopportunityform">
-			<?php echo $form->create('ContactOpportunity', array('action'=>'edit'));?>
+			<?php echo $this->Form->create('ContactOpportunity', array('action'=>'edit'));?>
 				<?php
-					echo $form->input('ContactOpportunity.contact_id', array('type' => 'hidden', 'value' => $contact['Contact']['id']));
-					echo $form->input('ContactOpportunity.enumeration_id', array('label' => $this->Html->link(__('Opportunity Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTOPPORTUNITYTYPE', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Opportunity List')))); 
-					echo $form->input('ContactOpportunity.name', array('label' => 'Subject')); 
-					echo $form->input('ContactOpportunity.description', array('type' => 'richtext', 'ckeSettings' => array('buttons' => array('Bold','Italic','Underline','FontSize','TextColor','BGColor','-','NumberedList','BulletedList','Blockquote','JustifyLeft','JustifyCenter','JustifyRight','-','Link','Unlink','-', 'Image'))));
-					echo $form->input('ContactOpportunity.assignee_id', array('label' => 'Assign To'));
-					echo $form->input('ContactOpportunity.due_date', array('minYear' => date('Y'), 'maxYear' => date('Y') + 10, 'interval' =>  15));
+					echo $this->Form->input('ContactOpportunity.contact_id', array('type' => 'hidden', 'value' => $contact['Contact']['id']));
+					echo $this->Form->input('ContactOpportunity.enumeration_id', array('label' => $this->Html->link(__('Opportunity Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTOPPORTUNITYTYPE', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Opportunity List')))); 
+					echo $this->Form->input('ContactOpportunity.name', array('label' => 'Subject')); 
+					echo $this->Form->input('ContactOpportunity.description', array('type' => 'richtext', 'ckeSettings' => array('buttons' => array('Bold','Italic','Underline','FontSize','TextColor','BGColor','-','NumberedList','BulletedList','Blockquote','JustifyLeft','JustifyCenter','JustifyRight','-','Link','Unlink','-', 'Image'))));
+					echo $this->Form->input('ContactOpportunity.assignee_id', array('label' => 'Assign To'));
+					echo $this->Form->input('ContactOpportunity.due_date', array('minYear' => date('Y'), 'maxYear' => date('Y') + 10, 'interval' =>  15));
 				?>
-			<?php echo $form->end('Submit');?>	
+			<?php echo $this->Form->end('Submit');?>	
           </div>
 		<?php
 		if ($contact['Contact']['ContactOpportunity']) : 

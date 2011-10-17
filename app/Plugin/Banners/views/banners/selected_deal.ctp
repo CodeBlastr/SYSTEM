@@ -11,7 +11,7 @@
 		?>
 		</div>
 		<div id="content">
-			<?php echo $form->hidden('id', array('value' => $dealItem['Banner']['id'])); ?>
+			<?php echo $this->Form->hidden('id', array('value' => $dealItem['Banner']['id'])); ?>
 			<h2><?php echo $dealItem['Banner']['name']; ?></h2>
 				<p><?php echo $dealItem['Banner']['description']; ?></p>
 			<div id="galleryThumb">
@@ -36,7 +36,7 @@
 				<?php 
 					$url = array('plugin' => 'banners', 'controller'=>'banners' , 
 														'action'=>'redeemed', $dealItem['Banner']['id']);
- 					echo $form->submit('Redeem', array('onclick' => "location.href='".$this->Html->url($url)."'"));
+ 					echo $this->Form->submit('Redeem', array('onclick' => "location.href='".$this->Html->url($url)."'"));
  				?> 	
 			</div>
 			<div id="timer">

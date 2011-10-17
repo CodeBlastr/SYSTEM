@@ -7,20 +7,20 @@
             <?php __('List Name : '); ?>
             </span><span class="metaDataDetail"><?php echo $task['Task']['name']; ?></span></li>
         </ul>
-        <div class="tasks form"> <?php echo $form->create('Task', array('url' => '/tasks/tasks/add'));?>
+        <div class="tasks form"> <?php echo $this->Form->create('Task', array('url' => '/tasks/tasks/add'));?>
           <fieldset>
             <legend class="toggleClick">
             <?php __('Add a task to this list?');?>
             </legend>
             <?php
-			 echo $form->input('Task.parent_id', array('type' => 'hidden', 'value' => $parentId));
-			 echo $form->input('Task.name');
-			 echo $form->input('Task.due_date');
-			 echo $form->input('Task.assignee_id');
-			 echo $form->input('Task.model', array('type' => 'hidden', 'value' => $model));
-			 echo $form->input('Task.foreign_key', array('type' => 'hidden', 'value' => $foreignKey));
+			 echo $this->Form->input('Task.parent_id', array('type' => 'hidden', 'value' => $parentId));
+			 echo $this->Form->input('Task.name');
+			 echo $this->Form->input('Task.due_date');
+			 echo $this->Form->input('Task.assignee_id');
+			 echo $this->Form->input('Task.model', array('type' => 'hidden', 'value' => $model));
+			 echo $this->Form->input('Task.foreign_key', array('type' => 'hidden', 'value' => $foreignKey));
 			 echo $this->Form->input('Success.redirect', array('type' => 'hidden', 'value' => '/contacts/contacts/task/'.$parentId));
-        	 echo $form->end('Submit');
+        	 echo $this->Form->end('Submit');
 			?>
           </fieldset>
         </div>

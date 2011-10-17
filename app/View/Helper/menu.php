@@ -33,7 +33,7 @@ class MenuHelper extends AppHelper {
 		   return $menu;
 		} else { 
        	   #$view = ClassRegistry::getObject('view');
-	       return;
+	       return '';
 		}
     }
 

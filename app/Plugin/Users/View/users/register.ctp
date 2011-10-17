@@ -24,31 +24,31 @@
  ?>
  <div id="userRegister" class="user form">
   <h1><?php echo __('Register', true); ?></h1>
-  <?php echo $form->create('User', array('type' => 'file'));?>
+  <?php echo $this->Form->create('User', array('type' => 'file'));?>
   <?php echo $this->Form->input('Contact.id', array('type' => 'hidden')); ?>  
   <fieldset>
     <legend></legend>
     <?php 
 		if(defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) { 
-			echo $form->input('User.contact_type', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE));
+			echo $this->Form->input('User.contact_type', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE));
 		} else {
-			echo $form->input('User.contact_type', array('type' => 'hidden', 'value' => 'person'));
+			echo $this->Form->input('User.contact_type', array('type' => 'hidden', 'value' => 'person'));
 		}
 		
 		echo !empty($userRoleId) ? $this->Form->hidden('User.user_role_id', array('value' => $userRoleId)) : $this->Form->input('User.user_role_id');
 		echo $this->Form->input('User.full_name', array('label' => 'Name'));
-		#echo $form->input('User.email', array('value' => ''));
-		#echo $form->input('User.avatar', array('type' => 'file', 'label' => 'Avatar'));
+		#echo $this->Form->input('User.email', array('value' => ''));
+		#echo $this->Form->input('User.avatar', array('type' => 'file', 'label' => 'Avatar'));
 		echo $this->Form->input('User.username', array('label' => 'Email'));
 		echo $this->Form->input('User.password', array('value' => ''));
 		echo $this->Form->input('User.confirm_password', array('type' => 'password', 'value' => '', 'label' => 'Confirm'));
 	?>
   </fieldset>  
-  <?php echo $form->end('Submit');?> 
+  <?php echo $this->Form->end('Submit');?> 
 </div>
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Users',
 		'items' => array(

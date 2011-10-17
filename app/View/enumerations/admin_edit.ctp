@@ -1,14 +1,14 @@
 <?php
-echo $form->create('Enumeration');
-echo $form->input('Enumeration.id');
-echo $form->input('Enumeration.name');
+echo $this->Form->create('Enumeration');
+echo $this->Form->input('Enumeration.id');
+echo $this->Form->input('Enumeration.name');
 if(count($enumerationTypes)) {
-	echo $form->input('Enumeration.type',array('type'=>'select','options'=>array_merge($enumerationTypes,array('+'=>'+ Add new type'))));
+	echo $this->Form->input('Enumeration.type',array('type'=>'select','options'=>array_merge($enumerationTypes,array('+'=>'+ Add new type'))));
 }
 else {
-	echo $form->input('Enumeration.type');
+	echo $this->Form->input('Enumeration.type');
 }
-echo $form->button('Done',array('type'=>'submit'));
+echo $this->Form->button('Done',array('type'=>'submit'));
 ?>
 
 <script type='text/javascript'>

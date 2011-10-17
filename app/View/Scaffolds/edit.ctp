@@ -24,9 +24,9 @@
 ?>
 <div class="<?php echo $pluralVar;?> form">
 <?php
-	echo $form->create();
-	echo $form->inputs($scaffoldFields, array('created', 'modified', 'updated'));
-	echo $form->end(__('Submit', true));
+	echo $this->Form->create();
+	echo $this->Form->inputs($scaffoldFields, array('created', 'modified', 'updated'));
+	echo $this->Form->end(__('Submit', true));
 ?>
 </div>			
 
@@ -36,7 +36,7 @@
 
 <?php 
 if ($this->action != 'add'):
-	$menuItems[] = $this->Html->link(__('Delete', true), array('action' => 'delete', $form->value($modelClass.'.'.$primaryKey)), null, __('Are you sure you want to delete', true).' #' . $form->value($modelClass.'.'.$primaryKey)); 
+	$menuItems[] = $this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value($modelClass.'.'.$primaryKey)), null, __('Are you sure you want to delete', true).' #' . $this->Form->value($modelClass.'.'.$primaryKey)); 
 endif;
 	  
 $done = array();
@@ -51,7 +51,7 @@ foreach ($associations as $_type => $_data) {
 }
 		
 // set the contextual menu items
-$menu->setValue(
+$this->Menu->setValue(
 	array(
 		array(
 			'heading' => $singularHumanName,

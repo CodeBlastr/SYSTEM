@@ -64,7 +64,7 @@ foreach ($conditions as $condition):
 
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Conditions',
 		'items' => array(

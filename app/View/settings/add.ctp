@@ -1,10 +1,10 @@
 <div class="settings form">
-<?php echo $form->create('Setting');?>
+<?php echo $this->Form->create('Setting');?>
 	<fieldset>
  		<legend><?php __('Add Setting');?></legend>
 	<?php
 		// this is the first instance of our use of the updated select drop down which uses ajax to update other fields. We are attempting to make reusable form elements that can encompass the ajax part as well as the normal automagic form element config. element = the type of field being created or updated, json = the url to call with the value of this element, rel = the target id of the element to update
-		echo $form->input('Setting.type', array(
+		echo $this->Form->input('Setting.type', array(
 												   'empty' => true, 
 												   'label' => 'Type', 
 												   'ajax' => array(
@@ -13,12 +13,12 @@
 																   'rel' => 'SettingName'
 																   )));  
 		
-		echo $form->input('Setting.name', array('type' => 'select', 'empty' => 'Select Type First'));
-		echo $form->input('Setting.value');
-		echo $form->input('Setting.description');
+		echo $this->Form->input('Setting.name', array('type' => 'select', 'empty' => 'Select Type First'));
+		echo $this->Form->input('Setting.value');
+		echo $this->Form->input('Setting.description');
 	?>
 	</fieldset>
-<?php echo $form->end('Submit');?>
+<?php echo $this->Form->end('Submit');?>
 </div>
 <div class="actions">
 	<ul>

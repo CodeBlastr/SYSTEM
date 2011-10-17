@@ -1,7 +1,7 @@
 <?php echo $this->Element('scaffolds/index', array('data' => $galleries)); ?>
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+$this->Menu->setValue(array(
 	array(
 		'heading' => 'Galleries',
 		'items' => array(

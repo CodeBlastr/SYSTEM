@@ -57,42 +57,42 @@
 		<h3><?php echo __('Please register or login to access this page.', true); ?></h3>
 		<?php 
 			if(defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) { 
-				echo $form->create('User', array('type' => 'file', 'id' => 'register_form', 'action' => 'register'));
-				echo $form->input('Contact.id', array('type' => 'hidden')); 
+				echo $this->Form->create('User', array('type' => 'file', 'id' => 'register_form', 'action' => 'register'));
+				echo $this->Form->input('Contact.id', array('type' => 'hidden')); 
 				
 				if (!empty($this->params['named']['user'])) {
-					echo $form->input('User.id', array('type' => 'hidden', 'value' => $this->params['named']['user']));
+					echo $this->Form->input('User.id', array('type' => 'hidden', 'value' => $this->params['named']['user']));
 				} else {
 					if(defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) { 
-						echo $form->input('User.contact_type', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE));
+						echo $this->Form->input('User.contact_type', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE));
 					} else {
-						echo $form->input('User.contact_type', array('type' => 'hidden', 'value' => 'person'));
+						echo $this->Form->input('User.contact_type', array('type' => 'hidden', 'value' => 'person'));
 					}
 					if(defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) {
-						echo $form->input('User.user_role_id', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_ROLE_ID));
+						echo $this->Form->input('User.user_role_id', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_ROLE_ID));
 					} else {
-						echo $form->input('User.user_role_id');
+						echo $this->Form->input('User.user_role_id');
 					}
 		?>
 					<label> <b>EMAIL OR USERNAME :</b> </label>
 				<?php 			
-					echo $form->input('User.username', array('label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
+					echo $this->Form->input('User.username', array('label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
 				?>
 					<div id="UserUsernameError" style="display: none;"><font color="red"> Username Is Required. </font></div>
 					<label> <b>PASSWORD :</b> </label>
 				<?php 
-					echo $form->input('User.password', array('label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
+					echo $this->Form->input('User.password', array('label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
 				?>
 					<div id="UserPasswordError" style="display: none;"><font color="red">  Password Is Required. </font></div>
 					<label> <b>CONFIRM PASSWORD :</b> </label>
 				<?php 	
-					echo $form->input('User.confirm_password', array('type' => 'password', 'label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
+					echo $this->Form->input('User.confirm_password', array('type' => 'password', 'label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
 				?>
 					<div id="UserConfirmPasswordError" style="display: none;"><font color="red"> Confirm Password Is Required. </font></div>
 				<?php 	
-					echo $form->submit('Submit', array('id'=>'register_submit'));
+					echo $this->Form->submit('Submit', array('id'=>'register_submit'));
 				} // end named user if
-				echo $form->end(); 
+				echo $this->Form->end(); 
 			} else {
 				__('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID must be defined for public user registrations to work.');
 			}
@@ -102,18 +102,18 @@
 			<h2><?php echo __('Already Registered?', true); ?></h1>
 			<h3><?php echo __('Please login here.', true); ?></h3>
 			<?php
-		    	echo $form->create('User', array('id' => 'login_form', 'action' => 'login'));
+		    	echo $this->Form->create('User', array('id' => 'login_form', 'action' => 'login'));
 		    ?>
 			    <label> <b>EMAIL OR USERNAME :</b> </label>
 		    <?php 	
-		    	echo $form->input('username', array('label' => false, 'size' => 30));
+		    	echo $this->Form->input('username', array('label' => false, 'size' => 30));
 		    ?>
 			    <label> <b>PASSWORD :</b> </label>
 		    <?php 	
-		    	echo $form->input('password', array('label' => false, 'size' => 30));
+		    	echo $this->Form->input('password', array('label' => false, 'size' => 30));
 		    	echo $this->Html->tag('span', '', array('id' => 'mesg','', 'style' => 'color:red;'));
-		    	echo $form->submit('Submit', array('id'=>'login_form_submit', 'div' => array('style' => 'float:right;')));
-		    	echo $form->end();
+		    	echo $this->Form->submit('Submit', array('id'=>'login_form_submit', 'div' => array('style' => 'float:right;')));
+		    	echo $this->Form->end();
 		    ?>
 		</fieldset>
 	</div>
