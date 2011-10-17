@@ -11,11 +11,11 @@ class GalleriesAppController extends AppController {
 		parent::beforeFilter();		
 		$Config = GalleriesConfig::getInstance();
 		#sets display values
-		if (!empty($Config->settings[$this->params['controller'].Inflector::camelize($this->params['action']).'View'])) {
-			$this->set('settings', $Config->settings[$this->params['controller'].Inflector::camelize($this->params['action']).'View']);
+		if (!empty($Config->settings[$this->request->params['controller'].Inflector::camelize($this->request->params['action']).'View'])) {
+			$this->set('settings', $Config->settings[$this->request->params['controller'].Inflector::camelize($this->request->params['action']).'View']);
 		}
-		if (!empty($Config->settings[$this->params['controller'].Inflector::camelize($this->params['action']).'Controller'])) {
-			$this->settings = $Config->settings[$this->params['controller'].Inflector::camelize($this->params['action']).'Controller'];
+		if (!empty($Config->settings[$this->request->params['controller'].Inflector::camelize($this->request->params['action']).'Controller'])) {
+			$this->settings = $Config->settings[$this->request->params['controller'].Inflector::camelize($this->request->params['action']).'Controller'];
 		}
 	}
 	

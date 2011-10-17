@@ -28,9 +28,9 @@
 	endif;
 ?>
 </head>
-<body class="<?php echo $this->params['controller']; ?><?php if($this->Session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
+<body class="<?php echo $this->request->params['controller']; ?><?php if($this->Session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
 <div id="siteWrap"> <?php echo $this->Element('admin/header_nav'); ?>
-  <div id="tabs"> <?php echo $this->Element('page_title'); ?> <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array('plugin' => $this->params['plugin'])) : ''; ?>
+  <div id="tabs"> <?php echo $this->Element('page_title'); ?> <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array('plugin' => $this->request->params['plugin'])) : ''; ?>
     <div id="content">
       <div id="contentWrap">
         <div id="navigation"> <?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?>

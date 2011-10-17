@@ -93,7 +93,7 @@ class SettingsController extends AppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data) && empty($this->params['named'])) {
+		if (!$id && empty($this->data) && empty($this->request->params['named'])) {
 			$this->Session->setFlash(__('Invalid Setting', true));
 			$this->redirect(array('action'=>'index'));
 		} 
@@ -105,16 +105,16 @@ class SettingsController extends AppController {
 				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true));
 			}
 		}
-		if (!empty($this->params['named'])) {
+		if (!empty($this->request->params['named'])) {
 			$this->data = $this->Setting->find('first', array(
 				'conditions' => array(
-					'type_id' => enum(null, $this->params['named']['type']), 
-					'name' => $this->params['named']['name'],
+					'type_id' => enum(null, $this->request->params['named']['type']), 
+					'name' => $this->request->params['named']['name'],
 					),
 				));
-			$this->set('typeId', enum(null, $this->params['named']['type'])); 
-			$this->data['Setting']['name'] = $this->params['named']['name'];
-			$this->data['Setting']['description'] = $this->Setting->getDescription($this->params['named']['type'], $this->params['named']['name']); 
+			$this->set('typeId', enum(null, $this->request->params['named']['type'])); 
+			$this->data['Setting']['name'] = $this->request->params['named']['name'];
+			$this->data['Setting']['description'] = $this->Setting->getDescription($this->request->params['named']['type'], $this->request->params['named']['name']); 
 		}
 		if (empty($this->data)) {
 			$this->data = $this->Setting->read(null, $id);

@@ -35,8 +35,8 @@ class WebpagesController extends WebpagesAppController {
 	}
 
 	function index() {
-		if (!empty($this->params['named']['type'])) :
-			$this->paginate['conditions']['Webpage.type'] = $this->params['named']['type'];
+		if (!empty($this->request->params['named']['type'])) :
+			$this->paginate['conditions']['Webpage.type'] = $this->request->params['named']['type'];
 		endif;
  
 		$this->Webpage->recursive = 0;

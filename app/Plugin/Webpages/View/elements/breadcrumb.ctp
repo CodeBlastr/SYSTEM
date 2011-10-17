@@ -48,17 +48,17 @@
 	// urls if in form of /controller/index or /plugin/controller means they belong to index pages.
 	// so count will be max of 3 in that case
 	
-	if ( count($urls)  < 2 || $this->params['action'] == 'index' )  {
+	if ( count($urls)  < 2 || $this->request->params['action'] == 'index' )  {
 		if (defined('__ELEMENT_BREADCRUMBS_SEPARATOR'))
 			echo  __ELEMENT_BREADCRUMBS_SEPARATOR. ' ';
-		$humanCtrl = Inflector::humanize(Inflector::underscore($this->params['controller'])); #Contact People
+		$humanCtrl = Inflector::humanize(Inflector::underscore($this->request->params['controller'])); #Contact People
 	
 	   echo $crumb->getHtml($humanCtrl, 'reset') ;
 	} else {
 		if (defined('__ELEMENT_BREADCRUMBS_SEPARATOR'))
 			echo  __ELEMENT_BREADCRUMBS_SEPARATOR. ' ';
 		
-	   echo ucfirst($crumb->getHtml($this->params['action'], null, 'auto') );
+	   echo ucfirst($crumb->getHtml($this->request->params['action'], null, 'auto') );
 	}
 }
 ?>

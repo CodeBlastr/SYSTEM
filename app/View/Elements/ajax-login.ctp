@@ -60,8 +60,8 @@
 				echo $this->Form->create('User', array('type' => 'file', 'id' => 'register_form', 'action' => 'register'));
 				echo $this->Form->input('Contact.id', array('type' => 'hidden')); 
 				
-				if (!empty($this->params['named']['user'])) {
-					echo $this->Form->input('User.id', array('type' => 'hidden', 'value' => $this->params['named']['user']));
+				if (!empty($this->request->params['named']['user'])) {
+					echo $this->Form->input('User.id', array('type' => 'hidden', 'value' => $this->request->params['named']['user']));
 				} else {
 					if(defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) { 
 						echo $this->Form->input('User.contact_type', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE));

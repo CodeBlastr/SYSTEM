@@ -5,8 +5,8 @@
  * @todo	We should have a separate view file for each banner type, and let the controller pick which view file to display.  That will allow us to keep the html separate for each banner type.
  */
 ?><?php 
-	if(isset($this->params['named']['bannerType'])){
-		$banner = $this->requestAction('banners/banners/daily_deal_data/'.$this->params['named']['bannerType']);
+	if(isset($this->request->params['named']['bannerType'])){
+		$banner = $this->requestAction('banners/banners/daily_deal_data/'.$this->request->params['named']['bannerType']);
 	}
 ?>
 	<div id="nav">
@@ -23,8 +23,11 @@
 		<?php if (!empty($banner)) {?>
 			<?php echo $this->Form->hidden('id', array('value' => $banner['Banner']['id'])); ?>
 			<div id="galleryThumb">
-				<?php echo $this->element('thumb', array('plugin' => 'galleries', 'model' => 'Banner', 
-						'foreignKey' => $banner['Banner']['id'], 'thumbSize' => 'medium', 'thumbLink' => $banner['Banner']['redemption_url']));  ?>
+				<?php echo $this->Element('thumb', array(
+								'model' => 'Banner', 
+								'foreignKey' => $banner['Banner']['id'], 
+								'thumbSize' => 'medium', 'thumbLink' => $banner['Banner']['redemption_url']),
+										 array('plugin' => 'galleries'));  ?>
 			</div>
 <?php
 } else {

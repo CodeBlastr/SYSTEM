@@ -1,5 +1,5 @@
 <!-- /views/elements/admin/helper_text.ctp -->
-<?php $url = $this->params['plugin'].'.'.$this->params['controller'].'.'.$this->params['action']; ?>
+<?php $url = $this->request->params['plugin'].'.'.$this->request->params['controller'].'.'.$this->request->params['action']; ?>
 
 <div id="helperText">
 <?php if (isset($_GET['e']) && $_GET['e'] == 'sent') { ?>

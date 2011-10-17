@@ -60,7 +60,8 @@ class UsableBehavior extends ModelBehavior {
 		# this is if we have a hasMany list of users coming in.
 		if (!empty($this->model->data['User'][0])) :
 			foreach ($this->model->data['User'] as $user) :
-				$users[]['id'] = $user['user_id'];
+				#$users[]['id'] = $user['user_id']; // before cakephp 2.0 upgrade
+				$users[]['id'] = $user['id'];
 			endforeach;
 		endif;
 		

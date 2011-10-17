@@ -1,6 +1,6 @@
 <?php 
 # setup defaults
-$modelName = !empty($modelName) ? $modelName : Inflector::classify($this->params['controller']); // ContactPerson
+$modelName = !empty($modelName) ? $modelName : Inflector::classify($this->request->params['controller']); // ContactPerson
 $pluginName = !empty($pluginName) ? $pluginName : pluginize($modelName); // contacts
 $controller = !empty($controller) ? $controller : Inflector::tableize($modelName); // contact_people, projects
 if (!empty($data)) : 

@@ -38,7 +38,7 @@
 	echo $this->Paginator->numbers();
 	echo $this->Paginator->next();
 	?>
-	<div style='text-align:right;margin-top:4px;'><a class='sym-button' href='/admin/<?php echo $this->params['controller'] ?>/add'>Add <?php echo ucwords(Inflector::singularize($this->params['controller'])); ?></a></div>
+	<div style='text-align:right;margin-top:4px;'><a class='sym-button' href='/admin/<?php echo $this->request->params['controller'] ?>/add'>Add <?php echo ucwords(Inflector::singularize($this->request->params['controller'])); ?></a></div>
 </div>
 <script type='text/javascript'>
 function confirmDelete(string) {

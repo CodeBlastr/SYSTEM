@@ -11,8 +11,8 @@ class CrumbHelper extends Helper
 	{
 		define('THIS_URL' , $this->protocol.  '://' . $_SERVER['HTTP_HOST'] .  $_SERVER['REQUEST_URI']) ;
 		
-		$controller	   =	$this->params['controller']	;
-		$action			=	$this->params['action']		;
+		$controller	   =	$this->request->params['controller']	;
+		$action			=	$this->request->params['action']		;
 	
 		if (is_null($title)) {
 			$title = Inflector::humanize($controller);
@@ -32,7 +32,7 @@ class CrumbHelper extends Helper
 		$arr_titles	= $this->Session->read('crumb_titles');
 		$arr_levels	= $this->Session->read('crumb_levels');
 	
-		if (is_null($level) AND $this->params['action'] != 'index' && $level != 'auto') {
+		if (is_null($level) AND $this->request->params['action'] != 'index' && $level != 'auto') {
 			$level = $controller ;
 		}
 		if ( $level == 'unique'){

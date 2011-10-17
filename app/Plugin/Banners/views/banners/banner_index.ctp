@@ -31,8 +31,8 @@
 								echo $this->Form->submit($ageGroup, array('value' => $ageGroup, 
 									'class' => 'BannerDemographicAgeGroup demographic'));
 						}
-						if(isset($this->params['named']['location'])){
-							echo $this->Form->hidden('location', array('value' => $this->params['named']['location']));	
+						if(isset($this->request->params['named']['location'])){
+							echo $this->Form->hidden('location', array('value' => $this->request->params['named']['location']));	
 						} else {
 							echo $this->Form->hidden('location', array('value' => $location));					
 						}	

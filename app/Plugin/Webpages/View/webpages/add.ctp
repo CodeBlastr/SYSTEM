@@ -4,7 +4,7 @@
 	<fieldset>
 	<legend class="toggleClick"><?php __('Search Engine Optimization');?></legend>
     <?php 
-		echo $this->Form->input('Alias.name', array('label' => 'SEO Url (unique)', 'value' =>  $this->params['named']['alias']));
+		echo $this->Form->input('Alias.name', array('label' => 'SEO Url (unique)', 'value' =>  $this->request->params['named']['alias']));
 		echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => 'webpages'));
 		echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => 'webpages'));
 		echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => 'view'));

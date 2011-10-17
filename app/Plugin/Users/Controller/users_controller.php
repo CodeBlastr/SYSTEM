@@ -261,14 +261,14 @@ class UsersController extends UsersAppController {
 	
 	function edit($id = null) {
 		# looking for an existing user to edit
-		if (!empty($this->params['named']['user_id'])) {
-			$conditions = array('User.user_id' => $this->params['named']['user_id']);
+		if (!empty($this->request->params['named']['user_id'])) {
+			$conditions = array('User.user_id' => $this->request->params['named']['user_id']);
 		} else if (!empty($id)) {
 			$conditions = array('User.id' => $id);
 		} else {
 			$conditions = array('User.user_id' => $this->Session->read('Auth.User.id'));
 		}
-		if (empty($this->data) && (!empty($this->params['named']['user_id']) || !empty($id))) {
+		if (empty($this->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
 			));
@@ -352,7 +352,7 @@ class UsersController extends UsersAppController {
 			break;
 		endif;
 		
-		$this->data['Contact']['id'] = !empty($this->params['named']['contact']) ? $this->params['named']['contact'] : null;
+		$this->data['Contact']['id'] = !empty($this->request->params['named']['contact']) ? $this->request->params['named']['contact'] : null;
 		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
 	}
 

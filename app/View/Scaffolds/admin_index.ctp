@@ -1,10 +1,10 @@
 <?php 
 # setup view vars for reuse 
-$modelClass = Inflector::classify($this->params['controller']); #ex. ContactPerson
+$modelClass = Inflector::classify($this->request->params['controller']); #ex. ContactPerson
 $prefix = (!empty($this->params['prefix']) ? $this->params['prefix'] : null); #admin
-$plugin = (!empty($this->params['plugin']) ? $this->params['plugin'] : null); #contacts
-$controller = $this->params['controller']; #contact_people
-$indexVar = Inflector::variable($this->params['controller']); #contactPeople
+$plugin = (!empty($this->request->params['plugin']) ? $this->request->params['plugin'] : null); #contacts
+$controller = $this->request->params['controller']; #contact_people
+$indexVar = Inflector::variable($this->request->params['controller']); #contactPeople
 $humanModel = Inflector::humanize(Inflector::underscore($modelClass)); #Contact Person
 $humanCtrl = Inflector::humanize(Inflector::underscore($controller)); #Contact People
 $indexData = $___dataForView[$indexVar];

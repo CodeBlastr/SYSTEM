@@ -71,9 +71,9 @@ class AppController extends Controller {
 		/*App::Import('Model', 'Condition');
 		$this->Condition = new Condition;
 		#get the id that was just inserted so you can call back on it.
-		$conditions['plugin'] = $this->params['plugin'];
-		$conditions['controller'] = $this->params['controller'];
-		$conditions['action'] = $this->params['action'];
+		$conditions['plugin'] = $this->request->params['plugin'];
+		$conditions['controller'] = $this->request->params['controller'];
+		$conditions['action'] = $this->request->params['action'];
 		$conditions['extra_values'] = $this->params['pass'];
 		$this->Condition->checkAndFire('is_read', $conditions, $this->data); */
 		# End Condition Check #
@@ -214,7 +214,7 @@ class AppController extends Controller {
 	 * and have more reusable code.
 	 */
 	function __admin_add() {
-		$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
+		$model = Inflector::camelize(Inflector::singularize($this->request->params['controller']));
 		if (!empty($this->data)) {
 			$this->$model->create();
 			if ($this->$model->save($this->data)) {
@@ -280,7 +280,7 @@ class AppController extends Controller {
         if ($this->data) {
 			# This will not work for multiple fields, and is meant for a form with a single value to update
 			# Create the model name from the controller requested in the url
-			$model = Inflector::camelize(Inflector::singularize($this->params['controller']));
+			$model = Inflector::camelize(Inflector::singularize($this->request->params['controller']));
 			# These apparently aren't necessary. Left for reference.
 			//App::import('Model', $model);
 			//$this->$model = new $model();
@@ -344,15 +344,15 @@ class AppController extends Controller {
 			if ($this->params['prefix'] == $this->Session->read('Auth.User.view_prefix')) :
 				# this elseif checks to see if the user role has a specific view file
 				$this->layout = 'default';
-				$this->params['action'] = str_replace('admin_', '', $this->params['action']);
-				# $this->viewPath = $this->Session->read('Auth.User.view').DS.$this->params['controller'];
+				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
+				# $this->viewPath = $this->Session->read('Auth.User.view').DS.$this->request->params['controller'];
 				$viewPaths = App::path('views');
 				foreach ($viewPaths as $path) :
-					$paths[] = !empty($this->params['plugin']) ? str_replace(DS.'views', DS.'plugins'.DS.$this->params['plugin'].DS.'views', $path) : $path;
+					$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'views', DS.'plugins'.DS.$this->request->params['plugin'].DS.'views', $path) : $path;
 				endforeach;
 				foreach ($paths as $path) :
-					if (file_exists($path.$this->Session->read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->params['action'].'.ctp')) :
-						$this->viewPath = $this->Session->read('Auth.User.view_prefix').DS.$this->params['controller'];
+					if (file_exists($path.$this->Session->read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) :
+						$this->viewPath = $this->Session->read('Auth.User.view_prefix').DS.$this->request->params['controller'];
 					endif;
 				endforeach;
 			else : 
@@ -423,7 +423,7 @@ class AppController extends Controller {
 						# check each one against the current url
 						$u = str_replace('/', '\/', $u);
 						$urlRegEx = '/'.str_replace('*', '(.*)', $u).'/';
-						if (preg_match($urlRegEx, $this->params['url']['url'])) {
+						if (preg_match($urlRegEx, $this->request->url)) {
 							$this->templateId = $templateId[$i];
 						}
 						$i++;
@@ -493,7 +493,7 @@ class AppController extends Controller {
 			foreach ($data['urls'] as $url) :
 				$urlString = str_replace('/', '\/', trim($url));
 				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
-				$url = $this->params['url']['url'];
+				$url = $this->request->url;
 				$urlCompare = strpos($url, '/') == 0 ? substr($url, 1) : $url;
 				if (preg_match($urlRegEx, $urlCompare)) :
 					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateId'];
@@ -735,8 +735,8 @@ class AppController extends Controller {
 		if(!empty($aco)) {
 			return array('model' => $this->modelClass, 'foreign_key' => $this->params['pass'][0]);
 		} else {
-			$controller = Inflector::camelize($this->params['controller']);
-			$action = $this->params['action'];
+			$controller = Inflector::camelize($this->request->params['controller']);
+			$action = $this->request->params['action'];
 			# $aco = 'controllers/Webpages/Webpages/view'; // you could do the full path, but the shorter path is slightly faster. But it does not allow name collisions. (the full path would allow name collisions, and be slightly slower). 
 			return $controller.'/'.$action;
 		}

@@ -42,8 +42,8 @@
 		echo $this->Form->input('User.username', array('label' => 'Email'));
 		echo $this->Form->input('User.password', array('value' => ''));
 		echo $this->Form->input('User.confirm_password', array('type' => 'password', 'value' => '', 'label' => 'Confirm'));
-		if(isset($this->params['named']['referal_code']) && !empty($this->params['named']['referal_code'])) {
-		 	echo $this->Form->input('User.referal_code', array('type' => 'hidden', 'value' => $this->params['named']['referal_code']));
+		if(isset($this->request->params['named']['referal_code']) && !empty($this->request->params['named']['referal_code'])) {
+		 	echo $this->Form->input('User.referal_code', array('type' => 'hidden', 'value' => $this->request->params['named']['referal_code']));
 		}
 	?>
   </fieldset>  

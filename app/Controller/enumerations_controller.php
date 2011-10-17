@@ -48,8 +48,8 @@ class EnumerationsController extends AppController {
 			)
 		);
 		$conditions = array();
-		if(isset($this->params['named']['filter'])) {
-			$conditions['Enumeration.type LIKE'] = $this->params['named']['filter'] . '%';
+		if(isset($this->request->params['named']['filter'])) {
+			$conditions['Enumeration.type LIKE'] = $this->request->params['named']['filter'] . '%';
 		}
 		$this->data = $this->paginate('Enumeration',$conditions);
 	}
@@ -74,8 +74,8 @@ class EnumerationsController extends AppController {
 	
 	function index() {
 		$conditions = array();
-		if(isset($this->params['named']['type'])) {
-			$conditions['Enumeration.type'] = strtoupper($this->params['named']['type']);
+		if(isset($this->request->params['named']['type'])) {
+			$conditions['Enumeration.type'] = strtoupper($this->request->params['named']['type']);
 		}
 		$enumerations = $this->Enumeration->find('all',array(
 			'conditions' => $conditions

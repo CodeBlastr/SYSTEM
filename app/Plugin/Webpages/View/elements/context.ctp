@@ -32,7 +32,7 @@
 		# check each one against the current url
 		$u = str_replace('/', '\/', $u);
 		$urlRegEx = '/'.str_replace('*', '(.*)', $u).'/';
-		if (preg_match($urlRegEx, $this->params['url']['url'])) {
+		if (preg_match($urlRegEx, $this->request->url)) {
 			$page = $pageId[$i];
  			$contextWebpages[] = $this->requestAction('/webpages/webpages/view/'.$page);
 		}

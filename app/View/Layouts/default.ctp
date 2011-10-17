@@ -28,7 +28,7 @@
 	endif;
 ?>
 </head>
-<body class="<?php echo $this->params['controller']; ?><?php if($this->Session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
+<body class="<?php echo $this->request->params['controller']; ?><?php if($this->Session->read('Auth.User')) : __(' authorized'); else : __(' restricted'); endif; ?>">
 <div id="siteWrap">
   <?php #echo $this->Element('navigation', array('plugin' => 'webpages')); ?>
   <div id="quickNav">
@@ -43,7 +43,7 @@
       </div>
     </form>
   </div>
-  <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array('plugin' => $this->params['plugin'])) : ''; ?>
+  <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array('plugin' => $this->request->params['plugin'])) : ''; ?>
   <div id="siteContent">
     <div id="contentWrap">
       <div id="content">

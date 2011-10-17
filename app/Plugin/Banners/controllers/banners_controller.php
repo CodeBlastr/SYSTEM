@@ -103,7 +103,7 @@ class BannersController extends AppController {
 			}
 		}
 		
-		$bannerPositionId = $this->Banner->get_banner_position_id($this->params['named']['bannerType']);
+		$bannerPositionId = $this->Banner->get_banner_position_id($this->request->params['named']['bannerType']);
 		$bannerPositionsPrice = $this->Banner->BannerPosition->find('list', array('fields' => array('id', 'price')));
 		$age_group = unserialize(__ELEMENT_BANNER_AGEGROUP);
 		

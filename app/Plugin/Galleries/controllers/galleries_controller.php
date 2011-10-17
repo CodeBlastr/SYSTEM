@@ -58,8 +58,8 @@ class GalleriesController extends GalleriesAppController {
 
 
 	function thumb($id = null) {
-		if (!$id && !empty($this->params['named']['model']) && !empty($this->params['named']['foreignKey'])) {
-			$conditions = array('Gallery.model' => $this->params['named']['model'], 'Gallery.foreign_key' => $this->params['named']['foreignKey']);
+		if (!$id && !empty($this->request->params['named']['model']) && !empty($this->request->params['named']['foreignKey'])) {
+			$conditions = array('Gallery.model' => $this->request->params['named']['model'], 'Gallery.foreign_key' => $this->request->params['named']['foreignKey']);
 		} else {
 			$conditions = array('Gallery.id' => $id);
 		}

@@ -6,7 +6,7 @@
 		extract(unserialize(__ELEMENT_BANNERS_POSITIONS));
 	}
 	$bannerType = !empty($bannerType) ? $bannerType : null;
-	if($this->params['named']['bannerType'] == $bannerType) {
+	if($this->request->params['named']['bannerType'] == $bannerType) {
 		echo '<h3>Now you can select a period of dates with one click</h3>';
 		echo '<table><tr><td>';
 	

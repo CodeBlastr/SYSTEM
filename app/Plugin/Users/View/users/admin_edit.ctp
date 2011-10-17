@@ -4,7 +4,7 @@
  		<legend><?php __('Edit '.$this->Form->value('User.username'));?></legend>
 	<?php
 		echo $this->Form->input('User.id');
-	if (!empty($this->params['named']['cpw'])) {
+	if (!empty($this->request->params['named']['cpw'])) {
 		echo $this->Form->input('User.username', array('type' => 'hidden'));
 		echo $this->Form->input('User.user_role_id', array('type' => 'hidden'));
 		echo $this->Form->input('User.password', array('value' => ''));

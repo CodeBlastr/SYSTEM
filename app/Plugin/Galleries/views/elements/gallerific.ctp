@@ -30,7 +30,7 @@ echo $this->Html->css('/galleries/css/galleriffic/galleriffic-2', '', array('inl
 echo $this->Html->script('/galleries/js/galleriffic/jquery.galleriffic', array('inline' => 0));
 echo $this->Html->script('/galleries/js/galleriffic/jquery.opacityrollover', array('inline' => 0));
 
-	if (strpos($this->params['url']['url'], 'edit/')) {
+	if (strpos($this->request->url, 'edit/')) {
 		# this is an edit page we should show a delete button
 		$editPage = true;
 	}		

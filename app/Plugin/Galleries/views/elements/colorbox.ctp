@@ -19,7 +19,7 @@ if (!empty($gallery['GalleryImage'][0])) {
 				slideshow:true,
 			});
 		});', array('inline' => 0)); 
-	if (strpos($this->params['url']['url'], 'edit/')) {
+	if (strpos($this->request->url, 'edit/')) {
 		# this is an edit page we should show a delete button
 		$editPage = true;
 	}

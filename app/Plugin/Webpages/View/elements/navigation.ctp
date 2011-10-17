@@ -2,7 +2,7 @@
   <div id="slidedock_content">
     <ul>
       <li><a class="dock_btn edit_button" id="edit_button" title="On edit mode"><span>Edit Mode : Off</span></a></li>
-      <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').'/'.$this->params['url']['url']; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?></span></a></li>
+      <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').'/'.$this->request->url; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?></span></a></li>
       <li class="title"><a href="/webpages/webpages/index/type:template" title="Edit Template"><span>CMS</span></a>
         <ul>
           <li><a href="/webpages/webpages/index/type:page_content/">Webpages</a></li>
@@ -14,7 +14,7 @@
           <li><a href="/admin/admin/files_image">Images</a></li>
           <li class="separator"><a href="/admin/admin/files_files">Documents</a></li>
           <?php if (!empty($defaultTemplate['Menu'])) : foreach ($defaultTemplate['Menu'] as $menu) : ?>
-          <li><a class="dialog" href="/menus/menu_items/add/<?php echo $menu['id']; ?>/<?php echo !empty($title_for_layout) ? urlencode($title_for_layout) : Inflector::humanize($this->params['action'].' '.$this->params['controller']); ?>/<?php echo base64_encode($_SERVER['REQUEST_URI']); ?>" title="Add to Menu"><span>Add to <?php echo $menu['name']; ?></span></a></li>
+          <li><a class="dialog" href="/menus/menu_items/add/<?php echo $menu['id']; ?>/<?php echo !empty($title_for_layout) ? urlencode($title_for_layout) : Inflector::humanize($this->request->params['action'].' '.$this->request->params['controller']); ?>/<?php echo base64_encode($_SERVER['REQUEST_URI']); ?>" title="Add to Menu"><span>Add to <?php echo $menu['name']; ?></span></a></li>
           <?php endforeach; endif; ?>
           
           
@@ -55,7 +55,7 @@
   <div id="slidedock_content">
       <ul>
       	<li><a class="dock_btn edit_button" id="edit_button" title="On edit mode"><span>Edit Mode : Off</span></a></li>
-	    <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').'/'.$this->params['url']['url']; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?></span></a></li>
+	    <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').'/'.$this->request->url; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?></span></a></li>
         <li> <a href="#"><span>Design</span></a>
           <ul>
                 <li class="title">Design</li>

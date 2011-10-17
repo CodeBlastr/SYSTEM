@@ -10,7 +10,7 @@
 	echo $this->Html->css('admin/jquery-ui-1.8.13.custom');
 	echo $this->Form->create('Banner');
 ?>
-<h1><?php __($this->params['named']['bannerType'].' Ad Builder'); ?></h1>
+<h1><?php __($this->request->params['named']['bannerType'].' Ad Builder'); ?></h1>
 <fieldset id="step1">
   <?php
 	echo $this->Form->hidden('banner_position_id', array('value' => $bannerPositionId));

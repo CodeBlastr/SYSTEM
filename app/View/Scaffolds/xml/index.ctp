@@ -1,8 +1,8 @@
 <?php # setup standards for reuse 
 echo $xml->header(); 
-	$model = Inflector::classify($this->params['controller']); #ContactPerson
-	$controller = $this->params['controller']; #contact_people
-	$indexVar = Inflector::variable($this->params['controller']); #contactPeople
+	$model = Inflector::classify($this->request->params['controller']); #ContactPerson
+	$controller = $this->request->params['controller']; #contact_people
+	$indexVar = Inflector::variable($this->request->params['controller']); #contactPeople
 	$humanModel = Inflector::humanize(Inflector::underscore($model)); #Contact Person
 	$humanCtrl = Inflector::humanize(Inflector::underscore($controller)); #Contact People
 	# Inflector::singularize(Inflector::underscore($model)); #contact_person
