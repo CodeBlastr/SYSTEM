@@ -36,7 +36,6 @@
 	Configure::write('debug', 2);
 	#Configure::write('debug', $debugger);
 	#Configure::write('Config.language', 'en');
-	Configure::write('Exception.renderer', 'AppExceptionRenderer');
 
 /**
  * Configure the Error handler used to handle errors for your application.  By default
@@ -74,11 +73,12 @@
  *
  * @see ErrorHandler for more information on exception handling and configuration.
  */
-	Configure::write('Exception', array(
-		'handler' => 'ErrorHandler::handleException',
-		'renderer' => 'ExceptionRenderer',
-		'log' => true
-	));
+	#Configure::write('Exception', array(
+	#	'handler' => 'ErrorHandler::handleException',
+	#	'renderer' => 'ExceptionRenderer',
+	#	'log' => true
+	#));
+	Configure::write('Exception.handler', 'AppExceptionHandler::handle');
 
 /**
  * Application wide charset encoding

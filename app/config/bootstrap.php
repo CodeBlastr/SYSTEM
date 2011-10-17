@@ -56,11 +56,11 @@ App::build(array(
 		ROOT.DS.APP_DIR.DS.'Controller'.DS,
 		ROOT.DS.'app'.DS.'Controller'.DS
 		),
-	/*'libs' => array(
+	'libs' => array(
 		ROOT.DS.APP_DIR.DS.'lib'.DS,
 		ROOT.DS.APP_DIR.DS.'Lib'.DS,
 		ROOT.DS.'app'.DS.'Lib'.DS
-		),*/
+		),
     'datasources' => array(
 		ROOT.DS.APP_DIR.DS.'models'.DS.'datasources'.DS,
 		ROOT.DS.'app'.DS.'models'.DS.'datasources'.DS
@@ -130,3 +130,4 @@ App::build(array(
 	 * CakePlugin::load('DebugKit'); //Loads a single plugin named DebugKit
 	 */
 	 CakePlugin::loadAll(); // Loads all plugins at once
+	App::uses('AppExceptionHandler', 'Lib');
