@@ -172,7 +172,7 @@ class UsersController extends UsersAppController {
 		$user = $this->User->find('first', array('conditions' => array('User.id' => $id)));
 		
 		# This is here, because we have an element doing a request action on it.
-		if (isset($this->params['requested'])) {
+		if (isset($this->request->params['requested'])) {
         	if (!empty($user)) {
 				return $user;
 			} 

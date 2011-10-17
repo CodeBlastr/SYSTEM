@@ -40,7 +40,7 @@ class GalleriesController extends GalleriesAppController {
 					),
 				));
 			# This is here, because we have an element doing a request action on it.
-			if (isset($this->params['requested'])) {
+			if (isset($this->request->params['requested'])) {
 	        	if (!empty($gallery)) {
 					return $gallery;
 				} else {
@@ -69,11 +69,11 @@ class GalleriesController extends GalleriesAppController {
 			'contain' => array(
 				'GalleryThumb',
 				),
-			));		
+			));	
 		
 		if (!empty($gallery)) {
 			# This is here, because we have an element doing a request action on it.
-			if (isset($this->params['requested'])) {
+			if (isset($this->request->params['requested'])) {
 				return $gallery;
 	        } else {
 				$this->set('gallery', $gallery);

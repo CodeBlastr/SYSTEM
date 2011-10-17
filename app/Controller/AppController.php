@@ -359,7 +359,7 @@ class AppController extends Controller {
 				$this->Session->setFlash(__('Section access restricted.', true));
 				$this->redirect($this->referer());
 			endif;			
-		elseif (empty($this->params['requested']) && !$this->request->is('ajax')) : 
+		elseif (empty($this->request->params['requested']) && !$this->request->is('ajax')) : 
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		endif;

@@ -41,7 +41,7 @@ foreach ($data as $dat):
 	}
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
-      <div class="indexCell image"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('plugin' => 'galleries', 'model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey)) : null; ?> </span> </div>
+      <div class="indexCell image"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey), array('plugin' => 'galleries')) : null; ?> </span> </div>
       <div class="indexCell">
         <div class="indexCell">
           <div class="recorddat">

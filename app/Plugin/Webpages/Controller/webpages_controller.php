@@ -50,7 +50,7 @@ class WebpagesController extends WebpagesAppController {
 		
 		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
 		# this is here because an element uses this view function
-		if (!empty($webpage) && isset($this->params['requested'])) {
+		if (!empty($webpage) && isset($this->request->params['requested'])) {
         	return $webpage;
         } 
 		
