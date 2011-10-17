@@ -261,9 +261,18 @@ class User extends AppModel {
 			# setup a verification key
 			$data['User']['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uid('W', array('User' => 'forgot_key')) : null; 
 			$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+			
+			$data['User']['parent_id'] = !empty($data['User']['referal_code']) ? 
+						$this->getParentId($data['User']['referal_code']) : ''; 
+			$data['User']['reference_code'] = $this->generateRandomCode();
 			# the contact model calls back to the User model when using save all
 			# and saves the recursive data of contact person / contact company this way.
 			if ($this->Contact->add($data)) {
+				
+				//Update Referral User Credits on a new registration
+				if(defined('__USERS_NEW_REGISTRATION_CREDITS') && !empty($data['User']['parent_id'])) {
+					$this->updateUserCredits(__USERS_NEW_REGISTRATION_CREDITS, $data['User']['parent_id']);
+				}	
 				# setup and save data for a related order shipment record for prefilled checkout 
 				$data['OrderShipment']['first_name'] = !empty($data['User']['first_name']) ? $data['User']['first_name'] : ''; 
 				$data['OrderShipment']['last_name'] =  !empty($data['User']['last_name']) ? $data['User']['last_name'] : '';
@@ -325,7 +334,6 @@ class User extends AppModel {
 		}
 		return $data;
 	}
-	
 	
 	/** 
 	 * Function to change the role of the user submitted
@@ -453,7 +461,6 @@ class User extends AppModel {
 		return $user;
 	}
 
-
 	/**
 	 * The username could be an email or a username, so we just do a quick check of both fields to
 	 * be doubly sure the user doesn't exist.
@@ -529,5 +536,99 @@ class User extends AppModel {
 		return $data;
 	}
 	
+	/* Generate Referal Code
+	 * Generate Referal Code and makes a new entry to database to Users Table 
+	 * @param array data
+	 * return boolean
+	 */
+	function generateReferalCode($user = null){
+		
+		$data = array();
+		if(is_numeric($user)) {
+			$this->recursive = -1;
+			$data = $this->read(null, $user);
+		} else {
+			$data = $user;
+		}
+		
+		if(empty($data['User']['reference_code'])) {
+			$code =  $this->generateRandomCode();
+			// Checks if user with same code already exists
+			if($this->ifCodeExists($code)){
+				$this->generateReferalCode($data);
+			} else {
+				$data['User']['reference_code'] = $code;
+				if($this->save($data)){
+					return $code;
+				} else {
+					return false;
+				}
+			}	
+		} else {
+			return $data['User']['reference_code'];
+		}
+		
+	}
+	
+	/* checkCodeExists
+	 * Check whether code with same string exists
+	 * @param code
+	 * return boolean
+	 */
+	function ifCodeExists($code = null){
+		$code = $this->find('first', array(
+								'conditions' => array('reference_code' => $code)
+							));
+		if(!empty($code)){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/* generateRandomCode
+	 * Generates a random Code of length 5
+	 * return code
+	 */
+	function generateRandomCode() {
+	    $length = 8;
+	    $characters = "0123456789abcdefghijklmnopqrstuvwxyz";
+	    $code = "";    
+		for ($i = 0; $i < $length; $i++) {
+	        $code .= $characters[mt_rand(0, strlen($characters)-1)];
+	    }
+	    
+	    if(!$this->ifCodeExists($code)) {
+	    	return $code;
+	    } else { 
+			return $this->generateRandomCode();
+		}
+	}
+	
+	/* Get Parent Id 
+	 * @params referal_code
+	 * return User.Id
+	 */
+	function getParentId($referal_code = null){
+		$parent = $this->find('first', array(
+					'conditions' => array('reference_code' => $referal_code)
+				));
+		return $parent['User']['id']; 
+	}
+	
+	/*	Update User Credits
+	 *  @param User.Id, Credits
+	 *  return boolean
+	 */
+	function updateUserCredits($credits = null, $userId){
+		$user = $this->find('first' , array(
+						'conditions' => 
+							array('User.id' => $userId)
+						)) ;
+		$user['User']['credit_total'] += $credits; 
+		if(!($this->save($user))){
+			throw new Exception(__d('Credits not Saved', true));
+		}
+	}
 }
 ?>

@@ -257,7 +257,11 @@ class Setting extends AppModel {
 						array(
 							'name' => 'PAID_ROLE_REDIRECT',
 							'description' => 'Defines setting variables for the paid user role redirect.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/users/users/my',
-							),		
+							),
+						array(
+							'name' => 'NEW_REGISTRATION_CREDITS',
+							'description' => 'Defines setting variables for credits given to referal user on new user registration.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'5',
+							),			
 						),		
 				  );
 	}
