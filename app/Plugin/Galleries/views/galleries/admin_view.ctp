@@ -13,14 +13,14 @@
         		    </li>
 					<li>
 		            	<span class="label"><?php __('Created Date'); ?></span>
-		                <span name="createddate" id="<?php __($gallery['Gallery']['id']); ?>"><?php echo $time->format('M d, Y', $gallery['Gallery']['created']); ?></span>
+		                <span name="createddate" id="<?php __($gallery['Gallery']['id']); ?>"><?php echo $this->Time->format('M d, Y', $gallery['Gallery']['created']); ?></span>
         		    </li>
 				</ul>
 			</div>
 		</div> 
 	</div>
     
-    <p class="timing"><strong><?php __($gallery['Gallery']['name']);?></strong><?php __(' was '); ?><strong><?php __('Created: '); ?></strong><?php echo $time->relativeTime($gallery['Gallery']['created']); ?><?php __(', '); ?><strong><?php __('Last Modified: '); ?></strong><?php echo $time->relativeTime($gallery['Gallery']['modified']); ?></p>
+    <p class="timing"><strong><?php __($gallery['Gallery']['name']);?></strong><?php __(' was '); ?><strong><?php __('Created: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['created']); ?><?php __(', '); ?><strong><?php __('Last Modified: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['modified']); ?></p>
 
 </div>
 <?php 

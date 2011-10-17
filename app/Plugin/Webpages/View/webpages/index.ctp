@@ -2,18 +2,18 @@
 	<h2><?php __('Webpages');?></h2>
 	<p>
 		<?php
-			echo $paginator->counter(array(
+			echo $this->Paginator->counter(array(
 			'format' => __('Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%', true)
 			));
 		?> | <?php echo $this->Html->link(__('Add New', true), array('action' => 'add')); ?>
 	</p>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
-		<th><?php echo $paginator->sort('id');?></th>
-		<th><?php echo $paginator->sort('name');?></th>
-		<th><?php echo $paginator->sort('Alias.name');?></th>
-		<th><?php echo $paginator->sort('created');?></th>
-		<th><?php echo $paginator->sort('modified');?></th>
+		<th><?php echo $this->Paginator->sort('id');?></th>
+		<th><?php echo $this->Paginator->sort('name');?></th>
+		<th><?php echo $this->Paginator->sort('Alias.name');?></th>
+		<th><?php echo $this->Paginator->sort('created');?></th>
+		<th><?php echo $this->Paginator->sort('modified');?></th>
 		<th class="actions"><?php __('Actions');?></th>
 	</tr>
 	<?php
@@ -63,7 +63,7 @@ $this->Menu->setValue(array(
 	array(
 		'heading' => 'Webpages',
 		'items' => array(
-			$paginator->sort('name'),
+			$this->Paginator->sort('name'),
 			$this->Html->link(__('New', true), array('controller' => 'webpages', 'action' => 'add')),
 			)
 		),

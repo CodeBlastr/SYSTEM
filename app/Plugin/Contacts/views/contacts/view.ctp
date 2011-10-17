@@ -258,7 +258,7 @@ endif;
 					<li><strong><?php __($activity['ContactActivityType']['name'].' Subject: '); echo $this->Html->link(__($activity['name'], true), array('controller'=> 'contact_activities', 'action' => 'edit', $activity['id'])); ?></strong><p class="action"><?php echo $this->Html->link(__('Delete', true), array('plugin' => 'contacts', 'controller' => 'contact_activities', 'action' => 'delete', $activity['id']), null, 'Are you sure you want to delete'); ?></p>
 						<ul>
 							<li><span class="description"><?php __(nl2br($activity['description'])); ?></span></li>
-							<li><span class="created"><?php __($time->nice($activity['created'])); ?></span></li>
+							<li><span class="created"><?php __($this->Time->nice($activity['created'])); ?></span></li>
 						</ul>
 					</li>
 			<?php endforeach; ?>
@@ -344,7 +344,7 @@ endif;
 
 
 
-<p class="timing"><strong><?php __($contact['ContactCompany']['name']);?></strong><?php __(' was '); ?><strong><?php __('Created: '); ?></strong><?php echo $time->relativeTime($contact['ContactCompany']['created']); ?><?php __(', '); ?><strong><?php __('Last Modified: '); ?></strong><?php echo $time->relativeTime($contact['ContactCompany']['modified']); ?></p>
+<p class="timing"><strong><?php __($contact['ContactCompany']['name']);?></strong><?php __(' was '); ?><strong><?php __('Created: '); ?></strong><?php echo $this->Time->relativeTime($contact['ContactCompany']['created']); ?><?php __(', '); ?><strong><?php __('Last Modified: '); ?></strong><?php echo $this->Time->relativeTime($contact['ContactCompany']['modified']); ?></p>
 
 </div>
 

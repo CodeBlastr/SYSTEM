@@ -2,17 +2,17 @@
 <h2><?php __('Requestors');?></h2>
 <p>
 <?php
-echo $paginator->counter(array(
+echo $this->Paginator->counter(array(
 'format' => __('Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%', true)
 ));
 ?></p>
 <table cellpadding="0" cellspacing="0">
 <tr>
-	<th><?php echo $paginator->sort('id');?></th>
-	<th><?php echo $paginator->sort('parent_id');?></th>
-	<th><?php echo $paginator->sort('model');?></th>
-	<th><?php echo $paginator->sort('foreign_key');?></th>
-	<th><?php echo $paginator->sort('alias');?></th>
+	<th><?php echo $this->Paginator->sort('id');?></th>
+	<th><?php echo $this->Paginator->sort('parent_id');?></th>
+	<th><?php echo $this->Paginator->sort('model');?></th>
+	<th><?php echo $this->Paginator->sort('foreign_key');?></th>
+	<th><?php echo $this->Paginator->sort('alias');?></th>
 	<th class="actions"><?php __('Actions');?></th>
 </tr>
 <?php

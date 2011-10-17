@@ -67,7 +67,7 @@ foreach ($data as $dat):
 			endif;
 			$keyName = Inflector::humanize($keyName);
 			# if its a date parse it into words
-			if ($keyValue == date('Y-m-d h:i:s', strtotime($keyValue)) || $keyValue == date('Y-m-d', strtotime($keyValue))) : $keyValue = $time->timeAgoInWords($keyValue); endif; // human readable dates 
+			if ($keyValue == date('Y-m-d h:i:s', strtotime($keyValue)) || $keyValue == date('Y-m-d', strtotime($keyValue))) : $keyValue = $this->Time->timeAgoInWords($keyValue); endif; // human readable dates 
 			?>
             <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
             <?php endif; ?>
@@ -130,7 +130,7 @@ endforeach;
     <li class="actionHeading"><?php echo __('Sort by');?></li>
     <?php foreach ($data[0][$modelName] as $keyName => $keyValue) :  
 	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
-    <li class="actionItem"><?php echo $paginator->sort($keyName);?></li>
+    <li class="actionItem"><?php echo $this->Paginator->sort($keyName);?></li>
     <?php endif; endforeach; ?>
     <?php if (!empty($pageActions)) : ?>
     <li><?php echo __('Action'); ?></li>

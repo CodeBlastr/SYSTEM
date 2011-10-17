@@ -16,7 +16,7 @@
 		</div> 
 	</div>
     
-    <!--p class="timing"><strong><?php __($gallery['Gallery']['name']);?></strong><?php __(' was '); ?><strong><?php __('Created: '); ?></strong><?php echo $time->relativeTime($gallery['Gallery']['created']); ?><?php __(', '); ?><strong><?php __('Last Modified: '); ?></strong><?php echo $time->relativeTime($gallery['Gallery']['modified']); ?></p-->
+    <!--p class="timing"><strong><?php __($gallery['Gallery']['name']);?></strong><?php __(' was '); ?><strong><?php __('Created: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['created']); ?><?php __(', '); ?><strong><?php __('Last Modified: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['modified']); ?></p-->
 
 </div>
 <?php 

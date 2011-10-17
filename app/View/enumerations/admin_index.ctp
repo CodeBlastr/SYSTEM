@@ -1,13 +1,13 @@
 <div>
 	<?php
-	echo $paginator->prev();
-	echo $paginator->numbers();
-	echo $paginator->next();
+	echo $this->Paginator->prev();
+	echo $this->Paginator->numbers();
+	echo $this->Paginator->next();
 	?>
-	<div style='text-align:right;'><b>Type Filter:</b> | <?php  echo $paginator->link('ALL') ?> |
+	<div style='text-align:right;'><b>Type Filter:</b> | <?php  echo $this->Paginator->link('ALL') ?> |
 		<?php
 		foreach(range('A','Z') as $letter) {
-			echo ' ' . $paginator->link($letter,array('filter'=>$letter)) . ' |';
+			echo ' ' . $this->Paginator->link($letter,array('filter'=>$letter)) . ' |';
 		}
 		?>
 	</div>
@@ -34,9 +34,9 @@
 		<?php } ?>
 	</table>
 	<?php
-	echo $paginator->prev();
-	echo $paginator->numbers();
-	echo $paginator->next();
+	echo $this->Paginator->prev();
+	echo $this->Paginator->numbers();
+	echo $this->Paginator->next();
 	?>
 	<div style='text-align:right;margin-top:4px;'><a class='sym-button' href='/admin/<?php echo $this->params['controller'] ?>/add'>Add <?php echo ucwords(Inflector::singularize($this->params['controller'])); ?></a></div>
 </div>

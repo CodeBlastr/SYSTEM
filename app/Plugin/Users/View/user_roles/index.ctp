@@ -2,15 +2,15 @@
 <h2><?php __('UserRoles');?></h2>
 <p>
 <?php
-echo $paginator->counter(array(
+echo $this->Paginator->counter(array(
 'format' => __('Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%', true)
 ));
 ?></p>
 <table cellpadding="0" cellspacing="0">
 <tr>
-	<th><?php echo $paginator->sort('id');?></th>
-	<th><?php echo $paginator->sort('name');?></th>
-	<th><?php echo $paginator->sort('view_prefix');?></th>
+	<th><?php echo $this->Paginator->sort('id');?></th>
+	<th><?php echo $this->Paginator->sort('name');?></th>
+	<th><?php echo $this->Paginator->sort('view_prefix');?></th>
 	<th class="actions"><?php __('Actions');?></th>
 </tr>
 <?php

@@ -18,7 +18,7 @@
   <?php if(count($statuses) != 0):?>
   <ul>
     <?php foreach($statuses as $status):?>
-    <li><?php echo $status['User']['username']; __(' wrote: '); echo $status['UserStatus']['status']; __(' ...'); echo $time->niceShort($status['UserStatus']['created']); ?></li>
+    <li><?php echo $status['User']['username']; __(' wrote: '); echo $status['UserStatus']['status']; __(' ...'); echo $this->Time->niceShort($status['UserStatus']['created']); ?></li>
     <?php endforeach;?>
     <?php endif;?>
   </ul>
