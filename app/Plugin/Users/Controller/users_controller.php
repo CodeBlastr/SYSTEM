@@ -30,7 +30,13 @@ class UsersController extends UsersAppController {
 	/**
 	 * Public login function to verify access to restricted areas.
 	 */
-	public function login() {
+	public function login() {    
+		if ($this->Auth->login()) {
+	        return $this->redirect($this->Auth->redirect());
+	    } else {
+	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
+	    }
+		/*$this->data['User']['password'] = FormAuthenticate::password(
     	if ($this->Auth->login()) {
 			try {
 				$result = $this->User->loginMeta($this->data);
@@ -45,7 +51,7 @@ class UsersController extends UsersAppController {
 			}
 	    } else {
 	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
-	    }
+	    }*/
 	}
 	
 	/*function login() {
@@ -163,8 +169,7 @@ class UsersController extends UsersAppController {
 			
 	
 	function view($id) {
-		$this->settings['conditions'] = array('User.id' => $id);
-		$user = $this->User->find('first', $this->settings);
+		$user = $this->User->find('first', array('conditions' => array('User.id' => $id)));
 		
 		# This is here, because we have an element doing a request action on it.
 		if (isset($this->params['requested'])) {

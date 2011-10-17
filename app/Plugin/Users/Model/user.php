@@ -109,13 +109,13 @@ class User extends AppModel {
 		);
 	
 	var $hasAndBelongsToMany = array(
-        'Users.UserGroup' =>
-            array(
-                'className'              => 'Users.UserGroup',
-                'joinTable'              => 'users_user_groups',
-                'foreignKey'             => 'user_group_id',
-                'associationForeignKey'  => 'user_id'
-            ),
+       # 'Users.UserGroup' =>
+       #     array(
+       #         'className'              => 'Users.UserGroup',
+       #         'joinTable'              => 'users_user_groups',
+       #         'foreignKey'             => 'user_group_id',
+       #         'associationForeignKey'  => 'user_id'
+       #     ),
   	  );
 	
 	function _comparePassword() {
@@ -149,6 +149,14 @@ class User extends AppModel {
 			$this->data['User']['confirm_password'] = $this->data['User']['password'];
 		endif;
 	}
+	
+	function beforeSave($options = array()) {
+        // make a password for form auth.
+        $this->data['User']['form_hash'] = FormAuthenticate::password(
+            $this->data['User']['username'], $this->data['User']['password'], env('SERVER_NAME')
+        );
+        return true;
+    }
 
 	/** 
 	 * After save callback

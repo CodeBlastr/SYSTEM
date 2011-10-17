@@ -29,21 +29,23 @@ class UsableBehavior extends ModelBehavior {
 		App::import('Model', 'CakeSession');
 		$this->Session = new CakeSession();
 		$userRole = $this->Session->read('Auth.User.user_role_id');
-		if ($userRole != 1) :  // temporary until we find a better way
-		# this allows you to bypass the logged in user check (nocheck should equal the user id)
-		$userQuery = !empty($queryData['nocheck']) ? "Used.user_id = {$queryData['nocheck']}" : "Used.user_id = {$this->Session->read('Auth.User.id')}";
-		# output the new query
-		$queryData['joins'] = array(array(
-			'table' => 'used',
-			'alias' => 'Used',
-			'type' => 'INNER',
-			'conditions' => array(
+		
+		if ($userRole !== 1) :  // temporary until we find a better way
+			# this allows you to bypass the logged in user check (nocheck should equal the user id)
+			$userQuery = !empty($queryData['nocheck']) ? "Used.user_id = {$queryData['nocheck']}" : "Used.user_id = {$this->Session->read('Auth.User.id')}";
+			# output the new query
+			$queryData['joins'] = array(array(
+				'table' => 'used',
+				'alias' => 'Used',
+				'type' => 'INNER',
+				'conditions' => array(
 				"Used.foreign_key = {$model->alias}.id",
 				"Used.model = '{$model->alias}'",
 				$userQuery,
 				),
 			));
 		endif;
+		
 		return $queryData;
 	}
 	

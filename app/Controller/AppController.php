@@ -156,7 +156,7 @@ class AppController extends Controller {
 		/**
 		 * Check whether the site is sync'd up 
 		 */
-		$this->_siteStatus();	
+		#$this->_siteStatus();	
 	}
 	
 	/**
