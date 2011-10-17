@@ -33,8 +33,10 @@
  * In development mode, you need to click the flash message to continue.
  */
  	$debugger = !empty($_GET['debugger']) ? $_GET['debugger'] : 0;
-	Configure::write('debug', $debugger);
-	Configure::write('Config.language', 'en');
+	Configure::write('debug', 2);
+	#Configure::write('debug', $debugger);
+	#Configure::write('Config.language', 'en');
+	Configure::write('Exception.renderer', 'AppExceptionRenderer');
 
 /**
  * Configure the Error handler used to handle errors for your application.  By default

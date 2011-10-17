@@ -34,38 +34,51 @@
  
 App::build(array(
 	'plugins' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'plugins'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'plugins'.DS
+		ROOT.DS.APP_DIR.DS.'plugins'.DS,
+		ROOT.DS.APP_DIR.DS.'Plugin'.DS,
+		ROOT.DS.'app'.DS.'Plugin'.DS
 		),
     'models' =>  array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'models'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'models'.DS
+		ROOT.DS.APP_DIR.DS.'models'.DS,
+		ROOT.DS.APP_DIR.DS.'Model'.DS,
+		ROOT.DS.'app'.DS.'Model'.DS
 		),
     'views' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'views'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'views'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'scaffolds'.DS,
+		ROOT.DS.APP_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
+		ROOT.DS.APP_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS,
+		ROOT.DS.APP_DIR.DS.'views'.DS,
+		ROOT.DS.APP_DIR.DS.'View'.DS,
+		ROOT.DS.'app'.DS.'View'.DS,
+		ROOT.DS.'app'.DS.'Scaffolds'.DS,
 		),
 	'controllers' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'controllers'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'controllers'.DS
+		ROOT.DS.APP_DIR.DS.'controllers'.DS,
+		ROOT.DS.APP_DIR.DS.'Controller'.DS,
+		ROOT.DS.'app'.DS.'Controller'.DS
 		),
+	/*'libs' => array(
+		ROOT.DS.APP_DIR.DS.'lib'.DS,
+		ROOT.DS.APP_DIR.DS.'Lib'.DS,
+		ROOT.DS.'app'.DS.'Lib'.DS
+		),*/
     'datasources' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'models'.DS.'datasources'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'models'.DS.'datasources'.DS
+		ROOT.DS.APP_DIR.DS.'models'.DS.'datasources'.DS,
+		ROOT.DS.'app'.DS.'models'.DS.'datasources'.DS
 		),
     'behaviors' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'models'.DS.'behaviors'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'models'.DS.'behaviors'.DS
+		ROOT.DS.APP_DIR.DS.'models'.DS.'behaviors'.DS,
+		ROOT.DS.APP_DIR.DS.'Model'.DS.'Behavior'.DS,
+		ROOT.DS.'app'.DS.'Model'.DS.'Behavior'.DS
 		),
     'components' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'controllers'.DS.'components'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'controllers'.DS.'components'.DS
+		ROOT.DS.APP_DIR.DS.'controllers'.DS.'components'.DS,
+		ROOT.DS.APP_DIR.DS.'Controller'.DS.'Component'.DS,
+		ROOT.DS.'app'.DS.'Controller'.DS.'Component'.DS
 		),
     'helpers' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'views'.DS.'helpers'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'views'.DS.'helpers'.DS
+		ROOT.DS.APP_DIR.DS.'views'.DS.'helpers'.DS,
+		ROOT.DS.APP_DIR.DS.'View'.DS.'Helper'.DS,
+		ROOT.DS.'app'.DS.'View'.DS.'Helper'.DS
 		),
 #   'vendors' => array('/full/path/to/vendors/', '/next/full/path/to/vendors/'),
 #   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),
@@ -108,5 +121,12 @@ App::build(array(
 	}
 	
 	__setConstants();
-	
-?>
+
+	/**
+	 * Plugins need to be loaded manually, you can either load them one by one or all of them in a single call
+	 * Uncomment one of the lines below, as you need. make sure you read the documentation on CakePlugin to use more
+	 * advanced ways of loading plugins
+	 * 
+	 * CakePlugin::load('DebugKit'); //Loads a single plugin named DebugKit
+	 */
+	 CakePlugin::loadAll(); // Loads all plugins at once
