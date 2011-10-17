@@ -1,0 +1,59 @@
+@CHARSET "UTF-8";
+
+.aco_plugin td{
+	background-color:#ff7d7d;
+}
+
+.aco_controller td{
+	background-color:#7d92ff;
+}
+
+.aco_pcontroller td{
+	background-color:#7dffb4;
+}
+
+.aco_action td{
+	background-color:#ffed73;
+}
+
+
+@charset "utf-8";
+/* CSS Document */
+.privileges ul {
+	display: block;
+	float: left;
+	width: 23%;
+	border: 1px solid #CCC;
+	list-style-type: none;
+	padding: 0.4em;
+	margin: 0.2em;
+}
+.privileges ul ul {
+	width: auto;
+}
+.privileges ul li {
+	list-style-type: none;
+	float: left;
+	margin: 0;
+	clear: both;
+}
+.privileges ul li a {
+	float: left;
+}
+.privileges ul li ul {
+	float: left;
+	clear: both;
+	border: none;
+}
+.privileges ul li ul li {
+	clear: both;
+}
+.privileges .checkbox {
+	float: left;
+}
+.privileges input[type="checkbox"] {
+	clear: none;
+}
+.privileges form div {
+	clear: none;
+}
