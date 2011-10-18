@@ -1,7 +1,7 @@
 <div class="settings form">
 <?php echo $this->Form->create('Setting'); ?>
 	<fieldset>
- 		<legend><?php __('Edit Setting');?></legend>
+ 		<legend><?php echo __('Edit Setting');?></legend>
 		<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('type');

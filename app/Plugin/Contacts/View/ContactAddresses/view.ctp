@@ -1,72 +1,72 @@
 <div class="contactAddresses view">
 <h2><?php  __('Contact Address');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Id'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Id'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['id']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Contact Address Type'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Contact Address Type'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $this->Html->link($contactAddress['ContactAddressType']['name'], array('controller' => 'enumerations', 'action' => 'view', $contactAddress['ContactAddressType']['id'])); ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Street1'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Street1'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['street1']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Street2'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Street2'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['street2']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('City'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('City'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['city']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('State Id'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('State Id'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['state_id']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Zip Postal'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Zip Postal'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['zip_postal']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Country Id'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Country Id'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['country_id']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Primary'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Primary'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['primary']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Contact'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Contact'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $this->Html->link($contactAddress['Contact']['name'], array('controller' => 'contacts', 'action' => 'view', $contactAddress['Contact']['id'])); ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Creator Id'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Creator Id'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['creator_id']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Modifier Id'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Modifier Id'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['modifier_id']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Created'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Created'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['created']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Modified'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Modified'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $contactAddress['ContactAddress']['modified']; ?>
 			&nbsp;
@@ -74,7 +74,7 @@
 	</dl>
 </div>
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('Edit Contact Address', true), array('action' => 'edit', $contactAddress['ContactAddress']['id'])); ?> </li>
 		<li><?php echo $this->Html->link(__('Delete Contact Address', true), array('action' => 'delete', $contactAddress['ContactAddress']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $contactAddress['ContactAddress']['id'])); ?> </li>

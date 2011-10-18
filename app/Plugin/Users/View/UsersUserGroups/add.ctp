@@ -1,7 +1,7 @@
 <div class="UsersUserGroups form"> <?php echo $this->Form->create('UsersUserGroup');?>
   <fieldset>
     <legend>
-    <?php __('User groups administration form'); ?>
+    <?php echo __('User groups administration form'); ?>
     </legend>
     <?php
 	 echo $this->Form->input('user_id', array('label' => 'Add this user...'));
@@ -10,7 +10,7 @@
   </fieldset>
   <fieldset>
     <legend>
-    <?php __('What is the users status in this group?'); ?>
+    <?php echo __('What is the users status in this group?'); ?>
     </legend>
     <?php 
 	 echo $this->Form->input('is_approved');
@@ -20,7 +20,7 @@
   <?php echo $this->Form->end(__('Submit', true));?> </div>
 <div class="actions">
   <h3>
-    <?php __('Actions'); ?>
+    <?php echo __('Actions'); ?>
   </h3>
   <ul>
     <li><?php echo $this->Html->link(__('List Users User Goups', true), array('action' => 'index'));?></li>

@@ -26,7 +26,7 @@ $indexData = $___dataForView[$indexVar];
       <?php $i++; endforeach;?>
       <?php if(!empty($settings['action'])) { ?>
       <div class="indexCell columnHeading" id="columnActions">
-        <?php __('Actions');?>
+        <?php echo __('Actions');?>
       </div>
       <?php } ?>
     </div>

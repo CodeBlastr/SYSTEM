@@ -4,13 +4,13 @@
       <div class="viewRow">
         <ul class="metaData">
           <li><span class="metaDataLabel">
-            <?php __('List Name : '); ?>
+            <?php echo __('List Name : '); ?>
             </span><span class="metaDataDetail"><?php echo $task['Task']['name']; ?></span></li>
         </ul>
         <div class="tasks form"> <?php echo $this->Form->create('Task', array('url' => '/tasks/tasks/add'));?>
           <fieldset>
             <legend class="toggleClick">
-            <?php __('Add a task to this list?');?>
+            <?php echo __('Add a task to this list?');?>
             </legend>
             <?php
 			 echo $this->Form->input('Task.parent_id', array('type' => 'hidden', 'value' => $parentId));

@@ -1,14 +1,14 @@
 <div class="menus form">
 <?php echo $this->Form->create('Menu');?>
 	<fieldset>
- 		<legend><?php __('Edit Menu'); ?></legend>
+ 		<legend><?php echo __('Edit Menu'); ?></legend>
 	<?php
 		echo $this->Form->input('name');
 		echo $this->Form->input('type', array('empty' => true));
 	?>
     </fieldset>
     <fieldset>
-    	<legend><?php __('Advanced'); ?></legend>
+    	<legend><?php echo __('Advanced'); ?></legend>
 	<?php
 		echo $this->Form->input('params');
 		echo $this->Form->input('css_id', array('type' => 'text', 'label' => 'Css Id'));
@@ -19,7 +19,7 @@
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 
 		<li><?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('Menu.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Menu.id'))); ?></li>

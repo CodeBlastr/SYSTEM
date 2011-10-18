@@ -2,7 +2,7 @@
 <?php echo $this->Form->create('Webpage');?>
   <fieldset>
     <legend class="toggleClick">
-    <?php __('Search Engine Optimization');?>
+    <?php echo __('Search Engine Optimization');?>
     </legend>
     <?php 
 		echo $this->Form->input('Webpage.id');
@@ -19,7 +19,7 @@
   </fieldset>
   <fieldset>
     <legend class="toggleClick">
-    <?php __('Access Rights');?>
+    <?php echo __('Access Rights');?>
     </legend>
     <?php 
 		echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => '', 'type' => 'select', 'multiple' => true, 'options' => $userRoles, 'between' => 'Customize page access. (Note : Uses global settings by default)'));
@@ -27,14 +27,14 @@
   </fieldset>
   <fieldset>
     <legend>
-    <?php __('Add Webpage');?>
+    <?php echo __('Add Webpage');?>
     </legend>
     <?php
 		echo $this->Form->input('type', array('default' => 'page_content'));
 	?>
     <fieldset>
       <legend>
-      <?php __('Template Settings'); ?>
+      <?php echo __('Template Settings'); ?>
       </legend>
       <?php
 		echo $this->Form->input('is_default', array('type' => 'checkbox'));

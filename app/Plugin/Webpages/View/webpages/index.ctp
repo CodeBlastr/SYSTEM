@@ -1,5 +1,5 @@
 <div class="webapges index">
-	<h2><?php __('Webpages');?></h2>
+	<h2><?php echo __('Webpages');?></h2>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 		<th><?php echo $this->Paginator->sort('id');?></th>
@@ -7,7 +7,7 @@
 		<th><?php echo $this->Paginator->sort('Alias.name');?></th>
 		<th><?php echo $this->Paginator->sort('created');?></th>
 		<th><?php echo $this->Paginator->sort('modified');?></th>
-		<th class="actions"><?php __('Actions');?></th>
+		<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
 	$i = 0;

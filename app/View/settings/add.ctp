@@ -1,7 +1,7 @@
 <div class="settings form">
 <?php echo $this->Form->create('Setting');?>
 	<fieldset>
- 		<legend><?php __('Add Setting');?></legend>
+ 		<legend><?php echo __('Add Setting');?></legend>
 	<?php
 		// this is the first instance of our use of the updated select drop down which uses ajax to update other fields. We are attempting to make reusable form elements that can encompass the ajax part as well as the normal automagic form element config. element = the type of field being created or updated, json = the url to call with the value of this element, rel = the target id of the element to update
 		echo $this->Form->input('Setting.type', array(

@@ -1,4 +1,4 @@
-<h1><?php __('Reset Password', true); ?></h1>
+<h1><?php echo __('Reset Password', true); ?></h1>
 <div class="users" id="forgotPassword">
 <?php
     echo $this->Form->create('User');

@@ -2,7 +2,7 @@
 <div class="conditions form">
 <?php echo $this->Form->create('Condition', array('action' => 'edit'));?>
 	<fieldset>
- 		<legend><?php __('Internal Condition Description');?></legend>
+ 		<legend><?php echo __('Internal Condition Description');?></legend>
 	<?php
 		echo $this->Form->input('Condition.id');
 		echo $this->Form->input('Condition.name');
@@ -10,7 +10,7 @@
 	?>
     </fieldset>
     <fieldset>
- 		<legend><?php __('When This Condition is Triggered');?></legend>
+ 		<legend><?php echo __('When This Condition is Triggered');?></legend>
    	<?php
 		echo $this->Form->input('Condition.is_create', array('label' => 'Fire when record is created.'));
 		echo $this->Form->input('Condition.is_read', array('label' => 'Fire when record is viewed.'));
@@ -23,13 +23,13 @@
 	?>
     </fieldset>
     <fieldset>
- 		<legend><?php __('Extra Sub Conditions');?></legend>
+ 		<legend><?php echo __('Extra Sub Conditions');?></legend>
     <?php
 		echo $this->Form->input('Condition.condition', array('label' => 'Sub Condtions', 'after' => ' Sub-conditions to match against. Model.field.operator.value,Model.field.operator.value'));
 	?>
     </fieldset>
     <fieldset>
- 		<legend><?php __('Model Calling This Condition');?></legend>
+ 		<legend><?php echo __('Model Calling This Condition');?></legend>
     <?php
 		echo $this->Form->input('Condition.bind_model', array('after' => ' The model calling this condition. Currently the only model supported is Workflows.Workflow', 'value' => 'Workflows.Workflow'));
 	?>

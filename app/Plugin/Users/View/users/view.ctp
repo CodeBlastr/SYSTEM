@@ -7,7 +7,7 @@
 <div id="follow action">
   <?php if($does_follow):?>
   <p>
-    <?php __('You currently follow this user.'); ?>
+    <?php echo __('You currently follow this user.'); ?>
   </p>
   <p><?php echo count($followers); __('Followers'); ?></p>
   <?php elseif(!$is_self): ?>

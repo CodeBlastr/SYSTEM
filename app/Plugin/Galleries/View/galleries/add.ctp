@@ -1,9 +1,9 @@
 <div class="galleries form">
-	<h2><?php __('Add Gallery '); ?></h2>
+	<h2><?php echo __('Add Gallery '); ?></h2>
     	    
 	<?php echo $this->Form->create('Gallery', array('enctype'=>'multipart/form-data'));?>
 	<fieldset>
- 		<legend><?php __('Gallery Info'); ?></legend>
+ 		<legend><?php echo __('Gallery Info'); ?></legend>
 	<?php
 		echo $this->Form->input('Gallery.name');
 		echo $this->Form->input('Gallery.type');
@@ -14,7 +14,7 @@
 	?>
     </fieldset>
 	<fieldset>
- 		<legend><?php __('Main Image Info'); ?></legend>
+ 		<legend><?php echo __('Main Image Info'); ?></legend>
     <?php
 		echo $this->Form->input('GalleryImage.filename', array('type' => 'file', 'label' => 'Upload your best image for this item.', 'after' => ' <p> This image will be the thumbnail. You can add additional images after save.</p>'));
 	    echo $this->Form->input('GalleryImage.dir', array('type' => 'hidden'));

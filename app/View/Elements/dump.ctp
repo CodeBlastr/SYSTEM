@@ -23,7 +23,7 @@
  */
 ?>
 <div id="cakeControllerDump">
-	<h2><?php __('Controller dump:'); ?></h2>
+	<h2><?php echo __('Controller dump:'); ?></h2>
 	<pre>
 		<?php echo h(print_r($controller, true)); ?>
 	</pre>

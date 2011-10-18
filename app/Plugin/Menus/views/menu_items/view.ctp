@@ -1,22 +1,22 @@
 <div class="menus view">
 <h2><?php  __('MenuItem');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Menu'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Menu'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $this->Html->link($menuItem['Menu']['name'], array('controller' => 'menus', 'action' => 'view', $menuItem['Menu']['id'])); ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Item Text'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Item Text'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $menuItem['MenuItem']['item_text']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Item Url'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Item Url'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $menuItem['MenuItem']['item_url']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Order'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Order'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $menuItem['MenuItem']['order']; ?>
 			&nbsp;
@@ -24,7 +24,7 @@
 	</dl>
 </div>
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('Edit Menu', true), array('action' => 'edit', $menuItem['MenuItem']['id'])); ?> </li>
 		<li><?php echo $this->Html->link(__('Delete Menu', true), array('action' => 'delete', $menuItem['MenuItem']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $menuItem['MenuItem']['id'])); ?> </li>
@@ -37,15 +37,15 @@
 	</ul>
 </div>
 <div class="related">
-	<h3><?php __('Child Items');?></h3>
+	<h3><?php echo __('Child Items');?></h3>
 	<?php if (!empty($menuItem['ChildMenuItem'])):?>
 	<table cellpadding = "0" cellspacing = "0">
 	<tr>
-		<th><?php __('Id'); ?></th>
-		<th><?php __('Item Text'); ?></th>
-		<th><?php __('Item Url'); ?></th>
-		<th><?php __('Order'); ?></th>
-		<th class="actions"><?php __('Actions');?></th>
+		<th><?php echo __('Id'); ?></th>
+		<th><?php echo __('Item Text'); ?></th>
+		<th><?php echo __('Item Url'); ?></th>
+		<th><?php echo __('Order'); ?></th>
+		<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
 		$i = 0;

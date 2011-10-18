@@ -1,7 +1,7 @@
 <div class="contactAddresses form">
 <?php echo $this->Form->create('ContactAddress');?>
 	<fieldset>
- 		<legend><?php __('Add Contact Address'); ?></legend>
+ 		<legend><?php echo __('Add Contact Address'); ?></legend>
 	<?php
 		echo $this->Form->input('contact_address_type_id');
 		echo $this->Form->input('street1');
@@ -19,7 +19,7 @@
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 
 		<li><?php echo $this->Html->link(__('List Contact Addresses', true), array('action' => 'index'));?></li>

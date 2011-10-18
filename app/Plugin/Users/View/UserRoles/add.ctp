@@ -1,7 +1,7 @@
 <div class="userRoles form">
 <?php echo $this->Form->create('UserRole');?>
 	<fieldset>
- 		<legend><?php __('Add UserRole');?></legend>
+ 		<legend><?php echo __('Add UserRole');?></legend>
 	<?php
 		echo $this->Form->input('name');
 		echo $this->Form->input('view_prefix', array('empty' => '-- Option View Access --'));

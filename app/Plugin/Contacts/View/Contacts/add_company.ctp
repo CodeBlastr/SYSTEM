@@ -1,7 +1,7 @@
 <div class="contact form"> <?php echo $this->Form->create('Contact');?>
   <fieldset>
     <legend>
-    <?php __('Add a New Company');?>
+    <?php echo __('Add a New Company');?>
     <?php echo $this->Form->input('Contact.is_company', array('type' => 'hidden', 'value' => 1)); ?>
     </legend>
     <p>Only a name is required, you can add anything else later if you like.</p>
@@ -11,7 +11,7 @@
   </fieldset>
   <fieldset>
     <legend class="toggleClick">
-    <?php __('Would you like to add communication details?');?>
+    <?php echo __('Would you like to add communication details?');?>
     </legend>
     <p>Add one contact detail for now, you can add all of the additional details you want after you save.</p>
     <?php
@@ -20,7 +20,7 @@
 	?>
   <fieldset>
     <legend class="toggleClick">
-    <?php __('Would you like to create some labels for this contact, to easily find them later?');?>
+    <?php echo __('Would you like to create some labels for this contact, to easily find them later?');?>
     </legend>
     <?php
 	 echo $this->Form->input('Contact.contact_type_id', array('empty'=>true, 'label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTTYPE', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Type List'))));
@@ -34,7 +34,7 @@
   </fieldset>
   <fieldset>
     <legend class="toggleClick">
-    <?php __('Would you like to log an activity performed so you can refer to it later?');?>
+    <?php echo __('Would you like to log an activity performed so you can refer to it later?');?>
     </legend>
     <?php 
 	 echo $this->Form->input('ContactActivity.0.contact_activity_type_id', array('label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTACTIVITY', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Activity List')))); 
@@ -47,7 +47,7 @@
   <?php /*  This is saved for later, when we add tasks table for contacts
   <fieldset>
     <legend class="toggleClick">
-    <?php __('Any future opportunities or tasks you want to remind someone of?');?>
+    <?php echo __('Any future opportunities or tasks you want to remind someone of?');?>
     </legend>
  	<?php 
 	 echo $this->Form->input('Task.enumeration_id', array('label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'TASKTYPE', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Task List')))); 

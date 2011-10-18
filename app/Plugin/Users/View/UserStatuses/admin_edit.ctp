@@ -1,7 +1,7 @@
 <div class="userStatuses form">
 <?php echo $this->Form->create('UserStatus');?>
 	<fieldset>
- 		<legend><?php __('Admin Edit User Status'); ?></legend>
+ 		<legend><?php echo __('Admin Edit User Status'); ?></legend>
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('status');
@@ -11,7 +11,7 @@
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 
 		<li><?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('UserStatus.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('UserStatus.id'))); ?></li>

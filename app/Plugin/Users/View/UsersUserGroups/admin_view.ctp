@@ -1,27 +1,27 @@
 <div class="UsersUserGroups view">
 <h2><?php  __('Users User Goup');?></h2>
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Id'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Id'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $usersUserGroup['UsersUserGroup']['id']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('User'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('User'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $this->Html->link($usersUserGroup['User']['username'], array('controller' => 'users', 'action' => 'view', $usersUserGroup['User']['id'])); ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('User Group'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('User Group'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $this->Html->link($usersUserGroup['UserGroup']['title'], array('controller' => 'user_groups', 'action' => 'view', $usersUserGroup['UserGroup']['id'])); ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Approved'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Approved'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $usersUserGroup['UsersUserGroup']['is_approved']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Moderator'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Moderator'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $usersUserGroup['UsersUserGroup']['is_moderator']; ?>
 			&nbsp;
@@ -29,7 +29,7 @@
 	</dl>
 </div>
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('Edit Users User Goup', true), array('action' => 'edit', $usersUserGroup['UsersUserGroup']['id'])); ?> </li>
 		<li><?php echo $this->Html->link(__('Delete Users User Goup', true), array('action' => 'delete', $usersUserGroup['UsersUserGroup']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $usersUserGroup['UsersUserGroup']['id'])); ?> </li>

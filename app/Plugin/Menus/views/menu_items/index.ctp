@@ -1,5 +1,5 @@
 <div class="menus index">
-	<h2><?php __('Menu Items');?></h2>
+	<h2><?php echo __('Menu Items');?></h2>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id');?></th>
@@ -7,7 +7,7 @@
 			<th><?php echo $this->Paginator->sort('item_text');?></th>
 			<th><?php echo $this->Paginator->sort('item_url');?></th>
 			<th><?php echo $this->Paginator->sort('order');?></th>
-			<th class="actions"><?php __('Actions');?></th>
+			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
 	$i = 0;
@@ -49,7 +49,7 @@
 	</div>
 </div>
 <div class="actions">
-	<h3><?php __('Actions'); ?></h3>
+	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('New Menu Item', true), array('action' => 'add', $this->params['pass'][0])); ?></li>
 		<li><?php echo $this->Html->link(__('View Parent Menu', true), array('controller' => 'menus', 'action' => 'view', $this->params['pass'][0])); ?> </li>

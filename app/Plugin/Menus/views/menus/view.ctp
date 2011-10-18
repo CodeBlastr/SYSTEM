@@ -25,7 +25,7 @@ echo $this->Tree->generate($menuItems, array(
     <div class="actions">
       <ul>
         <li>
-          <?php __('Menus'); ?>
+          <?php echo __('Menus'); ?>
         </li>
         <li><?php echo $this->Html->link(__('Refresh', true), array('', $menu['Menu']['id']), array('class' => 'refresh')); ?> </li>
         <li><?php echo $this->Html->link(__('Edit Menu', true), array('action' => 'edit', $menu['Menu']['id'])); ?> </li>
@@ -33,7 +33,7 @@ echo $this->Tree->generate($menuItems, array(
         <li><?php echo $this->Html->link(__('List Menus', true), array('action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('New Menu', true), array('action' => 'add')); ?> </li>
         <li>
-          <?php __('Items'); ?>
+          <?php echo __('Items'); ?>
         </li>
         <li><?php echo $this->Html->link(__('New Menu Item', true), array('controller' => 'menu_items', 'action' => 'add', $menu['Menu']['id']));?> </li>
         <li><?php echo $this->Html->link(__('List Menu Items', true), array('controller' => 'menu_items', 'action' => 'index', $menu['Menu']['id']));?> </li>

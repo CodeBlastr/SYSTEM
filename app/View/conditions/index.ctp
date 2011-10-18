@@ -1,5 +1,5 @@
 <div class="conditions index">
-<h2><?php __('Conditions');?></h2>
+<h2><?php echo __('Conditions');?></h2>
 <p>
 <?php
 echo $this->Paginator->counter(array(
@@ -15,7 +15,7 @@ echo $this->Paginator->counter(array(
 	<th><?php echo $this->Paginator->sort('is_update');?></th>
 	<th><?php echo $this->Paginator->sort('is_delete');?></th>
 	<th><?php echo $this->Paginator->sort('model');?></th>
-	<th class="actions"><?php __('Actions');?></th>
+	<th class="actions"><?php echo __('Actions');?></th>
 </tr>
 <?php
 $i = 0;

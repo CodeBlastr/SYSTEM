@@ -1,5 +1,5 @@
 <div class="banners index">
-	<h2><?php __('Banners');?></h2>
+	<h2><?php echo __('Banners');?></h2>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><div class="th1"><?php echo $this->Paginator->sort('name');?></div></th>

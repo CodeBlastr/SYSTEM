@@ -4,7 +4,7 @@
 
 <div class="gallery view">
 	<div class="galleryname">
-		<h2><span id="gallery-name"><?php __($gallery['Gallery']['name']); ?></span></h2>
+		<h2><span id="gallery-name"><?php echo __($gallery['Gallery']['name']); ?></span></h2>
 	</div>
     <div class="gallery-description">
 		<?php echo $gallery['Gallery']['description']; ?>
@@ -16,7 +16,7 @@
 		</div> 
 	</div>
     
-    <!--p class="timing"><strong><?php __($gallery['Gallery']['name']);?></strong><?php __(' was '); ?><strong><?php __('Created: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['created']); ?><?php __(', '); ?><strong><?php __('Last Modified: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['modified']); ?></p-->
+    <!--p class="timing"><strong><?php echo __($gallery['Gallery']['name']);?></strong><?php echo __(' was '); ?><strong><?php echo __('Created: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['created']); ?><?php echo __(', '); ?><strong><?php echo __('Last Modified: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['modified']); ?></p-->
 
 </div>
 <?php 

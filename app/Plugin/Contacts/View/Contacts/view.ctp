@@ -6,7 +6,7 @@
 <?php 		if (!empty($contact['Employer'][0])) : 
 		       foreach ($contact['Employer'] as $employer) : 
 ?>
-          <li><span class="metaDataLabel"><?php __('Company : '); ?></span><span name="type" class="metaDataDetail"><?php echo $this->Html->link($employer['name'], array('controller' => 'contacts', 'action' => 'view', $employer['id'])); ?></span></li>
+          <li><span class="metaDataLabel"><?php echo __('Company : '); ?></span><span name="type" class="metaDataDetail"><?php echo $this->Html->link($employer['name'], array('controller' => 'contacts', 'action' => 'view', $employer['id'])); ?></span></li>
 <?php 
         	    endforeach;
      	    endif;
@@ -34,7 +34,7 @@
         </ul>
         <div class="recordData">
           <?php if (!empty($employees)) : ?>
-          <h3><?php __('Employees'); ?></h3>
+          <h3><?php echo __('Employees'); ?></h3>
           <div><?php echo $this->Element('scaffolds/index', array('data' => $employees)); ?></div>
           <?php endif; ?>
         </div>
@@ -119,7 +119,7 @@ if (empty($contact['Contact']['user_id'])) {
 
 <div class="contactCompanies view">
 	<div class="contactname">
-		<h2><span name="companyname" class="edit" id="<?php echo $contact['ContactCompany']['id']; ?>"><?php __($contact['ContactCompany']['name']);  ?></span></h2>
+		<h2><span name="companyname" class="edit" id="<?php echo $contact['ContactCompany']['id']; ?>"><?php echo __($contact['ContactCompany']['name']);  ?></span></h2>
 	</div>
 	<div class="relationships data">
 <?php
@@ -139,7 +139,7 @@ if ($contact['Contact']['RelateeContact']) :
 			$relatorName = null;
 		 endif;
 		?>
-			<li><span><?php __($relationship['ContactRelationshipType']['name']); ?></span> <?php echo $this->Html->link(__($relatorName, true), array('controller' => $relatorController, 'action' => 'view', $relatorId)) ?></li>
+			<li><span><?php echo __($relationship['ContactRelationshipType']['name']); ?></span> <?php echo $this->Html->link(__($relatorName, true), array('controller' => $relatorController, 'action' => 'view', $relatorId)) ?></li>
 		<?php endforeach; ?>
 		</ul>
 <?php
@@ -148,31 +148,31 @@ endif;
 	</div>
 <div id="tabs">
     <ul>
-        <li><a href="#tabs-1"><span><?php __('Details') ?></span></a></li>
-        <li><a href="#tabs-2"><span><?php __('Activity') ?></span></a></li>
-        <li><a href="#tabs-3"><span><?php __('Opportunity') ?></span></a></li>
-        <li><a href="#tabs-4"><span><?php __('Projects') ?></span></a></li>
+        <li><a href="#tabs-1"><span><?php echo __('Details') ?></span></a></li>
+        <li><a href="#tabs-2"><span><?php echo __('Activity') ?></span></a></li>
+        <li><a href="#tabs-3"><span><?php echo __('Opportunity') ?></span></a></li>
+        <li><a href="#tabs-4"><span><?php echo __('Projects') ?></span></a></li>
     </ul>
   <div id="tabs-1">
 	<div class="details data">
 		<ul class="detail datalist">
 			<li>
-				<span class="label"><?php echo $this->Html->link(__('Contact Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTTYPE', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Type List')); ?></span><span name="contacttype" class="edit" id="<?php __($contact['Contact']['id']); ?>"><strong><?php echo $contact['Contact']['ContactType']['name']; ?></strong></span>
+				<span class="label"><?php echo $this->Html->link(__('Contact Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTTYPE', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Type List')); ?></span><span name="contacttype" class="edit" id="<?php echo __($contact['Contact']['id']); ?>"><strong><?php echo $contact['Contact']['ContactType']['name']; ?></strong></span>
             </li>
             <li> 
-				<span class="label"><?php echo $this->Html->link(__('Source', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTSOURCE', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Source List')); ?></span><span name="source" class="edit" id="<?php __($contact['Contact']['id']); ?>"><strong><?php echo $contact['Contact']['ContactSource']['name']; ?></strong></span>
+				<span class="label"><?php echo $this->Html->link(__('Source', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTSOURCE', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Source List')); ?></span><span name="source" class="edit" id="<?php echo __($contact['Contact']['id']); ?>"><strong><?php echo $contact['Contact']['ContactSource']['name']; ?></strong></span>
             </li>
             <li> 
-				<span class="label"><?php echo $this->Html->link(__('Industry', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTINDUSTRY', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Industry List')); ?></span><span name="industry" class="edit" id="<?php __($contact['Contact']['id']); ?>"><strong><?php echo $contact['Contact']['ContactIndustry']['name']; ?></strong></span>
+				<span class="label"><?php echo $this->Html->link(__('Industry', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTINDUSTRY', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Industry List')); ?></span><span name="industry" class="edit" id="<?php echo __($contact['Contact']['id']); ?>"><strong><?php echo $contact['Contact']['ContactIndustry']['name']; ?></strong></span>
             </li>
             <li> 
-				<span class="label"><?php echo $this->Html->link(__('Rating', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTRATING', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Rating List')); ?></span><span name="rating" class="edit" id="<?php __($contact['Contact']['id']); ?>"><strong><?php echo $contact['Contact']['ContactRating']['name']; ?></strong></span>
+				<span class="label"><?php echo $this->Html->link(__('Rating', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTRATING', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Rating List')); ?></span><span name="rating" class="edit" id="<?php echo __($contact['Contact']['id']); ?>"><strong><?php echo $contact['Contact']['ContactRating']['name']; ?></strong></span>
             </li>
 		</ul>
 	</div>
 
 	<div class="contactinfos data">
-		<h6><?php __('Details') ?></h6>
+		<h6><?php echo __('Details') ?></h6>
         <p class="action"><?php echo $this->Html->link(__('Add Detail', true), array('controller' => 'contact_details', 'action' => 'edit', 'contact_id' => $contact['Contact']['id']), array('class' => 'toggleClick', 'name' => 'adddetailform')); ?></p>
         <ul class="contactinfo datalist">
 		  <li class="hide" id="adddetailform">
@@ -188,7 +188,7 @@ endif;
 if ($contact['Contact']['ContactDetail']) : 
 ?>		
 			<?php foreach ($contact['Contact']['ContactDetail'] as $detail) : ?>
-			<li><strong><?php __($detail['ContactDetailType']['name'].': '); ?></strong><span name="detail" class="edit" id="<?php __($detail['id']); ?>"><?php echo $detail['value']; ?></span>
+			<li><strong><?php echo __($detail['ContactDetailType']['name'].': '); ?></strong><span name="detail" class="edit" id="<?php echo __($detail['id']); ?>"><?php echo $detail['value']; ?></span>
 			<p class="action"><?php echo $this->Html->link(__('Delete', true), array('plugin' => 'contacts', 'controller' => 'contact_details', 'action' => 'delete', $detail['id']), null, 'Are you sure you want to delete "'.$detail['value']); ?></p></li>
 			<?php endforeach; ?>
 		
@@ -218,17 +218,17 @@ endif;
 			<?php foreach ($contact['Contact']['ContactAddress'] as $address) : ?>
 			<li id="addresslist<?php echo $address['id']; ?>"><strong><?php echo $address['ContactAddressType']['name'].': '; ?></strong><p class="action"><?php echo $this->Html->link(__('Delete', true), array('plugin' => 'contacts', 'controller' => 'contact_addresses', 'action' => 'delete', $address['id']), null, 'Are you sure you want to delete'); ?></p>
 				<ul>
-					<li><strong><?php __('Address 1: '); ?></strong><span name="addressstreet1" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['street1']; ?></span></li>
+					<li><strong><?php echo __('Address 1: '); ?></strong><span name="addressstreet1" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['street1']; ?></span></li>
 
-					<li><strong><?php __('Address 2: '); ?></strong><span name="addressstreet2" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['street2']; ?></span></li>
+					<li><strong><?php echo __('Address 2: '); ?></strong><span name="addressstreet2" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['street2']; ?></span></li>
 
-					<li><strong><?php __('City: '); ?></strong><span name="addresscity" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['city']; ?></span></li>
+					<li><strong><?php echo __('City: '); ?></strong><span name="addresscity" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['city']; ?></span></li>
 
-					<li><strong><?php __('State: '); ?></strong><span name="addressstate" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['State']['name']; ?></span></li>
+					<li><strong><?php echo __('State: '); ?></strong><span name="addressstate" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['State']['name']; ?></span></li>
 
-					<li><strong><?php __('Zip: '); ?></strong><span name="addresszip" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['zip_postal']; ?></span></li>
+					<li><strong><?php echo __('Zip: '); ?></strong><span name="addresszip" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['zip_postal']; ?></span></li>
 
-					<li><strong><?php __('Country: '); ?></strong><span name="addresscountry" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['Country']['name']; ?></span></li>
+					<li><strong><?php echo __('Country: '); ?></strong><span name="addresscountry" class="edit" id="<?php echo $address['id']; ?>"><?php echo $address['Country']['name']; ?></span></li>
 				</ul>
 			</li>
 			<?php endforeach; ?>
@@ -241,7 +241,7 @@ endif;
   </div> 
   <div id="tabs-2">
 	<div class="activities data">
-		<h6><?php __('Activities') ?></h6>
+		<h6><?php echo __('Activities') ?></h6>
         <p class="action"><?php echo $this->Html->link(__('Add Activity', true), array('controller' => 'contact_activities', 'action' => 'edit', 'contact_id' => $contact['Contact']['id']), array('class' => 'toggleClick', 'name' => 'addactivityform')); ?></p>	
 		<ul class="activity datalist">
 		  <li class="hide" id="addactivityform">
@@ -255,10 +255,10 @@ endif;
 			<?php echo $this->Form->end('Submit');?>
 <?php if ($contact['Contact']['ContactActivity']) :  ?>
 			<?php foreach ($contact['Contact']['ContactActivity'] as $activity) : ?>
-					<li><strong><?php __($activity['ContactActivityType']['name'].' Subject: '); echo $this->Html->link(__($activity['name'], true), array('controller'=> 'contact_activities', 'action' => 'edit', $activity['id'])); ?></strong><p class="action"><?php echo $this->Html->link(__('Delete', true), array('plugin' => 'contacts', 'controller' => 'contact_activities', 'action' => 'delete', $activity['id']), null, 'Are you sure you want to delete'); ?></p>
+					<li><strong><?php echo __($activity['ContactActivityType']['name'].' Subject: '); echo $this->Html->link(__($activity['name'], true), array('controller'=> 'contact_activities', 'action' => 'edit', $activity['id'])); ?></strong><p class="action"><?php echo $this->Html->link(__('Delete', true), array('plugin' => 'contacts', 'controller' => 'contact_activities', 'action' => 'delete', $activity['id']), null, 'Are you sure you want to delete'); ?></p>
 						<ul>
-							<li><span class="description"><?php __(nl2br($activity['description'])); ?></span></li>
-							<li><span class="created"><?php __($this->Time->nice($activity['created'])); ?></span></li>
+							<li><span class="description"><?php echo __(nl2br($activity['description'])); ?></span></li>
+							<li><span class="created"><?php echo __($this->Time->nice($activity['created'])); ?></span></li>
 						</ul>
 					</li>
 			<?php endforeach; ?>
@@ -293,11 +293,11 @@ endif;
                     </span>
                     </p>
 					<div class="hide" id="opportunity-detail<?php echo $opportunity['id']; ?>">
-                    	<p><?php __($opportunity['description']); ?></span></p>
+                    	<p><?php echo __($opportunity['description']); ?></span></p>
                    		<div class="hide" id="extended-detail<?php echo $opportunity['id']; ?>">
-							<p><span class="label"><?php __('Due Date: '); ?></span><?php __($opportunity['due_date']); ?></p>
-							<p><span class="label"><?php __('Assigned To: '); ?></span><?php __($opportunity['Assignee']['username']); ?></p>
-							<p><span class="label"><?php __('Created By: '); ?></span><?php __($opportunity['Assignee']['username']); ?></p>
+							<p><span class="label"><?php echo __('Due Date: '); ?></span><?php echo __($opportunity['due_date']); ?></p>
+							<p><span class="label"><?php echo __('Assigned To: '); ?></span><?php echo __($opportunity['Assignee']['username']); ?></p>
+							<p><span class="label"><?php echo __('Created By: '); ?></span><?php echo __($opportunity['Assignee']['username']); ?></p>
     	                </div>
                     	<p class="action"><?php echo $this->Html->link(__('Show Details', true), array('plugin' => 'contacts', 'controller'=> 'contact_opportunities', 'action' => 'edit', $opportunity['id']), array('class' => 'toggleClick', 'name' => 'extended-detail'.$opportunity['id'])); ?><?php echo $this->Html->link(__('Delete', true), array('plugin' => 'contacts', 'controller' => 'contact_opportunities', 'action' => 'delete', $opportunity['id']), null, 'Are you sure you want to delete'); ?></p>
 					</div>
@@ -312,17 +312,17 @@ endif;
   
   <div id="tabs-4">
 	<div class="projects data">
-		<h6><?php __('Projects') ?></h6>
+		<h6><?php echo __('Projects') ?></h6>
 		<p class="action"><?php echo $this->Html->link(__('Add Project', true), array('plugin' => 'projects', 'controller' => 'projects', 'action' => 'edit', 'contact_id' => $contact['Contact']['id'])); ?></p>	
 <?php
 if ($contact['Contact']['Project']) : 
 ?>
 		<table>
         	<tr>
-            <th><?php __('Status'); ?></th>
-            <th><?php __('Name'); ?></th>
-            <th><?php __('Estimated Hours'); ?></th>
-            <th><?php __('Spent Hours'); ?></th>
+            <th><?php echo __('Status'); ?></th>
+            <th><?php echo __('Name'); ?></th>
+            <th><?php echo __('Estimated Hours'); ?></th>
+            <th><?php echo __('Spent Hours'); ?></th>
             </tr>
 			<?php foreach ($contact['Contact']['Project'] as $project) : ?>
             <tr>
@@ -344,7 +344,7 @@ endif;
 
 
 
-<p class="timing"><strong><?php __($contact['ContactCompany']['name']);?></strong><?php __(' was '); ?><strong><?php __('Created: '); ?></strong><?php echo $this->Time->relativeTime($contact['ContactCompany']['created']); ?><?php __(', '); ?><strong><?php __('Last Modified: '); ?></strong><?php echo $this->Time->relativeTime($contact['ContactCompany']['modified']); ?></p>
+<p class="timing"><strong><?php echo __($contact['ContactCompany']['name']);?></strong><?php echo __(' was '); ?><strong><?php echo __('Created: '); ?></strong><?php echo $this->Time->relativeTime($contact['ContactCompany']['created']); ?><?php echo __(', '); ?><strong><?php echo __('Last Modified: '); ?></strong><?php echo $this->Time->relativeTime($contact['ContactCompany']['modified']); ?></p>
 
 </div>
 

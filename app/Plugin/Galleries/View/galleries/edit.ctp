@@ -1,8 +1,8 @@
 <div class="galleries form">
-  <h2><?php __('Edit '); echo $gallery['Gallery']['name']; __(' Gallery '); ?></h2>
+  <h2><?php echo __('Edit '); echo $gallery['Gallery']['name']; __(' Gallery '); ?></h2>
 <?php echo $this->Form->create('Gallery', array('enctype'=>'multipart/form-data'));?>
 	<fieldset id="galleryFields">
- 		<legend class="toggleClick"><?php __('Edit Gallery Info'); ?></legend>
+ 		<legend class="toggleClick"><?php echo __('Edit Gallery Info'); ?></legend>
 		<?php
 		echo $this->Form->input('Gallery.id');
 		echo $this->Form->input('Gallery.name');
@@ -20,7 +20,7 @@
     
 <?php echo $this->Form->create('GalleryImage', array('enctype'=>'multipart/form-data'));?>
 	<fieldset>
- 		<legend><?php __('Add Image'); ?></legend>
+ 		<legend><?php echo __('Add Image'); ?></legend>
 	<?php
 		echo $this->Form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $gallery['Gallery']['id']));
 		echo $this->Form->input('Gallery.model', array('type' => 'hidden'));

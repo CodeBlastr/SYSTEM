@@ -1,7 +1,7 @@
 <div class="aros form">
 <?php echo $this->Form->create('Requestor');?>
 	<fieldset>
- 		<legend><?php __('Edit Requestor');?></legend>
+ 		<legend><?php echo __('Edit Requestor');?></legend>
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('parent_id');

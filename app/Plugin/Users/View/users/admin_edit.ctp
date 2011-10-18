@@ -1,7 +1,7 @@
 <div class="users form">
 <?php echo $this->Form->create('User');?>
 	<fieldset>
- 		<legend><?php __('Edit '.$this->Form->value('User.username'));?></legend>
+ 		<legend><?php echo __('Edit '.$this->Form->value('User.username'));?></legend>
 	<?php
 		echo $this->Form->input('User.id');
 	if (!empty($this->request->params['named']['cpw'])) {

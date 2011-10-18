@@ -2,7 +2,7 @@
 <?php echo  $this->Html->script('/banners/js/jsapi.js');?>
 
 <h2>
-  <?php __('Performance');?>
+  <?php echo __('Performance');?>
 </h2>
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>

@@ -1,6 +1,6 @@
 <div class="webpages form">
 	<?php echo $this->Form->create('Webpage');?>
-	<h2><?php __('Webpage Builder');?></h2>
+	<h2><?php echo __('Webpage Builder');?></h2>
 	<fieldset>
 	<legend class="toggleClick"><?php echo __('Search Engine Optimization');?></legend>
     <?php 
@@ -23,12 +23,12 @@
     </fieldset>
     
 	<fieldset>
-	<legend><?php __('Add Webpage');?></legend>
+	<legend><?php echo __('Add Webpage');?></legend>
 	<?php
 		echo $this->Form->input('type', array('default' => 'page_content'));
 	?>
     	<fieldset>
-        <legend><?php __('Template Settings'); ?></legend>
+        <legend><?php echo __('Template Settings'); ?></legend>
     <?php
 		echo $this->Form->input('is_default', array('type' => 'checkbox'));
 		echo $this->Form->input('template_urls', array('after' => ' <br>One url per line. (ex. /tickets/tickets/view/*)'));

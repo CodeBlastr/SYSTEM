@@ -1,6 +1,6 @@
 <?php echo $this->Html->css('/privileges/css/privileges'); ?>
 <h2><?php echo __(Inflector::humanize(Inflector::underscore($section)) . ' Privileges', true); ?></h2>
-<p><?php __('Set privileges by checking the box under the user role in the row of the action you want to allow access to.') ?></p>
+<p><?php echo __('Set privileges by checking the box under the user role in the row of the action you want to allow access to.') ?></p>
 <p class="toggleClick" name="SectionAddForm"> <a href="">Do the actions you want to set privileges for not appear here</a>?</p>
 <!--p><?php echo __('Please note, if you do not see the method you are trying to control access to, use the following button to auto update. You can also ' . $this->Html->link(__('view all', true), array('action' => 'index')) . ' and ' . $this->Html->link(__('manage user roles', true), array('plugin' => null, 'controller' => 'user_roles', 'action' => 'index')), true); ?></p-->
 

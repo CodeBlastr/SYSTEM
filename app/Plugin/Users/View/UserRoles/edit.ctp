@@ -1,7 +1,7 @@
 <div class="userRoles form">
 <?php echo $this->Form->create('UserRole');?>
 	<fieldset>
- 		<legend><?php __('Edit UserRole');?></legend>
+ 		<legend><?php echo __('Edit UserRole');?></legend>
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('name');
