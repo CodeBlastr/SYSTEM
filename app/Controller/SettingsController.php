@@ -200,7 +200,7 @@ class SettingsController extends AppController {
 			$root = $root[0];
 		}   
 
-		App::import('Core', 'File');
+		App::uses('File', 'Utility');
 		$Controllers = Configure::listObjects('controller');
 		$appIndex = array_search('App', $Controllers);
 		if ($appIndex !== false ) {

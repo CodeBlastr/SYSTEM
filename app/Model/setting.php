@@ -339,7 +339,7 @@ class Setting extends AppModel {
  */
 	function writeSettingsIniData() {
 		# move this inside of the save fi statement 
-		App::import('Core', 'File');
+		App::uses('File', 'Utility');
 		$file = new File(CONFIGS.'settings.ini');
 		#$file->path = CONFIGS.'settings.ini';
 		$writeData = $this->prepareSettingsIniData();
@@ -362,7 +362,7 @@ class Setting extends AppModel {
  */
 	function writeDefaultsIniData() {
 		# move this inside of the save fi statement 
-		App::import('Core', 'File');
+		App::uses('File', 'Utility');
 		$file = new File(CONFIGS.'defaults.ini');
 		#$file->path = CONFIGS.'settings.ini';
 		$writeData = $this->prepareSettingsIniData();

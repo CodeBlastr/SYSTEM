@@ -65,6 +65,14 @@
 			define('APP_DIR', basename(dirname(dirname(__FILE__))));
 		}
 	}
+	
+/**
+ * Zuha added constant because CakePHP 2.0 removed it
+ *
+ */
+	if (!defined('CONFIGS')) {
+		define('CONFIGS', ROOT .DS . APP_DIR . DS . 'Config' . DS);
+	}
 
 /**
  * The absolute path to the "cake" directory, WITHOUT a trailing DS.

@@ -15,6 +15,5 @@ if (!empty($menus)) {
 			endforeach;
 	$menu .= '</ul></div>';
 }
-
-$this->set('menu_for_layout', $menu);
+echo $menu;
 ?>

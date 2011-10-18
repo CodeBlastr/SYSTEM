@@ -96,7 +96,7 @@ $flash_for_layout = $this->Session->flash();
 $flash_auth_for_layout = $this->Session->flash('auth');
 if (!empty($defaultTemplate)) {
 	
-	# matches helper template tags like {helper: content_for_layout} or {helper: menu_for_layout}
+	# matches helper template tags like {helper: content_for_layout}
 	preg_match_all ("/(\{helper: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
 	foreach ($matches[0] as $helperMatch) {

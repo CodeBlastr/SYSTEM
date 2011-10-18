@@ -96,7 +96,7 @@ class WebpageJs extends WebpagesAppModel {
 	
 	function _jsFile($fileName = 'all.js', $content) {
 		# file helper
-		App::import('Core', 'File');
+		App::uses('File', 'Utility');
 		$file = new File;
 		# check whether this is multi-sites
 		if (file_exists(ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR)) {
@@ -131,7 +131,7 @@ class WebpageJs extends WebpagesAppModel {
 	
 	function remove($id) {
 		#import the file helper
-		App::import('Core', 'File');
+		App::uses('File', 'Utility');
 		$file = new File;
 		
 		# find the js file being deleted

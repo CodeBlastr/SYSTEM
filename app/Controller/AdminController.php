@@ -43,7 +43,7 @@ class AdminController extends AppController {
 				$this->Session->setFlash(__('Database Upgraded (you may still need to <a href="/admin/permissions/acores/build_acl">rebuild aco objects</a> (note : clicking this link may take a long time)', true));
 			} else {
 				$this->Session->setFlash(__('Invalid Database Upgrade', true));
-			}				
+			}
 		}
 		$upgradesNeeded = $this->_checkIfLatestVersion();
 		if (!empty($upgradesNeeded)) {
@@ -69,9 +69,10 @@ class AdminController extends AppController {
 	 */
 	function _upgradeDatabase($queries) {
 		foreach ($queries['Query'] as $query) {
-			if ($this->Setting->query($query['data'])) {
-				$is_Good = true;	
-			} else {
+			try {
+				$this->Setting->query($query['data']);
+				$is_Good = true;
+			} catch (PdoException $e) {
 				$is_Good = false;
 			}
 		}
@@ -91,9 +92,9 @@ class AdminController extends AppController {
  * @return {bool}
  */
 	function _updateSettingVersion() {
-		$this->data['Setting']['type'] = 'System';
-		$this->data['Setting']['name'] = 'ZUHA_DB_VERSION';
-		$this->data['Setting']['value'] = $this->dbVersion + 0.0001;
+		$this->request->data['Setting']['type'] = 'System';
+		$this->request->data['Setting']['name'] = 'ZUHA_DB_VERSION';
+		$this->request->data['Setting']['value'] = $this->dbVersion + 0.0001;
 		
 		if ($this->Setting->add($this->data)) {
 			$this->dbVersion = $this->dbVersion + 0.0001;
