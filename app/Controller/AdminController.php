@@ -56,9 +56,9 @@ class AdminController extends AppController {
         # $this->set('topSellingProducts', ClassRegistry::init('Product')->getTopSellers());
 	}
 	
-	function admin_files_image() {
+	function files_image() {
 	}
-	function admin_files_files() {
+	function files_files() {
 	}
 
 	/**

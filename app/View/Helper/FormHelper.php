@@ -776,11 +776,11 @@ class FormHelper extends AppHelper {
  *
  * In addition to controller fields output, `$fields` can be used to control legend
  * and fieldset rendering with the `fieldset` and `legend` keys.
- * `$form->inputs(array('legend' => 'My legend'));` Would generate an input set with
+ * `$this->Form->inputs(array('legend' => 'My legend'));` Would generate an input set with
  * a custom legend.  You can customize individual inputs through `$fields` as well.
  *
  * {{{
- *	$form->inputs(array(
+ *	$this->Form->inputs(array(
  *		'name' => array('label' => 'custom label')
  *	));
  * }}}
@@ -1438,7 +1438,7 @@ class FormHelper extends AppHelper {
 			}
 			unset($options['value']);
 		}
-		return $this->Html->useTag('richtext', $fieldId, $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor').$this->Html->script('ckeditor/adapters/jquery'), $this->Cke->load($fieldId, $ckeSettings));
+		return $this->Html->useTag('richtext', $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor').$this->Html->script('ckeditor/adapters/jquery'), $this->Cke->load($fieldId, $ckeSettings));
 	}
 	
 	

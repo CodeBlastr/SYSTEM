@@ -178,6 +178,7 @@
 			'CatalogItemBrand' => 'catalogs',
 			'CatalogItemBrands' => 'catalogs',
 			'catalog_item_brands' => 'catalogs',
+			'Gallery' => 'galleries',
 			'GalleryImage' => 'galleries',
 			'GalleryImages' => 'galleries',
 			'gallery_images' => 'galleries',

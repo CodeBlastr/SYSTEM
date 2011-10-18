@@ -10,14 +10,13 @@ class GalleriesController extends GalleriesAppController {
  */
 	function index() {
 		# see if this gallery 
-		$this->settings['conditions'] = !empty($this->params['pass'][0]) && !empty($this->params['pass'][1]) ? 
+		$params['conditions'] = !empty($this->params['pass'][0]) && !empty($this->params['pass'][1]) ? 
 			array('Gallery.model' => $this->params['pass'][0], 'Gallery.foreign_key' => $this->params['pass'][1]) : 
 			null;
 		# we need the main image for the gallery to show a thumbnail
-		$this->settings['contain'] = array('GalleryImage');
+		$params['contain'] = array('GalleryImage');
 		# paginate the results
-		$this->paginate = $this->settings;
-		debug($this->paginate);
+		$this->paginate = $params;
 		$this->set('galleries', $this->paginate());
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', 'description');
