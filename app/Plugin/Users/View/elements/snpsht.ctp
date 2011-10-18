@@ -52,7 +52,6 @@
 	# would link to the gallery, and other places where it would link to the user profile
 	# therefore we need to give it a unique id based on the thumblink as well.
 	#$cfg['cache'] = array('key' => 'gallery-thumb-'.$thumbSize.'-'.$userId, 'time' => '+2 days');
-	$cfg['plugin'] = 'galleries';
 	$cfg['thumbLink'] = (!empty($thumbLink) ? $thumbLink : null);
 	$cfg['thumbTitle'] = $thumbTitle;
 	$cfg['thumbSize'] = $thumbSize;
@@ -65,7 +64,7 @@
  	$user = (!empty($userId) ? $this->requestAction('/users/users/view/'.$userId) : null);
 ?>
 <div class="box">
-    <?php echo $this->element('thumb', $cfg); ?>
+    <?php echo $this->Element('thumb', $cfg, array('plugin' => 'galleries')); ?>
 	<div class="descript">
 		<h2><?php if($showFirstName) { echo $user['User']['first_name']; } echo ' '; if($showLastName) { echo $user['User']['last_name']; }?></h2>
         <?php if($showViewLink || $showEditLink) { ?>

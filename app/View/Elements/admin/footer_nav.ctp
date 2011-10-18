@@ -3,7 +3,7 @@
     <div class="gridRow">
       <div class="footerHeading">
         <ul class="loggedIn <?php if(!$this->Session->read('Auth.User')) { echo 'hide'; } ?>">
-          <li><?php echo $this->Element('snpsht', array('useGallery' => true, 'userId' => $this->Session->read('Auth.User.id'), 'thumbAlt' => $this->Session->read('Auth.User.username'), 'thumbTitle' => $this->Session->read('Auth.User.username'), array('plugin' => 'users'))); ?></li>
+          <li><?php echo $this->Element('snpsht', array('useGallery' => true, 'userId' => $this->Session->read('Auth.User.id'), 'thumbAlt' => $this->Session->read('Auth.User.username'), 'thumbTitle' => $this->Session->read('Auth.User.username')), array('plugin' => 'Users')); ?></li>
           <li><span>Welcome <span><?php echo $this->Session->read('Auth.User.username'); ?></span></span> </li>
           <li><a href="/users/users/logout"><span>Logout</span></a> </li>
           <li><a href="/admin/settings"><span><?php echo 'Zuha Version: '.__SYSTEM_ZUHA_DB_VERSION; ?></span></a></li>
