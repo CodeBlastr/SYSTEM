@@ -43,14 +43,14 @@
 	<?php echo $this->Form->end('Save Webpage');?>
 </div>
 <?php
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Webpages',
 		'items' => array(
 			 $this->Html->link(__('List', true), array('action' => 'index')),									 
 			 )
 		)
-	));
+	)));
 ?>
 <script type="text/javascript">
 $(function() {

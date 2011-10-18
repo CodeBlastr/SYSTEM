@@ -59,7 +59,7 @@
 
 <?php
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Webpages',
 		'items' => array(
@@ -67,6 +67,5 @@ $this->Menu->setValue(array(
 			$this->Html->link(__('New', true), array('controller' => 'webpages', 'action' => 'add')),
 			)
 		),
-	)
-); 
+	)));
 ?>

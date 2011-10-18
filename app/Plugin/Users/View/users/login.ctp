@@ -11,12 +11,12 @@
 </div>
 <?php 
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Users',
 		'items' => array(
 			$this->Html->link(__('Register', true), array('plugin' => 'users', 'controller' => 'users', 'action' => 'register', 'admin' => 0)),
 			)
 		),
-	));
+	)));
 ?>

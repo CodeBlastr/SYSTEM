@@ -64,13 +64,12 @@ foreach ($conditions as $condition):
 
 <?php 
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Conditions',
 		'items' => array(
 			$this->Html->link(__('New Condition', true), array('plugin' => null, 'controller' => 'conditions', 'action' => 'edit')),
 			)
 		),
-	)
-);
+	)));
 ?>

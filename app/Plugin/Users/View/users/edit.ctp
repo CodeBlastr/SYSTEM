@@ -39,12 +39,13 @@
 
 <?php 
 // set the contextual menu items
-$this->Menu->setValue(array(array(
+echo $this->Element('context_menu', array('menus' => array(
+	array(
 		'heading' => 'Users',
 		'items' => array(
 			$this->Html->link(__('View User', true), array('action' => 'view', $this->data['User']['id'])),
 			$this->Html->link(__('Change Password', true), array($this->Form->value('User.id'), 'cpw' => 1)),
 			)
 		),
-));
+	)));
 ?>

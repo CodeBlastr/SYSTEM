@@ -25,7 +25,7 @@
 </div>
 <?php 
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Galleries',
 		'items' => array(
@@ -34,7 +34,6 @@ $this->Menu->setValue(array(
 			$this->Html->link(__('New Gallery', true), array('action' => 'edit')),
 			)
 		),
-	)
-);
+	)));
 ?>
 <?php #pr($gallery); ?>

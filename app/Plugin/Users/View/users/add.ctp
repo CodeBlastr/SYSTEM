@@ -14,12 +14,12 @@
 
 <?php 
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Users',
 		'items' => array(
 			$this->Html->link(__('Login', true), array('plugin' => 'users', 'controller' => 'users', 'action' => 'login', 'admin' => 0)),
 			 )
 		),
-  ));
+	)));
 ?>

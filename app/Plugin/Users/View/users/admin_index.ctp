@@ -51,7 +51,7 @@ foreach ($users as $user):
 
 <?php 
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Users',
 		'items' => array(
@@ -64,5 +64,5 @@ $this->Menu->setValue(array(
 			 $this->Html->link(__('List User Roles', true), array('controller' => 'user_roles', 'action' => 'index')),
 			 )
 		),
-	));
+	)));
 ?>

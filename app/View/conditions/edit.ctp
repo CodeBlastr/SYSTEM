@@ -39,15 +39,14 @@
 
 <?php 
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Conditions',
 		'items' => array(
 			$this->Html->link(__('List Conditions', true), array('plugin' => null, 'controller' => 'conditions', 'action' => 'index')),
 			)
 		),
-	)
-);
+	)));
 ?>
 
 <script type="text/javascript">

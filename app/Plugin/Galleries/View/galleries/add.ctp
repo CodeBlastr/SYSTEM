@@ -31,14 +31,12 @@
 
 <?php 
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Galleries',
 		'items' => array(
 			$this->Html->link(__('List Galleries', true), array('action' => 'index')),
 			)
 		),
-	)
-);
+	)));
 ?>
-<?php #debug($this->data); ?>

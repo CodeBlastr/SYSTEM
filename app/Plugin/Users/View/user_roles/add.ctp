@@ -11,7 +11,7 @@
 </div>
 <?php 
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'User Roles',
 		'items' => array(
@@ -24,5 +24,5 @@ $this->Menu->setValue(array(
 			 $this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')),
 			 )
 		),
-	));
+	)));
 ?>

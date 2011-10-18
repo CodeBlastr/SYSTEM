@@ -62,7 +62,7 @@ foreach ($followedUsers as $followedUser) {
 This menu needs a lot of work.  I'm not sure how to handle it, and its important
 because it is different for every single site.  */
 // set the contextual menu items
-$this->Menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Users',
 		'items' => array(
@@ -96,6 +96,5 @@ $this->Menu->setValue(array(
 			$this->Html->link(__('Create Blog', true), array('plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'add'), array('checkPermissions' => true)),
 			)
 		), */
-	)
-);
+	)));
 ?>
