@@ -71,7 +71,7 @@
  *
  */
 	if (!defined('CONFIGS')) {
-		define('CONFIGS', ROOT .DS . APP_DIR . DS . 'Config' . DS);
+		define('CONFIGS', ROOT .DS . APP_DIR . DS . 'config' . DS);
 	}
 
 /**

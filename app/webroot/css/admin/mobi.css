@@ -203,6 +203,9 @@ th {
 }
 th.actions {
 	position: relative !important;
+	border-collapse: inherit;
+	display: table-cell;
+	width: auto;
 }
 th a {
 	display: block;

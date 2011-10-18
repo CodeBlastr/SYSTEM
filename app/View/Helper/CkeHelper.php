@@ -2,16 +2,13 @@
 /**
  * A helper for loading ckeditor and the config variables for it. 
  *
- * @todo 		Need to set default variables, like $this->uiColor, instead of the return thing from the __config function.
+ * @todo 		Need to set default variables, like $this->uiColor, instead of the return thing from the _config function.
  */
 class CkeHelper extends Helper { 
 
     var $helpers = Array('Html', 'Javascript'); 
 
-    function load($id, $settings = null) { 
-		App::import('Helper', 'Html');
-		$this->Html = new HtmlHelper;	
-		
+    public function load($id, $settings = null) { 		
 		# this is the id to replace the following two foreach's change it into the id format that cake uses from the field name.
         $did = ''; 
         foreach (explode('.', $id) as $v) { 
@@ -27,7 +24,7 @@ class CkeHelper extends Helper {
   			var field = CKEDITOR.replace( '".$did."' );
   			CKFinder.setupCKEditor(field, '".$path."') ;
         ";*/ 
-		$configuration = $this->__config($settings);
+		$configuration = $this->_config($settings);
 		
         $code = "
   			$('#".$did."').ckeditor(function(){ 
@@ -40,7 +37,7 @@ class CkeHelper extends Helper {
     } 
 	
 	
-	function __config($settings) {
+	public function _config($settings) {
 		# color settings
 		if (!empty($settings['uiColor'])) {
 			$color = "uiColor: '".$settings['uiColor']."',";
