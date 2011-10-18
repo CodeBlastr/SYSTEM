@@ -36,8 +36,8 @@
 		<td class="actions">
 			<?php 
 			if (!empty($webpage['Alias']['name'])) {
-				echo $this->Html->link(__('View', true), array('plugin' => null, 'controller' => $webpage['Alias']['name'], 'admin' => 0));  } else {
-				echo $this->Html->link(__('View', true), array('action' => 'view', $webpage['Webpage']['id'], 'admin' => 0));
+				echo $this->Html->link(__('View', true), array('plugin' => null, 'controller' => $webpage['Alias']['name']));  } else {
+				echo $this->Html->link(__('View', true), array('action' => 'view', $webpage['Webpage']['id']));
 			}
 			?>
 

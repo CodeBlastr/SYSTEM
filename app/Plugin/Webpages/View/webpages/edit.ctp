@@ -1,9 +1,7 @@
-<div class="webpages form">
+<div class="webpages form"> 
 <?php echo $this->Form->create('Webpage');?>
   <fieldset>
-    <legend class="toggleClick">
-    <?php echo __('Search Engine Optimization');?>
-    </legend>
+    <legend class="toggleClick"> <?php echo __('Search Engine Optimization');?> </legend>
     <?php 
 		echo $this->Form->input('Webpage.id');
 		echo $this->Form->input('Alias.id');
@@ -18,24 +16,18 @@
 	?>
   </fieldset>
   <fieldset>
-    <legend class="toggleClick">
-    <?php echo __('Access Rights');?>
-    </legend>
+    <legend class="toggleClick"> <?php echo __('Access Rights');?> </legend>
     <?php 
 		echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => '', 'type' => 'select', 'multiple' => true, 'options' => $userRoles, 'between' => 'Customize page access. (Note : Uses global settings by default)'));
 	?>
   </fieldset>
   <fieldset>
-    <legend>
-    <?php echo __('Add Webpage');?>
-    </legend>
+    <legend> <?php echo __('Add Webpage');?> </legend>
     <?php
 		echo $this->Form->input('type', array('default' => 'page_content'));
 	?>
     <fieldset>
-      <legend>
-      <?php echo __('Template Settings'); ?>
-      </legend>
+      <legend> <?php echo __('Template Settings'); ?> </legend>
       <?php
 		echo $this->Form->input('is_default', array('type' => 'checkbox'));
 		echo $this->Form->input('template_urls', array('type' => 'textarea', 'value' => $templateUrls, 'after' => ' <br>One url per line. (ex. /tickets/tickets/view/*)'));
@@ -47,21 +39,20 @@
 		echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'ckeSettings' => $ckeSettings));
 	?>
   </fieldset>
-  <?php echo $this->Form->end('Save Webpage');?> </div>
+<?php echo $this->Form->end('Save Webpage');?>
+</div>
+
 <?php
-$this->Menu->setValue(
-	array(
-		  array('heading' => 'Webpages',
-			'items' => array(
-				$this->Html->link(__('Webpage List', true), array('controller' => 'webpages', 'action' => 'index')),
-				$this->Html->link(__('Add Webpage', true), array('controller' => 'webpages', 'action' => 'add'), array('title' => 'Add Webpage')),
-				$this->Html->link(__('View Webpage', true), array('controller' => 'webpages', 'action' => 'view', $this->request->data['Webpage']['id'])),
-				$this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Webpage.id'))),
-					 )
-				)
-		  )
-	);
-		echo $this->Html->script('ckeditor/adapters/jquery');
+echo $this->Element('context_menu', array('menus' => array(
+	  array('heading' => 'Webpages',
+		'items' => array(
+			$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index')),
+			$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add'), array('title' => 'Add Webpage')),
+			$this->Html->link(__('View'), array('controller' => 'webpages', 'action' => 'view', $this->request->data['Webpage']['id'])),
+			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?'), $this->Form->value('Webpage.id'))),
+				 )
+			)
+	  )));
 ?>
 <script type="text/javascript">
 $(function() {
