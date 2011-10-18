@@ -8,6 +8,10 @@ class SslComponent extends Object {
     function initialize(&$Controller) {
         $this->Controller = $Controller;
     }
+	
+	function startup() { }
+	function beforeRender() { }
+	function shutdown() { }
     
     function force() {
         if(!$this->RequestHandler->isSSL()) {

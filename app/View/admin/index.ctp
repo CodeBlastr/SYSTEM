@@ -76,8 +76,7 @@ if (!empty($previousUpgrade)) {
     <li><?php echo $this->Html->link('Webpages', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'page_content')); ?></li>
     <li><?php echo $this->Html->link('Image Manager', array('controller' => 'admin', 'action' => 'files_image')); ?></li>
     <li><?php echo $this->Html->link('Document Manager', array('controller' => 'admin', 'action' => 'files_files')); ?></li>
-    <li class="separator"><a href="/admin/forms">Custom Forms</a></li>
-    <li><a href="/admin/comments">Comments</a></li>
+    <li><?php echo $this->Html->link('Comments', array('plugin' => 'comments', 'controller' => 'comments', 'action' => 'index')); ?></li>
     <!--li class="title">Feedback</li>
     <li>Ratings (coming soon)</li-->
     <li><?php echo $this->Html->link('Invites', array('plugin' => 'invite', 'controller' => 'invites', 'action' => 'invitation')); ?></li>
@@ -94,68 +93,54 @@ if (!empty($previousUpgrade)) {
     <li> <a href="#"><span>Contacts</span></a></li>
   </ul>
   <ul>
-    <!--li class="title">Contacts</li-->
-    <li><a href="/contacts">All Contacts</a></li>
-    <!--li class="title">Tracking</li-->
-    <li>
-      <!--a href="/contacts/contacts/tasks"-->
-      Leads (coming soon)</li>
-    <li class="separator">
-      <!--a href="/contacts/contacts/messages/"-->
-      Activities (coming soon)</li>
-  </ul>
+    <li><?php echo $this->Html->link('Contacts', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'index')); ?></li>
+    <li><!--a href="/contacts/contacts/tasks"-->Leads (coming soon)</li>
+    <li><!--a href="/contacts/contacts/messages/"-->Activities (coming soon)</li></ul>
   <ul>
     <li> <a href="#"><span>Sales</span></a></li>
   </ul>
   <ul>
-    <li><a href="/estimates">Estimates</a></li>
-    <li><a href="/invoices">Invoices</a></li>
-    <li class="separator"><a href="/orders/order_transactions/">Orders</a></li>
+    <li><?php echo $this->Html->link('Estimates', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Invoices', array('plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Orders', array('plugin' => 'orders', 'controller' => 'order_transactions', 'action' => 'index')); ?></li>
   </ul>
   <ul>
-    <li> <a href="/admin/reports/reports/dashboard"><span>Marketing</span></a>
+    <li> <a href="#"><span>Marketing</span></a>
   </ul>
   <ul>
-    <!--li class="title">Tools</li-->
-    <li><a href="/admin/notifications/notification_templates">Notifications</a></li>
-    <li><a href="/admin/conditions">Conditions</a></li>
-    <li class="separator"><a href="/workflows">Workflows</a></li>
-    <!--li class="title">Reporting</li-->
-    <li><a href="/admin/reports">Analytics</a></li>
-    <li class="separator"><a href="/admin/reports">Reports</a></li>
+    <li><?php echo $this->Html->link('Conditions', array('plugin' => null, 'controller' => 'conditions', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Workflows', array('plugin' => 'workflows', 'controller' => 'workflows', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Analytics', array('plugin' => 'reports', 'controller' => 'reports', 'action' => 'dashboard')); ?></li>
+    <li><?php echo $this->Html->link('Reports', array('plugin' => 'reports', 'controller' => 'reports', 'action' => 'index')); ?></li>
   </ul>
   <ul>
     <li> <a href="#"><span>Support</span></a>
   </ul>
   <ul>
-    <li><a href="/projects">Projects</a></li>
-    <li><a href="/timesheets">Timesheets</a></li>
-    <li><a href="/tasks/tasks/my">Tasks</a></li>
-    <!--li class="title">Support</li-->
-    <li><a href="/admin/tickets">Tickets</a></li>
+    <li><?php echo $this->Html->link('Projects', array('plugin' => 'projects', 'controller' => 'projects', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Timesheets', array('plugin' => 'timesheets', 'controller' => 'timesheets', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Tasks', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'my')); ?></li>
+    <li><?php echo $this->Html->link('Tickets', array('plugin' => 'tickets', 'controller' => 'tickets', 'action' => 'index')); ?></li>
   </ul>
   <ul>
     <li> <a href="#" title="Users"><span>Users</span></a>
   </ul>
   <ul>
-    <li><a href="/users">All Users</a></li>
-    <li class="separator"><a href="/users/user_roles">User Roles</a></li>
-    <li class="title">Social</li>
-    <li><a href="/users/user_groups">Groups</a></li>
-    <li><a href="/users/user_statuses">Statuses</a></li>
-    <li><a href="/users/user_walls">Walls</a></li>
-    <li class="separator"><a href="/messages">Messages</a></li>
+    <li><?php echo $this->Html->link('Users', array('plugin' => 'users', 'controller' => 'users', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('User Roles', array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Groups', array('plugin' => 'users', 'controller' => 'user_groups', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Statuses', array('plugin' => 'users', 'controller' => 'user_statuses', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Walls', array('plugin' => 'users', 'controller' => 'user_walls', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Messages', array('plugin' => 'messages', 'controller' => 'messages', 'action' => 'index')); ?></li>
   </ul>
   <ul>
-    <li> <a href="/admin/webpages" title="Content"><span>Extend</span></a>
+    <li> <a href="#" title="Content"><span>Extend</span></a>
   </ul>
   <ul>
-    <li class="title">App Builder</li>
-    <li><a href="/privileges">Privileges</a></li>
-    <li><a href="/admin/settings">Settings</a></li>
-    <li><a href="/admin/forms">Custom Forms</a></li>
-    <li><a href="/admin/conditions">Conditions</a></li>
-    <li class="separator"><a href="/workflows">Workflows</a></li>
-    </li>
+    <li><?php echo $this->Html->link('Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Settings', array('plugin' => null, 'controller' => 'settings', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Custom Forms', array('plugin' => 'forms', 'controller' => 'forms', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Conditions', array('plugin' => null, 'controller' => 'conditions', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Workflows', array('plugin' => 'workflows', 'controller' => 'workflows', 'action' => 'index')); ?></li>
   </ul>
 </div>

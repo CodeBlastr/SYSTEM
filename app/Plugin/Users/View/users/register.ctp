@@ -55,8 +55,8 @@ echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Users',
 		'items' => array(
-			$this->Html->link(__('Login', true), array('plugin' => 'users', 'controller' => 'users', 'action' => 'login', 'admin' => 0)),
-			$this->Html->link(__('Logout', true), array('plugin' => 'users', 'controller' => 'users', 'action' => 'logout', 'admin' => 0)),
+			$this->Html->link(__('Login'), array('plugin' => 'users', 'controller' => 'users', 'action' => 'login')),
+			$this->Html->link(__('Logout'), array('plugin' => 'users', 'controller' => 'users', 'action' => 'logout')),
 			 )
 		),
 	)));
