@@ -10,7 +10,7 @@ class PrivilegesController extends PrivilegesAppController {
 	}
 	
 	function add() {
- 		$dat = $this->data['Privilege'];
+ 		$dat = $this->request->data['Privilege'];
  		
  		for($i = 0; $i < count($dat); $i++){
  			//set the variables 
@@ -18,25 +18,25 @@ class PrivilegesController extends PrivilegesAppController {
  			$v = current($dat);
  			$split = explode('_' , $k);
  			// split 
- 			$this->data['Privilege']['aco_id'] = $split[0];
- 			$this->data['Privilege']['aro_id'] = $split[1];
+ 			$this->request->data['Privilege']['aco_id'] = $split[0];
+ 			$this->request->data['Privilege']['aro_id'] = $split[1];
 		
  			if($v == 'on' || $v == 1){
- 				$this->data['Privilege']['_create'] = 1;
- 				$this->data['Privilege']['_read'] = 1;
- 				$this->data['Privilege']['_update'] = 1;
- 				$this->data['Privilege']['_delete'] = 1;	
+ 				$this->request->data['Privilege']['_create'] = 1;
+ 				$this->request->data['Privilege']['_read'] = 1;
+ 				$this->request->data['Privilege']['_update'] = 1;
+ 				$this->request->data['Privilege']['_delete'] = 1;	
  			} else {
- 				$this->data['Privilege']['_create'] = -1;
- 				$this->data['Privilege']['_read'] = -1;
- 				$this->data['Privilege']['_update'] = -1;
- 				$this->data['Privilege']['_delete'] = -1;
+ 				$this->request->data['Privilege']['_create'] = -1;
+ 				$this->request->data['Privilege']['_read'] = -1;
+ 				$this->request->data['Privilege']['_update'] = -1;
+ 				$this->request->data['Privilege']['_delete'] = -1;
  			}
  			
  			if (!$this->Privilege->checkSection($split[1] , $split[0])) :
- 					if($this->data['Privilege']['_create'] != -1) : 
+ 					if($this->request->data['Privilege']['_create'] != -1) : 
  						$this->Privilege->create();
-	 					if ($this->Privilege->save($this->data)) :
+	 					if ($this->Privilege->save($this->request->data)) :
 							$message = __('Privileges Updated', true);
 						else : 
 							$message = __('Privlege update failed, please try again.', true);
@@ -45,7 +45,7 @@ class PrivilegesController extends PrivilegesAppController {
  					endif;
 	 		else :
 	 				$this->Privilege->id = $this->Privilege->checkSection($split[1] , $split[0]);
-	 				if ($this->Privilege->save($this->data)) :
+	 				if ($this->Privilege->save($this->request->data)) :
 						$message = __('Privileges Updated', true);
 					else : 
 						$message = __('Privlege update failed, please try again.', true);

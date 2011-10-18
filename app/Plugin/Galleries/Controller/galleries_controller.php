@@ -82,9 +82,9 @@ class GalleriesController extends GalleriesAppController {
 	}
 
 	function add($model = null, $foreignKey = null) {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			try {
-				$this->Gallery->GalleryImage->add($this->data, 'filename');
+				$this->Gallery->GalleryImage->add($this->request->data, 'filename');
 				$this->Session->setFlash(__('The Gallery has been saved', true));
 				$gallery = $this->Gallery->findbyId($this->Gallery->id);
 				$this->redirect(array('action' => 'edit', $gallery['Gallery']['model'], $gallery['Gallery']['foreign_key']));			
@@ -108,10 +108,10 @@ class GalleriesController extends GalleriesAppController {
 	 * @todo		Convert galleries to slugs or aliases, for easier linking into edit and views.
 	 */
 	function edit($model = null, $foreignKey = null) {		
-		if (!empty($this->data)) {				
-			if ($this->Gallery->save($this->data)) {
+		if (!empty($this->request->data)) {				
+			if ($this->Gallery->save($this->request->data)) {
 				$this->Session->setFlash(__('The Gallery has been saved', true));
-				$this->redirect(array('action'=>'edit', $this->data['Gallery']['model'], $this->data['Gallery']['foreign_key']));
+				$this->redirect(array('action'=>'edit', $this->request->data['Gallery']['model'], $this->request->data['Gallery']['foreign_key']));
 			} else {
 				$this->Session->setFlash(__('The Gallery could not be saved. Please, try again.', true));
 				$this->redirect($this->referer());
@@ -126,7 +126,7 @@ class GalleriesController extends GalleriesAppController {
 		}
 		
 		
-		if (empty($this->data)) {
+		if (empty($this->request->data)) {
 			$gallery = $this->Gallery->find('first', array(
 				'conditions' => array(
 					'Gallery.model' => $model,
@@ -140,8 +140,8 @@ class GalleriesController extends GalleriesAppController {
 			$this->set('value', $this->Gallery->_galleryVars($gallery)); 
 		}
 		
-		$this->data['Gallery']['model'] = $model;
-		$this->data['Gallery']['foreign_key'] = $foreignKey;
+		$this->request->data['Gallery']['model'] = $model;
+		$this->request->data['Gallery']['foreign_key'] = $foreignKey;
 		$this->set('types', $this->Gallery->types());
 	}
 	

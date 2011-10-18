@@ -102,8 +102,8 @@ class Webpage extends WebpagesAppModel {
 		/* Revisit this because I could not find where the function is, and it could be made better 
 		with having it possible to restrict user roles or available to only certain user roles
 		# if permissions are set, restrict them
-		if (!empty($this->data['ArosAco']['aro_id'])) {
-			$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->data['ArosAco']['aro_id'], true);
+		if (!empty($this->request->data['ArosAco']['aro_id'])) {
+			$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->request->data['ArosAco']['aro_id'], true);
 		}
 		*/
 	}	
@@ -125,8 +125,8 @@ class Webpage extends WebpagesAppModel {
 		/* Revisit this because I could not find where the function is, and it could be made better 
 		with having it possible to restrict user roles or available to only certain user roles
 		# if permissions are set, restrict them
-		if (!empty($this->data['ArosAco']['aro_id'])) {
-			$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->data['ArosAco']['aro_id'], true);
+		if (!empty($this->request->data['ArosAco']['aro_id'])) {
+			$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->request->data['ArosAco']['aro_id'], true);
 		}
 		*/
 	}

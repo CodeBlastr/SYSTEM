@@ -18,25 +18,25 @@ class FacebookController extends FacebookAppController {
 				if(isset($_REQUEST['signed_request'])) {
 					$response = $this->User->parse_signed_request($_REQUEST['signed_request'], Configure::read('Facebook.secret'));
 
-					$this->data['User']['full_name'] = $response['registration']['name'];
-					$this->data['User']['first_name'] = $response['registration']['first_name'];
-					$this->data['User']['last_name'] = $response['registration']['last_name'];
-					$this->data['User']['username'] = $response['registration']['username'];
-					$this->data['User']['password'] = $this->Auth->password($response['registration']['password']);
-					$this->data['User']['confirm_password'] = $response['registration']['password'];
-					$this->data['User']['email'] = $this->data['User']['confirm_email'] = $response['registration']['email'];
-					$this->data['User']['facebook_id'] = $_SESSION['FB']['uid'];
+					$this->request->data['User']['full_name'] = $response['registration']['name'];
+					$this->request->data['User']['first_name'] = $response['registration']['first_name'];
+					$this->request->data['User']['last_name'] = $response['registration']['last_name'];
+					$this->request->data['User']['username'] = $response['registration']['username'];
+					$this->request->data['User']['password'] = $this->Auth->password($response['registration']['password']);
+					$this->request->data['User']['confirm_password'] = $response['registration']['password'];
+					$this->request->data['User']['email'] = $this->request->data['User']['confirm_email'] = $response['registration']['email'];
+					$this->request->data['User']['facebook_id'] = $_SESSION['FB']['uid'];
 					
 				}
-				if(!empty($this->data)) {
+				if(!empty($this->request->data)) {
 					try {
-						$result = $this->User->add($this->data);
+						$result = $this->User->add($this->request->data);
 						if ($result === true) {
 							$this->Session->setFlash(__d('users', 'Successful Registration', true));
-							$this->Auth->login($this->data);
+							$this->Auth->login($this->request->data);
 							$this->redirect($this->_defaultLoginRedirect());				
 						} else {
-							$this->data = $result;
+							$this->request->data = $result;
 						}
 					} catch (Exception $e) {
 						# if registration verification is required the model will return this code

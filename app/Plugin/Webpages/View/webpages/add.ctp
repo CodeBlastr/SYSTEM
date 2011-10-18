@@ -2,9 +2,9 @@
 	<?php echo $this->Form->create('Webpage');?>
 	<h2><?php __('Webpage Builder');?></h2>
 	<fieldset>
-	<legend class="toggleClick"><?php __('Search Engine Optimization');?></legend>
+	<legend class="toggleClick"><?php echo __('Search Engine Optimization');?></legend>
     <?php 
-		echo $this->Form->input('Alias.name', array('label' => 'SEO Url (unique)', 'value' =>  $this->request->params['named']['alias']));
+		echo $this->Form->input('Alias.name', array('label' => 'SEO Url (unique)'));
 		echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => 'webpages'));
 		echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => 'webpages'));
 		echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => 'view'));
@@ -16,7 +16,7 @@
     
     
 	<fieldset>
-	<legend class="toggleClick"><?php __('Access Rights');?></legend>
+	<legend class="toggleClick"><?php echo __('Access Rights');?></legend>
     <?php 
 		echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => 'User Roles', 'type' => 'select', 'multiple' => true, 'options' => $userRoles, 'between' => '<br>Site settings used by default, if you use this, only these groups will have access.'));
 	?>

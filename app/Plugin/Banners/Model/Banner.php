@@ -72,8 +72,8 @@ class Banner extends AppModel {
 	
 	function _comparePrice() {
 		# fyi, confirm password is hashed in the beforeValidate method
-		if (!empty($this->data['Banner']['discount_price']) && 
-				(40 > (($this->data['Banner']['price'] - $this->data['Banner']['discount_price']) / $this->data['Banner']['price'] * 100))) {
+		if (!empty($this->request->data['Banner']['discount_price']) && 
+				(40 > (($this->request->data['Banner']['price'] - $this->request->data['Banner']['discount_price']) / $this->request->data['Banner']['price'] * 100))) {
 			return false;
 		} else {
 			return true;

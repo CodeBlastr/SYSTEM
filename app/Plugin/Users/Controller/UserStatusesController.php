@@ -16,10 +16,10 @@ class UserStatusesController extends UsersAppController {
 	}
 
 	function add() {
-		if (!empty($this->data)) {
-			$this->data['UserStatus']['creator_id'] = $this->Auth->user('id');
+		if (!empty($this->request->data)) {
+			$this->request->data['UserStatus']['creator_id'] = $this->Auth->user('id');
 			$this->UserStatus->create();
-			if ($this->UserStatus->save($this->data)) {
+			if ($this->UserStatus->save($this->request->data)) {
 				$this->flash(__('Status saved.', true), array('action' => 'index'));
 				$this->redirect(array( 'plugin'=>'users', 'controller'=>'users' , 'action'=>'my'));
 			}
@@ -27,17 +27,17 @@ class UserStatusesController extends UsersAppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->flash(sprintf(__('Invalid user status', true)), array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->UserStatus->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->UserStatus->save($this->request->data)) {
 				$this->flash(__('Status updated.', true), array('action' => 'index'));
 			} else {
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->UserStatus->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->UserStatus->read(null, $id);
 		}
 	}
 
@@ -64,9 +64,9 @@ class UserStatusesController extends UsersAppController {
 	}
 
 	function admin_add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->UserStatus->create();
-			if ($this->UserStatus->save($this->data)) {
+			if ($this->UserStatus->save($this->request->data)) {
 				$this->flash(__('Userstatus saved.', true), array('action' => 'index'));
 			} else {
 			}
@@ -74,17 +74,17 @@ class UserStatusesController extends UsersAppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->flash(sprintf(__('Invalid user status', true)), array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->UserStatus->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->UserStatus->save($this->request->data)) {
 				$this->flash(__('The user status has been saved.', true), array('action' => 'index'));
 			} else {
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->UserStatus->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->UserStatus->read(null, $id);
 		}
 	}
 

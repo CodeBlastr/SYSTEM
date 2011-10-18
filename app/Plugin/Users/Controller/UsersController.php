@@ -36,14 +36,14 @@ class UsersController extends UsersAppController {
 	    } else {
 	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
 	    }
-		/*$this->data['User']['password'] = FormAuthenticate::password(
+		/*$this->request->data['User']['password'] = FormAuthenticate::password(
     	if ($this->Auth->login()) {
 			try {
-				$result = $this->User->loginMeta($this->data);
+				$result = $this->User->loginMeta($this->request->data);
 				if ($result) {
 		       		return $this->redirect($this->Auth->redirect());
 				} else {
-					$this->data = $result;
+					$this->request->data = $result;
 				}
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
@@ -56,9 +56,9 @@ class UsersController extends UsersAppController {
 	
 	/*function login() {
 		#$user['User'] = ($this->Session->read('Auth.User'));	
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			try {
-				$result = $this->User->loginMeta($this->data);
+				$result = $this->User->loginMeta($this->request->data);
 				#$this->Session->write('Auth', $result);
 				if ($result) {
 					$this->Auth->login();
@@ -69,7 +69,7 @@ class UsersController extends UsersAppController {
 						$this->redirect($redirect);
 					endif;
 				} else {
-					$this->data = $result;
+					$this->request->data = $result;
 				}
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
@@ -132,7 +132,7 @@ class UsersController extends UsersAppController {
 	function checkLogin() {
 		$this->layout = false;
 		$this->autoRender = false; 	
-        $user = $this->User->find('first', array('conditions' => array('username' => $this->data['User']['username'],'password' => $this->data['User']['password'])));	
+        $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => $this->request->data['User']['password'])));	
      	if($user){
      		$data['login'] = 1;
 		} else {
@@ -147,7 +147,7 @@ class UsersController extends UsersAppController {
 	 * @todo 		This should be updated to some kind of API login (maybe REST) so that any apps can authenticate.
 	 */
 	function desktop_login() { 	
-        $user = $this->User->find('first', array('conditions' => array('username' => $this->data['User']['username'],'password' => $this->data['User']['password'])));	
+        $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => $this->request->data['User']['password'])));	
         if($user!= null ){
 	        echo $user['User']['id']; 
 			$this->render(false);	    
@@ -268,7 +268,7 @@ class UsersController extends UsersAppController {
 		} else {
 			$conditions = array('User.user_id' => $this->Session->read('Auth.User.id'));
 		}
-		if (empty($this->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
+		if (empty($this->request->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
 			));
@@ -285,20 +285,20 @@ class UsersController extends UsersAppController {
 			$user['OrderPayment'] = $userBillingAddress['OrderPayment'];
 			
 			if(isset($user['User'])) {
-				$this->data = $user;
+				$this->request->data = $user;
 			} else {
-				$this->data = $this->User->read(null, $id);
+				$this->request->data = $this->User->read(null, $id);
 			}
 		# saving a user which was edited
-		} else if(!empty($this->data)) {
-			$this->data['User']['user_id'] = $this->Auth->user('id');
-			if(!empty($this->data['User']['avatar'])) {
+		} else if(!empty($this->request->data)) {
+			$this->request->data['User']['user_id'] = $this->Auth->user('id');
+			if(!empty($this->request->data['User']['avatar'])) {
 				# upload image if it was set
-				$this->data['User']['avatar_url'] = $this->Upload->image($this->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
+				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
-			if($this->User->save($this->data)) {
-				$this->User->OrderPayment->save($this->data);
-				$this->User->OrderShipment->save($this->data);	
+			if($this->User->save($this->request->data)) {
+				$this->User->OrderPayment->save($this->request->data);
+				$this->User->OrderShipment->save($this->request->data);	
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id));
 			}
@@ -315,15 +315,15 @@ class UsersController extends UsersAppController {
 	 * @todo	Not sure I like the use of contact in the url being possible.  My guess is that you could change the id and register as a different contact, and probably gain access to things you shouldn't.  Maybe switch to some kind of Security::cipher thing.  (on second thought, the database having a unique index on contact_id might keep this from happening)
 	 */
 	function register() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			try {
-				$result = $this->User->add($this->data);
+				$result = $this->User->add($this->request->data);
 				if ($result === true) {
 					$this->Session->setFlash(__d('users', 'Successful Registration', true));
-					$this->Auth->login($this->data);
+					$this->Auth->login($this->request->data);
 					$this->redirect($this->_defaultLoginRedirect());				
 				} else {
-					$this->data = $result;
+					$this->request->data = $result;
 				}
 			} catch (Exception $e) {
 				# if registration verification is required the model will return this code
@@ -352,7 +352,7 @@ class UsersController extends UsersAppController {
 			break;
 		endif;
 		
-		$this->data['Contact']['id'] = !empty($this->request->params['named']['contact']) ? $this->request->params['named']['contact'] : null;
+		$this->request->data['Contact']['id'] = !empty($this->request->params['named']['contact']) ? $this->request->params['named']['contact'] : null;
 		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
 	}
 
@@ -392,12 +392,12 @@ If you have received this message in error please ignore, the link will be unusa
 	
 	
 	function _admin_edit($id = null) {
-		if (empty($this->data)) {
-			$this->data = $this->User->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->User->read(null, $id);
 			$userRoles = $this->User->UserRole->find('list');
 			$this->set(compact('userRoles'));
-		} else if(!empty($this->data)) {
-			if($this->User->add($this->data)) {
+		} else if(!empty($this->request->data)) {
+			if($this->User->add($this->request->data)) {
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id));
 			} else {
@@ -411,15 +411,15 @@ If you have received this message in error please ignore, the link will be unusa
 
 	function __resetPasswordKey($userid) {
 		$user = $this->User->find('first', array('conditions' => array('id' => $userid))); 
-		unset($this->data['User']['username']);
-		$this->data['User']['id'] = $userid;
-		$this->data['User']['forgot_key'] = $this->User->__uid('F'); 
-		$this->data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
-		$this->data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
-		$this->data['User']['user_role_id'] = $user['User']['user_role_id'];
+		unset($this->request->data['User']['username']);
+		$this->request->data['User']['id'] = $userid;
+		$this->request->data['User']['forgot_key'] = $this->User->__uid('F'); 
+		$this->request->data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+		$this->request->data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
+		$this->request->data['User']['user_role_id'] = $user['User']['user_role_id'];
 		$this->User->Behaviors->detach('Translate');
-		if ($this->User->save($this->data, array('validate' => false))) {
-			return $this->data['User']['forgot_key'];
+		if ($this->User->save($this->request->data, array('validate' => false))) {
+			return $this->request->data['User']['forgot_key'];
 		} else {
 			return false;
 		}
@@ -457,9 +457,9 @@ If you have received this message in error please ignore, the link will be unusa
 	 * @todo			This message needs to be configurable.
 	 */
 	function forgot_password() {
-		if(!empty($this->data))	{
+		if(!empty($this->request->data))	{
 			# we need to check the username field and the email field
-		  	$user = $this->User->findbyUsername(trim($this->data['User']['username']));
+		  	$user = $this->User->findbyUsername(trim($this->request->data['User']['username']));
 			if (!empty($user['User']['id']) && !empty($user['User']['email'])) {
 				# the user details exist 
 				# so first lets update the user record with a temporary uid key to use for resetting password

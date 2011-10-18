@@ -75,8 +75,8 @@ class SettingsController extends AppController {
 	}
 
 	function add() {
-		if (!empty($this->data)) {
-			if ($this->Setting->add($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->Setting->add($this->request->data)) {
 				$this->Session->setFlash(__('The Setting has been saved', true));
 				$this->redirect(array('action'=>'index'));
 			} else {
@@ -93,12 +93,12 @@ class SettingsController extends AppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data) && empty($this->request->params['named'])) {
+		if (!$id && empty($this->request->data) && empty($this->request->params['named'])) {
 			$this->Session->setFlash(__('Invalid Setting', true));
 			$this->redirect(array('action'=>'index'));
 		} 
-		if (!empty($this->data)) {
-			if ($this->Setting->add($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->Setting->add($this->request->data)) {
 				$this->Session->setFlash(__('The Setting has been saved', true));
 				$this->redirect(array('action'=>'index'));
 			} else {
@@ -106,18 +106,18 @@ class SettingsController extends AppController {
 			}
 		}
 		if (!empty($this->request->params['named'])) {
-			$this->data = $this->Setting->find('first', array(
+			$this->request->data = $this->Setting->find('first', array(
 				'conditions' => array(
 					'type_id' => enum(null, $this->request->params['named']['type']), 
 					'name' => $this->request->params['named']['name'],
 					),
 				));
 			$this->set('typeId', enum(null, $this->request->params['named']['type'])); 
-			$this->data['Setting']['name'] = $this->request->params['named']['name'];
-			$this->data['Setting']['description'] = $this->Setting->getDescription($this->request->params['named']['type'], $this->request->params['named']['name']); 
+			$this->request->data['Setting']['name'] = $this->request->params['named']['name'];
+			$this->request->data['Setting']['description'] = $this->Setting->getDescription($this->request->params['named']['type'], $this->request->params['named']['name']); 
 		}
-		if (empty($this->data)) {
-			$this->data = $this->Setting->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->Setting->read(null, $id);
 		}
 		$types = $this->Setting->types();
 		$this->set(compact('types')); 

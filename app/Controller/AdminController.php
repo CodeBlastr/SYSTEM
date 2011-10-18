@@ -36,9 +36,9 @@ class AdminController extends AppController {
 	 */
     function index () {
 		$this->Setting = ClassRegistry::init('Setting');
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$previousUpgrade = $this->_checkIfLatestVersion();
-			if($this->_upgradeDatabase($this->data)) {
+			if($this->_upgradeDatabase($this->request->data)) {
 				$this->set('previousUpgrade', $previousUpgrade);
 				$this->Session->setFlash(__('Database Upgraded (you may still need to <a href="/admin/permissions/acores/build_acl">rebuild aco objects</a> (note : clicking this link may take a long time)', true));
 			} else {
@@ -96,7 +96,7 @@ class AdminController extends AppController {
 		$this->request->data['Setting']['name'] = 'ZUHA_DB_VERSION';
 		$this->request->data['Setting']['value'] = $this->dbVersion + 0.0001;
 		
-		if ($this->Setting->add($this->data)) {
+		if ($this->Setting->add($this->request->data)) {
 			$this->dbVersion = $this->dbVersion + 0.0001;
 			return true;
 		} else {

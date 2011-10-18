@@ -41,9 +41,9 @@ class UserRolesController extends AppController {
 	}
 
 	function add() {	
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->UserRole->create();
-			if ($this->UserRole->save($this->data)) {
+			if ($this->UserRole->save($this->request->data)) {
 				$this->Session->setFlash(__('The UserRole has been saved', true));
 				$this->redirect(array('action'=>'index'));
 			} else {
@@ -54,20 +54,20 @@ class UserRolesController extends AppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid UserRole', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->UserRole->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->UserRole->save($this->request->data)) {
 				$this->Session->setFlash(__('The UserRole has been saved', true));
 				$this->redirect(array('action'=>'index'));
 			} else {
 				$this->Session->setFlash(__('The UserRole could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->UserRole->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->UserRole->read(null, $id);
 		}
 		$this->set('viewPrefixes', $this->UserRole->viewPrefixes);
 	}

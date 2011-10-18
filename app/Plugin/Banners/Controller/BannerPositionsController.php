@@ -17,9 +17,9 @@ class BannerPositionsController extends AppController {
 	}
 
 	function admin_add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->BannerPosition->create();
-			if ($this->BannerPosition->save($this->data)) {
+			if ($this->BannerPosition->save($this->request->data)) {
 				$this->Session->setFlash(__('The banner position has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -33,20 +33,20 @@ class BannerPositionsController extends AppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid banner position', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->BannerPosition->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->BannerPosition->save($this->request->data)) {
 				$this->Session->setFlash(__('The banner position has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The banner position could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->BannerPosition->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->BannerPosition->read(null, $id);
 		}
 		$creators = $this->BannerPosition->Creator->find('list');
 		$modifiers = $this->BannerPosition->Modifier->find('list');

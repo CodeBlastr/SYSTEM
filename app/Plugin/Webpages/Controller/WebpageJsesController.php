@@ -38,9 +38,9 @@ class WebpageJsesController extends WebpagesAppController {
 	}
 
 	function add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			try {
-				$this->WebpageJs->add($this->data);
+				$this->WebpageJs->add($this->request->data);
 				$this->redirect(array('action' => 'index'));
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
@@ -51,20 +51,20 @@ class WebpageJsesController extends WebpagesAppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid webpage js', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->WebpageJs->update($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->WebpageJs->update($this->request->data)) {
 				$this->Session->setFlash(__('The webpage js has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The webpage js could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->WebpageJs->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->WebpageJs->read(null, $id);
 		}
 		$webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
 		$this->set(compact('webpages'));
@@ -100,9 +100,9 @@ class WebpageJsesController extends WebpagesAppController {
 	}
 
 	function admin_add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->WebpageJs->create();
-			if ($this->WebpageJs->add($this->data)) {
+			if ($this->WebpageJs->add($this->request->data)) {
 				$this->Session->setFlash(__('The webpage js has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -114,20 +114,20 @@ class WebpageJsesController extends WebpagesAppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid webpage js', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->WebpageJs->update($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->WebpageJs->update($this->request->data)) {
 				$this->Session->setFlash(__('The webpage js has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The webpage js could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->WebpageJs->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->WebpageJs->read(null, $id);
 		}
 		$webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
 		$this->set(compact('webpages'));

@@ -49,4 +49,4 @@ echo $this->Element('context_menu', array('menus' => array(
 		),
 	)));
 ?>
-<?php #debug($this->data); ?>
+<?php #debug($this->request->data); ?>

@@ -54,10 +54,10 @@ class UserGroupsController extends UsersAppController {
 	}
 
 	function add() {
-		if (!empty($this->data)) {
-			$this->data["UserGroup"]["creator"] = $this->Auth->user('id');
+		if (!empty($this->request->data)) {
+			$this->request->data["UserGroup"]["creator"] = $this->Auth->user('id');
 			$this->UserGroup->create();
-			if ($this->UserGroup->save($this->data)) {
+			if ($this->UserGroup->save($this->request->data)) {
 				//Set the data for the join table the creator has to be the moderator.
 				$pg_data = array(
 					'UsersUserGroup'=>array(
@@ -88,7 +88,7 @@ class UserGroupsController extends UsersAppController {
 		//set the data 
 		// MOVED to the users_user_groups
 		
-		/*$this->data = array(
+		/*$this->request->data = array(
 			'UserGroup'=>array(
 				'id'=>$group_id
 			),
@@ -98,25 +98,25 @@ class UserGroupsController extends UsersAppController {
 		);
 		
 		$this->UserGroup->create();
-		$this->UserGroup->save($this->data);*/
+		$this->UserGroup->save($this->request->data);*/
 		//$this->redirect(array('plugin'=>'users','controller'=>'user_groups' , 'action'=>'index'));
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid user role', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->UserGroup->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->UserGroup->save($this->request->data)) {
 				$this->Session->setFlash(__('Group has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('Group could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->UserGroup->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->UserGroup->read(null, $id);
 		}
 	}
 
@@ -146,9 +146,9 @@ class UserGroupsController extends UsersAppController {
 	}
 
 	function admin_add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->UserGroup->create();
-			if ($this->UserGroup->save($this->data)) {
+			if ($this->UserGroup->save($this->request->data)) {
 				$this->Session->setFlash(__('Group has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -158,20 +158,20 @@ class UserGroupsController extends UsersAppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid group', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->UserGroup->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->UserGroup->save($this->request->data)) {
 				$this->Session->setFlash(__('Group has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('Group could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->UserGroup->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->UserGroup->read(null, $id);
 		}
 	}
 

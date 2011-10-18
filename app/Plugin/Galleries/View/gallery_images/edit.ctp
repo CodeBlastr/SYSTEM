@@ -1,12 +1,12 @@
 <div class="galleryImages form">
-  <h2><?php __('Edit '); echo $this->data['GalleryImage']['caption']; ?></h2>
-  <img src="<?php echo $this->data['GalleryImage']['dir'].'thumb/small/'.$this->data['GalleryImage']['filename']; ?>" />	    
+  <h2><?php __('Edit '); echo $this->request->data['GalleryImage']['caption']; ?></h2>
+  <img src="<?php echo $this->request->data['GalleryImage']['dir'].'thumb/small/'.$this->request->data['GalleryImage']['filename']; ?>" />	    
 <?php echo $this->Form->create('GalleryImage', array('enctype'=>'multipart/form-data'));?>
 	<fieldset>
  		<legend><?php __('Edit Image'); ?></legend>
 	<?php
 		echo $this->Form->input('GalleryImage.id');
-		echo $this->Form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $this->data['GalleryImage']['gallery_id']));
+		echo $this->Form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $this->request->data['GalleryImage']['gallery_id']));
 		echo $this->Form->input('GalleryImage.filename', array('type' => 'file'));
 		echo $this->Form->input('GalleryImage.caption', array('type' => 'text'));
 		echo $this->Form->input('GalleryImage.description', array('type' => 'richtext'));

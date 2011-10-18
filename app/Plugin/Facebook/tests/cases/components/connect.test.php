@@ -12,7 +12,7 @@ class TestUser extends CakeTestModel {
   var $useTable = false;
   
   function save($data){
-    $this->data = $data;
+    $this->request->data = $data;
   }
   
   function hasField(){
@@ -37,7 +37,7 @@ class TestUserHasOne extends CakeTestModel {
   var $useTable = false;
   
   function save($data){
-    $this->data = $data;
+    $this->request->data = $data;
   }
   
   function hasField(){
@@ -73,7 +73,7 @@ class TestUserError extends CakeTestModel {
   var $useTable = false;
   
   function save($data){
-    $this->data = $data;
+    $this->request->data = $data;
   }
   
   function hasField(){

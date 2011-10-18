@@ -17,9 +17,9 @@ class BannerViewsController extends AppController {
 	}
 
 	function add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->BannerView->create();
-			if ($this->BannerView->save($this->data)) {
+			if ($this->BannerView->save($this->request->data)) {
 				$this->Session->setFlash(__('The banner view has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -31,20 +31,20 @@ class BannerViewsController extends AppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid banner view', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->BannerView->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->BannerView->save($this->request->data)) {
 				$this->Session->setFlash(__('The banner view has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The banner view could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->BannerView->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->BannerView->read(null, $id);
 		}
 		$banners = $this->BannerView->Banner->find('list');
 		$this->set(compact('banners'));
@@ -76,9 +76,9 @@ class BannerViewsController extends AppController {
 	}
 
 	function admin_add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->BannerView->create();
-			if ($this->BannerView->save($this->data)) {
+			if ($this->BannerView->save($this->request->data)) {
 				$this->Session->setFlash(__('The banner view has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -90,20 +90,20 @@ class BannerViewsController extends AppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid banner view', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->BannerView->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->BannerView->save($this->request->data)) {
 				$this->Session->setFlash(__('The banner view has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The banner view could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->BannerView->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->BannerView->read(null, $id);
 		}
 		$banners = $this->BannerView->Banner->find('list');
 		$this->set(compact('banners'));

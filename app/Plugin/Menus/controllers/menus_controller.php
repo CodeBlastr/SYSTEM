@@ -59,9 +59,9 @@ class MenusController extends MenusAppController {
 	}
 
 	function add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->Menu->create();
-			if ($this->Menu->save($this->data)) {
+			if ($this->Menu->save($this->request->data)) {
 				$this->Session->setFlash(__('The menu has been saved', true));
 				$this->redirect(array('controller' => 'menu_items', 'action' => 'add', $this->Menu->id));
 			} else {
@@ -73,20 +73,20 @@ class MenusController extends MenusAppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid menu', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->Menu->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->Menu->save($this->request->data)) {
 				$this->Session->setFlash(__('The menu has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->Menu->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->Menu->read(null, $id);
 		}
 		$types = $this->Menu->types();
 		$this->set(compact('types'));

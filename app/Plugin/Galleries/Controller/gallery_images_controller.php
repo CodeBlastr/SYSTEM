@@ -4,8 +4,8 @@ class GalleryImagesController extends GalleriesAppController {
 	var $name = 'GalleryImages';
 
 	function edit($id = null) {
-		if (!empty($this->data)) {
-			if ($this->GalleryImage->add($this->data, 'filename')) {
+		if (!empty($this->request->data)) {
+			if ($this->GalleryImage->add($this->request->data, 'filename')) {
 				$this->Session->setFlash(__('The image has been saved', true));
 				$this->redirect($this->referer());
 			} else {
@@ -13,8 +13,8 @@ class GalleryImagesController extends GalleriesAppController {
 				$this->redirect($this->referer());
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->GalleryImage->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->GalleryImage->read(null, $id);
 		}
 	}
 
@@ -51,8 +51,8 @@ class GalleryImagesController extends GalleriesAppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!empty($this->data)) {
-			if ($this->GalleryImage->add($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->GalleryImage->add($this->request->data)) {
 				$this->Session->setFlash(__('The image has been saved', true));
 				$this->redirect($this->referer());
 			} else {
@@ -60,8 +60,8 @@ class GalleryImagesController extends GalleriesAppController {
 				$this->redirect($this->referer());
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->GalleryImage->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->GalleryImage->read(null, $id);
 		}
 	}
 

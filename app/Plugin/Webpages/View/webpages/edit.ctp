@@ -55,7 +55,7 @@ $this->Menu->setValue(
 			'items' => array(
 				$this->Html->link(__('Webpage List', true), array('controller' => 'webpages', 'action' => 'index')),
 				$this->Html->link(__('Add Webpage', true), array('controller' => 'webpages', 'action' => 'add'), array('title' => 'Add Webpage')),
-				$this->Html->link(__('View Webpage', true), array('controller' => 'webpages', 'action' => 'view', $this->data['Webpage']['id'])),
+				$this->Html->link(__('View Webpage', true), array('controller' => 'webpages', 'action' => 'view', $this->request->data['Webpage']['id'])),
 				$this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Webpage.id'))),
 					 )
 				)

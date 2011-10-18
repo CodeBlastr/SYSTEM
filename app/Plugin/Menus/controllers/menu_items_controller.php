@@ -15,10 +15,10 @@ class MenuItemsController extends MenusAppController {
 		$i = 0;
 		foreach ($_REQUEST['order'] as $item) {
 			if ($item['item_id'] != 'root') {
-				$this->data['MenuItem']['id'] = $item['item_id'];
-				$this->data['MenuItem']['parent_id'] = $item['parent_id'] == 'root' ? $menuItem['MenuItem']['menu_id'] : $item['parent_id'];
-				$this->data['MenuItem']['order'] = $i;
-				$this->MenuItem->save($this->data);
+				$this->request->data['MenuItem']['id'] = $item['item_id'];
+				$this->request->data['MenuItem']['parent_id'] = $item['parent_id'] == 'root' ? $menuItem['MenuItem']['menu_id'] : $item['parent_id'];
+				$this->request->data['MenuItem']['order'] = $i;
+				$this->MenuItem->save($this->request->data);
 			}
 			$i++;
 		}
@@ -74,18 +74,18 @@ class MenuItemsController extends MenusAppController {
 		# if these are set we have enough to create an item
 		if (!empty($menuId) && !empty($linkText) && !empty($linkUrl)) {
 			if($menu = $this->MenuItem->Menu->find('first', array('conditions' => array('Menu.id' => $menuId)))) {
-				$this->data['MenuItem']['parent_id'] = $menu['Menu']['id'];
-				$this->data['MenuItem']['menu_id'] = $menuId;
-				$this->data['MenuItem']['item_text'] = $linkText;
-				$this->data['MenuItem']['item_url'] = base64_decode($linkUrl);
+				$this->request->data['MenuItem']['parent_id'] = $menu['Menu']['id'];
+				$this->request->data['MenuItem']['menu_id'] = $menuId;
+				$this->request->data['MenuItem']['item_text'] = $linkText;
+				$this->request->data['MenuItem']['item_url'] = base64_decode($linkUrl);
 			}
 		}
 		
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			try {
-				$this->MenuItem->add($this->data);
+				$this->MenuItem->add($this->request->data);
 				$this->Session->setFlash(__d('menus', 'Menu item added.', true));
-				$this->redirect(array('controller' => 'menus', 'action' => 'view', $this->data['MenuItem']['menu_id']));
+				$this->redirect(array('controller' => 'menus', 'action' => 'view', $this->request->data['MenuItem']['menu_id']));
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}
@@ -100,37 +100,37 @@ class MenuItemsController extends MenusAppController {
 		}
 		$itemTargets = $this->MenuItem->itemTargets();
 		$this->set(compact('menuId', 'menus', 'parents', 'itemTargets'));
-		$this->data['MenuItem']['item_text'] = urldecode($linkText);
-		$this->data['MenuItem']['item_url'] = base64_decode($linkUrl);
+		$this->request->data['MenuItem']['item_text'] = urldecode($linkText);
+		$this->request->data['MenuItem']['item_url'] = base64_decode($linkUrl);
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid menu', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->MenuItem->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->MenuItem->save($this->request->data)) {
 				$this->Session->setFlash(__('The menu has been saved', true));
 				$this->redirect($this->referer());
 			} else {
 				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->MenuItem->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->MenuItem->read(null, $id);
 		}
 		
 		$menus = $this->MenuItem->Menu->find('list', array('conditions' => array('Menu.menu_id' => null)));
 		$parents = $this->MenuItem->ParentMenuItem->generatetreelist(array(
-			'ParentMenuItem.menu_id' => $this->data['MenuItem']['menu_id']));
+			'ParentMenuItem.menu_id' => $this->request->data['MenuItem']['menu_id']));
 		$itemTargets = $this->MenuItem->itemTargets();
 		$this->set(compact('menus', 'parents', 'itemTargets'));
 	}
 
 	function delete($id = null) {
-		if (!empty($this->data['MenuItem']['id'])) {
-			$id = $this->data['MenuItem']['id'];
+		if (!empty($this->request->data['MenuItem']['id'])) {
+			$id = $this->request->data['MenuItem']['id'];
 		}
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for menu item', true));

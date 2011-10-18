@@ -70,9 +70,9 @@ class WebpagesController extends WebpagesAppController {
 	}
 	
 	function add() {	
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			try {
-				$this->Webpage->add($this->data);
+				$this->Webpage->add($this->request->data);
 				$this->Session->setFlash(__('Saved successfully', true));
 				$this->redirect(array('action'=>'index'));
 			} catch(Exception $e) {
@@ -81,6 +81,7 @@ class WebpagesController extends WebpagesAppController {
 		}
 		
 		# reuquired to have per page permissions
+		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? $this->request->params['named']['alias'] : null;
 		$this->UserRole = ClassRegistry::init('Users.UserRole');
 		$userRoles = $this->UserRole->find('list');
 		$types = $this->Webpage->types();
@@ -88,14 +89,14 @@ class WebpagesController extends WebpagesAppController {
 	}
 	
 	function edit($id = null) {		
-		if (empty($id) && empty($this->data)) {
+		if (empty($id) && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid Webpage', true));
 			$this->redirect(array('action'=>'index'));
 		}
 
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			try {
-				$this->Webpage->update($this->data);
+				$this->Webpage->update($this->request->data);
 				$this->Session->setFlash(__('Saved successfully', true));
 				$this->redirect(array('action'=>'index'));
 			} catch(Exception $e) {
@@ -103,10 +104,10 @@ class WebpagesController extends WebpagesAppController {
 			}
 		}
 		
-		if (empty($this->data)) {
+		if (empty($this->request->data)) {
 			$this->Webpage->contain('Alias');
-			$this->data = $this->Webpage->read(null, $id);
-			$this->data = $this->Webpage->cleanOutputData($this->data);
+			$this->request->data = $this->Webpage->read(null, $id);
+			$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
 		}
 		
 		# reuquired to have per page permissions
@@ -115,7 +116,7 @@ class WebpagesController extends WebpagesAppController {
 		$types = $this->Webpage->types();
 		
 		$this->set(compact('userRoles', 'types'));
-		if ($this->data['Webpage']['type'] == 'template') {
+		if ($this->request->data['Webpage']['type'] == 'template') {
 			if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
 				$cssFiles = unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES);
 				$cssFile = $cssFiles['all'][0];
@@ -159,11 +160,11 @@ class WebpagesController extends WebpagesAppController {
 		$msg   = "";
 		$err   = false;
 		$pageData =  $this->params['form']['pageData'];
-		$this->data = $this->Webpage->read(null, $id);
-		if (!empty($this->data)) {
-			$this->data['Webpage']['content'] = $pageData;
+		$this->request->data = $this->Webpage->read(null, $id);
+		if (!empty($this->request->data)) {
+			$this->request->data['Webpage']['content'] = $pageData;
 			Inflector::variable("Webpage");
-			if ($this->Webpage->save($this->data)) {
+			if ($this->Webpage->save($this->request->data)) {
 				$msg = "Page saved";
 			}
 			else {

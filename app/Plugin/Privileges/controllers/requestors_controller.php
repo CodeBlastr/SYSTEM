@@ -12,18 +12,18 @@ class RequestorsController extends PrivilegesAppController {
 	 * @todo		Requestor.alias isn't being filled in when users or roles are added.
 	 */
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->flash(__('Invalid Requestor', true), array('action'=>'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->Requestor->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->Requestor->save($this->request->data)) {
 				$this->flash(__('The Requestor has been saved.', true), array('action'=>'index'));
 			} else {
 			}
 		}
-		if (empty($this->data)) {
+		if (empty($this->request->data)) {
 			$this->Requestor->recursive = 0;
-			$this->data = $this->Requestor->read(null, $id);
+			$this->request->data = $this->Requestor->read(null, $id);
 		}
 	}
 

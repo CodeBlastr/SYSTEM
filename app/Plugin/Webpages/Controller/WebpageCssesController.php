@@ -37,9 +37,9 @@ class WebpageCssesController extends WebpagesAppController {
 	}
 
 	function add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->WebpageCss->create();
-			if ($this->WebpageCss->add($this->data)) {
+			if ($this->WebpageCss->add($this->request->data)) {
 				header("Pragma: no-cache"); 
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
@@ -53,20 +53,20 @@ class WebpageCssesController extends WebpagesAppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid webpage css', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->WebpageCss->update($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->WebpageCss->update($this->request->data)) {
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The webpage css could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->WebpageCss->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->WebpageCss->read(null, $id);
 		}
 		$types = $this->WebpageCss->types();
 		$webpages = $this->WebpageCss->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
@@ -103,9 +103,9 @@ class WebpageCssesController extends WebpagesAppController {
 	}
 
 	function admin_add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->WebpageCss->create();
-			if ($this->WebpageCss->add($this->data)) {
+			if ($this->WebpageCss->add($this->request->data)) {
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -118,20 +118,20 @@ class WebpageCssesController extends WebpagesAppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid webpage css', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->WebpageCss->update($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->WebpageCss->update($this->request->data)) {
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The webpage css could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->WebpageCss->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->WebpageCss->read(null, $id);
 		}
 		$types = $this->WebpageCss->types();
 		$webpages = $this->WebpageCss->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));

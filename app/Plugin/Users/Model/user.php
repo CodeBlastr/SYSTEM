@@ -120,8 +120,8 @@ class User extends AppModel {
 	
 	function _comparePassword() {
 		# fyi, confirm password is hashed in the beforeValidate method
-		if (isset($this->data['User']['confirm_password']) && 
-				($this->data['User']['password'] == $this->data['User']['confirm_password'])) {
+		if (isset($this->request->data['User']['confirm_password']) && 
+				($this->request->data['User']['password'] == $this->request->data['User']['confirm_password'])) {
 			return true;
 		} else {
 			return false;
@@ -129,7 +129,7 @@ class User extends AppModel {
 	}
 	
 	function _emailRequired() {
-		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION') && empty($this->data['User']['email'])) {
+		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION') && empty($this->request->data['User']['email'])) {
 			return false;
 		} else {
 			return true;
@@ -138,22 +138,22 @@ class User extends AppModel {
 		
 	
 	function beforeValidate() {
-		$user = $this->findbyId($this->data['User']['id']);
-		$this->data = Set::merge($user, $this->data);
+		$user = $this->findbyId($this->request->data['User']['id']);
+		$this->request->data = Set::merge($user, $this->request->data);
 		# hash the confirm password for testing against the password
-		if (!empty($this->data['User']['confirm_password'])) {
-			$this->data['User']['confirm_password'] = Security::hash($this->data['User']['confirm_password'],'', true);
+		if (!empty($this->request->data['User']['confirm_password'])) {
+			$this->request->data['User']['confirm_password'] = Security::hash($this->request->data['User']['confirm_password'],'', true);
 		}
 		# if confirm password is not set at all, that means they weren't editing the user from a form with the passwords on it
-		if (!isset($this->data['User']['confirm_password']) && isset($this->data['User']['password'])) : 
-			$this->data['User']['confirm_password'] = $this->data['User']['password'];
+		if (!isset($this->request->data['User']['confirm_password']) && isset($this->request->data['User']['password'])) : 
+			$this->request->data['User']['confirm_password'] = $this->request->data['User']['password'];
 		endif;
 	}
 	
 	function beforeSave($options = array()) {
         // make a password for form auth.
-        $this->data['User']['form_hash'] = FormAuthenticate::password(
-            $this->data['User']['username'], $this->data['User']['password'], env('SERVER_NAME')
+        $this->request->data['User']['form_hash'] = FormAuthenticate::password(
+            $this->request->data['User']['username'], $this->request->data['User']['password'], env('SERVER_NAME')
         );
         return true;
     }
@@ -181,7 +181,7 @@ class User extends AppModel {
 				break;
 			}
 			$aroParent = $this->Aro->node(array(
-				'model' => 'UserRole', 'foreign_key' => $this->data['User']['user_role_id']));
+				'model' => 'UserRole', 'foreign_key' => $this->request->data['User']['user_role_id']));
 			$aroData = array(
 				'parent_id' => $aroParent[0]['Aro']['id'],
 				'model' => 'User',
@@ -209,15 +209,15 @@ class User extends AppModel {
 				break;
 			}
         } else {
-			if (!empty($this->data['User']['id']) && !empty($this->data['User']['user_role_id'])) {
+			if (!empty($this->request->data['User']['id']) && !empty($this->request->data['User']['user_role_id'])) {
 				$this->Aro = ClassRegistry::init('Aro');
-				$aro = $this->Aro->node(array('model' => 'User', 'foreign_key' => $this->data['User']['id']));
-				$aroParent = $this->Aro->node(array('model' => 'UserRole', 'foreign_key' => $this->data['User']['user_role_id']));
+				$aro = $this->Aro->node(array('model' => 'User', 'foreign_key' => $this->request->data['User']['id']));
+				$aroParent = $this->Aro->node(array('model' => 'UserRole', 'foreign_key' => $this->request->data['User']['user_role_id']));
 				$aroData = array(
 					'id' => $aro[0]['Aro']['id'],
 					'parent_id' => $aroParent[0]['Aro']['id'],
 					#'model' => 'User',
-					#'foreign_key' => $this->data['User']['id'],
+					#'foreign_key' => $this->request->data['User']['id'],
 					);
 	            if($this->Aro->save($aroData)) {
 				} else {
@@ -251,7 +251,7 @@ class User extends AppModel {
 	 */
 	function afterDelete() {
 		$this->Aco = ClassRegistry::init('Aco');
-		$acoNode = $this->Aco->node(array('model' => 'User', 'foreign_key' => $this->data['User']['id'])); 
+		$acoNode = $this->Aco->node(array('model' => 'User', 'foreign_key' => $this->request->data['User']['id'])); 
 		$this->Aco->delete($acoNode[0]['Aco']['id']);
 		parent::afterDelete();
 	}

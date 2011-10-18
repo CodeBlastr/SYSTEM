@@ -119,11 +119,11 @@ class SectionsController extends PrivilegesAppController {
 		$AclExtras = new AclExtrasComponent;
 		set_time_limit(1200);
 		
-		if(!empty($this->data)){
-			if (!empty($this->data['Section']['controller'])) : 
-				$AclExtras->aco_sync(array('controllers' => $this->data['Section']['controller']));
-			elseif (!empty($this->data['Section']['plugin'])) :
-				$AclExtras->aco_sync(array('plugins' => $this->data['Section']['plugin']));
+		if(!empty($this->request->data)){
+			if (!empty($this->request->data['Section']['controller'])) : 
+				$AclExtras->aco_sync(array('controllers' => $this->request->data['Section']['controller']));
+			elseif (!empty($this->request->data['Section']['plugin'])) :
+				$AclExtras->aco_sync(array('plugins' => $this->request->data['Section']['plugin']));
 			endif;
 				
 		} else {

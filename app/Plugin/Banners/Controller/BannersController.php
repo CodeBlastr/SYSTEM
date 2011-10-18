@@ -22,9 +22,9 @@ class BannersController extends AppController {
 	}
 
 	function add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->Banner->create();
-			if ($this->Banner->save($this->data)) {
+			if ($this->Banner->save($this->request->data)) {
 				$this->Session->setFlash(__('The banner has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -56,18 +56,18 @@ class BannersController extends AppController {
 	 * @todo		there might be a better way to handle the cart than emptying the cart before each checkout, once we use status in order to see if the banners are reserved, then we could add them all to cart or something like that
 	 */
 	function buy() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			
-			$bannerPrice = $this->Banner->getBannerPrice($this->data);
+			$bannerPrice = $this->Banner->getBannerPrice($this->request->data);
 			
 			$this->Banner->create();
-			if ($this->Banner->save($this->data)) {
+			if ($this->Banner->save($this->request->data)) {
 			
 				// if location is given and settings defined for locations 
-				if(isset($this->data['Banner']['location']) && defined('__ORDERS_LOCATIONS')) {
+				if(isset($this->request->data['Banner']['location']) && defined('__ORDERS_LOCATIONS')) {
 					$banner_locations = unserialize(__ORDERS_LOCATIONS);
 					$loc_settings = array();
-    	 			foreach($banner_locations[$this->data['Banner']['location']] as $k => $payOptions) {
+    	 			foreach($banner_locations[$this->request->data['Banner']['location']] as $k => $payOptions) {
         	 			$paySettings = explode(',' , $payOptions);
         	 		    $lsettings = array("receiverAmountArray.{$k}" => $paySettings[0],
         	 							"receiverEmailArray.{$k}" => $paySettings[1]);
@@ -75,27 +75,27 @@ class BannersController extends AppController {
     	 			}
 				}
 
-				$name = array('Age Group' =>$this->data['Banner']['age_group'],
-						 'Start Date' => $this->data['Banner']['schedule_start_date'], 
-						 'End Date' => $this->data['Banner']['schedule_end_date'], 
-						 'Gender' => $this->data['Banner']['gender'],
+				$name = array('Age Group' =>$this->request->data['Banner']['age_group'],
+						 'Start Date' => $this->request->data['Banner']['schedule_start_date'], 
+						 'End Date' => $this->request->data['Banner']['schedule_end_date'], 
+						 'Gender' => $this->request->data['Banner']['gender'],
 						 'Chained' => isset($loc_settings) ? $loc_settings : '' );
 
-				$this->data['OrderItem']['name'] = serialize($name);
-				$this->data['OrderItem']['price'] = $bannerPrice;
-				$this->data['OrderItem']['quantity'] = 1;
-				$this->data['OrderItem']['customer_id'] = $this->Auth->user("id");
-				$this->data['OrderItem']['status'] = 'incart';
-				$this->data['OrderItem']['foreign_key'] = $this->Banner->id;
-				$this->data['OrderItem']['model'] = 'Banner'; 
-				$this->data['OrderItem']['is_virtual'] = 1; 
+				$this->request->data['OrderItem']['name'] = serialize($name);
+				$this->request->data['OrderItem']['price'] = $bannerPrice;
+				$this->request->data['OrderItem']['quantity'] = 1;
+				$this->request->data['OrderItem']['customer_id'] = $this->Auth->user("id");
+				$this->request->data['OrderItem']['status'] = 'incart';
+				$this->request->data['OrderItem']['foreign_key'] = $this->Banner->id;
+				$this->request->data['OrderItem']['model'] = 'Banner'; 
+				$this->request->data['OrderItem']['is_virtual'] = 1; 
 				# remove old items from cart first, and delete reserved spots, you can only buy one banner at a time
 				$currentCartItems = $this->Banner->OrderItem->prepareCartData($this->Auth->user('id'));
 				if (!empty($currentCartItems)) { foreach ($currentCartItems as $currentItem) {
 					$this->Banner->OrderItem->delete($currentItem['OrderItem']['id']);
 				} }
 			
-				if ($this->Banner->OrderItem->save($this->data)) {
+				if ($this->Banner->OrderItem->save($this->request->data)) {
 					$this->redirect(array('plugin' => 'orders', 'controller' => 'order_transactions' , 'action'=>'checkout'));
 				} 
 			} else {
@@ -127,16 +127,16 @@ class BannersController extends AppController {
 	function get_avaialable_slots() {
 		Configure::write('debug', 0);
 		$this->autoRender = false;
-		$conditions = array('Banner.banner_position_id' => $this->data['Banner']['banner_position_id'],
-							'Banner.location' => $this->data['Banner']['location'] ,
-							//'Banner.schedule_start_date' => $this->data['Banner']['schedule_start_date'],
-							//'Banner.schedule_end_date' => $this->data['Banner']['schedule_start_date']
+		$conditions = array('Banner.banner_position_id' => $this->request->data['Banner']['banner_position_id'],
+							'Banner.location' => $this->request->data['Banner']['location'] ,
+							//'Banner.schedule_start_date' => $this->request->data['Banner']['schedule_start_date'],
+							//'Banner.schedule_end_date' => $this->request->data['Banner']['schedule_start_date']
 							'OR' => array('Banner.schedule_start_date BETWEEN ? AND ?' => array(
-											$this->data['Banner']['schedule_start_date'],
-											$this->data['Banner']['schedule_end_date']),
+											$this->request->data['Banner']['schedule_start_date'],
+											$this->request->data['Banner']['schedule_end_date']),
 										'Banner.schedule_end_date BETWEEN ? AND ?' => array(
-											$this->data['Banner']['schedule_start_date'],
-											$this->data['Banner']['schedule_end_date']))			
+											$this->request->data['Banner']['schedule_start_date'],
+											$this->request->data['Banner']['schedule_end_date']))			
 		);
 		$reservedSlots = $this->Banner->find('list', array(
 				'fields' => array('Banner.id', 'Banner.gender', 'Banner.age_group'),
@@ -225,28 +225,28 @@ class BannersController extends AppController {
 	}
 	
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid banner', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if (!empty($this->data['Banner']['discount_price']) && !empty($this->data['Banner']['price'])) {
-				$this->data['Banner']['discount_percentage'] = round((intval($this->data['Banner']['discount_price'])
-																		/intval($this->data['Banner']['price'])) * 100); 
+		if (!empty($this->request->data)) {
+			if (!empty($this->request->data['Banner']['discount_price']) && !empty($this->request->data['Banner']['price'])) {
+				$this->request->data['Banner']['discount_percentage'] = round((intval($this->request->data['Banner']['discount_price'])
+																		/intval($this->request->data['Banner']['price'])) * 100); 
 			}
-			if ($this->Banner->save($this->data)) {
-				if (!empty($this->data['Gallery']['id'])) {
+			if ($this->Banner->save($this->request->data)) {
+				if (!empty($this->request->data['Gallery']['id'])) {
 					try {
-						$this->Banner->Gallery->makeThumb($this->data);			
+						$this->Banner->Gallery->makeThumb($this->request->data);			
 					} catch (Exception $e) {
 						$this->Session->setFlash($e->getMessage());
 					}
 				} else {
-					$this->data['Gallery']['model'] = 'Banner';
-					$this->data['Gallery']['foreign_key'] = $this->Banner->id;
-					$this->Banner->Gallery->GalleryImage->add($this->data, 'filename');
+					$this->request->data['Gallery']['model'] = 'Banner';
+					$this->request->data['Gallery']['foreign_key'] = $this->Banner->id;
+					$this->Banner->Gallery->GalleryImage->add($this->request->data, 'filename');
 					# make the image the thumb (have to do this in case its an edit of a previous ad)
-					$this->data['GalleryImage']['id'] = $this->Banner->Gallery->GalleryImage->id;
+					$this->request->data['GalleryImage']['id'] = $this->Banner->Gallery->GalleryImage->id;
 				}
 				$this->Session->setFlash(__('Saved', true));
 				$this->redirect(array('action' => 'preview', $this->Banner->id));
@@ -254,8 +254,8 @@ class BannersController extends AppController {
 				$this->Session->setFlash(__('Could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->Banner->find('first', array(
+		if (empty($this->request->data)) {
+			$this->request->data = $this->Banner->find('first', array(
 				'conditions' => array(
 					'Banner.id' => $id
 					),
@@ -300,9 +300,9 @@ class BannersController extends AppController {
 	}
 
 	function admin_add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->Banner->create();
-			if ($this->Banner->save($this->data)) {
+			if ($this->Banner->save($this->request->data)) {
 				$this->Session->setFlash(__('The banner has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -317,20 +317,20 @@ class BannersController extends AppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid banner', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->Banner->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->Banner->save($this->request->data)) {
 				$this->Session->setFlash(__('The banner has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The banner could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->Banner->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->Banner->read(null, $id);
 		}
 		$bannerPositions = $this->Banner->BannerPosition->find('list');
 		$customers = $this->Banner->Customer->find('list');
@@ -359,10 +359,10 @@ class BannersController extends AppController {
 	 */
 	function banner_index() {
 		//save demographic data in session variables
-		$this->Session->write("email", $this->data['Banner']['email']);
-		$this->Session->write("gender", $this->data['Banner']['gender']);
-		$this->Session->write("age_group", $this->data['Banner']['age_group']);
-		$this->Session->write("location", $this->data['Banner']['location']);
+		$this->Session->write("email", $this->request->data['Banner']['email']);
+		$this->Session->write("gender", $this->request->data['Banner']['gender']);
+		$this->Session->write("age_group", $this->request->data['Banner']['age_group']);
+		$this->Session->write("location", $this->request->data['Banner']['location']);
 		
 		App::Import('Model', 'Location');
 		$req_loc = new Location();

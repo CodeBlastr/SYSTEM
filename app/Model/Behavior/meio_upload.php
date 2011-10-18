@@ -33,7 +33,7 @@ class MeioUploadBehavior extends ModelBehavior {
 		'createDirectory' => true,
 		'encryptedFolder' => false,
 		'dir' => '/upload/{ModelName}/{fieldName}',
-		'folderAsField' => null, // Can be the name of any field in $this->data
+		'folderAsField' => null, // Can be the name of any field in $this->request->data
 		'uploadName' => null, // Can also be the tokens {ModelName} or {fieldName}
 		'maxSize' => 7097152, // 7MB
 		'allowedMime' => array('image/jpeg', 'image/pjpeg', 'image/png', 'image/gif', 'image/bmp', 'image/x-icon', 'image/vnd.microsoft.icon'),
@@ -388,7 +388,7 @@ class MeioUploadBehavior extends ModelBehavior {
 				}
 				return false;
 			} else {
-				$this->data = $result['data'];
+				$this->request->data = $result['data'];
 				return true;
 			}
 		} else {

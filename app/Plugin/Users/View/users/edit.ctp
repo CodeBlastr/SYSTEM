@@ -11,7 +11,7 @@
 		?>
 		<h3>User Profile Info </h3>
 		<?php
-		echo $this->element('snpsht', array('useGallery' => true, 'userId' => $this->data['User']['id'], 'thumbSize' => 'medium', 'thumbLink' => 'default')); 
+		echo $this->element('snpsht', array('useGallery' => true, 'userId' => $this->request->data['User']['id'], 'thumbSize' => 'medium', 'thumbLink' => 'default')); 
 		echo $this->Form->input('User.first_name');
 		echo $this->Form->input('User.last_name');
 		echo $this->Form->input('User.username');
@@ -23,7 +23,7 @@
 
 <?php
 	//if user paid role id defined and user's role id is paid role id then show the link Cancel Subscription 
-	if(defined('__USERS_PAID_ROLE_ID') &&  __USERS_PAID_ROLE_ID == $this->data['User']['user_role_id'] ) {
+	if(defined('__USERS_PAID_ROLE_ID') &&  __USERS_PAID_ROLE_ID == $this->request->data['User']['user_role_id'] ) {
 	
 		//if membership catalog item redirect defined then show the link Change Subscription
 		if(defined('__APP_MEMBERSHIP_CATALOG_ITEM_REDIRECT')) {
@@ -31,7 +31,7 @@
 		}
 		
 		echo $this->Html->link('Cancel Subscription' , array('plugin' => 'members', 'controller' => 'members' , 
-								'action' => 'cancelSubscription', $this->data['User']['id']));
+								'action' => 'cancelSubscription', $this->request->data['User']['id']));
 	} 
 ?>
 
@@ -43,7 +43,7 @@ echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Users',
 		'items' => array(
-			$this->Html->link(__('View User', true), array('action' => 'view', $this->data['User']['id'])),
+			$this->Html->link(__('View User', true), array('action' => 'view', $this->request->data['User']['id'])),
 			$this->Html->link(__('Change Password', true), array($this->Form->value('User.id'), 'cpw' => 1)),
 			)
 		),

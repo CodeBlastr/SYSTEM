@@ -47,12 +47,12 @@ class AppController extends Controller {
 	 * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
 	 */
 	function redirect($url, $status = null, $exit = true) {
-		if (!empty($this->data['Success']['redirect']) && $status == 'success') :
-			return parent::redirect($this->data['Success']['redirect'], $status, $exit);
-		elseif (!empty($this->data['Error']['redirect']) && $status == 'error') :
-			return parent::redirect($this->data['Error']['redirect'], $status, $exit);
-		elseif (!empty($this->data['Override']['redirect'])) :
-			return parent::redirect($this->data['Override']['redirect'], $status, $exit);	
+		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') :
+			return parent::redirect($this->request->data['Success']['redirect'], $status, $exit);
+		elseif (!empty($this->request->data['Error']['redirect']) && $status == 'error') :
+			return parent::redirect($this->request->data['Error']['redirect'], $status, $exit);
+		elseif (!empty($this->request->data['Override']['redirect'])) :
+			return parent::redirect($this->request->data['Override']['redirect'], $status, $exit);	
 		else : 
 			return parent::redirect($url, $status, $exit);
 		endif;
@@ -74,7 +74,7 @@ class AppController extends Controller {
 		$conditions['controller'] = $this->request->params['controller'];
 		$conditions['action'] = $this->request->params['action'];
 		$conditions['extra_values'] = $this->params['pass'];
-		$this->Condition->checkAndFire('is_read', $conditions, $this->data); */
+		$this->Condition->checkAndFire('is_read', $conditions, $this->request->data); */
 		# End Condition Check #
 		# End DO NOT DELETE #
 			
@@ -214,9 +214,9 @@ class AppController extends Controller {
 	 */
 	function __admin_add() {
 		$model = Inflector::camelize(Inflector::singularize($this->request->params['controller']));
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->$model->create();
-			if ($this->$model->save($this->data)) {
+			if ($this->$model->save($this->request->data)) {
 				$this->Session->setFlash(__('Saved.', true));
 				$this->redirect($this->referer());
 			} else {
@@ -276,7 +276,7 @@ class AppController extends Controller {
 	 * and have more reusable code.
 	 */
 	function __ajax_edit($id = null) {
-        if ($this->data) {
+        if ($this->request->data) {
 			# This will not work for multiple fields, and is meant for a form with a single value to update
 			# Create the model name from the controller requested in the url
 			$model = Inflector::camelize(Inflector::singularize($this->request->params['controller']));
@@ -285,7 +285,7 @@ class AppController extends Controller {
 			//$this->$model = new $model();
 			# Working to determine if there is a sub model needed, for proper display of updated info
 			# For example Project->ProjectStatusType, this is typically denoted by if the field name has _id in it, becuase that means it probably refers to another database table.
-			foreach ($this->data[$model] as $key => $value) {
+			foreach ($this->request->data[$model] as $key => $value) {
 				# weeding out if the form data is id, because id is standard
 			    if($key != 'id') {
 					# we need to refer back to the actual field name ie. project_status_type_id
@@ -300,8 +300,8 @@ class AppController extends Controller {
 				}
 			}
 			
-            $this->$model->id = $this->data[$model]['id'];
-			$fieldValue = $this->data[$model][$fieldName];
+            $this->$model->id = $this->request->data[$model]['id'];
+			$fieldValue = $this->request->data[$model][$fieldName];
 			
 			# save the data here
         	if ($this->$model->saveField($fieldName, $fieldValue, true)) { 
@@ -768,9 +768,9 @@ class AppController extends Controller {
 		$this->layout = false;
 		$this->autoRender = false;
 
-		$data = ($this->data);
+		$data = ($this->request->data);
 		$data['requireAuth'] = 0;
-		$allowed = array_search($this->data['action'], $this->Auth->allowedActions);
+		$allowed = array_search($this->request->data['action'], $this->Auth->allowedActions);
 		
 		if ($allowed === 0 || $allowed > 0 ) {
 			$this->Auth->allow('*');

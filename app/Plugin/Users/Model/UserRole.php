@@ -31,11 +31,11 @@ class UserRole extends AppModel {
 	 * Right now it appears to be working so that sub user roles create sub Aros
 	 */
 	function parentNode() {
-   		if (!$this->id && empty($this->data)) {
+   		if (!$this->id && empty($this->request->data)) {
 	        return null;
 	    }
-	    $data = $this->data;
-	    if (empty($this->data)) {
+	    $data = $this->request->data;
+	    if (empty($this->request->data)) {
 	        $data = $this->read();
 	    }
 	    if (empty($data['UserRole']['parent_id'])) {
@@ -65,10 +65,10 @@ class UserRole extends AppModel {
         endif;
 		
 		# updates users view_prefix if its been changed
-		if (!empty($this->data['UserRole']['id'])) :
+		if (!empty($this->request->data['UserRole']['id'])) :
 			$this->User->updateAll(
-				array('User.view_prefix' => "'".$this->data['UserRole']['view_prefix']."'"),
-				array('User.user_role_id' => $this->data['UserRole']['id'])
+				array('User.view_prefix' => "'".$this->request->data['UserRole']['view_prefix']."'"),
+				array('User.user_role_id' => $this->request->data['UserRole']['id'])
 				);
 		endif;
 	}

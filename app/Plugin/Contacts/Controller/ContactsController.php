@@ -117,9 +117,9 @@ class ContactsController extends ContactsAppController {
 	 * @todo			Most of the list variables below need to have a find function put into those models, which finds the right enumeration type by default.  Its really ugly to have multiple instances of the "type" spelled out all over the place.
 	 */	 
 	function add($contactType = 'company', $contactId = null) {
-		if (!empty($this->data)) {			
+		if (!empty($this->request->data)) {			
 			try {
-				$message = $this->Contact->add($this->data);
+				$message = $this->Contact->add($this->request->data);
 				$this->Session->setFlash($message);
 				$this->redirect(array('action' => 'view', $this->Contact->id));
 			} catch (Exception $e) {
@@ -130,7 +130,7 @@ class ContactsController extends ContactsAppController {
 		
 		// load the contact drop down fields variables
 		$employers = $contactType == 'person' ? $this->Contact->Employer->findCompanies('list') : null;
-		$this->data['Employer']['Employer'] = !empty($contactId) ? $contactId : null;
+		$this->request->data['Employer']['Employer'] = !empty($contactId) ? $contactId : null;
 		$contactTypes = enum('CONTACTTYPE');
 		$contactSources = enum('CONTACTSOURCE');
 		$contactIndustries = enum('CONTACTINDUSTRY');
@@ -144,20 +144,20 @@ class ContactsController extends ContactsAppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid contact', true));
 			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->Contact->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->Contact->save($this->request->data)) {
 				$this->Session->setFlash(__('The contact has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The contact could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->Contact->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->Contact->read(null, $id);
 		}
 		$contactTypes = $this->Contact->ContactType->find('list');
 		$contactSources = $this->Contact->ContactSource->find('list');

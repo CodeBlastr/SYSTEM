@@ -1,6 +1,5 @@
 <?php 
-class CrumbHelper extends Helper
-{
+class CrumbHelper extends Helper {
 	var $link_class	= 'crumb_link'	;	// css class for anchor tags.
 	var $span_class	= 'crumb_span'	;	// css class for the span element .(last label).
 	var $separator	= ' ';

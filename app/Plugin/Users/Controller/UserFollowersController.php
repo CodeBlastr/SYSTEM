@@ -25,26 +25,26 @@ class UserFollowersController extends UsersAppController {
 	 */
 
 	function add($uid) {
-		$this->data['UserFollower']['user_id'] = $uid;
-		$this->data['UserFollower']['follower_id'] = $this->Auth->user('id');	
+		$this->request->data['UserFollower']['user_id'] = $uid;
+		$this->request->data['UserFollower']['follower_id'] = $this->Auth->user('id');	
 		$this->UserFollower->create();
-		if ($this->UserFollower->save($this->data)) {
+		if ($this->UserFollower->save($this->request->data)) {
 			$this->redirect(array('plugin'=>'users','controller'=>'users' , 'action'=>'view', $uid));
 		}
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->flash(sprintf(__('Invalid user follower', true)), array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->UserFollower->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->UserFollower->save($this->request->data)) {
 				$this->flash(__('The user follower has been saved.', true), array('action' => 'index'));
 			} else {
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->UserFollower->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->UserFollower->read(null, $id);
 		}
 		$users = $this->UserFollower->User->find('list');
 		$this->set(compact('users'));
@@ -73,9 +73,9 @@ class UserFollowersController extends UsersAppController {
 	}
 
 	function admin_add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->UserFollower->create();
-			if ($this->UserFollower->save($this->data)) {
+			if ($this->UserFollower->save($this->request->data)) {
 				$this->flash(__('UserFollower saved.', true), array('action' => 'index'));
 			} else {
 			}
@@ -85,17 +85,17 @@ class UserFollowersController extends UsersAppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->flash(sprintf(__('Invalid user follower', true)), array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->UserFollower->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->UserFollower->save($this->request->data)) {
 				$this->flash(__('The user follower has been saved.', true), array('action' => 'index'));
 			} else {
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->UserFollower->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->UserFollower->read(null, $id);
 		}
 		$users = $this->UserFollower->User->find('list');
 		$this->set(compact('users'));

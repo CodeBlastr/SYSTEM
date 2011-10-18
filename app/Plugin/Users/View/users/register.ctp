@@ -24,7 +24,7 @@
  ?>
  <div id="userRegister" class="user form">
   <h1><?php echo __('Register', true); ?></h1>
-  <?php echo $form->create('User', array('type' => 'file'));?>
+  <?php echo $this->Form->create('User', array('type' => 'file'));?>
   <?php echo $this->Form->input('Contact.id', array('type' => 'hidden')); ?>  
   <fieldset>
     <legend></legend>
@@ -32,7 +32,7 @@
 		if(defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) { 
 			echo $form->input('User.contact_type', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE));
 		} else {
-			echo $form->input('User.contact_type', array('type' => 'hidden', 'value' => 'person'));
+			echo $this->Form->input('User.contact_type', array('type' => 'hidden', 'value' => 'person'));
 		}
 		
 		echo !empty($userRoleId) ? $this->Form->hidden('User.user_role_id', array('value' => $userRoleId)) : $this->Form->input('User.user_role_id');
@@ -47,17 +47,17 @@
 		}
 	?>
   </fieldset>  
-  <?php echo $form->end('Submit');?> 
+  <?php echo $this->Form->end('Submit');?> 
 </div>
 <?php 
 // set the contextual menu items
-$menu->setValue(array(
+echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Users',
 		'items' => array(
-			$html->link(__('Login', true), array('plugin' => 'users', 'controller' => 'users', 'action' => 'login', 'admin' => 0)),
-			$html->link(__('Logout', true), array('plugin' => 'users', 'controller' => 'users', 'action' => 'logout', 'admin' => 0)),
+			$this->Html->link(__('Login', true), array('plugin' => 'users', 'controller' => 'users', 'action' => 'login', 'admin' => 0)),
+			$this->Html->link(__('Logout', true), array('plugin' => 'users', 'controller' => 'users', 'action' => 'logout', 'admin' => 0)),
 			 )
 		),
-  ));
+	)));
 ?>

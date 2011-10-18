@@ -28,10 +28,10 @@
  */
 class EnumerationsController extends AppController {
 	function admin_search() {
-		if(!empty($this->data)) {
-			$this->data['Enumeration']['query'] = str_replace('*','%',$this->data['Enumeration']['query']);
-			$this->data = $this->paginate('Enumeration',array(
-				'Enumeration.type LIKE' => $this->data['Enumeration']['query']
+		if(!empty($this->request->data)) {
+			$this->request->data['Enumeration']['query'] = str_replace('*','%',$this->request->data['Enumeration']['query']);
+			$this->request->data = $this->paginate('Enumeration',array(
+				'Enumeration.type LIKE' => $this->request->data['Enumeration']['query']
 			));
 			
 		}
@@ -51,7 +51,7 @@ class EnumerationsController extends AppController {
 		if(isset($this->request->params['named']['filter'])) {
 			$conditions['Enumeration.type LIKE'] = $this->request->params['named']['filter'] . '%';
 		}
-		$this->data = $this->paginate('Enumeration',$conditions);
+		$this->request->data = $this->paginate('Enumeration',$conditions);
 	}
 	
 	function admin_changeOrder($id=null,$mode='increase') {
@@ -84,9 +84,9 @@ class EnumerationsController extends AppController {
 	}
 	
 	function admin_add() {
-		if(!empty($this->data)) {
-			$this->data['Enumeration']['type'] = strtoupper($this->data['Enumeration']['type']);
-			if($this->Enumeration->save($this->data)) {
+		if(!empty($this->request->data)) {
+			$this->request->data['Enumeration']['type'] = strtoupper($this->request->data['Enumeration']['type']);
+			if($this->Enumeration->save($this->request->data)) {
 				$this->Session->setFlash('Enumeration saved!');
 				$this->redirect('/admin/Enumerations');
 			}
@@ -105,9 +105,9 @@ class EnumerationsController extends AppController {
 	}
 	
 	function admin_edit($id=null) {
-		if(!empty($this->data)) {
-			$this->data['Enumeration']['type'] = strtoupper($this->data['Enumeration']['type']);
-			if($this->Enumeration->save($this->data)) {
+		if(!empty($this->request->data)) {
+			$this->request->data['Enumeration']['type'] = strtoupper($this->request->data['Enumeration']['type']);
+			if($this->Enumeration->save($this->request->data)) {
 				$this->Session->setFlash('Enumeration saved!');
 				$this->redirect('/admin/Enumerations');
 			}
@@ -115,7 +115,7 @@ class EnumerationsController extends AppController {
 				$this->Session->setFlash('Unable to save Enumeration.');
 			}
 		}
-		$this->data = $this->Enumeration->find('first',array(
+		$this->request->data = $this->Enumeration->find('first',array(
 			'conditions' => array(
 				'Enumeration.id' => $id
 			)

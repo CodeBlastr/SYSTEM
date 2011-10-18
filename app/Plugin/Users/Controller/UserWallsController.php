@@ -22,11 +22,11 @@ class UserWallsController extends UsersAppController {
 	 */
 
 	function add($user_id) {
-		if (!empty($this->data)) {
-			$this->data['UserWall']['user_id'] = $user_id;
-			$this->data['UserWall']['creator_id'] = $this->Auth->user('id');
+		if (!empty($this->request->data)) {
+			$this->request->data['UserWall']['user_id'] = $user_id;
+			$this->request->data['UserWall']['creator_id'] = $this->Auth->user('id');
 			$this->UserWall->create();
-			if ($this->UserWall->save($this->data)) {
+			if ($this->UserWall->save($this->request->data)) {
 				$this->redirect(array('plugin'=>'users', 'controller'=>'users' , 'action'=>'view' , 'user_id'=>$user_id));
 			} else {
 			}
@@ -34,17 +34,17 @@ class UserWallsController extends UsersAppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->flash(sprintf(__('Invalid user wall', true)), array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->UserWall->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->UserWall->save($this->request->data)) {
 				$this->flash(__('The user wall has been saved.', true), array('action' => 'index'));
 			} else {
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->UserWall->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->UserWall->read(null, $id);
 		}
 	}
 
@@ -71,9 +71,9 @@ class UserWallsController extends UsersAppController {
 	}
 
 	function admin_add() {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			$this->UserWall->create();
-			if ($this->UserWall->save($this->data)) {
+			if ($this->UserWall->save($this->request->data)) {
 				$this->flash(__('Userwall saved.', true), array('action' => 'index'));
 			} else {
 			}
@@ -81,17 +81,17 @@ class UserWallsController extends UsersAppController {
 	}
 
 	function admin_edit($id = null) {
-		if (!$id && empty($this->data)) {
+		if (!$id && empty($this->request->data)) {
 			$this->flash(sprintf(__('Invalid user wall', true)), array('action' => 'index'));
 		}
-		if (!empty($this->data)) {
-			if ($this->UserWall->save($this->data)) {
+		if (!empty($this->request->data)) {
+			if ($this->UserWall->save($this->request->data)) {
 				$this->flash(__('The user wall has been saved.', true), array('action' => 'index'));
 			} else {
 			}
 		}
-		if (empty($this->data)) {
-			$this->data = $this->UserWall->read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->UserWall->read(null, $id);
 		}
 	}
 

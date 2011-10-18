@@ -18,7 +18,7 @@
 			<th>Order</th>
 			<th>Actions</th>
 		</tr>
-		<?php foreach($this->data as $enumeration) { ?>
+		<?php foreach($this->request->data as $enumeration) { ?>
 		<tr>
 			<td><?php echo $enumeration['Enumeration']['type'] ?></td>
 			<td><?php echo $enumeration['Enumeration']['name'] ?></td>

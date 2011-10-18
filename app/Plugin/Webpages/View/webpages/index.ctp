@@ -1,12 +1,5 @@
 <div class="webapges index">
 	<h2><?php __('Webpages');?></h2>
-	<p>
-		<?php
-			echo $this->Paginator->counter(array(
-			'format' => __('Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%', true)
-			));
-		?> | <?php echo $this->Html->link(__('Add New', true), array('action' => 'add')); ?>
-	</p>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 		<th><?php echo $this->Paginator->sort('id');?></th>
@@ -55,7 +48,7 @@
 	<?php endforeach; ?>
 	</table>
 </div>
-<?php echo $this->element('paging'); ?>
+<?php echo $this->Element('paging'); ?>
 
 <?php
 // set the contextual menu items
