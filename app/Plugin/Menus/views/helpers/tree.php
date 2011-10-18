@@ -131,7 +131,7 @@ class TreeHelper extends AppHelper {
         if ($indent === null && Configure::read()) { 
             $indent = true; 
         } 
-        $view =& ClassRegistry:: getObject('view'); 
+        $view =& ClassRegistry::getObject('view'); 
         if ($model === null) { 
             $model = Inflector::classify($view->params['models'][0]); 
         } 

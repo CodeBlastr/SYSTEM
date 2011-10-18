@@ -20,6 +20,9 @@
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
+ 
+App::uses('Model', 'Model');
+
 class AppModel extends Model {	
 	var $actsAs = array('Containable');
 	var $recursive = -1;

@@ -92,7 +92,7 @@ class MenuItemsController extends MenusAppController {
 		}
 		
 		if (!empty($menuId)) {
-			$parents = $this->MenuItem->ParentMenuItem->generatetreelist(array('ParentMenuItem.menu_id' => $menuId));
+			$parents = $this->MenuItem->ParentMenuItem->generateTreeList(array('ParentMenuItem.menu_id' => $menuId));
 			$menus = null;
 		} else {
 			$parents = null;
@@ -122,7 +122,7 @@ class MenuItemsController extends MenusAppController {
 		}
 		
 		$menus = $this->MenuItem->Menu->find('list', array('conditions' => array('Menu.menu_id' => null)));
-		$parents = $this->MenuItem->ParentMenuItem->generatetreelist(array(
+		$parents = $this->MenuItem->ParentMenuItem->generateTreeList(array(
 			'ParentMenuItem.menu_id' => $this->request->data['MenuItem']['menu_id']));
 		$itemTargets = $this->MenuItem->itemTargets();
 		$this->set(compact('menus', 'parents', 'itemTargets'));

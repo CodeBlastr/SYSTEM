@@ -27,7 +27,8 @@
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
 class EnumerationsController extends AppController {
-	function admin_search() {
+	
+	function search() {
 		if(!empty($this->request->data)) {
 			$this->request->data['Enumeration']['query'] = str_replace('*','%',$this->request->data['Enumeration']['query']);
 			$this->request->data = $this->paginate('Enumeration',array(
@@ -39,7 +40,7 @@ class EnumerationsController extends AppController {
 		$this->render('admin_index');
 	}
 	
-	function admin_index() {
+	function index() {
 		$this->paginate = array(
 			'order' => array(
 				'Enumeration.type' => 'ASC',
@@ -54,7 +55,7 @@ class EnumerationsController extends AppController {
 		$this->request->data = $this->paginate('Enumeration',$conditions);
 	}
 	
-	function admin_changeOrder($id=null,$mode='increase') {
+	function changeOrder($id=null,$mode='increase') {
 		$enumeration = $this->Enumeration->find('first',array(
 			'conditions' => array(
 				'Enumeration.id' => $id
@@ -72,18 +73,7 @@ class EnumerationsController extends AppController {
 		$this->redirect($this->referer());
 	}
 	
-	function index() {
-		$conditions = array();
-		if(isset($this->request->params['named']['type'])) {
-			$conditions['Enumeration.type'] = strtoupper($this->request->params['named']['type']);
-		}
-		$enumerations = $this->Enumeration->find('all',array(
-			'conditions' => $conditions
-		));
-		$this->set('enumerations',$enumerations);
-	}
-	
-	function admin_add() {
+	function add() {
 		if(!empty($this->request->data)) {
 			$this->request->data['Enumeration']['type'] = strtoupper($this->request->data['Enumeration']['type']);
 			if($this->Enumeration->save($this->request->data)) {
@@ -104,7 +94,7 @@ class EnumerationsController extends AppController {
 		$this->set('enumerationTypes',$enumerationTypes);
 	}
 	
-	function admin_edit($id=null) {
+	function edit($id=null) {
 		if(!empty($this->request->data)) {
 			$this->request->data['Enumeration']['type'] = strtoupper($this->request->data['Enumeration']['type']);
 			if($this->Enumeration->save($this->request->data)) {
@@ -130,7 +120,7 @@ class EnumerationsController extends AppController {
 		$this->set('enumerationTypes',$enumerationTypes);
 	}
 	
-	function admin_delete($id=null) {
+	function delete($id=null) {
 		if($this->Enumeration->delete($id)) {
 			$this->Session->setFlash('Enumeration deleted');
 		} else {

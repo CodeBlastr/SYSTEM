@@ -133,7 +133,7 @@ endforeach;
     <li class="actionItem"><?php echo $this->Paginator->sort($keyName);?></li>
     <?php endif; endforeach; ?>
     <?php if (!empty($pageActions)) : ?>
-    <li><?php echo __('Action'); ?></li>
+    <li class="actionHeading"><?php echo __('Action'); ?></li>
     <?php foreach ($pageActions as $pageAction) : ?>
     <li class="actionItem"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
     <?php endforeach; else : ?>

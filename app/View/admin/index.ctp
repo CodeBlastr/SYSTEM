@@ -85,11 +85,10 @@ if (!empty($previousUpgrade)) {
     <li><?php echo $this->Html->link('Faqs', array('plugin' => 'faqs', 'controller' => 'faqs', 'action' => 'index')); ?></li>
     <li><?php echo $this->Html->link('Maps', array('plugin' => 'maps', 'controller' => 'maps', 'action' => 'index')); ?></li>
     <li><?php echo $this->Html->link('Galleries', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'index')); ?></li>
-    <li class="separator"><a href="/admin/wikis">Wikis</a></li>
-    <!--li class="title">Labels</li-->
-    <li><a href="/admin/categories">Categories</a></li>
-    <li><a href="/admin/tags">Tags</a></li>
-    <li><a href="/admin/enumerations">Enumerations</a></li>
+    <li><?php echo $this->Html->link('Wikis', array('plugin' => 'wikis', 'controller' => 'wikis', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Categories', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Tags', array('plugin' => 'tags', 'controller' => 'tags', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Enumerations', array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index')); ?></li>
   </ul>
   <ul>
     <li> <a href="#"><span>Contacts</span></a></li>
@@ -97,8 +96,6 @@ if (!empty($previousUpgrade)) {
   <ul>
     <!--li class="title">Contacts</li-->
     <li><a href="/contacts">All Contacts</a></li>
-    <li><a href="/contacts/contact_people">People</a></li>
-    <li class="separator"><a href="/contacts/contact_companies">Companies</a></li>
     <!--li class="title">Tracking</li-->
     <li>
       <!--a href="/contacts/contacts/tasks"-->

@@ -100,17 +100,21 @@ if (empty($contact['Contact']['user_id'])) {
 	$userLink =  $this->Html->link(__('Edit User', true), array('plugin' => 'users', 'controller' => 'users', 'action' => 'edit', $contact['Contact']['user_id']));
 }
 ?>
-<div class="actions">
-	<ul>
-        <li>Contacts</li>
-        <li><?php echo $this->Html->link(__('Add Person to '.$contact['Contact']['name'], true), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'add', 'person', $contact['Contact']['id'])); ?></li>
-        <li>User Mgmt</li>
-    	<li><?php echo $userLink; ?></li>
-     </ul>
-</div>
-
-
-
+<?php
+// set the contextual menu items
+echo $this->Element('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Contacts',
+		'items' => array(
+			$this->Html->link(__('Add Person to '.$contact['Contact']['name'], true), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'add', 'person', $contact['Contact']['id'])),
+			),
+		),
+	array(
+		'heading' => 'Users',
+		'items' => array($userLink),
+		),
+	))); 
+?>
 
 
 <?php /*
