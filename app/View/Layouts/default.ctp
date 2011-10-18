@@ -43,7 +43,7 @@
       </div>
     </form>
   </div>
-  <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array('plugin' => $this->request->params['plugin'])) : ''; ?>
+  <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array(), array('plugin' => $this->request->params['plugin'])) : ''; ?>
   <div id="siteContent">
     <div id="contentWrap">
       <div id="content">
