@@ -49,7 +49,6 @@ App::build(array(
 		ROOT.DS.APP_DIR.DS.'views'.DS,
 		ROOT.DS.APP_DIR.DS.'View'.DS,
 		ROOT.DS.'app'.DS.'View'.DS,
-		ROOT.DS.'app'.DS.'Scaffolds'.DS,
 		),
 	'controllers' => array(
 		ROOT.DS.APP_DIR.DS.'controllers'.DS,

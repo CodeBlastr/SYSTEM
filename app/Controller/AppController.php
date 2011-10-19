@@ -27,7 +27,8 @@ class AppController extends Controller {
     var $uses = array('Condition', 'Webpages.Webpage');
 	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html', 'Menus.Tree');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', /*'RegisterCallbacks', 'SwiftMailer', 'Security' Desktop Login Stops Working When This is On*/);
-	var $view = 'Theme';
+	var $viewClass = 'Theme';
+	var $theme = 'Default';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
 	// update this so that it uses the full list of actual user roles
 	var $userRoles = array('administrators', 'guests');
@@ -83,8 +84,7 @@ class AppController extends Controller {
  		 * Allows us to have webroot files (css, js, etc) in the sites directories
  		 * Used in conjunction with the "var $view above"
 		 * @todo allow the use of multiple themes, database driven themes, and theme switching
- 		 */
-		$this->theme = 'default';
+ 		 *
 		
 		/**
 		 * For use with administrators, and being able to view the site as if they were in a different user role at anytime.
