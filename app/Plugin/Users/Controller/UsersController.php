@@ -304,8 +304,7 @@ class UsersController extends UsersAppController {
 				$result = $this->User->add($this->request->data);
 				if ($result === true) {
 					$this->Session->setFlash(__d('users', 'Successful Registration', true));
-					$this->Auth->login($this->request->data);
-					$this->redirect($this->_defaultLoginRedirect());				
+					$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));				
 				} else {
 					$this->request->data = $result;
 				}

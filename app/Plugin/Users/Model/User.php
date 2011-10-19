@@ -1,13 +1,13 @@
 <?php
 class User extends AppModel {
 
-	var $name = 'User';
-	var $displayField = 'full_name';
-	var $actsAs = array('Affiliates.Referrable', 'Acl' => array('type' => 'both'));
-	var $order = array('last_name', 'full_name', 'first_name');
+	public $name = 'User';
+	public $displayField = 'full_name';
+	public $actsAs = array('Affiliates.Referrable', 'Acl' => array('type' => 'both'));
+	public $order = array('last_name', 'full_name', 'first_name');
 
 	
-	var $validate = array(
+	public $validate = array(
 		'password' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
@@ -42,7 +42,7 @@ class User extends AppModel {
 	);
 
 	// this seems to break things because of nesting if I put Users.UserRole for the className
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'UserRole' => array(
 			'className' => 'UserRole',
 			'foreignKey' => 'user_role_id',
@@ -52,7 +52,7 @@ class User extends AppModel {
 		)
 	);
 
-	var $hasMany = array(
+	public $hasMany = array(
 		'Gallery' => array(
 			'className' => 'Galleries.Gallery',
 			'foreignKey' => 'foreign_key',
@@ -93,7 +93,7 @@ class User extends AppModel {
 			),
 		);
 	
-	var $hasOne = array(
+	public $hasOne = array(
 		'UserWall' => array(
 			'className' => 'Users.UserWall',
 			'foreignKey' => 'user_id',
@@ -106,7 +106,7 @@ class User extends AppModel {
 			), 
 		);
 	
-	var $hasAndBelongsToMany = array(
+	public $hasAndBelongsToMany = array(
        # 'Users.UserGroup' =>
        #     array(
        #         'className'              => 'Users.UserGroup',
@@ -116,7 +116,7 @@ class User extends AppModel {
        #     ),
   	  );
 	
-	function _comparePassword() {
+	protected function _comparePassword() {
 		# fyi, confirm password is hashed in the beforeValidate method
 		if (isset($this->data['User']['confirm_password']) && 
 				($this->data['User']['password'] == $this->data['User']['confirm_password'])) {
@@ -126,7 +126,7 @@ class User extends AppModel {
 		}
 	}
 	
-	function _emailRequired() {
+	protected function _emailRequired() {
 		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION') && empty($this->request->data['User']['email'])) {
 			return false;
 		} else {
@@ -137,7 +137,7 @@ class User extends AppModel {
 /** 
  * With Cakephp 2.0 you can do ACL better (with acts as both) and this function is one of the functions now available from the Acl Behavior.
  */
-    function parentNode() {
+    public function parentNode() {
         if (!$this->id && empty($this->data)) {
             return null;
         }
@@ -152,46 +152,22 @@ class User extends AppModel {
             return array('UserRole' => array('id' => $roleId));
         }
     }
-		
-	/*  Doesn't seem to be necessary now, with the cakephp 2.0 upgrade, because password hashing is not automatic anymore
-	 DELETE SOON : 10/29/2011 RK
-	function beforeValidate() {
-		if (!empty($this->data['User']['id'])) : 
-			$user = $this->find('first', array('conditions' => array('User.id' => $this->data['User']['id'])));
-			$this->data = Set::merge($user, $this->data);
-		endif;
-		# hash the confirm password for testing against the password
-		if (!empty($this->data['User']['confirm_password'])) {
-			$this->data['User']['confirm_password'] = Security::hash($this->data['User']['confirm_password'],'', true);
-		}
-		# if confirm password is not set at all, that means they weren't editing the user from a form with the passwords on it
-		if (!isset($this->data['User']['confirm_password']) && isset($this->data['User']['password'])) : 
-			$this->data['User']['confirm_password'] = $this->data['User']['password'];
-		endif;
-		debug($this->data);
-		break;
-	} 
 	
-	function beforeSave($options = array()) {
-		debug($this->data);
+	
+	public function beforeSave($options = array()) {
 		if (!empty($this->data['User']['password'])) : 
-      		# make a password for form auth.
-	        $this->data['User']['password'] = FormAuthenticate::password(
-	        	$this->data['User']['username'], $this->data['User']['password'], env('SERVER_NAME')
-	        );
+	        $this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
 		endif;
-		debug($this->data);
-		break;
         return true;
-    }*/
+    }
 
-	/** 
-	 * After save callback
-	 * Update aros_acos so that this user has access to their own profile and no one else does. 
-	 * @access public
-	 * @return void
-	 */	  
-	function afterSave($created) {
+/** 
+ * After save callback
+ * Update aros_acos so that this user has access to their own profile and no one else does. 
+ * @access public
+ * @return void
+ */	  
+	public function afterSave($created) {
         if ($created) {
 			$Aro = ClassRegistry::init('Aro');
 			$Aco = ClassRegistry::init('Aco');
@@ -216,102 +192,15 @@ class User extends AppModel {
 			
 			parent::afterSave($created);
 		}
-			
-			
-			/*
-			
-			$acoData = array(
-				'model' => 'User',
-				'foreign_key' => $userId,
-				);
-            if ($this->Aco->save($acoData)) {
-			} else {
-				echo 'Uncaught Exception: 917293871928791823';
-				break;
-			}
-			$aroParent = $this->Aro->node(array(
-				'model' => 'UserRole', 'foreign_key' => $this->request->data['User']['user_role_id']));
-			$aroData = array(
-				'parent_id' => $aroParent[0]['Aro']['id'],
-				'model' => 'User',
-				'foreign_key' => $userId,
-				);
-            if ($this->Aro->save($aroData)) {
-			} else {
-				echo 'Uncaught Exception: 823094820394810298120';
-				break;
-			}
-			
-			$aroId = $this->Aro->id;
-			$acoId = $this->Aco->id;
-			$data = array(
-				'aro_id' => $aroId,
-				'aco_id' => $acoId,
-				'_create' => 1,
-				'_read' => 1,
-				'_update' => 1,
-				'_delete' => 1,
-			);
-            if ($this->ArosAco->save($data)) {
-			} else {
-				echo 'Uncaught Exception: 9108710923801928347';
-				break;
-			}
-        } else {
-			if (!empty($this->request->data['User']['id']) && !empty($this->request->data['User']['user_role_id'])) {
-				$this->Aro = ClassRegistry::init('Aro');
-				$aro = $this->Aro->node(array('model' => 'User', 'foreign_key' => $this->request->data['User']['id']));
-				$aroParent = $this->Aro->node(array('model' => 'UserRole', 'foreign_key' => $this->request->data['User']['user_role_id']));
-				$aroData = array(
-					'id' => $aro[0]['Aro']['id'],
-					'parent_id' => $aroParent[0]['Aro']['id'],
-					#'model' => 'User',
-					#'foreign_key' => $this->request->data['User']['id'],
-					);
-	            if($this->Aro->save($aroData)) {
-				} else {
-					echo 'Uncaught Exception: 0019239291919929292929';
-					break;
-				}
-			}
-		}
-		*/
 	}
 	
-
-	/** 
-	 * Before delete callback
-	 * Attach acl behavior to delete the aro and aros_acos nodes associated with this user.
-	 * @access public
-	 * @return true
-	  
-	function beforeDelete() {
-		$this->Aro = ClassRegistry::init('Aro');
-		$this->ArosAco = ClassRegistry::init('ArosAco');
-		$this->Behaviors->attach('Acl', array('type' => 'requester'));
-		return true;
-	}*/
-	
-	/**
-	 * After delete callback
-	 * Need to manually delete the aco, because acl cannot act as requester and controlled at the same time.
-	 * @access public
-	 * @return void
-	 
-	function afterDelete() {
-		$this->Aco = ClassRegistry::init('Aco');
-		$acoNode = $this->Aco->node(array('model' => 'User', 'foreign_key' => $this->request->data['User']['id'])); 
-		$this->Aco->delete($acoNode[0]['Aco']['id']);
-		parent::afterDelete();
-	}*/
-	
-	/**
-	 * Handles the data of adding of a user
-	 *
-	 * @param {array}		An array in the array(model => array(field)) format
-	 * @todo		 		Not sure the rollback for user_id works in all cases (Line 66)
-	 */
-	function add($data) {
+/**
+ * Handles the data of adding of a user
+ *
+ * @param {array}		An array in the array(model => array(field)) format
+ * @todo		 		Not sure the rollback for user_id works in all cases (Line 66)
+ */
+	public function add($data) {
 		$data = $this->_cleanAddData($data);
 		
 		if ($data = $this->_userContact($data)) {
@@ -365,13 +254,13 @@ class User extends AppModel {
 	}
 
 
-	/**
-	 * Add contact data to the $data var if it exists, if it doesn't setup contact data for save.
-	 *
-	 * @todo	Finish the contact adding in the case where the data field exists.
-	 * @todo	We need to have be able to specify default contact details, like status, industry settings.
-	 */
-	function _userContact($data) {
+/**
+ * Add contact data to the $data var if it exists, if it doesn't setup contact data for save.
+ *
+ * @todo	Finish the contact adding in the case where the data field exists.
+ * @todo	We need to have be able to specify default contact details, like status, industry settings.
+ */
+	protected function _userContact($data) {
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->Contact->findById($data['Contact']['id']);
 			$data['Contact'] = $contact['Contact'];
@@ -392,10 +281,10 @@ class User extends AppModel {
 		return $data;
 	}
 	
-	/** 
-	 * Function to change the role of the user submitted
-	 */
-	function changeRole($data = null) {
+/** 
+ * Function to change the role of the user submitted
+ */
+	public function changeRole($data = null) {
 		# check whether user is a data array or the actual user.
 		if (is_array($data)) {
 			# check whether its numeric or a name for both users and user role
@@ -411,10 +300,10 @@ class User extends AppModel {
 		}
 	}
 	
-	/**
-	 * a function which goes through the different ways to get to a user id
-	 */
-	function _getUserId($user) {
+/**
+ * a function which goes through the different ways to get to a user id
+ */
+	protected function _getUserId($user) {
 		if (is_array($user)) {
 			if (!empty($user['user_id'])) {
 				return $user['user_id'];
@@ -426,10 +315,10 @@ class User extends AppModel {
 		}
 	}
 	
-	/**
-	 * a function which goes through the different ways to get to a user role id
-	 */
-	function _getUserRoleId($user) {
+/**
+ * a function which goes through the different ways to get to a user role id
+ */
+	protected function _getUserRoleId($user) {
 		if (is_array($user)) {
 			if (!empty($user['user_role'])) {
 				if (is_string($user['user_role'])) {
@@ -491,11 +380,11 @@ class User extends AppModel {
 		}
 	}
 
-	/*
-	 * verifies the key passed and if valid key, remove it from DB and return user else 
-	 * returns null. 
-	 */
-	function verify_key($key = null) {
+/*
+ * verifies the key passed and if valid key, remove it from DB and return user else 
+ * returns null. 
+ */
+	public function verify_key($key = null) {
 		$user = null;
       	# lets see if the key exists and which user its for.
 		if(!empty($key))	{
@@ -518,11 +407,11 @@ class User extends AppModel {
 		return $user;
 	}
 
-	/**
-	 * The username could be an email or a username, so we just do a quick check of both fields to
-	 * be doubly sure the user doesn't exist.
-	 */
-	function findbyUsername($username) {
+/**
+ * The username could be an email or a username, so we just do a quick check of both fields to
+ * be doubly sure the user doesn't exist.
+ */
+	public function findbyUsername($username) {
 		$user = $this->find('first', array(
 			'conditions' => array(
 				'User.username' => $username
@@ -544,11 +433,11 @@ class User extends AppModel {
 		}
 	}
 	
-	/** facebook registration functions ... 
-     * 
-	 * @todo 		Document why you put these in here and what they do!
-	 */
-	function parse_signed_request($signed_request, $secret) {
+/** facebook registration functions ... 
+ * 
+ * @todo 		Document why you put these in here and what they do!
+ */
+	public function parse_signed_request($signed_request, $secret) {
 		list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
 		// decode the data
 		$sig = $this->base64_url_decode($encoded_sig);
@@ -566,12 +455,12 @@ class User extends AppModel {
 		return $data;
 	  }
 	
-	function base64_url_decode($input) {
+	public function base64_url_decode($input) {
 		return base64_decode(strtr($input, '-_', '+/'));
 	}
 	
 
-	function _cleanAddData($data) {
+	protected function _cleanAddData($data) {
 		if (isset($data['User']['username']) && strpos($data['User']['username'], '@')) :
 			$data['User']['email'] = $data['User']['username'];
 		endif;
@@ -593,12 +482,12 @@ class User extends AppModel {
 		return $data;
 	}
 	
-	/* Generate Referal Code
-	 * Generate Referal Code and makes a new entry to database to Users Table 
-	 * @param array data
-	 * return boolean
-	 */
-	function generateReferalCode($user = null){
+/* Generate Referal Code
+ * Generate Referal Code and makes a new entry to database to Users Table 
+ * @param array data
+ * return boolean
+ */
+	public function generateReferalCode($user = null){
 		
 		$data = array();
 		if(is_numeric($user)) {
@@ -627,12 +516,12 @@ class User extends AppModel {
 		
 	}
 	
-	/* checkCodeExists
-	 * Check whether code with same string exists
-	 * @param code
-	 * return boolean
-	 */
-	function ifCodeExists($code = null){
+/* checkCodeExists
+ * Check whether code with same string exists
+ * @param code
+ * return boolean
+ */
+	public function ifCodeExists($code = null){
 		$code = $this->find('first', array(
 								'conditions' => array('reference_code' => $code)
 							));
@@ -643,11 +532,11 @@ class User extends AppModel {
 		}
 	}
 	
-	/* generateRandomCode
-	 * Generates a random Code of length 5
-	 * return code
-	 */
-	function generateRandomCode() {
+/* generateRandomCode
+ * Generates a random Code of length 5
+ * return code
+ */
+	public function generateRandomCode() {
 	    $length = 8;
 	    $characters = "0123456789abcdefghijklmnopqrstuvwxyz";
 	    $code = "";    
@@ -662,22 +551,22 @@ class User extends AppModel {
 		}
 	}
 	
-	/* Get Parent Id 
-	 * @params referal_code
-	 * return User.Id
-	 */
-	function getParentId($referal_code = null){
+/* Get Parent Id 
+ * @params referal_code
+ * return User.Id
+ */
+	public function getParentId($referal_code = null){
 		$parent = $this->find('first', array(
 					'conditions' => array('reference_code' => $referal_code)
 				));
 		return $parent['User']['id']; 
 	}
 	
-	/*	Update User Credits
-	 *  @param User.Id, Credits
-	 *  return boolean
-	 */
-	function updateUserCredits($credits = null, $userId){
+/*	Update User Credits
+ *  @param User.Id, Credits
+ *  return boolean
+ */
+	public function updateUserCredits($credits = null, $userId){
 		$user = $this->find('first' , array(
 						'conditions' => 
 							array('User.id' => $userId)
