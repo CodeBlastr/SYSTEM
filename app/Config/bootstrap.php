@@ -38,11 +38,6 @@ App::build(array(
 		ROOT.DS.SITE_DIR.DS.'controllers'.DS,
 		ROOT.DS.APP_DIR.DS.'Controller'.DS
 		),
-	'libs' => array(
-		ROOT.DS.SITE_DIR.DS.'Lib'.DS,
-		ROOT.DS.SITE_DIR.DS.'lib'.DS,
-		ROOT.DS.APP_DIR.DS.'Lib'.DS
-		),
     'datasources' => array(
 		ROOT.DS.SITE_DIR.DS.'Model'.DS.'Datasource'.DS,
 		ROOT.DS.SITE_DIR.DS.'models'.DS.'datasources'.DS,
@@ -67,7 +62,6 @@ App::build(array(
 #   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),
 #   'locales' => array('/full/path/to/locale/', '/next/full/path/to/locale/')
 ));
-debug(App::path('libs'));
 /**
  * As of 1.3, additional rules for the inflector are added below
  *
