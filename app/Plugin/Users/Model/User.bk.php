@@ -151,10 +151,12 @@ class User extends AppModel {
 	}
 	
 	function beforeSave($options = array()) {
-        // make a password for form auth.
-        $this->request->data['User']['form_hash'] = FormAuthenticate::password(
-            $this->request->data['User']['username'], $this->request->data['User']['password'], env('SERVER_NAME')
-        );
+		if (!empty($this->data['User']['password'])) : 
+      		# make a password for form auth.
+	        $this->data['User']['form_hash'] = FormAuthenticate::password(
+	            $this->data['User']['username'], $this->data['User']['password'], env('SERVER_NAME')
+	        );
+		endif;
         return true;
     }
 

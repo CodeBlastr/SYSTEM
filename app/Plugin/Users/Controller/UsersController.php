@@ -46,8 +46,6 @@ class UsersController extends UsersAppController {
 			if ($this->Auth->login()) {
 				try {
 					$this->User->loginMeta($this->request->data);
-					debug($this->request);
-					break;
 	        		return $this->redirect($this->Auth->redirect());
 				} catch (Exception $e) {
 					$this->Session->setFlash($e->getMessage());
@@ -60,7 +58,7 @@ class UsersController extends UsersAppController {
 	}
 
 
-    function logout() {
+    public function logout() {
 		if ($this->Auth->logout() || $this->Session->delete('Auth')) : 
 			$this->Session->setFlash('Successful Logout');
 			$this->redirect($this->_logoutRedirect());
