@@ -24,7 +24,7 @@
 /**
  * Custom file for loading functions which are available to multi-sites.
  */
- require_once(ROOT.DS.'app'.DS.'config'.DS.'global.php');
+ require_once(ROOT.DS.APP_DIR.DS.'config'.DS.'global.php');
 
 /**
  * The settings below can be used to set additional paths to models, views and controllers.
@@ -34,50 +34,50 @@
  
 App::build(array(
 	'plugins' => array(
-		ROOT.DS.APP_DIR.DS.'plugins'.DS,
-		ROOT.DS.APP_DIR.DS.'Plugin'.DS,
-		ROOT.DS.'app'.DS.'Plugin'.DS
+		ROOT.DS.SITE_DIR.DS.'plugins'.DS,
+		ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
+		ROOT.DS.APP_DIR.DS.'Plugin'.DS
 		),
     'models' =>  array(
-		ROOT.DS.APP_DIR.DS.'models'.DS,
-		ROOT.DS.APP_DIR.DS.'Model'.DS,
-		ROOT.DS.'app'.DS.'Model'.DS
+		ROOT.DS.SITE_DIR.DS.'models'.DS,
+		ROOT.DS.SITE_DIR.DS.'Model'.DS,
+		ROOT.DS.APP_DIR.DS.'Model'.DS
 		),
     'views' => array(
-		ROOT.DS.APP_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
-		ROOT.DS.APP_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS,
-		ROOT.DS.APP_DIR.DS.'views'.DS,
+		ROOT.DS.SITE_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
+		ROOT.DS.SITE_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS,
+		ROOT.DS.SITE_DIR.DS.'views'.DS,
+		ROOT.DS.SITE_DIR.DS.'View'.DS,
 		ROOT.DS.APP_DIR.DS.'View'.DS,
-		ROOT.DS.'app'.DS.'View'.DS,
 		),
 	'controllers' => array(
-		ROOT.DS.APP_DIR.DS.'controllers'.DS,
-		ROOT.DS.APP_DIR.DS.'Controller'.DS,
-		ROOT.DS.'app'.DS.'Controller'.DS
+		ROOT.DS.SITE_DIR.DS.'controllers'.DS,
+		ROOT.DS.SITE_DIR.DS.'Controller'.DS,
+		ROOT.DS.APP_DIR.DS.'Controller'.DS
 		),
 	'libs' => array(
-		ROOT.DS.APP_DIR.DS.'lib'.DS,
-		ROOT.DS.APP_DIR.DS.'Lib'.DS,
-		ROOT.DS.'app'.DS.'Lib'.DS
+		ROOT.DS.SITE_DIR.DS.'lib'.DS,
+		ROOT.DS.SITE_DIR.DS.'Lib'.DS,
+		ROOT.DS.APP_DIR.DS.'Lib'.DS
 		),
     'datasources' => array(
-		ROOT.DS.APP_DIR.DS.'models'.DS.'datasources'.DS,
-		ROOT.DS.'app'.DS.'models'.DS.'datasources'.DS
+		ROOT.DS.SITE_DIR.DS.'models'.DS.'datasources'.DS,
+		ROOT.DS.APP_DIR.DS.'models'.DS.'datasources'.DS
 		),
     'behaviors' => array(
-		ROOT.DS.APP_DIR.DS.'models'.DS.'behaviors'.DS,
-		ROOT.DS.APP_DIR.DS.'Model'.DS.'Behavior'.DS,
-		ROOT.DS.'app'.DS.'Model'.DS.'Behavior'.DS
+		ROOT.DS.SITE_DIR.DS.'models'.DS.'behaviors'.DS,
+		ROOT.DS.SITE_DIR.DS.'Model'.DS.'Behavior'.DS,
+		ROOT.DS.APP_DIR.DS.'Model'.DS.'Behavior'.DS
 		),
     'components' => array(
-		ROOT.DS.APP_DIR.DS.'controllers'.DS.'components'.DS,
-		ROOT.DS.APP_DIR.DS.'Controller'.DS.'Component'.DS,
-		ROOT.DS.'app'.DS.'Controller'.DS.'Component'.DS
+		ROOT.DS.SITE_DIR.DS.'controllers'.DS.'components'.DS,
+		ROOT.DS.SITE_DIR.DS.'Controller'.DS.'Component'.DS,
+		ROOT.DS.APP_DIR.DS.'Controller'.DS.'Component'.DS
 		),
     'helpers' => array(
-		ROOT.DS.APP_DIR.DS.'views'.DS.'helpers'.DS,
-		ROOT.DS.APP_DIR.DS.'View'.DS.'Helper'.DS,
-		ROOT.DS.'app'.DS.'View'.DS.'Helper'.DS
+		ROOT.DS.SITE_DIR.DS.'views'.DS.'helpers'.DS,
+		ROOT.DS.SITE_DIR.DS.'View'.DS.'Helper'.DS,
+		ROOT.DS.APP_DIR.DS.'View'.DS.'Helper'.DS
 		),
 #   'vendors' => array('/full/path/to/vendors/', '/next/full/path/to/vendors/'),
 #   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),

@@ -59,11 +59,11 @@
  */
 	
 	if (!defined('APP_DIR')) {
-		if (file_exists(ROOT.DS.'sites' . DS . SITE_DIR)) {
+		define('APP_DIR', basename(dirname(dirname(__FILE__))));
+		/*if (file_exists(ROOT.DS.'sites' . DS . SITE_DIR)) {
 			define('APP_DIR', 'sites' .DS . SITE_DIR);
 		} else {
-			define('APP_DIR', basename(dirname(dirname(__FILE__))));
-		}
+		}*/
 	}
 	
 /**
