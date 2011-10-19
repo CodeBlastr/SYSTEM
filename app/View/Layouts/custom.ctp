@@ -83,14 +83,14 @@
 		} 
 		echo $scripts_for_layout;
 		if (defined('__REPORTS_ANALYTICS')) :
-			echo $this->Element('analytics', array('plugin' => 'reports'));
+			echo $this->Element('analytics', array(), array('plugin' => 'reports'));
 		endif;
 	?>
 </head>
 <body class="<?php echo $this->request->params['controller']; echo ($this->Session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" id="<?php echo !empty($this->params['pass'][0]) ? strtolower($this->request->params['controller'].'_'.$this->request->params['action'].'_'.$this->params['pass'][0]) : strtolower($this->request->params['controller'].'_'.$this->request->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
 <div id="corewrap">
 <?php 
-echo $this->Element('modal_editor', array('plugin' => 'webpages'));
+echo $this->Element('modal_editor', array(), array('plugin' => 'webpages'));
 
 $flash_for_layout = $this->Session->flash();
 $flash_auth_for_layout = $this->Session->flash('auth');

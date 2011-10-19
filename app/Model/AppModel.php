@@ -34,7 +34,7 @@ class AppModel extends Model {
 	function beforeSave(&$model) {
 		# Start Record Level Access Save #
 		// If the model needs Record Level Access add an Aco
-		if (!empty($this->request->data['RecordLevelAccess']['UserRole'])) {
+		if (!empty($this->data['RecordLevelAccess']['UserRole'])) {
 			# There may be a potential problem with this.
 			# It saves an ArosAco record for every record being created.
 			# For example, when creating a webpage, it also creates an Aco for the Alias
@@ -42,24 +42,22 @@ class AppModel extends Model {
 			# we probably want the user to have access to the Contact and Contact Person
 			# if a project issue is created, we probably want the user to have access to the project too.
 			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
-			$this->Behaviors->attach('AclExtra', $this->request->data);
+			$this->Behaviors->attach('AclExtra', $this->data);
 		} else if (defined('__APP_RECORD_LEVEL_ACCESS_ENTITIES')){
-			if ($this->request->data['RecordLevelAccess'] = $this->_isRecordLevelRecord(__APP_RECORD_LEVEL_ACCESS_ENTITIES)) {
+			if ($this->data['RecordLevelAccess'] = $this->_isRecordLevelRecord(__APP_RECORD_LEVEL_ACCESS_ENTITIES)) {
 				$this->Behaviors->attach('Acl', array('type' => 'controlled'));
-				$this->Behaviors->attach('AclExtra', $this->request->data);
+				$this->Behaviors->attach('AclExtra', $this->data);
 			}
 		} 	
 		
 		# Start Auto Creator & Modifier Id Saving # 
 		$exists = $this->exists();
-		App::import('Component', 'Session');
-		$Session = new SessionComponent();
-		$user = $Session->read('Auth.User');
-		if ( !$exists && $this->hasField('creator_id') && empty($this->request->data[$this->alias]['creator_id']) ) {
-			$this->request->data[$this->alias]['creator_id'] = $user['id'];
+		$user = CakeSession::read('Auth.User');
+		if ( !$exists && $this->hasField('creator_id') && empty($this->data[$this->alias]['creator_id']) ) {
+			$this->data[$this->alias]['creator_id'] = $user['id'];
 		}
-		if ( $this->hasField('modifier_id') && empty($this->request->data[$this->alias]['modifier_id']) ) {
-			$this->request->data[$this->alias]['modifier_id'] = $user['id'];
+		if ( $this->hasField('modifier_id') && empty($this->data[$this->alias]['modifier_id']) ) {
+			$this->data[$this->alias]['modifier_id'] = $user['id'];
 		}
 		# End Auto Creator & Modifier Id Saving # 
 		# you have to return true to make the save continue.
@@ -74,12 +72,12 @@ class AppModel extends Model {
 		# Start Condition Check #
 		$this->Condition = ClassRegistry::init('Condition');
 		#get the id that was just inserted so you can call back on it.
-		$this->request->data[$this->name]['id'] = $this->id;	
+		$this->data[$this->name]['id'] = $this->id;	
 		
 		if ($created === true) {
-			$this->Condition->checkAndFire('is_create', array('model' => $this->name), $this->request->data);
+			$this->Condition->checkAndFire('is_create', array('model' => $this->name), $this->data);
 		} else {
-			$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->request->data);
+			$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
 			#$this->conditionCheck('is_read'); // this needs to be put into the beforeFilter or beforeRender (beforeRender, would allow error pages to work too) of the 
 		}
 		# End Condition Check #
@@ -94,8 +92,8 @@ class AppModel extends Model {
 		App::Import('Model', 'Condition');
 		$this->Condition = new Condition;
 		#get the id that was just inserted so you can call back on it.
-		$this->request->data[$this->name]['id'] = $this->id;	
-		$this->Condition->checkAndFire('is_delete', array('model' => $this->name), $this->request->data); 
+		$this->data[$this->name]['id'] = $this->id;	
+		$this->Condition->checkAndFire('is_delete', array('model' => $this->name), $this->data); 
 		# End Condition Check #
 	}
 	
@@ -171,7 +169,7 @@ class AppModel extends Model {
  */
 	function _isRecordLevelRecord($recordEntities) {
 		# create the array
-		$data = $this->request->data;
+		$data = $this->data;
 		$recordEntities = explode(',', $recordEntities);
 		foreach ($recordEntities as $recordEntity) {
 			$entities = explode('.', $recordEntity);

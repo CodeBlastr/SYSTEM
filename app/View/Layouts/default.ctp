@@ -24,7 +24,7 @@
 	echo $this->Html->script('admin/admin');
 	echo $scripts_for_layout;
 	if (defined('__REPORTS_ANALYTICS')) :
-		echo $this->Element('analytics', array('plugin' => 'reports'));
+		echo $this->Element('analytics', array(), array('plugin' => 'reports'));
 	endif;
 ?>
 </head>
