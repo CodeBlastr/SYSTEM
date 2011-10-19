@@ -101,6 +101,14 @@ class AppController extends Controller {
 			'controller' => 'users',
 			'action' => 'login',
 			);
+		
+		$this->Auth->authenticate = array(
+            'Form' => array(
+                'userModel' => 'Users.User',
+                'fields' => array('username' => 'username', 'password' => 'password'),
+                /*'scope' => array('User.active' => 1)*/
+            )
+        );
 		        
         $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 
@@ -683,9 +691,10 @@ class AppController extends Controller {
 	 * @todo		Move this to the permissions app_controller or somewhere over there.
 	 * @todo		Optimize this somehow, someway. 
 	 */
-	function isAuthorized() {
+	function isAuthorized($user) {
 		# this allows all users in the administrators group access to everything
-		if ($this->userRoleId == 1) { return true; } 
+		# using user_role_id is deprecated and will be removed in future versions
+		if ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1) { return true; } 
 		# check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
@@ -695,7 +704,7 @@ class AppController extends Controller {
 			return true;
 		} else {
 			# check user access
-			$aro = $this->_userAro($this->userId); // user aro model and foreign_key
+			$aro = $this->_userAro($user['id']); // user aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get aco
 			if ($this->Acl->check($aro, $aco)) {
 				#echo 'user access passed';
@@ -706,7 +715,7 @@ class AppController extends Controller {
 				#debug($aco);
 				#break;
 				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'restricted'));
 			}	
 		} 
 	}
@@ -718,17 +727,17 @@ class AppController extends Controller {
 	 * return {array || string}		The path to the aco to look up.
 	 */
 	function _getAcoPath() {
-		if (!empty($this->params['pass'][0])) {
+		if (!empty($this->request->params['pass'][0])) {
 			# check if the record level aco exists first
 			$aco = $this->Acl->Aco->find('first', array(
 				'conditions' => array(
 					'model' => $this->modelClass, 
-					'foreign_key' => $this->params['pass'][0]
+					'foreign_key' => $this->request->params['pass'][0]
 					)
 				));
 		}
 		if(!empty($aco)) {
-			return array('model' => $this->modelClass, 'foreign_key' => $this->params['pass'][0]);
+			return array('model' => $this->modelClass, 'foreign_key' => $this->request->params['pass'][0]);
 		} else {
 			$controller = Inflector::camelize($this->request->params['controller']);
 			$action = $this->request->params['action'];
@@ -779,4 +788,3 @@ class AppController extends Controller {
 	}
 }
 ?>
-<br />

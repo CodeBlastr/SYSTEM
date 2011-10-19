@@ -20,8 +20,6 @@
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  * @todo		  The "view" method needs a requestAction fix so that requestAction works for all requestAction type calls, without the if params['requested'] thing being necessary everyhwere we want to do that. 
  */
-App::uses('User', 'Model');
-
 class UsersController extends UsersAppController {
 	
 	var $name = 'Users';
@@ -35,8 +33,15 @@ class UsersController extends UsersAppController {
 		'reset_password', 
 		'my', 
 		'register', 
-		'checkLogin'
+		'checkLogin', 
+		'restricted'
 		);
+	
+	/**
+	 * A page to stop infinite redirect loops when there are errors. 
+	 */
+	public function restricted() {
+	}
 	
 	/**
 	 * Public login function to verify access to restricted areas.

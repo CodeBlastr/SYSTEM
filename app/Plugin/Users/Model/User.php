@@ -3,9 +3,7 @@ class User extends AppModel {
 
 	var $name = 'User';
 	var $displayField = 'full_name';
-	# removed because you cannot have Acl act as controlled, and requester.
-	# var $actsAs = array('Acl' => 'requester');
-	var $actsAs = array('Affiliates.Referrable');
+	var $actsAs = array('Affiliates.Referrable', 'Acl' => array('type' => 'both'));
 	var $order = array('last_name', 'full_name', 'first_name');
 
 	
@@ -120,8 +118,8 @@ class User extends AppModel {
 	
 	function _comparePassword() {
 		# fyi, confirm password is hashed in the beforeValidate method
-		if (isset($this->request->data['User']['confirm_password']) && 
-				($this->request->data['User']['password'] == $this->request->data['User']['confirm_password'])) {
+		if (isset($this->data['User']['confirm_password']) && 
+				($this->data['User']['password'] == $this->data['User']['confirm_password'])) {
 			return true;
 		} else {
 			return false;
@@ -135,43 +133,92 @@ class User extends AppModel {
 			return true;
 		}
 	}
-		
 	
+/** 
+ * With Cakephp 2.0 you can do ACL better (with acts as both) and this function is one of the functions now available from the Acl Behavior.
+ */
+    function parentNode() {
+        if (!$this->id && empty($this->data)) {
+            return null;
+        }
+        if (isset($this->data['User']['user_role_id'])) {
+        	$roleId = $this->data['User']['user_role_id'];
+        } else {
+            $roleId = $this->field('user_role_id');
+        }
+        if (!$roleId) {
+       		return null;
+        } else {
+            return array('UserRole' => array('id' => $roleId));
+        }
+    }
+		
+	/*  Doesn't seem to be necessary now, with the cakephp 2.0 upgrade, because password hashing is not automatic anymore
+	 DELETE SOON : 10/29/2011 RK
 	function beforeValidate() {
-		$user = $this->findbyId($this->request->data['User']['id']);
-		$this->request->data = Set::merge($user, $this->request->data);
+		if (!empty($this->data['User']['id'])) : 
+			$user = $this->find('first', array('conditions' => array('User.id' => $this->data['User']['id'])));
+			$this->data = Set::merge($user, $this->data);
+		endif;
 		# hash the confirm password for testing against the password
-		if (!empty($this->request->data['User']['confirm_password'])) {
-			$this->request->data['User']['confirm_password'] = Security::hash($this->request->data['User']['confirm_password'],'', true);
+		if (!empty($this->data['User']['confirm_password'])) {
+			$this->data['User']['confirm_password'] = Security::hash($this->data['User']['confirm_password'],'', true);
 		}
 		# if confirm password is not set at all, that means they weren't editing the user from a form with the passwords on it
-		if (!isset($this->request->data['User']['confirm_password']) && isset($this->request->data['User']['password'])) : 
-			$this->request->data['User']['confirm_password'] = $this->request->data['User']['password'];
+		if (!isset($this->data['User']['confirm_password']) && isset($this->data['User']['password'])) : 
+			$this->data['User']['confirm_password'] = $this->data['User']['password'];
 		endif;
-	}
+		debug($this->data);
+		break;
+	} 
 	
 	function beforeSave($options = array()) {
+		debug($this->data);
 		if (!empty($this->data['User']['password'])) : 
       		# make a password for form auth.
-	        $this->data['User']['form_hash'] = FormAuthenticate::password(
-	            $this->data['User']['username'], $this->data['User']['password'], env('SERVER_NAME')
+	        $this->data['User']['password'] = FormAuthenticate::password(
+	        	$this->data['User']['username'], $this->data['User']['password'], env('SERVER_NAME')
 	        );
 		endif;
+		debug($this->data);
+		break;
         return true;
-    }
+    }*/
 
 	/** 
 	 * After save callback
-	 * Update the aro, aco, and aros_acos for the user.
+	 * Update aros_acos so that this user has access to their own profile and no one else does. 
 	 * @access public
 	 * @return void
-	 */ 
+	 */	  
 	function afterSave($created) {
         if ($created) {
-			$this->Aro = ClassRegistry::init('Aro');
-			$this->Aco = ClassRegistry::init('Aco');
-			$this->ArosAco = ClassRegistry::init('ArosAco');
+			$Aro = ClassRegistry::init('Aro');
+			$Aco = ClassRegistry::init('Aco');
+			$ArosAco = ClassRegistry::init('ArosAco');
 			$userId = $this->id;
+			$aroId = $Aro->id;
+			$acoId = $Aco->id;		
+			
+			$data = array(
+				'aro_id' => $aroId,
+				'aco_id' => $acoId,
+				'_create' => 1,
+				'_read' => 1,
+				'_update' => 1,
+				'_delete' => 1,
+			);
+            if ($ArosAco->save($data)) {
+			} else {
+				echo 'Uncaught Exception: 9108710923801928347';
+				break;
+			}
+			
+			parent::afterSave($created);
+		}
+			
+			
+			/*
 			
 			$acoData = array(
 				'model' => 'User',
@@ -228,7 +275,7 @@ class User extends AppModel {
 				}
 			}
 		}
-		parent::afterSave($created);
+		*/
 	}
 	
 
@@ -237,26 +284,26 @@ class User extends AppModel {
 	 * Attach acl behavior to delete the aro and aros_acos nodes associated with this user.
 	 * @access public
 	 * @return true
-	 */ 
+	  
 	function beforeDelete() {
 		$this->Aro = ClassRegistry::init('Aro');
 		$this->ArosAco = ClassRegistry::init('ArosAco');
 		$this->Behaviors->attach('Acl', array('type' => 'requester'));
 		return true;
-	}
+	}*/
 	
 	/**
 	 * After delete callback
 	 * Need to manually delete the aco, because acl cannot act as requester and controlled at the same time.
 	 * @access public
 	 * @return void
-	 */
+	 
 	function afterDelete() {
 		$this->Aco = ClassRegistry::init('Aco');
 		$acoNode = $this->Aco->node(array('model' => 'User', 'foreign_key' => $this->request->data['User']['id'])); 
 		$this->Aco->delete($acoNode[0]['Aco']['id']);
 		parent::afterDelete();
-	}
+	}*/
 	
 	/**
 	 * Handles the data of adding of a user
