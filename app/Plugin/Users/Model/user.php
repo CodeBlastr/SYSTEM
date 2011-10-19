@@ -401,14 +401,14 @@ class User extends AppModel {
 	}
 	
 
-	/**
-	 * Saves meta data when login occurrs.  For example it updates the last_login field.
-	 *
-	 * @param {array}		An array of user data
-	 * @return {array}		User data array.
-	 * @todo				Implement Error Logging for non essential errors (mentioned below)
-	 */
-	function loginMeta($data) {
+/**
+ * Saves meta data when login occurrs.  For example it updates the last_login field.
+ *
+ * @param {array}		An array of user data
+ * @return {array}		User data array.
+ * @todo				Implement Error Logging for non essential errors (mentioned below)
+ */
+	public function loginMeta($data) {
 		if (!empty($data) && !empty($data['User']['username'])) {
 			$user = $this->find('first', array(
 				'conditions' => array(
@@ -432,13 +432,13 @@ class User extends AppModel {
 						return $user;
 					}
 				} else {
-					throw new Exception(__d('users', 'Please check your email to verify your account.', true));
+					throw new Exception(__d('users', 'Please check your email to verify your account.'));
 				}
 			} else {
-				throw new Exception(__d('users', 'User was not found.', true));
+				throw new Exception(__d('users', 'User was not found.'));
 			}
 		} else {
-			throw new Exception(__d('users', 'Login failed.', true));
+			throw new Exception(__d('users', 'Login failed.'));
 		}
 	}
 

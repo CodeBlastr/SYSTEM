@@ -20,63 +20,44 @@
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  * @todo		  The "view" method needs a requestAction fix so that requestAction works for all requestAction type calls, without the if params['requested'] thing being necessary everyhwere we want to do that. 
  */
+App::uses('User', 'Model');
+
 class UsersController extends UsersAppController {
 	
 	var $name = 'Users';
 	var $uid;
 	var $components = array('Email','Invite.InviteHandler');
-	var $allowedActions = array('login', 'desktop_login', 'logout', 'forgot_password', 'reset_password', 'my', 'register', 'checkLogin');
+	var $allowedActions = array(
+		'login', 
+		'desktop_login', 
+		'logout',
+		'forgot_password', 
+		'reset_password', 
+		'my', 
+		'register', 
+		'checkLogin'
+		);
 	
 	/**
 	 * Public login function to verify access to restricted areas.
 	 */
-	public function login() {    
-		if ($this->Auth->login()) {
-	        return $this->redirect($this->Auth->redirect());
-	    } else {
-	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
-	    }
-		/*$this->request->data['User']['password'] = FormAuthenticate::password(
-    	if ($this->Auth->login()) {
-			try {
-				$result = $this->User->loginMeta($this->request->data);
-				if ($result) {
-		       		return $this->redirect($this->Auth->redirect());
-				} else {
-					$this->request->data = $result;
-				}
-			} catch (Exception $e) {
-				$this->Session->setFlash($e->getMessage());
-				$this->Auth->logout();
-			}
-	    } else {
-	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
-	    }*/
-	}
-	
-	/*function login() {
-		#$user['User'] = ($this->Session->read('Auth.User'));	
+	public function login() {  
 		if (!empty($this->request->data)) {
-			try {
-				$result = $this->User->loginMeta($this->request->data);
-				#$this->Session->write('Auth', $result);
-				if ($result) {
-					$this->Auth->login();
-					$redirect = $this->Auth->redirect();
-					if (empty($redirect)) :
-						$this->redirect($this->_loginRedirect());
-					else :
-						$this->redirect($redirect);
-					endif;
-				} else {
-					$this->request->data = $result;
+			if ($this->Auth->login()) {
+				try {
+					$this->User->loginMeta($this->request->data);
+					debug($this->request);
+					break;
+	        		return $this->redirect($this->Auth->redirect());
+				} catch (Exception $e) {
+					$this->Session->setFlash($e->getMessage());
+					$this->Auth->logout();
 				}
-			} catch (Exception $e) {
-				$this->Session->setFlash($e->getMessage());
-				$this->Auth->logout();
-			}
+		    } else {
+		        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
+		    }
 		}
-    }	*/
+	}
 
 
     function logout() {

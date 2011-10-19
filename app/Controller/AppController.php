@@ -25,7 +25,7 @@ class AppController extends Controller {
 	
 	var $userId = '';
     var $uses = array('Condition', 'Webpages.Webpage');
-	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Menus.Tree');
+	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html', 'Menus.Tree');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', /*'RegisterCallbacks', 'SwiftMailer', 'Security' Desktop Login Stops Working When This is On*/);
 	var $view = 'Theme';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
@@ -36,7 +36,8 @@ class AppController extends Controller {
 	var $templateId = '';
 	
 	public function __construct($request = null, $response = null) {
-		$this->helpers['Html'] =  array('aro' => 'alsdkfjasd'/*$this->_guestsAro()*/);
+		# moved this up to var $helpers (not sure why it was here) 10/19/2011 RK
+		#$this->helpers['Html'] =  array('aro' => 'alsdkfjasd'/*$this->_guestsAro()*/);
 		parent::__construct($request, $response);
 		$this->_getHelpers();
 		$this->_getComponents();
@@ -95,13 +96,11 @@ class AppController extends Controller {
 		 */
 		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : array('message'=> 'Please register or login to access that feature.');
 		$this->Auth->authError = $authError['message'];
-        /*This was removed so that loginMeta would work, when called from the users_controller.login() function.  If you change this, make sure that the loginMeta() function still works.
-		$this->Auth->loginAction = array(
+        $this->Auth->loginAction = array(
 			'plugin' => 'users',
 			'controller' => 'users',
 			'action' => 'login',
-			'admin' => 0,
-			);*/
+			);
 		        
         $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 
@@ -162,9 +161,6 @@ class AppController extends Controller {
 	 * @todo convert to a full REST application and this might not be necessary
 	 */
     function beforeRender() {
-		if ($this->request->url == 'users/login') : 
-			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
-		endif;
 		
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
@@ -783,3 +779,4 @@ class AppController extends Controller {
 	}
 }
 ?>
+<br />

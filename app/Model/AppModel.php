@@ -26,7 +26,7 @@ App::uses('Model', 'Model');
 class AppModel extends Model {	
 	var $actsAs = array('Containable');
 	var $recursive = -1;
-	
+
 	/**
 	 * Manipulate data before it is saved.
 	 * @todo		Move this record level access stuff to a behavior
