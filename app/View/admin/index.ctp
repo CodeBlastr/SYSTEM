@@ -94,8 +94,13 @@ if (!empty($previousUpgrade)) {
   </ul>
   <ul>
     <li><?php echo $this->Html->link('Contacts', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'index')); ?></li>
-    <li><!--a href="/contacts/contacts/tasks"-->Leads (coming soon)</li>
-    <li><!--a href="/contacts/contacts/messages/"-->Activities (coming soon)</li></ul>
+    <li>
+      <!--a href="/contacts/contacts/tasks"-->
+      Leads (coming soon)</li>
+    <li>
+      <!--a href="/contacts/contacts/messages/"-->
+      Activities (coming soon)</li>
+  </ul>
   <ul>
     <li> <a href="#"><span>Sales</span></a></li>
   </ul>
