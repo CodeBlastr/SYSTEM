@@ -1,4 +1,9 @@
 <?php
+
+if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php')) :
+	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php');
+else :
+
 /**
  * Routes configuration
  *
@@ -47,7 +52,8 @@
 	Router::connect('/sitemap', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'index')); 
 	Router::connect('/sitemap/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps')); 
 	Router::connect('/robots/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'robot'));
-	
+
+endif;
 	
 	
 	

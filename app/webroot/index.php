@@ -48,31 +48,34 @@
 */
 	if (file_exists(ROOT . DS . 'sites' . DS . 'bootstrap.php')) {
 		include(ROOT . DS . 'sites' . DS . 'bootstrap.php');
-	} 
-	if (!defined('SITE_DIR')) {
-		define('SITE_DIR', $_SERVER['HTTP_HOST']);
-	} 
+	}
 	
 /**
  * The actual directory name for the "app".
  *
  */
-	
 	if (!defined('APP_DIR')) {
 		define('APP_DIR', basename(dirname(dirname(__FILE__))));
-		/*if (file_exists(ROOT.DS.'sites' . DS . SITE_DIR)) {
-			define('APP_DIR', 'sites' .DS . SITE_DIR);
-		} else {
-		}*/
 	}
+	
+/**
+ * Zuha updated tmp directory to support sites directory
+ */
+	if (!defined('TMP')) :
+		if (SITE_DIR) :
+ 			define('TMP', ROOT . DS . SITE_DIR . DS . 'tmp' . DS);
+		else : 
+ 			define('TMP', ROOT . DS . APP_DIR . DS . 'tmp' . DS);
+		endif;
+	endif;
 	
 /**
  * Zuha added constant because CakePHP 2.0 removed it
  *
  */
-	if (!defined('CONFIGS')) {
+	if (!defined('CONFIGS')) :
 		define('CONFIGS', ROOT .DS . APP_DIR . DS . 'config' . DS);
-	}
+	endif;
 
 /**
  * The absolute path to the "cake" directory, WITHOUT a trailing DS.
