@@ -75,9 +75,9 @@
  */
 	if (!defined('CONFIGS')) :
 		if (defined('SITE_DIR')) : 
-			define('CONFIGS', ROOT .DS . SITE_DIR . DS . 'config' . DS);
+			define('CONFIGS', ROOT .DS . SITE_DIR . DS . 'Config' . DS);
 		else : 
-			define('CONFIGS', ROOT .DS . APP_DIR . DS . 'config' . DS);
+			define('CONFIGS', ROOT .DS . APP_DIR . DS . 'Config' . DS);
 		endif;
 	endif;
 
