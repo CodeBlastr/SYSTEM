@@ -4,19 +4,20 @@
  *
  * The Front Controller for handling every request
  *
- * PHP 5
+ * PHP versions 5
  *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Zuha(tm) : Web Development Suite (http://zuha.com)
+ * Copyright 2009-2010, Zuha.com (http://zuha.com)
  *
- * Licensed under The MIT License
+ * Licensed under GNU General Public License version 3 http://www.gnu.org/licenses/gpl.html
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.webroot
- * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @copyright     Copyright 2009-2010, Zuha.com (http://zuha.com)
+ * @link          http://zuha.com Zuha
+ * @package       zuha
+ * @subpackage    app.webroot
+ * @since         Zuha(tm) v 0.0.0
+ * @license       GNU General Public License version 3 (http://www.gnu.org/licenses/gpl.html)
  */
 /**
  * Use the DS to separate the directories in other defines
@@ -48,51 +49,30 @@
 */
 	if (file_exists(ROOT . DS . 'sites' . DS . 'bootstrap.php')) {
 		include(ROOT . DS . 'sites' . DS . 'bootstrap.php');
-	}
+	} 
+	if (!defined('SITE_DIR')) {
+		define('SITE_DIR', $_SERVER['HTTP_HOST']);
+	} 
 	
 /**
  * The actual directory name for the "app".
  *
  */
+	
 	if (!defined('APP_DIR')) {
-		define('APP_DIR', basename(dirname(dirname(__FILE__))));
+		if (file_exists(ROOT.DS.'sites' . DS . SITE_DIR)) {
+			define('APP_DIR', 'sites' .DS . SITE_DIR);
+		} else {
+			define('APP_DIR', basename(dirname(dirname(__FILE__))));
+		}
 	}
-	
-/**
- * Zuha updated tmp directory to support sites directory
- */
-	if (!defined('TMP')) :
-		if (SITE_DIR) :
- 			define('TMP', ROOT . DS . SITE_DIR . DS . 'tmp' . DS);
-		else : 
- 			define('TMP', ROOT . DS . APP_DIR . DS . 'tmp' . DS);
-		endif;
-	endif;
-	
-/**
- * Zuha added constant because CakePHP 2.0 removed it
- *
- */
-	if (!defined('CONFIGS')) :
-		if (defined('SITE_DIR')) : 
-			define('CONFIGS', ROOT .DS . SITE_DIR . DS . 'Config' . DS);
-		else : 
-			define('CONFIGS', ROOT .DS . APP_DIR . DS . 'Config' . DS);
-		endif;
-	endif;
-
 /**
  * The absolute path to the "cake" directory, WITHOUT a trailing DS.
  *
- * Un-comment this line to specify a fixed path to CakePHP.
- * This should point at the directory containg `Cake`.
- *
- * For ease of development CakePHP uses PHP's include_path.  If you
- * cannot modify your include_path set this value.
- *
- * Leaving this constant undefined will result in it being defined in Cake/bootstrap.php
  */
-	//define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'lib');
+	if (!defined('CAKE_CORE_INCLUDE_PATH')) {
+		define('CAKE_CORE_INCLUDE_PATH', ROOT);
+	}
 
 /**
  * Editing below this line should NOT be necessary.
@@ -105,28 +85,21 @@
 	if (!defined('WWW_ROOT')) {
 		define('WWW_ROOT', dirname(__FILE__) . DS);
 	}
-
-	if (!defined('CAKE_CORE_INCLUDE_PATH')) {
-		if (function_exists('ini_set')) {
-			ini_set('include_path', ROOT . DS . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
-		}
-		if (!include('Cake' . DS . 'bootstrap.php')) {
-			$failed = true;
-		}
-	} else {
-		if (!include(CAKE_CORE_INCLUDE_PATH . DS . 'Cake' . DS . 'bootstrap.php')) {
-			$failed = true;
+	if (!defined('CORE_PATH')) {
+		if (function_exists('ini_set') && ini_set('include_path', CAKE_CORE_INCLUDE_PATH . PATH_SEPARATOR . ROOT . DS . APP_DIR . DS . PATH_SEPARATOR . ini_get('include_path'))) {
+			define('APP_PATH', null);
+			define('CORE_PATH', null);
+		} else {
+			define('APP_PATH', ROOT . DS . APP_DIR . DS);
+			define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
 		}
 	}
-	if (!empty($failed)) {
+	if (!include(CORE_PATH . 'cake' . DS . 'bootstrap.php')) {
 		trigger_error("CakePHP core could not be found.  Check the value of CAKE_CORE_INCLUDE_PATH in APP/webroot/index.php.  It should point to the directory containing your " . DS . "cake core directory and your " . DS . "vendors root directory.", E_USER_ERROR);
 	}
-
-	if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] == '/favicon.ico') {
+	if (isset($_GET['url']) && $_GET['url'] === 'favicon.ico') {
 		return;
+	} else {
+		$Dispatcher = new Dispatcher();
+		$Dispatcher->dispatch();
 	}
-
-	App::uses('Dispatcher', 'Routing');
-
-	$Dispatcher = new Dispatcher();
-	$Dispatcher->dispatch(new CakeRequest(), new CakeResponse(array('charset' => Configure::read('App.encoding'))));
