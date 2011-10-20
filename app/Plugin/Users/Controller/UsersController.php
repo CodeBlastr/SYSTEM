@@ -135,9 +135,11 @@ class UsersController extends UsersAppController {
         $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => AuthComponent::password($this->request->data['User']['password']))));	
         if($user!= null ){
 	        echo $user['User']['id']; 
+			$this->layout(false);
 			$this->render(false);	    
 		} else{
 		    echo "Fail";
+			$this->layout(false);
 			$this->render(false);
 		}	
     }
