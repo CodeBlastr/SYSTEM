@@ -203,12 +203,6 @@ th {
 }
 th.actions {
 	position: relative !important;
-<<<<<<< HEAD
-=======
-	border-collapse: inherit;
-	display: table-cell;
-	width: auto;
->>>>>>> f797f0d995a5dadee8a4074741b833c36d9c821b
 }
 th a {
 	display: block;
@@ -230,12 +224,6 @@ tr.altrow td {
 td.actions {
 	white-space: nowrap;
 	position: relative !important;
-<<<<<<< HEAD
-=======
-	border-collapse: inherit;
-	display: table-cell;
-	width: auto;
->>>>>>> f797f0d995a5dadee8a4074741b833c36d9c821b
 }
 td.actions a {
 	margin: 0px 0.7em;
