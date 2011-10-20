@@ -71,8 +71,7 @@ App::build(array(
  */
 	
 	function __setConstants($path = null, $return = false) {
-		$path = (!empty($path) ? $path : dirname(__FILE__) . DS);
-		
+		$path = (!empty($path) ? $path : CONFIGS);
 		if (file_exists($path .'settings.ini')) {
 			$path .= 'settings.ini';
 		} else {

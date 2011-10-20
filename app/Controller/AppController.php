@@ -340,6 +340,7 @@ class AppController extends Controller {
 	 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
 	 */
 	function _siteTemplate() {
+		debug($this->request->params);
 		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
 			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
