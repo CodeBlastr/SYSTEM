@@ -1,4 +1,5 @@
 /app/Config/database.php
+/app/Config/core.php
 /app/tmp/logs/debug.log
 /app/tmp/logs/error.log
 /app/tmp/cache/models/cake*
@@ -8,6 +9,7 @@
 \#*\#
 /plugins
 /sites/**/Config/database.php
+/sites/**/Config/core.php
 /sites/**/tmp/logs/debug.log
 /sites/**/tmp/logs/error.log
 /sites/**/tmp/cache/models/cake*
