@@ -789,7 +789,6 @@ class AppController extends Controller {
 	}
 	
 	function runcron()	{
-		$this->render(false);
 	}
 }
 ?>
