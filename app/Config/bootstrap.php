@@ -1,30 +1,13 @@
 <?php
-/**
- * This file is loaded automatically by the app/webroot/index.php file after the core bootstrap.php
- *
- * This is an application wide file to load any function that is not used within a class
- * define. You can also use this to include or require any files in your application.
- *
- * PHP versions 4 and 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       cake
- * @subpackage    cake.app.config
- * @since         CakePHP(tm) v 0.10.8.2117
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php')) :
+	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php');
+else : 
+
+/** 
+ * Default bootstrap.php file from here down.
  */
 
-/**
- * Custom file for loading functions which are available to multi-sites.
- */
- require_once(ROOT.DS.'app'.DS.'config'.DS.'global.php');
+require_once(ROOT.DS.APP_DIR.DS.'Config'.DS.'global.php');
 
 /**
  * The settings below can be used to set additional paths to models, views and controllers.
@@ -34,44 +17,51 @@
  
 App::build(array(
 	'plugins' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'plugins'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'plugins'.DS
+		ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
+		ROOT.DS.SITE_DIR.DS.'plugins'.DS,
+		ROOT.DS.APP_DIR.DS.'Plugin'.DS
 		),
     'models' =>  array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'models'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'models'.DS
+		ROOT.DS.SITE_DIR.DS.'Model'.DS,
+		ROOT.DS.SITE_DIR.DS.'models'.DS,
+		ROOT.DS.APP_DIR.DS.'Model'.DS
 		),
     'views' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'views'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'views'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'scaffolds'.DS,
+		ROOT.DS.SITE_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS,
+		ROOT.DS.SITE_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
+		ROOT.DS.SITE_DIR.DS.'View'.DS,
+		ROOT.DS.SITE_DIR.DS.'views'.DS,
+		ROOT.DS.APP_DIR.DS.'View'.DS,
 		),
 	'controllers' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'controllers'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'controllers'.DS
+		ROOT.DS.SITE_DIR.DS.'Controller'.DS,
+		ROOT.DS.SITE_DIR.DS.'controllers'.DS,
+		ROOT.DS.APP_DIR.DS.'Controller'.DS
 		),
     'datasources' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'models'.DS.'datasources'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'models'.DS.'datasources'.DS
+		ROOT.DS.SITE_DIR.DS.'Model'.DS.'Datasource'.DS,
+		ROOT.DS.SITE_DIR.DS.'models'.DS.'datasources'.DS,
+		ROOT.DS.APP_DIR.DS.'models'.DS.'datasources'.DS
 		),
     'behaviors' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'models'.DS.'behaviors'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'models'.DS.'behaviors'.DS
+		ROOT.DS.SITE_DIR.DS.'Model'.DS.'Behavior'.DS,
+		ROOT.DS.SITE_DIR.DS.'models'.DS.'behaviors'.DS,
+		ROOT.DS.APP_DIR.DS.'Model'.DS.'Behavior'.DS
 		),
     'components' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'controllers'.DS.'components'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'controllers'.DS.'components'.DS
+		ROOT.DS.SITE_DIR.DS.'Controller'.DS.'Component'.DS,
+		ROOT.DS.SITE_DIR.DS.'controllers'.DS.'components'.DS,
+		ROOT.DS.APP_DIR.DS.'Controller'.DS.'Component'.DS
 		),
     'helpers' => array(
-		$_SERVER['DOCUMENT_ROOT'].DS.APP_DIR.DS.'views'.DS.'helpers'.DS,
-		$_SERVER['DOCUMENT_ROOT'].DS.'app'.DS.'views'.DS.'helpers'.DS
+		ROOT.DS.SITE_DIR.DS.'View'.DS.'Helper'.DS,
+		ROOT.DS.SITE_DIR.DS.'views'.DS.'helpers'.DS,
+		ROOT.DS.APP_DIR.DS.'View'.DS.'Helper'.DS
 		),
 #   'vendors' => array('/full/path/to/vendors/', '/next/full/path/to/vendors/'),
 #   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),
 #   'locales' => array('/full/path/to/locale/', '/next/full/path/to/locale/')
 ));
-
 /**
  * As of 1.3, additional rules for the inflector are added below
  *
@@ -81,8 +71,7 @@ App::build(array(
  */
 	
 	function __setConstants($path = null, $return = false) {
-		$path = (!empty($path) ? $path : dirname(__FILE__) . DS);
-		
+		$path = (!empty($path) ? $path : CONFIGS);
 		if (file_exists($path .'settings.ini')) {
 			$path .= 'settings.ini';
 		} else {
@@ -108,5 +97,14 @@ App::build(array(
 	}
 	
 	__setConstants();
-	
-?>
+
+	/**
+	 * Plugins need to be loaded manually, you can either load them one by one or all of them in a single call
+	 * Uncomment one of the lines below, as you need. make sure you read the documentation on CakePlugin to use more
+	 * advanced ways of loading plugins
+	 * 
+	 * CakePlugin::load('DebugKit'); //Loads a single plugin named DebugKit
+	 */
+	 CakePlugin::loadAll(); // Loads all plugins at once
+
+endif;

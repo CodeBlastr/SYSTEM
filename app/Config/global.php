@@ -12,7 +12,6 @@
      */
 	Configure::write('Recaptcha.publicKey', '6Lc5xsMSAAAAAAoP0DkzEcoBHvHeQ2mO506mHnRY');
 	Configure::write('Recaptcha.privateKey', '6Lc5xsMSAAAAADJmj-bruuzCYXOeSg5Mf7JTyW3e');
-
 	 
 	
 	/**
@@ -168,29 +167,31 @@
  	function pluginize($name) {
 		# list of models and controllers to rename to the corresponding plugin
 		$allowed = array(
-			'Banner' => 'banners',
-			'Category' => 'categories',
-			'Categories' => 'categories',
-			'Catalog' => 'catalogs',
-			'Catalogs' => 'catalogs',
-			'CatalogItem' => 'catalogs',
-			'CatalogItems' => 'catalogs',
-			'catalog_items' => 'catalogs',
-			'CatalogItemBrand' => 'catalogs',
-			'CatalogItemBrands' => 'catalogs',
-			'catalog_item_brands' => 'catalogs',
-			'GalleryImage' => 'galleries',
-			'GalleryImages' => 'galleries',
-			'gallery_images' => 'galleries',
-			'Invoice' => 'invoices',
-			'InvoiceItem' => 'invoices',
-			'InvoiceTime' => 'invoices',
-			'Project' => 'projects',
-			'Used' => 'users',
-			'User' => 'users',
+			'Banner' => 'Banners',
+			'Category' => 'Categories',
+			'Categories' => 'Categories',
+			'Catalog' => 'Catalogs',
+			'Catalogs' => 'Catalogs',
+			'CatalogItem' => 'Catalogs',
+			'CatalogItems' => 'Catalogs',
+			'catalog_items' => 'Catalogs',
+			'CatalogItemBrand' => 'Catalogs',
+			'CatalogItemBrands' => 'Catalogs',
+			'catalog_item_brands' => 'Catalogs',
+			'Contact' => 'Contacts',
+			'Gallery' => 'Galleries',
+			'GalleryImage' => 'Galleries',
+			'GalleryImages' => 'Galleries',
+			'gallery_images' => 'Galleries',
+			'Invoice' => 'Invoices',
+			'InvoiceItem' => 'Invoices',
+			'InvoiceTime' => 'Invoices',
+			'Project' => 'Projects',
+			'Used' => 'Users',
+			'User' => 'Users',
 			'Setting' => '',
 			'Settings' => '',
-			'Member' => 'members',
+			'Member' => 'Members',
 			);
 		if ($allowed[$name] !== null) {
 			return $allowed[$name];
