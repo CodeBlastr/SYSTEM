@@ -45,7 +45,7 @@ foreach ($data as $dat):
       <div class="indexCell">
         <div class="indexCell">
           <div class="recorddat">
-            <h3> <?php echo $this->Html->link($name, array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id), array('escape' => false)); ?></h3>
+            <h3> <?php echo $this->Html->link($name, array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id), array('escape' => false)); ?></h3>
           </div>
         </div>
         <div class="indexCell">
@@ -89,9 +89,9 @@ foreach ($data as $dat):
                 <?php $patterns = array('/{/', '/}/', '/\[/', '/\]/'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.preg_replace($patterns, $replaces, $action).'\';'; eval($action); ?>
               </li>
               <?php endforeach; else: ?>
-              <li><?php echo $this->Html->link('View', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
-              <li><?php echo $this->Html->link('Edit', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
-              <li><?php echo $this->Html->link('Delete', array('plugin' => $link['pluginName'], 'controller' => $link['controllerName'], 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
+              <li><?php echo $this->Html->link('View', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
+              <li><?php echo $this->Html->link('Edit', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
+              <li><?php echo $this->Html->link('Delete', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
               <?php endif; ?>
             </ul>
           </div>
@@ -138,7 +138,7 @@ endforeach;
     <li class="actionItem"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
     <?php endforeach; else : ?>
     <li class="actionHeading"><?php echo __('Action'); ?></li>
-    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
+    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add')); ?></li>
     <?php endif; ?>
   </ul>
 </div>
@@ -149,7 +149,7 @@ else : // show a default message pulled as an element called start, from the plu
 <div class="index noItems"> <?php echo empty($noItems) ? $this->Element('start',  array('plugin' => $pluginName)) : $noItems; ?>
   <div class="actions">
     <ul class="drop">
-      <li class="actionItem"><?php echo $this->Html->link('Add '.$modelName, array('plugin' => $pluginName, 'controller' => $controller, 'action' => 'add')); ?></li>
+      <li class="actionItem"><?php echo $this->Html->link('Add '.$modelName, array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add')); ?></li>
     </ul>
   </div>
 </div>
