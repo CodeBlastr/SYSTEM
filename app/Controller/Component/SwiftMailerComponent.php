@@ -224,7 +224,10 @@ class SwiftMailerComponent extends Object {
 		$this->from = !empty($smtp['from']) ? $smtp['from'] : $this->from;
 		$this->fromName = !empty($smtp['fromName']) ? $smtp['fromName'] : $this->fromName;
 	}
+	function startup() { }
 	function beforeRedirect() { }
+	function beforeRender() { }
+	function shutdown() { }
 
 	/**
 	 * Retrieves html/text or plain/text content from /app/views/elements/$this->viewPath/$type/$template.ctp
