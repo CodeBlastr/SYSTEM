@@ -159,7 +159,7 @@ class WebpagesController extends WebpagesAppController {
 	function savePage ($id = null) {
 		$msg   = "";
 		$err   = false;
-		$pageData =  $this->params['form']['pageData'];
+		$pageData =  $this->request->params['form']['pageData'];
 		$this->request->data = $this->Webpage->read(null, $id);
 		if (!empty($this->request->data)) {
 			$this->request->data['Webpage']['content'] = $pageData;

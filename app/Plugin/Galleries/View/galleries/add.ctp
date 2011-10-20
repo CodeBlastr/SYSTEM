@@ -8,8 +8,8 @@
 		echo $this->Form->input('Gallery.name');
 		echo $this->Form->input('Gallery.type');
 		echo $this->Form->input('Gallery.model', array('type' => 'hidden', 'value' => $model));
-		echo !empty($this->params['pass'][0]) ? $this->Form->input('Gallery.model', array('type' => 'hidden', 'value' => $this->params['pass'][0])) : '';
-		echo !empty($this->params['pass'][1]) ? $this->Form->input('Gallery.foreign_key', array('type' => 'hidden', 'value' => $this->params['pass'][1])) : '';
+		echo !empty($this->request->params['pass'][0]) ? $this->Form->input('Gallery.model', array('type' => 'hidden', 'value' => $this->request->params['pass'][0])) : '';
+		echo !empty($this->request->params['pass'][1]) ? $this->Form->input('Gallery.foreign_key', array('type' => 'hidden', 'value' => $this->request->params['pass'][1])) : '';
 		echo $this->Form->input('Gallery.description', array('type' => 'richtext'));
 	?>
     </fieldset>

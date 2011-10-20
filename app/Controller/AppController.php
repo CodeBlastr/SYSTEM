@@ -75,7 +75,7 @@ class AppController extends Controller {
 		$conditions['plugin'] = $this->request->params['plugin'];
 		$conditions['controller'] = $this->request->params['controller'];
 		$conditions['action'] = $this->request->params['action'];
-		$conditions['extra_values'] = $this->params['pass'];
+		$conditions['extra_values'] = $this->request->params['pass'];
 		$this->Condition->checkAndFire('is_read', $conditions, $this->request->data); */
 		# End Condition Check #
 		# End DO NOT DELETE #
@@ -340,12 +340,11 @@ class AppController extends Controller {
 	 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
 	 */
 	function _siteTemplate() {
-		debug($this->request->params);
-		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && $this->params['url']['ext'] != 'json' &&  $this->params['url']['ext'] != 'rss' && $this->params['url']['ext'] != 'xml' && $this->params['url']['ext'] != 'csv') :
+		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) :
 			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
-		elseif(!empty($this->params['prefix']) && $this->params['prefix'] == 'admin' && !$this->request->is('ajax')) :
-			if ($this->params['prefix'] == $this->Session->read('Auth.User.view_prefix')) :
+		elseif(!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) :
+			if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) :
 				# this elseif checks to see if the user role has a specific view file
 				$this->layout = 'default';
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
@@ -355,10 +354,14 @@ class AppController extends Controller {
 					$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'views', DS.'plugins'.DS.$this->request->params['plugin'].DS.'views', $path) : $path;
 				endforeach;
 				foreach ($paths as $path) :
-					if (file_exists($path.$this->Session->read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) :
-						$this->viewPath = $this->Session->read('Auth.User.view_prefix').DS.$this->request->params['controller'];
+					if (file_exists($path.CakeSession::read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) :
+						$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.$this->request->params['controller'];
 					endif;
 				endforeach;
+				#$this->request->url = str_replace('admin/', '', $this->request->url);
+				#$this->request->here = str_replace('admin', '', $this->request->here);
+				#$dispatcher = new Dispatcher();
+				#$result = $dispatcher->dispatch($this->request, new CakeResponse());
 			else : 
 				$this->Session->setFlash(__('Section access restricted.', true));
 				$this->redirect($this->referer());
@@ -366,7 +369,7 @@ class AppController extends Controller {
 		elseif (empty($this->request->params['requested']) && !$this->request->is('ajax')) : 
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
-		endif;
+		endif;		
 	}
 
 

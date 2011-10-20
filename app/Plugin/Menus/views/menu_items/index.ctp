@@ -51,7 +51,7 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('New Menu Item', true), array('action' => 'add', $this->params['pass'][0])); ?></li>
-		<li><?php echo $this->Html->link(__('View Parent Menu', true), array('controller' => 'menus', 'action' => 'view', $this->params['pass'][0])); ?> </li>
+		<li><?php echo $this->Html->link(__('New Menu Item', true), array('action' => 'add', $this->request->params['pass'][0])); ?></li>
+		<li><?php echo $this->Html->link(__('View Parent Menu', true), array('controller' => 'menus', 'action' => 'view', $this->request->params['pass'][0])); ?> </li>
 	</ul>
 </div>

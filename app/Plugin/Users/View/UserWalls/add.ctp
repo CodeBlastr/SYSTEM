@@ -1,4 +1,4 @@
-<?php echo $this->Form->create('UserWall' , array('url'=>array('plugin'=>'users','controller'=>'user_walls' , 'action'=>'add' , $this->params['pass'][0])));?>
+<?php echo $this->Form->create('UserWall' , array('url'=>array('plugin'=>'users','controller'=>'user_walls' , 'action'=>'add' , $this->request->params['pass'][0])));?>
 	<fieldset>
  		<legend><?php echo __('Add User Wall'); ?></legend>
 	<?php

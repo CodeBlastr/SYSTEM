@@ -1,5 +1,5 @@
 <div class="userGroupWallPosts form">
-<?php echo $this->Form->create('UserGroupWallPost' , array('url'=>array('plugin'=>'users','controller'=>'user_group_wall_posts' , 'action'=>'add', $this->params["pass"][0] )));?>
+<?php echo $this->Form->create('UserGroupWallPost' , array('url'=>array('plugin'=>'users','controller'=>'user_group_wall_posts' , 'action'=>'add', $this->request->params["pass"][0] )));?>
 	<fieldset>
  		<legend><?php echo __('Add User Group Wall Post'); ?></legend>
 	<?php
