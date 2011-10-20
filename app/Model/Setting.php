@@ -404,6 +404,11 @@ class Setting extends AppModel {
 			#$data['Setting']['value'] = base64_decode($data['Setting']['value']);
 			#$data['Setting']['value'] = Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'));
 		endif;
+		
+		if (!empty($data['Query']) && $data['Setting']['name'] == 'ZUHA_DB_VERSION') : 
+			$data['Setting']['value'] =  $data['Setting']['value'] + 0.0001;
+		endif;
+		
 		return $data;
 	}
 	

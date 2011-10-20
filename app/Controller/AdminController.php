@@ -40,7 +40,7 @@ class AdminController extends AppController {
 			$previousUpgrade = $this->_checkIfLatestVersion();
 			if($this->_upgradeDatabase($this->request->data)) {
 				$this->set('previousUpgrade', $previousUpgrade);
-				$this->Session->setFlash(__('Database Upgraded (you may still need to <a href="/admin/permissions/acores/build_acl">rebuild aco objects</a> (note : clicking this link may take a long time)', true));
+				$this->Session->setFlash(__('Database Upgraded ', true));
 			} else {
 				$this->Session->setFlash(__('Invalid Database Upgrade', true));
 			}
