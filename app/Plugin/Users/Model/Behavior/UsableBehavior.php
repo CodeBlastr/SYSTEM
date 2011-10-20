@@ -26,11 +26,10 @@ class UsableBehavior extends ModelBehavior {
 	 * @todo	I'm sure we will need some checks and stuff added to this.  (Right now this Project is Used, so make sure Project works if you change this function.)
 	 */
 	function beforeFind(&$model, $queryData) {
-		App::import('Model', 'CakeSession');
-		$this->Session = new CakeSession();
-		$userRole = $this->Session->read('Auth.User.user_role_id');
+		$userRole = CakeSession::read('Auth.User.user_role_id');
 		
-		if ($userRole !== 1) :  // temporary until we find a better way
+		if ($userRole != 1) : 
+			// temporary until we find a better way
 			# this allows you to bypass the logged in user check (nocheck should equal the user id)
 			$userQuery = !empty($queryData['nocheck']) ? "Used.user_id = {$queryData['nocheck']}" : "Used.user_id = {$this->Session->read('Auth.User.id')}";
 			# output the new query
