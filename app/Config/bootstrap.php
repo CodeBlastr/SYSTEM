@@ -7,7 +7,7 @@ else :
  * Default bootstrap.php file from here down.
  */
 
-require_once(ROOT.DS.APP_DIR.DS.'config'.DS.'global.php');
+require_once(ROOT.DS.APP_DIR.DS.'Config'.DS.'global.php');
 
 /**
  * The settings below can be used to set additional paths to models, views and controllers.

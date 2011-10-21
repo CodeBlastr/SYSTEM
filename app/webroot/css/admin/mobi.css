@@ -203,9 +203,6 @@ th {
 }
 th.actions {
 	position: relative !important;
-	border-collapse: inherit;
-	display: table-cell;
-	width: auto;
 }
 th a {
 	display: block;
@@ -227,9 +224,6 @@ tr.altrow td {
 td.actions {
 	white-space: nowrap;
 	position: relative !important;
-	border-collapse: inherit;
-	display: table-cell;
-	width: auto;
 }
 td.actions a {
 	margin: 0px 0.7em;
