@@ -15,7 +15,7 @@
 //required third party library "SwiftMailer" under GPL license
 App::import('Vendor', 'Swift', array('file' => 'swift_mailer'.DS.'swift_required.php'));
 
-class SwiftMailerComponent extends Object {
+class SwiftMailerComponent extends Component {
 	/**
 	 * Reference to controller
 	 *
