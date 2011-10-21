@@ -80,6 +80,7 @@ background: transparent;
 }
 body {
 	-webkit-tap-highlight-color: rgb(255,255,158);
+	border: 40px solid #DADBE4;
 }
 /*		Default Layout: 992px. 
 		Gutters: 24px.
@@ -94,6 +95,10 @@ px      68    160    252    344    436    528    620    712    804    896    */
 	margin: 0 auto;
 	color: rgb(60,60,60);
 	-webkit-text-size-adjust: 100%; /* Stops Mobile Safari from auto-adjusting font-sizes */
+	-moz-box-shadow: 0px 0px 25px rgba(0, 0, 0, .3);
+	-webkit-box-shadow: 0px 0px 25px rgba(0, 0, 0, .3);
+	box-shadow: 0px 0px 25px rgba(0, 0, 0, .3);
+	border: 1px solid #999;
 }
 
 
@@ -343,7 +348,7 @@ fieldset {
 fieldset legend {
 	font-weight: bold;
 	padding: 0.3em;
-	margin: 0 -0.1em 0 -0.1em;
+	margin: -0.1em;
 	border: 1px solid #CCC;
 	border-radius:0.5em;
 	-webkit-border-radius:0.5em;
@@ -352,6 +357,7 @@ fieldset legend {
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fdfdfd), color-stop(1, #eeeeee));
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#eeeeee')";
 	width: 100%;
+	float: left;
 }
 fieldset legend h1, fieldset legend h2, fieldset legend h3, fieldset legend h4, fieldset legend h5, fieldset legend h6 {
 	text-shadow: 1px 1px 2px #FFF;
@@ -576,10 +582,10 @@ div.paging span a {
 #quickNav {
 	text-align: center;
 	font-weight: bold;
-	background: #EAEAEA;
+	background: #E9E9E9;	
 	background-image: -moz-linear-gradient(top, #E9E9E9, #FFFFFF);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F9F9F9), color-stop(1, #EEEEEE));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#F9F9F9', EndColorStr='#EEEEEE')";
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #E9E9E9), color-stop(1, #FFFFFF));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#E9E9E9', EndColorStr='#FFFFFF')";
 	position: relative;
 	height: 2.3em;
 }
@@ -596,7 +602,6 @@ div.paging span a {
 	white-space: nowrap;
 	outline: 0 !important;
 	text-shadow: 0 1px 0 #fff;
-*/
 }
 #quickNav a {
 	font: bold 0.75em/0.85em Arial;
@@ -700,10 +705,16 @@ div.paging span a {
 	float: none !important;
 	text-align: center;
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAsCAIAAAArRUU2AAAAOElEQVQIW2O6+egX0///DEwMDAxM/xkYEOz/ED7DfwQbhUZWB1fzH87+hyGHykfRi2Y2AzIb1V0AEFlAz5gMk7cAAAAASUVORK5CYII=") repeat-x scroll 0 0 transparent !important;
-	font-size: 0.8em;
+	font-size: 1.09em;
 	padding: 0.8em 0 !important;
 	margin: 0 !important;
 }
+@-moz-document url-prefix() {
+    .tab ul li {
+		font-size: 0.97em;
+    }
+}
+
 .tab ul li.ui-state-active, .tab ul li:hover {
 	background: #4e89c5 !important;
 	background-image: -moz-linear-gradient(top, #B7C9F9, #4e89c5) !important;
@@ -894,6 +905,9 @@ ul.activities li.activity span.activityName {
 	display: table;
 	width: 100%;
 	border-collapse: collapse;
+	-moz-box-shadow: 0px 3px 2px rgba(0, 0, 0, .3);
+	-webkit-box-shadow: 3px 0px 2px rgba(0, 0, 0, .3);
+	box-shadow: 0px 3px 2px rgba(0, 0, 0, .3);
 }
 .actions ul {
 	list-style: none;
