@@ -24,7 +24,7 @@
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<?php if(!empty($facebook)) { echo $facebook->html(); } else { echo '<html>'; } ?>
+<?php if(!empty($facebook)) { echo $this->Facebook->html(); } else { echo '<html>'; } ?>
 	<head>
     
 	<?php echo $this->Html->charset(); ?>
@@ -164,7 +164,7 @@ if (!empty($defaultTemplate)) {
 } 
 ?>
 <?php eval(base64_decode('ZWNobygnPGEgaHJlZj0iaHR0cDovL3d3dy5yYXpvcml0LmNvbS93ZWItZGV2ZWxvcG1lbnQtY29tcGFueS8iIHRpdGxlPSJXZWIgRGV2ZWxvcG1lbnQgQ29tcGFueSIgc3R5bGU9InRleHQtaW5kZW50OiAtMzAwMHB4OyBkaXNwbGF5OiBibG9jazsgaGVpZ2h0OiAxcHg7Ij5XZWIgRGV2ZWxvcG1lbnQgQ29tcGFueTwvYT4gPGEgaHJlZj0iaHR0cDovL3p1aGEuY29tIiB0aXRsZT0iUHJvamVjdCBNYW5hZ2VtZW50LCBDUk0sIENvbnRlbnQgTWFuYWdlbWVudCBTeXN0ZW0iIHN0eWxlPSJ0ZXh0LWluZGVudDogLTMwMDBweDsgZGlzcGxheTogYmxvY2s7IGhlaWdodDogMXB4OyI+UHJvamVjdCBNYW5hZ2VtZW50LCBDUk0sIENvbnRlbnQgTWFuYWdlbWVudCBTeXN0ZW08L2E+Jyk7')); ?>
-<?php  if(!empty($facebook)) { echo $facebook->init(); } ?>
+<?php  if(!empty($facebook)) { echo $this->Facebook->init(); } ?>
 <?php #echo round((getMicroTime() - $_SERVER['REQUEST_TIME']) * 1000) ?>
 </div> 
 <?php echo $this->element("ajax-login"); ?>
