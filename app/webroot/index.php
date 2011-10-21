@@ -37,6 +37,7 @@
 	if (!defined('ROOT')) {
 		define('ROOT', dirname(dirname(dirname(__FILE__))));
 	}
+    
 /**
 * For multi site setups 
 * There are two methods for hosting multiple sites
@@ -48,8 +49,8 @@
 */
 	if (file_exists(ROOT . DS . 'sites' . DS . 'bootstrap.php')) {
 		include(ROOT . DS . 'sites' . DS . 'bootstrap.php');
-	}
-	
+	} 
+    
 /**
  * The actual directory name for the "app".
  *

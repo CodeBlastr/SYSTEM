@@ -1,5 +1,4 @@
 <?php
-
 if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php')) :
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php');
 else :
