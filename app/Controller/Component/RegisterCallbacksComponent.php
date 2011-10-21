@@ -72,9 +72,9 @@ public function initialize(&$controller, $settings = array()) {
 	$this->settings = array_merge($this->__defaults, $settings);
 
 	if (empty($this->settings['priority'])) {
-		$this->settings['priority'] = Configure::listobjects('plugin');
+		$this->settings['priority'] = App::objects('plugin');
 	} else {
-		foreach (Configure::listobjects('plugin') as $plugin) {
+		foreach (App::objects('plugin') as $plugin) {
 			if (!in_array($plugin, $this->settings['priority'])) {
 				array_push($this->settings['priority'], $plugin);
 			}
@@ -84,12 +84,21 @@ public function initialize(&$controller, $settings = array()) {
 	foreach ($this->settings['priority'] as $plugin) {
 		$file = Inflector::underscore($plugin).'_callback';
 		$className = $plugin.'Callback';
-		if (App::import('File', $className, true, array(APP . 'plugins' . DS . Inflector::underscore($plugin), ROOT . DS . 'app' . DS . 'plugins' . DS . Inflector::underscore($plugin)), $file.'.php')) {
-			if (class_exists($className)) {
-			     $class = new $className();
-			     ClassRegistry::addObject($className, $class);
-			     $this->__registered[] = $className;
-		     }
+		$paths = array(
+				APP . 'Plugin' . DS . Inflector::camelize($plugin) . DS, //cakephp 2.0
+				ROOT . DS . 'app' . DS . 'Plugin' . DS . Inflector::camelize($plugin) . DS,  //cakephp 2.0
+				APP . 'plugins' . DS . Inflector::underscore($plugin) . DS, //old 1.3 structure, (todo -to be removed)
+				);
+		//debug(array(APP . 'Plugin' . DS . ucfirst(Inflector::underscore($plugin)), ROOT . DS . 'app' . DS . 'Plugin' . DS . Inflector::underscore($plugin)));continue;
+		if(file_exists($paths[0] . $file.'.php') || file_exists($paths[1] . $file.'.php') || file_exists($paths[0] . $file.'.php'))	{ //TODO - to be removed and to fix the App::import warnings which appear if you donot put this check
+			if (App::import('File', $className, true, $paths, $file.'.php')) {
+				debug($className);
+				if (class_exists($className)) {
+					 $class = new $className();
+					 ClassRegistry::addObject($className, $class);
+					 $this->__registered[] = $className;
+				 }
+			}
 		}
 	}
         
@@ -180,17 +189,17 @@ public function initialize(&$controller, $settings = array()) {
 /*
  http://jamienay.com/2009/11/an-easy-plugin-callback-component-for-cakephp-1-2/
 
-If you want certain plugin callbacks to fire before others, you can specify a partial or complete order using the ‘priority’ setting: var $components = array('RegisterCallbacks' => array('priority' => array('ImportantPluginOne, 'ImportantPluginTwo')));
+If you want certain plugin callbacks to fire before others, you can specify a partial or complete order using the ï¿½priorityï¿½ setting: var $components = array('RegisterCallbacks' => array('priority' => array('ImportantPluginOne, 'ImportantPluginTwo')));
 
-Any plugins not specified in the ‘priority’ array are loaded as per Configure::listobjects('plugin')
+Any plugins not specified in the ï¿½priorityï¿½ array are loaded as per Configure::listobjects('plugin')
 
-For each plugin you want to include in the callback system, create a plugin_name_callback.php  file in the plugin’s root directory (app/plugins/plugin_name). Within that file define a CamelizedPluginNameCallback class.
+For each plugin you want to include in the callback system, create a plugin_name_callback.php  file in the pluginï¿½s root directory (app/plugins/plugin_name). Within that file define a CamelizedPluginNameCallback class.
 
 The CamelizedPluginNameCallback class can contain any or all of the following functions:
 
-    * initialize(&$controller): Called before the controller’s beforeFilter method.
-    * beforeFilter(&$controller): Called after the controller’s beforeFilter() method but before the controller executes the current action handler. Uses ‘beforeFilter’ instead of ’startup’ to make the action name more consistent with the controller name.
-    * beforeRender(&$controller): Called after the controller’s beforeRender method but before the controller renders views and layout.
+    * initialize(&$controller): Called before the controllerï¿½s beforeFilter method.
+    * beforeFilter(&$controller): Called after the controllerï¿½s beforeFilter() method but before the controller executes the current action handler. Uses ï¿½beforeFilterï¿½ instead of ï¿½startupï¿½ to make the action name more consistent with the controller name.
+    * beforeRender(&$controller): Called after the controllerï¿½s beforeRender method but before the controller renders views and layout.
     * shutdown(&$controller): Called before output is sent to the browser.
-    * beforeRedirect(&$controller, $url, $status = null, $exit = true): Called when the controller’s redirect method is called but before any further action.
+    * beforeRedirect(&$controller, $url, $status = null, $exit = true): Called when the controllerï¿½s redirect method is called but before any further action.
 */
