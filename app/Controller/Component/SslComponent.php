@@ -1,5 +1,5 @@
 <?php 
-class SslComponent extends Object {
+class SslComponent extends Component {
     
     var $components = array('RequestHandler');
     
