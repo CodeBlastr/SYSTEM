@@ -89,7 +89,7 @@ $(function() {
 	$(".toggleClick").click(function () {
 		var currentName = $(this).attr('name');
 		$('#'+currentName).toggle('slow');
-		$('.'+currentName).toggle('slow');
+		//$('.'+currentName).toggle('slow');
 		return false;
 	});
 	
@@ -122,6 +122,20 @@ $(function() {
   	$('legend.toggleClick').click(function(){
     	$(this).siblings().slideToggle("toggle");
     });
+	
+	
+	$("#quickNav .menu").toggle(function() {
+		$("#siteSearch").hide();
+		$("#siteMenu").slideDown('slow');
+	}, function() {
+		$("#siteMenu").slideUp('slow');
+	});
+	$("#quickNav .search").toggle(function() {
+		$("#siteMenu").hide();
+		$("#siteSearch").slideDown('slow');
+	}, function() {
+		$("#siteSearch").slideUp('slow');
+	});
 		
 	//$('#tabs').tabs({fx:{height: "toggle"}});	
 	//$('.tabs').parent().tabs({fx:{height: "toggle"}});
@@ -166,7 +180,7 @@ $(function() {
 	
 	
 	/* Layout Fixes */
-	/* Stick Footer */
+	/* Stick Footer 
 	positionFooter(); 
 	function positionFooter(){
 		var padding_top = $("#awesomeFooter").css("padding-top").replace("px", "");
@@ -182,7 +196,7 @@ $(function() {
 	}
  
 	$(window)
-		.resize(positionFooter)
+		.resize(positionFooter)*/
 		
 	/* Wider than containing box */
 	
