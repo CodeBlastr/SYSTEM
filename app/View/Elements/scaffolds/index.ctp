@@ -3,6 +3,7 @@
 $modelName = !empty($modelName) ? $modelName : Inflector::classify($this->request->params['controller']); // ContactPerson
 $pluginName = !empty($pluginName) ? $pluginName : pluginize($modelName); // contacts
 $controller = !empty($controller) ? $controller : Inflector::tableize($modelName); // contact_people, projects
+$indexClass = !empty($indexClass) ? $indexClass : null; // collapsed value will reduce it to headlines only by default
 if (!empty($data)) : 
 	# setup defaults
 	$indexVar = Inflector::variable($controller); // contactPeople, projects
@@ -21,7 +22,7 @@ if (!empty($data)) :
 ?>
 
 <div class="<?php echo $controller; ?> index">
-  <div class="indexContainer">
+  <div class="indexContainer <?php echo $indexClass; ?>">
     <?php
 $i = 0;
 foreach ($data as $dat):
@@ -69,7 +70,7 @@ foreach ($data as $dat):
 			# if its a date parse it into words
 			if ($keyValue == date('Y-m-d h:i:s', strtotime($keyValue)) || $keyValue == date('Y-m-d', strtotime($keyValue))) : $keyValue = $this->Time->timeAgoInWords($keyValue); endif; // human readable dates 
 			?>
-            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
+            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
             <?php endif; ?>
             <?php endforeach; ?>
           </ul>
@@ -77,7 +78,7 @@ foreach ($data as $dat):
         <?php if (!empty($displayDescription)) : ?>
         <div class="indexCell">
           <div class="recorddat">
-            <div class="truncate"> <span name="<?php echo $displayDescription; ?>" class="edit" id="<?php echo $id; ?>"><?php echo $description; ?></span> </div>
+            <div class="truncate"> <span name="<?php echo $displayDescription; ?>" id="<?php echo $id; ?>"><?php echo $description; ?></span> </div>
           </div>
         </div>
         <?php endif; ?>
@@ -99,7 +100,7 @@ foreach ($data as $dat):
       </div>
     </div>
     <?php
-  # used for ajax editing
+  /* used for ajax editing
   # needs to be here because it has to be before the forech ends
   $editFields[] =  array(
 	'name' => $displayDescription,
@@ -120,7 +121,7 @@ foreach ($data as $dat):
 		'fieldName' => 'data['.$modelName.']['.$keyName.']',
 		'type' => 'text'  
 		);
-	endforeach;
+	endforeach;*/
 endforeach;
 ?>
   </div>
@@ -142,7 +143,7 @@ endforeach;
     <?php endif; ?>
   </ul>
 </div>
-<?php echo $this->Element('paging'); ?> <?php echo $this->Element('ajax_edit',  array('editFields' => $editFields)); ?>
+<?php echo $this->Element('paging'); ?> <?php #echo $this->Element('ajax_edit',  array('editFields' => $editFields)); ?>
 <?php 
 else : // show a default message pulled as an element called start, from the plugin folder you're in.
 ?>

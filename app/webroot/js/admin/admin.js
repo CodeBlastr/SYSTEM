@@ -138,11 +138,11 @@ $(function() {
 	
 	/* Index pages */ 
 	
-	$(".indexCell .indexCell").hide();
+	$(".collapsed .indexCell .indexCell").hide();
 	
-	$(".indexCell .indexCell:first-child").show();
+	$(".collapsed .indexCell .indexCell:first-child").show();
 	
-	$(".indexCell .indexCell:first-child").click(function (e) {
+	$(".collapsed .indexCell .indexCell:first-child").click(function (e) {
 		$(this).siblings().slideToggle("toggle");
 		e.preventDefault();
 	});
