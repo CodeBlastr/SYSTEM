@@ -17,7 +17,7 @@
 * @package       zuha
 * @subpackage    zuha.app.controllers.components
 */
-class RegisterCallbacksComponent extends Object {
+class RegisterCallbacksComponent extends Component {
 /**
 * Controller object
 *

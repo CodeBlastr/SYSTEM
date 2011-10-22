@@ -979,7 +979,7 @@ class HtmlHelper extends AppHelper {
  */
 	public function loadConfig($configFile, $path = null) {
 		if (!$path) {
-			$path = APP . 'Config' . DS;
+			$path = CONFIGS;
 		}
 		$file = null;
 		$reader = 'php';
