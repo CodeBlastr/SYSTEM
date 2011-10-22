@@ -1,6 +1,6 @@
 <?php
 if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php')) :
-	#require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php');
+	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php');
 else : 
 
 /** 
