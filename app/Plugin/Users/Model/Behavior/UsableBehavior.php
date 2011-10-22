@@ -29,9 +29,10 @@ class UsableBehavior extends ModelBehavior {
 		$userRole = CakeSession::read('Auth.User.user_role_id');
 		
 		if ($userRole != 1) : 
+			$authUserId = CakeSession::read('Auth.User.id');
 			// temporary until we find a better way
 			# this allows you to bypass the logged in user check (nocheck should equal the user id)
-			$userQuery = !empty($queryData['nocheck']) ? "Used.user_id = {$queryData['nocheck']}" : "Used.user_id = {$this->Session->read('Auth.User.id')}";
+			$userQuery = !empty($queryData['nocheck']) ? "Used.user_id = {$queryData['nocheck']}" : "Used.user_id = {$authUserId}";
 			# output the new query
 			$queryData['joins'] = array(array(
 				'table' => 'used',
