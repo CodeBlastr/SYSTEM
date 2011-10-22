@@ -39,6 +39,9 @@ Note that the class names could be updated and change often.
 .hide {
 	display: none;
 }
+.show {
+	display: block;
+}
 .hide form {
 	display: block;
 	background: #f0f0f0;
