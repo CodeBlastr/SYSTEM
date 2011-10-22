@@ -91,12 +91,15 @@ public function initialize(&$controller, $settings = array()) {
 				);
 		//debug(array(APP . 'Plugin' . DS . ucfirst(Inflector::underscore($plugin)), ROOT . DS . 'app' . DS . 'Plugin' . DS . Inflector::underscore($plugin)));continue;
 		if(file_exists($paths[0] . $file.'.php') || file_exists($paths[1] . $file.'.php') || file_exists($paths[0] . $file.'.php'))	{ //TODO - to be removed and to fix the App::import warnings which appear if you donot put this check
-			if (App::import('File', $className, true, $paths, $file.'.php')) {
-				if (class_exists($className)) {
-					 $class = new $className();
-					 ClassRegistry::addObject($className, $class);
-					 $this->__registered[] = $className;
-				 }
+			
+			if(!class_exists($className))	{			
+				if (App::import('File', $className, true, $paths, $file.'.php')) {
+					if (class_exists($className)) {
+						 $class = new $className();
+						 ClassRegistry::addObject($className, $class);
+						 $this->__registered[] = $className;
+					 }
+				}
 			}
 		}
 	}
