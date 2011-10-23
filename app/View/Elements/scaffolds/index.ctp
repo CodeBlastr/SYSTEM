@@ -42,14 +42,10 @@ foreach ($data as $dat):
 	}
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
-      <div class="indexCell image"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey), array('plugin' => 'galleries')) : null; ?> </span> </div>
-      <div class="indexCell">
-        <div class="indexCell">
-          <div class="recorddat">
-            <h3> <?php echo $this->Html->link($name, array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id), array('escape' => false)); ?></h3>
-          </div>
+        <div class="indexCell imageCell"> 
+      	<span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey), array('plugin' => 'galleries')) : null; ?> </span> 
         </div>
-        <div class="indexCell">
+        <div class="indexCell metaCell">
           <ul class="metaData">
             <?php foreach($dat[$modelName] as $keyName => $keyValue) : 
 			# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
@@ -75,14 +71,20 @@ foreach ($data as $dat):
             <?php endforeach; ?>
           </ul>
         </div>
+        <div class="indexCell indexData">
+        <div class="indexCell titleCell">
+          <div class="recorddat">
+            <h3> <?php echo $this->Html->link($name, array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id), array('escape' => false)); ?></h3>
+          </div>
+        </div>
         <?php if (!empty($displayDescription)) : ?>
-        <div class="indexCell">
+        <div class="indexCell descriptionCell">
           <div class="recorddat">
             <div class="truncate"> <span name="<?php echo $displayDescription; ?>" id="<?php echo $id; ?>"><?php echo $description; ?></span> </div>
           </div>
         </div>
         <?php endif; ?>
-        <div class="indexCell">
+        <div class="indexCell actionCell">
           <div class="drop-holder indexDrop actions">
             <ul class="drop">
               <?php if(!empty($actions) && is_array($actions)) : foreach ($actions as $action) : ?>
@@ -97,7 +99,7 @@ foreach ($data as $dat):
             </ul>
           </div>
         </div>
-      </div>
+        </div>
     </div>
     <?php
   /* used for ajax editing
