@@ -26,7 +26,7 @@ class AppController extends Controller {
 	var $userId = '';
     var $uses = array('Condition', 'Webpages.Webpage');
 	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html', 'Menus.Tree');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'SwiftMailer', /*'RegisterCallbacks', 'SwiftMailer', 'Security' Desktop Login Stops Working When This is On*/);
+	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'SwiftMailer', 'RegisterCallbacks' /*'RegisterCallbacks', 'SwiftMailer', 'Security' Desktop Login Stops Working When This is On*/);
 	var $viewClass = 'Theme';
 	var $theme = 'Default';
 	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
