@@ -1047,6 +1047,7 @@ ul.activities li.activity span.activityName {
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#4e89c5', EndColorStr='#2567ab')";
 	text-align: center;
 	vertical-align: middle;
+	padding: 0.2em 0 0.5em;
 }
 .actions ul li:hover {
 	background: #4b88b6;
@@ -1060,14 +1061,31 @@ ul.activities li.activity span.activityName {
 	display: none;
 }
 .actions ul li a {
-	display: block;
+	display: inline-block;
 	font-weight: bold;
 	color: #fff;
 	cursor: pointer;
 	text-shadow: 0 -1px 1px #145072;
 	text-decoration: none;
 	font-size: 0.75em;
-	padding: 2em 0 1em 0;
+	margin: 1em 0 0 0;
+	padding: 2.4em 0 0 0;
+	background: url("../../img/admin/icons/icon-default.png") top center no-repeat;
+}
+.actions ul li a.sort {
+	background: url("../../img/admin/icons/icon-sort.png")  center 7px no-repeat;
+}
+.actions ul li a.add {
+	background: url("../../img/admin/icons/icon-add.png")  center top no-repeat;
+}
+.actions ul li a.edit {
+	background: url("../../img/admin/icons/icon-edit.png")  center top no-repeat;
+}
+.actions ul li a.index {
+	background: url("../../img/admin/icons/icon-index.png")  center top no-repeat;
+}
+.actions ul li a.delete {
+	background: url("../../img/admin/icons/icon-delete.png")  center top no-repeat;
 }
 .actions h3 {
 	display: none;

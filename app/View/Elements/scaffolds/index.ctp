@@ -131,15 +131,15 @@ endforeach;
     <li class="actionHeading"><?php echo __('Sort by');?></li>
     <?php foreach ($data[0][$modelName] as $keyName => $keyValue) :  
 	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
-    <li class="actionItem"><?php echo $this->Paginator->sort($keyName);?></li>
+    <li class="actionItem"><?php echo $this->Paginator->sort($keyName, array(), array('class' => 'sort'));?></li>
     <?php endif; endforeach; ?>
     <?php if (!empty($pageActions)) : ?>
     <li class="actionHeading"><?php echo __('Action'); ?></li>
     <?php foreach ($pageActions as $pageAction) : ?>
-    <li class="actionItem"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
+    <li class="actionItem <?php echo $pageAction['linkClass']; ?>"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
     <?php endforeach; else : ?>
     <li class="actionHeading"><?php echo __('Action'); ?></li>
-    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add')); ?></li>
+    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); ?></li>
     <?php endif; ?>
   </ul>
 </div>
@@ -150,7 +150,7 @@ else : // show a default message pulled as an element called start, from the plu
 <div class="index noItems"> <?php echo empty($noItems) ? $this->Element('start',  array('plugin' => $pluginName)) : $noItems; ?>
   <div class="actions">
     <ul class="drop">
-      <li class="actionItem"><?php echo $this->Html->link('Add '.$modelName, array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add')); ?></li>
+      <li class="actionItem"><?php echo $this->Html->link('Add '.$modelName, array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); ?></li>
     </ul>
   </div>
 </div>
