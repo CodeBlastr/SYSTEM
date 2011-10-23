@@ -53,8 +53,8 @@
 </div>
 <a name="comments"></a>
 <div id="post-comments">
-  <?php $commentWidget->options(array('allowAnonymousComment' => false));?>
-  <?php echo $commentWidget->display();?> </div>
+  <?php $this->CommentWidget->options(array('allowAnonymousComment' => false));?>
+  <?php echo $this->CommentWidget->display();?> </div>
   
 
 <script type="text/javascript">

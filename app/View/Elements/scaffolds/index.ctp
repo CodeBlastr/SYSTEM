@@ -136,7 +136,7 @@ endforeach;
     <?php if (!empty($pageActions)) : ?>
     <li class="actionHeading"><?php echo __('Action'); ?></li>
     <?php foreach ($pageActions as $pageAction) : ?>
-    <li class="actionItem <?php echo $pageAction['linkClass']; ?>"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
+    <li class="actionItem <?php echo !empty($pageAction['linkClass']) ? $pageAction['linkClass'] : ''; ?>"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
     <?php endforeach; else : ?>
     <li class="actionHeading"><?php echo __('Action'); ?></li>
     <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); ?></li>
