@@ -12,7 +12,4 @@
 	 echo $this->Form->end(__('Save', true));?>
   </fieldset>
 </div>
-
-<?php $this->Set('noItems', 'print this message when there are no tasks'); ?>
-
 <?php echo $this->Element('scaffolds/index', array('data' => $tasks)); ?>
