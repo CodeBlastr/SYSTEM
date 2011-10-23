@@ -28,7 +28,6 @@ class UsableBehavior extends ModelBehavior {
 	function beforeFind(&$model, $queryData) {
 		$userRole = CakeSession::read('Auth.User.user_role_id');
 		$userId = CakeSession::read('Auth.User.id');
-		
 		//if ($userRole != 1) : 
 			// temporary until we find a better way
 			# this allows you to bypass the logged in user check (nocheck should equal the user id)
