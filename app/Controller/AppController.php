@@ -169,7 +169,6 @@ class AppController extends Controller {
 	 * @todo convert to a full REST application and this might not be necessary
 	 */
     function beforeRender() {
-		
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
 		if($this->name == 'CakeError') :
@@ -358,15 +357,14 @@ class AppController extends Controller {
 						$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.$this->request->params['controller'];
 					endif;
 				endforeach;
-				#$this->request->url = str_replace('admin/', '', $this->request->url);
-				#$this->request->here = str_replace('admin', '', $this->request->here);
-				#$dispatcher = new Dispatcher();
-				#$result = $dispatcher->dispatch($this->request, new CakeResponse());
+				$this->adminRedirect = true;
+				$dispatcher = new Dispatcher();
+				$result = $dispatcher->dispatch(new CakeRequest(str_replace('admin', '', $this->request->url)), new CakeResponse());
 			else : 
 				$this->Session->setFlash(__('Section access restricted.', true));
 				$this->redirect($this->referer());
 			endif;			
-		elseif (empty($this->request->params['requested']) && !$this->request->is('ajax')) : 
+		elseif (empty($this->request->params['requested']) && !$this->request->is('ajax') && ($this->request->query['url'] == $this->request->url)) : 
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		endif;		
