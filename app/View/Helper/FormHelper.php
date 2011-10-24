@@ -927,8 +927,8 @@ class FormHelper extends AppHelper {
 				$map = array(
 					'string'  => 'text',	 'datetime'  => 'datetime',
 					'boolean' => 'checkbox', 'timestamp' => 'datetime',
-					'text'	=> 'textarea', 'time'	  => 'time',
-					'date'	=> 'date',	 'float'	 => 'number',
+					'text'	=> 'textarea', 'time' => 'time',
+					'date'	=> 'date',	 'float' => 'number',
 					'integer' => 'number'
 				);
 
@@ -1080,21 +1080,21 @@ class FormHelper extends AppHelper {
 				$options['value'] = $selected;
 				$options['class'] = 'timepicker';
 				$type = 'text';
-				$input = $this->{$type}($fieldName, $selected, $options);
+				$input = $this->{$type}($fieldName, $options);
 			break;
 			case 'date':
 				#$input = $this->dateTime($fieldName, $dateFormat, null, $options);
 				$options['value'] = $selected;
 				$options['class'] = 'datepicker';
 				$type = 'text';
-				$input = $this->{$type}($fieldName, $selected, $options);
+				$input = $this->{$type}($fieldName, $options);
 			break;
 			case 'datetime':
 				#$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options);
 				$options['value'] = $selected;
 				$options['class'] = 'datetimepicker';
 				$type = 'text';
-				$input = $this->{$type}($fieldName, $selected, $options);
+				$input = $this->{$type}($fieldName, $options);
 			break;
 			case 'richtext':
 				$input = $this->richtext($fieldName, $options + array('class' => 'CKEDITOR'));

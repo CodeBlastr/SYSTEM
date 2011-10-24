@@ -169,7 +169,6 @@ class AppController extends Controller {
 	 * @todo convert to a full REST application and this might not be necessary
 	 */
     function beforeRender() {
-		
 		# this needed to be duplicated from the beforeFilter 
 		# because beforeFilter doesn't fire on error pages.
 		if($this->name == 'CakeError') :
@@ -340,6 +339,7 @@ class AppController extends Controller {
 	 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
 	 */
 	function _siteTemplate() {
+		$checkUrl = strpos($this->request->here, '/') === 0 ? substr($this->request->here, 1) : $this->request->here;
 		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) :
 			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
@@ -358,18 +358,17 @@ class AppController extends Controller {
 						$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.$this->request->params['controller'];
 					endif;
 				endforeach;
-				#$this->request->url = str_replace('admin/', '', $this->request->url);
-				#$this->request->here = str_replace('admin', '', $this->request->here);
-				#$dispatcher = new Dispatcher();
-				#$result = $dispatcher->dispatch($this->request, new CakeResponse());
+				$this->adminRedirect = true;
+				$dispatcher = new Dispatcher();
+				$result = $dispatcher->dispatch(new CakeRequest(str_replace('admin', '', $this->request->url)), new CakeResponse());
 			else : 
 				$this->Session->setFlash(__('Section access restricted.', true));
 				$this->redirect($this->referer());
 			endif;			
-		elseif (empty($this->request->params['requested']) && !$this->request->is('ajax')) : 
+		elseif (empty($this->request->params['requested']) && !$this->request->is('ajax') && ($this->request->query['url'] == $checkUrl)) : 
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
-		endif;		
+		endif;
 	}
 
 

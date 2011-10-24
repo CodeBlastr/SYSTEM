@@ -39,13 +39,12 @@ Note that the class names could be updated and change often.
 .hide {
 	display: none;
 }
+.show {
+	display: block;
+}
 .hide form {
 	display: block;
 	background: #f0f0f0;
-}
-.edit:hover {
-	background: #FF6;
-	color: #333;
 }
 .edit input, .edit textarea, .edit select {
 	min-width: 0;
@@ -55,9 +54,6 @@ Note that the class names could be updated and change often.
 /* Threaded Blog Comment Layout */
 .comment {
 	clear: both;
-	border: 1px solid #CCC;
-	margin: .5em 0;
-	padding: .5em;
 }
 .comment .avatar, .comment .full_name, .comment .meta {
 	float: left;
