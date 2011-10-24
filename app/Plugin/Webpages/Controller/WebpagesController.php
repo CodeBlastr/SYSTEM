@@ -216,6 +216,12 @@ class WebpagesController extends WebpagesAppController {
         $content_str = $this->render('webpages/render_content');
         return $content_str;
     }
+	
+	function theme() {
+	}
+	
+	function dashboard() {
+	}
 
 }
 ?>

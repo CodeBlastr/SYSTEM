@@ -289,5 +289,8 @@ class ContactsController extends ContactsAppController {
 		$this->set('page_title_for_layout', $contact['Contact']['name']);
 		$this->set('tabsElement', '/contacts');
 	}
+	
+	function dashboard() {
+	}
 }
 ?>
