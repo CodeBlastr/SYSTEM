@@ -1,6 +1,10 @@
 <div id="users-edit" class="users edit">
 <?php 
-	echo $this->Form->create('User', array('enctype'=>'multipart/form-data')); 	
+	echo $this->Form->create('User', array('enctype'=>'multipart/form-data')); 	?>
+    
+  <fieldset>
+    <legend><h2><?php echo __('Edit User Profile'); ?></h2></legend>
+	<?php 
 	echo $this->Form->input('User.id');
 	if (!empty($this->request->params['named']['cpw'])) {
 		echo $this->Form->input('User.username', array('type' => 'hidden'));
@@ -8,9 +12,6 @@
 		echo $this->Form->input('User.password', array('value' => ''));
 		echo $this->Form->input('User.confirm_password', array('value' => '', 'type' => 'password'));
 	} else {
-		?>
-		<h3>User Profile Info </h3>
-		<?php
 		echo $this->element('snpsht', array('useGallery' => true, 'userId' => $this->request->data['User']['id'], 'thumbSize' => 'medium', 'thumbLink' => 'default')); 
 		echo $this->Form->input('User.first_name');
 		echo $this->Form->input('User.last_name');
@@ -20,6 +21,7 @@
 	}
 	echo $this->Form->end('Submit');
 ?>
+</fieldset>
 
 <?php
 	//if user paid role id defined and user's role id is paid role id then show the link Cancel Subscription 
@@ -44,7 +46,8 @@ echo $this->Element('context_menu', array('menus' => array(
 		'heading' => 'Users',
 		'items' => array(
 			$this->Html->link(__('View User', true), array('action' => 'view', $this->request->data['User']['id'])),
-			$this->Html->link(__('Change Password', true), array($this->Form->value('User.id'), 'cpw' => 1)),
+			$this->Html->link(__('Change Picture', true), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'edit', 'User',  $this->request->data['User']['id'])),
+			$this->Html->link(__('Change Password', true), array($this->request->data['User']['id'], 'cpw' => 1)),
 			)
 		),
 	)));

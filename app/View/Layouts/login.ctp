@@ -31,8 +31,8 @@
 <body class="<?php echo $this->request->params['controller']; echo ($this->Session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" id="<?php echo !empty($this->request->params['pass'][0]) ? strtolower($this->request->params['controller'].'_'.$this->request->params['action'].'_'.$this->request->params['pass'][0]) : strtolower($this->request->params['controller'].'_'.$this->request->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
 <div id="siteWrap">
   <?php #echo $this->Element('navigation', array('plugin' => 'webpages')); ?>
-  <?php echo $this->Element('admin/quick_nav'); ?>
-  <?php echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array(), array('plugin' => $this->request->params['plugin'])) : ''; ?>
+  <?php #echo $this->Element('admin/quick_nav'); ?>
+  <?php #echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array(), array('plugin' => $this->request->params['plugin'])) : ''; ?>
   <div id="siteContent">
     <div id="contentWrap">
       <div id="content">

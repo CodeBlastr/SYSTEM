@@ -3,6 +3,7 @@
 $modelName = !empty($modelName) ? $modelName : Inflector::classify($this->request->params['controller']); // ContactPerson
 $pluginName = !empty($pluginName) ? $pluginName : pluginize($modelName); // contacts
 $controller = !empty($controller) ? $controller : Inflector::tableize($modelName); // contact_people, projects
+$indexClass = !empty($indexClass) ? $indexClass : null; // collapsed value will reduce it to headlines only by default
 if (!empty($data)) : 
 	# setup defaults
 	$indexVar = Inflector::variable($controller); // contactPeople, projects
@@ -21,7 +22,7 @@ if (!empty($data)) :
 ?>
 
 <div class="<?php echo $controller; ?> index">
-  <div class="indexContainer">
+  <div class="indexContainer <?php echo $indexClass; ?>">
     <?php
 $i = 0;
 foreach ($data as $dat):
@@ -41,14 +42,10 @@ foreach ($data as $dat):
 	}
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
-      <div class="indexCell image"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey), array('plugin' => 'galleries')) : null; ?> </span> </div>
-      <div class="indexCell">
-        <div class="indexCell">
-          <div class="recorddat">
-            <h3> <?php echo $this->Html->link($name, array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id), array('escape' => false)); ?></h3>
-          </div>
+        <div class="indexCell imageCell"> 
+      	<span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey), array('plugin' => 'galleries')) : null; ?> </span> 
         </div>
-        <div class="indexCell">
+        <div class="indexCell metaCell">
           <ul class="metaData">
             <?php foreach($dat[$modelName] as $keyName => $keyValue) : 
 			# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
@@ -69,19 +66,25 @@ foreach ($data as $dat):
 			# if its a date parse it into words
 			if ($keyValue == date('Y-m-d h:i:s', strtotime($keyValue)) || $keyValue == date('Y-m-d', strtotime($keyValue))) : $keyValue = $this->Time->timeAgoInWords($keyValue); endif; // human readable dates 
 			?>
-            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail edit" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
+            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
             <?php endif; ?>
             <?php endforeach; ?>
           </ul>
         </div>
-        <?php if (!empty($displayDescription)) : ?>
-        <div class="indexCell">
+        <div class="indexCell indexData">
+        <div class="indexCell titleCell">
           <div class="recorddat">
-            <div class="truncate"> <span name="<?php echo $displayDescription; ?>" class="edit" id="<?php echo $id; ?>"><?php echo $description; ?></span> </div>
+            <h3> <?php echo $this->Html->link($name, array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id), array('escape' => false)); ?></h3>
+          </div>
+        </div>
+        <?php if (!empty($displayDescription)) : ?>
+        <div class="indexCell descriptionCell">
+          <div class="recorddat">
+            <div class="truncate"> <span name="<?php echo $displayDescription; ?>" id="<?php echo $id; ?>"><?php echo $description; ?></span> </div>
           </div>
         </div>
         <?php endif; ?>
-        <div class="indexCell">
+        <div class="indexCell actionCell">
           <div class="drop-holder indexDrop actions">
             <ul class="drop">
               <?php if(!empty($actions) && is_array($actions)) : foreach ($actions as $action) : ?>
@@ -96,10 +99,10 @@ foreach ($data as $dat):
             </ul>
           </div>
         </div>
-      </div>
+        </div>
     </div>
     <?php
-  # used for ajax editing
+  /* used for ajax editing
   # needs to be here because it has to be before the forech ends
   $editFields[] =  array(
 	'name' => $displayDescription,
@@ -120,7 +123,7 @@ foreach ($data as $dat):
 		'fieldName' => 'data['.$modelName.']['.$keyName.']',
 		'type' => 'text'  
 		);
-	endforeach;
+	endforeach;*/
 endforeach;
 ?>
   </div>
@@ -130,29 +133,38 @@ endforeach;
     <li class="actionHeading"><?php echo __('Sort by');?></li>
     <?php foreach ($data[0][$modelName] as $keyName => $keyValue) :  
 	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
-    <li class="actionItem"><?php echo $this->Paginator->sort($keyName);?></li>
+    <li class="actionItem"><?php echo $this->Paginator->sort($keyName, array(), array('class' => 'sort'));?></li>
     <?php endif; endforeach; ?>
     <?php if (!empty($pageActions)) : ?>
     <li class="actionHeading"><?php echo __('Action'); ?></li>
     <?php foreach ($pageActions as $pageAction) : ?>
-    <li class="actionItem"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
+    <li class="actionItem <?php echo !empty($pageAction['linkClass']) ? $pageAction['linkClass'] : ''; ?>"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
     <?php endforeach; else : ?>
     <li class="actionHeading"><?php echo __('Action'); ?></li>
-    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add')); ?></li>
+    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); ?></li>
     <?php endif; ?>
   </ul>
 </div>
-<?php echo $this->Element('paging'); ?> <?php echo $this->Element('ajax_edit',  array('editFields' => $editFields)); ?>
 <?php 
-else : // show a default message pulled as an element called start, from the plugin folder you're in.
+echo $this->Element('paging'); ?>
+<?php #echo $this->Element('ajax_edit',  array('editFields' => $editFields));
 ?>
-<div class="index noItems"> <?php echo empty($noItems) ? $this->Element('start',  array('plugin' => $pluginName)) : $noItems; ?>
+<?php 
+else : 
+// Don't show anything rom the index, show a default message  
+// pulled as an element called start, from the plugin folder you're in.
+?>
+<div class="index noItems"> 
+ <?php echo $this->Element('start', array(), array('plugin' => $pluginName)); ?>
+ <?php if (empty($indexOnThisPage)) : ?>
   <div class="actions">
     <ul class="drop">
-      <li class="actionItem"><?php echo $this->Html->link('Add '.$modelName, array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add')); ?></li>
+      <li class="actionItem"><?php echo $this->Html->link('Add '.$modelName, array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); ?></li>
     </ul>
   </div>
+ <?php endif; ?>
 </div>
 <?php
 endif;
+$this->set('indexOnThisPage', true);  // used when there is more than one index on the page calling this element. This variable keeps it the actions from the second index element from over writing the first index element actions.
 ?>

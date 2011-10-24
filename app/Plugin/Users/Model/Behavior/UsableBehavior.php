@@ -27,12 +27,11 @@ class UsableBehavior extends ModelBehavior {
 	 */
 	function beforeFind(&$model, $queryData) {
 		$userRole = CakeSession::read('Auth.User.user_role_id');
-		
-		if ($userRole != 1) : 
-			$authUserId = CakeSession::read('Auth.User.id');
+		$userId = CakeSession::read('Auth.User.id');
+		//if ($userRole != 1) : 
 			// temporary until we find a better way
 			# this allows you to bypass the logged in user check (nocheck should equal the user id)
-			$userQuery = !empty($queryData['nocheck']) ? "Used.user_id = {$queryData['nocheck']}" : "Used.user_id = {$authUserId}";
+			$userQuery = !empty($queryData['nocheck']) ? "Used.user_id = {$queryData['nocheck']}" : "Used.user_id = {$userId}";
 			# output the new query
 			$queryData['joins'] = array(array(
 				'table' => 'used',
@@ -44,22 +43,17 @@ class UsableBehavior extends ModelBehavior {
 				$userQuery,
 				),
 			));
-		endif;
-		
+		//endif;
 		return $queryData;
 	}
 	
 	/**
 	 * Callback used to save related users, into the used table, with the proper relationship.
 	 */
-	function afterSave(&$model, $created) {
-		
-		$this->model = $model;
-		$this->foreignKey = $this->model->id;
-		
+	function afterSave(&$Model, $created) {		
 		# this is if we have a hasMany list of users coming in.
-		if (!empty($this->model->data['User'][0])) :
-			foreach ($this->model->data['User'] as $user) :
+		if (!empty($Model->data['User'][0])) :
+			foreach ($Model->data['User'] as $user) :
 				#$users[]['id'] = $user['user_id']; // before cakephp 2.0 upgrade
 				$users[]['id'] = $user['id'];
 			endforeach;
@@ -73,11 +67,11 @@ class UsableBehavior extends ModelBehavior {
 		endif;
 		
 		# this is if its a user group we need to look up.
-		if (!empty($this->model->data[$this->model->alias]['user_group_id'])) :
+		if (!empty($Model->data[$Model->alias]['user_group_id'])) :
 			# add all of the team members to the used table 
-			$userGroups = $this->model->UserGroup->find('all', array(
+			$userGroups = $Model->UserGroup->find('all', array(
 				'conditions' => array(
-					'UserGroup.id' => $this->model->data[$this->model->alias]['user_group_id'],
+					'UserGroup.id' => $Model->data[$Model->alias]['user_group_id'],
 					),
 				'contain' => array(
 					'User',
@@ -94,8 +88,8 @@ class UsableBehavior extends ModelBehavior {
 			$i=0;
 			foreach ($users as $user) : 
 				$data[$i]['Used']['user_id'] = $user['id'];
-				$data[$i]['Used']['foreign_key'] = $this->foreignKey;
-				$data[$i]['Used']['model'] = $this->model->alias;
+				$data[$i]['Used']['foreign_key'] = $Model->id;
+				$data[$i]['Used']['model'] = $Model->alias;
 				$data[$i]['Used']['role'] = $this->defaultRole; // this is temporary, until we start doing real acl 
 				$i++;
 			endforeach;
@@ -105,7 +99,6 @@ class UsableBehavior extends ModelBehavior {
 				$Used->create();
 				$Used->save($dat);
 			endforeach;
-			
 		endif;
 	}
 	
@@ -159,7 +152,7 @@ class UsableBehavior extends ModelBehavior {
 	 */
 	function addUsedUser(&$model, $data) {
 		# do a check to see if the user is already a part of this object (we don't want duplicates)
-		$objects = $this->findUsedObjects($model, $data['Used']['user_id'], 'all', array('fields' => 'id'));
+		$objects = $this->findUsedObjects($model, $data['Used']['user_id'], 'all', array('conditions' => array('Used.foreign_key' => $data['Used']['foreign_key']), 'fields' => 'id'));
 		$objectIds = Set::extract("/{$model->alias}/id", $objects);
 		if (array_search($data['Used']['foreign_key'], $objectIds)) : 
 			throw new Exception('User is already involved.');
