@@ -246,5 +246,5 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
   <div class="handle">..<br />..<br />..<br />..<br />..<br />..<br />..</div>
   <div id="modalEditor"></div>
 </div>
-<?php echo $this->Element('navigation', array('plugin' => 'webpages')); ?>
+<?php echo $this->Element('navigation', array(), array('plugin' => 'webpages')); ?>
 <?php } ?>

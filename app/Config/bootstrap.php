@@ -17,45 +17,45 @@ require_once(ROOT.DS.APP_DIR.DS.'Config'.DS.'global.php');
  
 App::build(array(
 	'plugins' => array(
-		#ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
-		#ROOT.DS.SITE_DIR.DS.'plugins'.DS,
+		ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
+		ROOT.DS.SITE_DIR.DS.'plugins'.DS,
 		ROOT.DS.APP_DIR.DS.'Plugin'.DS
 		),
     'models' =>  array(
-		#ROOT.DS.SITE_DIR.DS.'Model'.DS,
-		#ROOT.DS.SITE_DIR.DS.'models'.DS,
+		ROOT.DS.SITE_DIR.DS.'Model'.DS,
+		ROOT.DS.SITE_DIR.DS.'models'.DS,
 		ROOT.DS.APP_DIR.DS.'Model'.DS
 		),
     'views' => array(
-		#ROOT.DS.SITE_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS,
-		#ROOT.DS.SITE_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
-		#ROOT.DS.SITE_DIR.DS.'View'.DS,
-		#ROOT.DS.SITE_DIR.DS.'views'.DS,
+		ROOT.DS.SITE_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS,
+		ROOT.DS.SITE_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
+		ROOT.DS.SITE_DIR.DS.'View'.DS,
+		ROOT.DS.SITE_DIR.DS.'views'.DS,
 		ROOT.DS.APP_DIR.DS.'View'.DS,
 		),
 	'controllers' => array(
-		#ROOT.DS.SITE_DIR.DS.'Controller'.DS,
-		#ROOT.DS.SITE_DIR.DS.'controllers'.DS,
+		ROOT.DS.SITE_DIR.DS.'Controller'.DS,
+		ROOT.DS.SITE_DIR.DS.'controllers'.DS,
 		ROOT.DS.APP_DIR.DS.'Controller'.DS
 		),
     'datasources' => array(
-		#ROOT.DS.SITE_DIR.DS.'Model'.DS.'Datasource'.DS,
-		#ROOT.DS.SITE_DIR.DS.'models'.DS.'datasources'.DS,
+		ROOT.DS.SITE_DIR.DS.'Model'.DS.'Datasource'.DS,
+		ROOT.DS.SITE_DIR.DS.'models'.DS.'datasources'.DS,
 		ROOT.DS.APP_DIR.DS.'models'.DS.'datasources'.DS
 		),
     'behaviors' => array(
-		#ROOT.DS.SITE_DIR.DS.'Model'.DS.'Behavior'.DS,
-		#ROOT.DS.SITE_DIR.DS.'models'.DS.'behaviors'.DS,
+		ROOT.DS.SITE_DIR.DS.'Model'.DS.'Behavior'.DS,
+		ROOT.DS.SITE_DIR.DS.'models'.DS.'behaviors'.DS,
 		ROOT.DS.APP_DIR.DS.'Model'.DS.'Behavior'.DS
 		),
     'components' => array(
-		#ROOT.DS.SITE_DIR.DS.'Controller'.DS.'Component'.DS,
-		#ROOT.DS.SITE_DIR.DS.'controllers'.DS.'components'.DS,
+		ROOT.DS.SITE_DIR.DS.'Controller'.DS.'Component'.DS,
+		ROOT.DS.SITE_DIR.DS.'controllers'.DS.'components'.DS,
 		ROOT.DS.APP_DIR.DS.'Controller'.DS.'Component'.DS
 		),
     'helpers' => array(
-		#ROOT.DS.SITE_DIR.DS.'View'.DS.'Helper'.DS,
-		#ROOT.DS.SITE_DIR.DS.'views'.DS.'helpers'.DS,
+		ROOT.DS.SITE_DIR.DS.'View'.DS.'Helper'.DS,
+		ROOT.DS.SITE_DIR.DS.'views'.DS.'helpers'.DS,
 		ROOT.DS.APP_DIR.DS.'View'.DS.'Helper'.DS
 		),
 #   'vendors' => array('/full/path/to/vendors/', '/next/full/path/to/vendors/'),
