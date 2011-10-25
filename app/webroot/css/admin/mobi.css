@@ -253,9 +253,14 @@ td {
 tr.altrow td {
 	background: #f0f0f0;
 }
-td.actions {
+th.actions, td.actions {
 	white-space: nowrap;
 	position: relative !important;
+	display: table-cell;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	width: auto;
 }
 td.actions a {
 	margin: 0px 0.7em;
