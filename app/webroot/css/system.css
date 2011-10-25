@@ -42,6 +42,9 @@ Note that the class names could be updated and change often.
 .show {
 	display: block;
 }
+td.show {
+	display: table-cell;
+}
 .hide form {
 	display: block;
 	background: #f0f0f0;
