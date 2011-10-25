@@ -1,8 +1,7 @@
 <div class="galleries form">
-  <h2><?php echo __('Edit '); echo $gallery['Gallery']['name']; __(' Gallery '); ?></h2>
 <?php echo $this->Form->create('Gallery', array('enctype'=>'multipart/form-data'));?>
 	<fieldset id="galleryFields">
- 		<legend class="toggleClick"><?php echo __('Edit Gallery Info'); ?></legend>
+ 		<legend class="toggleClick"><h2><?php echo !empty($this->request->data['Gallery']['name']) ? $this->request->data['Gallery']['name']: null; echo __(' Gallery Info'); ?></h2></legend>
 		<?php
 		echo $this->Form->input('Gallery.id');
 		echo $this->Form->input('Gallery.name');
@@ -15,12 +14,12 @@
     </fieldset>
     
     
-	<?php echo $this->element($gallery['Gallery']['type'], array('plugin' => 'galleries', 'id' => $gallery['Gallery']['id'])); ?>
+	<?php echo !empty($this->request->data['Gallery']['id']) ? $this->element($this->request->data['Gallery']['type'], array('id' => $this->request->data['Gallery']['id']), array('plugin' => 'galleries')) : null; ?>
 
     
 <?php echo $this->Form->create('GalleryImage', array('enctype'=>'multipart/form-data'));?>
 	<fieldset>
- 		<legend><?php echo __('Add Image'); ?></legend>
+ 		<legend><h3><?php echo __('Add Image'); ?></h3></legend>
 	<?php
 		echo $this->Form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $gallery['Gallery']['id']));
 		echo $this->Form->input('Gallery.model', array('type' => 'hidden'));
