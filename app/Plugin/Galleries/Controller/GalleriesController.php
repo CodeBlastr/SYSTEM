@@ -84,7 +84,7 @@ class GalleriesController extends GalleriesAppController {
 		if (!empty($this->request->data)) {
 			try {
 				$this->Gallery->GalleryImage->add($this->request->data, 'filename');
-				$this->Session->setFlash(__('The Gallery has been saved', true));
+				$this->Session->setFlash(__('The Gallery has been saved'));
 				$gallery = $this->Gallery->findbyId($this->Gallery->id);
 				$this->redirect(array('action' => 'edit', $gallery['Gallery']['model'], $gallery['Gallery']['foreign_key']));			
 			} catch (Exception $e) {
@@ -100,16 +100,16 @@ class GalleriesController extends GalleriesAppController {
 	}
 	
 
-	/**
-	 * Edit a Gallery
-	 * You must link to this with model and foreign_key to avoid confusion between edit/Id and edit/Model
-	 *
-	 * @todo		Convert galleries to slugs or aliases, for easier linking into edit and views.
-	 */
-	function edit($model = null, $foreignKey = null) {		
-		if (!empty($this->request->data)) {				
-			if ($this->Gallery->save($this->request->data)) {
-				$this->Session->setFlash(__('The Gallery has been saved', true));
+/**
+ * Edit a Gallery
+ * You must link to this with model and foreign_key to avoid confusion between edit/Id and edit/Model
+ *
+ * @todo		Convert galleries to slugs or aliases, for easier linking into edit and views.
+ */
+	function edit($model = null, $foreignKey = null) {
+		if (!empty($this->request->data)) {			
+			if ($this->Gallery->GalleryImage->add($this->request->data, 'filename')) {
+				$this->Session->setFlash(__('The Gallery has been saved'));
 				$this->redirect(array('action'=>'edit', $this->request->data['Gallery']['model'], $this->request->data['Gallery']['foreign_key']));
 			} else {
 				$this->Session->setFlash(__('The Gallery could not be saved. Please, try again.', true));
@@ -135,7 +135,7 @@ class GalleriesController extends GalleriesAppController {
 					'GalleryImage',
 					),
 				));
-			$this->set(compact('gallery'));
+			$this->request->data = $gallery;
 			$this->set('value', $this->Gallery->_galleryVars($gallery)); 
 		}
 		

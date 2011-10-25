@@ -59,7 +59,7 @@ class Gallery extends GalleriesAppModel {
 	);
 	
 	function afterSave($created) {
-		$gallery = $this->findbyId($this->id);
+		$gallery = $this->find('first', array('Gallery.id' => $this->id));
 		if (!empty($gallery) && empty($gallery['Gallery']['model']) && empty($gallery['Gallery']['foreign_key'])) {
 			$gallery['Gallery']['model'] = 'Gallery';
 			$gallery['Gallery']['foreign_key'] = $gallery['Gallery']['id'];
