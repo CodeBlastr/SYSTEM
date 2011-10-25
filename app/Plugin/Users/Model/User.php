@@ -190,8 +190,8 @@ class User extends AppModel {
 				break;
 			}
 			
-			parent::afterSave($created);
 		}
+		parent::afterSave($created);
 	}
 	
 /**
