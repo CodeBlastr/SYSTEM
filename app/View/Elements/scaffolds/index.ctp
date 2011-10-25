@@ -42,12 +42,10 @@ foreach ($data as $dat):
 	}
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
-        <div class="indexCell imageCell"> 
-      	<span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey), array('plugin' => 'galleries')) : null; ?> </span> 
-        </div>
-        <div class="indexCell metaCell">
-          <ul class="metaData">
-            <?php foreach($dat[$modelName] as $keyName => $keyValue) : 
+      <div class="indexCell imageCell"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey), array('plugin' => 'galleries')) : null; ?> </span> </div>
+      <div class="indexCell metaCell">
+        <ul class="metaData">
+          <?php foreach($dat[$modelName] as $keyName => $keyValue) : 
 			# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
 			$_keyName = $keyName;
 			$humanKeyName = Inflector::humanize(str_replace('_id', '', $keyName)); 
@@ -66,12 +64,12 @@ foreach ($data as $dat):
 			# if its a date parse it into words
 			if ($keyValue == date('Y-m-d h:i:s', strtotime($keyValue)) || $keyValue == date('Y-m-d', strtotime($keyValue))) : $keyValue = $this->Time->timeAgoInWords($keyValue); endif; // human readable dates 
 			?>
-            <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
-            <?php endif; ?>
-            <?php endforeach; ?>
-          </ul>
-        </div>
-        <div class="indexCell indexData">
+          <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
+          <?php endif; ?>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+      <div class="indexCell indexData">
         <div class="indexCell titleCell">
           <div class="recorddat">
             <h3> <?php echo $this->Html->link($name, array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id), array('escape' => false)); ?></h3>
@@ -99,7 +97,7 @@ foreach ($data as $dat):
             </ul>
           </div>
         </div>
-        </div>
+      </div>
     </div>
     <?php
   /* used for ajax editing
@@ -154,15 +152,14 @@ else :
 // Don't show anything rom the index, show a default message  
 // pulled as an element called start, from the plugin folder you're in.
 ?>
-<div class="index noItems"> 
- <?php echo $this->Element('start', array(), array('plugin' => $pluginName)); ?>
- <?php if (empty($indexOnThisPage)) : ?>
+<div class="index noItems"> <?php echo $this->Element('start', array(), array('plugin' => $pluginName)); ?>
+  <?php if (empty($indexOnThisPage)) : ?>
   <div class="actions">
     <ul class="drop">
       <li class="actionItem"><?php echo $this->Html->link('Add '.$modelName, array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); ?></li>
     </ul>
   </div>
- <?php endif; ?>
+  <?php endif; ?>
 </div>
 <?php
 endif;
