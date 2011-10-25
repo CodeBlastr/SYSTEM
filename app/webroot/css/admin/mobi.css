@@ -581,6 +581,7 @@ input[type=checkbox] {
 	width: auto;
 	padding-right: 0.1em;
 	display: inline;
+
 }
 .checkbox label:hover {
 	background: #D7E3EA;
@@ -956,7 +957,7 @@ div.paging span a {
 	padding: 0.5em;
 	border-bottom: 1px solid #CCC;
 }
-#content div.index .metaData {
+#content div.index .metaData, #content div.comments .metaData  {
 	background: #EEEEEE;
 	border: 1px solid #CCC !important;
 	filter: none;

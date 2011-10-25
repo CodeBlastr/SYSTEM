@@ -21,7 +21,7 @@
 	<fieldset>
  		<legend><h3><?php echo __('Add Image'); ?></h3></legend>
 	<?php
-		echo $this->Form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $gallery['Gallery']['id']));
+		echo $this->Form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $this->request->data['Gallery']['id']));
 		echo $this->Form->input('Gallery.model', array('type' => 'hidden'));
 		echo $this->Form->input('Gallery.foreign_key', array('type' => 'hidden'));
 		echo $this->Form->input('GalleryImage.filename', array('type' => 'file'));
