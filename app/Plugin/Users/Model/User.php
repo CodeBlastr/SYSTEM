@@ -44,7 +44,7 @@ class User extends AppModel {
 	// this seems to break things because of nesting if I put Users.UserRole for the className
 	public $belongsTo = array(
 		'UserRole' => array(
-			'className' => 'UserRole',
+			'className' => 'Users.UserRole',
 			'foreignKey' => 'user_role_id',
 			'conditions' => '',
 			'fields' => '',
@@ -518,6 +518,7 @@ class User extends AppModel {
 	
 /* checkCodeExists
  * Check whether code with same string exists
+
  * @param code
  * return boolean
  */
