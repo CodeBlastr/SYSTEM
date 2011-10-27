@@ -2,7 +2,7 @@
 if (!empty($menus)) {
 	$menu = '';
 	$menu = '
-      	<div class="actions">
+      	<div class="contextMenu actions">
 			<ul>';
 			foreach ($menus as $menugroup) :
 				$menu .= '<li class="actionHeading"><span>'.$menugroup['heading'].'</span></a>';
