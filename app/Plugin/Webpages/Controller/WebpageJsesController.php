@@ -13,7 +13,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.plugins.webpages.controllers
  * @since         Zuha(tm) v 0.0.1
@@ -65,6 +65,10 @@ class WebpageJsesController extends WebpagesAppController {
 		}
 		if (empty($this->request->data)) {
 			$this->request->data = $this->WebpageJs->read(null, $id);
+			$file_contents = $this->WebpageJs->getJsFileContents($this->request->data['WebpageJs']['name']);
+			if($file_contents)	{
+				$this->request->data['WebpageJs']['content'] = $file_contents; 
+			}
 		}
 		$webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
 		$this->set(compact('webpages'));

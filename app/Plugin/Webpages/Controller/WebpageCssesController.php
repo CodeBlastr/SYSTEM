@@ -13,7 +13,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.plugins.webpages.controllers
  * @since         Zuha(tm) v 0.0.1
@@ -66,7 +66,11 @@ class WebpageCssesController extends WebpagesAppController {
 			}
 		}
 		if (empty($this->request->data)) {
-			$this->request->data = $this->WebpageCss->read(null, $id);
+			$this->request->data = $this->WebpageCss->read(null, $id);			
+			$css_file_contents = $this->WebpageCss->getCssFileContents($this->request->data['WebpageCss']['name']);
+			if($css_file_contents)	{
+				$this->request->data['WebpageCss']['content'] = $css_file_contents; 
+			}
 		}
 		$types = $this->WebpageCss->types();
 		$webpages = $this->WebpageCss->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
