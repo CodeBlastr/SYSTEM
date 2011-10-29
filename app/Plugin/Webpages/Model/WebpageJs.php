@@ -95,15 +95,12 @@ class WebpageJs extends WebpagesAppModel {
 	
 	
 	function _jsFile($fileName = 'all.js', $content) {
+
+		$file_path = $this->_getJsFilePath() . $fileName;
 		# file helper
 		App::uses('File', 'Utility');
-		$file = new File;
-		# check whether this is multi-sites
-		if (file_exists(ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR)) {
-			$file->path = ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR.DS.JS_URL.$fileName.'.js';
-		} else {
-			$file->path = ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.JS_URL.$fileName.'.js';
-		}
+		$file = new File($file_path);
+		$file->path = $file_path;
 				
 		if($file->write($file->prepare($content))) {
 			return true;
@@ -111,7 +108,22 @@ class WebpageJs extends WebpagesAppModel {
 			return false;
 		}
 	}
+		
+	function _getJsFilePath()	{
+		# check whether this is multi-sites
+		if (file_exists(ROOT.DS.SITE_DIR.DS.'View'.DS.'Themed'.DS.'Default'.DS.WEBROOT_DIR)) {
+			return ROOT.DS.SITE_DIR.DS.'View'.DS.'Themed'.DS.'Default'.DS.WEBROOT_DIR.DS.JS_URL;
+		} else {
+			return ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.JS_URL;
+		}
+	}	
 	
+	function getJsFileContents($filename)	{
+		$file_path = $this->_getJsFilePath();			
+		if(file_exists($file_path.DS.$filename))	{
+			return file_get_contents($file_path.DS.$filename);
+		}
+	}
 	
 	function types() {
 		return array(
