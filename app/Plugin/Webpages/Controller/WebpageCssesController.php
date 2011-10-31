@@ -39,7 +39,7 @@ class WebpageCssesController extends WebpagesAppController {
 	function add() {
 		if (!empty($this->request->data)) {
 			$this->WebpageCss->create();
-			if ($this->WebpageCss->add($this->request->data)) {
+			if ($this->WebpageCss->add($this->request->data, $this->theme)) {
 				header("Pragma: no-cache"); 
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
@@ -58,7 +58,7 @@ class WebpageCssesController extends WebpagesAppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			if ($this->WebpageCss->update($this->request->data)) {
+			if ($this->WebpageCss->update($this->request->data, $this->theme)) {
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -67,9 +67,9 @@ class WebpageCssesController extends WebpagesAppController {
 		}
 		if (empty($this->request->data)) {
 			$this->request->data = $this->WebpageCss->read(null, $id);			
-			$css_file_contents = $this->WebpageCss->getCssFileContents($this->request->data['WebpageCss']['name']);
-			if($css_file_contents)	{
-				$this->request->data['WebpageCss']['content'] = $css_file_contents; 
+			$cssFileContents = $this->WebpageCss->getCssFileContents($this->request->data['WebpageCss']['name'], $this->theme);
+			if($cssFileContents)	{
+				$this->request->data['WebpageCss']['content'] = $cssFileContents; 
 			}
 		}
 		$types = $this->WebpageCss->types();
@@ -82,7 +82,7 @@ class WebpageCssesController extends WebpagesAppController {
 			$this->Session->setFlash(__('Invalid id for webpage css', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->WebpageCss->remove($id)) {
+		if ($this->WebpageCss->remove($id, $this->theme)) {
 			$this->Session->setFlash(__('Webpage css deleted', true));
 			$this->redirect(array('action'=>'index'));
 		} else {
@@ -127,7 +127,7 @@ class WebpageCssesController extends WebpagesAppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			if ($this->WebpageCss->update($this->request->data)) {
+			if ($this->WebpageCss->update($this->request->data, $this->theme)) {
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -147,7 +147,7 @@ class WebpageCssesController extends WebpagesAppController {
 			$this->Session->setFlash(__('Invalid id for webpage css', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->WebpageCss->remove($id)) {
+		if ($this->WebpageCss->remove($id, $this->theme)) {
 			$this->Session->setFlash(__('Webpage css deleted', true));
 			$this->redirect(array('action'=>'index'));
 		} else {

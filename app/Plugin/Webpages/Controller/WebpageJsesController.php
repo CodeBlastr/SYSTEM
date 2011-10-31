@@ -40,7 +40,7 @@ class WebpageJsesController extends WebpagesAppController {
 	function add() {
 		if (!empty($this->request->data)) {
 			try {
-				$this->WebpageJs->add($this->request->data);
+				$this->WebpageJs->add($this->request->data, $this->theme);
 				$this->redirect(array('action' => 'index'));
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
@@ -56,7 +56,7 @@ class WebpageJsesController extends WebpagesAppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			if ($this->WebpageJs->update($this->request->data)) {
+			if ($this->WebpageJs->update($this->request->data, $this->theme)) {
 				$this->Session->setFlash(__('The webpage js has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -65,9 +65,9 @@ class WebpageJsesController extends WebpagesAppController {
 		}
 		if (empty($this->request->data)) {
 			$this->request->data = $this->WebpageJs->read(null, $id);
-			$file_contents = $this->WebpageJs->getJsFileContents($this->request->data['WebpageJs']['name']);
-			if($file_contents)	{
-				$this->request->data['WebpageJs']['content'] = $file_contents; 
+			$jsFileContents = $this->WebpageJs->getJsFileContents($this->request->data['WebpageJs']['name'], $this->theme);
+			if($jsFileContents)	{
+				$this->request->data['WebpageJs']['content'] = $jsFileContents; 
 			}
 		}
 		$webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
@@ -79,7 +79,7 @@ class WebpageJsesController extends WebpagesAppController {
 			$this->Session->setFlash(__('Invalid id for webpage js', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->WebpageJs->remove($id)) {
+		if ($this->WebpageJs->remove($id, $this->theme)) {
 			$this->Session->setFlash(__('Webpage js deleted', true));
 			$this->redirect(array('action'=>'index'));
 		} else {
@@ -106,7 +106,7 @@ class WebpageJsesController extends WebpagesAppController {
 	function admin_add() {
 		if (!empty($this->request->data)) {
 			$this->WebpageJs->create();
-			if ($this->WebpageJs->add($this->request->data)) {
+			if ($this->WebpageJs->add($this->request->data, $this->theme)) {
 				$this->Session->setFlash(__('The webpage js has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -123,7 +123,7 @@ class WebpageJsesController extends WebpagesAppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			if ($this->WebpageJs->update($this->request->data)) {
+			if ($this->WebpageJs->update($this->request->data, $this->theme)) {
 				$this->Session->setFlash(__('The webpage js has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -142,7 +142,7 @@ class WebpageJsesController extends WebpagesAppController {
 			$this->Session->setFlash(__('Invalid id for webpage js', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->WebpageJs->remove($id)) {
+		if ($this->WebpageJs->remove($id, $this->theme)) {
 			$this->Session->setFlash(__('Webpage js deleted', true));
 			$this->redirect(array('action'=>'index'));
 		} else {
