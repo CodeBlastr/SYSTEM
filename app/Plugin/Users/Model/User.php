@@ -575,7 +575,7 @@ class User extends AppModel {
 							array('User.id' => $userId)
 						)) ;
 		$user['User']['credit_total'] += $credits; 
-		if(!($this->save($user))){
+		if(!($this->save($user, false))){
 			throw new Exception(__d('Credits not Saved', true));
 		}
 	}
