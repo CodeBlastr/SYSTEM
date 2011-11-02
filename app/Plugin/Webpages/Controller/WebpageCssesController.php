@@ -13,7 +13,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.plugins.webpages.controllers
  * @since         Zuha(tm) v 0.0.1
@@ -39,7 +39,7 @@ class WebpageCssesController extends WebpagesAppController {
 	function add() {
 		if (!empty($this->request->data)) {
 			$this->WebpageCss->create();
-			if ($this->WebpageCss->add($this->request->data)) {
+			if ($this->WebpageCss->add($this->request->data, $this->theme)) {
 				header("Pragma: no-cache"); 
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
@@ -58,7 +58,7 @@ class WebpageCssesController extends WebpagesAppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			if ($this->WebpageCss->update($this->request->data)) {
+			if ($this->WebpageCss->update($this->request->data, $this->theme)) {
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -66,7 +66,11 @@ class WebpageCssesController extends WebpagesAppController {
 			}
 		}
 		if (empty($this->request->data)) {
-			$this->request->data = $this->WebpageCss->read(null, $id);
+			$this->request->data = $this->WebpageCss->read(null, $id);			
+			$cssFileContents = $this->WebpageCss->getCssFileContents($this->request->data['WebpageCss']['name'], $this->theme);
+			if($cssFileContents)	{
+				$this->request->data['WebpageCss']['content'] = $cssFileContents; 
+			}
 		}
 		$types = $this->WebpageCss->types();
 		$webpages = $this->WebpageCss->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
@@ -78,7 +82,7 @@ class WebpageCssesController extends WebpagesAppController {
 			$this->Session->setFlash(__('Invalid id for webpage css', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->WebpageCss->remove($id)) {
+		if ($this->WebpageCss->remove($id, $this->theme)) {
 			$this->Session->setFlash(__('Webpage css deleted', true));
 			$this->redirect(array('action'=>'index'));
 		} else {
@@ -123,7 +127,7 @@ class WebpageCssesController extends WebpagesAppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			if ($this->WebpageCss->update($this->request->data)) {
+			if ($this->WebpageCss->update($this->request->data, $this->theme)) {
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
@@ -143,7 +147,7 @@ class WebpageCssesController extends WebpagesAppController {
 			$this->Session->setFlash(__('Invalid id for webpage css', true));
 			$this->redirect(array('action'=>'index'));
 		}
-		if ($this->WebpageCss->remove($id)) {
+		if ($this->WebpageCss->remove($id, $this->theme)) {
 			$this->Session->setFlash(__('Webpage css deleted', true));
 			$this->redirect(array('action'=>'index'));
 		} else {

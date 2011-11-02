@@ -62,11 +62,11 @@ class WebpageJs extends WebpagesAppModel {
 		)
 	);
 	
-	function add($data) {
+	function add($data, $theme=null) {
 		if ($this->save($data)) {
 			$webpageJsId = $this->id;
 			# then write the js file here.
-			if ($this->_jsFile($data['WebpageJs']['name'], $data['WebpageJs']['content'])) {
+			if ($this->_jsFile($data['WebpageJs']['name'], $data['WebpageJs']['content'], $theme)) {
 				# then write it to settings for easy retrieval by the default layout
 				if ($this->_updateSettings()) {
 					return true;
@@ -85,8 +85,8 @@ class WebpageJs extends WebpagesAppModel {
 		}
 	}
 	
-	function update($data) {
-		if ($this->add($data)) {
+	function update($data, $theme=null) {
+		if ($this->add($data, $theme)) {
 			return true;		
 		} else {
 			return false;
@@ -94,16 +94,13 @@ class WebpageJs extends WebpagesAppModel {
 	}
 	
 	
-	function _jsFile($fileName = 'all.js', $content) {
+	function _jsFile($fileName = 'all.js', $content, $theme=null) {
+
+		$filePath = $this->_getJsFilePath($theme) . $fileName;
 		# file helper
 		App::uses('File', 'Utility');
-		$file = new File;
-		# check whether this is multi-sites
-		if (file_exists(ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR)) {
-			$file->path = ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR.DS.JS_URL.$fileName.'.js';
-		} else {
-			$file->path = ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.JS_URL.$fileName.'.js';
-		}
+		$file = new File($filePath);
+		$file->path = $filePath;
 				
 		if($file->write($file->prepare($content))) {
 			return true;
@@ -111,7 +108,26 @@ class WebpageJs extends WebpagesAppModel {
 			return false;
 		}
 	}
+		
+	function _getJsFilePath($theme=null)	{
+		$themePath = null;
+		if($theme)	{
+			$themePath = App::themePath($theme);
+		}
+		# check whether this is multi-sites
+		if (file_exists($themePath.WEBROOT_DIR)) {
+			return $themePath.DS.WEBROOT_DIR.DS.JS_URL;
+		} else {
+			return ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.JS_URL;
+		}
+	}	
 	
+	function getJsFileContents($filename, $theme=null)	{
+		$filePath = $this->_getJsFilePath($theme);			
+		if(file_exists($filePath.DS.$filename))	{
+			return file_get_contents($filePath.DS.$filename);
+		}
+	}
 	
 	function types() {
 		return array(
@@ -129,23 +145,15 @@ class WebpageJs extends WebpagesAppModel {
 	}
 	
 	
-	function remove($id) {
-		#import the file helper
-		App::uses('File', 'Utility');
-		$file = new File;
-		
+	function remove($id, $theme=null) {
 		# find the js file being deleted
 		$webpageJs = $this->find('first', array('conditions' => array('WebpageJs.id' => $id)));
-		
-		# check whether this is multi-sites
-		if (file_exists(ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR.DS.JS_URL.$webpageJs['WebpageJs']['name'].'.js')) {
-			$file->path = ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR.DS.JS_URL.$webpageJs['WebpageJs']['name'].'.js';
-		} else if (file_exists(ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.JS_URL.$webpageJs['WebpageJs']['name'].'.js')) {
-			$file->path = ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.JS_URL.$webpageJs['WebpageJs']['name'].'.js';
-		} else {
-			# the file doesn't appear to exist
-			return false;
-		}
+		# Get file path
+		$filePath = $this->_getJsFilePath($theme) . $webpageJs['WebpageJs']['name'];
+		#import the file helper
+		App::uses('File', 'Utility');
+		$file = new File($filePath);
+		$file->path = $filePath;
 		
 		if($file->delete()) {
 			if ($this->delete($id)) {
@@ -197,7 +205,7 @@ class WebpageJs extends WebpagesAppModel {
 			$data['Setting']['value'] = '';
 			foreach ($jsFiles as $js) {
 				if (!empty($js['WebpageJs']['webpage_id'])) {
-					$data['Setting']['value'] .= $js['WebpageJs']['type'].'text/javascript[] = '.$js['WebpageJs']['webpage_id'].','.$js['WebpageJs']['name'].PHP_EOL;
+					$data['Setting']['value'] .= @$js['WebpageJs']['type'].'text/javascript[] = '.$js['WebpageJs']['webpage_id'].','.$js['WebpageJs']['name'].PHP_EOL;
 				} else {
 					$data['Setting']['value'] .= 'text/javascript[] = '.$js['WebpageJs']['name'].PHP_EOL;
 				}
