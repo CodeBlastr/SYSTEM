@@ -565,10 +565,10 @@ class User extends AppModel {
 		return $parent['User']['id']; 
 	}
 	
-/*	Update User Credits
- *  @param User.Id, Credits
- *  return boolean
- */
+	/*	Update User Credits
+	 *  @param User.Id, Credits
+	 *  return boolean
+	 */
 	public function updateUserCredits($credits = null, $userId){
 		$user = $this->find('first' , array(
 						'conditions' => 
@@ -579,5 +579,79 @@ class User extends AppModel {
 			throw new Exception(__d('Credits not Saved', true));
 		}
 	}
+
+	/*
+	 * Credits Update
+	 * it will update user credits according to the price paid for credits
+	 * price * __USERS_CREDITS_PER_PRICE_UNIT
+	 */
+	function creditsUpdate($data = null){
+		$user = $this->find('first' , array(
+						'conditions' =>
+							array('User.id' => $data['OrderItem']['customer_id'])
+					)) ;
+
+		if(defined('__USERS_CREDITS_PER_PRICE_UNIT')) :
+			$user['User']['credit_total'] += $data['OrderItem']['price'] * __USERS_CREDITS_PER_PRICE_UNIT ;
+		else :
+			$user['User']['credit_total'] += $data['OrderItem']['price'] ;
+		endif;
+
+		if(!($this->save($user, false))){
+			throw new Exception(__d('Credits not Saved', true));
+		}
+	}
+
+	/*
+	 * Update Access
+	 * It will give access of a particular record
+	 * to a particular user
+	 */
+	function updateAccess($data = null){
+		$this->Aro = ClassRegistry::init('Aro');
+		$this->Aco = ClassRegistry::init('Aco');
+		$this->ArosAco = ClassRegistry::init('ArosAco');
+
+		$aroData = $this->Aro->find('first', array(
+						'conditions' => array(
+							'model' => 'User',
+							'foreign_key' => $data['OrderItem']['customer_id'])
+					));
+		$aroId = $aroData['Aro']['id'];
+
+		$acoData = $this->Aco->find('first', array(
+						'conditions' => array(
+							'model' => $data['OrderItem']['model'],
+							'foreign_key' => $data['OrderItem']['foreign_key'])
+					));
+		if(!empty($acoData)) :
+			$acoId = $acoData['Aco']['id'];
+		else :
+			$acoData = array(
+						'model' => $data['OrderItem']['model'],
+						'foreign_key' => $data['OrderItem']['foreign_key'],
+						'alias' => 'view',
+					);
+			if($this->Aco->save($acoData)) :
+				$acoId = $this->Aco->id;
+			endif;
+		endif;
+
+		$acoAroData = array(
+						'aro_id' => $aroId,
+						'aco_id' => $acoId,
+						'_create' => 0,
+						'_read' => 1,
+						'_update' => 0,
+						'_delete' => 0,
+					);
+
+		if (!$this->ArosAco->save($acoAroData)) {
+			echo 'Uncaught Exception: 9108710923801928347';
+			break;
+		}
+
+	}
+
 }
 ?>
