@@ -72,11 +72,11 @@ class WebpageCss extends WebpagesAppModel {
 		)
 	);
 	
-	function add($data) {
+	function add($data, $theme=null) {
 		if ($this->save($data)) {
 			$webpageCssId = $this->id;
 			# then write the css file here.
-			if ($this->_cssFile($data['WebpageCss']['name'], $data['WebpageCss']['content'])) {
+			if ($this->_cssFile($data['WebpageCss']['name'], $data['WebpageCss']['content'], $theme)) {
 				# then write it to settings for easy retrieval by the default layout
 				if ($this->_updateSettings()) {
 					return true;
@@ -95,8 +95,8 @@ class WebpageCss extends WebpagesAppModel {
 		}
 	}
 	
-	function update($data) {
-		if ($this->add($data)) {
+	function update($data, $theme=null) {
+		if ($this->add($data, $theme)) {
 			return true;		
 		} else {
 			return false;
@@ -104,16 +104,12 @@ class WebpageCss extends WebpagesAppModel {
 	}
 	
 	
-	function _cssFile($fileName = 'all.css', $content) {
+	function _cssFile($fileName = 'all.css', $content, $theme=null) {
+		$filePath = $this->_getCssFilePath($theme) . $fileName;
 		# file helper
 		App::uses('File', 'Utility');
-		$file = new File;
-		# check whether this is multi-sites
-		if (file_exists(ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR)) {
-			$file->path = ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR.DS.CSS_URL.$fileName.'.css';
-		} else {
-			$file->path = ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.CSS_URL.$fileName.'.css';
-		}
+		$file = new File($filePath);
+		$file->path = $filePath;
 				
 		if($file->write($file->prepare($content))) {
 			return true;
@@ -122,6 +118,26 @@ class WebpageCss extends WebpagesAppModel {
 		}
 	}
 	
+	function _getCssFilePath($theme=null)	{
+		$themePath = null;
+		if($theme)	{
+			$themePath = App::themePath($theme);
+		}
+		# check whether this is multi-sites
+		if (file_exists($themePath.WEBROOT_DIR)) {
+			return $themePath.DS.WEBROOT_DIR.DS.CSS_URL;
+		} else {
+			return ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.CSS_URL;
+		}
+	}
+	
+	
+	function getCssFileContents($filename, $theme=null)	{
+		$filePath = $this->_getCssFilePath($theme);			
+		if(file_exists($filePath.DS.$filename))	{
+			return file_get_contents($filePath.DS.$filename);
+		}
+	}
 	
 	function types() {
 		return array(
@@ -139,23 +155,16 @@ class WebpageCss extends WebpagesAppModel {
 	}
 	
 	
-	function remove($id) {
-		#import the file helper
-		App::uses('File', 'Utility');
-		$file = new File;
-		
+	function remove($id, $theme=null) {
 		# find the css file being deleted
 		$webpageCss = $this->find('first', array('conditions' => array('WebpageCss.id' => $id)));
+		# Get file path
+		$filePath = $this->_getCssFilePath($theme) . $webpageCss['WebpageCss']['name'];
 		
-		# check whether this is multi-sites
-		if (file_exists(ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR.DS.CSS_URL.$webpageCss['WebpageCss']['name'].'.css')) {
-			$file->path = ROOT.DS.APP_DIR.DS.'views'.DS.'themed'.DS.'default'.DS.WEBROOT_DIR.DS.CSS_URL.$webpageCss['WebpageCss']['name'].'.css';
-		} else if (file_exists(ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.CSS_URL.$webpageCss['WebpageCss']['name'].'.css')) {
-			$file->path = ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.CSS_URL.$webpageCss['WebpageCss']['name'].'.css';
-		} else {
-			# the file doesn't appear to exist
-			return false;
-		}
+		#import the file helper
+		App::uses('File', 'Utility');
+		$file = new File($filePath);
+		$file->path = $filePath;
 		
 		if($file->delete()) {
 			if ($this->delete($id)) {
