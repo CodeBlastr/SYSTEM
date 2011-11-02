@@ -1,61 +1,9 @@
-<!--div id="slidedock">
-  <div id="slidedock_content">
-    <ul>
-      <li><a class="dock_btn edit_button" id="edit_button" title="On edit mode"><span>Edit Mode : Off</span></a></li>
-      <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').'/'.$this->request->url; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?></span></a></li>
-      <li class="title"><a href="/webpages/webpages/index/type:template" title="Edit Template"><span>CMS</span></a>
-        <ul>
-          <li><a href="/webpages/webpages/index/type:page_content/">Webpages</a></li>
-          <li><?php echo $this->Html->link('Templates', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'template')); ?></li>
-          <li><a href="/webpages/webpages/index/type:element/">Elements</a></li>
-          <li><a href="/webpages/webpage_csses">Css</a></li>
-          <li><a href="/webpages/webpage_jses">Javscript</a></li>
-          <li class="title">File Manager</li>
-          <li><a href="/admin/admin/files_image">Images</a></li>
-          <li><a href="/admin/admin/files_files">Documents</a></li>
-          <?php if (!empty($defaultTemplate['Menu'])) : foreach ($defaultTemplate['Menu'] as $menu) : ?>
-          <li><a class="dialog" href="/menus/menu_items/add/<?php echo $menu['id']; ?>/<?php echo !empty($title_for_layout) ? urlencode($title_for_layout) : Inflector::humanize($this->request->params['action'].' '.$this->request->params['controller']); ?>/<?php echo base64_encode($_SERVER['REQUEST_URI']); ?>" title="Add to Menu"><span>Add to <?php echo $menu['name']; ?></span></a></li>
-          <?php endforeach; endif; ?>
-          
-          
-          <li class="title">Extended</li>
-          <li><a href="/blogs">Blogs</a></li>
-          <li><a href="/admin/comments">Comments</a></li>
-          <li ><a href="/admin/faqs">Faqs</a></li>
-          <li><a href="/admin/forms">Forms</a></li>
-          <li ><a href="/admin/forum/forum_home">Forums</a></li>
-          <li ><a href="/admin/maps">Maps</a></li>
-          <li><a href="/admin/galleries">Galleries</a></li>
-          <li><a href="/admin/wikis">Wikis</a></li>
-          <li class="title">Labels</li>
-          <li><a href="/admin/categories">Categories</a></li>
-          <li><a href="/admin/tags">Tags</a></li>
-          <li><a href="/admin/enumerations">Enumerations</a></li>
-          <li>Ratings (coming soon)</li>
-          <li>
-            <a href="/invite/invites/invitation">
-            Invites (coming soon)</li>
-        </ul>
-      </li>
-      <?php /*foreach ($editorUserRoles as $role) : ?>
-		    	<li><a href="/users/user_roles/display_role/<?php echo $role; ?>"><span>View as <?php echo Inflector::singularize($role); ?></span></a></li>
-			    <?php endforeach; */?>
-      <li><a href="/users/users/logout/"><span>Logout</span></a></li>
-    </ul>
-    
-    
-    
-    
-    
-  </div>
-</div-->
-
-
+<?php $requestUrl = strpos($this->request->url, '/') === 0 ? $this->request->url : '/'.$this->request->url; ?>
 <div id="slidedock">
   <div id="slidedock_content">
       <ul>
       	<li><a class="dock_btn edit_button" id="edit_button" title="On edit mode"><span>Edit Mode : Off</span></a></li>
-	    <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').'/'.$this->request->url; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?></span></a></li>
+	    <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').$requestUrl; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?></span></a></li>
         <li> <a href="#"><span>Design</span></a>
           <ul>
                 <li class="title">Design</li>
