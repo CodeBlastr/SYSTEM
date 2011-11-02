@@ -192,6 +192,7 @@
 			'Setting' => '',
 			'Settings' => '',
 			'Member' => 'Members',
+			'Webpage' => 'Webpages',
 			);
 		if ($allowed[$name] !== null) {
 			return $allowed[$name];
