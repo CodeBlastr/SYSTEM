@@ -141,6 +141,7 @@ class GalleriesController extends GalleriesAppController {
 		
 		$this->request->data['Gallery']['model'] = $model;
 		$this->request->data['Gallery']['foreign_key'] = $foreignKey;
+		$this->set('gallery', $gallery);
 		$this->set('types', $this->Gallery->types());
 	}
 	

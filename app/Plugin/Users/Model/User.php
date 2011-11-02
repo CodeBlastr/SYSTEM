@@ -137,21 +137,23 @@ class User extends AppModel {
 /** 
  * With Cakephp 2.0 you can do ACL better (with acts as both) and this function is one of the functions now available from the Acl Behavior.
  */
-    public function parentNode() {
-        if (!$this->id && empty($this->data)) {
-            return null;
-        }
-        if (isset($this->data['User']['user_role_id'])) {
-        	$roleId = $this->data['User']['user_role_id'];
-        } else {
-            $roleId = $this->field('user_role_id');
-        }
-        if (!$roleId) {
-       		return null;
-        } else {
-            return array('UserRole' => array('id' => $roleId));
-        }
-    }
+	function parentNode() {
+		return null;
+   		if (!$this->id && empty($this->data)) {
+	        return null;
+	    }
+	    $data = $this->data;
+	    if (empty($this->data)) {
+	        $data = $this->read();
+	    }
+	    if (!$data['User']['user_role_id']) {
+	        return null;
+	    } else {
+	        $this->UserRole->id = $data['User']['user_role_id'];
+	        $roleNode = $this->UserRole->node();
+	        return array('UserRole' => array('id' => $roleNode[0]['Aro']['foreign_key']));
+	    }
+	}
 	
 	
 	public function beforeSave($options = array()) {
