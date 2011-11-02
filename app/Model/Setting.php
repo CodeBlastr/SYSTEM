@@ -265,7 +265,11 @@ class Setting extends AppModel {
 						array(
 							'name' => 'NEW_REGISTRATION_CREDITS',
 							'description' => 'Defines setting variables for credits given to referal user on new user registration.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'5',
-							),			
+							),
+						array(
+							'name' => 'CREDITS_PER_PRICE_UNIT',
+							'description' => 'Defines setting variables for credits given to user on purchase of credits.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'5',
+							),
 						),		
 				  );
 	}
