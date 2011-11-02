@@ -506,7 +506,7 @@ class User extends AppModel {
 				$this->generateReferalCode($data);
 			} else {
 				$data['User']['reference_code'] = $code;
-				if($this->save($data)){
+				if($this->save($data, false)){
 					return $code;
 				} else {
 					return false;
