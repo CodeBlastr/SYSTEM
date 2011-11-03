@@ -493,4 +493,16 @@ If you have received this message in error please ignore, the link will be unusa
 	function dashboard() {
 	}
 	
+	/*
+	 * Get Credits 
+	 * get user credits 
+	 */
+	function get_credits($user_id = null){
+		
+		$user = $this->User->find('first', array(
+						'conditions' => array('User.id' => $user_id)));
+		
+		return $user['User']['credit_total']; 
+	}
+	
 }
