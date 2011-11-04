@@ -571,6 +571,7 @@ class User extends AppModel {
 	 */
 	public function updateUserCredits($credits = null, $userId){
 		$user = $this->find('first' , array(
+						'fields' => array('id', 'credit_total'),
 						'conditions' => 
 							array('User.id' => $userId)
 						)) ;
@@ -587,6 +588,7 @@ class User extends AppModel {
 	 */
 	function creditsUpdate($data = null){
 		$user = $this->find('first' , array(
+						'fields' => array('id', 'credit_total'),
 						'conditions' =>
 							array('User.id' => $data['OrderItem']['customer_id'])
 					)) ;
