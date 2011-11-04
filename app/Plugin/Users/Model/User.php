@@ -594,9 +594,9 @@ class User extends AppModel {
 					)) ;
 
 		if(defined('__USERS_CREDITS_PER_PRICE_UNIT')) :
-			$user['User']['credit_total'] += $data['OrderItem']['price'] * __USERS_CREDITS_PER_PRICE_UNIT ;
+			$user['User']['credit_total'] += ($data['OrderItem']['price'] * $data['OrderItem']['quantity']) * __USERS_CREDITS_PER_PRICE_UNIT ;
 		else :
-			$user['User']['credit_total'] += $data['OrderItem']['price'] ;
+			$user['User']['credit_total'] += $data['OrderItem']['price'] * $data['OrderItem']['quantity'] ;
 		endif;
 
 		if(!($this->save($user, false))){
