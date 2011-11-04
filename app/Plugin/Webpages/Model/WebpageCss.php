@@ -125,7 +125,7 @@ class WebpageCss extends WebpagesAppModel {
 		}
 		# check whether this is multi-sites
 		if (file_exists($themePath.WEBROOT_DIR)) {
-			return $themePath.DS.WEBROOT_DIR.DS.CSS_URL;
+			return $themePath.WEBROOT_DIR.DS.CSS_URL;
 		} else {
 			return ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.CSS_URL;
 		}
