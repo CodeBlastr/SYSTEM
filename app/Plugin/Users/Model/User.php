@@ -599,6 +599,7 @@ class User extends AppModel {
 			$user['User']['credit_total'] += $data['OrderItem']['price'] * $data['OrderItem']['quantity'] ;
 		endif;
 
+		$this->Behaviors->detach('Acl');
 		if(!($this->save($user, false))){
 			throw new Exception(__d('Credits not Saved', true));
 		}
