@@ -54,7 +54,6 @@
 		}
 ?>
 
-
 <div id="<?php echo $divId; ?>" class="<?php echo $divClass; ?>">
 	<ul>
 	<?php if (!empty($userId)) { ?>
