@@ -101,7 +101,6 @@ class WebpageJs extends WebpagesAppModel {
 		App::uses('File', 'Utility');
 		$file = new File($filePath);
 		$file->path = $filePath;
-				
 		if($file->write($file->prepare($content))) {
 			return true;
 		} else {
@@ -116,7 +115,7 @@ class WebpageJs extends WebpagesAppModel {
 		}
 		# check whether this is multi-sites
 		if (file_exists($themePath.WEBROOT_DIR)) {
-			return $themePath.DS.WEBROOT_DIR.DS.JS_URL;
+			return $themePath.WEBROOT_DIR.DS.JS_URL;
 		} else {
 			return ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.JS_URL;
 		}

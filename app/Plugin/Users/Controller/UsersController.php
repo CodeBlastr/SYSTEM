@@ -284,6 +284,10 @@ class UsersController extends UsersAppController {
 		# saving a user which was edited
 		} else if(!empty($this->request->data)) {
 			$this->request->data['User']['user_id'] = $this->Auth->user('id');
+			#getting password issue when saving ; so unsetting in this case
+			if(!isset($this->request->data['User']['password']))	{
+				unset($this->User->validate['password']);	
+			}
 			if(!empty($this->request->data['User']['avatar'])) {
 				# upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
@@ -292,7 +296,7 @@ class UsersController extends UsersAppController {
 				$this->User->OrderPayment->save($this->request->data);
 				$this->User->OrderShipment->save($this->request->data);	
 				$this->Session->setFlash('User Updated!');
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id));
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
 			}
 			else {
 				$this->Session->setFlash('There was an error updating user');
