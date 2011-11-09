@@ -3,7 +3,7 @@
   * Facebook.Api Library used to create an instanciated facebook API available to the user
   *
   * @author Nick Baker <nick [at] webtechnick [dot] com>
-  * @version 2.2.0
+  * @version 2.5.0
   * @link http://www.webtechnick.com
   * @license MIT
   */
@@ -15,16 +15,13 @@ class FB {
     * Facebook Api
     */
   public static $Facebook = null;
-  
+
   public function __construct() {
-    if(!self::$Facebook){
-      FacebookInfo::getConfig();
-      self::$Facebook = new Facebook(
-      	FacebookInfo::$configs
-      );
-    }
+    if (empty(self::$Facebook)) {
+			self::$Facebook = new Facebook(FacebookInfo::getConfig());
+		}
   }
-  
+
   /**
     * Forward any call to the Facebook API
     * @param string method name
@@ -38,7 +35,7 @@ class FB {
 	    error_log($e);
 	  }
   }
-  
+
   /**
     * Retrieve the property of the Facebook API
     * @param string name of property
@@ -47,10 +44,10 @@ class FB {
   public function __get($name){
     return self::$Facebook->$name;
   }
-  
+
   /**
     * PHP 5.3.0 only
-    * Usage: 
+    * Usage:
     * - FB::method(params);
     * Example:
     * - FB::getUser();
