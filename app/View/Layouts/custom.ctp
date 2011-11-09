@@ -166,8 +166,23 @@ if (!empty($defaultTemplate)) {
 		$i++;
 	}
 	
+	#skiping the parsing of text area content with this check	
+	preg_match_all ("/(<textarea[^>]+>)(.*)(<\/textarea>)/isU", $defaultTemplate["Webpage"]["content"], $matchesEditable);
+	
+	$nonParseable = array();
+	
+	$i = 0;
+	foreach($matchesEditable[2] as $matchEditable)	{
+		if(trim($matchEditable))	{
+			$nonParseable['[PLACEHOLDER:'.$i.']'] = $matchEditable;
+			$defaultTemplate["Webpage"]["content"] = str_replace($matchEditable, '[PLACEHOLDER:'.$i.']', $defaultTemplate['Webpage']['content']);
+			$i++;
+		}		
+	}
+	
 	# matches element template tags like {element: plugin.name.Instance} for example {element: contacts.recent.2}
 	preg_match_all ("/(\{element: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	
 	$i = 0;
 	foreach ($matches[0] as $elementMatch) {
 		$element = trim($matches[3][$i]);
@@ -214,6 +229,11 @@ if (!empty($defaultTemplate)) {
 		$menuCfg['plugin'] = 'menus';
 		$defaultTemplate["Webpage"]["content"] = str_replace($menuMatch, $this->element('menus', $menuCfg), $defaultTemplate['Webpage']['content']);
 		$i++;
+	}
+	
+	#checking for the textarea content placeholders	
+	foreach($nonParseable as $placeHolder=>$holdingContent)	{
+		$defaultTemplate["Webpage"]["content"] = str_replace($placeHolder, $holdingContent, $defaultTemplate['Webpage']['content']);
 	}
 	
 	# display the database driven default template
