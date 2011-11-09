@@ -1,4 +1,5 @@
 /app/Config/database.php
+/app/Config/facebook.php
 /app/Config/core.php
 /app/tmp/logs/debug.log
 /app/tmp/logs/error.log

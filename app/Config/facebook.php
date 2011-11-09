@@ -8,9 +8,9 @@ else :
 	  */
 	$config = array(
 	  'Facebook' => array(
-	  	'appId' => '137151633055586',
-	    'apiKey' => '137151633055586',
-	    'secret' => '98ecf4a71cb4da40c4a99a7de16a410f',
+	  	'appId' => '315141015179110',
+	    'apiKey' => '315141015179110',
+	    'secret' => 'd478fd08b4096607dc68d8b803fc9ef5',
 	    'cookie' => true,
 	  )
 	);

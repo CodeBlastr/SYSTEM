@@ -416,15 +416,6 @@ window.fbAsyncInit = function() {
 		xfbml : true // parse XFBML
 	});
 	{$callback}
-
-	FB.getLoginStatus(function(response) {
-	  if (response.authResponse) {
-	  	alert('sdf');
-	    $('#fbloggedin').show();
-	  } else {
-	  	$('#nonfbloggedin').show();
-	  }
-	});
 };
 (function() {
 	var e = document.createElement('script');
