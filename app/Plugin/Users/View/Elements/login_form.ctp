@@ -27,8 +27,11 @@
 		extract(unserialize(__ELEMENT_USERS_LOGIN_FORM));
 	}
 	
+	$userId = $this->Session->read('Auth.User.id');	
 	$formClass = !empty($formClass) ? $formClass : 'login-form';
 	$divClass = !empty($divClass) ? $divClass : 'loginElement';
+	
+	if (empty($userId)) {
 	
 	echo $this->Form->create('User', array('url'=>array('controller'=>'users', 'action'=>'login', 'plugin'=>'users'), 'class'=>$formClass));
 ?>
@@ -56,4 +59,8 @@
 		</div>
 		<?php echo $this->Form->submit('Login', array('class'=>'submit', 'div'=>false)); ?> 
 	</fieldset>
-<?php echo $this->Form->end(); ?>
+<?php echo $this->Form->end();
+	}	else	{
+		echo $this->element('login_form_logged', array('user'=>$this->Session->read('Auth')), array('plugin'=>'users'));
+	}
+?>
