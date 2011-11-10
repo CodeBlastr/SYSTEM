@@ -30,37 +30,66 @@
 	$userId = $this->Session->read('Auth.User.id');	
 	$formClass = !empty($formClass) ? $formClass : 'login-form';
 	$divClass = !empty($divClass) ? $divClass : 'loginElement';
+	$columnClass = !empty($columnClass) ? $columnClass : 'column';
+	$holderClass = !empty($holderClass) ? $holderClass : 'holder';
+	$rowClass = !empty($rowClass) ? $rowClass : 'row';	
+	$usernameLabel = !empty($usernameLabel) ? $usernameLabel : 'Email';	
+	$passwordLabel = !empty($passwordLabel) ? $passwordLabel : 'Password';	
+	$submitLabel = !empty($submitLabel) ? $submitLabel : 'Login';	
+	$submitClass = !empty($submitClass) ? $submitClass : 'submit';
+	$inputClass = !empty($inputClass) ? $inputClass : 'text';
+	$submitDiv = !empty($submitDiv) ? $submitDiv : false;
+	$checkboxClass = !empty($checkboxClass) ? $checkboxClass : 'checkbox';
+	$rememberLabel = !empty($rememberLabel) ? $rememberLabel : 'Keep me logged in';
+	$forgotPasswordTitle = !empty($forgotPasswordTitle) ? $forgotPasswordTitle : 'Forgot Password?';
+	$loggedElement = (isset($loggedElement) ? (!empty($loggedElement) ? $loggedElement : 'login_form_logged') : 'login_form_logged');
+	$textWelcome = !empty($textWelcome) ? $textWelcome : 'Welcome : ';
+	$linkClass = !empty($linkClass) ? $linkClass : 'loginLink';
+	$linkIdUser = !empty($linkIdUser) ? $linkIdUser : 'useridLink';
+	$textSeparator = !empty($textSeparator) ? $textSeparator : '-';
+	$textLogOut = !empty($textLogOut) ? $textLogOut : 'Logout';
+	$linkIdLogout = !empty($linkIdLogout) ? $linkIdLogin : 'logoutLink';
+	
+	$facebookId = $this->Session->read('Auth.User.facebook_id');
+	
+	if(!empty($facebookId)) {
+		# use the facebook logout if it exists
+		$logOutLink = $this->Facebook->logout(array('label' => $textLogOut, 'redirect' => array('plugin' => 'users', 'controller' => 'users', 'action' => 'logout'))); 
+	} else {																	   
+		$logOutLink = $this->Html->link($textLogOut, array('plugin' => 'users', 'controller' => 'users', 'action' => 'logout'), array('class' => $linkClass, 'id' => $linkIdLogout));
+	}
 	
 	if (empty($userId)) {
 	
-	echo $this->Form->create('User', array('url'=>array('controller'=>'users', 'action'=>'login', 'plugin'=>'users'), 'class'=>$formClass));
-?>
-
-	<fieldset>
-		<div class="column">
-			<label for="UserUsername">Email</label>
-			<div class="holder">
-				<?php echo $this->Form->input('username', array('label'=>false, 'class'=>'text', 'div'=>'row')); ?>
-				<div class="row">
-					<input id="check" class="checkbox" type="checkbox" checked="checked" />
-					<label for="check">Keep me logged in</label>
+		echo $this->Form->create('User', array('url'=>array('controller'=>'users', 'action'=>'login', 'plugin'=>'users'), 'class'=>$formClass));
+	?>
+		<fieldset>
+			<div class="<?php echo $columnClass?>">
+				<div class="<?php echo $holderClass?>">
+					<?php echo $this->Form->input('username', array('label'=>$usernameLabel, 'class'=>$inputClass, 'div'=>$rowClass)); ?>
+					<div class="<?php echo $rowClass; ?>">
+						<?php echo $this->Form->input('remember_me', array('label'=>false, 'class'=>$checkboxClass, 'div'=>false, 'type'=>'checkbox')); ?>
+						<label for="UserRememberMe"><?php echo $rememberLabel; ?></label>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="column">
-			<label for="UserPassword">Password</label>
-			<div class="holder">			
-				<?php echo $this->Form->input('password', array('label'=>false, 'class'=>'text', 'div'=>'row')); ?>
-
-				<div class="row">
-					<?php echo $this->Html->link('Forgot Password?', array('plugin' => 'users', 'controller' => 'users', 'action' => 'forgot_password')); ?>
+			<div class="<?php echo $columnClass?>">
+				<div class="<?php echo $holderClass?>">			
+					<?php echo $this->Form->input('password', array('label'=>$passwordLabel, 'class'=>$inputClass, 'div'=>$rowClass)); ?>
+					<div class="<?php echo $rowClass; ?>">
+						<?php echo $this->Html->link($forgotPasswordTitle, array('plugin' => 'users', 'controller' => 'users', 'action' => 'forgot_password')); ?>
+					</div>
 				</div>
 			</div>
-		</div>
-		<?php echo $this->Form->submit('Login', array('class'=>'submit', 'div'=>false)); ?> 
-	</fieldset>
+			<?php echo $this->Form->submit($submitLabel, array('class'=>$submitClass, 'div'=>$submitDiv)); ?>
+		</fieldset>
 <?php echo $this->Form->end();
 	}	else	{
-		echo $this->element('login_form_logged', array('user'=>$this->Session->read('Auth')), array('plugin'=>'users'));
+		if($loggedElement)	{
+			echo $this->element($loggedElement, array('user'=>$this->Session->read('Auth')), array('plugin'=>'users'));
+		}	else	{ ?>
+			<span class="usernameWelcome"><?php echo $textWelcome; ?></span><span class="usernameName"><?php echo $this->Html->link($this->Session->read('Auth.User.username'), array('plugin' => 'users', 'controller' => 'users', 'action' => 'my'), array('class' => $linkClass, 'id' => $linkIdUser, 'checkPermissions' => true)); ?></span> <?php echo $textSeparator; ?>  <?php echo $logOutLink; ?>
+<?php            
+		}
 	}
 ?>
