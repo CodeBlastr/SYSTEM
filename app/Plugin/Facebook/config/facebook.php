@@ -5,10 +5,11 @@
   */
 $config = array(
   'Facebook' => array(
-  	'appId' => __FACEBOOK_APP_ID,
-    'apiKey' => __FACEBOOK_APP_KEY,
-    'secret' => __FACEBOOK_APP_SECRET,
+  	'appId' => '137151633055586',
+    'apiKey' => '137151633055586',
+    'secret' => '98ecf4a71cb4da40c4a99a7de16a410f',
     'cookie' => true,
+    'locale' => 'en_US',
   )
 );
 ?>
