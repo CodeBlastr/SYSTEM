@@ -18,11 +18,11 @@ class VideosController extends AppController {
 	
 	public function upload() {
 		
-		if($this->data){
+		if($this->request->data){
 			// verify & process an upload
-			if($this->data['Video']['submittedfile']) {
+			if($this->request->data['Video']['submittedfile']) {
 				
-			} elseif($this->data['Video']['submittedurl']) {
+			} elseif($this->request->data['Video']['submittedurl']) {
 				
 			} else {
 				$this->flash(__('Invalid Upload.', true), array('action'=>'index'));	
@@ -45,6 +45,7 @@ class VideosController extends AppController {
 	public function notification($outputID = null) {
 		
 		if($outputID) {
+#			$this->Media->notify($data);
 			// zencoder is notifying us that a Job is complete
 			if($this->data['output']['state'] == 'finished') {
 				
