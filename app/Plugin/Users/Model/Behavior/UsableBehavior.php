@@ -50,12 +50,15 @@ class UsableBehavior extends ModelBehavior {
 	/**
 	 * Callback used to save related users, into the used table, with the proper relationship.
 	 */
-	function afterSave(&$Model, $created) {		
+	function afterSave(&$Model, $created) {
+		# get current users using, so that we can merge and keep duplicates out later
+		$currentUsers = $this->findUsedUsers($Model, $foreignKey = $Model->data[$Model->alias]['id'], $type = 'all', array('fields' => 'id'));
+		
 		# this is if we have a hasMany list of users coming in.
 		if (!empty($Model->data['User'][0])) :
 			foreach ($Model->data['User'] as $user) :
 				#$users[]['id'] = $user['user_id']; // before cakephp 2.0 upgrade
-				$users[]['id'] = $user['id'];
+				$users[]['id'] = !empty($user['user_id']) ? $user['user_id'] : $user['id'];
 			endforeach;
 		endif;
 		
@@ -74,7 +77,9 @@ class UsableBehavior extends ModelBehavior {
 					'UserGroup.id' => $Model->data[$Model->alias]['user_group_id'],
 					),
 				'contain' => array(
-					'User',
+					'User' => array(
+						'fields' => 'User.id',
+						),
 					),
 				));
 			foreach ($userGroups as $userGroup) :
@@ -84,10 +89,16 @@ class UsableBehavior extends ModelBehavior {
 			endforeach;
 		endif;
 		
+		
+		#gets rid of duplicate users from two arrays... @todo: maybe move this to its own function if its needed again
+		$users = Set::extract('/id', $users);
+		$currentUsers = Set::extract('/User/id', $currentUsers);
+		$users = array_diff($users, $currentUsers);
+		
 		if (!empty($users)) :
 			$i=0;
 			foreach ($users as $user) : 
-				$data[$i]['Used']['user_id'] = $user['id'];
+				$data[$i]['Used']['user_id'] = $user;
 				$data[$i]['Used']['foreign_key'] = $Model->id;
 				$data[$i]['Used']['model'] = $Model->alias;
 				$data[$i]['Used']['role'] = $this->defaultRole; // this is temporary, until we start doing real acl 
@@ -211,7 +222,6 @@ class UsableBehavior extends ModelBehavior {
 				$i++;
 			endforeach;
 		endif;
-		
 		return $model->data;
 	}
 	
