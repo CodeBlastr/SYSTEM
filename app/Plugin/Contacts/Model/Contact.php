@@ -145,15 +145,11 @@ class Contact extends ContactsAppModel {
 			$error = 'Error : ';
 			foreach ($this->invalidFields() as $models) :
 				if (is_array($models)) : foreach ($models as $err) :
-					debug($err);
 					$error .= $err . ', ';
 				endforeach; else :
 					$error .= $models;
 				endif;
-			endforeach;
-			debug($error);
-			break;
-			
+			endforeach;			
 			throw new Exception($error);
 		}
 	}
