@@ -162,6 +162,15 @@ class Contact extends ContactsAppModel {
 		return $this->find($type, $params);
 	}
 	
+	function findPeople($type = 'list', $params = null) {
+		$params['conditions'] = array(
+			"{$this->alias}.is_company" => 0,
+			);
+		$params['order'] = empty($params['order']) ? "{$this->alias}.name" : $params['order'];
+		
+		return $this->find($type, $params);
+	}
+	
 	function findCompaniesWithRegisteredUsers($type = 'list', $params = null) {
 		#first find registered people
 		$people = $this->find('list', array(
