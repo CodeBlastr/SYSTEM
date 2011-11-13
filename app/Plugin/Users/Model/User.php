@@ -12,25 +12,25 @@ class User extends AppModel {
 			'notempty' => array(
 				'rule' => 'notEmpty',
 				'allowEmpty' => false,
-				'message' => 'Please Enter a value for Password',
+				'message' => 'Please enter a value for password',
 				'required' => true
 			),
 			'comparePassword' => array(
 				'rule' => array('_comparePassword'),
 				'allowEmpty' => false,
-				'message' => 'Password, and Confirm Password Should Match.',
+				'message' => 'Password, and confirm password fields do not match.',
 				'required' => true
 			),
 		),
 		'username' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'message' => 'Please Enter a value for Username',
+				'message' => 'Please enter a value for username',
 				'required' => true
 			),
 			'isUnique' => array(
 				'rule' => 'isUnique',
-				'message' => 'This Username belongs to someone else. Please try again.'
+				'message' => 'This username belongs to someone else. Please try again.'
 			),
 		),
 		'email' => array(
@@ -119,11 +119,14 @@ class User extends AppModel {
 	protected function _comparePassword() {
 		# fyi, confirm password is hashed in the beforeValidate method
 		if (isset($this->data['User']['confirm_password']) && 
-				($this->data['User']['password'] == $this->data['User']['confirm_password'])) {
+				($this->data['User']['password'] == $this->data['User']['confirm_password'])) :
 			return true;
-		} else {
+		elseif (!isset($this->data['User']['confirm_password'])) :
+			# if confirm_password isn't in the form fields then we aren't updating passwords
+			return true;
+		else :
 			return false;
-		}
+		endif;
 	}
 	
 	protected function _emailRequired() {

@@ -118,8 +118,6 @@ class ContactsController extends ContactsAppController {
 	 */	 
 	function add($contactType = 'company', $contactId = null) {
 		if (!empty($this->request->data)) {
-			debug($this->request->data);
-			break;
 			try {
 				$message = $this->Contact->add($this->request->data);
 				$this->Session->setFlash($message);
