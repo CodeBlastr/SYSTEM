@@ -101,7 +101,7 @@ class AppController extends Controller {
 			'controller' => 'users',
 			'action' => 'login',
 			);
-		
+		$this->Auth->authorize = array('Controller');
 		$this->Auth->authenticate = array(
             'Form' => array(
                 'userModel' => 'Users.User',

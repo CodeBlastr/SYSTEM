@@ -36,26 +36,35 @@ $thumbHeight = (!empty($thumbHeight) ? ' height="'.$thumbHeight.'"' : null);
 $thumbAlt = (!empty($thumbAlt) ? ' alt="'.$thumbAlt.'"' : ' alt="'.$galleryThumb['GalleryThumb']['filename'].'"');
 $thumbClass = (!empty($thumbClass) ? ' class="'.$thumbClass.'"' : ' class="gallery-thumb"');
 $thumbId = (!empty($thumbId) ? ' id="'.$thumbId.'"' : ' id="gallery'.$galleryThumb['Gallery']['id'].'"');
+$thumbDiv = (isset($thumbDiv) ? ($thumbDiv==true ? true : false) : true); //added to skip the display of div on demand (true/false)
+$thumbLinkClass = (!empty($thumbLinkClass) ? ' class="'.$thumbLinkClass.'"' : ''); //can have  class="gallery-thumb-link-class"
+$thumbLinkAppend = (!empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''); //to append anything to the image within the link
 
 if (!empty($galleryThumb)) {
 ?>
-
+ <?php if($thumbDiv)	{ ?>
   <div <?php echo $thumbClass; echo $thumbId; ?>>
-	<a href="<?php echo $thumbLink; ?>" <?php echo $thumbTitle; ?>>
-	<img src="<?php echo $galleryThumb['GalleryThumb']['dir']; ?>thumb/<?php echo $thumbSize; ?>/<?php echo $galleryThumb['GalleryThumb']['filename']; ?>" <?php echo $thumbAlt;  echo $thumbWidth; echo $thumbHeight; ?> />
+ <?php } ?>
+	<a href="<?php echo $thumbLink; ?>" <?php echo $thumbTitle; ?> <?php echo $thumbLinkClass; ?>>
+	<img src="<?php echo $galleryThumb['GalleryThumb']['dir']; ?>thumb/<?php echo $thumbSize; ?>/<?php echo $galleryThumb['GalleryThumb']['filename']; ?>" <?php echo $thumbAlt;  echo $thumbWidth; echo $thumbHeight; ?> /><?php echo $thumbLinkAppend; ?>
 	</a>
+<?php if($thumbDiv)	{ ?>
   </div>
+ <?php } ?>
 
 <?php 
 } else {
-?>
-
+	
+?>	
+  <?php if($thumbDiv)	{ ?>
   <div <?php echo $thumbClass; echo $thumbId; ?>>
-	<a href="<?php echo $thumbLink; ?>" <?php echo $thumbTitle; ?>>
-	<img src="/img/noImage.jpg" <?php echo $thumbAlt;  echo $thumbWidth; echo $thumbHeight; ?> />
+  <?php } ?>
+	<a href="<?php echo $thumbLink; ?>" <?php echo $thumbTitle; ?> <?php echo $thumbLinkClass; ?>>
+	<img src="/img/noImage.jpg" <?php echo $thumbAlt;  echo $thumbWidth; echo $thumbHeight; ?> /><?php echo $thumbLinkAppend; ?>
 	</a>
+  <?php if($thumbDiv)	{ ?>
   </div>
-
+  <?php } ?>
 <?php
 }
 ?>

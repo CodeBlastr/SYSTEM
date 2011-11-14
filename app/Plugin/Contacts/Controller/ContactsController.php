@@ -117,7 +117,7 @@ class ContactsController extends ContactsAppController {
 	 * @todo			Most of the list variables below need to have a find function put into those models, which finds the right enumeration type by default.  Its really ugly to have multiple instances of the "type" spelled out all over the place.
 	 */	 
 	function add($contactType = 'company', $contactId = null) {
-		if (!empty($this->request->data)) {			
+		if (!empty($this->request->data)) {
 			try {
 				$message = $this->Contact->add($this->request->data);
 				$this->Session->setFlash($message);
@@ -129,15 +129,17 @@ class ContactsController extends ContactsAppController {
 		}
 		
 		// load the contact drop down fields variables
-		$employers = $contactType == 'person' ? $this->Contact->Employer->findCompanies('list') : null;
+		$employers = $this->Contact->Employer->findCompanies('list');
+		$people = $this->Contact->Employer->findPeople('list');
 		$this->request->data['Employer']['Employer'] = !empty($contactId) ? $contactId : null;
+		$contacts = enum('CONTACTTYPE');
 		$contactTypes = enum('CONTACTTYPE');
 		$contactSources = enum('CONTACTSOURCE');
 		$contactIndustries = enum('CONTACTINDUSTRY');
 		$contactRatings = enum('CONTACTRATING');
 		$contactDetailTypes = enum('CONTACTDETAIL');
 			
-		$this->set(compact('employers', 'contactDetailTypes', 'contactTypes', 'contactSources', 'contactIndustries', 'contactRatings'));
+		$this->set(compact('employers', 'people', 'contactDetailTypes', 'contactTypes', 'contactSources', 'contactIndustries', 'contactRatings'));
 		$this->set('page_title_for_layout', 'Add a '.$contactType);
 		$this->set('title_for_layout',  'Add a '.$contactType);
 		$this->render('add_'.$contactType);
