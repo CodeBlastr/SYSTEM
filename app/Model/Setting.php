@@ -83,7 +83,7 @@ class Setting extends AppModel {
 							),
 						array(
 							'name' => 'CHECKOUT_REDIRECT',
-							'description' => 'Defines where to redirect to after a successful checkout.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'"/thank-you/"',
+							'description' => 'Defines where to redirect to after a successful checkout.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'url = "/thank-you/" '.PHP_EOL.PHP_EOL.' OR '.PHP_EOL.PHP_EOL.'model = Member'.PHP_EOL.'action = set_paid_user_role'.PHP_EOL.'pass[] = catalog_item_id',
 							),
 						array(
 							'name' => 'LOCATIONS',

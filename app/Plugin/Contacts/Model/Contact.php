@@ -138,6 +138,7 @@ class Contact extends ContactsAppModel {
 	
 	function add($data) {
 		$data = $this->_cleanContactData($data);
+		
 		if ($this->saveAll($data)) {
 			return __d('contacts', 'Contact saved successfully.', true);
 		} else {
@@ -148,7 +149,7 @@ class Contact extends ContactsAppModel {
 				endforeach; else :
 					$error .= $models;
 				endif;
-			endforeach;
+			endforeach;			
 			throw new Exception($error);
 		}
 	}
@@ -156,6 +157,15 @@ class Contact extends ContactsAppModel {
 	function findCompanies($type = 'list', $params = null) {
 		$params['conditions'] = array(
 			"{$this->alias}.is_company" => 1,
+			);
+		$params['order'] = empty($params['order']) ? "{$this->alias}.name" : $params['order'];
+		
+		return $this->find($type, $params);
+	}
+	
+	function findPeople($type = 'list', $params = null) {
+		$params['conditions'] = array(
+			"{$this->alias}.is_company" => 0,
 			);
 		$params['order'] = empty($params['order']) ? "{$this->alias}.name" : $params['order'];
 		
@@ -191,7 +201,29 @@ class Contact extends ContactsAppModel {
 	 *
 	 * @todo 	I had an instance where this could be put into the ContactDetail model instead, but didn't seem to work when you were entering multiple details at once, so left it here instead.  If you know how to get it into the contact detail model, please do, and inform us how it was done. 
 	 */
-	function _cleanContactData($data) {			
+	function _cleanContactData($data) {
+		# if id is here, then merge the data with the existing data (new data over writes old)
+		if (!empty($data['Contact']['id'])) :
+			$contact = $this->find('first', array(
+				'conditions' => array(
+					'Contact.id' => $data['Contact']['id'],
+					),
+				'contain' => array(
+					'User',
+					'Employer',
+					),
+				));
+			$data = Set::merge($contact, $data);
+			unset($data['Contact']['modified']);
+		endif;
+		
+		# if employer is not empty merge all employers so that we don't lose any existing employers in the Habtm update
+		if (!empty($data['Employer'])) :
+			$mergedEmployers = Set::merge(Set::extract('/id', $data['Employer']), $data['Employer']['Employer']);
+			unset($data['Employer']);
+			$data['Employer']['Employer'] = $mergedEmployers;
+		endif;
+				
 		foreach ($data['User'] as $key => $userData) :
 			if (is_array($userData)) :
 				$data['User'][$key] = implode(',', $userData);
