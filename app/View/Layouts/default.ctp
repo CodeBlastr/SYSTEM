@@ -10,7 +10,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=8" />
 <meta name="viewport" content="width=device-width"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<?php
+<?php   
 	echo $this->Html->meta('icon');
 	echo $this->Html->css('system');
 	echo $this->Html->css('admin/jquery-ui-1.8.13.custom');
