@@ -17,24 +17,25 @@
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
-App::import('Core', 'Controller');
-App::import('Component', 'Acl');
-App::import('Model', 'DbAcl');
+App::uses('Controller', 'Controller');
+App::uses('ComponentCollection', 'Controller');
+App::uses('AclComponent', 'Controller/Component');
+App::uses('DbAcl', 'Model');
 
 /**
  * Shell for ACO extras
  *
  * @package		acl_extras
- * @subpackage	acl_extras.vendors.shells
+ * @subpackage	acl_extras.Console.Command
  */
 class AclExtrasShell extends Shell {
 /**
  * Contains instance of AclComponent
  *
- * @var object
+ * @var AclComponent
  * @access public
  */
-	var $Acl;
+	public $Acl;
 
 /**
  * Contains arguments parsed from the command line.
@@ -42,7 +43,7 @@ class AclExtrasShell extends Shell {
  * @var array
  * @access public
  */
-	var $args;
+	public $args;
 
 /**
  * Contains database source to use
@@ -50,48 +51,34 @@ class AclExtrasShell extends Shell {
  * @var string
  * @access public
  */
-	var $dataSource = 'default';
+	public $dataSource = 'default';
 
 /**
  * Root node name.
  *
  * @var string
  **/
-	var $rootNode = 'controllers';
+	public $rootNode = 'controllers';
 
 /**
  * Internal Clean Actions switch
  *
  * @var boolean
  **/
-	var $_clean = false;
+	public $_clean = false;
 
 /**
  * Start up And load Acl Component / Aco model
  *
  * @return void
  **/
-	function startup() {
-		$this->Acl =& new AclComponent();
+	public function startup() {
+		parent::startup();
+		$collection = new ComponentCollection();
+		$this->Acl = new AclComponent($collection);
 		$controller = null;
 		$this->Acl->startup($controller);
-		$this->Aco =& $this->Acl->Aco;
-	}
-
-/**
- * Override main() for help message hook
- *
- * @access public
- */
-	function main() {
-		$out  = __("Available ACO sync commands:", true) . "\n";
-		$out .= "\t - aco_update\n";
-		$out .= "\t - aco_sync\n";
-		$out .= "\t - recover \$type\n";
-		$out .= "\t - verify \$type\n";
-		$out .= "\t - help\n\n";
-		$out .= __("For help, run the 'help' command.  For help on a specific command, run 'help <command>'", true);
-		$this->out($out);
+		$this->Aco = $this->Acl->Aco;
 	}
 
 /**
@@ -109,11 +96,12 @@ class AclExtrasShell extends Shell {
  * @return void
  **/
 	function aco_update() {
-		$root = $this->_checkNode($this->rootNode, $this->rootNode, null);
+		/* zuha type set @todo was not tested because we don't use aco_update */
+		$root = $this->_checkNode('controller', $this->rootNode, $this->rootNode, null);
 		$controllers = $this->getControllerList();
 		$this->_updateControllers($root, $controllers);
 
-		$plugins = App::objects('plugin', null, false);
+		$plugins = CakePlugin::loaded();
 		foreach ($plugins as $plugin) {
 			$controllers = $this->getControllerList($plugin);
 
@@ -121,7 +109,7 @@ class AclExtrasShell extends Shell {
 			$pluginRoot = $this->_checkNode('plugin', $path, $plugin, $root['Aco']['id']);
 			$this->_updateControllers($pluginRoot, $controllers, $plugin);
 		}
-		$this->out(__('Aco Update Complete', true));
+		$this->out(__('<success>Aco Update Complete</success>'));
 		return true;
 	}
 
@@ -134,18 +122,20 @@ class AclExtrasShell extends Shell {
  * @return void
  */
 	function _updateControllers($root, $controllers, $plugin = null) {
-		$appIndex = array_search($plugin . 'App', $controllers);
-		if ($appIndex !== false) {
-			unset($controllers[$appIndex]);
-		}
 		$dotPlugin = $pluginPath = $plugin;
 		if ($plugin) {
 			$dotPlugin .= '.';
 			$pluginPath .= '/';
 		}
+		$appIndex = array_search($plugin . 'AppController', $controllers);
+		if ($appIndex !== false) {
+			App::uses($plugin . 'AppController', $dotPlugin . 'Controller');
+			unset($controllers[$appIndex]);
+		}
 		// look at each controller
-		foreach ($controllers as $controllerName) {
-			App::import('Controller', $dotPlugin . $controllerName);
+		foreach ($controllers as $controller) {
+			App::uses($controller, $dotPlugin . 'Controller');
+			$controllerName = preg_replace('/Controller$/', '', $controller);
 
 			$path = $this->rootNode . '/' . $pluginPath . $controllerName;
 			# zuha add for types
@@ -155,7 +145,7 @@ class AclExtrasShell extends Shell {
 				$type = 'controller';
 			}
 			$controllerNode = $this->_checkNode($type, $path, $controllerName, $root['Aco']['id']);
-			$this->_checkMethods($controllerName, $controllerNode, $pluginPath);
+			$this->_checkMethods($controller, $controllerName, $controllerNode, $pluginPath);
 		}
 		if ($this->_clean) {
 			if (!$plugin) {
@@ -166,13 +156,13 @@ class AclExtrasShell extends Shell {
 			$this->Aco->id = $root['Aco']['id'];
 			$controllerNodes = $this->Aco->children(null, true);
 			foreach ($controllerNodes as $ctrlNode) {
-				if (!isset($controllerFlip[$ctrlNode['Aco']['alias']])) {
-					$this->Aco->id = $ctrlNode['Aco']['id'];
-					if ($this->Aco->delete()) {
-						$this->out(sprintf(
-							__('Deleted %s and all children', true), 
+				$name = $ctrlNode['Aco']['alias'] . 'Controller';
+				if (!isset($controllerFlip[$name])) {
+					if ($this->Aco->delete($ctrlNode['Aco']['id'])) {
+						$this->out(__(
+							'Deleted %s and all children',
 							$this->rootNode . '/' . $ctrlNode['Aco']['alias']
-						));
+						), 1, Shell::VERBOSE);
 					}
 				}
 			}
@@ -189,10 +179,9 @@ class AclExtrasShell extends Shell {
  **/
 	function getControllerList($plugin = null) {
 		if (!$plugin) {
-			$controllers = App::objects('controller', null, false);
+			$controllers = App::objects('Controller', null, false);
 		} else {
-			$pluginPath = App::pluginPath($plugin);
-			$controllers = App::objects('controller', $pluginPath . 'controllers' . DS, false);
+			$controllers = App::objects($plugin . '.Controller', null, false);
 		}
 		return $controllers;
 	}
@@ -206,34 +195,27 @@ class AclExtrasShell extends Shell {
  * @return array Aco Node array
  */
 	function _checkNode($type = 'controller', $path, $alias, $parentId = null) {
-		$node = $this->Aco->node($path);			
+		$node = $this->Aco->node($path);
 		if (!$node) {
-			$this->Aco->create(array(
-				'parent_id' => $parentId,
-				'model' => null,
-				'alias' => $alias,
-				'type' => $type,
-				));
+			$this->Aco->create(array('parent_id' => $parentId, 'model' => null, 'alias' => $alias, 'type' => $type));
 			$node = $this->Aco->save();
 			$node['Aco']['id'] = $this->Aco->id;
-			$this->out(sprintf(__('Created Aco node: %s', true), $path));
+			$this->out(__('Created Aco node: %s', $path), 1, Shell::VERBOSE);
 		} else {
 			$node = $node[0];
 		}
 		return $node;
 	}
-	
 
 /**
  * Check and Add/delete controller Methods
  *
  * @param string $controller
  * @param array $node
- * @param string $plugin Name of plugin 
+ * @param string $plugin Name of plugin
  * @return void
  */
-	function _checkMethods($controller, $node, $pluginPath = false) {
-		$className = $controller . 'Controller';
+	function _checkMethods($className, $controllerName, $node, $pluginPath = false) {
 		$baseMethods = get_class_methods('Controller');
 		$actions = get_class_methods($className);
 		$methods = array_diff($actions, $baseMethods);
@@ -241,7 +223,7 @@ class AclExtrasShell extends Shell {
 			if (strpos($action, '_', 0) === 0) {
 				continue;
 			}
-			$path = $this->rootNode . '/' . $pluginPath . $controller . '/' . $action;
+			$path = $this->rootNode . '/' . $pluginPath . $controllerName . '/' . $action;
 			# zuha add for types
 			if (!empty($pluginPath)) {
 				$type = 'paction';
@@ -258,8 +240,8 @@ class AclExtrasShell extends Shell {
 				if (!isset($methodFlip[$action['Aco']['alias']])) {
 					$this->Aco->id = $action['Aco']['id'];
 					if ($this->Aco->delete()) {
-						$path = $this->rootNode . '/' . $controller . '/' . $action['Aco']['alias'];
-						$this->out(sprintf(__('Deleted Aco node %s', true), $path));
+						$path = $this->rootNode . '/' . $controllerName . '/' . $action['Aco']['alias'];
+						$this->out(__('Deleted Aco node %s', $path), 1, Shell::VERBOSE);
 					}
 				}
 			}
@@ -267,47 +249,40 @@ class AclExtrasShell extends Shell {
 		return true;
 	}
 
-
-/**
- * Show help screen.
- *
- * @access public
- */
-	function help() {
-		$head  = __("Usage: cake acl_extras <command>", true) . "\n";
-		$head .= "-----------------------------------------------\n";
-		$head .= __("Commands:", true) . "\n\n";
-
-		$commands = array(
-			'update' => "\tcake acl_extras aco_update\n" .
-						"\t\t" . __("Add new ACOs for new controllers and actions", true) . "\n" .
-						"\t\t" . __("Create new ACO's for controllers and their actions. Does not remove any nodes from ACO table", true),
-
-			'sync' =>	"\tcake acl_extras aco_sync\n" .
-						"\t\tPerform a full sync on the ACO table.\n" .
-						"\t\t" . __("Creates new ACO's for missing controllers and actions. Removes orphaned entries in the ACO table.", true) . "\n",
-
-			'verify' => "\tcake acl_extras verify \$type\n" .
-						"\t\t" . __('Verify the tree structure of either your Aco or Aro Trees', true),
-
-			'recover' => "\tcake acl_extras recover \$type\n" .
-						 "\t\t" . __('Recover a corrupted Tree', true),
-
-			'help' => 	"\thelp [<command>]\n" .
-						"\t\t" . __("Displays this help message, or a message on a specific command.", true) . "\n"
-		);
-
-		$this->out($head);
-		if (!isset($this->args[0])) {
-			foreach ($commands as $cmd) {
-				$this->out("{$cmd}\n\n");
-			}
-		} elseif (isset($commands[low($this->args[0])])) {
-			$this->out($commands[low($this->args[0])] . "\n");
-		} else {
-			$this->out(sprintf(__("Command '%s' not found", true), $this->args[0]));
-		}
+	public function getOptionParser() {
+		return parent::getOptionParser()
+			->description(__("Better manage, and easily synchronize you application's ACO tree"))
+			->addSubcommand('aco_update', array(
+				'help' => __('Add new ACOs for new controllers and actions. Does not remove nodes from the ACO table.')
+			))->addSubcommand('aco_sync', array(
+				'help' => __('Perform a full sync on the ACO table.' .
+					'Will create new ACOs or missing controllers and actions.' .
+					'Will also remove orphaned entries that no longer have a matching controller/action')
+			))->addSubcommand('verify', array(
+				'help' => __('Verify the tree structure of either your Aco or Aro Trees'),
+				'parser' => array(
+					'arguments' => array(
+						'type' => array(
+							'required' => true,
+							'help' => __('The type of tree to verify'),
+							'choices' => array('aco', 'aro')
+						)
+					)
+				)
+			))->addSubcommand('recover', array(
+				'help' => __('Recover a corrupted Tree'),
+				'parser' => array(
+					'arguments' => array(
+						'type' => array(
+							'required' => true,
+							'help' => __('The type of tree to recover'),
+							'choices' => array('aco', 'aro')
+						)
+					)
+				)
+			));
 	}
+
 /**
  * Verify a Acl Tree
  *
@@ -316,16 +291,13 @@ class AclExtrasShell extends Shell {
  * @return void
  */
 	function verify() {
-		if (empty($this->args[0])) {
-			$this->err(__('Missing Type', true));
-			$this->_stop();
-		}
 		$type = Inflector::camelize($this->args[0]);
 		$return = $this->Acl->{$type}->verify();
 		if ($return === true) {
-			$this->out(__('Tree is valid and strong', true));
+			$this->out(__('Tree is valid and strong'));
 		} else {
-			$this->out(print_r($return, true));
+			$this->err(print_r($return, true));
+			return false;
 		}
 	}
 /**
@@ -336,17 +308,13 @@ class AclExtrasShell extends Shell {
  * @return void
  */
 	function recover() {
-		if (empty($this->args[0])) {
-			$this->err(__('Missing Type', true));
-			$this->_stop();
-		}
 		$type = Inflector::camelize($this->args[0]);
 		$return = $this->Acl->{$type}->recover();
 		if ($return === true) {
-			$this->out(__('Tree has been recovered, or tree did not need recovery.', true));
+			$this->out(__('Tree has been recovered, or tree did not need recovery.'));
 		} else {
-			$this->out(__('Tree recovery failed.', true));
+			$this->err(__('<error>Tree recovery failed.</error>'));
+			return false;
 		}
 	}
 }
-?>
