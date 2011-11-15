@@ -296,6 +296,35 @@ class HtmlHelper extends AppHelper {
 		}
 		return sprintf($this->_tags['charset'], (!empty($charset) ? $charset : 'utf-8'));
 	}
+	
+	
+/**
+ * 
+ */ 	public function video($videopath , $options = array()) { 
+    	
+       $defaultoptions['width']= '640';
+       $defaultoptions['height']= '264';
+       $defaultoptions['title']= 'Video Js';
+       $defaultoptions['preload']= 'auto';
+       $defaultoptions['controls']='controls';
+       $defaultoptions['poster']="http://video-js.zencoder.com/oceans-clip.png";		
+	     $finaloptions=	array_merge($defaultoptions,$options);
+	     echo $this->script('ckeditor/plugins/video_js/video-js');	     
+	     
+  //$videoPlayer.='<script type="text/javascript"> VideoJS.setupAllWhenReady(); </script>'; 
+  
+  //$videoPlayer.='<link rel="stylesheet" href="/js/ckeditor/plugins/video_js/video-js.css" type="text/css" media="screen" title="'.$finaloptions['title'].'">';
+  
+  $videoPlayer.='<div class="video-js-box">';
+   
+  $videoPlayer.='<video id="example_video_1" class="video-js" width="'.$finaloptions['width'].'" height="'.$finaloptions['height'].'" controls="'.$finaloptions['controls'].'" preload="'.$finaloptions['preload'].'" poster="'.$finaloptions['poster'].'">';
+     
+  $videoPlayer.='<source src="'.$videopath.'" /> </video> </div>';
+  
+   return $videoPlayer;  
+   
+ 
+	}
 
 /**
  * Creates an HTML link.
