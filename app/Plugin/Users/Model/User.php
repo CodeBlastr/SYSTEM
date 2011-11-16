@@ -141,7 +141,6 @@ class User extends AppModel {
  * With Cakephp 2.0 you can do ACL better (with acts as both) and this function is one of the functions now available from the Acl Behavior.
  */
 	function parentNode() {
-		return null;
    		if (!$this->id && empty($this->data)) {
 	        return null;
 	    }
@@ -365,6 +364,7 @@ class User extends AppModel {
 				$data['User']['id'] = $user['User']['id'];
 				$data['User']['last_login'] = date('Y-m-d h:i:s');
 				$data['User']['view_prefix'] = $user['UserRole']['view_prefix'];
+				$data['User']['user_role_id'] = $user['UserRole']['id'];
 				if (empty($user['User']['forgot_key']) || $user['User']['forgot_key'][0] != 'W') {
 					unset($data['User']['password']);
 					if($this->save($data, array('validate' => false))) {

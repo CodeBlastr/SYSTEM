@@ -1,4 +1,4 @@
-<?php
+<?php   
 /**
  * Default Layout View File
  *
@@ -24,7 +24,7 @@
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<?php
+<?php        
 if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html>'; } ?>
 	<head>
     
@@ -44,6 +44,10 @@ if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html
 		echo $this->Html->css('system', 'stylesheet', array('media' => 'all')); 
 		echo $this->Html->css('admin/jquery-ui-1.8.13.custom');
 		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
+		//$defaultTemplate['Webpage']['content']=str_replace('{helper: content_for_layout}','',$defaultTemplate['Webpage']['content']);
+	//	print_r($defaultTemplate['Webpage']['content']);
+//	echo '{helper: content_for_layout}';
+  //  die;
 			$i = 0;
 			foreach (unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES) as $media => $files) { 
 				foreach ($files as $file) {

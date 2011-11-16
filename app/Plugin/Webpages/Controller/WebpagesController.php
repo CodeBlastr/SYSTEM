@@ -33,6 +33,10 @@ class WebpagesController extends WebpagesAppController {
 		parent::beforeFilter();
 		$this->passedArgs['comment_view_type'] = 'flat';
 	}
+	
+	function test() {	
+	         $this->layout='';
+	}
 
 	function index() {
 		if (!empty($this->request->params['named']['type'])) :
@@ -89,6 +93,7 @@ class WebpagesController extends WebpagesAppController {
 	}
 	
 	function edit($id = null) {		
+	
 		if (empty($id) && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid Webpage', true));
 			$this->redirect(array('action'=>'index'));
