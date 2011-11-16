@@ -1,10 +1,9 @@
 	<?php 
   
-  echo $this->Html->video('http://sifnets.com/videojs/oceans-clip.mp4',array('width'=>'1000','height'=>'500'));?>
+  echo $this->Html->video(array('http://sifnets.com/videojs/oceans-clip.mp4','http://video-js.zencoder.com/oceans-clip.webm'));
   
-    
-  	<?php 
+  ?>
   
-  echo $this->Html->video('http://sifnets.com/videojs/oceans-clip.mp4',array('width'=>'1000','height'=>'500'));?>
+  
 	
 	

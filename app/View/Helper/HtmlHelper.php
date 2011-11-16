@@ -299,9 +299,10 @@ class HtmlHelper extends AppHelper {
 	
 	
 /**
- * 
- */ 	public function video($videopath , $options = array()) { 
-    	
+ *   Returns a charset video embed-tag.
+ */ 
+ 	public function video($videopath , $options = array()) {
+       	
        $defaultoptions['width']= '640';
        $defaultoptions['height']= '264';
        $defaultoptions['title']= 'Video Js';
@@ -309,21 +310,27 @@ class HtmlHelper extends AppHelper {
        $defaultoptions['controls']='controls';
        $defaultoptions['poster']="http://video-js.zencoder.com/oceans-clip.png";		
 	     $finaloptions=	array_merge($defaultoptions,$options);
-	     echo $this->script('ckeditor/plugins/video_js/video-js');	     
-	     
-  //$videoPlayer.='<script type="text/javascript"> VideoJS.setupAllWhenReady(); </script>'; 
-  
-  //$videoPlayer.='<link rel="stylesheet" href="/js/ckeditor/plugins/video_js/video-js.css" type="text/css" media="screen" title="'.$finaloptions['title'].'">';
-  
-  $videoPlayer.='<div class="video-js-box">';
-   
-  $videoPlayer.='<video id="example_video_1" class="video-js" width="'.$finaloptions['width'].'" height="'.$finaloptions['height'].'" controls="'.$finaloptions['controls'].'" preload="'.$finaloptions['preload'].'" poster="'.$finaloptions['poster'].'">';
-     
-  $videoPlayer.='<source src="'.$videopath.'" /> </video> </div>';
-  
-   return $videoPlayer;  
-   
- 
+	     echo $this->script('ckeditor/plugins/video_js/video-js');	
+       $videoPlayer='';
+       $videoPlayer.='<div class="video-js-box">';       
+       $videoPlayer.='<video id="example_video_1" class="video-js" width="'.$finaloptions['width'].'" height="'.$finaloptions['height'].'" controls="'.$finaloptions['controls'].'" preload="'.$finaloptions['preload'].'" poster="'.$finaloptions['poster'].'">';         
+        if(is_array($videopath) ){
+            //if video path  param is array 
+                 foreach($videopath as $video){
+                   $videoPlayer.='<source src="'.$video.'" />';
+                 }
+        } else{
+        //if video path param is string 
+         $videoPlayer.='<source src="'.$videopath.'" />'; 
+        }
+        $videoPlayer.='<object id="flash_fallback_1" class="vjs-flash-fallback" width="640" height="264" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">'; 
+        $videoPlayer.='<param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" /> <param name="allowfullscreen" value="true" />';
+        $videoPlayer.='<param name="flashvars" value=\'config={"playlist":["http://video-js.zencoder.com/oceans-clip.png", {"url": "http://video-js.zencoder.com/oceans-clip.mp4","autoPlay":false,"autoBuffering":true}]}\' /> ';
+       
+        $videoPlayer.='<img src="http://video-js.zencoder.com/oceans-clip.png" width="640" height="264" alt="Poster Image" title="No video playback capabilities." /> </object> </video> ';
+       
+       
+       return $videoPlayer; 
 	}
 
 /**
