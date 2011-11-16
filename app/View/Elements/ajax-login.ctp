@@ -57,7 +57,7 @@
 		<h3><?php echo __('Please register or login to access this page.', true); ?></h3>
 		<?php 
 			if(defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) { 
-				echo $this->Form->create('User', array('type' => 'file', 'id' => 'register_form', 'action' => 'register'));
+				echo $this->Form->create('User', array('type' => 'file', 'id' => 'register_form', 'url' => '/users/users/register'));
 				echo $this->Form->input('Contact.id', array('type' => 'hidden')); 
 				
 				if (!empty($this->request->params['named']['user'])) {

@@ -120,8 +120,8 @@ class UsersController extends UsersAppController {
 	
 	function checkLogin() {
 		$this->layout = false;
-		$this->autoRender = false; 	
-        $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => $this->request->data['User']['password'])));	
+		$this->autoRender = false; 
+        $user = $this->User->find('first', array('conditions' => array('User.username' => $this->request->data['User']['username'], 'User.password' => AuthComponent::password($this->request->data['User']['password']))));	
      	if($user){
      		$data['login'] = 1;
 		} else {
