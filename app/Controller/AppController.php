@@ -168,17 +168,7 @@ class AppController extends Controller {
 	/**
 	 * @todo convert to a full REST application and this might not be necessary
 	 */
-    function beforeRender() {
-		# this needed to be duplicated from the beforeFilter 
-		# because beforeFilter doesn't fire on error pages.
-		if($this->name == 'CakeError') :
-			$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
-			$this->userRoleName = $this->Session->read('Auth.UserRole.name');
-			$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
-			$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
-	 		$this->_getTemplate();
-	    endif;
-		
+    function beforeRender() {		
 		# This turns off debug so that ajax views don't get severly messed up
 		if($this->RequestHandler->isAjax()) :
             Configure::write('debug', 0); 

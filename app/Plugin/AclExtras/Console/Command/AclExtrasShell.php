@@ -220,7 +220,8 @@ class AclExtrasShell extends Shell {
 		$actions = get_class_methods($className);
 		$methods = array_diff($actions, $baseMethods);
 		foreach ($methods as $action) {
-			if (strpos($action, '_', 0) === 0) {
+			# zuha functions to ignore --  || $action == 'isAuthorized'
+			if (strpos($action, '_', 0) === 0 || $action == 'isAuthorized' || $action == 'runcron' || $action == 'authentication') {
 				continue;
 			}
 			$path = $this->rootNode . '/' . $pluginPath . $controllerName . '/' . $action;

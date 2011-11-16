@@ -52,7 +52,7 @@ class AppModel extends Model {
 		
 		# Start Auto Creator & Modifier Id Saving # 
 		$exists = $this->exists();
-		$user = CakeSession::read('Auth.User');
+		$user = class_exists('CakeSession') ? CakeSession::read('Auth.User') : null;
 		if ( !$exists && $this->hasField('creator_id') && empty($this->data[$this->alias]['creator_id']) ) {
 			$this->data[$this->alias]['creator_id'] = $user['id'];
 		}

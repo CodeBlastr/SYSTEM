@@ -29,21 +29,7 @@ class AppErrorController extends AppController {
 		$this->handleError($request);
 	}
 
-/**
- * Escapes the viewVars.
- *
- * @return void
- */
-	public function beforeRender() {
-		parent::beforeRender();
-		foreach ($this->viewVars as $key => $value) {
-			if (!is_object($value)){
-				$this->viewVars[$key] = h($value);
-			}
-		}
-	}
-	
-	
+		
     public function handleError($request) {
 		
 		$Alias = ClassRegistry::init('Alias');
@@ -91,11 +77,11 @@ class AppErrorController extends AppController {
 	 */
 	function addPageRedirect($alias) {
 		# lets see if the user would like to add a page if they are an admin
-		$userRole = Configure::read('Session.Auth.User.user_role_id');
+		$userRole = CakeSession::read('Auth.User.user_role_id');
 		if($userRole == 1 /* Admin user role */) {
 			App::uses('AppController', 'Controller');
-			$AppController = new AppController();
-			$Session->setFlash(__('No page exists at '.$alias.', would you like to create it?', true) );
+			$AppController = new AppController($this->request, $this->response);
+			#$Session->setFlash(__('No page exists at '.$alias.', would you like to create it?', true) );
 			$AppController->redirect(array('plugin' => 'webpages', 'controller' => 'webpages', 'action'=>'add', 'alias' => $alias));
 		} else {
 			return false;

@@ -14,7 +14,11 @@
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  */
-
+.fancyboxGallery ul, .fancyboxGallery li {
+	list-style-type: none;
+	margin: 0.3em 0.1em 0.3em 0;
+	padding: 0;
+}
 #fancybox-loading {
 	position: fixed;
 	top: 50%;

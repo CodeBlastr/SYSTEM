@@ -1,5 +1,5 @@
 <?php
-if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php')) :
+if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php')) :
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php');
 else : 
 
@@ -15,6 +15,13 @@ require_once(ROOT.DS.APP_DIR.DS.'Config'.DS.'global.php');
  *
  */
  
+if (!defined('SITE_DIR')) {
+	define('SITE_DIR', null);
+} 
+if (!defined('CONFIGS')) {
+	define('CONFIGS', null);
+} 
+
 App::build(array(
 	'plugins' => array(
 		ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
@@ -72,23 +79,25 @@ App::build(array(
 	
 	function __setConstants($path = null, $return = false) {
 		$path = (!empty($path) ? $path : CONFIGS);
-		if (file_exists($path .'settings.ini')) {
-			$path .= 'settings.ini';
-		} else {
-			$path .= 'defaults.ini';
-		}
-		$settings = parse_ini_file($path, true);
-		
-		if ($return == true) {
-			$settings = my_array_map($settings, 'parse_ini_ini');
-			return $settings;
-		} else {
-			foreach ($settings as $key => $value) {				
-				if (!defined(strtoupper($key))) {
-					if (is_array($value)) {
-						define(strtoupper($key), serialize($value));
-					} else {
-						define(strtoupper($key), $value);
+		if (file_exists($path .'defaults.ini')) {
+			if (file_exists($path .'settings.ini')) {
+				$path .= 'settings.ini';
+			} else {
+				$path .= 'defaults.ini';
+			}
+			$settings = parse_ini_file($path, true);
+			
+			if ($return == true) {
+				$settings = my_array_map($settings, 'parse_ini_ini');
+				return $settings;
+			} else {
+				foreach ($settings as $key => $value) {				
+					if (!defined(strtoupper($key))) {
+						if (is_array($value)) {
+							define(strtoupper($key), serialize($value));
+						} else {
+							define(strtoupper($key), $value);
+						}
 					}
 				}
 			}
