@@ -350,7 +350,7 @@ class AppController extends Controller {
 			endforeach;
 			foreach ($paths as $path) :
 				if (file_exists($path.CakeSession::read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) :
-					$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.$this->request->params['controller'];
+					$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.ucfirst($this->request->params['controller']);
 				endif;
 			endforeach;
 			$this->layout = 'default';
