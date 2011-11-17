@@ -214,15 +214,19 @@ class SwiftMailerComponent extends Component {
 			extract(unserialize(__SYSTEM_SMTP));
 			$smtp = base64_decode($smtp);
 			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
-			$smtp = parse_ini_string($smtp);
+			if (@$smtp = parse_ini_string($smtp)) :
+				$this->smtpUsername = !empty($smtp['smtpUsername']) ? $smtp['smtpUsername'] : $this->smtpUsername;
+				$this->smtpPassword = !empty($smtp['smtpPassword']) ? $smtp['smtpPassword'] : $this->smtpPassword;
+				$this->smtpHost = !empty($smtp['smtpHost']) ? $smtp['smtpHost'] : $this->smtpHost;
+				$this->smtpPort = !empty($smtp['smtpPort']) ? $smtp['smtpPort'] : $this->smtpPort;
+				$this->from = !empty($smtp['from']) ? $smtp['from'] : $this->from;
+				$this->fromName = !empty($smtp['fromName']) ? $smtp['fromName'] : $this->fromName;
+			else :
+				return false;
+			endif;
+		else : 
+			return false;
 		endif;
-
-		$this->smtpUsername = !empty($smtp['smtpUsername']) ? $smtp['smtpUsername'] : $this->smtpUsername;
-		$this->smtpPassword = !empty($smtp['smtpPassword']) ? $smtp['smtpPassword'] : $this->smtpPassword;
-		$this->smtpHost = !empty($smtp['smtpHost']) ? $smtp['smtpHost'] : $this->smtpHost;
-		$this->smtpPort = !empty($smtp['smtpPort']) ? $smtp['smtpPort'] : $this->smtpPort;
-		$this->from = !empty($smtp['from']) ? $smtp['from'] : $this->from;
-		$this->fromName = !empty($smtp['fromName']) ? $smtp['fromName'] : $this->fromName;
 	}
 	function startup() { }
 	function beforeRender() { }

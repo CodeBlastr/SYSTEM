@@ -39,7 +39,7 @@
   // length of 10 would truncate "1234567890" to "12 (…more)".
   $.fn.truncate.defaults = {
     max_length: 100,
-    more: '…more',
+    more: '...more',
     less: 'less'
   };
 
