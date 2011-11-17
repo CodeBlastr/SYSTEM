@@ -23,6 +23,9 @@ html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pr
 	outline-width:0;
 	vertical-align: baseline;
 }
+ul {
+	margin: 0 0 0 2em;
+}
 :focus {
 	outline: 0;
 }
@@ -103,21 +106,6 @@ px      68    160    252    344    436    528    620    712    804    896    */
 
 
 
-/*		Tablet Layout: 768px.
-		Gutters: 24px.
-		Outer margins: 28px.
-		Inherits styles from: Default Layout.
------------------------------------------------------------------
-cols    1     2      3      4      5      6      7      8
-px      68    160    252    344    436    528    620    712    */
-
-@media only screen and (min-width: 768px) and (max-width: 991px) {
- /*#siteWrap {
-	width: 768px;
-	}*/
-}
-
-
 /*		Mobile Layout: 320px.
 		Gutters: 24px.
 		Outer margins: 34px.
@@ -157,9 +145,6 @@ px      68    160    252    */
 .indexCell.metaCell {
 	width: 6em !important;
 }
-.indexCell.imageCell {
-	width: 10em !important;
-}
 .indexCell.indexData {
 	float: left !important;
 	max-width: 10em !important;
@@ -189,12 +174,31 @@ px      68    160    252    344    436    */
 .indexCell.metaCell {
 	width: 8em !important;
 }
-.indexCell.imageCell {
+.indexCell.indexData {
+	float: left !important;
+	max-width: 18em !important;
+}
+}
+
+
+/*		Tablet Layout: 768px.
+		Gutters: 24px.
+		Outer margins: 28px.
+		Inherits styles from: Default Layout.
+-----------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8
+px      68    160    252    344    436    528    620    712    */
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+ /*#siteWrap {
+	width: 768px;
+	}*/
+.indexCell.metaCell {
 	width: 10em !important;
 }
 .indexCell.indexData {
 	float: left !important;
-	max-width: 18em !important;
+	max-width: 37em !important;
 }
 }
 
@@ -277,8 +281,9 @@ td.actions a {
 	display: table;
 	width: 100%;
 	padding: 0;
-	margin: 1em 0;
+	margin: 0.5em 0;
 	border-collapse: collapse;
+	font-size: 0.85em;
 }
 .indexRow {
 	display: table-row;
@@ -320,13 +325,14 @@ td.actions a {
 }
 .indexCell.imageCell {
 	margin: 0 0 0 0.5em;
-	width: 7em;
+	width: 3em;
 	float: left;
 	height: 100%;
+	overflow: hidden;
 }
 .indexCell.imageCell img {
-	width: 6.5em;
-	height: 5em;
+	width: 2.5em;
+	height: 2.5em;
 }
 .indexCell.metaCell {
 	width: 20em;
@@ -385,7 +391,7 @@ form {
 	clear: both;
 	width: 100%;
 }
-fieldset {
+fieldset, .viewRow .recordData {
 	padding: 0;
 	margin: 0.5em 0 0 0;
 	width: 100%;
@@ -402,8 +408,9 @@ fieldset {
 	-moz-box-shadow: 0 0 5px #CCC;
 	box-shadow: 0 0 5px #CCC;
 }
-fieldset legend {
+fieldset legend, .viewRow .metaData {
 	font-weight: bold;
+	
 	border: 1px solid #CCC;
 	border-top-right-radius:0.5em;
 	border-top-left-radius:0.5em;
@@ -411,9 +418,11 @@ fieldset legend {
 	-webkit-border-top-left-radius:0.5em;
 	-moz-border-top-right-radius:0.5em;
 	-moz-border-top-left-radius:0.5em;
+	
 	background-image: -moz-linear-gradient(top, #fdfdfd, #DDD);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fdfdfd), color-stop(1, #eeeeee));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#eeeeee')";
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fdfdfd), color-stop(1, #DDD));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#DDD')";
+	
 	width: 100%;
 	float: left;
 }
@@ -945,6 +954,8 @@ div.paging span a {
 #content h3.indexHead {
 	background: #6C97C1;
 	color: #fff;
+	margin: 0.5em -0.1em 0 0;
+	padding: 0.3em;
 }
 #content .index .recordData h3 {
 	float: left;
@@ -974,7 +985,7 @@ div.paging span a {
 }
 #content div .metaData {
 	margin: 0em 0 0.5em 0;
-	padding: 0.5em;
+	padding: 0.2em 0 0 0.2em;
 	border-bottom: 1px solid #CCC;
 }
 #content div.index .metaData, #content div.comments .metaData  {
@@ -982,10 +993,16 @@ div.paging span a {
 	border: 1px solid #CCC !important;
 	filter: none;
 	padding: 0.3em !important;
-	color: #CCC;
+	color: #888;
 	float: right;
 	font-size: 0.8em;
 	position: relative;
+}
+#content ul.tree-block {
+	margin: 0;
+}
+#content .comments {
+	font-size: 0.85em;
 }
 #content .metaData ul {
 	list-style-type: none;
@@ -993,9 +1010,9 @@ div.paging span a {
 	padding: 0;
 }
 #content .metaData li {
-	margin: 0 1em 0 0;
 	list-style: none;
-	float: left;
+	padding: 0;
+	margin: 0 0.5em 0 0;
 }
 #content .metaDataPriorityDetail {
 	padding: 0;
@@ -1005,7 +1022,9 @@ div.paging span a {
 #content .recordData {
 	clear: both;
 	margin: 0 0 0.5em 0;
-	padding: 0.5em;
+	padding: 2em 0 0 0.2em;
+	position: relative;
+	top: -2em;
 }
 #content .image {
 }
@@ -1015,12 +1034,15 @@ div.paging span a {
 #content .view .metaData {
 	float: none;
 	overflow: auto;
+	position: relative;
+	z-index: 1;
 }
+/* /tasks/tasks/view/xxxxx is why this change was made, make sure if you change it, it looks good there */
 #content .viewRow {
 	clear: both;
 	position: relative;
 	margin: 0.3em 0;
-	overflow: hidden;
+	width: 100%;
 }
 #content .recordData .image img {
 	border: 1px solid #999;
@@ -1030,7 +1052,7 @@ div.paging span a {
 	top: 0.2em;
 	right: 0.6em;
 }
-#content .viewRow ul.actions li {
+#content .viewRow ul.actions li, #content .viewRow .metaData li {
 	list-style: none;
 	float: left;
 }
@@ -1048,9 +1070,6 @@ div.paging span a {
 .contentSection {
 	padding: 1em;
 	overflow: hidden; /* this was done so that the index items could be wider than the containing div, so if you change it, make sure index items still look good (and there is not white gap on the sides. */
-}
-.contentSection ul {
-	margin: 0 0 0 2em;
 }
 /* helper text */
 #helperText {
@@ -1073,9 +1092,9 @@ div.paging span a {
 	font-size: 0.7em;
 }
 /* Activities Plugin */
-ul.activites, ul.activities li {
+ul.activities, ul.activities li {
 	list-style-type: none;
-	margin: 0.4em;
+	margin: 0.4em 0;
 }
 ul.activities li.activity span.activityModel {
 	font-size: 0.8em;
