@@ -106,6 +106,54 @@ px      68    160    252    344    436    528    620    712    804    896    */
 
 
 
+/*		Tablet Layout: 768px.
+		Gutters: 24px.
+		Outer margins: 28px.
+		Inherits styles from: Default Layout.
+-----------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8
+px      68    160    252    344    436    528    620    712    */
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+ /*#siteWrap {
+	width: 768px;
+	}*/
+.indexCell.metaCell .metaData {
+	width: 12em !important;
+}
+.indexCell.indexData {
+	float: left !important;
+	max-width: 37em !important;
+}
+}
+
+
+/*		Wide Mobile Layout: 480px.
+		Gutters: 24px.
+		Outer margins: 22px.
+		Inherits styles from: Default Layout, Mobile Layout.
+------------------------------------------------------------
+cols    1     2      3      4      5
+px      68    160    252    344    436    */
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+ /* #siteWrap {
+ width: 480px;
+}*/
+ .searchfield {
+ display: none;
+}
+.indexCell.metaCell .metaData {
+	width: 9.5em !important;
+}
+.indexCell.indexData {
+	float: left !important;
+	max-width: 18em !important;
+}
+}
+
+
+
 /*		Mobile Layout: 320px.
 		Gutters: 24px.
 		Outer margins: 34px.
@@ -142,63 +190,15 @@ px      68    160    252    */
 #siteMenu li {
 	margin: 12px !important;
 }
-.indexCell.metaCell {
+.indexCell.metaCell .metaData {
 	width: 6em !important;
 }
 .indexCell.indexData {
 	float: left !important;
-	max-width: 10em !important;
+	max-width: 12em !important;
 }
 #siteSearch input {
 	width: 90% !important;
-}
-}
-
-
-
-/*		Wide Mobile Layout: 480px.
-		Gutters: 24px.
-		Outer margins: 22px.
-		Inherits styles from: Default Layout, Mobile Layout.
-------------------------------------------------------------
-cols    1     2      3      4      5
-px      68    160    252    344    436    */
-
-@media only screen and (min-width: 480px) and (max-width: 767px) {
- /* #siteWrap {
- width: 480px;
-}*/
- .searchfield {
- display: none;
-}
-.indexCell.metaCell {
-	width: 8em !important;
-}
-.indexCell.indexData {
-	float: left !important;
-	max-width: 18em !important;
-}
-}
-
-
-/*		Tablet Layout: 768px.
-		Gutters: 24px.
-		Outer margins: 28px.
-		Inherits styles from: Default Layout.
------------------------------------------------------------------
-cols    1     2      3      4      5      6      7      8
-px      68    160    252    344    436    528    620    712    */
-
-@media only screen and (min-width: 768px) and (max-width: 991px) {
- /*#siteWrap {
-	width: 768px;
-	}*/
-.indexCell.metaCell {
-	width: 10em !important;
-}
-.indexCell.indexData {
-	float: left !important;
-	max-width: 37em !important;
 }
 }
 
@@ -335,9 +335,11 @@ td.actions a {
 	height: 2.5em;
 }
 .indexCell.metaCell {
-	width: 20em;
 	margin: 0 0.5em;
 	float: right;
+}
+.indexCell.metaCell .metaData {
+	width: 20em;
 }
 .indexCell.indexData {
 	padding: 0 0.5em;
