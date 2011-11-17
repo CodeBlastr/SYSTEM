@@ -99,5 +99,5 @@
 
 
 $(function() {
-  $('.truncate').truncate({max_length: 220});
+  $('.truncate').truncate({max_length: 50});
 });
