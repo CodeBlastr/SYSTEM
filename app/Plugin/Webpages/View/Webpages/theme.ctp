@@ -3,9 +3,9 @@
     <li data-role="list-divider"> <a href="#"><span>Design</span></a></li>
   </ul>
   <ul>
-    <li><a href="/webpages/webpages/index/type:template">Site Templates</a></li>
-    <li><a href="/webpages/webpages/index/type:element/">Global Boxes</a></li>
-    <li><a href="/webpages/webpage_csses">Css Styles</a></li>
-    <li class="separator"><a href="/webpages/webpage_jses">Javascript</a></li>
+    <li><?php echo $this->Html->link('Site Template', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'template')); ?></li>
+    <li><?php echo $this->Html->link('Global Boxes', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'element')); ?></li>
+    <li><?php echo $this->Html->link('Css Styles', array('plugin' => 'webpages', 'controller' => 'webpage_csses', 'action' => 'index')); ?></li>
+    <li><?php echo $this->Html->link('Javascript', array('plugin' => 'webpages', 'controller' => 'webpage_jses', 'action' => 'index')); ?></li>
   </ul>
 </div>

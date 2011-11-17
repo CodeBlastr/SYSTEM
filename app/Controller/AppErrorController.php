@@ -31,6 +31,9 @@ class AppErrorController extends AppController {
 
 		
     public function handleError($request) {
+		if(!empty($request->params['admin']) && $request->params['admin'] == 1) {
+			die;
+		}
 		
 		$Alias = ClassRegistry::init('Alias');
 		if ($request->here == '/') {

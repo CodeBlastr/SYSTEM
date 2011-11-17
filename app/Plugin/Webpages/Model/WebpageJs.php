@@ -63,6 +63,8 @@ class WebpageJs extends WebpagesAppModel {
 	);
 	
 	function add($data, $theme=null) {
+		$data = $this->_cleanData($data);
+		
 		if ($this->save($data)) {
 			$webpageJsId = $this->id;
 			# then write the js file here.
@@ -227,6 +229,14 @@ class WebpageJs extends WebpagesAppModel {
 				return false;
 			}
 		}
+	}
+	
+	function _cleanData($data) {
+		if(!strpos($data['WebpageJs']['name'], '.js')) :
+			$data['WebpageJs']['name'] = $data['WebpageJs']['name'].'.js';
+		endif;
+			
+		return $data;
 	}
 	
 }

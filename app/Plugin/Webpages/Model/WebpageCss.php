@@ -73,6 +73,8 @@ class WebpageCss extends WebpagesAppModel {
 	);
 	
 	function add($data, $theme=null) {
+		$data = $this->_cleanData($data);
+		
 		if ($this->save($data)) {
 			$webpageCssId = $this->id;
 			# then write the css file here.
@@ -239,6 +241,14 @@ class WebpageCss extends WebpagesAppModel {
 				return false;
 			}
 		}
+	}
+	
+	function _cleanData($data) {
+		if(!strpos($data['WebpageCss']['name'], '.css')) :
+			$data['WebpageCss']['name'] = $data['WebpageCss']['name'].'.css';
+		endif;
+			
+		return $data;
 	}
 	
 }
