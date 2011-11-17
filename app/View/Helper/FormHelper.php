@@ -367,7 +367,8 @@ class FormHelper extends AppHelper {
 		}
 
 		if ($options['action'] === null && $options['url'] === null) {
-			$options['action'] = $this->request->here(false);
+			#$options['action'] = $this->request->here(false);
+			$options['action'] = $_SERVER['REQUEST_URI'];
 		} elseif (empty($options['url']) || is_array($options['url'])) {
 			if (empty($options['url']['controller'])) {
 				if (!empty($model) && $model != $this->defaultModel) {
@@ -417,7 +418,7 @@ class FormHelper extends AppHelper {
 			break;
 		}
 		$this->requestType = strtolower($options['type']);
-
+		
 		$action = $this->url($options['action']);
 		unset($options['type'], $options['action']);
 

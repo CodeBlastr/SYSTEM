@@ -102,8 +102,8 @@ class WebpagesController extends WebpagesAppController {
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->update($this->request->data);
-				$this->Session->setFlash(__('Saved successfully', true));
-				$this->redirect(array('action'=>'index'));
+				#$this->Session->setFlash(__('Saved successfully', true));
+				#$this->redirect(array('action'=>'index'));
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}

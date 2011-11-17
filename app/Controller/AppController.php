@@ -37,17 +37,15 @@ class AppController extends Controller {
 	var $templateId = '';
 	
 	public function __construct($request = null, $response = null) {
-		# moved this up to var $helpers (not sure why it was here) 10/19/2011 RK
-		#$this->helpers['Html'] =  array('aro' => 'alsdkfjasd'/*$this->_guestsAro()*/);
 		parent::__construct($request, $response);
 		$this->_getHelpers();
 		$this->_getComponents();
 	}
 	
 	
-	/**
-	 * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
-	 */
+/**
+ * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
+ */
 	function redirect($url, $status = null, $exit = true) {
 		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') :
 			return parent::redirect($this->request->data['Success']['redirect'], $status, $exit);
@@ -60,11 +58,8 @@ class AppController extends Controller {
 		endif;
 	}
 	
-	/**
-	 * Handles the variables and functions that fire before all other controllers
-	 * 
-	 * @todo		There is a problem with the acl check, when using a site wide template tag for an element which is not allowed.  It redirects you to the login page like it should, but the login page also has that template tag, so it is an infinite loop that is hard to debug. 
-	 */
+	
+	
 	function beforeFilter() {
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
@@ -156,7 +151,6 @@ class AppController extends Controller {
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 		
-		 
 		$this->_siteTemplate();
 		
 		/**
@@ -333,12 +327,13 @@ class AppController extends Controller {
 		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) :
 			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
+			
+		
 		elseif(!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) :
 			if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) :
 				# this elseif checks to see if the user role has a specific view file
-				$this->layout = 'default';
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
-				# $this->viewPath = $this->Session->read('Auth.User.view').DS.$this->request->params['controller'];
+				
 				$viewPaths = App::path('views');
 				foreach ($viewPaths as $path) :
 					$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'views', DS.'plugins'.DS.$this->request->params['plugin'].DS.'views', $path) : $path;
@@ -348,13 +343,21 @@ class AppController extends Controller {
 						$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.$this->request->params['controller'];
 					endif;
 				endforeach;
-				$this->adminRedirect = true;
-				$dispatcher = new Dispatcher();
-				$result = $dispatcher->dispatch(new CakeRequest(str_replace('admin', '', $this->request->url)), new CakeResponse());
+				
+				unset($this->request->params['prefix']);
+				$this->request->query['url'] = str_replace('admin/', '', $this->request->query['url']);
+				$this->request->url = str_replace('admin/', '', $this->request->url);
+				$this->request->here = str_replace('/admin', '', $this->request->here);
+				if (!empty($this->request->data)) :	debug($this->request->data); else : unset($this->request->data); endif; //weird, but required
+				$Dispatcher = new Dispatcher();
+				$Dispatcher->dispatch($this->request, new CakeResponse(array('charset' => Configure::read('App.encoding'))));
+				
 			else : 
 				$this->Session->setFlash(__('Section access restricted.', true));
 				$this->redirect($this->referer());
-			endif;			
+			endif;	
+		elseif(!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) :
+			$this->layout = 'default';
 		elseif (empty($this->request->params['requested']) && !$this->request->is('ajax') && ($this->request->query['url'] == $checkUrl)) : 
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
@@ -647,24 +650,37 @@ class AppController extends Controller {
 	 * Else modify the template from the view file and set the variables from action via $this->set
 	 */
 	function __sendMail($email = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
-		$this->SwiftMailer->to = $email;
-		$this->SwiftMailer->template = $template;
-
-		$this->SwiftMailer->layout = 'email';
-		$this->SwiftMailer->sendAs = 'html';
-
-		if ($message) :
-			$this->SwiftMailer->content = $message;
-			$message['html'] = $message; 
-			$this->set('message', $message);
-		endif;
 		
-		if (!$subject) : 
-			$subject = 'No Subject';
+		if (defined('__SYSTEM_SMTP')) :
+			extract(unserialize(__SYSTEM_SMTP));
+			$smtp = base64_decode($smtp);
+			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
+			if(parse_ini_string($smtp)) : 
+				$this->SwiftMailer->to = $email;
+				$this->SwiftMailer->template = $template;
+		
+				$this->SwiftMailer->layout = 'email';
+				$this->SwiftMailer->sendAs = 'html';
+		
+				if ($message) :
+					$this->SwiftMailer->content = $message;
+					$message['html'] = $message; 
+					$this->set('message', $message);
+				endif;
+				
+				if (!$subject) : 
+					$subject = 'No Subject';
+				endif;
+			
+	
+				//Set view variables as normal
+				return $this->SwiftMailer->send($template, $subject);
+			else : 
+				return false;
+			endif;
+		else : 
+			return false;
 		endif;
-
-		//Set view variables as normal
-		return $this->SwiftMailer->send($template, $subject);
    }
 		
 
