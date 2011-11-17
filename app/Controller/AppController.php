@@ -333,30 +333,26 @@ class AppController extends Controller {
 			if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) :
 				# this elseif checks to see if the user role has a specific view file
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
-				
-				$viewPaths = App::path('views');
-				foreach ($viewPaths as $path) :
-					$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'views', DS.'plugins'.DS.$this->request->params['plugin'].DS.'views', $path) : $path;
-				endforeach;
-				foreach ($paths as $path) :
-					if (file_exists($path.CakeSession::read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) :
-						$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.$this->request->params['controller'];
-					endif;
-				endforeach;
-				
 				unset($this->request->params['prefix']);
 				$this->request->query['url'] = str_replace('admin/', '', $this->request->query['url']);
 				$this->request->url = str_replace('admin/', '', $this->request->url);
 				$this->request->here = str_replace('/admin', '', $this->request->here);
-				if (!empty($this->request->data)) :	debug($this->request->data); else : unset($this->request->data); endif; //weird, but required
 				$Dispatcher = new Dispatcher();
 				$Dispatcher->dispatch($this->request, new CakeResponse(array('charset' => Configure::read('App.encoding'))));
-				
+				break;
 			else : 
 				$this->Session->setFlash(__('Section access restricted.', true));
 				$this->redirect($this->referer());
 			endif;	
 		elseif(!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) :
+			foreach (App::path('views') as $path) :
+				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'View', DS.'Plugin'.DS.ucfirst($this->request->params['plugin']).DS.'View', $path) : $path;
+			endforeach;
+			foreach ($paths as $path) :
+				if (file_exists($path.CakeSession::read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) :
+					$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.$this->request->params['controller'];
+				endif;
+			endforeach;
 			$this->layout = 'default';
 		elseif (empty($this->request->params['requested']) && !$this->request->is('ajax') && ($this->request->query['url'] == $checkUrl)) : 
 			// this else if makes so that extensions still get parsed
