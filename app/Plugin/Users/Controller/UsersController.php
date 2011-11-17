@@ -304,6 +304,7 @@ class UsersController extends UsersAppController {
 		} else {
 			$this->Session->setFlash('Invalid user');
 		}
+		$this->set('userRoles',  $this->User->UserRole->find('list'));
 	}
 
 	
