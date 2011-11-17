@@ -31,40 +31,42 @@ class AppErrorController extends AppController {
 
 		
     public function handleError($request) {		
-		$Alias = ClassRegistry::init('Alias');
-		if ($request->here == '/') {
-			$request->here = 'home';
-		} else {
-			# seems it was getting over sanitized because dashes were being replaced.  Just converting them back.
-			$request->here = str_replace('&#45;', '-', $request->here);
-		}
-		if (strpos($request->here, '/') === 0) {
-			$request->here = substr($request->here, 1);
-		}
-	
-		$alias = $Alias->find("first", array("conditions" => array( "name" => str_replace('/', '', $request->here))));
-		if(!empty($alias)) :
-			$request->params['controller'] = $alias['Alias']['controller'];
-			$request->params['plugin'] = $alias['Alias']['plugin'];
-			$request->params['action'] = $alias['Alias']['action'];
-			$request->params['pass'][] = $alias['Alias']['value'];
-			$request->url = '/';
-			(!empty($alias['Alias']['plugin']) ? $request->url = $request->url.$alias['Alias']['plugin'].'/' : '');
-			(!empty($alias['Alias']['controller']) ? $request->url = $request->url.$alias['Alias']['controller'].'/' : '');
-			(!empty($alias['Alias']['action']) ? $request->url = $request->url.$alias['Alias']['action'].'/' : '');
-			(!empty($alias['Alias']['value']) ? $request->url = $request->url.$alias['Alias']['value'].'/' : '');
-			$request->query['url'] = substr($request->url, 1, -1);
-			$request->here = substr($request->url, 1, -1);
-			$dispatcher = new Dispatcher();
-			$result = $dispatcher->dispatch($request, new CakeResponse());
-		else :
-			if($this->addPageRedirect($request->url)) : 
-				// error will be redirected if you're the admin
+		if (Configure::read('debug') < 1) : 
+			$Alias = ClassRegistry::init('Alias');
+			if ($request->here == '/') {
+				$request->here = 'home';
+			} else {
+				# seems it was getting over sanitized because dashes were being replaced.  Just converting them back.
+				$request->here = str_replace('&#45;', '-', $request->here);
+			}
+			if (strpos($request->here, '/') === 0) {
+				$request->here = substr($request->here, 1);
+			}
+		
+			$alias = $Alias->find("first", array("conditions" => array( "name" => str_replace('/', '', $request->here))));
+			if(!empty($alias)) :
+				$request->params['controller'] = $alias['Alias']['controller'];
+				$request->params['plugin'] = $alias['Alias']['plugin'];
+				$request->params['action'] = $alias['Alias']['action'];
+				$request->params['pass'][] = $alias['Alias']['value'];
+				$request->url = '/';
+				(!empty($alias['Alias']['plugin']) ? $request->url = $request->url.$alias['Alias']['plugin'].'/' : '');
+				(!empty($alias['Alias']['controller']) ? $request->url = $request->url.$alias['Alias']['controller'].'/' : '');
+				(!empty($alias['Alias']['action']) ? $request->url = $request->url.$alias['Alias']['action'].'/' : '');
+				(!empty($alias['Alias']['value']) ? $request->url = $request->url.$alias['Alias']['value'].'/' : '');
+				$request->query['url'] = substr($request->url, 1, -1);
+				$request->here = substr($request->url, 1, -1);
+				$dispatcher = new Dispatcher();
+				$result = $dispatcher->dispatch($request, new CakeResponse());
 			else :
-				throw new MissingControllerException('Page not found.');
+				if($this->addPageRedirect($request->url)) : 
+					// error will be redirected if you're the admin
+				else :
+					throw new MissingControllerException('Page not found.');
+				endif;
 			endif;
+	        exit;
 		endif;
-        exit;
     }
 
 
