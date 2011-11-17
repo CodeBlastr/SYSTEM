@@ -125,13 +125,13 @@ $(function() {
 	
 	
 	$("#quickNav .menu").toggle(function() {
-		$("#siteSearch").hide();
+		$("#siteSearch").trigger('toggle');
 		$("#siteMenu").slideDown('slow');
 	}, function() {
 		$("#siteMenu").slideUp('slow');
 	});
 	$("#quickNav .search").toggle(function() {
-		$("#siteMenu").hide();
+		$("#siteMenu").trigger('toggle');
 		$("#siteSearch").slideDown('slow');
 	}, function() {
 		$("#siteSearch").slideUp('slow');
