@@ -2,14 +2,15 @@
 // by Henrik Nyh <http://henrik.nyh.se> 2008-02-28.
 // Free to modify and redistribute with credit.
 
+ 
 (function($) {
 
   var trailing_whitespace = true;
 
   $.fn.truncate = function(options) {
-
+	
     var opts = $.extend({}, $.fn.truncate.defaults, options);
-    
+	
     $(this).each(function() {
 
       var content_length = $.trim(squeeze($(this).text())).length;
@@ -22,9 +23,9 @@
 
       truncated_node.insertAfter(full_node);
       
+      findNodeForMore(truncated_node).html(truncated_node.text());
       findNodeForMore(truncated_node).append(' (<a href="#show more content">'+opts.more+'</a>)');
       findNodeForLess(full_node).append(' (<a href="#show less content">'+opts.less+'</a>)');
-      
       truncated_node.find('a:last').click(function() {
         truncated_node.hide('slow'); full_node.show('slow'); return false;
       });
@@ -59,7 +60,8 @@
     });
     return new_node;
   }
-
+	 
+ 
   function truncateText(node, max_length) {
     var text = squeeze(node.data);
     if (trailing_whitespace)  // remove initial whitespace if last text
