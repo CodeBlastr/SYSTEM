@@ -1006,6 +1006,19 @@ div.paging span a {
 #content .comments {
 	font-size: 0.85em;
 }
+#content .comments a.button {
+	margin: 0 0 1em 0;
+	display: block;
+	float: left;
+}
+#content .comments a.button:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
 #content .metaData ul {
 	list-style-type: none;
 	margin: 0;
