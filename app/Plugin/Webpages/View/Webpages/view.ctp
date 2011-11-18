@@ -15,11 +15,7 @@
 
 
 
-<style>
- .contextMenu{
-  display:none;
- }
-</style>
+
 <?php 
 
 // set the contextual menu items      
