@@ -70,16 +70,18 @@ body {
 /* Selection colours (easy to forget) */
 
 ::selection {
-background: rgb(255,255,158);
+	background: #F00;
+	color: #fff;
 }
 ::-moz-selection {
-background: rgb(255,255,158);
+	background: #F00;
+	color: #fff;
 }
 img::selection {
-background: transparent;
+	background: rgb(255,255,158);
 }
 img::-moz-selection {
-background: transparent;
+	background: rgb(255,255,158);
 }
 body {
 	-webkit-tap-highlight-color: rgb(255,255,158);
