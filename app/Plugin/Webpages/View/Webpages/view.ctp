@@ -1,6 +1,6 @@
 <?php $this->set('title_for_layout', $webpage['Webpage']['title']); ?>
 <?php echo $this->Html->meta('keywords', $webpage['Webpage']['keywords'], array('inline' => false)); ?>
-<?php echo $this->Html->meta('description', $webpage['Webpage']['description'], array('inline' => false)); ?>
+<?php echo $this->Html->meta('description', $webpage['Webpage']['description'], array('inline' => false)); ?>  
 
 <?php echo $webpage['Webpage']['content'];  
 
@@ -14,8 +14,15 @@
 
 
 
-<?php
-// set the contextual menu items
+
+<style>
+ .contextMenu{
+  display:none;
+ }
+</style>
+<?php 
+
+// set the contextual menu items      
 echo $this->Element('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Webpages',
@@ -26,4 +33,5 @@ echo $this->Element('context_menu', array('menus' => array(
 			)
 		),
 	)));
+	
 ?>
