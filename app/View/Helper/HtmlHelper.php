@@ -301,38 +301,51 @@ class HtmlHelper extends AppHelper {
 /**
  *   Returns a charset video embed-tag.
  */ 
- 	public function video($videopath , $options = array()) {
-       	
-       $defaultoptions['width']= '640';
-       $defaultoptions['height']= '264';
-       $defaultoptions['title']= 'Video Js';
-       $defaultoptions['preload']= 'auto';
-       $defaultoptions['controls']='controls';
-       $defaultoptions['poster']="http://video-js.zencoder.com/oceans-clip.png";		
-	     $finaloptions=	array_merge($defaultoptions,$options);
-	     echo $this->script('ckeditor/plugins/video_js/video_js');	
-       $videoPlayer='';
-       $videoPlayer.='<div class="video-js-box">';       
-       $videoPlayer.='<video id="example_video_1" class="video-js" width="'.$finaloptions['width'].'" height="'.$finaloptions['height'].'" controls="'.$finaloptions['controls'].'" preload="'.$finaloptions['preload'].'" poster="'.$finaloptions['poster'].'">';         
-        if(is_array($videopath) ){
-            //if video path  param is array 
-                 foreach($videopath as $video){
-                   $videoPlayer.='<source src="'.$video.'" />';
-                 }
-        } else{
-        //if video path param is string 
-         $videoPlayer.='<source src="'.$videopath.'" />'; 
+ 	public function video($videopath, $options = array()) {
+
+            $defaultoptions['width'] = '640';
+            $defaultoptions['height'] = '264';
+            $defaultoptions['title'] = 'Video Js';
+            $defaultoptions['preload'] = 'auto';
+            $defaultoptions['controls'] = 'controls';
+            $defaultoptions['poster'] = 'http://video-js.zencoder.com/oceans-clip.png';
+            
+            $finaloptions = array_merge($defaultoptions, $options);
+            
+            echo $this->script('ckeditor/plugins/video_js/video_js');
+            
+            $videoPlayer = '<div class="video-js-box">'
+                            .'<video id="example_video_1" class="video-js" width="' . $finaloptions['width'] . '" height="' . $finaloptions['height'] . '" controls="' . $finaloptions['controls'] . '" preload="' . $finaloptions['preload'] . '" poster="' . $finaloptions['poster'] . '">';
+            
+            if (is_array($videopath)) {
+                //if video path  param is array 
+                foreach ($videopath as $video) {
+                    $videoPlayer .= '<source src="' . $video . '" />';
+                    
+                    // extract the mp3 or mp4 for flash fallback
+                    $exts = explode("\\", $video);
+                    $n = count($exts)-1;
+                    $ext = strtolower($exts[$n]);
+                    if(in_array($ext, array('mp3', 'mp4'))) $flashFallbackSource = $video;
+                }
+            } else {
+                //if video path param is string 
+                $videoPlayer .= '<source src="' . $videopath . '" />';
+
+                $flashFallbackSource = $videopath;
+            }
+            
+            $videoPlayer .= '<object id="flash_fallback_1" class="vjs-flash-fallback" width="' . $finaloptions['width'] . '" height="' . $finaloptions['height'] . '" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">'
+                            .'<param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" /> <param name="allowfullscreen" value="true" />'
+                            .'<param name="flashvars" value=\'config={"playlist":["' . $finaloptions['poster'] . '", {"url": "' . $flashFallbackSource . '","autoPlay":false,"autoBuffering":true}]}\' /> '
+                            .'<img src="' . $finaloptions['poster'] . '" width="' . $finaloptions['width'] . '" height="' . $finaloptions['height'] . '" alt="Poster Image" title="No video playback capabilities." />'
+                            .'</object>';
+            
+            $videoPlayer .= '</video>';
+            $videoPlayer .= '</div>';
+
+            return $videoPlayer;
         }
-        $videoPlayer.='<object id="flash_fallback_1" class="vjs-flash-fallback" width="640" height="264" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">'; 
-        $videoPlayer.='<param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" /> <param name="allowfullscreen" value="true" />';
-        $videoPlayer.='<param name="flashvars" value=\'config={"playlist":["http://video-js.zencoder.com/oceans-clip.png", {"url": "http://video-js.zencoder.com/oceans-clip.mp4","autoPlay":false,"autoBuffering":true}]}\' /> ';
-       
-        $videoPlayer.='<img src="http://video-js.zencoder.com/oceans-clip.png" width="640" height="264" alt="Poster Image" title="No video playback capabilities." /> </object> </video> ';
-        
-		$videoPlayer .= '</div>';
-       
-       return $videoPlayer; 
-	}
 
 /**
  * Creates an HTML link.
