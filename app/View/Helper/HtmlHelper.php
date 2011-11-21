@@ -323,7 +323,7 @@ class HtmlHelper extends AppHelper {
                     $videoPlayer .= '<source src="' . $video . '" />';
                     
                     // extract the mp3 or mp4 for flash fallback
-                    $exts = explode("\\", $video);
+                    $exts = explode('/', $video);
                     $n = count($exts)-1;
                     $ext = strtolower($exts[$n]);
                     if(in_array($ext, array('mp3', 'mp4'))) $flashFallbackSource = $video;
