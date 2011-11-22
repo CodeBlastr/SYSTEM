@@ -1,4 +1,4 @@
-<?php
+<?php   
 if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php')) :
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php');
 else : 
@@ -21,7 +21,7 @@ if (!defined('SITE_DIR')) {
 if (!defined('CONFIGS')) {
 	define('CONFIGS', null);
 } 
-
+    
 App::build(array(
 	'plugins' => array(
 		ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
