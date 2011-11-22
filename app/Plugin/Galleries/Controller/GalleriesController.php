@@ -8,7 +8,7 @@ class GalleriesController extends GalleriesAppController {
  * Index for gallery.
  * 
  */
-	function index() {
+	function index() { 
 		# see if this gallery 
 		$params['conditions'] = !empty($this->request->params['pass'][0]) && !empty($this->request->params['pass'][1]) ? 
 			array('Gallery.model' => $this->request->params['pass'][0], 'Gallery.foreign_key' => $this->request->params['pass'][1]) : 
