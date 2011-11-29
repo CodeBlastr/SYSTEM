@@ -66,7 +66,7 @@ class AppErrorController extends AppController {
 				endif;
 			endif;
 	        exit;
-		endif;
+		endif;  
     }
 
 
