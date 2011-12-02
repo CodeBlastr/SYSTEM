@@ -102,9 +102,9 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 	
 	
 	function editAreasOn () {
-		$("div[id^='edit_webpage_include']").css({
-				width : $(this).find("div:first-child").width + "px",
-		});
+		//$("div[id^='edit_webpage_include']").css({
+		//		width : $(this).find("div:first-child").width + "px",
+		//});
 		
 		$('#webpage_content').append('<div class="hover_div"></div>');
 		$("div[id^='edit_webpage_include']").append('<div class="hover_div"></div>');
@@ -117,8 +117,8 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 				position : "absolute",
 				top : "0px",
 				left: "0px",
-				width:  "99%",
-				height: "99%"
+				width:  "100%",
+				height: "100%"
         });
 	}
 	
@@ -206,8 +206,8 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 		});
 		
 		$("div[id^='edit_webpage_include']").each(function(index) {
-			var width = $("div", this).first().width();
-			var height = $("div", this).first().height();
+			var width = $(this).parent().width();
+			var height = $(this).parent().height();
 			$(this).width(width);
 			$(this).height(height);
 		});

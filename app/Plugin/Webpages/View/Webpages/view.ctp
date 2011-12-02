@@ -12,10 +12,6 @@
 	<?php // echo $this->CommentWidget->display();?>
 </div> */ ?>
 
-
-
-
-
 <?php 
 
 // set the contextual menu items      
