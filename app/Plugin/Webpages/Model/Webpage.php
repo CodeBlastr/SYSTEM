@@ -194,8 +194,11 @@ class Webpage extends WebpagesAppModel {
 			$webpage2 = $this->find("first", array("conditions" => array( "id" => trim($matches[2][$i])) ) );		
 			if(empty($webpage2) || !is_array($webpage2)) continue;
 			$this->parseIncludedPages ($webpage2, $parents, $action, $userRoleId);
-			if ($webpage['Webpage']['type'] == 'template') $webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $include_container['start'].$webpage2["Webpage"]["content"].$include_container['end'], $webpage["Webpage"]["content"]);
-			else $webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
+			if ($webpage['Webpage']['type'] == 'template') :
+				$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $include_container['start'].$webpage2["Webpage"]["content"].$include_container['end'], $webpage["Webpage"]["content"]);
+			else :
+				$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
+			endif;
 			#$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
 		}
 	}
