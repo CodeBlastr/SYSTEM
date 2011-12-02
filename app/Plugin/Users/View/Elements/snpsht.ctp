@@ -25,6 +25,8 @@
 // it allows a database driven way of configuring elements, and having multiple instances of that configuration.
 	if(!empty($instance) && defined('__ELEMENT_USERS_SNPSHT_'.$instance)) {
 		extract(unserialize(constant('__ELEMENT_USERS_SNPSHT_'.$instance)));
+	} else if (defined('__ELEMENT_USERS_SNPSHT')) {
+		extract(unserialize(__ELEMENT_USERS_SNPSHT));
 	}
 // set up the config vars
 	$useGallery = (!empty($useGallery) ? $useGallery : false);

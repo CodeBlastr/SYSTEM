@@ -218,8 +218,7 @@ if (!empty($defaultTemplate)) {
 		$formCfg['id'] = trim($matches[3][$i]);
 		# removed cache for forms, because you can't set it based on form inputs
 		# $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
-		$formCfg['plugin'] = 'forms';
-		$defaultTemplate["Webpage"]["content"] = str_replace($formMatch, $this->element('forms', $formCfg), $defaultTemplate['Webpage']['content']);
+		$defaultTemplate["Webpage"]["content"] = str_replace($formMatch, $this->element('forms', $formCfg, array('plugin' => 'forms')), $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
 	

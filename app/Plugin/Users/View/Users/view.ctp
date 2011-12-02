@@ -1,10 +1,15 @@
 <div id="users-view" class="users view">
   <div id="user-information">
-    <?php echo $this->element('snpsht', array('useGallery' => true, 'userId' => $user['User']['id'], 'thumbSize' => 'medium', 'thumbLink' => 'default'));  ?>
     <h2><?php echo $user['User']['first_name'] . ' ' . $user['User']['last_name'] ?></h2>
+    <?php echo $this->element('snpsht', array('useGallery' => true, 'userId' => $user['User']['id'], 'thumbSize' => 'medium', 'thumbLink' => 'default'));  ?>
   </div>
 </div>
-<div id="follow action">
+<div class="follow action">
+  <?php 
+	foreach ($followedUsers as $followedUser) {
+		echo $this->Html->link('Friend', array('view', $followedUser['UserFollower']['user_id']));
+	}
+  ?>
   <?php if($does_follow):?>
   <p>
     <?php echo __('You currently follow this user.'); ?>
@@ -43,19 +48,14 @@ if($is_self):?>
     <td><?php echo $this->Html->link($w['Owner']['username'] , array('plugin'=>'users','controller'=>'users' , 'action'=>'view' , 'user_id'=>$w['Owner']['id']))?></td>
   </tr>
   <?php endforeach;?>
-  <?php endif;?>
 </table>
+<?php endif;?>
 <?php 
 if($is_self):
 	$messageBoardLink = $this->Html->link('View Message Board' , array('plugin'=>'messages' ,'controller'=>'messages', 'action'=>'index'), array('checkPermissions' => true));
 else:
 	$messageBoardLink = $this->Html->link('Send a Message To This User' , array('plugin'=>'messages', 'controller'=>'messages' , 'action'=>'add' , $user['User']['username']), array('checkPermissions' => true));
 endif;
-?>
-<?php 
-foreach ($followedUsers as $followedUser) {
-	echo '<a href="/users/users/view/'.$followedUser['UserFollower']['user_id'].'">Friend</a><br>';
-}
 ?>
 <?php 
 /*
