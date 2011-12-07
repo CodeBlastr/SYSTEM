@@ -26,7 +26,7 @@
 	  <?php foreach($userGroup['User'] as $user):?>
 		  <tr>
 		    <td><?php echo $this->Element('thumb', array('model' => 'User', 'foreignKey' => $user['id'], 
-'thumbSize' => 'small', 'thumbLink' => '#'), array('plugin' => 'galleries')); echo $this->Html->link($user['full_name'] . ' (' . $user['username'] . ')', array('plugin'=>'users','controller' => 'users' , 'action'=>'view' , $user['id']))?></td>
+'thumbSize' => 'small', 'thumbLink' => '/users/users/view/'.$user['id']), array('plugin' => 'galleries')); echo $this->Html->link($user['full_name'] . ' (' . $user['username'] . ')', array('plugin'=>'users','controller' => 'users' , 'action'=>'view' , $user['id']))?></td>
 		    <td>	
 	  			<?php if($user['UsersUserGroup']['is_moderator'] == 1):?>
 		    		Moderator
