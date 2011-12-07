@@ -3,15 +3,15 @@ class UserGroup extends UsersAppModel {
 	var $name = 'UserGroup';
 	var $displayField = 'title';
 	
-	#var $hasAndBelongsToMany = array(
-    #    'User' =>
-    #        array(
-    #            'className'              => 'Users.User',
-    #            'joinTable'              => 'users_user_groups',
-    #            'foreignKey'             => 'user_group_id',
-    #            'associationForeignKey'  => 'user_id'
-    #        )
-    #);
+	var $hasAndBelongsToMany = array(
+        'User' =>
+            array(
+                'className'              => 'Users.User',
+                'joinTable'              => 'users_user_groups',
+                'foreignKey'             => 'user_group_id',
+                'associationForeignKey'  => 'user_id'
+            )
+    );
     
     var $belongsTo = array(
 		'Creator' => array(
@@ -24,10 +24,10 @@ class UserGroup extends UsersAppModel {
 	);
 	
 	var $hasMany = array(
-		'User'=>array(
-			'className'     => 'Users.User',
-            'foreignKey'    => 'user_id'
-		),
+		#'User'=>array(
+		#	'className'     => 'Users.User',
+        #    'foreignKey'    => 'user_id'
+		#),
 		'UsersUserGroup'=>array(
 			'className'     => 'Users.UsersUserGroup',
             'foreignKey'    => 'user_group_id'
