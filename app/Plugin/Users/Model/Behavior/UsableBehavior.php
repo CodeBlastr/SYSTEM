@@ -6,18 +6,18 @@ class UsableBehavior extends ModelBehavior {
 	var $defaultRole = '';
 	var $userData = array();
 
-	function setup(&$model, $settings = array()) {
+	function setup(&$Model, $settings = array()) {
 		$this->defaultRole = !empty($settings['defaultRole']) ? $settings['defaultRole'] : null;
 	}
 
-	function beforeSave(&$model) {
+	function beforeSave(&$Model) {
 		#remove habtm user data and give it to the afterSave() function
-		if (!empty($model->data['User']['User'])) :
-			$this->userData = $model->data;
-			unset($model->data['User']['User']);
+		if (!empty($Model->data['User']['User'])) :
+			$this->userData = $Model->data;
+			unset($Model->data['User']['User']);
 		endif;
 		
-		$model->data = $this->getChildContacts($model);
+		$Model->data = $this->getChildContacts($Model);
 		
 		return true;
 	}
@@ -25,7 +25,7 @@ class UsableBehavior extends ModelBehavior {
 	 * Update the find methods so that we check against the used table that the current user is part of this item being searched.
 	 * @todo	I'm sure we will need some checks and stuff added to this.  (Right now this Project is Used, so make sure Project works if you change this function.)
 	 */
-	function beforeFind(&$model, $queryData) {
+	function beforeFind(&$Model, $queryData) {
 		$userRole = CakeSession::read('Auth.User.user_role_id');
 		$userId = CakeSession::read('Auth.User.id');
 		//if ($userRole != 1) : 
@@ -38,8 +38,8 @@ class UsableBehavior extends ModelBehavior {
 				'alias' => 'Used',
 				'type' => 'INNER',
 				'conditions' => array(
-				"Used.foreign_key = {$model->alias}.id",
-				"Used.model = '{$model->alias}'",
+				"Used.foreign_key = {$Model->alias}.id",
+				"Used.model = '{$Model->alias}'",
 				$userQuery,
 				),
 			));
@@ -118,22 +118,22 @@ class UsableBehavior extends ModelBehavior {
  * finds used objects based on the userId specified and model asking for this function.
  * uses standard find() parameters after userId
  */
-	function findUsedObjects(&$model, $userId = null, $type = 'list', $params = array()) {
+	function findUsedObjects(&$Model, $userId = null, $type = 'list', $params = array()) {
 		$joins = array('joins' => array(array(
 			'table' => 'used',
 			'alias' => 'Used',
 			'type' => 'INNER',
 			'conditions' => array(
 				"Used.user_id = {$userId}",
-				"Used.model = '{$model->alias}'",
-				"Used.foreign_key = {$model->alias}.id",
+				"Used.model = '{$Model->alias}'",
+				"Used.foreign_key = {$Model->alias}.id",
 				),
 			)));
 		# note : Last changed this based on adding a user here : /projects/projects/people/{id}
 		# make sure it still works there if changed.
 		$params = !empty($params) ? array_merge($joins, $params) : $joins;
 		# we can do a simple find with the model, because beforeFind of usable limits the results by user
-		$results = $model->find($type, $params);
+		$results = $Model->find($type, $params);
 		if (!empty($results)) : 
 			return $results;
 		else : 
@@ -146,19 +146,29 @@ class UsableBehavior extends ModelBehavior {
  * finds users based on the foreign_key specified and model asking for this function.
  * uses standard find() parameters after foreignKey
  */
-	function findUsedUsers(&$model, $foreignKey = null, $type = 'list', $params = null) {
+	function findUsedUsers(&$Model, $foreignKey = null, $type = 'list', $params = null) {
 		$joins = array('joins' => array(array(
 			'table' => 'used',
 			'alias' => 'Used',
 			'type' => 'INNER',
 			'conditions' => array(
 				"Used.foreign_key = '{$foreignKey}'",
-				"Used.model = '{$model->alias}'",
+				"Used.model = '{$Model->alias}'",
 				"Used.user_id = User.id",
 				),
 			)));
 		$params = !empty($params) ? array_merge($joins, $params) : $joins;
-		$results = $model->Used->User->find($type, $params);
+		
+		$Model->bindModel(array(
+			'hasMany' => array(
+				'Used' => array(
+					'className' => 'Users.Used',
+					'foreignKey' => 'foreign_key',
+					),
+				),
+			));
+		
+		$results = $Model->Used->User->find($type, $params);
 		if (!empty($results)) : 
 			return $results;
 		else : 
@@ -170,14 +180,14 @@ class UsableBehavior extends ModelBehavior {
 /** 
  * Add a used user to an object
  */
-	function addUsedUser(&$model, $data) {
+	function addUsedUser(&$Model, $data) {
 		# do a check to see if the user is already a part of this object (we don't want duplicates)
-		$objects = $this->findUsedObjects($model, $data['Used']['user_id'], 'all', array('conditions' => array('Used.foreign_key' => $data['Used']['foreign_key']), 'fields' => 'id'));
-		$objectIds = Set::extract("/{$model->alias}/id", $objects);
+		$objects = $this->findUsedObjects($Model, $data['Used']['user_id'], 'all', array('conditions' => array('Used.foreign_key' => $data['Used']['foreign_key']), 'fields' => 'id'));
+		$objectIds = Set::extract("/{$Model->alias}/id", $objects);
 		if (array_search($data['Used']['foreign_key'], $objectIds)) : 
 			throw new Exception('User is already involved.');
 		else : 
-			if ($model->Used->saveAll($data)) : 
+			if ($Model->Used->saveAll($data)) : 
 				return true;
 			else : 
 				throw new Exception('User add failed.');
@@ -189,8 +199,8 @@ class UsableBehavior extends ModelBehavior {
 	/** 
 	 * Remove used users from the object
 	 */
-	function removeUsedUser(&$model, $userId = null, $foreignKey = null) {
-		if ($model->Used->deleteAll(array('Used.user_id' => $userId, 'Used.foreign_key' => $foreignKey))) : 
+	function removeUsedUser(&$Model, $userId = null, $foreignKey = null) {
+		if ($Model->Used->deleteAll(array('Used.user_id' => $userId, 'Used.foreign_key' => $foreignKey))) : 
 			return true;
 		else : 
 			return false;
@@ -201,13 +211,13 @@ class UsableBehavior extends ModelBehavior {
 	/**
 	 * Find child contacts of a parent contact and add them to the data user list
 	 */
-	function getChildContacts(&$model) {
-		if (!empty($model->data[$model->alias]['contact_id']) && $model->data[$model->alias]['contact_all_access']) : 
+	function getChildContacts(&$Model) {
+		if (!empty($Model->data[$Model->alias]['contact_id']) && $Model->data[$Model->alias]['contact_all_access']) : 
 			# add all of the companies people to the used table
 			# note, if the model has contact_id, then it should belongTo Contact
-			$contacts = $model->Contact->Employer->find('first', array(
+			$contacts = $Model->Contact->Employer->find('first', array(
 				'conditions' => array(
-					'Employer.id' => $model->data[$model->alias]['contact_id'],
+					'Employer.id' => $Model->data[$Model->alias]['contact_id'],
 					),
 				'contain' => array(
 					'Employee' => array(
@@ -225,13 +235,13 @@ class UsableBehavior extends ModelBehavior {
 		if (!empty($users)) :
 			$i=0;
 			foreach ($users as $user) : 
-				$model->data['User'][$i]['user_id'] = $user['id'];
-				$model->data['User'][$i]['model'] = $model->name;
-				$model->data['User'][$i]['role'] = $this->defaultRole; // temporary, until we start doing real acl within systems
+				$Model->data['User'][$i]['user_id'] = $user['id'];
+				$Model->data['User'][$i]['model'] = $Model->name;
+				$Model->data['User'][$i]['role'] = $this->defaultRole; // temporary, until we start doing real acl within systems
 				$i++;
 			endforeach;
 		endif;
-		return $model->data;
+		return $Model->data;
 	}
 	
 }
