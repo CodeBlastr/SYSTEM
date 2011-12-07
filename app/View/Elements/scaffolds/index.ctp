@@ -87,7 +87,7 @@ foreach ($data as $dat):
             <ul class="drop">
               <?php if(!empty($actions) && is_array($actions)) : foreach ($actions as $action) : ?>
               <li>
-                <?php $patterns = array('/\%7B/', '/\%7D/', '/\[/', '/\]/'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.preg_replace($patterns, $replaces, $action).'\';'; eval(urldecode($action)); ?>
+                <?php $patterns = array('{', '}', '[', ']'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.str_replace($patterns, $replaces, urldecode($action)).'\';'; eval($action); ?>
               </li>
               <?php endforeach; else: ?>
               <li><?php echo $this->Html->link('View', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
