@@ -15,21 +15,23 @@ class UserGroupsController extends UsersAppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		
-		$pg_data  = $this->UserGroup->find('first', array(
+		$pgData  = $this->UserGroup->find('first', array(
 			'conditions'=>array(
-				'UserGroup.id'=>$id
+				'UserGroup.id' => $id
 				),
 			'contain'=>array(
 				'Creator'=>array(
 					'fields'=>array(
+						'id',
 						'username',
-						'id'	
+						'full_name',
 						)
 					), 
 				'User'=>array(
 					'fields'=>array(
 						'id',
-						'username'
+						'username',
+						'full_name',
 						)
 					),
 				'UserGroupWallPost' => array(
@@ -37,20 +39,17 @@ class UserGroupsController extends UsersAppController {
 						),
 				)
 			));
-		$this->log($pg_data);
-		$this->set('userGroup', $pg_data);
-		
-		$this->set('uid' , $this->Auth->user('id'));
+		$this->set('userGroup', $pgData);
+		$this->set('userId' , $this->Session->read('Auth.User.id'));
 		// get the users user role record to have info about group status
-		$user_data = $this->UserGroup->UsersUserGroup->find('first' , array(
-										'conditions'=>array(
-											'user_id'=>$this->Auth->user('id'),
-											'user_group_id'=>$pg_data['UserGroup']['id']
-										),
-										'contain'=>array()
-		));
-		
-		$this->set('u_dat' , $user_data);
+		$userGroups = $this->UserGroup->UsersUserGroup->find('first' , array(
+			'conditions' => array(
+				'user_id' => $this->Session->read('Auth.User.id'),
+				'user_group_id' => $pgData['UserGroup']['id']
+				),
+			'contain' => array()
+			));
+		$this->set('u_dat' , $userGroups);
 	}
 
 	function add() {
