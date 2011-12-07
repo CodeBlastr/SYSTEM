@@ -42,8 +42,7 @@ class AppErrorController extends AppController {
 			if (strpos($request->here, '/') === 0) {
 				$request->here = substr($request->here, 1);
 			}
-		
-			$alias = $Alias->find("first", array("conditions" => array( "name" => str_replace('/', '', $request->here))));
+			$alias = $Alias->find("first", array("conditions" => array( "name" => str_replace('/', '', urldecode($request->here)))));
 			if(!empty($alias)) :
 				$request->params['controller'] = $alias['Alias']['controller'];
 				$request->params['plugin'] = $alias['Alias']['plugin'];
