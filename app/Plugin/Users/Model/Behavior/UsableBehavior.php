@@ -114,6 +114,10 @@ class UsableBehavior extends ModelBehavior {
 	}
 	
 	
+/**
+ * finds used objects based on the userId specified and model asking for this function.
+ * uses standard find() parameters after userId
+ */
 	function findUsedObjects(&$model, $userId = null, $type = 'list', $params = array()) {
 		$joins = array('joins' => array(array(
 			'table' => 'used',
@@ -138,6 +142,10 @@ class UsableBehavior extends ModelBehavior {
 	}
 	
 	
+/**
+ * finds users based on the foreign_key specified and model asking for this function.
+ * uses standard find() parameters after foreignKey
+ */
 	function findUsedUsers(&$model, $foreignKey = null, $type = 'list', $params = null) {
 		$joins = array('joins' => array(array(
 			'table' => 'used',
@@ -158,9 +166,10 @@ class UsableBehavior extends ModelBehavior {
 		endif;
 	}
 	
-	/** 
-	 * Add a used user to an object
-	 */
+	
+/** 
+ * Add a used user to an object
+ */
 	function addUsedUser(&$model, $data) {
 		# do a check to see if the user is already a part of this object (we don't want duplicates)
 		$objects = $this->findUsedObjects($model, $data['Used']['user_id'], 'all', array('conditions' => array('Used.foreign_key' => $data['Used']['foreign_key']), 'fields' => 'id'));

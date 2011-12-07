@@ -107,13 +107,13 @@ class User extends AppModel {
 		);
 	
 	public $hasAndBelongsToMany = array(
-       # 'Users.UserGroup' =>
-       #     array(
-       #         'className'              => 'Users.UserGroup',
-       #         'joinTable'              => 'users_user_groups',
-       #         'foreignKey'             => 'user_group_id',
-       #         'associationForeignKey'  => 'user_id'
-       #     ),
+        'UsersUserGroup' =>
+            array(
+                'className' => 'Users.UsersUserGroup',
+                'joinTable' => 'users_user_groups',
+                'foreignKey' => 'user_group_id',
+                'associationForeignKey' => 'user_id'
+            ),
   	  );
 	
 	protected function _comparePassword() {

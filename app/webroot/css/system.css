@@ -125,7 +125,13 @@ input[type=radio], input[type=checkbox] {
 /* Very light default form formatting to make new sites easier */
 label {
 	display: block;
+	padding: 0.2em 0 0 0;
 }
+input[type=radio], input[type=checkbox] {
+	float: left;
+	clear: left;
+}
+
 
 
 /* the checkout page is two column by default */
@@ -137,6 +143,9 @@ label {
 	float: right;
 	width: 48%;
 }
+
+
+
 
 
 /* admin navigation */
