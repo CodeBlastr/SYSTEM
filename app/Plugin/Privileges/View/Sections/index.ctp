@@ -66,8 +66,20 @@
 <?php endforeach;?>
 </div>
 
-<?php echo $this->Form->create('Section', array('action' => 'add'));?>
-<?php echo $this->Form->end('Update ALL Sections and Actions');?>
+
+<?php
+// set the contextual menu items
+echo $this->Element('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Actions',
+		'items' => array(
+			$this->Html->link(__('Run Aco Sync', true), array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'aco_sync')),
+			$this->Html->link(__('Clear Sync Session', true), array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'clear_session')),
+			)
+		),
+	)));
+?>
+
 <script type="text/javascript">
 $("form").submit(function() {
 	window.confirm("Warning, this could take more than 20 minutes.");
