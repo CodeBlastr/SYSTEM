@@ -14,32 +14,32 @@ class User extends AppModel {
 				'allowEmpty' => false,
 				'message' => 'Please enter a value for password',
 				'required' => true
-			),
+				),
 			'comparePassword' => array(
 				'rule' => array('_comparePassword'),
 				'allowEmpty' => false,
 				'message' => 'Password, and confirm password fields do not match.',
 				'required' => true
+				),
 			),
-		),
 		'username' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
 				'message' => 'Please enter a value for username',
 				'required' => true
-			),
+				),
 			'isUnique' => array(
 				'rule' => 'isUnique',
 				'message' => 'This username belongs to someone else. Please try again.'
+				),
 			),
-		),
 		'email' => array(
 			'emailRequired' => array(
 				'rule' => array('_emailRequired'),
 				'message' => 'Email required for registration, Please try again.'
+				),
 			),
-		),
-	);
+		);
 
 	// this seems to break things because of nesting if I put Users.UserRole for the className
 	public $belongsTo = array(
@@ -49,8 +49,8 @@ class User extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
-	);
+			)
+		);
 
 	public $hasMany = array(
 		'Gallery' => array(
@@ -130,7 +130,7 @@ class User extends AppModel {
 	}
 	
 	protected function _emailRequired() {
-		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION') && empty($this->request->data['User']['email'])) {
+		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION') && empty($this->data['User']['email'])) {
 			return false;
 		} else {
 			return true;
