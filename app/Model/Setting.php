@@ -2,7 +2,7 @@
 /**
  * Settings Model
  *
- * This database table contains all of the settings for the site, but its important to note that it is never called on by the application.  Instead every time you create or edit a setting, it updates a static file in the config folder called settings.ini.  This is done to make performance fast, even with hundreds of settings. 
+ * This database table contains all of the settings for the site, but its important to note that it is never called on by the application.  Instead every time you create or edit a setting, it updates a static file in the config folder called settings.ini.  This is done to make performance fast, even with hundreds of settings.
  *
  * PHP versions 5
  *
@@ -18,21 +18,21 @@
  * @subpackage    zuha.app.models
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
- * @todo		  Make it so that we list all of the settings available, and only if they have a value do we write it to the ini file. 
+ * @todo		  Make it so that we list all of the settings available, and only if they have a value do we write it to the ini file.
  */
 class Setting extends AppModel {
 
 	var $name = 'Setting';
 	// instead of storing available settings in a database we store all of the available settings here
 	var $names = array();
-		
-	
+
+
 	function __construct($id = false, $table = null, $ds = null) {
     	parent::__construct($id, $table, $ds);
 	    $this->virtualFields['displayName'] = sprintf('CONCAT(%s.type, " ", %s.name)', $this->alias, $this->alias);
 		$this->displayField = 'displayName';
-		
-		
+
+
 		$this->names = array(
 				  'System' => array(
 						array(
@@ -124,7 +124,7 @@ class Setting extends AppModel {
 						array(
 							'name' => 'SHIPPING_FEDEX_DEFAULT_WEIGHT',
 							'description' => 'Defines the shipping fedex default weight if the weight is not givven for item for the site.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'2.0',
-							),				
+							),
 						array(
 							'name' => 'FEDEX',
 							'description' => 'Define Enabled Shipping Service options the following variable defines the options which should be display	in the dropdown of shipping type for the app.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'GROUNDHOMEDELIVERY = STANDARD'.PHP_EOL.'INTERNATIONALFIRST = "INTERNATIONAL FLAT FEE"'.PHP_EOL.'FEDEX1DAYFREIGHT = "NEXT DAY"',
@@ -182,8 +182,8 @@ class Setting extends AppModel {
 						array(
 							'name' => 'DEFAULT_TEMPLATE_ID',
 							'description' => 'Defines the settings for default site templates. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
-							),		
-						),	
+							),
+						),
 				  'Reports' => array(
 						array(
 							'name' => 'ANALYTICS',
@@ -206,7 +206,7 @@ class Setting extends AppModel {
 						),
 				  'Gallery' => array(
 						array(
-							'name' => 'DEFAULT_TYPE', 
+							'name' => 'DEFAULT_TYPE',
 							'description' => 'Defines the type of gallery used if no other is specified.'.PHP_EOL.PHP_EOL.'Example value: '.PHP_EOL.'gallerific',
 							),
 						array(
@@ -249,6 +249,10 @@ class Setting extends AppModel {
 							'description' => 'Defines setting variables for the latest blog posts module.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'moduleTitle = "My Custom Title"'.PHP_EOL.'numberOfPosts = 5'.PHP_EOL.'blogID = 1',
 							),
 						),
+                                                array(
+                                                        'name' => 'MEDIA_SORTED',
+                                                        'description' => 'Defines settings for the Media Sorted module.'.PHP_EOL.'The Media Sorted module can return a UL of any number of results of Media of either Type, sorted ASC or DESC, based on any field in the Media table.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'mediaType = "video"'.PHP_EOL.'field = "rating"'.PHP_EOL.'sort = "DESC"'.PHP_EOL.'numberOfResults = 5',
+                                                ),
 				  'Users' => array(
 						array(
 							'name' => 'PAID_EXPIRED_ROLE_ID',
@@ -270,10 +274,10 @@ class Setting extends AppModel {
 							'name' => 'CREDITS_PER_PRICE_UNIT',
 							'description' => 'Defines setting variables for credits given to user on purchase of credits.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'5',
 							),
-						),		
+						),
 				  );
 	}
-	
+
 /**
  * Handles the saving of settings data to the settings.ini file
  *
@@ -295,8 +299,8 @@ class Setting extends AppModel {
 			}
 		}
 	}
-	
-	
+
+
 /**
  * This function sets up the data from the settings table so that it will write a whole new file each time a setting is saved.
  *
@@ -318,11 +322,11 @@ class Setting extends AppModel {
 				$writeData .= PHP_EOL;
 			}
 		}
-		
+
 		$writeData .= !empty($holdSettings) ? $this->finishIniData($holdSettings) : '';
 		return $writeData;
 	}
-	
+
 /**
  * We need to make sure that ini sections appear after all straight values in the ini file
  */
@@ -338,15 +342,15 @@ class Setting extends AppModel {
 		}
 		return $writeData;
 	}
-	
-	
+
+
 /**
  * This function sets up the data from the settings table so that it will write a whole new file each time a setting is saved.
  *
  * return {string}		A string of data used to write to the settings.ini file.
  */
 	function writeSettingsIniData() {
-		# move this inside of the save fi statement 
+		# move this inside of the save fi statement
 		App::uses('File', 'Utility');
 		$file = new File(CONFIGS.'settings.ini');
 		#$file->path = CONFIGS.'settings.ini';
@@ -361,15 +365,15 @@ class Setting extends AppModel {
 			return false;
 		}
 	}
-	
+
 
 /**
- * This function writes the defaults.ini file, assuming that it is because the settings.ini has been fully upgraded to the latest version. 
+ * This function writes the defaults.ini file, assuming that it is because the settings.ini has been fully upgraded to the latest version.
  *
  * return {string}		A string of data used to write to the settings.ini file.
  */
 	function writeDefaultsIniData() {
-		# move this inside of the save fi statement 
+		# move this inside of the save fi statement
 		App::uses('File', 'Utility');
 		$file = new File(CONFIGS.'defaults.ini');
 		#$file->path = CONFIGS.'settings.ini';
@@ -380,15 +384,15 @@ class Setting extends AppModel {
 			return false;
 		}
 	}
-	
-	
+
+
 /**
  * Checks whether the setting already exists and cleans the data array if it does.
  * This is used mainly by outside of the model functions which don't know if the Setting exists or not.
  *
  * @param {array}		An array of Setting data
  */
-	function _cleanSettingData($data, $append = false){		
+	function _cleanSettingData($data, $append = false){
 		# see if the setting already exists
 		$setting = $this->find('first', array(
 			'conditions' => array(
@@ -400,28 +404,28 @@ class Setting extends AppModel {
 			# if it does, then set the id, so that we over write instead of creating a new setting
 			$data['Setting']['id'] = $setting['Setting']['id'];
 		}
-		
+
 		if (!empty($append) && !empty($setting)) {
 			$data['Setting']['value'] = $setting['Setting']['value'].PHP_EOL.$data['Setting']['value'];
 		}
-		
-		// some values need to be encrypted.  We do that here (@todo put this in its own two functions.  One for "encode" function, and one for which settings should be encoded, so that we can specify all settings which need encryption, and reuse this instead of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well. 
+
+		// some values need to be encrypted.  We do that here (@todo put this in its own two functions.  One for "encode" function, and one for which settings should be encoded, so that we can specify all settings which need encryption, and reuse this instead of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well.
 		if ($data['Setting']['name'] == 'SMTP' && !parse_ini_string($data['Setting']['name'])) :
 			$data['Setting']['value'] = 'smtp = "'.base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'))).'"';
 			#$data['Setting']['value'] = 'smtp = "'.base64_encode(gzcompress($data['Setting']['value'])).'"';
 			#$data['Setting']['value'] = base64_decode($data['Setting']['value']);
 			#$data['Setting']['value'] = Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'));
 		endif;
-		
-		if (!empty($data['Query']) && $data['Setting']['name'] == 'ZUHA_DB_VERSION') : 
+
+		if (!empty($data['Query']) && $data['Setting']['name'] == 'ZUHA_DB_VERSION') :
 			$data['Setting']['value'] =  $data['Setting']['value'] + 0.0001;
 		endif;
-		
+
 		return $data;
 	}
-	
-	
-	/** 
+
+
+	/**
 	 * All of the system settings possible belong here.
 	 *
 	 * @todo 	We need to do a much better grouping of these setting names. Settings which need to be set together should not have different constants used.  Instead they should have different values which are sub values to the constant.
@@ -431,21 +435,21 @@ class Setting extends AppModel {
 			#$preFix = enum($typeName);
 			return $this->names[$typeName];
 		}
-	
+
 		/* This is a really helpful piece of code, but I don't know where to put it for reuse
-		 * because the $this part doesn't work in global.php.  I mean I know we could pass the 
+		 * because the $this part doesn't work in global.php.  I mean I know we could pass the
 		 * model over to it and import, I just didn't have time today.
 		 * It prints out the last query run.
    		$dbo = $this->getDatasource();
 	    $logs = $dbo->_queriesLog;
     	debug(end($logs)); */
 	}
-	
-	
+
+
 	/**
 	 * Return the description for a particular setting
 	 *
-	 * @param {string}		A string of the setting type 
+	 * @param {string}		A string of the setting type
 	 * @param {string}		A string containing the setting name
 	 */
 	function getDescription($typeName, $name) {
@@ -456,13 +460,13 @@ class Setting extends AppModel {
 		}
 		return $description;
 	}
-	
-	
+
+
 	function types() {
 		foreach ($this->names as $key => $value) :
 			$types[$key] = $key;
 		endforeach;
-		
+
 		return $types;
 	}
 }
