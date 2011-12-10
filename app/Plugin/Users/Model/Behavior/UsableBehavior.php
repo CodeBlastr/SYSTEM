@@ -1,14 +1,18 @@
 <?php
 class UsableBehavior extends ModelBehavior {
 
-	var $model = '';
-	var $foreignKey = '';
-	var $defaultRole = '';
-	var $userData = array();
+	public $model = '';
+	public $foreignKey = '';
+	public $defaultRole = '';
+	public $userData = array();
+	public $superAdminRoleId = 1;
+
 
 	function setup(&$Model, $settings = array()) {
 		$this->defaultRole = !empty($settings['defaultRole']) ? $settings['defaultRole'] : null;
+		$this->superAdminRoleId = defined('__USERS_SUPER_ADMIN_ROLE_ID') ? __USERS_SUPER_ADMIN_ROLE_ID : $this->superAdminRoleId;
 	}
+
 
 	function beforeSave(&$Model) {
 		#remove habtm user data and give it to the afterSave() function
@@ -21,35 +25,104 @@ class UsableBehavior extends ModelBehavior {
 		
 		return true;
 	}
-	/**
-	 * Update the find methods so that we check against the used table that the current user is part of this item being searched.
-	 * @todo	I'm sure we will need some checks and stuff added to this.  (Right now this Project is Used, so make sure Project works if you change this function.)
-	 */
+	
+	
+/**
+ * Update the find methods so that we check against the used table that the current user is part of this item being searched.
+ *
+ * @todo	Make it so that if a record has no used record that we don't use usable at all in the beforeFind.  (ie. its public)
+ * @todo	I'm semi-sure that the big query this makes could be optimized better.  An OR and a NOT IN in one query isn't exactly high performance.   But after 9 hours coming up with that we'll leave optimization for another day. 
+ */
 	function beforeFind(&$Model, $queryData) {
 		$userRole = CakeSession::read('Auth.User.user_role_id');
 		$userId = CakeSession::read('Auth.User.id');
-		//if ($userRole != 1) : 
-			// temporary until we find a better way
-			# this allows you to bypass the logged in user check (nocheck should equal the user id)
-			$userQuery = !empty($queryData['nocheck']) ? "Used.user_id = {$queryData['nocheck']}" : "Used.user_id = {$userId}";
+		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/) : 
+			/*# this allows you to bypass the logged in user check (nocheck should equal the user id)
+			$userQuery = !empty($queryData['nocheck']) ? "Used.user_id = '{$queryData['nocheck']}'" : "Used.user_id = '{$userId}'";
 			# output the new query
 			$queryData['joins'] = array(array(
 				'table' => 'used',
 				'alias' => 'Used',
-				'type' => 'INNER',
+				'type' => 'LEFT',
 				'conditions' => array(
-				"Used.foreign_key = {$Model->alias}.id",
-				"Used.model = '{$Model->alias}'",
-				$userQuery,
+					"Used.foreign_key = {$Model->alias}.id",
+					"Used.model = '{$Model->alias}'",
+					$userQuery,
 				),
-			));
-		//endif;
+			));*/ // left for reference as its a pretty cool query
+			$Dbo = $Model->getDataSource();
+			
+			# First find users with access
+			$subQuery = $Dbo->buildStatement(array(
+				//'fields' => array('`User2`.`id`'),
+				'fields' => array('Used.foreign_key'),
+				'table' => 'used',
+				'alias' => 'Used',
+				'limit' => null,
+				'offset' => null,
+				'joins' => array(),
+				'conditions' => array(
+					'Used.model' => "{$Model->alias}",
+					'Used.user_id' => $userId,
+					),
+				'order' => null,
+				'group' => null
+				), $Model);
+			$subQuery = "`{$Model->alias}`.`id` IN (" . $subQuery . ")";
+			$subQueryExpression = $Dbo->expression($subQuery);
+			
+			
+			# First model records that aren't accessed controlled
+			$subQuery2 = $Dbo->buildStatement(array(
+				//'fields' => array('`User2`.`id`'),
+				'fields' => array('Used.foreign_key'),
+				'table' => 'used',
+				'alias' => 'Used',
+				'limit' => null,
+				'offset' => null,
+				'joins' => array(),
+				'conditions' => array(
+					'Used.model' => "{$Model->alias}",
+					),
+				'order' => null,
+				'group' => null
+				), $Model);
+			$subQuery2 = "`{$Model->alias}`.`id` NOT IN (" . $subQuery2 . ")";
+			$subQueryExpression2 = $Dbo->expression($subQuery2);
+			
+			
+			
+			
+			$queryData['conditions'][]['OR'] = array('('.$subQueryExpression->value.')', '('.$subQueryExpression2->value.')'); 
+			/* Example of the query we're running here.
+			SELECT `Project`.`id`
+			FROM `projects` AS `Project` 
+			WHERE `Project`.`is_archived` = '0' 
+			AND (
+				 ((
+				 	`Project`.`id` IN (
+						SELECT `Used`.`foreign_key` 
+						FROM used AS Used 
+						WHERE `Used`.`model` = 'Project' 
+						AND `Used`.`user_id` = 1 )
+				 )) OR ((
+					`Project`.`id` NOT IN (
+						SELECT `Used`.`foreign_key` 
+						FROM used AS Used 
+						WHERE `Used`.`model` = 'Project' )
+				 ))
+				) 
+			LIMIT 25
+			*/		
+		endif;		
+		
 		return $queryData;
 	}
 	
-	/**
-	 * Callback used to save related users, into the used table, with the proper relationship.
-	 */
+	
+/**
+ * Callback used to save related users, into the used table, with the proper relationship.
+ */
 	function afterSave(&$Model, $created) {
 		# get current users using, so that we can merge and keep duplicates out later
 		$currentUsers = $this->findUsedUsers($Model, $foreignKey = $Model->data[$Model->alias]['id'], $type = 'all', array('fields' => 'id'));
@@ -196,9 +269,9 @@ class UsableBehavior extends ModelBehavior {
 	}
 	
 	
-	/** 
-	 * Remove used users from the object
-	 */
+/** 
+ * Remove used users from the object
+ */
 	function removeUsedUser(&$Model, $userId = null, $foreignKey = null) {
 		if ($Model->Used->deleteAll(array('Used.user_id' => $userId, 'Used.foreign_key' => $foreignKey))) : 
 			return true;
@@ -208,9 +281,9 @@ class UsableBehavior extends ModelBehavior {
 	}
 	
 	
-	/**
-	 * Find child contacts of a parent contact and add them to the data user list
-	 */
+/**
+ * Find child contacts of a parent contact and add them to the data user list
+ */
 	function getChildContacts(&$Model) {
 		if (!empty($Model->data[$Model->alias]['contact_id']) && $Model->data[$Model->alias]['contact_all_access']) : 
 			# add all of the companies people to the used table

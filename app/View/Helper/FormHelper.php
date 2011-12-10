@@ -1765,6 +1765,7 @@ class FormHelper extends AppHelper {
 		$style = null;
 		$tag = null;
 		$attributes += array(
+			'ajax' => null, // zuha added
 			'class' => null,
 			'escape' => true,
 			'secure' => true,
@@ -1773,6 +1774,10 @@ class FormHelper extends AppHelper {
 			'hiddenField' => true
 		);
 
+		// Added by Zuha to parse extra fields needed for ajax
+		if (isset($attributes['ajax'])) {
+			$attributes = $this->ajaxElement($attributes);
+		}
 		$escapeOptions = $this->_extractOption('escape', $attributes);
 		$secure = $this->_extractOption('secure', $attributes);
 		$showEmpty = $this->_extractOption('empty', $attributes);
@@ -2577,5 +2582,17 @@ class FormHelper extends AppHelper {
 
 		$this->_secure($secure, $fieldName);
 		return $result;
+	}
+	
+	
+	/**
+	 * Parse the ajax output back to the form element
+	 * Created so that if there is a case where we need to do something to 
+	 * the form element not already covered we would do it here.
+	 */
+	function ajaxElement($attributes) {
+		$attributes = array_merge($attributes, $attributes['ajax']);
+		unset($attributes['ajax']);
+		return $attributes;
 	}
 }
