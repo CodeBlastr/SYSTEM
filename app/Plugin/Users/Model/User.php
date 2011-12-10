@@ -3,7 +3,9 @@ class User extends AppModel {
 
 	public $name = 'User';
 	public $displayField = 'full_name';
-	public $actsAs = array('Affiliates.Referrable', 'Acl' => array('type' => 'both'));
+	public $actsAs = array('Affiliates.Referrable', 
+						   'Acl' => array('type' => 'requester'), 
+						   'Users.Usable' => array('defaultRole' => 'friend'));
 	public $order = array('last_name', 'full_name', 'first_name');
 
 	
@@ -164,39 +166,7 @@ class User extends AppModel {
 		endif;
         return true;
     }
-
-/** 
- * After save callback
- * Update aros_acos so that this user has access to their own profile and no one else does. 
- * @access public
- * @return void
- */	  
-	public function afterSave($created) {
-        if ($created) {
-			$Aro = ClassRegistry::init('Aro');
-			$Aco = ClassRegistry::init('Aco');
-			$ArosAco = ClassRegistry::init('ArosAco');
-			$userId = $this->id;
-			$aroId = $Aro->id;
-			$acoId = $Aco->id;		
-			
-			$data = array(
-				'aro_id' => $aroId,
-				'aco_id' => $acoId,
-				'_create' => 1,
-				'_read' => 1,
-				'_update' => 1,
-				'_delete' => 1,
-			);
-            if ($ArosAco->save($data)) {
-			} else {
-				echo 'Uncaught Exception: 9108710923801928347';
-				break;
-			}
-			
-		}
-		parent::afterSave($created);
-	}
+	
 	
 /**
  * Handles the data of adding of a user
@@ -223,6 +193,7 @@ class User extends AppModel {
 				if(defined('__USERS_NEW_REGISTRATION_CREDITS') && !empty($data['User']['parent_id'])) {
 					$this->updateUserCredits(__USERS_NEW_REGISTRATION_CREDITS, $data['User']['parent_id']);
 				}	
+				
 				# setup and save data for a related order shipment record for prefilled checkout 
 				$data['OrderShipment']['first_name'] = !empty($data['User']['first_name']) ? $data['User']['first_name'] : ''; 
 				$data['OrderShipment']['last_name'] =  !empty($data['User']['last_name']) ? $data['User']['last_name'] : '';
@@ -230,6 +201,7 @@ class User extends AppModel {
 				$data['OrderShipment']['user_id'] = $this->id;
 				$this->OrderPayment->save($data);
 				$this->OrderShipment->save($data);
+				
 				# create a gallery for this user.
 				if (!empty($data['User']['avatar']['name'])) {
 					$data['Gallery']['model'] = 'User';
@@ -319,6 +291,7 @@ class User extends AppModel {
 		}
 	}
 	
+	
 /**
  * a function which goes through the different ways to get to a user role id
  */
@@ -385,9 +358,10 @@ class User extends AppModel {
 		}
 	}
 
-/*
+
+/**
  * verifies the key passed and if valid key, remove it from DB and return user else 
- * returns null. 
+ * @return {mixed}			user data array, or null. 
  */
 	public function verify_key($key = null) {
 		$user = null;
@@ -411,6 +385,7 @@ class User extends AppModel {
 		}
 		return $user;
 	}
+
 
 /**
  * The username could be an email or a username, so we just do a quick check of both fields to
@@ -437,10 +412,12 @@ class User extends AppModel {
 			}
 		}
 	}
-	
-/** facebook registration functions ... 
+
+
+/**
+ * facebook registration functions ... 
  * 
- * @todo 		Document why you put these in here and what they do!
+ * @todo 		Document why you put these in here and what they do! (12/9/2011)
  */
 	public function parse_signed_request($signed_request, $secret) {
 		list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
@@ -459,12 +436,23 @@ class User extends AppModel {
 		}
 		return $data;
 	  }
-	
+
+
+/**
+ * 
+ * @todo Where is this used, and why would it be a User model specific function?  (12/9/2011)
+ */
 	public function base64_url_decode($input) {
 		return base64_decode(strtr($input, '-_', '+/'));
 	}
 	
 
+/**
+ * Updates data for user to prepare it for saving.
+ *
+ * @param {array} 		A form input data array.
+ * @return {array}		Parsed form input data.
+ */
 	protected function _cleanAddData($data) {
 		if (isset($data['User']['username']) && strpos($data['User']['username'], '@')) :
 			$data['User']['email'] = $data['User']['username'];
@@ -487,10 +475,12 @@ class User extends AppModel {
 		return $data;
 	}
 	
-/* Generate Referal Code
+	
+/** 
+ * Generate Referal Code
  * Generate Referal Code and makes a new entry to database to Users Table 
- * @param array data
- * return boolean
+ * @param {array}	    	array data
+ * @return {mixed}			a reference code string, or boolean
  */
 	public function generateReferalCode($user = null){
 		
@@ -521,16 +511,17 @@ class User extends AppModel {
 		
 	}
 	
-/* checkCodeExists
+/**
+ * checkCodeExists
  * Check whether code with same string exists
 
  * @param code
- * return boolean
+ * @return boolean
  */
 	public function ifCodeExists($code = null){
 		$code = $this->find('first', array(
-								'conditions' => array('reference_code' => $code)
-							));
+			'conditions' => array('reference_code' => $code)
+			));
 		if(!empty($code)){
 			return true;
 		} else {
@@ -538,9 +529,11 @@ class User extends AppModel {
 		}
 	}
 	
-/* generateRandomCode
+	
+/**
+ * generateRandomCode
  * Generates a random Code of length 5
- * return code
+ * @return code
  */
 	public function generateRandomCode() {
 	    $length = 8;
@@ -557,38 +550,44 @@ class User extends AppModel {
 		}
 	}
 	
-/* Get Parent Id 
+	
+/**
+ * Get Parent Id 
  * @params referal_code
- * return User.Id
+ * @return User.Id
  */
-	public function getParentId($referal_code = null){
+	public function getParentId($referral_code = null){
 		$parent = $this->find('first', array(
-					'conditions' => array('reference_code' => $referal_code)
-				));
+			'conditions' => array('reference_code' => $referral_code)
+			));
 		return $parent['User']['id']; 
 	}
-	
-	/*	Update User Credits
-	 *  @param User.Id, Credits
-	 *  return boolean
-	 */
+
+
+/**
+ * Update User Credits
+ * @param User.Id, Credits
+ * @return boolean
+ */
 	public function updateUserCredits($credits = null, $userId){
 		$user = $this->find('first' , array(
-						'fields' => array('id', 'credit_total'),
-						'conditions' => 
-							array('User.id' => $userId)
-						)) ;
+			'fields' => array('id', 'credit_total'),
+			'conditions' => array(
+				'User.id' => $userId,
+				),
+			));
 		$user['User']['credit_total'] += $credits; 
 		if(!($this->save($user, false))){
 			throw new Exception(__d('Credits not Saved', true));
 		}
 	}
 
-	/*
-	 * Credits Update
-	 * it will update user credits according to the price paid for credits
-	 * price * __USERS_CREDITS_PER_PRICE_UNIT
-	 */
+
+/*
+ * Credits Update
+ * it will update user credits according to the price paid for credits
+ * price * __USERS_CREDITS_PER_PRICE_UNIT
+ */
 	function creditsUpdate($data = null){
 		$user = $this->find('first' , array(
 						'fields' => array('id', 'credit_total'),
@@ -607,12 +606,16 @@ class User extends AppModel {
 			throw new Exception(__d('Credits not Saved', true));
 		}
 	}
-
-	/*
-	 * Update Access
-	 * It will give access of a particular record
-	 * to a particular user
-	 */
+	
+	
+/*
+ * Update Access
+ * It will give access of a particular record to a particular user
+ * This is only used in database driven workflows at the moment so there are no references
+ * to this function in other code on the system.
+ * 
+ * @param {array} 		An array of data like you would get from any form.
+ */
 	function updateAccess($data = null){
 		$this->Aro = ClassRegistry::init('Aro');
 		$this->Aco = ClassRegistry::init('Aco');

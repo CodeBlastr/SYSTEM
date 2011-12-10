@@ -9,7 +9,7 @@
 												   'label' => 'Type', 
 												   'ajax' => array(
 																   'element' => 'select',
-																   'json' => 'admin/settings/names', 
+																   'json' => 'settings/names', 
 																   'rel' => 'SettingName'
 																   )));  
 		

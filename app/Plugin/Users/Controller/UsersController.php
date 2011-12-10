@@ -34,7 +34,7 @@ class UsersController extends UsersAppController {
 		'my', 
 		'register', 
 		'checkLogin', 
-		'restricted'
+		'restricted',
 		);
 	
 	/**
@@ -247,7 +247,7 @@ class UsersController extends UsersAppController {
 	}
 
 	function index() {
-		$this->User->recursive = 0;
+		#$this->User->recursive = 0;
 		$this->set('users', $this->paginate());
 	}
 	
@@ -308,9 +308,9 @@ class UsersController extends UsersAppController {
 	}
 
 	
-	/**
-	 * @todo	Not sure I like the use of contact in the url being possible.  My guess is that you could change the id and register as a different contact, and probably gain access to things you shouldn't.  Maybe switch to some kind of Security::cipher thing.  (on second thought, the database having a unique index on contact_id might keep this from happening)
-	 */
+/**
+ * @todo	Not sure I like the use of contact in the url being possible.  My guess is that you could change the id and register as a different contact, and probably gain access to things you shouldn't.  Maybe switch to some kind of Security::cipher thing.  (on second thought, the database having a unique index on contact_id might keep this from happening)
+ */
 	function register() {
 		if (!empty($this->request->data)) {
 			try {
@@ -340,27 +340,22 @@ class UsersController extends UsersAppController {
 		
 		$userRoles = $this->User->UserRole->find('list');
 		unset($userRoles[1]); // remove the administrators group by default - too insecure
-		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
-		$this->set(compact('userRoleId', 'userRoles'));
-		
-		if (empty($userRoleId)) : 
-			echo '__APP_DEFAULT_USER_REGISTRATION_ROLE_ID must be defined for public user registrations to work.';
-			break;
-		endif;
-		
+		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : 3;
 		$this->request->data['Contact']['id'] = !empty($this->request->params['named']['contact']) ? $this->request->params['named']['contact'] : null;
+		
+		$this->set(compact('userRoleId', 'userRoles'));
 		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
 	}
 
 
-	/*
-	 * __welcome()
-	 * User can now register and then wait for an email confirmation to activate his account. 
-	 * If he doesn't activate his account, he cant access the system. The key expires in 3 days.
-	 * @todo		temp change for error in swift mailer
-	 * @todo		This message needs to be configurable.
-	 * @todo		This needs to have the ability to resend in case the user didn't get it the first time or something.
-	 */
+/*
+ * __welcome()
+ * User can now register and then wait for an email confirmation to activate his account. 
+ * If he doesn't activate his account, he cant access the system. The key expires in 3 days.
+ * @todo		temp change for error in swift mailer
+ * @todo		This message needs to be configurable.
+ * @todo		This needs to have the ability to resend in case the user didn't get it the first time or something.
+ */
 	function _welcome($user_id) {
 		$this->User->recursive = -1;
 		$user = $this->User->read(null, $user_id);
