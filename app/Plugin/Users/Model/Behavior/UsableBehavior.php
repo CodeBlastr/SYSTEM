@@ -6,6 +6,7 @@ class UsableBehavior extends ModelBehavior {
 	public $defaultRole = '';
 	public $userData = array();
 	public $superAdminRoleId = 1;
+	public $restrictRedirect = false;
 
 
 	function setup(&$Model, $settings = array()) {
@@ -30,15 +31,27 @@ class UsableBehavior extends ModelBehavior {
 /**
  * Update the find methods so that we check against the used table that the current user is part of this item being searched.
  *
- * @todo	Make it so that if a record has no used record that we don't use usable at all in the beforeFind.  (ie. its public)
- * @todo	I'm semi-sure that the big query this makes could be optimized better.  An OR and a NOT IN in one query isn't exactly high performance.   But after 9 hours coming up with that we'll leave optimization for another day. 
+ * @param {class}		Model class triggering this callback
+ * @param {array}		An array specifying the conditions for the query to be triggered.
+ * @todo				I'm semi-sure that the big query this makes could be optimized better.  An OR and a NOT IN in one query isn't exactly high performance.   But after 9 hours coming up with that we'll leave optimization for another day. 
  */
 	function beforeFind(&$Model, $queryData) {
-		$userRole = CakeSession::read('Auth.User.user_role_id');
-		$userId = CakeSession::read('Auth.User.id');
-		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/) : 
+		$authUser = CakeSession::read('Auth.User');
+		$userRole = $authUser['user_role_id'];
+		$userId = $authUser['id'];
+		
+		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/ && empty($queryData['nocheck'])) : 
+			#this tells us whether the result would have returned something if UsableBehavior wasn't used
+			$queryData['nocheck'] = true;
+			$originalSearchCount = $Model->find('count', $queryData);
+			if ($originalSearchCount > 0) : $this->restrictRedirect = true; endif;
+			
 			/*# this allows you to bypass the logged in user check (nocheck should equal the user id)
 			$userQuery = !empty($queryData['nocheck']) ? "Used.user_id = '{$queryData['nocheck']}'" : "Used.user_id = '{$userId}'";
+			*/ // left because I don't know where nocheck was used
+			
+			
+			/*
 			# output the new query
 			$queryData['joins'] = array(array(
 				'table' => 'used',
@@ -50,6 +63,7 @@ class UsableBehavior extends ModelBehavior {
 					$userQuery,
 				),
 			));*/ // left for reference as its a pretty cool query
+			
 			$Dbo = $Model->getDataSource();
 			
 			# First find users with access
@@ -118,6 +132,22 @@ class UsableBehavior extends ModelBehavior {
 		
 		return $queryData;
 	}
+	
+
+
+/**
+ * Redirects to restricted if beforeFind emptied the results that would have otherwise not been empty
+ *
+ * @param {class} 		Model class triggering this callback
+ * @param {array}		The data returned from the find query
+ */
+	public function afterFind(&$Model, $results) {
+		if(empty($results) && str_replace('/', '', $_SERVER['REQUEST_URI']) != 'usersusersrestricted' && $this->restrictRedirect) : 
+			header("Location: /users/users/restricted");
+			break;
+		endif;
+	}
+	
 	
 	
 /**
