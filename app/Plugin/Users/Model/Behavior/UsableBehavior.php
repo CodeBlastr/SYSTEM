@@ -155,7 +155,7 @@ class UsableBehavior extends ModelBehavior {
  */
 	function afterSave(&$Model, $created) {
 		# get current users using, so that we can merge and keep duplicates out later
-		$currentUsers = $this->findUsedUsers($Model, $foreignKey = $Model->data[$Model->alias]['id'], $type = 'all', array('fields' => 'id'));
+		$currentUsers = $this->findUsedUsers($Model, $foreignKey = $Model->data[$Model->alias]['id'], $type = 'all');
 		
 		# this is if we have a hasMany list of users coming in.
 		if (!empty($Model->data['User'][0])) :
@@ -285,7 +285,7 @@ class UsableBehavior extends ModelBehavior {
  */
 	function addUsedUser(&$Model, $data) {
 		# do a check to see if the user is already a part of this object (we don't want duplicates)
-		$objects = $this->findUsedObjects($Model, $data['Used']['user_id'], 'all', array('conditions' => array('Used.foreign_key' => $data['Used']['foreign_key']), 'fields' => 'id'));
+		$objects = $this->findUsedObjects($Model, $data['Used']['user_id'], 'all', array('conditions' => array('Used.foreign_key' => $data['Used']['foreign_key'])));
 		$objectIds = Set::extract("/{$Model->alias}/id", $objects);
 		if (array_search($data['Used']['foreign_key'], $objectIds)) : 
 			throw new Exception('User is already involved.');
