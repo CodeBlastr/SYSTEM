@@ -404,7 +404,7 @@ If you have received this message in error please ignore, the link will be unusa
 		$user = $this->User->find('first', array('conditions' => array('id' => $userid))); 
 		unset($this->request->data['User']['username']);
 		$this->request->data['User']['id'] = $userid;
-		$this->request->data['User']['forgot_key'] = $this->User->__uid('F'); 
+		$this->request->data['User']['forgot_key'] = $this->User->__uuid('F'); 
 		$this->request->data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
 		$this->request->data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
 		$this->request->data['User']['user_role_id'] = $user['User']['user_role_id'];

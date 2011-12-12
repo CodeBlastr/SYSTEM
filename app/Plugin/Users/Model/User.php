@@ -179,7 +179,7 @@ class User extends AppModel {
 		
 		if ($data = $this->_userContact($data)) {
 			# setup a verification key
-			$data['User']['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uid('W', array('User' => 'forgot_key')) : null; 
+			$data['User']['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null; 
 			$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
 			
 			$data['User']['parent_id'] = !empty($data['User']['referal_code']) ? 
