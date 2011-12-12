@@ -43,7 +43,8 @@ class UsableBehavior extends ModelBehavior {
 		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/ && empty($queryData['nocheck'])) : 
 			#this tells us whether the result would have returned something if UsableBehavior wasn't used
 			$queryData['nocheck'] = true;
-			$originalSearchCount = $Model->find('count', $queryData);
+			#$originalSearchCount = $Model->find('count', $queryData);
+			$originalSearchCount = 0;
 			if ($originalSearchCount > 0) : $this->restrictRedirect = true; endif;
 			
 			/*# this allows you to bypass the logged in user check (nocheck should equal the user id)
@@ -194,11 +195,11 @@ class UsableBehavior extends ModelBehavior {
 		
 		
 		#gets rid of duplicate users from two arrays... @todo: maybe move this to its own function if its needed again
-		$users = Set::extract('/id', $users);
-		$currentUsers = Set::extract('/User/id', $currentUsers);
-		$users = array_diff($users, $currentUsers);
-		
 		if (!empty($users)) :
+			$users = Set::extract('/id', $users);
+			$currentUsers = Set::extract('/User/id', $currentUsers);
+			$users = array_diff($users, $currentUsers);
+		
 			$i=0;
 			foreach ($users as $user) : 
 				$data[$i]['Used']['user_id'] = $user;
