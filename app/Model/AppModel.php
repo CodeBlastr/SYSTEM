@@ -192,12 +192,13 @@ class AppModel extends Model {
 		}
 	}
 
-	/*
-	 * __uid
-	 * returns a 40 digit random key and adds the prefix if provided.
-	 * $table : array(Model => action)  if uniqueness is required across any table and column
-	 */
-    function __uid($prefix = null, $table = null) {
+
+/*
+ * __uid
+ * returns a 40 digit random key and adds the prefix if provided.
+ * $table : array(Model => action)  if uniqueness is required across any table and column
+ */
+    function __uuid($prefix = null, $table = null) {
         // creates a 6 digit key
         $uid = substr(md5(uniqid(rand(), true)), 0, 40);
         if ($prefix)
@@ -217,5 +218,12 @@ class AppModel extends Model {
 			return $uid;
 		}
     }
+	
+	
+    function _generateUUID() {
+        $uuid = $this->query('SELECT UUID() AS uuid');
+        return $uuid[0][0]['uuid'];
+    }//_generateUUID()
+	
 }
 ?>
