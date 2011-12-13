@@ -18,7 +18,7 @@ class FB {
 
   public function __construct() {
     if (empty(self::$Facebook)) {
-			self::$Facebook = new Facebook(FacebookInfo::getConfig());
+			#self::$Facebook = new Facebook(FacebookInfo::getConfig());
 		}
   }
 
