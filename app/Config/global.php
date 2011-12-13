@@ -187,6 +187,8 @@
 			'InvoiceItem' => 'Invoices',
 			'InvoiceTime' => 'Invoices',
 			'Project' => 'Projects',
+			'Question' => 'Questions',
+			'QuestionAnswer' => 'Questions',
 			'Used' => 'Users',
 			'User' => 'Users',
 			'Setting' => '',
