@@ -106,9 +106,9 @@ class UsableBehavior extends ModelBehavior {
 			$subQueryExpression2 = $Dbo->expression($subQuery2);
 			
 			
+			$newQueryData['conditions'][]['OR'] = array('('.$subQueryExpression->value.')', '('.$subQueryExpression2->value.')'); 			
+			$queryData = Set::merge($queryData, $newQueryData);
 			
-			
-			$queryData['conditions'][]['OR'] = array('('.$subQueryExpression->value.')', '('.$subQueryExpression2->value.')'); 
 			/* Example of the query we're running here.
 			SELECT `Project`.`id`
 			FROM `projects` AS `Project` 
