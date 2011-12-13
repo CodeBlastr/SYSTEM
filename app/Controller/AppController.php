@@ -386,7 +386,6 @@ class AppController extends Controller {
 					// get rid of template values so we don't have to check them twice
 					unset($templates[$key]);
 				endif;
-				
 				if (!empty($this->templateId)) :
 					// as soon as we have the first template that matches, end this loop
 					break;
@@ -488,8 +487,9 @@ class AppController extends Controller {
 			foreach ($data['urls'] as $url) :
 				$urlString = str_replace('/', '\/', trim($url));
 				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
+				$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
 				$url = $this->request->url;
-				$urlCompare = strpos($url, '/') == 0 ? substr($url, 1) : $url;
+				$urlCompare = strpos($url, '/') === 0 ? substr($url, 1) : $url;
 				if (preg_match($urlRegEx, $urlCompare)) :
 					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateId'];
 				endif;
