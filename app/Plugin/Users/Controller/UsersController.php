@@ -18,35 +18,35 @@
  * @subpackage    zuha.app.models
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
- * @todo		  The "view" method needs a requestAction fix so that requestAction works for all requestAction type calls, without the if params['requested'] thing being necessary everyhwere we want to do that. 
+ * @todo		  The "view" method needs a requestAction fix so that requestAction works for all requestAction type calls, without the if params['requested'] thing being necessary everyhwere we want to do that.
  */
 class UsersController extends UsersAppController {
-	
+
 	var $name = 'Users';
 	var $uid;
 	var $components = array('Email','Invite.InviteHandler');
 	var $allowedActions = array(
-		'login', 
-		'desktop_login', 
+		'login',
+		'desktop_login',
 		'logout',
-		'forgot_password', 
-		'reset_password', 
-		'my', 
-		'register', 
-		'checkLogin', 
+		'forgot_password',
+		'reset_password',
+		'my',
+		'register',
+		'checkLogin',
 		'restricted',
 		);
-	
+
 	/**
-	 * A page to stop infinite redirect loops when there are errors. 
+	 * A page to stop infinite redirect loops when there are errors.
 	 */
 	public function restricted() {
 	}
-	
+
 	/**
 	 * Public login function to verify access to restricted areas.
 	 */
-	public function login() {  
+	public function login() {
 		if (!empty($this->request->data)) {
 			if ($this->Auth->login()) {
 				try {
@@ -69,16 +69,16 @@ class UsersController extends UsersAppController {
 
 
     public function logout() {
-		if ($this->Auth->logout() || $this->Session->delete('Auth')) : 
+		if ($this->Auth->logout() || $this->Session->delete('Auth')) :
 			$this->Session->setFlash('Successful Logout');
 			$this->redirect($this->_logoutRedirect());
-		else : 
+		else :
 			$this->Session->setFlash('Logout Failed');
 			$this->redirect($this->_loginRedirect());
-		endif;			
+		endif;
     }
-	
-	
+
+
 	/**
 	 * Set the default redirect variables, using the settings table constant.
 	 */
@@ -97,7 +97,7 @@ class UsersController extends UsersAppController {
 			);
 		}
 	}
-	
+
 	/**
 	 * Set the default redirect variables, using the settings table constant.
 	 */
@@ -116,39 +116,39 @@ class UsersController extends UsersAppController {
 			);
 		}
 	}
-	
-	
+
+
 	function checkLogin() {
 		$this->layout = false;
-		$this->autoRender = false; 
-        $user = $this->User->find('first', array('conditions' => array('User.username' => $this->request->data['User']['username'], 'User.password' => AuthComponent::password($this->request->data['User']['password']))));	
+		$this->autoRender = false;
+        $user = $this->User->find('first', array('conditions' => array('User.username' => $this->request->data['User']['username'], 'User.password' => AuthComponent::password($this->request->data['User']['password']))));
      	if($user){
      		$data['login'] = 1;
 		} else {
 		    $data['login'] = 0;
-		}	
+		}
 		echo json_encode($data);
     }
-	
+
 	/**
-	 * Used for Zuha Desktop integration. 
-	 * 
+	 * Used for Zuha Desktop integration.
+	 *
 	 * @todo 		This should be updated to some kind of API login (maybe REST) so that any apps can authenticate.
 	 */
-	function desktop_login() { 
-		
-        $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => AuthComponent::password($this->request->data['User']['password']))));	
+	function desktop_login() {
+
+        $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => AuthComponent::password($this->request->data['User']['password']))));
         if($user!= null ){
-	        echo $user['User']['id']; 
+	        echo $user['User']['id'];
 			$this->layout(false);
-			$this->render(false);	    
+			$this->render(false);
 		} else{
 		    echo "Fail";
 			$this->layout(false);
 			$this->render(false);
-		}	
+		}
     }
-	
+
 	function my() {
 		$userId = $this->Session->read('Auth.User.id');
 		if (!empty($userId)) {
@@ -158,37 +158,37 @@ class UsersController extends UsersAppController {
 			$this->redirect('/');
 		}
 	}
-			
-	
+
+
 	function view($id) {
 		$user = $this->User->find('first', array('conditions' => array('User.id' => $id)));
-		
+
 		# This is here, because we have an element doing a request action on it.
 		if (isset($this->request->params['requested'])) {
         	if (!empty($user)) {
 				return $user;
-			} 
-        } 
-		
-		// check if user exists 
+			}
+        }
+
+		// check if user exists
 		if(!isset($user['User'])) {
 		#	$this->Session->setFlash('You do not have a user, please create one.');
 		#	$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'register', 'user' => $this->Auth->user('id')));
 		}
-		
+
 		$followedUsers = $this->User->UserFollower->find('all', array(
 			'conditions' => array(
 				'UserFollower.follower_id' => $user['User']['id'],
 				),
 			));
-		
+
 		# Setup the user ids which we'll find the statuses of
 		foreach ($followedUsers as $followedUser) {
 			#$followedUserIds[] = $followedUser['User']['id'];
 			$statusUserIds[] = $followedUser['UserFollower']['user_id'];
 		}
 		$statusUserIds[] = $user['User']['id'];
-		
+
 		// get the statuses for display
 		$statuses = $this->User->UserStatus->find('all' , array(
 			'conditions'=>array(
@@ -202,9 +202,9 @@ class UsersController extends UsersAppController {
 				),
 			'limit' => 10,
 			));
-		
-		
-		// get the wall of the user 
+
+
+		// get the wall of the user
 		$walls = $this->User->UserWall->find('all' , array(
 			'conditions'=>array(
 				'UserWall.creator_id' => $user['User']['id'],
@@ -214,7 +214,7 @@ class UsersController extends UsersAppController {
 			),
 			'order'=>array('UserWall.creator_id')
 		));
-		
+
 		// Get the users followers
 		$followers = $this->User->UserFollower->find('all' , array(
 			'conditions'=>array(
@@ -222,9 +222,9 @@ class UsersController extends UsersAppController {
 			),
 			'contain'=>array(
 				'User'
-			)	
+			)
 		));
-		
+
 		// does the logged in user follow
 		$does_follow = $this->User->UserFollower->find('count', array(
 			'conditions'=>array(
@@ -233,8 +233,8 @@ class UsersController extends UsersAppController {
 			),
 			'contain'=>array()
 		));
-		
-		
+
+
 		$is_self = ($user['User']['id'] == $this->Auth->user('id') ? true : false);
 		$this->set('is_self', $is_self );
 		$this->set('uid' , $user['User']['id']);
@@ -250,7 +250,7 @@ class UsersController extends UsersAppController {
 		#$this->User->recursive = 0;
 		$this->set('users', $this->paginate());
 	}
-	
+
 	function edit($id = null) {
 		# looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
@@ -264,18 +264,18 @@ class UsersController extends UsersAppController {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
 			));
-			
+
 			$userShippingAddress = $this->User->OrderShipment->find('first',array(
-				'conditions' => array('OrderShipment.user_id' => $id, 
+				'conditions' => array('OrderShipment.user_id' => $id,
 							'OrderShipment.order_transaction_id is null')
 				));
 			$user['OrderShipment'] = $userShippingAddress['OrderShipment'];
 			$userBillingAddress = $this->User->OrderPayment->find('first',array(
-				'conditions' => array('OrderPayment.user_id' => $id, 
+				'conditions' => array('OrderPayment.user_id' => $id,
 						'OrderPayment.order_transaction_id is null')
-			)); 
+			));
 			$user['OrderPayment'] = $userBillingAddress['OrderPayment'];
-			
+
 			if(isset($user['User'])) {
 				$this->request->data = $user;
 			} else {
@@ -286,7 +286,7 @@ class UsersController extends UsersAppController {
 			$this->request->data['User']['user_id'] = $this->Auth->user('id');
 			#getting password issue when saving ; so unsetting in this case
 			if(!isset($this->request->data['User']['password']))	{
-				unset($this->User->validate['password']);	
+				unset($this->User->validate['password']);
 			}
 			if(!empty($this->request->data['User']['avatar'])) {
 				# upload image if it was set
@@ -294,7 +294,7 @@ class UsersController extends UsersAppController {
 			}
 			if($this->User->save($this->request->data)) {
 				$this->User->OrderPayment->save($this->request->data);
-				$this->User->OrderShipment->save($this->request->data);	
+				$this->User->OrderShipment->save($this->request->data);
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
 			}
@@ -307,17 +307,18 @@ class UsersController extends UsersAppController {
 		$this->set('userRoles',  $this->User->UserRole->find('list'));
 	}
 
-	
+
 /**
  * @todo	Not sure I like the use of contact in the url being possible.  My guess is that you could change the id and register as a different contact, and probably gain access to things you shouldn't.  Maybe switch to some kind of Security::cipher thing.  (on second thought, the database having a unique index on contact_id might keep this from happening)
  */
 	function register() {
+        $this->helpers[] = 'Recaptcha.Recaptcha';
 		if (!empty($this->request->data)) {
 			try {
 				$result = $this->User->add($this->request->data);
 				if ($result === true) {
 					$this->Session->setFlash(__d('users', 'Successful Registration', true));
-					$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));				
+					$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 				} else {
 					$this->request->data = $result;
 				}
@@ -336,13 +337,13 @@ class UsersController extends UsersAppController {
 					$this->Auth->logout();
 				}
 			}
-		}		
-		
+		}
+
 		$userRoles = $this->User->UserRole->find('list');
 		unset($userRoles[1]); // remove the administrators group by default - too insecure
 		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : 3;
 		$this->request->data['Contact']['id'] = !empty($this->request->params['named']['contact']) ? $this->request->params['named']['contact'] : null;
-		
+
 		$this->set(compact('userRoleId', 'userRoles'));
 		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
 	}
@@ -350,7 +351,7 @@ class UsersController extends UsersAppController {
 
 /*
  * __welcome()
- * User can now register and then wait for an email confirmation to activate his account. 
+ * User can now register and then wait for an email confirmation to activate his account.
  * If he doesn't activate his account, he cant access the system. The key expires in 3 days.
  * @todo		temp change for error in swift mailer
  * @todo		This message needs to be configurable.
@@ -361,12 +362,12 @@ class UsersController extends UsersAppController {
 		$user = $this->User->read(null, $user_id);
 		if (!$user)
 			return false;
-		
+
 		$this->set('name', $user['User']['full_name']);
 		$this->set('key', $user['User']['forgot_key']);
 		// todo: temp change for error in swift mailer
 		$url =   Router::url(array('controller'=>'users', 'action'=>'reset_password', $user['User']['forgot_key']), true);
-		$mail = 
+		$mail =
 		"Dear {$user['User']['full_name']},
 <br></br><br></br>
     Congratulations! You have created an account with us.
@@ -377,11 +378,11 @@ class UsersController extends UsersAppController {
 If you have received this message in error please ignore, the link will be unusable in three days.
 <br></br><br></br>
     Thank you for registering with us and welcome to the community.";
-		
+
 		return $this->__sendMail($user['User']['email'] , 'Welcome', $mail, 'welcome');
 	}
-	
-	
+
+
 	function _admin_edit($id = null) {
 		if (empty($this->request->data)) {
 			$this->request->data = $this->User->read(null, $id);
@@ -398,13 +399,13 @@ If you have received this message in error please ignore, the link will be unusa
 			$this->Session->setFlash('Invalid user');
 		}
 	}
-	
+
 
 	function __resetPasswordKey($userid) {
-		$user = $this->User->find('first', array('conditions' => array('id' => $userid))); 
+		$user = $this->User->find('first', array('conditions' => array('id' => $userid)));
 		unset($this->request->data['User']['username']);
 		$this->request->data['User']['id'] = $userid;
-		$this->request->data['User']['forgot_key'] = $this->User->__uuid('F'); 
+		$this->request->data['User']['forgot_key'] = $this->User->__uuid('F');
 		$this->request->data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
 		$this->request->data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
 		$this->request->data['User']['user_role_id'] = $user['User']['user_role_id'];
@@ -439,8 +440,8 @@ If you have received this message in error please ignore, the link will be unusa
 			$this->redirect(array('action'=>'forgot_password'));
 		}
 	}
-	
-	
+
+
 	/**
 	 * Forgot Password
 	 * Used to send a password reset key to the user's email address on file.
@@ -452,15 +453,15 @@ If you have received this message in error please ignore, the link will be unusa
 			# we need to check the username field and the email field
 		  	$user = $this->User->findbyUsername(trim($this->request->data['User']['username']));
 			if (!empty($user['User']['id']) && !empty($user['User']['email'])) {
-				# the user details exist 
+				# the user details exist
 				# so first lets update the user record with a temporary uid key to use for resetting password
 				$forgotKey = $this->__resetPasswordKey($user['User']['id']);
 				if (!empty($forgotKey)) {
 					# then lets email the user a link to the reset password page
 					$this->set('name', $user['User']['full_name']);
 					$this->set('key', $forgotKey);
-					$url = Router::url(array('controller'=>'users', 'action'=>'reset_password', $forgotKey), true);		
-					$mail = 
+					$url = Router::url(array('controller'=>'users', 'action'=>'reset_password', $forgotKey), true);
+					$mail =
 		"Dear {$user['User']['full_name']},
 <br></br><br></br>
     A reset of your password was requested.
@@ -469,7 +470,7 @@ If you have received this message in error please ignore, the link will be unusa
 <br></br><br></br>
 {$url}<br></br>
 If you have received this message in error please ignore, the link will be unusable in three days.";
-					if ($this->__sendMail($user['User']['email'] , 'Password reset', $mail, 'password_reset')) {		
+					if ($this->__sendMail($user['User']['email'] , 'Password reset', $mail, 'password_reset')) {
 						$this->Session->setFlash('Password reset email sent to email ending with ******'. substr($user['User']['email'], -9));
 					} else {
 						$this->Session->setFlash('Reset email could not be sent. Please try again.');
@@ -484,25 +485,25 @@ If you have received this message in error please ignore, the link will be unusa
 			}
 		}
 	}
-	
-	
+
+
 	function delete($id) {
 		$this->__delete('User', $id);
 	}
-	
+
 	function dashboard() {
 	}
-	
+
 	/*
-	 * Get Credits 
-	 * get user credits 
+	 * Get Credits
+	 * get user credits
 	 */
 	function get_credits($user_id = null){
-		
+
 		$user = $this->User->find('first', array(
 						'conditions' => array('User.id' => $user_id)));
-		
-		return $user['User']['credit_total']; 
+
+		return $user['User']['credit_total'];
 	}
-	
+
 }
