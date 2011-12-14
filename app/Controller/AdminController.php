@@ -56,18 +56,14 @@ class AdminController extends AppController {
         # $this->set('topSellingProducts', ClassRegistry::init('Product')->getTopSellers());
 		$this->layout = 'default';
 	}
-	
-	function files_image() {
-	}
-	function files_files() {
-	}
 
-	/**
-	 * Upgrades the database using queries given
-	 * 
-	 * @param {queries} The queries to run
-	 * @return {bool}
-	 */
+
+/**
+ * Upgrades the database using queries given
+ * 
+ * @param {queries} The queries to run
+ * @return {bool}
+ */
 	function _upgradeDatabase($queries) {
 		foreach ($queries['Query'] as $query) {
 			try {
@@ -106,11 +102,11 @@ class AdminController extends AppController {
 	}
 	
 
-	/**
-	 * Checks to see if the the current database if up to date, and if not gets the next sql file to import
-	 * 
-	 * @return file name to import
-	 */
+/**
+ * Checks to see if the the current database if up to date, and if not gets the next sql file to import
+ * 
+ * @return file name to import
+ */
 	function _checkIfLatestVersion() {
 		# the directory updated sql files are stored in.
 		$versionDirectory = ROOT . DS . 'version';
@@ -126,14 +122,14 @@ class AdminController extends AppController {
 	}
 	
 
-	/**
-	 * Gets the latest db file version by checking the /version directory for the latest sql file. Works if we always make sure that the file names are sequential, in the X.XXXX.sql format.
-	 * 
-	 * @todo For safety we should check to make sure the file name is well formatted.
-	 * @todo Seems there is a cake core Folder component which would make this folder reading more concise (App::Import('Core', 'File', 'Folder'); 
-	 * @param {versionDirectory}  Where the version sql files are located
-	 * @return latest version number of files or false if directory is empty
-	 */
+/**
+ * Gets the latest db file version by checking the /version directory for the latest sql file. Works if we always make sure that the file names are sequential, in the X.XXXX.sql format.
+ * 
+ * @todo For safety we should check to make sure the file name is well formatted.
+ * @todo Seems there is a cake core Folder component which would make this folder reading more concise (App::Import('Core', 'File', 'Folder'); 
+ * @param {versionDirectory}  Where the version sql files are located
+ * @return latest version number of files or false if directory is empty
+ */
 	function _checkFileVersion($versionDirectory) {
 		# Get the last file (by alphabetical sorting) in the version directory
 		if (is_dir($versionDirectory)) {
