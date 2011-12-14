@@ -48,7 +48,7 @@ else :
  */
 	Router::connect('/sitemap', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'index')); 
 	Router::connect('/sitemap/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps')); 
-	Router::connect('/robots/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'robot'));
+	Router::connect('/robots/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'robot'));	
 	require CAKE . 'Config' . DS . 'routes.php';
 
 endif;
