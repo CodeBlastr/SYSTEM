@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * PHP versions 4 and 5
  *
