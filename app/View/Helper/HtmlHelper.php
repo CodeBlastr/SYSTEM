@@ -296,11 +296,11 @@ class HtmlHelper extends AppHelper {
 		}
 		return sprintf($this->_tags['charset'], (!empty($charset) ? $charset : 'utf-8'));
 	}
-	
-	
+
+
 /**
  *   Returns a charset video embed-tag.
- */ 
+ */
  	public function video($videopath, $options = array()) {
 
             $defaultoptions['width'] = '640';
@@ -308,20 +308,20 @@ class HtmlHelper extends AppHelper {
             $defaultoptions['title'] = 'Video Js';
             $defaultoptions['preload'] = 'auto';
             $defaultoptions['controls'] = 'controls';
-            $defaultoptions['poster'] = 'http://video-js.zencoder.com/oceans-clip.png';
+            $defaultoptions['poster'] = '/img/noImage.jpg';
             
             $finaloptions = array_merge($defaultoptions, $options);
-            
+
             echo $this->script('ckeditor/plugins/video_js/video_js');
-            
+
             $videoPlayer = '<div class="video-js-box">'
                             .'<video id="example_video_1" class="video-js" width="' . $finaloptions['width'] . '" height="' . $finaloptions['height'] . '" controls="' . $finaloptions['controls'] . '" preload="' . $finaloptions['preload'] . '" poster="' . $finaloptions['poster'] . '">';
-            
+
             if (is_array($videopath)) {
-                //if video path  param is array 
+                //if video path  param is array
                 foreach ($videopath as $video) {
                     $videoPlayer .= '<source src="' . $video . '" />';
-                    
+
                     // extract the mp3 or mp4 for flash fallback
                     $exts = explode('/', $video);
                     $n = count($exts)-1;
@@ -329,18 +329,18 @@ class HtmlHelper extends AppHelper {
                     if(in_array($ext, array('mp3', 'mp4'))) $flashFallbackSource = $video;
                 }
             } else {
-                //if video path param is string 
+                //if video path param is string
                 $videoPlayer .= '<source src="' . $videopath . '" />';
 
                 $flashFallbackSource = $videopath;
             }
-            
+
             $videoPlayer .= '<object id="flash_fallback_1" class="vjs-flash-fallback" width="' . $finaloptions['width'] . '" height="' . $finaloptions['height'] . '" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">'
                             .'<param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" /> <param name="allowfullscreen" value="true" />'
                             .'<param name="flashvars" value=\'config={"playlist":["' . $finaloptions['poster'] . '", {"url": "' . $flashFallbackSource . '","autoPlay":false,"autoBuffering":true}]}\' /> '
                             .'<img src="' . $finaloptions['poster'] . '" width="' . $finaloptions['width'] . '" height="' . $finaloptions['height'] . '" alt="Poster Image" title="No video playback capabilities." />'
                             .'</object>';
-            
+
             $videoPlayer .= '</video>';
             $videoPlayer .= '</div>';
 
