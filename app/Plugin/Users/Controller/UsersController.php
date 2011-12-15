@@ -43,6 +43,9 @@ class UsersController extends UsersAppController {
 		if (in_array('Invite', CakePlugin::loaded())) : 
 			$this->components[] = 'Invite.InviteHandler'; 
 		endif;
+		if (in_array('Recaptcha', CakePlugin::loaded())) : 
+			$this->helpers[] = 'Recaptcha.Recaptcha'; 
+		endif;
 	}
 
 /**
@@ -320,8 +323,7 @@ class UsersController extends UsersAppController {
 /**
  * @todo	Not sure I like the use of contact in the url being possible.  My guess is that you could change the id and register as a different contact, and probably gain access to things you shouldn't.  Maybe switch to some kind of Security::cipher thing.  (on second thought, the database having a unique index on contact_id might keep this from happening)
  */
-	function register() {
-        $this->helpers[] = 'Recaptcha.Recaptcha';
+	function register() {		
 		if (!empty($this->request->data)) {
 			try {
 				$result = $this->User->add($this->request->data);
