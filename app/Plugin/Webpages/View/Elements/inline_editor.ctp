@@ -214,9 +214,9 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
         <?php if (!empty($defaultTemplate['Menu'])) { foreach ($defaultTemplate['Menu'] as $menu) { ?>
  	    <a class="dialog" href="/menus/menu_items/add/<?php echo $menu['id']; ?>/<?php echo !empty($title_for_layout) ? urlencode($title_for_layout) : Inflector::humanize($this->request->params['action'].' '.$this->request->params['controller']); ?>/<?php echo base64_encode($_SERVER['REQUEST_URI']); ?>"><div class="dock_btn" id="btn_templates" title="Add to Menu"><p>Add to <?php echo $menu['name']; ?></p></div></a>
         <?php } } ?>
-        <?php foreach ($editorUserRoles as $role) : ?>
+        <?php /* deprecated, this var was removed from app controller foreach ($editorUserRoles as $role) : ?>
         <a href="/users/user_roles/display_role/<?php echo $role; ?>"><div class="dock_btn" id="btn_css" title="Edit Js"><p>View as <?php echo Inflector::singularize($role); ?></p></div></a>
-        <?php endforeach; ?>
+        <?php endforeach; */ ?>
 	</div>
 </div>
 

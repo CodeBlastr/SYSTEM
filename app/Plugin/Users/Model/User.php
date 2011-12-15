@@ -3,9 +3,10 @@ class User extends AppModel {
 
 	public $name = 'User';
 	public $displayField = 'full_name';
-	public $actsAs = array('Affiliates.Referrable', 
-						   'Acl' => array('type' => 'requester'), 
-						   'Users.Usable' => array('defaultRole' => 'friend'));
+	public $actsAs = array( 
+		'Acl' => array('type' => 'requester'), 
+		'Users.Usable' => array('defaultRole' => 'friend')
+		);
 	public $order = array('last_name', 'full_name', 'first_name');
 
 	
@@ -117,6 +118,14 @@ class User extends AppModel {
                 'associationForeignKey' => 'user_id'
             ),
   	  );
+	
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+		if (in_array('Affiliates', CakePlugin::loaded())) : 
+			$this->actsAs[] = 'Affiliates.Referrable';
+		endif;
+		
+	}
 	
 	protected function _comparePassword() {
 		# fyi, confirm password is hashed in the beforeValidate method
