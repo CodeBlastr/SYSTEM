@@ -26,7 +26,8 @@
  */
 class SectionsController extends PrivilegesAppController {
 
-	var $name = 'Sections';
+	public $name = 'Sections';
+	public $uses = 'Privileges.Section';
 
 	function index() {
 		$data = $this->Section->prepare();

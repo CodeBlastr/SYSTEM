@@ -21,8 +21,8 @@
  */
 class WebpageJsesController extends WebpagesAppController {
 
-	var $uses = array('Webpages.WebpageJs');
 	var $name = 'WebpageJses';
+	var $uses = array('Webpages.WebpageJs');
 
 	function index() {
 		$this->WebpageJs->recursive = 0;

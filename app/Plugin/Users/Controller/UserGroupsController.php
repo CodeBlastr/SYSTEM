@@ -1,7 +1,8 @@
 <?php
 class UserGroupsController extends UsersAppController {
 
-	var $name = 'UserGroups';
+	public $name = 'UserGroups';
+	public $uses = 'Users.UserGroup';
 
 	function index() {
 		$this->UserGroup->recursive = 0;

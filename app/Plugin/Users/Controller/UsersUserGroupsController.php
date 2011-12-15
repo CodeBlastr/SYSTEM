@@ -1,7 +1,8 @@
 <?php
 class UsersUserGroupsController extends UsersAppController {
 
-	var $name = 'UsersUserGroups';
+	public $name = 'UsersUserGroups';
+	public $uses = 'Users.UsersUserGroup';
 
 	function index() {
 		$this->paginate['contain'] = array('User', 'UserGroup');

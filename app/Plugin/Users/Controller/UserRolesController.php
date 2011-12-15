@@ -24,8 +24,9 @@
  */
 class UserRolesController extends AppController {
 
-	var $name = 'UserRoles';
-	var $allowedActions = array('build_acl', 'admin_add', 'admin_index', 'admin_delete');
+	public $name = 'UserRoles';
+	public $uses = 'Users.UserRole';
+	public $allowedActions = array('build_acl', 'admin_add', 'admin_index', 'admin_delete');
 
 	function index() {		
 		$this->UserRole->recursive = 0;

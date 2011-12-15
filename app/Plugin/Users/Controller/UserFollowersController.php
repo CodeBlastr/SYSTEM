@@ -1,7 +1,8 @@
 <?php
 class UserFollowersController extends UsersAppController {
 
-	var $name = 'UserFollowers';
+	public $name = 'UserFollowers';
+	public $uses = 'Users.UserFollower';
 
 	function index() {
 		$this->UserFollower->recursive = 0;

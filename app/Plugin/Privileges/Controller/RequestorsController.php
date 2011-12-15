@@ -1,7 +1,8 @@
 <?php
 class RequestorsController extends PrivilegesAppController {
 
-	var $name = 'Requestors';
+	public $name = 'Requestors';
+	public $uses = 'Privileges.Requestor';
 
 	function index() {
 		$this->set('requestors', $this->paginate());

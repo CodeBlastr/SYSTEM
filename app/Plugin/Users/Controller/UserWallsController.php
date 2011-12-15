@@ -1,7 +1,8 @@
 <?php
 class UserWallsController extends UsersAppController {
 
-	var $name = 'UserWalls';
+	public $name = 'UserWalls';
+	public $uses = 'Users.UserWall';
 
 	function index() {
 		$this->UserWall->recursive = 0;

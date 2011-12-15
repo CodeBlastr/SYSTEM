@@ -21,7 +21,8 @@
  */
 class WebpageCssesController extends WebpagesAppController {
 
-	var $name = 'WebpageCsses';
+	public $name = 'WebpageCsses';
+	public $uses = 'Webpages.WebpageCss';
 
 	function index() {
 		$this->WebpageCss->recursive = 0;
