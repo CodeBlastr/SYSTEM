@@ -21,8 +21,9 @@
  */
 class WebpagesController extends WebpagesAppController {
 
-	var $name = 'Webpages';
-	var $paginate = array('limit' => 10, 'order' => array('Webpage.created' => 'desc'));
+	public $name = 'Webpages';
+	public $uses = 'Webpages.Webpage';
+	public $paginate = array('limit' => 10, 'order' => array('Webpage.created' => 'desc'));
 	#var $components = array('Comments.Comments' => array('userModelClass' => 'User'));
 
 	/* This is part of the search plugin */

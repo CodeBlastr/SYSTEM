@@ -1,7 +1,8 @@
 <?php
 class UserGroupWallPostsController extends UsersAppController {
 
-	var $name = 'UserGroupWallPosts';
+	public $name = 'UserGroupWallPosts';
+	public $uses = 'Users.UserGroupWallPost';
 
 	function index() {
 		$this->UserGroupWallPost->recursive = 0;

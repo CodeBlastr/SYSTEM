@@ -1,8 +1,8 @@
 <?php
 class MenuItemsController extends MenusAppController {
 
-	var $name = 'MenuItems';
-	var $uses = array('Menus.MenuItem');
+	public $name = 'MenuItems';
+	public $uses = array('Menus.MenuItem');
 	
 	function sort() {
 		Configure::write('debug', 0);

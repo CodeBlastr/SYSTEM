@@ -1,8 +1,9 @@
 <?php
 class MenusController extends MenusAppController {
 
-	var $name = 'Menus';
-	var $allowedActions = array('element');
+	public $name = 'Menus';
+	public $uses = 'Menus.Menu';
+	public $allowedActions = array('element');
 	
 	function element($id = null) {
 		if (!empty($id)) {

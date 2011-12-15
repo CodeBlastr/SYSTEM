@@ -1,7 +1,8 @@
 <?php
 class UserStatusesController extends UsersAppController {
 
-	var $name = 'UserStatuses';
+	public $name = 'UserStatuses';
+	public $uses = 'Users.UserStatus';
 
 	function index() {
 		$this->UserStatus->recursive = 0;

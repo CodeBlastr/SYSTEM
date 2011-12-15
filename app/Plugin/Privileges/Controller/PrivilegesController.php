@@ -1,7 +1,8 @@
 <?php
 class PrivilegesController extends PrivilegesAppController {
 
-	var $name = 'Privileges';
+	public $name = 'Privileges';
+	public $uses = 'Privileges.Privilege';
 
 	function index() {
  		$this->redirect(array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index'));
