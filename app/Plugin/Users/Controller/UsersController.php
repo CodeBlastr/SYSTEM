@@ -24,7 +24,7 @@ class UsersController extends UsersAppController {
 
 	var $name = 'Users';
 	var $uid;
-	var $components = array('Email','Invite.InviteHandler');
+	var $components = array('Email');
 	var $allowedActions = array(
 		'login',
 		'desktop_login',
@@ -36,16 +36,24 @@ class UsersController extends UsersAppController {
 		'checkLogin',
 		'restricted',
 		);
+	
+	public function __construct($request = null, $response = null) {
+		parent::__construct($request, $response);
+		if (in_array('Invite', CakePlugin::loaded())) : 
+			$this->components[] = 'Invite.InviteHandler'; 
+		endif;
+	}
 
-	/**
-	 * A page to stop infinite redirect loops when there are errors.
-	 */
+/**
+ * A page to stop infinite redirect loops when there are errors.
+ */
 	public function restricted() {
 	}
 
-	/**
-	 * Public login function to verify access to restricted areas.
-	 */
+
+/**
+ * Public login function to verify access to restricted areas.
+ */
 	public function login() {
 		if (!empty($this->request->data)) {
 			if ($this->Auth->login()) {
@@ -79,9 +87,9 @@ class UsersController extends UsersAppController {
     }
 
 
-	/**
-	 * Set the default redirect variables, using the settings table constant.
-	 */
+/**
+ * Set the default redirect variables, using the settings table constant.
+ */
 	function _loginRedirect() {
 		if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
 			if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
@@ -98,9 +106,9 @@ class UsersController extends UsersAppController {
 		}
 	}
 
-	/**
-	 * Set the default redirect variables, using the settings table constant.
-	 */
+/**
+ * Set the default redirect variables, using the settings table constant.
+ */
 	function _logoutRedirect() {
 		if (defined('__APP_LOGOUT_REDIRECT_URL')) {
 			if ($urlParams = @unserialize(__APP_LOGOUT_REDIRECT_URL)) {
@@ -130,11 +138,11 @@ class UsersController extends UsersAppController {
 		echo json_encode($data);
     }
 
-	/**
-	 * Used for Zuha Desktop integration.
-	 *
-	 * @todo 		This should be updated to some kind of API login (maybe REST) so that any apps can authenticate.
-	 */
+/**
+ * Used for Zuha Desktop integration.
+ *
+ * @todo 		This should be updated to some kind of API login (maybe REST) so that any apps can authenticate.
+ */
 	function desktop_login() {
 
         $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => AuthComponent::password($this->request->data['User']['password']))));
@@ -349,7 +357,7 @@ class UsersController extends UsersAppController {
 	}
 
 
-/*
+/**
  * __welcome()
  * User can now register and then wait for an email confirmation to activate his account.
  * If he doesn't activate his account, he cant access the system. The key expires in 3 days.
@@ -418,10 +426,10 @@ If you have received this message in error please ignore, the link will be unusa
 	}
 
 
-	/*
-	 * Used same column `forgot_key` for storing key. It starts with W for activation, F for forget
-	 * @todo 	change the column name from forgot_key to something better, like maybe just "key"
-	 */
+/**
+ * Used same column `forgot_key` for storing key. It starts with W for activation, F for forget
+ * @todo 	change the column name from forgot_key to something better, like maybe just "key"
+ */
 	function reset_password($key = null) {
 		$user = $this->User->verify_key($key);
 		if ($user) {
@@ -442,12 +450,12 @@ If you have received this message in error please ignore, the link will be unusa
 	}
 
 
-	/**
-	 * Forgot Password
-	 * Used to send a password reset key to the user's email address on file.
-	 *
-	 * @todo			This message needs to be configurable.
-	 */
+/**
+ * Forgot Password
+ * Used to send a password reset key to the user's email address on file.
+ *
+ * @todo			This message needs to be configurable.
+ */
 	function forgot_password() {
 		if(!empty($this->request->data))	{
 			# we need to check the username field and the email field
@@ -494,10 +502,10 @@ If you have received this message in error please ignore, the link will be unusa
 	function dashboard() {
 	}
 
-	/*
-	 * Get Credits
-	 * get user credits
-	 */
+/**
+ * Get Credits
+ * get user credits
+ */
 	function get_credits($user_id = null){
 
 		$user = $this->User->find('first', array(

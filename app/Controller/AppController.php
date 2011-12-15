@@ -25,7 +25,7 @@ class AppController extends Controller {
 	
 	var $userId = '';
     var $uses = array('Condition');
-	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html', 'Menus.Tree');
+	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html');
 	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'SwiftMailer', 'RegisterCallbacks' /*'RegisterCallbacks', 'SwiftMailer', 'Security' Desktop Login Stops Working When This is On*/);
 	var $viewClass = 'Theme';
 	var $theme = 'Default';
@@ -40,7 +40,10 @@ class AppController extends Controller {
 		parent::__construct($request, $response);
 		$this->_getHelpers();
 		$this->_getComponents();
-		$this->uses[] = 'Webpages.Webpage';
+		
+		if (in_array('Webpages', CakePlugin::loaded())) : 
+			$this->uses[] = 'Webpages.Webpage'; 
+		endif;
 	}
 	
 	
@@ -65,32 +68,24 @@ class AppController extends Controller {
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
-		/*App::Import('Model', 'Condition');
-		$this->Condition = new Condition;
+		#App::Import('Model', 'Condition');
+		#$this->Condition = new Condition;
 		#get the id that was just inserted so you can call back on it.
-		$conditions['plugin'] = $this->request->params['plugin'];
-		$conditions['controller'] = $this->request->params['controller'];
-		$conditions['action'] = $this->request->params['action'];
-		$conditions['extra_values'] = $this->request->params['pass'];
-		$this->Condition->checkAndFire('is_read', $conditions, $this->request->data); */
+		#$conditions['plugin'] = $this->request->params['plugin'];
+		#$conditions['controller'] = $this->request->params['controller'];
+		#$conditions['action'] = $this->request->params['action'];
+		#$conditions['extra_values'] = $this->request->params['pass'];
+		#$this->Condition->checkAndFire('is_read', $conditions, $this->request->data); */
 		# End Condition Check #
 		# End DO NOT DELETE #
-			
-		/**
- 		 * Allows us to have webroot files (css, js, etc) in the sites directories
- 		 * Used in conjunction with the "var $view above"
-		 * @todo allow the use of multiple themes, database driven themes, and theme switching
- 		 *
 		
-		/**
-		 * For use with administrators, and being able to view the site as if they were in a different user role at anytime.
-		 */
-		$this->set('editorUserRoles', $this->userRoles);
 		 
 		/**
 		 * Configure AuthComponent
 		 */
-		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : array('message'=> 'Please register or login to access that feature.');
+		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? 
+			array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : 
+			array('message'=> 'Please register or login to access that feature.');
 		$this->Auth->authError = $authError['message'];
         $this->Auth->loginAction = array(
 			'plugin' => 'users',
@@ -109,9 +104,9 @@ class AppController extends Controller {
         $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 
 		$this->Auth->actionPath = 'controllers/';
-		# pulls in the hard coded allowed actions from the current controller
+		
 		$this->Auth->allowedActions = array('display');
-		#$this->Auth->authorize = 'controller';
+		
 		if (!empty($this->allowedActions)) {
 			$allowedActions = array_merge($this->Auth->allowedActions, $this->allowedActions);
 			$this->Auth->allowedActions = $allowedActions;
@@ -152,12 +147,12 @@ class AppController extends Controller {
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 		
-		$this->_siteTemplate();
+		#$this->_siteTemplate();
 		
 		/**
 		 * Check whether the site is sync'd up 
 		 */
-		#$this->_siteStatus();	
+		$this->_siteStatus();	
 	}
 	
 	/**
@@ -555,6 +550,10 @@ class AppController extends Controller {
 	 *
 	 */
 	function _getHelpers() {
+		if (in_array('Menus', CakePlugin::loaded())) : 
+			$this->helpers[] = 'Menus.Tree'; 
+		endif;
+		
 		if(defined('__APP_LOAD_APP_HELPERS')) {
 			$settings = __APP_LOAD_APP_HELPERS;
 			if ($helpers = @unserialize($settings)) {
