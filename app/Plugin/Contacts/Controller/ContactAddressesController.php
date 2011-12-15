@@ -1,7 +1,8 @@
 <?php
 class ContactAddressesController extends ContactsAppController {
 
-	var $name = 'ContactAddresses';
+	public $name = 'ContactAddresses';
+	public $uses = 'Contacts.ContactAddress';
 
 	function index() {
 		$this->ContactAddress->recursive = 0;

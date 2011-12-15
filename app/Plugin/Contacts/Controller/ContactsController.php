@@ -1,8 +1,9 @@
 <?php
 class ContactsController extends ContactsAppController {
 
-	var $name = 'Contacts';
-	var $components = array('Comments.Comments' => array('userModelClass' => 'Users.User', 'actionNames' => array('task')));
+	public $name = 'Contacts';
+	public $uses = 'Contacts.Contact';
+	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User', 'actionNames' => array('task')));
 	
 	function beforeFilter() {
 		parent::beforeFilter();

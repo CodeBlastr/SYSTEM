@@ -1,7 +1,8 @@
 <?php
 class BannerViewsController extends AppController {
 
-	var $name = 'BannerViews';
+	public $name = 'BannerViews';
+	public $uses = 'Banners.BannerView';
 
 	function index() {
 		$this->BannerView->recursive = 0;

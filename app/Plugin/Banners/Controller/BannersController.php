@@ -1,10 +1,18 @@
 <?php
 class BannersController extends AppController {
 
-	var $name = 'Banners';
-	var $helpers = array('javascript');
-	var $allowedActions = array('daily_deal_data', 'banner_index', 'daily_deal', 'selected_deal', 
-				'all_daily_deals', 'redeemed', 'view_offer', 'home');
+	public $name = 'Banners';
+	public $uses = 'Banners.Banner';
+	public $helpers = array('javascript');
+	public $allowedActions = array(
+		'daily_deal_data',
+		'banner_index',
+		'daily_deal',
+		'selected_deal',
+		'all_daily_deals',
+		'redeemed',
+		'view_offer',
+		'home');
 		 
 	function index() {
 		$this->settings['conditions']['Banner.customer_id'] = $this->Auth->user('id');
