@@ -1,7 +1,8 @@
 <?php
 class BannerPositionsController extends AppController {
 
-	var $name = 'BannerPositions';
+	public $name = 'BannerPositions';
+	public $uses = 'Banners.BannerPosition';
 
 	function admin_index() {
 		$this->BannerPosition->recursive = 0;

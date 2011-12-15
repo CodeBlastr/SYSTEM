@@ -36,14 +36,12 @@ class AppController extends Controller {
 	var $params = array();
 	var $templateId = '';
 	
+	
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
 		$this->_getHelpers();
 		$this->_getComponents();
-		
-		if (in_array('Webpages', CakePlugin::loaded())) : 
-			$this->uses[] = 'Webpages.Webpage'; 
-		endif;
+		$this->_getUses();
 	}
 	
 	
@@ -79,38 +77,8 @@ class AppController extends Controller {
 		# End Condition Check #
 		# End DO NOT DELETE #
 		
-		 
-		/**
-		 * Configure AuthComponent
-		 */
-		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? 
-			array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : 
-			array('message'=> 'Please register or login to access that feature.');
-		$this->Auth->authError = $authError['message'];
-        $this->Auth->loginAction = array(
-			'plugin' => 'users',
-			'controller' => 'users',
-			'action' => 'login',
-			);
-		$this->Auth->authorize = array('Controller');
-		$this->Auth->authenticate = array(
-            'Form' => array(
-                'userModel' => 'Users.User',
-                'fields' => array('username' => 'username', 'password' => 'password'),
-                /*'scope' => array('User.active' => 1)*/
-            )
-        );
-		        
-        $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
-
-		$this->Auth->actionPath = 'controllers/';
+		$this->_configAuth();
 		
-		$this->Auth->allowedActions = array('display');
-		
-		if (!empty($this->allowedActions)) {
-			$allowedActions = array_merge($this->Auth->allowedActions, $this->allowedActions);
-			$this->Auth->allowedActions = $allowedActions;
-		}
 		
 		/**
 		 * Support for json file types when using json extensions
@@ -545,10 +513,10 @@ class AppController extends Controller {
 
 		
 	
-	/**
-	 * Loads helpers dynamically system wide, and per controller loading abilities.
-	 *
-	 */
+/**
+ * Loads helpers dynamically system wide, and per controller loading abilities.
+ *
+ */
 	function _getHelpers() {
 		if (in_array('Menus', CakePlugin::loaded())) : 
 			$this->helpers[] = 'Menus.Tree'; 
@@ -578,13 +546,13 @@ class AppController extends Controller {
 		}
 	}
 	
-	/** 
-	 * Checks whether the settings are synced up between defaults and the current settings file. 
-	 * The idea is, if they aren't in sync then your database is out of date and you need a warning message.
-	 * 
-	 * @todo	I think we need to put $uses = 'Setting' into the app model.  (please communicate whether you agree)
-	 * @todo 	We're now loading these settings files two times on every page load (or more).  This needs to be optimized.
-	 */
+/** 
+ * Checks whether the settings are synced up between defaults and the current settings file. 
+ * The idea is, if they aren't in sync then your database is out of date and you need a warning message.
+ * 
+ * @todo	I think we need to put $uses = 'Setting' into the app model.  (please communicate whether you agree)
+ * @todo 	We're now loading these settings files two times on every page load (or more).  This needs to be optimized.
+ */
 	function _siteStatus() {
 		if ($this->userRoleId == 1) {
 			$fileSettings = new File(CONFIGS.'settings.ini');
@@ -632,19 +600,65 @@ class AppController extends Controller {
 			}
 		}
 	}
+	
+	
+	function _getUses() {
+		if (in_array('Webpages', CakePlugin::loaded())) : 
+			if (is_array($this->uses)) :
+				$this->uses = array_merge($this->uses, array('Webpages.Webpage')); 
+			else :
+				# there is only one (non-array) in $this->uses
+				$this->uses = array($this->uses, 'Webpages.Webpage'); 
+			endif;
+		endif;
+	}
+   
+   
+		 
+/**
+ * Configure AuthComponent
+ */
+   public function _configAuth() { 
+		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? 
+			array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : 
+			array('message'=> 'Please register or login to access that feature.');
+		$this->Auth->authError = $authError['message'];
+        $this->Auth->loginAction = array(
+			'plugin' => 'users',
+			'controller' => 'users',
+			'action' => 'login',
+			);
+		$this->Auth->authorize = array('Controller');
+		$this->Auth->authenticate = array(
+            'Form' => array(
+                'userModel' => 'Users.User',
+                'fields' => array('username' => 'username', 'password' => 'password'),
+                /*'scope' => array('User.active' => 1)*/
+            )
+        );
+		        
+		$this->Auth->actionPath = 'controllers/';
+		$this->Auth->allowedActions = array('display');
+        $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
+		
+		if (!empty($this->allowedActions)) {
+			$allowedActions = array_merge($this->Auth->allowedActions, $this->allowedActions);
+			$this->Auth->allowedActions = $allowedActions;
+		}
+   }
 
 
-	/**
-	 * sendMail
-	 *
-	 * Send emails.
-	 * $email: Array - address/name pairs (e.g.: array(example@address.com => name, ...)
-	 * String - address to send email to
-	 * $subject: subject of email.
-	 * $message['html'] in the layout will be replaced with this text. 
-	 * $template to be picked from folder for email. By default, if $mail is given in any template, especially default, 
-	 * Else modify the template from the view file and set the variables from action via $this->set
-	 */
+/**
+ * sendMail
+ *
+ * Send emails.
+ * $email: Array - address/name pairs (e.g.: array(example@address.com => name, ...)
+ * String - address to send email to
+ * $subject: subject of email.
+ * $message['html'] in the layout will be replaced with this text. 
+ * $template to be picked from folder for email. By default, if $mail is given in any template, especially default, 
+ * Else modify the template from the view file and set the variables from action via $this->set
+ */
 	function __sendMail($email = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
 		
 		if (defined('__SYSTEM_SMTP')) :

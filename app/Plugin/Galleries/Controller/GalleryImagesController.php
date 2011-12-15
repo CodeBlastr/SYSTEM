@@ -1,7 +1,8 @@
 <?php
 class GalleryImagesController extends GalleriesAppController {
 
-	var $name = 'GalleryImages';
+	public $name = 'GalleryImages';
+	public $uses = 'Galleries.GalleryImage';
 
 	function edit($id = null) {
 		if (!empty($this->request->data)) {

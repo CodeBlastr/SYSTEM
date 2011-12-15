@@ -22,10 +22,11 @@
  */
 class UsersController extends UsersAppController {
 
-	var $name = 'Users';
-	var $uid;
-	var $components = array('Email');
-	var $allowedActions = array(
+	public $name = 'Users';
+	public $uses = 'Users.User';
+	public $uid;
+	public $components = array('Email');
+	public $allowedActions = array(
 		'login',
 		'desktop_login',
 		'logout',

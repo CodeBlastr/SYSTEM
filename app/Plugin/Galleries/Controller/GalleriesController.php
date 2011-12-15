@@ -1,8 +1,9 @@
 <?php
 class GalleriesController extends GalleriesAppController {
 
-	var $name = 'Galleries';
-	var $allowedActions = array('thumb');
+	public $name = 'Galleries';
+	public $uses = 'Galleries.Gallery';
+	public $allowedActions = array('thumb');
 
 /**
  * Index for gallery.

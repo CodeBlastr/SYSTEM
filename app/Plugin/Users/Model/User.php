@@ -124,7 +124,6 @@ class User extends AppModel {
 		if (in_array('Affiliates', CakePlugin::loaded())) : 
 			$this->actsAs[] = 'Affiliates.Referrable';
 		endif;
-		
 	}
 	
 	protected function _comparePassword() {
