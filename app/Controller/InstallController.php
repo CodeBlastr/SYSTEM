@@ -67,28 +67,32 @@ class InstallController extends AppController {
 		debug($out);
 	}
 	
+	private function _handleInputVars($data) {
+		$this->options['siteName'] = $this->request->data['Install']['site_name'];
+		if (strpos($this->request->data['Install']['site_domain'], ',')) :
+			# comma separated domain handler
+			$this->siteDomains = array_map('trim', explode(',', $this->request->data['Install']['site_domain']));
+			$this->options['siteDomain'] = $this->siteDomains[0];
+		else : 
+			$this->options['siteDomain'] = $this->request->data['Install']['site_domain'] == 'mydomain.com' ? '' : $this->request->data['Install']['site_domain'];
+		endif;
+		$this->config['host'] = $data['Database']['host'];
+		$this->config['login'] = $data['Database']['username'];
+		$this->config['password'] = $data['Database']['password'];
+		$this->config['database'] = $data['Database']['name'];
+		$this->newDir = ROOT.DS.'sites'.DS.$this->options['siteDomain'];
+	}
+	
 	
 	public function index() {
 		if (!empty($this->request->data)) :
-			// @todo  Move everything within from this if down into its own _install() function
-			$dataSource = $this->request->data['Database'];
-			#$db =& ConnectionManager::loadDataSource('install');
-			$this->options['siteName'] = $this->request->data['Install']['site_name'];
-			$this->options['siteDomain'] = $this->request->data['Install']['site_domain'] == 'mydomain.com' ? '' : $this->request->data['Install']['site_domain'];
-			$this->config['host'] = $dataSource['host'];
-			$this->config['login'] = $dataSource['username'];
-			$this->config['password'] = $dataSource['password'];
-			$this->config['database'] = $dataSource['name'];
-			$this->newDir = ROOT.DS.'sites'.DS.$this->options['siteDomain'];
-			
-			
+			# move everything here down to its own function
+			$this->_handleInputVars($this->request->data);
 			$db = ConnectionManager::getDataSource('default');
 			$db->disconnect();
 			$db->setConfig($this->config);
 			$db->connect();
 			
-			$this->_updateBootstrapPhp();
-			break;
 			
 			# test the db connection to make sure the info is good.
 			if ($db->connected) :
@@ -197,19 +201,29 @@ class InstallController extends AppController {
 	
 	private function _updateBootstrapPhp() {
 		$filename = ROOT.DS.'sites'.DS.'bootstrap.php';
-		if (is_writable($filename)) :
-			$handle = fopen($filename, "r");
-			$contents = fread($handle, filesize($filename));
-			$replace = "\$domains['".$this->options['siteDomain']."'] = '".$this->options['siteDomain']."';";
-			$contents = str_replace('/** end **/', $replace.PHP_EOL.PHP_EOL.'/** end **/', $contents);
-			fwrite($handle, $contents);
-			fclose($handle);
+		$filesize = filesize($filename);
+		$file = fopen($filename, 'r');
+		$filecontents = fread($file, $filesize);
+		fclose($file);
+		
+		if (!empty($this->siteDomains)) :
+			debug($this->siteDomains);
+			$replace = '';
+			foreach($this->siteDomains as $site) :
+				$replace .= "\$domains['".$site."'] = '".$this->options['siteDomain']."';".PHP_EOL;
+			endforeach;
+		else :
+			$replace = "\$domains['".$this->options['siteDomain']."'] = '".$this->options['siteDomain']."';".PHP_EOL;
+		endif;
+		
+		# make a back up first
+		if (copy($filename, ROOT.DS.'sites'.DS.'bootstrap.'.date('Ymdhis').'.php')) :
+			$contents = str_replace('/** end **/', $replace.PHP_EOL.'/** end **/', $filecontents);
+			if(file_put_contents($filename, $contents)) : 
+				echo 'written';
+			endif;
 		endif;
 		return false;
-		#$fp = fopen('data.txt', 'w');
-		#fwrite($fp, '1');
-		#fwrite($fp, '23');
-		#fclose($fp);
 	}
 	
 	
