@@ -34,17 +34,16 @@ class SettingsController extends AppController {
 			$this->Session->setFlash(__('Defaults update successful.', true));
 			$this->redirect($this->referer());
 		} else {
-			$this->Session->setFlash(__('Defaults update failed. Please, try again.', true));
+			$this->Session->setFlash(__('Defaults update failed. Please, try again.'));
 		}
-		
 	}
 	
 	function update_settings() {
 		if ($this->Setting->writeSettingsIniData()) {
-			$this->Session->setFlash(__('Settings update successful.', true));
+			$this->Session->setFlash(__('Settings update successful.'));
 			$this->redirect($this->referer());
 		} else {
-			$this->Session->setFlash(__('Settings update failed. Please, try again.', true));
+			$this->Session->setFlash(__('Settings update failed. Please, try again.'));
 		}
 	}
 	

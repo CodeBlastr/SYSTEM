@@ -12,6 +12,7 @@ class InstallController extends AppController {
 	public $progress;
 	public $options;
 	public $config;
+	public $allowedActions = array('login');
 
 /**
  * Schema class being used.
@@ -66,7 +67,10 @@ class InstallController extends AppController {
 	private function _out($out) {
 		debug($out);
 	}
-	
+
+/**
+ * write the class vars that are used through out the functions in this class
+ */
 	private function _handleInputVars($data) {
 		$this->options['siteName'] = $this->request->data['Install']['site_name'];
 		if (strpos($this->request->data['Install']['site_domain'], ',')) :
@@ -124,7 +128,7 @@ class InstallController extends AppController {
 							if ($install = $this->_installCoreData($db)) :
 								if ($this->_installCoreFiles()) : 
 									$this->Session->setFlash(__('Database and files installed successfully ' . $install));
-									$this->redirect($this->referer());
+									$this->redirect('http://'.$this->options['siteDomain'].'/install/login');
 								else : 
 									$this->Session->setFlash(__('File copy failed.' . $install));
 									$this->redirect($this->referer());
@@ -162,6 +166,51 @@ class InstallController extends AppController {
 		$this->layout = false;
 	}
 	
+/** 
+ * Used to verify an install, update the username and password, and then write the settings.ini files.
+ */
+	public function login() {
+		# write the ini data for the new site
+		App::uses('Setting', 'Model');
+		$Setting = new Setting;
+		if ($Setting->writeSettingsIniData()) :
+		
+			# get the user from the install data
+			App::uses('User', 'Users.Model');
+			$User = new User;
+			$user = $User->find('first', array(
+				'conditions' => array(
+					'User.username' => 'admin',
+					'User.last_login' => null,
+					),
+				));
+			
+			if(!empty($user)) : 
+				$this->set(compact('user'));
+			else :
+				$this->Session->setFlash(__('Install login require first time user.'));
+				$this->redirect($this->referer());
+			endif;
+		
+		
+			if (!empty($this->request->data)) :
+				$this->request->data['User']['last_login'] = date('Y-m-d h:i:s');
+				if ($User->add($this->request->data)) :
+					$this->Session->setFlash(__('Install completed! Test your new admin login (and a good first place to go is to privileges, to run the sections update, or to the admin page and run any upgrades needed).'));
+					$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+				else : 
+					$this->Session->setFlash(__('User update failure.'));
+					$this->redirect($this->referer());
+				endif;
+			endif;
+		else : 
+			$this->Session->setFlash(__('Required settings, update failed.'));
+			$this->redirect($this->referer());
+		endif; // write settings ini 
+		
+		$this->layout = false;
+	}
+	
 
 /**
  * Copies example.com, creates the database.php, and core.php files.
@@ -185,19 +234,19 @@ class InstallController extends AppController {
 							# run settings
 							return true;
 						else :
-							return false;
+							break; return false;
 						endif;
 					else :
-						return false;
+						break; return false;
 					endif;
 				else :
-					return false;
+					break; return false;
 				endif;
 			else : 
-				return false;
+				break; return false;
 			endif;			
 		else:
-			return false;
+			break; return false;
 		endif;
 	}
 	
@@ -210,7 +259,6 @@ class InstallController extends AppController {
 		fclose($file);
 		
 		if (!empty($this->siteDomains)) :
-			debug($this->siteDomains);
 			$replace = '';
 			foreach($this->siteDomains as $site) :
 				$replace .= "\$domains['".$site."'] = '".$this->options['siteDomain']."';".PHP_EOL;
@@ -223,7 +271,7 @@ class InstallController extends AppController {
 		if (copy($filename, ROOT.DS.'sites'.DS.'bootstrap.'.date('Ymdhis').'.php')) :
 			$contents = str_replace('/** end **/', $replace.PHP_EOL.'/** end **/', $filecontents);
 			if(file_put_contents($filename, $contents)) : 
-				echo 'written';
+				return true;
 			endif;
 		endif;
 		return false;
@@ -248,30 +296,6 @@ class InstallController extends AppController {
 			$this->config['password'] = $dataSource['password'];
 			$this->config['database'] = $dataSource['name'];
 			*/
-	}
-	
-	
-	/** will be deleted */
-	public function login() {
-		App::uses('User', 'Users.Model');
-		$User = new User;
-		$user = $User->find('first', array('conditions' => array('User.username' => 'admin')));
-		debug($user);
-		break;
-		
-		if (!empty($this->request->data)) {
-			if ($this->Auth->login()) {
-				try {
-					$this->User->loginMeta($this->request->data);
-	        		return $this->redirect($this->Auth->redirect());
-				} catch (Exception $e) {
-					$this->Session->setFlash($e->getMessage());
-					$this->Auth->logout();
-				}
-		    } else {
-		        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
-		    }
-		}
 	}
 	
 	
@@ -508,7 +532,7 @@ class InstallController extends AppController {
 		$dataStrings[] = "INSERT INTO `settings` (`id`, `type`, `name`, `value`, `description`, `plugin`, `model`, `created`, `modified`) VALUES (1, 'System', 'ZUHA_DB_VERSION', '0.0143', '', NULL, NULL, '0000-00-00 00:00:00', '0000-00-00 00:00:00'), (2, 'System', 'GUESTS_USER_ROLE_ID', '5', '', NULL, NULL, '0000-00-00 00:00:00', '0000-00-00 00:00:00'), (3, 'System', 'LOAD_PLUGINS', 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges', '', NULL, NULL, '0000-00-00 00:00:00', '0000-00-00 00:00:00'), (4, 'System', 'SITE_NAME', '".$options['siteName']."', '', NULL, NULL, '0000-00-00 00:00:00', '0000-00-00 00:00:00');";
 
 		$dataStrings[] = "INSERT INTO `users` (`id`, `parent_id`, `reference_code`, `full_name`, `first_name`, `last_name`, `username`, `password`, `email`, `view_prefix`, `last_login`, `forgot_key`, `forgot_key_created`, `forgot_tries`, `user_role_id`, `credit_total`, `slug`, `created`, `modified`, `facebook_id`, `is_active`) VALUES
-(1, NULL, 'lqnvph9u', 'Zuha Administrator', 'Zuha', 'Administrator', 'admin', '3eb13b1a6738103665003dea496460a1069ac78a', 'admin@example.com', 'admin', '2011-12-16 01:47:58', NULL, '2011-12-15 10:57:42', NULL, 1, 0, NULL, '2011-12-15 22:57:42', '2011-12-16 13:47:58', NULL, 0);";
+(1, NULL, 'lqnvph9u', 'Zuha Administrator', 'Zuha', 'Administrator', 'admin', '3eb13b1a6738103665003dea496460a1069ac78a', 'admin@example.com', 'admin', NULL, NULL, '2011-12-15 10:57:42', NULL, 1, 0, NULL, '2011-12-15 22:57:42', '2011-12-16 13:47:58', NULL, 0);";
 
 		$dataStrings[] = "INSERT INTO `user_roles` (`id`, `parent_id`, `name`, `lft`, `rght`, `view_prefix`, `is_system`, `created`, `modified`) VALUES (1, NULL, 'admin', 1, 2, 'admin', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:24'), (2, NULL, 'managers', 3, 4, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:41'), (3, NULL, 'users', 5, 6, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:50'), (5, NULL, 'guests', 7, 8, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:56:05');";
 
