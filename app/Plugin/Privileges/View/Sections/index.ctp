@@ -3,6 +3,7 @@
 <h2><?php echo __('Privileges', true); ?></h2>
 <?php foreach($data as $ac):?>
 <?php 
+	$ac["Section"]["type"]  = 'plugin'; // temporary (breaks core controllers)
 	switch ($ac["Section"]["type"]){
 		case 'plugin':
 			$action = 'view_plugin';
@@ -14,7 +15,6 @@
 			$class = 'acl_controller';
 		break;
 	}
-
 	if($ac["Section"]["type"] != 'plugin'):
 ?>
 	  <ul>

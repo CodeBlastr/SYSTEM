@@ -54,13 +54,23 @@ div.submit {
 legend {
 	font-weight: bold;
 }
+#flashMessage {
+	margin: auto;
+	text-align: left;
+	max-width: 24em;
+	border: 1px solid #C00;
+	background: #C99;
+	color: #FFF;
+	font-weight: bold;
+	padding: 1em;
+}
 --> 
 </style>
 
 </head>
 <body>
 
-
+<?php echo $this->Session->flash(); ?>
 <div class="install form">
 	<br /><img src = "/img/admin/logo.png" />
     <h4>Instantly install as many <br /> sites as you'd like.</h4>
@@ -85,8 +95,5 @@ legend {
 	</fieldset>
     <p>Server requirement : MySQL version 5.X+, PHP version 5.3+, Apache mod_rewrite</p>
 </div>
-  <?php 
-	}
-  ?>
 </body>
 </html>

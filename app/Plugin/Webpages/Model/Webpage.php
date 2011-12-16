@@ -7,7 +7,6 @@
  */
 class Webpage extends WebpagesAppModel {
 	
-    var $actsAs = array('Search.Searchable');
 	var $name = 'Webpage';
 	var $displayField = 'name';
 	var $validate = array(
@@ -66,6 +65,13 @@ class Webpage extends WebpagesAppModel {
         return $query;
     }
 */
+	
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+		if (in_array('Search', CakePlugin::loaded())) : 
+			$this->actsAs[] = 'Search.Searchable';
+		endif;
+	}
 
 	function afterDelete() {
 		# delete template settings

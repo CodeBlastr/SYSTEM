@@ -276,17 +276,23 @@ class UsersController extends UsersAppController {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
 			));
-
-			$userShippingAddress = $this->User->OrderShipment->find('first',array(
-				'conditions' => array('OrderShipment.user_id' => $id,
-							'OrderShipment.order_transaction_id is null')
-				));
-			$user['OrderShipment'] = $userShippingAddress['OrderShipment'];
-			$userBillingAddress = $this->User->OrderPayment->find('first',array(
-				'conditions' => array('OrderPayment.user_id' => $id,
-						'OrderPayment.order_transaction_id is null')
-			));
-			$user['OrderPayment'] = $userBillingAddress['OrderPayment'];
+			
+			if (in_array('Orders', CakePlugin::loaded())) : 
+				$userShippingAddress = $this->User->OrderShipment->find('first',array(
+					'conditions' => array(
+						'OrderShipment.user_id' => $id,
+						'OrderShipment.order_transaction_id is null'
+						)
+					));
+				$user['OrderShipment'] = $userShippingAddress['OrderShipment'];
+				$userBillingAddress = $this->User->OrderPayment->find('first',array(
+					'conditions' => array(
+						'OrderPayment.user_id' => $id,
+						'OrderPayment.order_transaction_id is null'
+						)
+					));
+				$user['OrderPayment'] = $userBillingAddress['OrderPayment'];
+			endif;
 
 			if(isset($user['User'])) {
 				$this->request->data = $user;
@@ -305,8 +311,10 @@ class UsersController extends UsersAppController {
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
 			if($this->User->save($this->request->data)) {
-				$this->User->OrderPayment->save($this->request->data);
-				$this->User->OrderShipment->save($this->request->data);
+				if (in_array('Orders', CakePlugin::loaded())) : 
+					$this->User->OrderPayment->save($this->request->data);
+					$this->User->OrderShipment->save($this->request->data);
+				endif;
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
 			}

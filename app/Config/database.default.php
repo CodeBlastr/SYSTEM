@@ -26,5 +26,16 @@ else :
 			'prefix' => '',
 			//'encoding' => 'utf8',
 		);
+		
+		public $install = array(
+			'datasource' => 'Database/Mysql',
+			'persistent' => false,
+			'host' => $this->host,
+			'login' => $this->login,
+			'password' => $this->password,
+			'database' => $this->database,
+			'prefix' => '',
+			//'encoding' => 'utf8',
+		);
 	}
 endif;
