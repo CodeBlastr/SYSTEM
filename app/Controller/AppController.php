@@ -115,7 +115,7 @@ class AppController extends Controller {
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 		
-		#$this->_siteTemplate();
+		$this->_siteTemplate();
 		
 		/**
 		 * Check whether the site is sync'd up 
@@ -477,34 +477,27 @@ class AppController extends Controller {
 	 */
 	function _templateConditions() {
 		# contain the menus for output into the slideDock if its the admin user
-		if ($this->userRoleId == 1) :		
-			$db = ConnectionManager::getDataSource('default');
-			$tables = $db->listSources();
-			# this is a check to see if this site is upgraded, it can be removed after all sites are upgraded 6/9/2011
-			if (array_search('menus', $tables)) { 
-				# this allows the admin to edit menus
-				$this->Webpage->bindModel(array(
-					'hasMany' => array(
-						'Menu' => array(
-							'className' => 'Menus.Menu', 
-							'foreignKey' => '', 
-							'conditions' => 'Menu.menu_id is null',
+		if ($this->userRoleId == 1 && in_array('Menus', CakePlugin::loaded())) :
+			# this allows the admin to edit menus
+			$this->Webpage->bindModel(array(
+				'hasMany' => array(
+					'Menu' => array(
+						'className' => 'Menus.Menu', 
+						'foreignKey' => '', 
+						'conditions' => 'Menu.menu_id is null',
+						),
+					),
+				));
+			return array('conditions' => array(
+				'Webpage.id' => $this->templateId,
+					),
+				'contain' => array(
+					'Menu' => array(
+						'conditions' => array(
+							'Menu.menu_id' => null,
 							),
 						),
 					));
-					return array('conditions' => array(
-						'Webpage.id' => $this->templateId,
-							),
-						'contain' => array(
-							'Menu' => array(
-								'conditions' => array(
-									'Menu.menu_id' => null,
-									),
-								),
-							));
-			} else {
-				return array('conditions' => array('Webpage.id' => $this->templateId));
-			}
 		else :
 			return array('conditions' => array('Webpage.id' => $this->templateId));
 		endif;

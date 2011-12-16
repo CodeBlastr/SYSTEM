@@ -15,11 +15,10 @@ class Section extends PrivilegesAppModel {
 		)
 	);
 	
-	/*
-	 * Prepare the Aco data 
-	 * @return {array}
-	 */
-	
+/*
+ * Prepare the Aco data 
+ * @return {array}
+ */	
 	function prepare(){
 		// set initial values 
 		$this->recursive = 2 ;
@@ -42,9 +41,9 @@ class Section extends PrivilegesAppModel {
 								  
 		$data = $this->find('all' , array(
 			'conditions' => array(
-				'Section.type' => array(
-					'plugin', 'controller'
-					),
+				#'Section.type' => array(
+				#	'plugin', 'controller'
+				#	),
 				'parent_id' => $root['Section']['id'],
 				),
 			'contain' => array(
@@ -59,15 +58,15 @@ class Section extends PrivilegesAppModel {
 			'order' => array(
 				'Section.alias',
 				'Section.lft',
-			    'Section.type',
+			  #  'Section.type',
 				),
 			));
 		
 		for($i = 0; $i < count($data) ; $i++){
-			if($data[$i]["Section"]["type"] == 'plugin'){
+			#if($data[$i]["Section"]["type"] == 'plugin'){
 				$controllers = $this->find('all', array(
 					'conditions'=>array(
-						'Section.type'=>'pcontroller',
+						#'Section.type'=>'pcontroller',
 						'Section.parent_id'=> $data[$i]["Section"]["id"]
 						),
 					'contain'=>array()
@@ -76,7 +75,7 @@ class Section extends PrivilegesAppModel {
 				foreach ($controllers as $c){
 					$data[$i]["Controller"][] = $c;
 				}
-			}
+			#}
 		}
 		return $data;
 	}

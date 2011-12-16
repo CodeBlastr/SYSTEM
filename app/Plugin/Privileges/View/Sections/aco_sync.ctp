@@ -8,6 +8,19 @@ foreach (CakeSession::read('Privileges.lastPlugin') as $text) :
 	echo '<li>' . $text . '</li>';
 endforeach;
 ?>
+<?php
+$last = end(CakeSession::read('Privileges.lastPlugin'));
+if (CakeSession::read('Privileges.end') != $last) :  ?>
+<script type="text/javascript">
+$(document).ready(function() {
+	var pathname = window.location.pathname;
+	window.location.replace(pathname);
+});
+</script>
+<?php else : ?>
+	<li>FINISHED!!!!</li>
+<?php endif; ?>
+
 	</ul>
 </div>
 
@@ -25,11 +38,3 @@ echo $this->Element('context_menu', array('menus' => array(
 		),
 	)));
 ?>
-
-
-<script type="text/javascript">
-$(document).ready(function() {
-	var pathname = window.location.pathname;
-	window.location.replace(pathname);
-});
-</script>

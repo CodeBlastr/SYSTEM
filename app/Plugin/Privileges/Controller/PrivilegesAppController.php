@@ -92,16 +92,28 @@ class PrivilegesAppController extends AppController {
  * @return void
  **/
 	function aco_sync() {
+		$this->_setEnd();
 		$this->_clean = true;
 		$this->aco_update();
 	}
+	
+/**
+ * Adds the last aco that will be added to the session so that  aco_sync (view file) will know when to stop.
+ */
+	function _setEnd() {
+		$plugins = CakePlugin::loaded();
+		end($plugins);
+		CakeSession::write('Privileges.end', current($plugins));
+	}
+	
+	
 /**
  * Updates the Aco Tree with new controller actions.
  *
  * @return void
  **/
 	function aco_update() {
-		$root = $this->_checkNode('controller', $this->rootNode, $this->rootNode, null);
+		$root = $this->_checkNode(/*'controller', */$this->rootNode, $this->rootNode, null);
 		$controllers = $this->getControllerList();
 		$this->_updateControllers($root, $controllers);
 		$plugins = array_diff(CakePlugin::loaded(), $this->pluginExclusions);
@@ -110,10 +122,10 @@ class PrivilegesAppController extends AppController {
 			$controllers = $this->getControllerList($plugin);
 
 			$path = $this->rootNode . '/' . $plugin;
-			$pluginRoot = $this->_checkNode('plugin', $path, $plugin, $root['Aco']['id']);
+			$pluginRoot = $this->_checkNode(/*'plugin', */$path, $plugin, $root['Aco']['id']);
 			$this->_updateControllers($pluginRoot, $controllers, $plugin);
 			
-			# zuha, run aco_update once and update the session so that plugin is ignored next go around
+			# zuha runs aco_update once and update the session so that plugin is ignored next go around
 			$lastPluginSession = CakeSession::read('Privileges.lastPlugin');
 			$lastPluginSession[] = $plugin;
 			CakeSession::write('Privileges.lastPlugin', $lastPluginSession);
@@ -157,12 +169,12 @@ class PrivilegesAppController extends AppController {
 
 			$path = $this->rootNode . '/' . $pluginPath . $controllerName;
 			# zuha add for types
-			if (!empty($pluginPath)) {
-				$type = 'pcontroller';
-			} else {
-				$type = 'controller';
-			}
-			$controllerNode = $this->_checkNode($type, $path, $controllerName, $root['Aco']['id']);
+			#if (!empty($pluginPath)) {
+			#	$type = 'pcontroller';
+			#} else {
+			#	$type = 'controller';
+			#}
+			$controllerNode = $this->_checkNode(/*$type, */$path, $controllerName, $root['Aco']['id']);
 			$this->_checkMethods($controller, $controllerName, $controllerNode, $pluginPath);
 		}
 		if ($this->_clean) {
@@ -212,10 +224,10 @@ class PrivilegesAppController extends AppController {
  * @param int $parentId
  * @return array Aco Node array
  */
-	function _checkNode($type = 'controller', $path, $alias, $parentId = null) {
+	function _checkNode(/*$type = 'controller', */$path, $alias, $parentId = null) {
 		$node = $this->Aco->node($path);
 		if (!$node) {
-			$this->Aco->create(array('parent_id' => $parentId, 'model' => null, 'alias' => $alias, 'type' => $type));
+			$this->Aco->create(array('parent_id' => $parentId, 'model' => null, 'alias' => $alias, /*'type' => $type*/));
 			$node = $this->Aco->save();
 			$node['Aco']['id'] = $this->Aco->id;
 			$this->out(__('Created Aco node: %s', $path));
@@ -244,12 +256,12 @@ class PrivilegesAppController extends AppController {
 			}
 			$path = $this->rootNode . '/' . $pluginPath . $controllerName . '/' . $action;
 			# zuha add for types
-			if (!empty($pluginPath)) {
+			/*if (!empty($pluginPath)) {
 				$type = 'paction';
 			} else {
 				$type = 'action';
-			}
-			$this->_checkNode($type, $path, $action, $node['Aco']['id']);
+			}*/
+			$this->_checkNode(/*$type, */$path, $action, $node['Aco']['id']);
 		}
 
 		if ($this->_clean) {

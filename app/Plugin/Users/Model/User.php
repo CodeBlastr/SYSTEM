@@ -207,8 +207,10 @@ class User extends AppModel {
 				$data['OrderShipment']['last_name'] =  !empty($data['User']['last_name']) ? $data['User']['last_name'] : '';
 				$data['OrderPayment']['user_id'] = $this->id;
 				$data['OrderShipment']['user_id'] = $this->id;
-				$this->OrderPayment->save($data);
-				$this->OrderShipment->save($data);
+				if (in_array('Orders', CakePlugin::loaded())) : 
+					$this->OrderPayment->save($data);
+					$this->OrderShipment->save($data);
+				endif;
 				
 				# create a gallery for this user.
 				if (!empty($data['User']['avatar']['name'])) {
