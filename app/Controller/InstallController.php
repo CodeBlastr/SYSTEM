@@ -81,6 +81,10 @@ class InstallController extends AppController {
 		$this->config['password'] = $data['Database']['password'];
 		$this->config['database'] = $data['Database']['name'];
 		$this->newDir = ROOT.DS.'sites'.DS.$this->options['siteDomain'];
+		if (is_dir($this->newDir)) :
+			$this->Session->setFlash(__('That domain already exists, please try again.'));
+			$this->redirect($this->referer());
+		endif;
 	}
 	
 	
@@ -92,7 +96,6 @@ class InstallController extends AppController {
 			$db->disconnect();
 			$db->setConfig($this->config);
 			$db->connect();
-			
 			
 			# test the db connection to make sure the info is good.
 			if ($db->connected) :
