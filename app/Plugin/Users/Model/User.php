@@ -81,19 +81,6 @@ class User extends AppModel {
 			'foreignKey' => 'creator_id',
 			'dependent' => false,
 			),
-		'OrderPayment' => array(
-			'className' => 'Orders.OrderPayment',
-			'foreign_key' => 'user_id'
-			),
-		'OrderShipment' => array(
-			'className' => 'Orders.OrderShipment',
-			'foreign_key' => 'user_id'
-			),
-		'CatalogItemBrand'=>array(
-			'className' => 'Catalogs.CatalogItemBrand',
-			'foreignKey' => 'owner_id',
-			'dependent' => false,
-			),
 		);
 	
 	public $hasOne = array(
@@ -123,6 +110,28 @@ class User extends AppModel {
 		parent::__construct($id, $table, $ds);
 		if (in_array('Affiliates', CakePlugin::loaded())) : 
 			$this->actsAs[] = 'Affiliates.Referrable';
+		endif;
+		if (in_array('Orders', CakePlugin::loaded())) : 
+			$this->hasMany['OrderPayment'] = array(
+				'className' => 'Orders.OrderPayment',
+				'foreign_key' => 'user_id'
+				);
+			$this->hasMany['OrderShipment'] = array(
+				'className' => 'Orders.OrderShipment',
+				'foreign_key' => 'user_id'
+				);
+			$this->hasMany['CatalogItemBrand'] = array(
+				'className' => 'Catalogs.CatalogItemBrand',
+				'foreignKey' => 'owner_id',
+				'dependent' => false,
+				);
+		endif;
+		if (in_array('Catalogs', CakePlugin::loaded())) : 
+			$this->hasMany['CatalogItemBrand'] = array(
+				'className' => 'Catalogs.CatalogItemBrand',
+				'foreignKey' => 'owner_id',
+				'dependent' => false,
+				);
 		endif;
 	}
 	
@@ -202,12 +211,12 @@ class User extends AppModel {
 					$this->updateUserCredits(__USERS_NEW_REGISTRATION_CREDITS, $data['User']['parent_id']);
 				}	
 				
-				# setup and save data for a related order shipment record for prefilled checkout 
-				$data['OrderShipment']['first_name'] = !empty($data['User']['first_name']) ? $data['User']['first_name'] : ''; 
-				$data['OrderShipment']['last_name'] =  !empty($data['User']['last_name']) ? $data['User']['last_name'] : '';
-				$data['OrderPayment']['user_id'] = $this->id;
-				$data['OrderShipment']['user_id'] = $this->id;
 				if (in_array('Orders', CakePlugin::loaded())) : 
+					# setup and save data for a related order shipment record for prefilled checkout 
+					$data['OrderShipment']['first_name'] = !empty($data['User']['first_name']) ? $data['User']['first_name'] : ''; 
+					$data['OrderShipment']['last_name'] =  !empty($data['User']['last_name']) ? $data['User']['last_name'] : '';
+					$data['OrderPayment']['user_id'] = $this->id;
+					$data['OrderShipment']['user_id'] = $this->id;
 					$this->OrderPayment->save($data);
 					$this->OrderShipment->save($data);
 				endif;
