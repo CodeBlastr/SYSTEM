@@ -87,6 +87,9 @@ class InstallController extends AppController {
 			$db->setConfig($this->config);
 			$db->connect();
 			
+			$this->_updateBootstrapPhp();
+			break;
+			
 			# test the db connection to make sure the info is good.
 			if ($db->connected) :
 				try {
@@ -170,8 +173,13 @@ class InstallController extends AppController {
 				if ($this->_createFile($fileName, $contents)) : 
 					# create core.php
 					if (copy($this->newDir.DS.'Config'.DS.'core.default.php', $this->newDir.DS.'Config'.DS.'core.php')) :
-						# run settings
-						return true;
+						# update sites/bootstrap.php
+						if ($this->_updateBootstrapPhp()) :
+							# run settings
+							return true;
+						else :
+							return false;
+						endif;
 					else :
 						return false;
 					endif;
@@ -184,6 +192,24 @@ class InstallController extends AppController {
 		else:
 			return false;
 		endif;
+	}
+	
+	
+	private function _updateBootstrapPhp() {
+		$filename = ROOT.DS.'sites'.DS.'bootstrap.php';
+		if (is_writable($filename)) :
+			$handle = fopen($filename, "r");
+			$contents = fread($handle, filesize($filename));
+			$replace = "\$domains['".$this->options['siteDomain']."'] = '".$this->options['siteDomain']."';";
+			$contents = str_replace('/** end **/', $replace.PHP_EOL.PHP_EOL.'/** end **/', $contents);
+			fwrite($handle, $contents);
+			fclose($handle);
+		endif;
+		return false;
+		#$fp = fopen('data.txt', 'w');
+		#fwrite($fp, '1');
+		#fwrite($fp, '23');
+		#fclose($fp);
 	}
 	
 	
