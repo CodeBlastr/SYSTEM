@@ -80,7 +80,7 @@ legend {
     	<legend><?php echo __('Site Info'); ?></legend>
         <?php
 		echo $this->Form->input('Install.site_name');
-		echo $this->Form->input('Install.site_domain', array('value' => 'mydomain.com', 'label' => 'Domain Name: <br /><span style="font-size: 0.6em;">No http or www necessary</span>'));
+		echo $this->Form->input('Install.site_domain', array('value' => 'mydomain.com', 'label' => 'Domain Name: <br /><span style="font-size: 0.6em;">No http or www necessary.<br />Comma separated works too.</span>'));
 		?>
     </fieldset>
 	<fieldset>
