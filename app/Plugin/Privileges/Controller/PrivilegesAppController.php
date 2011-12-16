@@ -26,6 +26,11 @@ class PrivilegesAppController extends AppController {
 		'Privileges',
 		'Utils',
 		);
+
+/** 
+ * A bool for whether to use the session to break aco_sync for each plugin
+ */
+ 	private $_useSession = true;
 	
 /**
  * Contains instance of AclComponent
@@ -91,8 +96,9 @@ class PrivilegesAppController extends AppController {
  *
  * @return void
  **/
-	function aco_sync() {
+	function aco_sync($session = 1) {
 		$this->_setEnd();
+		$this->_useSession = $session;
 		$this->_clean = true;
 		$this->aco_update();
 	}
@@ -125,11 +131,13 @@ class PrivilegesAppController extends AppController {
 			$pluginRoot = $this->_checkNode(/*'plugin', */$path, $plugin, $root['Aco']['id']);
 			$this->_updateControllers($pluginRoot, $controllers, $plugin);
 			
-			# zuha runs aco_update once and update the session so that plugin is ignored next go around
-			$lastPluginSession = CakeSession::read('Privileges.lastPlugin');
-			$lastPluginSession[] = $plugin;
-			CakeSession::write('Privileges.lastPlugin', $lastPluginSession);
-			break;
+			if ($this->_useSession !== 0) : 
+				# zuha runs aco_update once and update the session so that plugin is ignored next go around
+				$lastPluginSession = CakeSession::read('Privileges.lastPlugin');
+				$lastPluginSession[] = $plugin;
+				CakeSession::write('Privileges.lastPlugin', $lastPluginSession);
+				break;
+			endif;
 		}
 		$this->out(__('<success>Aco Update Complete</success>'));
 		return true;

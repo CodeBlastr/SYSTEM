@@ -87,9 +87,9 @@ legend {
  		<legend><?php echo __('Database Information');?></legend>
 		<?php
 		echo $this->Form->input('Database.host', array('value' => 'localhost'));
-		echo $this->Form->input('Database.name');
 		echo $this->Form->input('Database.username');
 		echo $this->Form->input('Database.password', array('type' => 'password'));
+		echo $this->Form->input('Database.name', array('label' => 'DB Name'));
 		echo $this->Form->end('Install');
 		?>
 	</fieldset>
