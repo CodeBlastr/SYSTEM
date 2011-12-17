@@ -2,7 +2,7 @@
 /**
  * App Wide Shared Model Functions
  *
- * Handles app wide model functions, model settings and convenience functions 
+ * Handles app wide model functions, model settings and convenience functions
  * all sub models use this model as the parent model
  *
  * PHP versions 5
@@ -20,10 +20,10 @@
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
- 
+
 App::uses('Model', 'Model');
 
-class AppModel extends Model {	
+class AppModel extends Model {
 	var $actsAs = array('Containable');
 	var $recursive = -1;
 
@@ -38,7 +38,7 @@ class AppModel extends Model {
 			# There may be a potential problem with this.
 			# It saves an ArosAco record for every record being created.
 			# For example, when creating a webpage, it also creates an Aco for the Alias
-			# Left it in as is, because we may want this.  (ie. when a contact is record level, 
+			# Left it in as is, because we may want this.  (ie. when a contact is record level,
 			# we probably want the user to have access to the Contact and Contact Person
 			# if a project issue is created, we probably want the user to have access to the project too.
 			$this->Behaviors->attach('Acl', array('type' => 'controlled'));
@@ -48,9 +48,9 @@ class AppModel extends Model {
 				$this->Behaviors->attach('Acl', array('type' => 'controlled'));
 				$this->Behaviors->attach('AclExtra', $this->data);
 			}
-		} 	
-		
-		# Start Auto Creator & Modifier Id Saving # 
+		}
+
+		# Start Auto Creator & Modifier Id Saving #
 		$exists = $this->exists();
 		$user = class_exists('CakeSession') ? CakeSession::read('Auth.User') : null;
 		if ( !$exists && $this->hasField('creator_id') && empty($this->data[$this->alias]['creator_id']) ) {
@@ -59,12 +59,12 @@ class AppModel extends Model {
 		if ( $this->hasField('modifier_id') && empty($this->data[$this->alias]['modifier_id']) ) {
 			$this->data[$this->alias]['modifier_id'] = $user['id'];
 		}
-		# End Auto Creator & Modifier Id Saving # 
+		# End Auto Creator & Modifier Id Saving #
 		# you have to return true to make the save continue.
 		return true;
 	}
-		
-	
+
+
 	/**
 	 * Condition Check, checks to see if any conditions from the conditions table were met.
 	 */
@@ -72,18 +72,18 @@ class AppModel extends Model {
 		# Start Condition Check #
 		$this->Condition = ClassRegistry::init('Condition');
 		#get the id that was just inserted so you can call back on it.
-		$this->data[$this->name]['id'] = $this->id;	
-		
+		$this->data[$this->name]['id'] = $this->id;
+
 		if ($created === true) {
 			$this->Condition->checkAndFire('is_create', array('model' => $this->name), $this->data);
 		} else {
 			$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
-			#$this->conditionCheck('is_read'); // this needs to be put into the beforeFilter or beforeRender (beforeRender, would allow error pages to work too) of the 
+			#$this->conditionCheck('is_read'); // this needs to be put into the beforeFilter or beforeRender (beforeRender, would allow error pages to work too) of the
 		}
 		# End Condition Check #
     }
-	
-	
+
+
 	/**
 	 * Condition Check, checks to see if any conditions from the conditions table were met.
 	 */
@@ -92,16 +92,16 @@ class AppModel extends Model {
 		App::Import('Model', 'Condition');
 		$this->Condition = new Condition;
 		#get the id that was just inserted so you can call back on it.
-		$this->data[$this->name]['id'] = $this->id;	
-		$this->Condition->checkAndFire('is_delete', array('model' => $this->name), $this->data); 
+		$this->data[$this->name]['id'] = $this->id;
+		$this->Condition->checkAndFire('is_delete', array('model' => $this->name), $this->data);
 		# End Condition Check #
 	}
-	
-	
+
+
 	/**
 	 * With this function our total_count now appears with the rest of the fields in the resulting data array.
 	 * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
-	 */ 
+	 */
 	function afterFind($results, $primary = false) {
     	if($primary == true) {
     	   if(Set::check($results, '0.0')) {
@@ -111,55 +111,55 @@ class AppModel extends Model {
     	          unset($results[$key][0]);
     	       }
     	    }
-    	}		
+    	}
     	return $results;
 	}
-	
-	
+
+
 	function listPlugins($remove = array(), $merge = true) {
 		$defaultRemove = array('Acl Extras', 'Api Generator', 'Recaptcha');
 		$remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
 		$plugins = App::objects('plugin');
-		foreach ($plugins as $plugin) : 
+		foreach ($plugins as $plugin) :
 			$return[$plugin] = Inflector::humanize(Inflector::underscore($plugin));
 		endforeach;
-		
+
 		return array_diff($return, $remove);
 	}
-	
-	
+
+
 	function listModels($pluginPath = null, $remove = array(), $merge = true) {
-		# defaultRemove originally done for this page : /admin/categories/categories/add/ 
+		# defaultRemove originally done for this page : /admin/categories/categories/add/
 		# if you add items for removal from this list make sure that they should also be removed from there
 		# or customize the categories_controller so that listModels() function to not merge
 		$defaultRemove = array('Affiliated', 'Catalog Items Catalog Category', 'Category', 'Categorized', 'Category Option', 'Catalog Item Price', 'Estimated', 'Form', 'Form Fieldset', 'Form Input', 'Forum', 'Forum Category', 'Poll', 'Poll Option', 'Poll Vote', 'Post', 'Setting', 'Topic', 'Invite', 'Invoices Catalog Item', 'Invoices Timesheet', 'Notification', 'Notification Template', 'Favorite', 'Privilege', 'Requestor', 'Section', 'Search Index', 'TicketDepartmentsAssignee', 'Workflow', 'Workflow Item', 'Workflow Event', 'Workflow Item Event');
 		$remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
-		
+
 		$plugins = $this->listPlugins();
-		foreach ($plugins as $plugin) : 
+		foreach ($plugins as $plugin) :
 			$pluginPaths[] = App::pluginPath($plugin);
 		endforeach;
-		
+
 		foreach ($pluginPaths as $pluginPath) :
 			$models = !empty($models) ? array_merge($models, App::objects('model', $pluginPath . 'models' . DS, false)) : App::objects('model', $pluginPath . 'models' . DS, false);
 		endforeach;
-		
+
 		foreach ($models as $model) :
 			$return[$model] = Inflector::humanize(Inflector::underscore($model));
 		endforeach;
-		
+
 		return array_diff($return, $remove);
 	}
-	
-	
+
+
 	/**
 	 * Don't know what this is for, I'd like to see a comment placed.
 	 */
 	function parentNode() {
 		$this->name;
 	}
-	
-	
+
+
 /**
  * Used to see whether the record being saved is a record which is subject to record level access control.  Executed in the beforeSave callback function of app_model.  If it is a record which is subject to record level access control, then beforeSave triggers the record level Aco and ArosAco creation.  Using the Acl behavior which make the Aco, and the AclExtra behavior which makes the AroAco using the user field which is supposed to get access as the Aro.  To set the Aros that should have access, make a setting called RECORD_LEVEL_ACCESS_ENTITY in the "settings" table of the database.
  *
@@ -183,9 +183,9 @@ class AppModel extends Model {
 				}
 			}
 		}
-		
+
 		if (!empty($userIds)) {
-			# 
+			#
 			return array('User' => $userIds);
 		} else {
 			return false;
@@ -202,7 +202,7 @@ class AppModel extends Model {
         // creates a 6 digit key
         $uid = substr(md5(uniqid(rand(), true)), 0, 40);
         if ($prefix)
-        	$uid = $prefix . $uid; 
+        	$uid = $prefix . $uid;
         //checkto make sure its not a duplcate
         if ($table) {
 	        foreach($table as $model => $col) {
@@ -218,12 +218,12 @@ class AppModel extends Model {
 			return $uid;
 		}
     }
-	
-	
+
+
     function _generateUUID() {
         $uuid = $this->query('SELECT UUID() AS uuid');
         return $uuid[0][0]['uuid'];
     }//_generateUUID()
-	
+
 }
 ?>
