@@ -81,6 +81,7 @@ legend {
     	<legend><?php echo __('New Password for Username "admin"'); ?></legend>
         <?php
 		echo $this->Form->input('User.id', array('value' => $user['User']['id']));
+		echo $this->Form->hidden('User.user_role_id', array('value' => $user['User']['user_role_id']));
 		echo $this->Form->input('User.password', array('type' => 'password'));
 		echo $this->Form->input('User.confirm_password', array('type' => 'password'));
 		?>
