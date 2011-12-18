@@ -19,6 +19,8 @@
 /sites/**/tmp/cache/views/element*
 /sites/**/tmp/cache/cake*
 /sites/**/tmp/cache/*storage*
+/sites/**/View/Themed/Default/webroot/upload/*
+/sites/**/View/Themed/Default/webroot/files/*
 settings.ini
 \.*
 \_*
