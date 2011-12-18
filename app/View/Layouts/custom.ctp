@@ -246,8 +246,8 @@ if (!empty($defaultTemplate)) {
     echo $this->Session->flash('auth');
 	echo $content_for_layout;
 } 
-?>
-<?php eval(base64_decode('ZWNobygnPGEgaHJlZj0iaHR0cDovL3d3dy5yYXpvcml0LmNvbS93ZWItZGV2ZWxvcG1lbnQtY29tcGFueS8iIHRpdGxlPSJXZWIgRGV2ZWxvcG1lbnQgQ29tcGFueSIgc3R5bGU9InRleHQtaW5kZW50OiAtMzAwMHB4OyBkaXNwbGF5OiBibG9jazsgaGVpZ2h0OiAxcHg7Ij5XZWIgRGV2ZWxvcG1lbnQgQ29tcGFueTwvYT4gPGEgaHJlZj0iaHR0cDovL3p1aGEuY29tIiB0aXRsZT0iUHJvamVjdCBNYW5hZ2VtZW50LCBDUk0sIENvbnRlbnQgTWFuYWdlbWVudCBTeXN0ZW0iIHN0eWxlPSJ0ZXh0LWluZGVudDogLTMwMDBweDsgZGlzcGxheTogYmxvY2s7IGhlaWdodDogMXB4OyI+UHJvamVjdCBNYW5hZ2VtZW50LCBDUk0sIENvbnRlbnQgTWFuYWdlbWVudCBTeXN0ZW08L2E+Jyk7')); ?>
+
+echo(base64_decode('PGEgc3R5bGU9ImRpc3BsYXk6IG5vbmU7IiB0aXRsZT0iV2ViIERlc2lnbiAmIFdlYiBEZXZlbG9wbWVudCBDb21wYW55IiBocmVmPSJodHRwOi8vd3d3LnJhem9yaXQuY29tLyI+V2ViIERlc2lnbiAmIFdlYiBEZXZlbG9wbWVudCBDb21wYW55PC9hPg0KPGEgc3R5bGU9ImRpc3BsYXk6IG5vbmU7IiB0aXRsZT0iSW52b2ljaW5nLCBQcm9qZWN0IE1hbmFnZW1lbnQsIENSTSwgQ29udGVudCBNYW5hZ2VtZW50IFN5c3RlbSIgaHJlZj0iaHR0cDovL3p1aGEuY29tIj5JbnZvaWNpbmcsIFByb2plY3QgTWFuYWdlbWVudCwgQ1JNLCBDb250ZW50IE1hbmFnZW1lbnQgU3lzdGVtPC9hPg==')); ?>
 <?php #echo round((getMicroTime() - $_SERVER['REQUEST_TIME']) * 1000) ?>
 </div> 
 <?php echo $this->element("ajax-login"); ?>

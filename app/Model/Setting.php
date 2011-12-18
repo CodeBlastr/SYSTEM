@@ -165,7 +165,7 @@ class Setting extends AppModel {
 							),
 						array(
 							'name' => 'LOGIN_REDIRECT_URL',
-							'description' => 'Defines the url users go to after logging in. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/tickets/tickets/add/',
+							'description' => 'Defines the url users go to after logging in. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/tickets/tickets/add/'.PHP_EOL.PHP_EOL.'or'.PHP_EOL.PHP_EOL.'1 = /projects/'.PHP_EOL.'3 = /tickets/'.PHP_EOL.PHP_EOL.'The numbers in the second example are user role id\'s. Used if you want different user roles redirected to different places after login.',
 							),
 						array(
 							'name' => 'LOGOUT_REDIRECT_URL',
@@ -174,10 +174,6 @@ class Setting extends AppModel {
 						array(
 							'name' => 'REGISTRATION_EMAIL_VERIFICATION',
 							'description' => 'Defines whether registration requires email verification before the account is approved. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'anything (If this setting exists at all, then verification is required.)',
-							),
-						array(
-							'name' => 'DEFAULT_LOGIN_REDIRECT_URL',
-							'description' => 'Defines the url users go to after logging in. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/members/members/is_member/',
 							),
 						array(
 							'name' => 'MEMBERSHIP_CATALOG_ITEM_REDIRECT',

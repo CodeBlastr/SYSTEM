@@ -141,21 +141,7 @@ class AppController extends Controller {
 	}
 
 
-	function _defaultLoginRedirect() {
-		if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
-	      	if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
-				return $urlParams;
-			} else {
-				return __APP_DEFAULT_LOGIN_REDIRECT_URL;
-			}
-		} else {
-			return array(
-				'plugin' => 'users',
-				'controller' => 'users',
-				'action' => 'my',
-			);
-		}
-	}
+
 
 	/**
 	 * Convenience admin_add
@@ -631,7 +617,6 @@ class AppController extends Controller {
 		        
 		$this->Auth->actionPath = 'controllers/';
 		$this->Auth->allowedActions = array('display');
-        $this->Auth->loginRedirect = $this->_defaultLoginRedirect();
 		
 		if (!empty($this->allowedActions)) {
 			$allowedActions = array_merge($this->Auth->allowedActions, $this->allowedActions);
