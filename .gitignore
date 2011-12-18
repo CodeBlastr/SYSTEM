@@ -21,6 +21,7 @@
 /sites/**/tmp/cache/*storage*
 /sites/**/View/Themed/Default/webroot/upload/*
 /sites/**/View/Themed/Default/webroot/files/*
+/sites/**/View/Themed/Default/webroot/media/*
 settings.ini
 \.*
 \_*
