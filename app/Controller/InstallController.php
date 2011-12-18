@@ -108,7 +108,7 @@ class InstallController extends AppController {
 					$sql = ' SHOW TABLES IN ' . $this->config['database'];
 					$db->execute($sql);
 					# run the core table queries
-					$this->_create();
+					$this->_create($db);
 					if ($this->lastTableName == $this->progress) : 
 						# run the required plugins
 						if ($this->_installPluginSchema('Users', 'Users')) : 
@@ -304,7 +304,8 @@ class InstallController extends AppController {
 		if (!empty($name) && !empty($plugin)) : 
 			$this->params['name'] = $name;
 			$this->params['plugin'] = $plugin;
-			$this->_create();
+			$blank = '';
+			$this->_create($blank);
 			if ($this->lastTableName == $this->progress) : 
 				return true;
 			else :
