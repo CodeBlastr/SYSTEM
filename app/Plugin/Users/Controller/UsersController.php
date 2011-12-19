@@ -148,13 +148,12 @@ class UsersController extends UsersAppController {
 		if (defined('__APP_LOGOUT_REDIRECT_URL')) {
 			if ($urlParams = @unserialize(__APP_LOGOUT_REDIRECT_URL)) {
 				if (is_numeric(key($urlParams))) {
-					debug($this->Session->read('Auth.User.user_role_id'));
-					debug($urlParams);
+					return $urlParams[$this->Session->read('Auth.User.user_role_id')];
 				} else {
-					#return $urlParams;
+					return $urlParams;
 				}
 			} else {
-				#return __APP_LOGOUT_REDIRECT_URL;
+				return __APP_LOGOUT_REDIRECT_URL;
 			}
 		} else {
 			return array(
