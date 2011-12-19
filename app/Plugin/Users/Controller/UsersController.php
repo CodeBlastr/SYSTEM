@@ -296,6 +296,7 @@ class UsersController extends UsersAppController {
 
 	function index() {
 		#$this->User->recursive = 0;
+		$this->paginate = !empty($this->userId) ? array('conditions' => array('User.id !=' => $this->userId)) : $this->paginate;
 		$this->set('users', $this->paginate());
 	}
 
