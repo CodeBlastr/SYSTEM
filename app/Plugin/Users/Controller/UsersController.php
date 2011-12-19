@@ -63,6 +63,10 @@ class UsersController extends UsersAppController {
 			if ($this->Auth->login()) {
 				try {
 					$this->User->loginMeta($this->request->data);
+					#debug($this->Auth->redirect);
+					#debug($this->Auth->redirect());
+					#debug($this->Session->read());
+					#debug($this->_loginRedirect());
 	        		$this->redirect($this->_loginRedirect());
 				} catch (Exception $e) {
 					$this->Session->setFlash($e->getMessage());
@@ -116,9 +120,11 @@ class UsersController extends UsersAppController {
 					# if the keys are numbers we're looking for a user role
 					if (!empty($urlParams[$this->Session->read('Auth.User.user_role_id')])) {
 						# if the user role is the index key then we have a special login redirect just for them 
+						#debug($urlParams[$this->Session->read('Auth.User.user_role_id')]); break; 
 						return $urlParams[$this->Session->read('Auth.User.user_role_id')];
 					} else {
 						# need a return here, to stop processing of the $redirect var
+						#debug($redirect); break; 
 						return $redirect;
 					}
 				} 
@@ -130,6 +136,7 @@ class UsersController extends UsersAppController {
 				$redirect = __APP_LOGIN_REDIRECT_URL;
 			}
 		}		
+		#debug($redirect); break; 
 		return $redirect;
 	}
 	
