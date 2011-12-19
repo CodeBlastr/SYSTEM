@@ -707,6 +707,7 @@ class AppController extends Controller {
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
+				#debug($user);
 				#debug($aro);
 				#debug($aco);
 				#break;
@@ -723,7 +724,7 @@ class AppController extends Controller {
 	 * return {array || string}		The path to the aco to look up.
 	 */
 	function _getAcoPath() {
-		if (!empty($this->request->params['pass'][0])) {
+		if (!empty($this->request->params['pass'][0])) { 
 			# check if the record level aco exists first
 			$aco = $this->Acl->Aco->find('first', array(
 				'conditions' => array(
