@@ -167,7 +167,7 @@ class User extends AppModel {
 	    if (empty($this->data)) {
 	        $data = $this->read();
 	    }
-	    if (!$data['User']['user_role_id']) {
+	    if (empty($data['User']['user_role_id'])) {
 	        return null;
 	    } else {
 	        $this->UserRole->id = $data['User']['user_role_id'];
