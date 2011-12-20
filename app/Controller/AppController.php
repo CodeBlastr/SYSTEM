@@ -707,6 +707,9 @@ class AppController extends Controller {
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
+				#debug($this->Acl->Aco->node($this->_getAcoPath()));
+				#debug($this->Acl->Aro->node($this->_userAro($user['id'])));
+				#debug($this->Acl->check($aro, $aco));
 				#debug($user);
 				#debug($aro);
 				#debug($aco);
