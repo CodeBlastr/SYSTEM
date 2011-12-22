@@ -69,6 +69,8 @@ App::build(array(
 #   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),
 #   'locales' => array('/full/path/to/locale/', '/next/full/path/to/locale/')
 ));
+
+
 /**
  * As of 1.3, additional rules for the inflector are added below
  *
@@ -86,12 +88,12 @@ App::build(array(
 				$path .= 'defaults.ini';
 			}
 			$settings = parse_ini_file($path, true);
-			
 			if ($return == true) {
 				$settings = my_array_map($settings, 'parse_ini_ini');
 				return $settings;
 			} else {
-				foreach ($settings as $key => $value) {				
+				foreach ($settings as $key => $value) {
+					$key = trim($key);
 					if (!defined(strtoupper($key))) {
 						if (is_array($value)) {
 							define(strtoupper($key), serialize($value));
@@ -107,13 +109,13 @@ App::build(array(
 	
 	__setConstants();
 	
-	/**
-	 * Plugins need to be loaded manually, you can either load them one by one or all of them in a single call
-	 * Uncomment one of the lines below, as you need. make sure you read the documentation on CakePlugin to use more
-	 * advanced ways of loading plugins
-	 * 
-	 */
-	 #CakePlugin::loadAll(); // Loads all plugins at once
+/**
+ * Plugins need to be loaded manually, you can either load them one by one or all of them in a single call
+ * Uncomment one of the lines below, as you need. make sure you read the documentation on CakePlugin to use more
+ * advanced ways of loading plugins
+ * 
+ */
+ #CakePlugin::loadAll(); // Loads all plugins at once
 	if (defined('__SYSTEM_LOAD_PLUGINS')) :
 	 	extract(unserialize(__SYSTEM_LOAD_PLUGINS));
 		CakePlugin::load($plugins);

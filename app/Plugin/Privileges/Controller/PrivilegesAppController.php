@@ -176,21 +176,14 @@ class PrivilegesAppController extends AppController {
 			$controllerName = preg_replace('/Controller$/', '', $controller);
 
 			$path = $this->rootNode . '/' . $pluginPath . $controllerName;
-			# zuha add for types
-			#if (!empty($pluginPath)) {
-			#	$type = 'pcontroller';
-			#} else {
-			#	$type = 'controller';
-			#}
-			$controllerNode = $this->_checkNode(/*$type, */$path, $controllerName, $root['Aco']['id']);
+			$controllerNode = $this->_checkNode($path, $controllerName, $root['Aco']['id']);
 			$this->_checkMethods($controller, $controllerName, $controllerNode, $pluginPath);
 		}
 		if ($this->_clean) {
 			if (!$plugin) {
-				$controllers = array_merge($controllers, App::objects('plugin', null, false));
+				$controllers = array_merge($controllers, CakePlugin::loaded());
 			}
 			$controllerFlip = array_flip($controllers);
-			
 			
 			$this->Aco->id = $root['Aco']['id'];
 			$controllerNodes = $this->Aco->children(null, true);
@@ -198,7 +191,7 @@ class PrivilegesAppController extends AppController {
 				$name = $ctrlNode['Aco']['alias'] . 'Controller';
 				$sessionPlugins = CakeSession::read('Privileges.lastPlugin');
 				$sessionPlugins = !empty($sessionPlugins) ? $sessionPlugins : array();
-				if (!isset($controllerFlip[$name]) && !in_array($ctrlNode['Aco']['alias'], $sessionPlugins)) {
+				if (!isset($controllerFlip[$name]) && !isset($controllerFlip[str_replace('Controller', '', $name)]) && !in_array($ctrlNode['Aco']['alias'], $sessionPlugins)) {
 					if ($this->Aco->delete($ctrlNode['Aco']['id'])) {
 						$this->out(__('Deleted %s and all children', $this->rootNode . '/' . $ctrlNode['Aco']['alias']));
 					}

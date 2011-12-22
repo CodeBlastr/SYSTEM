@@ -48,7 +48,7 @@ class Setting extends AppModel {
 							'description' => 'Defines the current version of the database.  Used to determine if an upgrade is needed. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'0.0123',
 							),
 						array(
-							'name' => 'LOAD_PLUGINS ',
+							'name' => 'LOAD_PLUGINS',
 							'description' => 'Defines the plugins that should be loaded. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'plugins[] = Webpages'.PHP_EOL.'plugins[] = Contacts'.PHP_EOL.'plugins[] = Search',
 							),
 						),
