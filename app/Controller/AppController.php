@@ -122,7 +122,7 @@ class AppController extends Controller {
 	function _handleJson($beforeFilter = true) {
 		if (!empty($beforeFilter)) {
 			# Support for json file types when using json extensions
-			$this->RequestHandler->setContent('json', 'text/x-json');
+			#$this->RequestHandler->setContent('json', 'text/x-json');
 			
 			if ($this->request->ext == 'json') {
 				$this->autoRender = false;
