@@ -57,6 +57,54 @@ class ContactsController extends ContactsAppController {
 		$associations =  array('ContactType' => array('displayField' => 'name'), 'ContactSource' => array('displayField' => 'name'), 'ContactIndustry' => array('displayField' => 'name'), 'ContactRating' => array('displayField' => 'name'));
 		$this->set('associations', $associations);
 	}
+	
+	
+	function people() {
+		$this->paginate = array(
+			'conditions' => array(
+				'Contact.is_company' => 0,
+				),
+			'fields' => array(
+				'id',
+				'name',
+				'contact_type_id',
+				'contact_source_id',
+				'contact_industry_id',
+				'contact_rating_id',
+				),
+			'contain' => array(
+				'ContactType' => array(
+					'fields' => array(
+						'name',
+						),
+					),
+				'ContactSource' => array(
+					'fields' => array(
+						'name',
+						),
+					),
+				'ContactIndustry' => array(
+					'fields' => array(
+						'name',
+						),
+					),
+				'ContactRating' => array(
+					'fields' => array(
+						'name',
+						),
+					),
+				),
+			'order' => array(
+				'Contact.name'
+				),
+			'limit' => 25,
+			);
+		$this->set('contacts', $this->paginate());
+		$this->set('displayName', 'name');
+		$this->set('displayDescription', ''); 
+		$associations =  array('ContactType' => array('displayField' => 'name'), 'ContactSource' => array('displayField' => 'name'), 'ContactIndustry' => array('displayField' => 'name'), 'ContactRating' => array('displayField' => 'name'));
+		$this->set('associations', $associations);
+	}
 
 	function view($id = null) {
 		if (!$id) {
@@ -188,10 +236,10 @@ class ContactsController extends ContactsAppController {
 		$this->__ajax_edit();
 	} 
 	
-	/**
-	 * Show the messages related to this project.
-	 * @todo 	Make this so that it renders using an element from the tasks plugin
-	 */
+/**
+ * Show the tasks related to this contact
+ * @todo 	Make this so that it renders using an element from the tasks plugin
+ */
 	function tasks($contactId = null) {
 		$this->paginate = array(
 			'conditions' => array(
