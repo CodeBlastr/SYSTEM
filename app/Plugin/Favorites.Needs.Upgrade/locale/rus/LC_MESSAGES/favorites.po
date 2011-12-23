@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CakePHP Favorites Plugin\n"
+"POT-Creation-Date: 2010-09-15 14:33+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Evgeny Tomenko <yevgeny.tomenko@cakedc.com>\n"
+"Language-Team: CakeDC\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Russian\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: /controllers/favorites_controller.php:59
+msgid "Authentification required"
+msgstr "Необходима авторизация"
+
+#: /controllers/favorites_controller.php:72;132;150
+msgid "Invalid object type."
+msgstr "Недопустимый тип объекта"
+
+#: /controllers/favorites_controller.php:79
+msgid "Invalid identifier"
+msgstr "Недоопустимый идентификатор"
+
+#: /controllers/favorites_controller.php:85
+msgid "Record was successfully added"
+msgstr "Запись успешно сохранена"
+
+#: /controllers/favorites_controller.php:87
+msgid "Record was not added."
+msgstr "Запись не сохранена."
+
+#: /controllers/favorites_controller.php:90
+msgid "Record was not added. "
+msgstr "Запись не сохранена."
+
+#: /controllers/favorites_controller.php:114
+msgid "Record removed from list"
+msgstr "Запись удалена из списка"
+
+#: /controllers/favorites_controller.php:116
+msgid "Unable to delete favorite, please try again"
+msgstr "Не удалось удалить запись, попробуйте позже"
+
+#: /controllers/favorites_controller.php:172
+msgid "Invalid direction"
+msgstr "Неверное направление"
+
+#: /controllers/favorites_controller.php:175
+msgid "Favorite positions updated."
+msgstr "Позиция записи изменена"
+
+#: /controllers/favorites_controller.php:177
+msgid "Unable to change favorite position, please try again"
+msgstr "Не удалось измененить позицию записи "
+
+#: /controllers/favorites_controller.php:226
+msgid "That record does not exist."
+msgstr "Запись не существует."
+
+#: /controllers/favorites_controller.php:229
+msgid "That record does not belong to you."
+msgstr "Нет прав на изменения записи."
+
+#: /models/behaviors/favorite.php:130
+msgid "Operation is not allowed"
+msgstr "Операция не разрешена"
+
+#: /models/behaviors/favorite.php:141
+msgid "Already added."
+msgstr "Запись была добавена ранее."
+
+#: /models/behaviors/favorite.php:151
+msgid "You cannot add more than %s items to this list"
+msgstr "Запрещено добавить более чем %s записей в список"
+
+#: /views/favorites/list.ctp:17
+msgid "You have no favorites in this category."
+msgstr "В данной категории нет любимых записей."
+
+#: /views/helpers/favorites.php:76
+msgid "Incorrect favorite type \"%s\"."
+msgstr "Тип \"%s\" недопустим."
+
