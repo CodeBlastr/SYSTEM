@@ -88,58 +88,5 @@ class UsersUserGroupsController extends UsersAppController {
 		$this->flash(__('Users user goup was not deleted', true), array('action' => 'index'));
 		$this->redirect(array('action' => 'index'));
 	}
-	function admin_index() {
-		$this->UsersUserGroup->recursive = 0;
-		$this->set('usersUserGroups', $this->paginate());
-	}
-
-	function admin_view($id = null) {
-		if (!$id) {
-			$this->flash(__('Invalid users user goup', true), array('action' => 'index'));
-		}
-		$this->set('usersUserGroup', $this->UsersUserGroup->read(null, $id));
-	}
-
-	function admin_add() {
-		if (!empty($this->request->data)) {
-			$this->UsersUserGroup->create();
-			if ($this->UsersUserGroup->save($this->request->data)) {
-				$this->flash(__('Usersusergoup saved.', true), array('action' => 'index'));
-			} else {
-			}
-		}
-		$users = $this->UsersUserGroup->User->find('list');
-		$userGroups = $this->UsersUserGroup->UserGroup->find('list');
-		$this->set(compact('users', 'userGroups'));
-	}
-
-	function admin_edit($id = null) {
-		if (!$id && empty($this->request->data)) {
-			$this->flash(sprintf(__('Invalid users user goup', true)), array('action' => 'index'));
-		}
-		if (!empty($this->request->data)) {
-			if ($this->UsersUserGroup->save($this->request->data)) {
-				$this->flash(__('The users user goup has been saved.', true), array('action' => 'index'));
-			} else {
-			}
-		}
-		if (empty($this->request->data)) {
-			$this->request->data = $this->UsersUserGroup->read(null, $id);
-		}
-		$users = $this->UsersUserGroup->User->find('list');
-		$userGroups = $this->UsersUserGroup->UserGroup->find('list');
-		$this->set(compact('users', 'userGroups'));
-	}
-
-	function admin_delete($id = null) {
-		if (!$id) {
-			$this->flash(sprintf(__('Invalid users user goup', true)), array('action' => 'index'));
-		}
-		if ($this->UsersUserGroup->delete($id)) {
-			$this->flash(__('Users user goup deleted', true), array('action' => 'index'));
-		}
-		$this->flash(__('Users user goup was not deleted', true), array('action' => 'index'));
-		$this->redirect(array('action' => 'index'));
-	}
 }
 ?>

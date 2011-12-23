@@ -59,52 +59,5 @@ class UserWallsController extends UsersAppController {
 		$this->flash(__('User wall was not deleted', true), array('action' => 'index'));
 		$this->redirect(array('action' => 'index'));
 	}
-	function admin_index() {
-		$this->UserWall->recursive = 0;
-		$this->set('userWalls', $this->paginate());
-	}
-
-	function admin_view($id = null) {
-		if (!$id) {
-			$this->flash(__('Invalid user wall', true), array('action' => 'index'));
-		}
-		$this->set('userWall', $this->UserWall->read(null, $id));
-	}
-
-	function admin_add() {
-		if (!empty($this->request->data)) {
-			$this->UserWall->create();
-			if ($this->UserWall->save($this->request->data)) {
-				$this->flash(__('Userwall saved.', true), array('action' => 'index'));
-			} else {
-			}
-		}
-	}
-
-	function admin_edit($id = null) {
-		if (!$id && empty($this->request->data)) {
-			$this->flash(sprintf(__('Invalid user wall', true)), array('action' => 'index'));
-		}
-		if (!empty($this->request->data)) {
-			if ($this->UserWall->save($this->request->data)) {
-				$this->flash(__('The user wall has been saved.', true), array('action' => 'index'));
-			} else {
-			}
-		}
-		if (empty($this->request->data)) {
-			$this->request->data = $this->UserWall->read(null, $id);
-		}
-	}
-
-	function admin_delete($id = null) {
-		if (!$id) {
-			$this->flash(sprintf(__('Invalid user wall', true)), array('action' => 'index'));
-		}
-		if ($this->UserWall->delete($id)) {
-			$this->flash(__('User wall deleted', true), array('action' => 'index'));
-		}
-		$this->flash(__('User wall was not deleted', true), array('action' => 'index'));
-		$this->redirect(array('action' => 'index'));
-	}
 }
 ?>
