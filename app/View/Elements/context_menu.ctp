@@ -1,9 +1,8 @@
 <?php
+$menus = !empty($context_menu['menus']) ? $context_menu['menus'] : null;
 if (!empty($menus)) {
 	$menu = '';
-	$menu = '
-      	<div class="contextMenu actions">
-			<ul>';
+	$menu = '<ul class="contextMenu actions">';
 			foreach ($menus as $menugroup) :
 				$menu .= '<li class="actionHeading"><span>'.$menugroup['heading'].'</span></a>';
 					if (!empty($menugroup['items'])):
@@ -13,7 +12,7 @@ if (!empty($menus)) {
 					endif;
 				$menu .= '';
 			endforeach;
-	$menu .= '</ul></div>';
+	$menu .= '</ul>';
 }
-echo $menu;
+echo !empty($menu) ? $menu : null;
 ?>
