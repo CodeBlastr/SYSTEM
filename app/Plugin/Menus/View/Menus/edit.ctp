@@ -18,12 +18,16 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-
-		<li><?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('Menu.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Menu.id'))); ?></li>
-		<li><?php echo $this->Html->link(__('List Menus', true), array('action' => 'index'));?></li>
-		<li><?php echo $this->Html->link(__('New Menu Item', true), array('controller' => 'menu_items', 'action' => 'add', $this->Form->value('Menu.id'))); ?> </li>
-	</ul>
-</div>
+<?php 
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Menus',
+		'items' => array(
+			$this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('Menu.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Menu.id'))),
+			$this->Html->link(__('List Menus', true), array('action' => 'index')),
+			$this->Html->link(__('New Menu Item', true), array('controller' => 'menu_items', 'action' => 'add', $this->Form->value('Menu.id'))),
+			)
+		),
+	)));
+?>

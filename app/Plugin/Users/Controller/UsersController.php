@@ -438,24 +438,6 @@ If you have received this message in error please ignore, the link will be unusa
 	}
 
 
-	function _admin_edit($id = null) {
-		if (empty($this->request->data)) {
-			$this->request->data = $this->User->read(null, $id);
-			$userRoles = $this->User->UserRole->find('list');
-			$this->set(compact('userRoles'));
-		} else if(!empty($this->request->data)) {
-			if($this->User->add($this->request->data)) {
-				$this->Session->setFlash('User Updated!');
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id));
-			} else {
-				$this->Session->setFlash('There was an error updating user');
-			}
-		} else {
-			$this->Session->setFlash('Invalid user');
-		}
-	}
-
-
 	function __resetPasswordKey($userid) {
 		$user = $this->User->find('first', array('conditions' => array('id' => $userid)));
 		unset($this->request->data['User']['username']);
