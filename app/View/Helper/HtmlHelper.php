@@ -369,42 +369,46 @@ class HtmlHelper extends AppHelper {
  * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/html.html#HtmlHelper::link
  */
 	public function link($title, $url = null, $options = array(), $confirmMessage = false) {
-		$escapeTitle = true;
-		if ($url !== null) {
-			$url = $this->url($url);
+		if (!empty($url['plugin']) && !in_array(Inflector::camelize($url['plugin']), CakePlugin::loaded())) { // zuha added 
+			return null;
 		} else {
-			$url = $this->url($title);
-			$title = $url;
-			$escapeTitle = false;
-		}
-
-		if (isset($options['escape'])) {
-			$escapeTitle = $options['escape'];
-		}
-
-		if ($escapeTitle === true) {
-			$title = h($title);
-		} elseif (is_string($escapeTitle)) {
-			$title = htmlentities($title, ENT_QUOTES, $escapeTitle);
-		}
-
-		if (!empty($options['confirm'])) {
-			$confirmMessage = $options['confirm'];
-			unset($options['confirm']);
-		}
-		if ($confirmMessage) {
-			$confirmMessage = str_replace("'", "\'", $confirmMessage);
-			$confirmMessage = str_replace('"', '\"', $confirmMessage);
-			$options['onclick'] = "return confirm('{$confirmMessage}');";
-		} elseif (isset($options['default']) && $options['default'] == false) {
-			if (isset($options['onclick'])) {
-				$options['onclick'] .= ' event.returnValue = false; return false;';
+			$escapeTitle = true;
+			if ($url !== null) {
+				$url = $this->url($url);
 			} else {
-				$options['onclick'] = 'event.returnValue = false; return false;';
+				$url = $this->url($title);
+				$title = $url;
+				$escapeTitle = false;
 			}
-			unset($options['default']);
-		}
-		return sprintf($this->_tags['link'], $url, $this->_parseAttributes($options), $title);
+	
+			if (isset($options['escape'])) {
+				$escapeTitle = $options['escape'];
+			}
+	
+			if ($escapeTitle === true) {
+				$title = h($title);
+			} elseif (is_string($escapeTitle)) {
+				$title = htmlentities($title, ENT_QUOTES, $escapeTitle);
+			}
+	
+			if (!empty($options['confirm'])) {
+				$confirmMessage = $options['confirm'];
+				unset($options['confirm']);
+			}
+			if ($confirmMessage) {
+				$confirmMessage = str_replace("'", "\'", $confirmMessage);
+				$confirmMessage = str_replace('"', '\"', $confirmMessage);
+				$options['onclick'] = "return confirm('{$confirmMessage}');";
+			} elseif (isset($options['default']) && $options['default'] == false) {
+				if (isset($options['onclick'])) {
+					$options['onclick'] .= ' event.returnValue = false; return false;';
+				} else {
+					$options['onclick'] = 'event.returnValue = false; return false;';
+				}
+				unset($options['default']);
+			}
+			return sprintf($this->_tags['link'], $url, $this->_parseAttributes($options), $title);
+		}			
 	}
 
 /**

@@ -3,7 +3,27 @@
   <div id="slidedock_content">
       <ul>
       	<li><a class="dock_btn edit_button" id="edit_button" title="On edit mode"><span>Edit Mode : Off</span></a></li>
-	    <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').$requestUrl; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?></span></a></li>
+	    <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').$requestUrl; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?> This Page</span></a></li>
+        
+    <li><?php echo $this->Html->link('<span>Dashboard</span>', array('plugin' => null, 'controller' => 'admin', 'action' => 'index'), array('escape' => false, 'title' => 'Privileges, Settings, Workflows, Conditions, Custom Forms', 'id' => 'navAdmin')); ?>
+              <ul>
+                <li><?php echo $this->Html->link('<span>Privileges</span>', array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index'), array('escape' => false, 'title' => 'Manage user role access to sections.')); ?></li>
+                <li><?php echo $this->Html->link('<span>Settings</span>', array('plugin' => null, 'controller' => 'settings', 'action' => 'index'), array('escape' => false, 'title' => 'Set your custom configuration options.')); ?></li>
+                <li><?php echo in_array('Forms', CakePlugin::loaded()) ? $this->Html->link('<span>Forms</span>', array('plugin' => 'forms', 'controller' => 'forms', 'action' => 'index'), array('escape' => false, 'title' => 'Customize forms and manage database fields.')) : null ; ?></li>
+                <li><?php echo $this->Html->link('<span>Conditions</span>', array('plugin' => null, 'controller' => 'conditions', 'action' => 'index'), array('escape' => false, 'title' => 'Advanced website automation by matching conditions to future actions.')); ?></li>
+                <li><?php echo $this->Html->link('<span>Workflows</span>', array('plugin' => 'workflows', 'controller' => 'workflows', 'action' => 'index'), array('escape' => false, 'title' => 'The actions your conditions will force to happen.')); ?></li>
+              </ul>
+    
+    
+    </li>
+    <li><?php echo $this->Html->link('<span>Theme</span>', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'theme'), array('escape' => false, 'title' => 'Templates, CSS, Javascript', 'id' => 'navTheme')); ?></li>
+    <li><?php echo $this->Html->link('<span>Content</span>', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Pages, Modules, Media, Categories, Tags, Enumerations', 'id' => 'navContent')); ?></li>
+    <li><?php echo $this->Html->link('<span>Contacts</span>', array('admin' => true, 'plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Leads, Opportunities', 'id' => 'navContacts')); ?></li>
+    <li><?php echo $this->Html->link('<span>Products</span>', array('admin' => true, 'plugin' => 'catalogs', 'controller' => 'catalogs', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Catalogs, Orders', 'id' => 'navProducts')); ?></li>
+    <li><?php echo $this->Html->link('<span>Billing</span>', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Estimates, Invoices', 'id' => 'navBilling')); ?></li>
+    <li><?php echo $this->Html->link('<span>Support</span>', array('admin' => true, 'plugin' => 'projects', 'controller' => 'projects', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Projects, Tickets, Timesheets', 'id' => 'navSupport')); ?></li>
+    <li><?php echo $this->Html->link('<span>Users</span>', array('admin' => true, 'plugin' => 'users', 'controller' => 'users', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Social, Groups, Members, Messages', 'id' => 'navUsers')); ?></li>
+    <li><?php echo $this->Html->link('<span>Reports</span>', array('admin' => true, 'plugin' => 'reports', 'controller' => 'reports', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Report Builder, Analytics', 'id' => 'navReports')); ?></li>
         <li> <a href="#"><span>Design</span></a>
           <ul>
                 <li class="title">Design</li>
