@@ -62,7 +62,7 @@ endif;
 This menu needs a lot of work.  I'm not sure how to handle it, and its important
 because it is different for every single site.  */
 // set the contextual menu items
-echo $this->Element('context_menu', array('menus' => array(
+$this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Users',
 		'items' => array(

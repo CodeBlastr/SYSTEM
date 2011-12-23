@@ -4,7 +4,9 @@
   <div id="slidedock_content">
     <ul>
       <li><a class="dock_btn edit_button" id="edit_button" title="On edit mode"><span>Edit Mode : Off</span></a></li>
-      <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').$requestUrl; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?> This Page</span></a></li>
+      <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').$requestUrl; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?> This Page</span></a>
+      <?php echo $this->Element('context_menu'); ?>
+      </li>
       <li><?php echo $this->Html->link('<span>Dashboard</span>', array('plugin' => null, 'controller' => 'admin', 'action' => 'index'), array('escape' => false, 'title' => 'Privileges, Settings, Workflows, Conditions, Custom Forms', 'id' => 'navAdmin')); ?>
         <ul>
           <li><?php echo $this->Html->link('<span>Privileges</span>', array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index'), array('escape' => false, 'title' => 'Manage user role access to sections.')); ?></li>
