@@ -275,4 +275,11 @@ input[type=radio], input[type=checkbox] {
 	color: #C00;
 }
 
+
+
+.catalogItemOptions {
+	float:left; 
+	width: 200px; 
+	clear:none;
+}
 	
