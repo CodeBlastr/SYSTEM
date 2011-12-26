@@ -43,7 +43,7 @@
 	<?php echo $this->Form->end('Save Webpage');?>
 </div>
 <?php
-echo $this->Element('context_menu', array('menus' => array(
+$this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Webpages',
 		'items' => array(

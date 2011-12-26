@@ -18,14 +18,18 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-
-		<li><?php echo $this->Html->link(__('List Menus', true), array('action' => 'index'));?></li>
-		<li><?php echo $this->Html->link(__('List Menus', true), array('controller' => 'menus', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Parent Menu', true), array('controller' => 'menus', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Creator', true), array('controller' => 'users', 'action' => 'add')); ?> </li>
-	</ul>
-</div>
+<?php 
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Menus',
+		'items' => array(
+			$this->Html->link(__('List Menus', true), array('action' => 'index')),
+			$this->Html->link(__('List Menus', true), array('controller' => 'menus', 'action' => 'index')),
+			$this->Html->link(__('New Parent Menu', true), array('controller' => 'menus', 'action' => 'add')),
+			$this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')),
+			$this->Html->link(__('New Creator', true), array('controller' => 'users', 'action' => 'add')),
+			)
+		),
+	)));
+?>

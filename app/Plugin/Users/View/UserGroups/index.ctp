@@ -33,9 +33,14 @@
 
 <?php echo $this->Element('paging'); ?>
 
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New User Group', true), array('action' => 'add')); ?></li>
-	</ul>
-</div>
+<?php 
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'User Groups',
+		'items' => array(
+			$this->Html->link(__('New User Group', true), array('action' => 'add')),
+			)
+		),
+	)));
+?>
