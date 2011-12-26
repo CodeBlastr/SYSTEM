@@ -78,11 +78,7 @@ class AppController extends Controller {
 		# End DO NOT DELETE #
 		
 		$this->_configAuth();
-		
-		/**
-		 * Support for json file types when using json extensions
-		 */
-		$this->RequestHandler->setContent('json', 'text/x-json');
+		$this->_handleJson();
 
 		/**
 		 * @todo 	create this function, so that conditions can fire on the view of records
@@ -106,6 +102,7 @@ class AppController extends Controller {
 			}
 		}
 
+
 		/*
 		 * Below here (in this function) are things that have to come after the final userRoleId is determined
 		 */
@@ -115,12 +112,28 @@ class AppController extends Controller {
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 
 		$this->_siteTemplate();
-
+		
 		/**
 		 * Check whether the site is sync'd up
 		 */
 		#$this->_siteStatus();	
 	}
+	
+	function _handleJson($beforeFilter = true) {
+		if (!empty($beforeFilter)) {
+			# Support for json file types when using json extensions
+			#$this->RequestHandler->setContent('json', 'text/x-json');
+			
+			if ($this->request->ext == 'json') {
+				$this->autoRender = false;
+			}
+		} else {
+			if ($this->request->ext == 'json') {
+				$this->render(false, 'default');
+			}
+		}
+	}
+	
 
 	/**
 	 * @todo convert to a full REST application and this might not be necessary
@@ -130,6 +143,11 @@ class AppController extends Controller {
 		if($this->RequestHandler->isAjax()) :
             Configure::write('debug', 0);
 		endif;
+	}
+	
+	
+	function afterFilter() {
+		$this->_handleJson(false);
 	}
 
 

@@ -34,10 +34,6 @@ class WebpagesController extends WebpagesAppController {
 		parent::beforeFilter();
 		$this->passedArgs['comment_view_type'] = 'flat';
 	}
-	
-	function test() {	
-	         $this->layout='';
-	}
 
 	function index() {
 		if (!empty($this->request->params['named']['type'])) :

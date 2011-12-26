@@ -61,56 +61,5 @@ class UserFollowersController extends UsersAppController {
 		$this->flash(__('User follower was not deleted', true), array('action' => 'index'));
 		$this->redirect(array('action' => 'index'));
 	}
-	function admin_index() {
-		$this->UserFollower->recursive = 0;
-		$this->set('userfollowers', $this->paginate());
-	}
-
-	function admin_view($id = null) {
-		if (!$id) {
-			$this->flash(__('Invalid user follower', true), array('action' => 'index'));
-		}
-		$this->set('userfollower', $this->UserFollower->read(null, $id));
-	}
-
-	function admin_add() {
-		if (!empty($this->request->data)) {
-			$this->UserFollower->create();
-			if ($this->UserFollower->save($this->request->data)) {
-				$this->flash(__('UserFollower saved.', true), array('action' => 'index'));
-			} else {
-			}
-		}
-		$users = $this->UserFollower->User->find('list');
-		$this->set(compact('users'));
-	}
-
-	function admin_edit($id = null) {
-		if (!$id && empty($this->request->data)) {
-			$this->flash(sprintf(__('Invalid user follower', true)), array('action' => 'index'));
-		}
-		if (!empty($this->request->data)) {
-			if ($this->UserFollower->save($this->request->data)) {
-				$this->flash(__('The user follower has been saved.', true), array('action' => 'index'));
-			} else {
-			}
-		}
-		if (empty($this->request->data)) {
-			$this->request->data = $this->UserFollower->read(null, $id);
-		}
-		$users = $this->UserFollower->User->find('list');
-		$this->set(compact('users'));
-	}
-
-	function admin_delete($id = null) {
-		if (!$id) {
-			$this->flash(sprintf(__('Invalid user follower', true)), array('action' => 'index'));
-		}
-		if ($this->UserFollower->delete($id)) {
-			$this->flash(__('User follower deleted', true), array('action' => 'index'));
-		}
-		$this->flash(__('User follower was not deleted', true), array('action' => 'index'));
-		$this->redirect(array('action' => 'index'));
-	}
 }
 ?>

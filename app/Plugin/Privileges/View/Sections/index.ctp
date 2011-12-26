@@ -69,12 +69,11 @@
 
 <?php
 // set the contextual menu items
-echo $this->Element('context_menu', array('menus' => array(
+$this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Actions',
 		'items' => array(
-			$this->Html->link(__('Run Aco Sync', true), array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'aco_sync')),
-			$this->Html->link(__('Clear Sync Session', true), array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'clear_session')),
+			$this->Html->link(__('Update Available Sections', true), array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'clear_session')),
 			)
 		),
 	)));
