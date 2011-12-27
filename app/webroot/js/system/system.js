@@ -77,10 +77,11 @@ $().ready(function() {
 	// requires rel attribute, which is the target id of the select box to update
 	$('select[element="select"]').change(function(){
 		var url = '/' + $(this).attr('json') + '/' + $(this).val() + '.json';
+		var variable = $(this).attr('variable');
 		var target = $(this).attr('rel');
 		$.getJSON(url, function(data){
-			var items = [];	
- 			$.each(data, function(key, val) {
+			var items = [];
+ 			$.each(data[variable], function(key, val) {
 				if (val['value']) { value = val['value']; } else { value = val['name']; }
 				items += '<option value="' + value + '">' + val['name'] + '</option>';
 			});
