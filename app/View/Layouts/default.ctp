@@ -103,6 +103,7 @@
         <!-- #compareChartHeader -->
         <div class="contentSection"> <?php echo $content_for_layout; ?> </div>
         <!-- #compareChart -->
+        <?php echo $this->Element('context_menu'); ?>
       </div>
     </div>
   </div>
