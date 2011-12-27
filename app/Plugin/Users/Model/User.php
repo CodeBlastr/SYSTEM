@@ -157,15 +157,16 @@ class User extends AppModel {
 	}
 	
 /** 
- * With Cakephp 2.0 you can do ACL better (with acts as both) and this function is one of the functions now available from the Acl Behavior.
+ * For relating the user to the correct parent user role in the aros table.
  */
 	function parentNode() {
    		if (!$this->id && empty($this->data)) {
 	        return null;
 	    }
 	    $data = $this->data;
-	    if (empty($this->data)) {
-	        $data = $this->read();
+	    if (empty($this->data['User']['user_role_id'])) {
+	        $user = $this->read();
+			$data['User']['user_role_id'] = $user['User']['user_role_id'];
 	    }
 	    if (empty($data['User']['user_role_id'])) {
 	        return null;
