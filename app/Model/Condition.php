@@ -80,19 +80,6 @@ class Condition extends AppModel {
 	}
 	
 	
-	function addRecursiveData($model, $data) {
-		$Model = ClassRegistry::init($model);
-		$Model->recursive = 1;
-		$data = $Model->find('first', array(
-			'conditions' => array(
-				"{$Model->name}.id" => $data[$Model->name]['id'],
-				),
-			));
-		return $data;
-	}
-	
-	
-	
 /** 
  * This function does a find to see if the any conditions exist which match the current create, read, update or delete action.
  *
@@ -132,6 +119,7 @@ class Condition extends AppModel {
 			foreach ($conditionsArray as $conditionsArr) {
 				$conditions[] = explode('.',$conditionsArr);
 			}
+			
 			foreach ($conditions as $condition) {
 				# check for the operator 
 				if ($condition[3] == 'null' && $condition[2] == '=') {
@@ -258,6 +246,18 @@ class Condition extends AppModel {
 			$this->$thisModel[0] = new $thisModel[0];
 			$this->$thisModel[0]->triggered($id, $data);
 		}
+	}
+	
+	
+	function addRecursiveData($model, $data) {
+		$Model = ClassRegistry::init($model);
+		$Model->recursive = 1;
+		$data = $Model->find('first', array(
+			'conditions' => array(
+				"{$Model->name}.id" => $data[$Model->name]['id'],
+				),
+			));
+		return $data;
 	}
 
 }
