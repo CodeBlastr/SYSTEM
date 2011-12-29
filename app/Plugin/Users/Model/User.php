@@ -157,15 +157,16 @@ class User extends AppModel {
 	}
 	
 /** 
- * With Cakephp 2.0 you can do ACL better (with acts as both) and this function is one of the functions now available from the Acl Behavior.
+ * For relating the user to the correct parent user role in the aros table.
  */
 	function parentNode() {
    		if (!$this->id && empty($this->data)) {
 	        return null;
 	    }
 	    $data = $this->data;
-	    if (empty($this->data)) {
-	        $data = $this->read();
+	    if (empty($this->data['User']['user_role_id'])) {
+	        $user = $this->read();
+			$data['User']['user_role_id'] = $user['User']['user_role_id'];
 	    }
 	    if (empty($data['User']['user_role_id'])) {
 	        return null;
@@ -609,10 +610,10 @@ class User extends AppModel {
  */
 	function creditsUpdate($data = null){
 		$user = $this->find('first' , array(
-						'fields' => array('id', 'credit_total'),
-						'conditions' =>
-							array('User.id' => $data['OrderItem']['customer_id'])
-					)) ;
+			'fields' => array('id', 'credit_total'),
+			'conditions' =>
+				array('User.id' => $data['OrderItem']['customer_id'])
+			));
 
 		if(defined('__USERS_CREDITS_PER_PRICE_UNIT')) :
 			$user['User']['credit_total'] += ($data['OrderItem']['price'] * $data['OrderItem']['quantity']) * __USERS_CREDITS_PER_PRICE_UNIT ;
@@ -624,61 +625,6 @@ class User extends AppModel {
 		if(!($this->save($user, false))){
 			throw new Exception(__d('Credits not Saved', true));
 		}
-	}
-	
-	
-/*
- * Update Access
- * It will give access of a particular record to a particular user
- * This is only used in database driven workflows at the moment so there are no references
- * to this function in other code on the system.
- * 
- * @param {array} 		An array of data like you would get from any form.
- */
-	function updateAccess($data = null){
-		$this->Aro = ClassRegistry::init('Aro');
-		$this->Aco = ClassRegistry::init('Aco');
-		$this->ArosAco = ClassRegistry::init('ArosAco');
-
-		$aroData = $this->Aro->find('first', array(
-						'conditions' => array(
-							'model' => 'User',
-							'foreign_key' => $data['OrderItem']['customer_id'])
-					));
-		$aroId = $aroData['Aro']['id'];
-
-		$acoData = $this->Aco->find('first', array(
-						'conditions' => array(
-							'model' => $data['OrderItem']['model'],
-							'foreign_key' => $data['OrderItem']['foreign_key'])
-					));
-		if(!empty($acoData)) :
-			$acoId = $acoData['Aco']['id'];
-		else :
-			$acoData = array(
-						'model' => $data['OrderItem']['model'],
-						'foreign_key' => $data['OrderItem']['foreign_key'],
-						'alias' => 'view',
-					);
-			if($this->Aco->save($acoData)) :
-				$acoId = $this->Aco->id;
-			endif;
-		endif;
-
-		$acoAroData = array(
-						'aro_id' => $aroId,
-						'aco_id' => $acoId,
-						'_create' => 0,
-						'_read' => 1,
-						'_update' => 0,
-						'_delete' => 0,
-					);
-
-		if (!$this->ArosAco->save($acoAroData)) {
-			echo 'Uncaught Exception: 9108710923801928347';
-			break;
-		}
-
 	}
 
 }

@@ -86,6 +86,7 @@ class UsersController extends UsersAppController {
 
     public function logout() {
 		if ($this->Auth->logout() || $this->Session->delete('Auth')) :
+			$this->Session->destroy();
 			$this->Session->setFlash('Successful Logout');
 			$this->redirect($this->_logoutRedirect());
 		else :
