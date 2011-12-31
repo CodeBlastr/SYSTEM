@@ -43,7 +43,7 @@ $thumbLinkClass = !empty($thumbLinkClass) ? $thumbLinkClass : ''; //can have  cl
 $thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; //to append anything to the image within the link
 
 if (!empty($galleryThumb)) {
-	if($thumbDiv)	{ echo '<div '.$thumbClass . $thumbId . '>';  } 
+	if($thumbDiv)	{ echo "<div {$thumbClass} {$thumbId}>";  } 
 		$imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'.$thumbSize.'/'.$galleryThumb['GalleryThumb']['filename'];
         $image = $this->Html->image($imagePath,
 			array(
@@ -62,19 +62,15 @@ if (!empty($galleryThumb)) {
 				'class' => $thumbLinkClass,
 				'title' => $thumbTitle,
 				)); 
-	if($thumbDiv) { echo '</div>'; } 
+	if($thumbDiv) { echo "</div>"; } 
 } else {
-	if($thumbDiv) {  echo '<div ' . $thumbClass . $thumbId . '>'; }
+	if($thumbDiv) {  echo "<div {$thumbClass} {$thumbId}>"; }
 		$imagePath = '/img/noImage.jpg';
         $image = $this->Html->image($imagePath,
 			array(
 				'width' => $thumbWidth, 
 				'height' => $thumbHeight,
 				'alt' => 'no image',
-				),
-			array(
-				'conversion' => $galleryThumb['Gallery']['conversionType'],
-				'quality' => 75,
 				));	
 		echo $this->Html->link($image . $thumbLinkAppend,
 			$thumbLink, 

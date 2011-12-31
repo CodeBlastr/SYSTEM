@@ -1186,6 +1186,14 @@ class HtmlHelper extends AppHelper {
 	private function _resize($image, $path, $options = array(), $extOptions = null) {
 		
 		if (is_array($extOptions)) {
+			if (empty($options['width']) && empty($options['height'])) {
+				# attempt to get the image width and height
+				if ($size = getimagesize('http://'.$_SERVER['HTTP_HOST'].$path)) {
+					$options['width'] = $size[0];
+					$options['height'] = $size[1];
+				}
+			}
+			
 			if (!empty($options['width']) && !empty($options['height'])) {
 				# default extended options for images
 				$extOptions['conversion'] = !empty($extOptions['conversion']) ? $extOptions['conversion'] : 'resizeCrop'; // resize, resizeCrop, crop
