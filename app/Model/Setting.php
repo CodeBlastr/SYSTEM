@@ -207,7 +207,7 @@ class Setting extends AppModel {
 				  'Galleries' => array(
 						array(
 							'name' => 'SETTINGS',
-							'description' => 'Defines the settings for all galleries that will appear on the site. The entire __GALLERY tree is deprecated and will be removed in the future, please use this.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'galleryType = "zoomable"'.PHP_EOL.'smallImageWidth = 50'.PHP_EOL.'smallImageHeight = 120'.PHP_EOL.'mediumImageWidth = 200'.PHP_EOL.'mediumImageHeight = 250'.PHP_EOL.'largeImageWidth = 600'.PHP_EOL.'largeImageHeight = 450'.PHP_EOL.'conversionType = "resizeCrop"',
+							'description' => 'Defines the settings for all galleries that will appear on the site. The entire __GALLERY tree is deprecated and will be removed in the future, please use this.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'galleryType = "zoomable"'.PHP_EOL.'smallImageWidth = 50'.PHP_EOL.'smallImageHeight = 120'.PHP_EOL.'mediumImageWidth = 200'.PHP_EOL.'mediumImageHeight = 250'.PHP_EOL.'largeImageWidth = 600'.PHP_EOL.'largeImageHeight = 450'.PHP_EOL.'conversionType = "resizeCrop"'.PHP_EOL.'indexImageWidth = 100'.PHP_EOL.'indexImageHeight = 100',
 							),
 						),
 				  'Gallery' => array(

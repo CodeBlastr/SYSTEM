@@ -8,6 +8,8 @@ class GalleriesAppModel extends AppModel {
 	public $mediumImageHeight = 100;
 	public $largeImageWidth = 500;
 	public $largeImageHeight = 500;
+	public $indexImageWidth = null;
+	public $indexImageHeight = null;
 	public $conversionType = 'resizeCrop';	
 		
 	public function __construct($request = null, $response = null) {
@@ -37,6 +39,8 @@ class GalleriesAppModel extends AppModel {
 	    $mediumImageHeight = !empty($mediumImageHeight) ? $mediumImageHeight : $this->mediumImageHeight;
 	    $largeImageWidth = !empty($largeImageWidth) ? $largeImageWidth : $this->largeImageWidth;
 	    $largeImageHeight = !empty($largeImageHeight) ? $largeImageHeight : $this->largeImageHeight;
+	    $indexImageWidth = !empty($indexImageWidth) ? $indexImageWidth : $this->indexImageWidth;
+	    $indexImageHeight = !empty($indexImageHeight) ? $indexImageHeight : $this->indexImageHeight;
 	    $conversionType = !empty($conversionType) ? $conversionType : $this->conversionType;
 		
 		# make it available to the views and to the controllers
@@ -49,6 +53,8 @@ class GalleriesAppModel extends AppModel {
 		$this->mediumImageHeight = $mediumImageHeight;
 		$this->largeImageWidth = $largeImageWidth;
 		$this->largeImageHeight = $largeImageHeight;
+		$this->indexImageWidth = $indexImageWidth;
+		$this->indexImageHeight = $indexImageHeight;
 		$this->conversionType = $conversionType;
 		$this->gallerySettings = array(
 			'galleryType' => $this->galleryType,
@@ -58,6 +64,8 @@ class GalleriesAppModel extends AppModel {
 			'mediumImageHeight' => $this->mediumImageHeight,
 			'largeImageWidth' => $this->largeImageWidth,
 			'largeImageHeight' => $this->largeImageHeight,
+			'indexImageWidth' => $this->indexImageWidth,
+			'indexImageHeight' => $this->indexImageHeight,
 			'conversionType' => $this->conversionType,
 			);
 	}
