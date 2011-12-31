@@ -369,7 +369,7 @@ class HtmlHelper extends AppHelper {
  * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/html.html#HtmlHelper::link
  */
 	public function link($title, $url = null, $options = array(), $confirmMessage = false) {
-		if (!empty($url['plugin']) && !in_array(Inflector::camelize($url['plugin']), CakePlugin::loaded())) { // zuha added 
+		if (!empty($url['plugin']) && $url['plugin'] != '/' && !in_array(Inflector::camelize($url['plugin']), CakePlugin::loaded())) { // zuha added
 			return null;
 		} else {
 			$escapeTitle = true;
@@ -1197,7 +1197,10 @@ class HtmlHelper extends AppHelper {
 					$themeFolder = str_replace(strtolower('/theme/'.$this->theme.'/'), '', $path);
 					$themeFolder = str_replace('/'.$fileName, '', $themeFolder);
 					if ($convertedFile = $this->_resizeImage($extOptions['conversion'], urldecode($fileName), ROOT.DS.SITE_DIR.DS.'View'.DS.'Themed'.DS.$this->theme.DS.'webroot'.DS.$themeFolder.DS, 'tmp_'.$options['width'].$options['height'].$extOptions['conversion'], $options['width'], $options['height'], $extOptions['quality'])) {
-						return str_replace($fileName, $convertedFile, $image);
+						$htmlTag = str_replace($fileName, $convertedFile['path'], $image);
+						$htmlTag = preg_replace('/\width=".*?"/', 'width="'.$convertedFile['width'].'"', $htmlTag);
+						$htmlTag = preg_replace('/height=".*?"/', 'height="'.$convertedFile['height'].'"', $htmlTag);
+						return $htmlTag;
 					} else {
 						return $image;
 					}
@@ -1271,7 +1274,12 @@ class HtmlHelper extends AppHelper {
              * If so delete.
              */
             if(file_exists($dest)) {
-				return $cacheFolder . '/' . $newName. '.' . $id;
+				$size = @getimagesize($dest);
+				return array(
+					'path' => $cacheFolder . '/' . $newName. '.' . $id,
+					'width' => $size[0],
+					'height' => $size[1],
+					);				
                 #unlink($dest);
             } else {
                 switch ($cType){
@@ -1282,7 +1290,7 @@ class HtmlHelper extends AppHelper {
                         $widthScale = 2;
                         $heightScale = 2;
                         
-                        if($newWidth) $widthScale =     $newWidth / $oldWidth;
+                        if($newWidth) $widthScale = $newWidth / $oldWidth;
                         if($newHeight) $heightScale = $newHeight / $oldHeight;
                         //debug("W: $widthScale  H: $heightScale<br>");
                         if($widthScale < $heightScale) {
@@ -1304,13 +1312,13 @@ class HtmlHelper extends AppHelper {
                             $applyWidth = ($applyHeight*$oldWidth)/$oldHeight;
                         } else {
                             $applyWidth = $maxWidth; 
-                                $applyHeight = $maxHeight;
+                            $applyHeight = $maxHeight;
                         }
-                        //debug("mW: $maxWidth mH: $maxHeight<br>");
-                        //debug("aW: $applyWidth aH: $applyHeight<br>");
+                        #debug("oW: $oldWidth oH: $oldHeight mW: $maxWidth mH: $maxHeight<br>");
+                       	#debug("aW: $applyWidth aH: $applyHeight<br>");
                         $startX = 0;
                         $startY = 0;
-                        //exit();
+                        #exit();
                         break;
                     case 'resizeCrop':
                         // -- resize to max, then crop to center
@@ -1397,7 +1405,12 @@ class HtmlHelper extends AppHelper {
                     rename($dest, $img);
                 }
                 
-                return $cacheFolder . '/' . $newName. '.' . $id;
+				$size = @getimagesize($cacheFolder . '/' . $newName. '.' . $id);
+				return array(
+					'path' => $cacheFolder . '/' . $newName. '.' . $id,
+					'width' => $applyWidth,
+					'height' => $applyHeight,
+					);	
             }
 
         } else {

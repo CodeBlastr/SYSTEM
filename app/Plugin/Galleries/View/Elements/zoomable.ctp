@@ -71,17 +71,26 @@ if (!empty($gallery['GalleryImage'][0])) :
 ?>
 <div class="zoomableGallery">
 	<div id="mediumImage">
-	    <!-- <a id="galleryImage<?php echo $gallery['GalleryImage'][0]['id']; ?>" class="jqzoom2 zoomable galleryImage" title="<?php echo $gallery['GalleryImage'][0]['caption']; ?>" href="<?php echo $gallery['GalleryImage'][0]['dir'].'thumb/large/'.$gallery['GalleryImage'][0]['filename']; ?>">
-        
-        
-        <img src="<?php echo $gallery['GalleryImage'][0]['dir'].'thumb/medium/'.$gallery['GalleryImage'][0]['filename']; ?>" alt="<?php echo $gallery['GalleryImage'][0]['caption']; ?>">
-        
-        
-        </a> -->
-        
-        <?php echo $this->Html->image($gallery['GalleryImage'][0]['dir'].'thumb/medium/'.$gallery['GalleryImage'][0]['filename'], array('width' => $gallery['Gallery']['mediumImageWidth'], 'height' => $gallery['Gallery']['mediumImageWidth']), array($gallery['Gallery']['conversionType'])); ?>
-        
-        
+        <?php 
+		$mediumImage = $gallery['GalleryImage'][0]['dir'].'thumb/medium/'.$gallery['GalleryImage'][0]['filename'];
+		$image = $this->Html->image($mediumImage, 
+			array(
+				'width' => $gallery['Gallery']['mediumImageWidth'], 
+				'height' => $gallery['Gallery']['mediumImageWidth'],
+				'alt' => $gallery['GalleryImage'][0]['caption'],
+				), 
+			array(
+				'conversion' => $gallery['Gallery']['conversionType'],
+				'quality' => 75,
+				));		
+		echo $this->Html->link($image,
+			'/'.$gallery['GalleryImage'][0]['dir'].'thumb/large/'.$gallery['GalleryImage'][0]['filename'], 
+			array(
+				'escape' => false,
+				'id' => 'galleryImage' . $gallery['GalleryImage'][0]['id'],
+				'class' => 'jqzoom2 zoomable galleryImage',
+				'title' => $gallery['GalleryImage'][0]['caption'],
+				)); ?>
     </div>
     <div id="description"></div>
     <ul class="thumbs">
@@ -91,18 +100,37 @@ if (!empty($gallery['GalleryImage'][0])) :
 	<li class="thumb" id="thumb<?php echo $slide['id']; ?>">
     	<ul>
         	<li class="thumbImg">
-            	<!-- medium image -->
-		    	<a href="<?php echo $slide['dir'].'thumb/medium/'.$slide['filename']; ?>" title="<?php echo $slide['caption']; ?>">
-               	<!-- smallest image -->
-                <img src="<?php echo $slide['dir'].'thumb/small/'.$slide['filename']; ?>" alt="<?php echo $slide['alt']; ?>">
-                </a>
+            	<?php
+                echo $this->Html->image($slide['dir'].'thumb/small/'.$slide['filename'],
+					array(
+						'width' => $gallery['Gallery']['smallImageWidth'], 
+						'height' => $gallery['Gallery']['smallImageHeight'],
+						'url' => $slide['dir'].'thumb/medium/'.$slide['filename'],
+						),
+					array(
+						'conversion' => $gallery['Gallery']['conversionType'],
+						'quality' => 75,
+						)); ?>
             </li>
             <li class="thumbMedium">
-            	<!-- largest image --> 
-            	<a href="<?php echo $slide['dir'].'thumb/large/'.$slide['filename']; ?>" class="jqzoom2" title="<?php echo $slide['caption']; ?>"> 
-                <!-- medium image -->
-                <img src="<?php echo $slide['dir'].'thumb/medium/'.$slide['filename']; ?>" alt="<?php echo $slide['alt']; ?>"> 
-                </a>
+            	<?php
+                $image = $this->Html->image($slide['dir'].'thumb/medium/'.$slide['filename'],
+					array(
+						'width' => $gallery['Gallery']['mediumImageWidth'], 
+						'height' => $gallery['Gallery']['mediumImageHeight'],
+						),
+					array(
+						'conversion' => $gallery['Gallery']['conversionType'],
+						'quality' => 75,
+						));	
+				echo $this->Html->link($image,
+					'/'.$slide['dir'].'thumb/large/'.$slide['filename'], 
+					array(
+						'escape' => false,
+						'id' => 'galleryImage' . $gallery['GalleryImage'][0]['id'],
+						'class' => 'jqzoom2 zoomable galleryImage',
+						'title' => $gallery['GalleryImage'][0]['caption'],
+						)); ?>
             </li>
             <li class="description">
             <?php echo $slide['description']; ?>
