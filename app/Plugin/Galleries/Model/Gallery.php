@@ -103,7 +103,7 @@ class Gallery extends GalleriesAppModel {
 		$data['Gallery']['name'] = !empty($data['Gallery']['name']) ? $data['Gallery']['name'] : $data['Gallery']['model']; 
 		# set any Gallery model fields not filled in data with app or system defaults.
 		$data = $this->_galleryDefaults($data);
-		$data = $this->GalleryImage->_galleryImageDefaults($data);
+		$data = $this->GalleryImage->galleryImageDefaults($data);
 		# create the gallery as the first step
 		if ($this->save($data)) {
 			# now if an image exists in data, save the image as the default thumbnail as well

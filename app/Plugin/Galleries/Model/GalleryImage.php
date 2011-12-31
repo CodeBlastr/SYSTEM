@@ -85,7 +85,7 @@ class GalleryImage extends GalleriesAppModel {
 			$uploadOptions = $data['UploadOptions']; 
 		} else {
 			# ex. array('filename' => array('thumbsizes' => array('small' => array('width' => 50, 'height' => 50))));
-			$uploadOptions = $this->_galleryImageDefaults($data); 
+			$uploadOptions = $this->galleryImageDefaults($data); 
 		}
 		return $uploadOptions;
 	}
@@ -102,7 +102,7 @@ class GalleryImage extends GalleriesAppModel {
  * @param {array}		data array of the gallery image
  * @return {array} 		returns the updated data array
  */
-	private function _galleryImageDefaults($data = null) {
+	public function galleryImageDefaults($data = null) {
 		
 		$uploadOptions['thumbsizes']['medium']['width'] = $this->mediumImageWidth;
 		$uploadOptions['thumbsizes']['medium']['height'] = $this->mediumImageHeight;

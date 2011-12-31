@@ -1,26 +1,32 @@
 <div class="galleries form">
 <?php echo $this->Form->create('Gallery', array('enctype'=>'multipart/form-data'));?>
 	<fieldset id="galleryFields">
- 		<legend class="toggleClick"><h2><?php echo !empty($this->request->data['Gallery']['name']) ? $this->request->data['Gallery']['name']: null; echo __(' Gallery Info'); ?></h2></legend>
+ 		<legend class="toggleClick"><?php echo __('Edit Gallery Options'); ?></legend>
 		<?php
 		echo $this->Form->input('Gallery.id');
 		echo $this->Form->input('Gallery.name');
-		echo $this->Form->input('Gallery.type', array('empty' => true));
 		echo $this->Form->input('Gallery.model', array('type' => 'hidden'));
 		echo $this->Form->input('Gallery.foreign_key', array('type' => 'hidden'));
 		echo $this->Form->input('Gallery.description', array('type' => 'richtext'));
+		?>
+      	<legend><?php echo __('Gallery Options'); ?></legend>
+    	<?php
+		echo $this->Form->input('Gallery.type', array('empty' => true));
+		echo $this->Form->input('Gallery.thumb_width');
+		echo $this->Form->input('Gallery.thumb_height');
+		echo $this->Form->input('Gallery.medium_width');
+		echo $this->Form->input('Gallery.medium_height');
+		echo $this->Form->input('Gallery.full_width');
+		echo $this->Form->input('Gallery.full_height');
 		echo $this->Form->end('Submit');
 		?>
-    </fieldset>
-    
-    
-	<?php echo !empty($this->request->data['Gallery']['id']) ? $this->element($this->request->data['Gallery']['type'], array('id' => $this->request->data['Gallery']['id']), array('plugin' => 'galleries')) : null; ?>
+	</fieldset>
 
     
 <?php echo $this->Form->create('GalleryImage', array('enctype'=>'multipart/form-data'));?>
 	<fieldset>
- 		<legend><h3><?php echo __('Add Image'); ?></h3></legend>
-	<?php
+ 		<legend class="toggleClick"><?php echo __('Add Images'); ?></legend>
+		<?php
 		echo $this->Form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $this->request->data['Gallery']['id']));
 		echo $this->Form->input('Gallery.model', array('type' => 'hidden'));
 		echo $this->Form->input('Gallery.foreign_key', array('type' => 'hidden'));
@@ -31,9 +37,13 @@
 		echo $this->Form->input('dir', array('type' => 'hidden'));
 	    echo $this->Form->input('mimetype', array('type' => 'hidden'));
 	    echo $this->Form->input('filesize', array('type' => 'hidden'));
-	?>
+		echo $this->Form->end('Submit');
+		?>
     </fieldset>
-<?php echo $this->Form->end('Submit'); ?>
+
+<h3><?php echo __('Gallery Preview'); ?></h3>
+<?php echo !empty($this->request->data['Gallery']['id']) ? $this->element($this->request->data['Gallery']['type'], array('id' => $this->request->data['Gallery']['id']), array('plugin' => 'galleries')) : null; ?>
+    
 </div>
 
 <?php 

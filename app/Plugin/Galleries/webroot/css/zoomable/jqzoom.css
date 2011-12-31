@@ -1,5 +1,4 @@
-div.jqZoomTitle
-{
+div.jqZoomTitle {
 	z-index:10000;
 	text-align:center;
 	font-size:11px;
@@ -13,11 +12,7 @@ div.jqZoomTitle
 	color: #FFF;
 	background: #999;
 }
-
-
-
-.jqZoomPup
-{
+.jqZoomPup {
 		overflow:hidden;
 		background-color: #FFF;
 		-moz-opacity:0.5;
@@ -29,8 +24,7 @@ div.jqZoomTitle
 		cursor:crosshair;
 }
 
-.jqZoomPup img
-{
+.jqZoomPup img {
 	border: 0px;
 }
 
@@ -59,18 +53,40 @@ div.jqZoomTitle
 }
 
 * html .preload{
-	
 	width:90px;
 	height:43px;
-
 }
 
-.jqZoomWindow
-{
+.jqZoomWindow {
 	border: 1px solid #999;
 	background-color: #FFF;
 }
 
-.zoom_ieframe
-{
+.zoom_ieframe {
+}
+
+.thumbs {
+	float: left;
+}
+
+.zoomableGallery {
+	float: left;
+}
+.zoomableGallery:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.zoomableGallery #mediumImage {
+	float: left;
+}
+.thumb, .thumb ul {
+	float: left;
+	list-style-type: none;
+}
+#GalleryImageEditForm {
+	clear: both;
 }

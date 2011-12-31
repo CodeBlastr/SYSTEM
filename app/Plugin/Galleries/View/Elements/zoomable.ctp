@@ -72,7 +72,8 @@ if (!empty($gallery['GalleryImage'][0])) :
 <div class="zoomableGallery">
 	<div id="mediumImage">
         <?php 
-		$mediumImage = $gallery['GalleryImage'][0]['dir'].'thumb/medium/'.$gallery['GalleryImage'][0]['filename'];
+		# uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+		$mediumImage = $gallery['GalleryImage'][0]['dir'].'thumb/large/'.$gallery['GalleryImage'][0]['filename'];
 		$image = $this->Html->image($mediumImage, 
 			array(
 				'width' => $gallery['Gallery']['mediumImageWidth'], 
@@ -101,7 +102,8 @@ if (!empty($gallery['GalleryImage'][0])) :
     	<ul>
         	<li class="thumbImg">
             	<?php
-                echo $this->Html->image($slide['dir'].'thumb/small/'.$slide['filename'],
+				# uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+                echo $this->Html->image($slide['dir'].'thumb/large/'.$slide['filename'],
 					array(
 						'width' => $gallery['Gallery']['smallImageWidth'], 
 						'height' => $gallery['Gallery']['smallImageHeight'],
@@ -114,7 +116,8 @@ if (!empty($gallery['GalleryImage'][0])) :
             </li>
             <li class="thumbMedium">
             	<?php
-                $image = $this->Html->image($slide['dir'].'thumb/medium/'.$slide['filename'],
+				# uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+                $image = $this->Html->image($slide['dir'].'thumb/large/'.$slide['filename'],
 					array(
 						'width' => $gallery['Gallery']['mediumImageWidth'], 
 						'height' => $gallery['Gallery']['mediumImageHeight'],
