@@ -58,6 +58,7 @@ class Gallery extends GalleriesAppModel {
 		)
 	);
 	
+	
 	function afterSave($created) {
 		$gallery = $this->find('first', array('Gallery.id' => $this->id));
 		if (!empty($gallery) && empty($gallery['Gallery']['model']) && empty($gallery['Gallery']['foreign_key'])) {
@@ -71,14 +72,30 @@ class Gallery extends GalleriesAppModel {
 		}
 	}
 	
-	/** 
-	 * Adds a gallery, and uploads the image using the GalleryImage model.  The image that is uploaded during Gallery creation is also used as the default thumbnail image for the gallery. 
-	 * 
-	 * @param {data}		An array of data to be saved.
-	 * @return {bool}		True if saved completely, false otherwise.
-	 * @todo				As part of the roll back methods, we could also delete the images that were uploaded.
-	 *
-	 */
+	
+	public function afterFind($results) {
+		if (!empty($results[0]['Gallery'])) {
+			# handle hasMany results
+			$i=0; foreach ($results as $result) {
+				$results[$i] = Set::merge(array('Gallery' => $this->gallerySettings($result)), $result);
+				$i++;
+			}
+		}
+		
+		if (!empty($results['id'])) {
+			$results = Set::merge($this->gallerySettings($results), $results);
+		}
+		
+		return $results;
+	}
+	
+/** 
+ * Adds a gallery, and uploads the image using the GalleryImage model.  The image that is uploaded during Gallery creation is also used as the default thumbnail image for the gallery. 
+ * 
+ * @param {data}		An array of data to be saved.
+ * @return {bool}		True if saved completely, false otherwise.
+ * @todo				As part of the roll back methods, we could also delete the images that were uploaded.
+ */
 	function add($data, $fileName) {
 		// Making it so that you only need GalleryImage->add in a controller to make all the work happen. 
 		// Take special note of the "rollback" features.  I really like rolling back whenever possible on failures.  

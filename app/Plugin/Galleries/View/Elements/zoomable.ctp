@@ -1,11 +1,12 @@
 <?php
-// this should be at the top of every element created with format __ELEMENT_PLUGIN_ELEMENTNAME_instanceNumber.
-// it allows a database driven way of configuring elements, and having multiple instances of that configuration.
+# this should be at the top of every element created with format __ELEMENT_PLUGIN_ELEMENTNAME_instanceNumber.
+# it allows a database driven way of configuring elements, and having multiple instances of that configuration.
 if(!empty($instance) && defined('__ELEMENT_GALLERIES_ZOOMABLE_'.$instance)) {
 	extract(unserialize(constant('__ELEMENT_GALLERIES_ZOOMABLE_'.$instance)));
 } else if (defined('__ELEMENT_GALLERIES_ZOOMABLE')) {
 	extract(unserialize(__ELEMENT_GALLERIES_ZOOMABLE));
 }
+
 # make a request action to pull the gallery data
 $gallery = $this->requestAction('/galleries/galleries/view/'.$id); 
 
@@ -70,7 +71,17 @@ if (!empty($gallery['GalleryImage'][0])) :
 ?>
 <div class="zoomableGallery">
 	<div id="mediumImage">
-	    <a id="galleryImage<?php echo $gallery['GalleryImage'][0]['id']; ?>" class="jqzoom2 zoomable galleryImage" title="<?php echo $gallery['GalleryImage'][0]['caption']; ?>" href="<?php echo $gallery['GalleryImage'][0]['dir'].'thumb/large/'.$gallery['GalleryImage'][0]['filename']; ?>"><img src="<?php echo $gallery['GalleryImage'][0]['dir'].'thumb/medium/'.$gallery['GalleryImage'][0]['filename']; ?>" alt="<?php echo $gallery['GalleryImage'][0]['caption']; ?>"></a>
+	    <!-- <a id="galleryImage<?php echo $gallery['GalleryImage'][0]['id']; ?>" class="jqzoom2 zoomable galleryImage" title="<?php echo $gallery['GalleryImage'][0]['caption']; ?>" href="<?php echo $gallery['GalleryImage'][0]['dir'].'thumb/large/'.$gallery['GalleryImage'][0]['filename']; ?>">
+        
+        
+        <img src="<?php echo $gallery['GalleryImage'][0]['dir'].'thumb/medium/'.$gallery['GalleryImage'][0]['filename']; ?>" alt="<?php echo $gallery['GalleryImage'][0]['caption']; ?>">
+        
+        
+        </a> -->
+        
+        <?php echo $this->Html->image($gallery['GalleryImage'][0]['dir'].'thumb/medium/'.$gallery['GalleryImage'][0]['filename'], array('width' => $gallery['Gallery']['mediumImageWidth'], 'height' => $gallery['Gallery']['mediumImageWidth']), array($gallery['Gallery']['conversionType'])); ?>
+        
+        
     </div>
     <div id="description"></div>
     <ul class="thumbs">

@@ -204,38 +204,44 @@ class Setting extends AppModel {
 							'description' => 'Defines the default hourly rate for invoices.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'18.50',
 							),
 						),
+				  'Galleries' => array(
+						array(
+							'name' => 'SETTINGS',
+							'description' => 'Defines the settings for all galleries that will appear on the site. The entire __GALLERY tree is deprecated and will be removed in the future, please use this.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'galleryType = "zoomable"'.PHP_EOL.'smallImageWidth = 50'.PHP_EOL.'smallImageHeight = 120'.PHP_EOL.'mediumImageWidth = 200'.PHP_EOL.'mediumImageHeight = 250'.PHP_EOL.'largeImageWidth = 600'.PHP_EOL.'largeImageHeight = 450'.PHP_EOL.'conversionType = "resizeCrop"',
+							),
+						),
 				  'Gallery' => array(
 						array(
 							'name' => 'DEFAULT_TYPE',
-							'description' => 'Defines the type of gallery used if no other is specified.'.PHP_EOL.PHP_EOL.'Example value: '.PHP_EOL.'gallerific',
+							'description' => 'DEPRECATED DON\'T USE THIS ::: '.PHP_EOL.PHP_EOL.'Defines the type of gallery used if no other is specified.'.PHP_EOL.PHP_EOL.'Example value: '.PHP_EOL.'gallerific',
 							),
 						array(
 							'name' => 'DEFAULT_THUMB_WIDTH',
-							'description' => 'Defines the medium thumbnail width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'120',
+							'description' => 'DEPRECATED DON\'T USE THIS ::: '.PHP_EOL.PHP_EOL.'Defines the medium thumbnail width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'120',
 							),
 						array(
 							'name' => 'DEFAULT_THUMB_HEIGHT',
-							'description' => 'Defines the medium thumbnail height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'90',
+							'description' => 'DEPRECATED DON\'T USE THIS ::: '.PHP_EOL.PHP_EOL.'Defines the medium thumbnail height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'90',
 							),
 						array(
 							'name' => 'IMAGE_DEFAULT_THUMB_WIDTH',
-							'description' => 'Defines the small thumbnail width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
+							'description' => 'DEPRECATED DON\'T USE THIS ::: '.PHP_EOL.PHP_EOL.'Defines the small thumbnail width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
 							),
 						array(
 							'name' => 'IMAGE_DEFAULT_THUMB_HEIGHT',
-							'description' => 'Defines the small thumbnail height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
+							'description' => 'DEPRECATED DON\'T USE THIS ::: '.PHP_EOL.PHP_EOL.'Defines the small thumbnail height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
 							),
 						array(
 							'name' => 'IMAGE_DEFAULT_FULL_WIDTH',
-							'description' => 'Defines the full size image width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
+							'description' => 'DEPRECATED DON\'T USE THIS ::: '.PHP_EOL.PHP_EOL.'Defines the full size image width in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
 							),
 						array(
 							'name' => 'IMAGE_DEFAULT_FULL_HEIGHT',
-							'description' => 'Defines the full size image height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
+							'description' => 'DEPRECATED DON\'T USE THIS ::: '.PHP_EOL.PHP_EOL.'Defines the full size image height in pixels.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'50',
 							),
 						array(
 							'name' => 'RESIZE_OR_CROP',
-							'description' => 'Defines whether images will be resized or cropped when uploaded.  Resize is the default.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'crop',
+							'description' => 'DEPRECATED DON\'T USE THIS ::: '.PHP_EOL.PHP_EOL.'Defines whether images will be resized or cropped when uploaded.  Resize is the default.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'crop',
 							),
 
 						),
@@ -249,10 +255,12 @@ class Setting extends AppModel {
 							'description' => 'Defines setting variables for the latest blog posts module.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'moduleTitle = "My Custom Title"'.PHP_EOL.'numberOfPosts = 5'.PHP_EOL.'blogID = 1',
 							),
 						),
-                                                array(
-                                                        'name' => 'MEDIA_SORTED',
-                                                        'description' => 'Defines settings for the Media Sorted module.'.PHP_EOL.'The Media Sorted module can return a UL of any number of results of Media of either Type, sorted ASC or DESC, based on any field in the Media table.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'mediaType = "video"'.PHP_EOL.'field = "rating"'.PHP_EOL.'sort = "DESC"'.PHP_EOL.'numberOfResults = 5',
-                                                ),
+				  'Media' => array(
+						array(
+							'name' => 'MEDIA_SORTED',
+							'description' => 'Defines settings for the Media Sorted module.'.PHP_EOL.'The Media Sorted module can return a UL of any number of results of Media of either Type, sorted ASC or DESC, based on any field in the Media table.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'mediaType = "video"'.PHP_EOL.'field = "rating"'.PHP_EOL.'sort = "DESC"'.PHP_EOL.'numberOfResults = 5',
+							),
+						),
 				  'Users' => array(
 						array(
 							'name' => 'PAID_EXPIRED_ROLE_ID',
