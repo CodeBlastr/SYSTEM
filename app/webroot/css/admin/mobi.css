@@ -397,35 +397,31 @@ form {
 }
 fieldset, .viewRow .recordData {
 	padding: 0;
-	margin: 0.5em 0 0 0;
+	margin: 0.5em 0;
 	width: 100%;
-	border-right: 1px solid #CCC;
-	border-bottom: 1px solid #CCC;
-	border-left: 1px solid #CCC;
-	border-top-right-radius:0.5em;
-	border-top-left-radius:0.5em;
-	-webkit-border-top-right-radius:0.5em;
-	-webkit-border-top-left-radius:0.5em;
-	-moz-border-top-right-radius:0.5em;
-	-moz-border-top-left-radius:0.5em;
+	border: 1px solid #CCC;
+	border-radius:0.5em;
+	-webkit-border-radius:0.5em;
+	-moz-border-radius:0.5em;
 	-webkit-box-shadow: 0 0 5px #CCC;
 	-moz-box-shadow: 0 0 5px #CCC;
 	box-shadow: 0 0 5px #CCC;
 }
 fieldset legend, .viewRow .metaData {
 	font-weight: bold;
+	margin: 0.5em;
 	
-	border: 1px solid #CCC;
-	border-top-right-radius:0.5em;
-	border-top-left-radius:0.5em;
+	bo.rder: 1px solid #CCC;
+	bor.der-top-right-radius:0.5em;
+	bord.er-top-left-radius:0.5em;
 	-webkit-border-top-right-radius:0.5em;
 	-webkit-border-top-left-radius:0.5em;
 	-moz-border-top-right-radius:0.5em;
 	-moz-border-top-left-radius:0.5em;
 	
-	background-image: -moz-linear-gradient(top, #fdfdfd, #DDD);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fdfdfd), color-stop(1, #DDD));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#DDD')";
+	backgr.ound-image: -moz-linear-gradient(top, #fdfdfd, #DDD);
+	backgr.ound-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fdfdfd), color-stop(1, #DDD));
+	-ms-f.ilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#DDD')";
 	
 	width: 100%;
 	float: left;
@@ -524,7 +520,7 @@ label a {
 input, textarea, select {
 	float: left;
 	padding: 0.5em;
-	min-width: 21em;
+	min-width: 20em;
 	background: #f5f5f5;
 	margin: 0;
 	border: 1px solid #AAA;
@@ -575,7 +571,8 @@ textarea {
 select {
 	clear: both;
 	vertical-align: text-bottom;
-	padding: 0.5em;
+	padding: 0.4em;
+	min-width: 21.1em;
 }
 .ui-datepicker-title select {
 	min-width: 1px;

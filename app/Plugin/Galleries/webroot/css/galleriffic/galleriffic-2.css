@@ -1,5 +1,6 @@
 #inlineGallery {
 	/*width: 100%;*/
+	float: left;
 }
 div.gallery-content {
 	/* The display of content is enabled using jQuery so that the slideshow content won't display unless javascript is enabled. */
@@ -98,6 +99,7 @@ ul.thumbs {
 	clear: both;
 	margin: 0;
 	padding: 0;
+	list-style: none;
 }
 ul.thumbs li {
 	float: left;

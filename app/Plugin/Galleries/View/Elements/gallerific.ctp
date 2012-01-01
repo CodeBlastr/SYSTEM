@@ -1,40 +1,24 @@
 <?php
-/**
- * Gallerific Gallery Element
- *
- * Used to display the gallery html, when the gallery type is "gallerific".
- *
- * PHP versions 5
- *
- * Zuha(tm) : Business Management Applications (http://zuha.com)
- * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
- *
- * Licensed under GPL v3 License
- * Must retain the above copyright notice and release modifications publicly.
- *
- * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
- * @package       zuha
- * @subpackage    zuha.app.plugins.galleries.views
- * @since         Zuha(tm) v 0.0.1
- * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
- * @todo		  Needs some major work on the presentation, so that it is extendable across multiple uses and multiple sites.  Right now you have to do a ton of css work to get it to look right, and it should not be so hard.  If the css was flexible for both width and height, and if you didn't have to specify specific widths and heights, you could just define the container div styles and it would be a much better way of handling it.
- */
-
-if(!empty($gallery['Gallery']['GalleryImage'])) {
-	$gallery = $gallery['Gallery'];
+# this should be at the top of every element created with format __ELEMENT_PLUGIN_ELEMENTNAME_instanceNumber.
+# it allows a database driven way of configuring elements, and having multiple instances of that configuration.
+if(!empty($instance) && defined('__ELEMENT_GALLERIES_GALLERIFIC_'.$instance)) {
+	extract(unserialize(constant('__ELEMENT_GALLERIES_GALLERIFIC_'.$instance)));
+} else if (defined('__ELEMENT_GALLERIES_GALLERIFIC')) {
+	extract(unserialize(__ELEMENT_GALLERIES_GALLERIFIC));
 }
-# out put the css needed
-echo $this->Html->css('/galleries/css/galleriffic/galleriffic-2', '', array('inline' => 0));
-# out put the javascript needed 
-echo $this->Html->script('/galleries/js/galleriffic/jquery.galleriffic', array('inline' => 0));
-echo $this->Html->script('/galleries/js/galleriffic/jquery.opacityrollover', array('inline' => 0));
 
-	if (strpos($this->request->url, 'edit/')) {
-		# this is an edit page we should show a delete button
-		$editPage = true;
-	}		
-		# the gallery wrapper
+# out put the css needed
+if (!empty($gallery['GalleryImage'][0])) {
+	# if its edit page we add a few actions
+	$editPage = strpos($this->request->url, 'edit/') ? true : false;
+	
+	# put default variable setups here
+	
+	# additional files needed for gallery display
+	echo $this->Html->css('/galleries/css/galleriffic/galleriffic-2', '', array('inline' => 0));
+	echo $this->Html->script('/galleries/js/galleriffic/jquery.galleriffic', array('inline' => 0));
+	echo $this->Html->script('/galleries/js/galleriffic/jquery.opacityrollover', array('inline' => 0));
+	
 ?>
 
 <!-- Start Advanced Gallery Html Containers --> 
@@ -43,35 +27,67 @@ echo $this->Html->script('/galleries/js/galleriffic/jquery.opacityrollover', arr
 			<div id="controls" class="controls"></div> 
 			<div class="slideshow-container"> 
 				<div id="loading" class="loader"></div> 
-				<div id="slideshow" class="slideshow"><img src="<?php echo $value['links'][0]['fullUrl']; ?>" /></div> 
+				<div id="slideshow" class="slideshow">
+				<?php 
+				# uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+				$largeImage = $gallery['GalleryImage'][0]['dir'].'thumb/large/'.$gallery['GalleryImage'][0]['filename'];
+				echo $this->Html->image($largeImage,
+					array(
+						'width' => $gallery['Gallery']['largeImageWidth'], 
+						'height' => $gallery['Gallery']['largeImageHeight'],
+						),
+					array(
+						'conversion' => $gallery['Gallery']['conversionType'],
+						'quality' => 75,
+						)); ?></div> 
 			</div> 
 			<div id="caption" class="caption-container"></div> 
 		</div> 
 		<div id="thumbs" class="navigation"> 
 			<ul class="thumbs noscript">
-	<?php if (!empty($value['links'])) { foreach ($value['links'] as $slide) { ?>
-				<li> 
-					<a class="thumb" name="leaf" href="<?php echo $slide['fullUrl']; ?>" title="<?php echo $slide['title']; ?>"> 
-					<img src="<?php echo $slide['thumbUrl']; ?>" alt="<?php echo $slide['title']; ?>" width="<?php echo $slide['thumbWidth']; ?>" height="<?php echo $slide['thumbHeight']; ?>" /> 
-					</a>
-				<?php if (isset($editPage) && $editPage == true) { ?>
-	                <?php echo $this->Html->link(__('Make Thumb', true), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'make_thumb', $gallery['Gallery']['id'], $slide['thumbId']), array('class' => 'action', 'title' => 'Make this image the thumbnail for this gallery.')); ?>
-					<?php echo $this->Html->link(__('Edit', true), array('plugin' => 'galleries', 'controller' => 'gallery_images', 'action' => 'edit', $slide['thumbId']), array('class' => 'action')); ?>
-					<div class="action galleryDelete"><?php echo $this->Html->link(__('Delete', true), array('plugin' => 'galleries', 'controller' => 'gallery_images', 'action' => 'delete', $slide['thumbId']), array('class' => 'action thumbDelete'), sprintf(__('Are you sure you want to delete # %s?', true), $slide['thumbId'])); ?></div>
-                <?php } ?>
+			<?php
+            foreach ($gallery['GalleryImage'] as $slide) {
+				$largeImage = $slide['dir'].'thumb/large/'.$slide['filename']; ?>
+				<li>
+   					<?php 
+					# uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+					$largeImage = $slide['dir'].'thumb/large/'.$slide['filename'];
+					$image = $this->Html->image($largeImage, 
+						array(
+							'width' => $gallery['Gallery']['smallImageWidth'], 
+							'height' => $gallery['Gallery']['smallImageWidth'],
+							'alt' => $slide['caption'],
+							), 
+						array(
+							'conversion' => $gallery['Gallery']['conversionType'],
+							'quality' => 75,
+							));		
+					echo $this->Html->link($image,
+						'/'.$largeImage, 
+						array(
+							'escape' => false,
+							'id' => 'galleryImage' . $gallery['GalleryImage'][0]['id'],
+							'class' => 'thumb',
+							'name' => 'leaf',
+							'title' => $slide['caption'],
+							)); 
+					if (!empty($editPage)) { ?>
+	               		<div class="action galleryMakeThumb"><?php echo $this->Html->link(__('Make Thumb', true), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'make_thumb', $gallery['Gallery']['id'], $slide['id']), array('class' => 'action', 'title' => 'Make this image the thumbnail for this gallery.')); ?></div>
+						<div class="action galleryEdit"><?php echo $this->Html->link(__('Edit', true), array('plugin' => 'galleries', 'controller' => 'gallery_images', 'action' => 'edit', $slide['id']), array('class' => 'action')); ?></div>
+						<div class="action galleryDelete"><?php echo $this->Html->link(__('Delete', true), array('plugin' => 'galleries', 'controller' => 'gallery_images', 'action' => 'delete', $slide['id']), array('class' => 'action thumbDelete'), sprintf(__('Are you sure you want to delete # %s?', true), $slide['id'])); ?></div>
+                	<?php
+					} ?>
 					<div class="caption">
 						<div class="image-title"><?php echo $slide['description']; ?></div> 
-							<!--div class="image-desc"></div--> 
-						</div> 
-					</li>
-       <?php } } ?>
+					</div> 
+				</li>
+      		<?php
+			} // end images loop ?>
        		</ul> 
-		</div><!-- End #thumbs -->
-	</div><!--End #inlineGallery -->
-	<div style="clear: both;"></div>
-				
-<?php echo $this->Html->scriptBlock('
-	jQuery(document).ready(function($) {
+		</div>
+	</div>
+<?php
+	echo $this->Html->scriptBlock('jQuery(document).ready(function($) {
 		// We only want these styles applied when javascript is enabled
 		$("div.gallery-content").css("display", "block");
 		$("div.slideshow-container").css("height", $("#slideshow img").height());
@@ -125,5 +141,6 @@ echo $this->Html->script('/galleries/js/galleriffic/jquery.opacityrollover', arr
 			}
 		});
 		
-	});', array('inline' => 0)); 
+	});'); 
+} // end of gallery display
 ?>

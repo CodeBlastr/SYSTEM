@@ -29,11 +29,12 @@ class GalleriesController extends GalleriesAppController {
 /**
  * View for gallery
  */
-	function view($id = null) {
-		if (!empty($id)) {
+	function view($model = null, $foreignKey = null) {
+		if (!empty($model) && !empty($foreignKey)) {
 			$gallery = $this->Gallery->find('first', array(
 				'conditions' => array(
-					'Gallery.id' => $id
+					'Gallery.model' => $model,
+					'Gallery.foreign_key' => $foreignKey,
 					),
 				'contain' => array(
 					'GalleryImage',
@@ -48,28 +49,24 @@ class GalleriesController extends GalleriesAppController {
 				}
 	        } 
 			$this->set(compact('gallery'));
-			$this->set('value', $this->Gallery->_galleryVars($gallery)); 
 		} else {
-			#This was causing an error with catalog items and other items which have galleries, but the galley didn't exist.
-			#$this->Session->setFlash(__('Invalid Gallery.', true));
-			#$this->redirect(array('action'=>'index'));
+			return false;
 		}
 	}
 
 
-	function thumb($id = null) {
-		if (!$id && !empty($this->request->params['named']['model']) && !empty($this->request->params['named']['foreignKey'])) {
-			$conditions = array('Gallery.model' => $this->request->params['named']['model'], 'Gallery.foreign_key' => $this->request->params['named']['foreignKey']);
-		} else {
-			$conditions = array('Gallery.id' => $id);
+	function thumb($model = null, $foreignKey = null) {
+		if (!empty($model) && !empty($foreignKey)) {
+			$gallery = $this->Gallery->find('first', array(
+				'conditions' => array(
+					'Gallery.model' => $model, 
+					'Gallery.foreign_key' => $foreignKey,
+					),
+				'contain' => array(
+					'GalleryThumb',
+					),
+				));	
 		}
-		
-		$gallery = $this->Gallery->find('first', array(
-			'conditions' => $conditions,
-			'contain' => array(
-				'GalleryThumb',
-				),
-			));	
 		
 		if (!empty($gallery)) {
 			# This is here, because we have an element doing a request action on it.
@@ -78,8 +75,12 @@ class GalleriesController extends GalleriesAppController {
 	        } else {
 				$this->set('gallery', $gallery);
 			}
-		} 
+		} else {
+			return false;
+		}
 	}
+
+
 
 	function add($model = null, $foreignKey = null) {
 		if (!empty($this->request->data)) {
@@ -93,11 +94,10 @@ class GalleriesController extends GalleriesAppController {
 				$this->redirect($this->referer());
 			}
 		}
-		$this->set('types', $this->Gallery->types()); 
+		$types = $this->Gallery->types(); 
 		$model = !empty($model) ? $model : 'Gallery';
 		$foreignKey = !empty($foreignKey) ? $foreignKey : null;
-		$this->set('model', $model);
-		$this->set('foreignKey', $foreignKey);
+		$this->set(compact('model', 'foreignKey', 'types'));
 	}
 	
 
@@ -107,50 +107,38 @@ class GalleriesController extends GalleriesAppController {
  *
  * @todo		Convert galleries to slugs or aliases, for easier linking into edit and views.
  */
-	function edit($model = null, $foreignKey = null) {
+	public function edit($model = null, $foreignKey = null) {
 		if (!empty($this->request->data)) {			
 			if ($this->Gallery->GalleryImage->add($this->request->data, 'filename')) {
 				$this->Session->setFlash(__('The Gallery has been saved'));
-				$this->redirect(array('action'=>'edit', $this->request->data['Gallery']['model'], $this->request->data['Gallery']['foreign_key']));
+				$this->redirect(array('action' => 'edit', $this->request->data['Gallery']['model'], $this->request->data['Gallery']['foreign_key']));
 			} else {
 				$this->Session->setFlash(__('The Gallery could not be saved. Please, try again.', true));
-				$this->redirect($this->referer());
 			}
 		} 
 		
 		if (!empty($model) && !empty($foreignKey)) {
-			$id = $this->Gallery->field('id', array('Gallery.model' => $model,	'Gallery.foreign_key' => $foreignKey));
+			$this->request->data = $this->Gallery->find('first', array(
+				'conditions' => array(
+					'Gallery.model' => $model,
+					'Gallery.foreign_key' => $foreignKey,
+					),
+				));
 		} else {
 			$this->Session->setFlash(__('Invalid Gallery', true));
 			$this->redirect($this->referer());
 		}
 		
-		
-		if (empty($this->request->data)) {
-			$gallery = $this->Gallery->find('first', array(
-				'conditions' => array(
-					'Gallery.model' => $model,
-					'Gallery.foreign_key' => $foreignKey,
-					),
-				'contain' => array(
-					'GalleryImage',
-					),
-				));
-			$this->request->data = $gallery;
-			$this->set('value', $this->Gallery->_galleryVars($gallery)); 
-		}
-		
-		$this->request->data['Gallery']['model'] = $model;
-		$this->request->data['Gallery']['foreign_key'] = $foreignKey;
-		$this->set('gallery', $gallery);
-		$this->set('types', $this->Gallery->types());
+		$types = $this->Gallery->types();
+		$this->set(compact('model', 'foreignKey', 'gallery', 'types'));
 	}
 	
-	/**
-	 * Changes the thumbnail image used for a particular gallery.
-	 * @param {int} 
-	 * @param {int}
-	 */
+	
+/**
+ * Changes the thumbnail image used for a particular gallery.
+ * @param {int} 
+ * @param {int}
+ */
 	function make_thumb($galleryId = null, $galleryImageId = null) {
 		try {
 			$data['Gallery']['id'] = $galleryId;

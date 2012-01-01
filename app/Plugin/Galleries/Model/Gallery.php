@@ -137,34 +137,6 @@ class Gallery extends GalleriesAppModel {
 		}		
 	}
 	
-	
-	
-	function _galleryVars($gallery = null) {
-		if(!empty($gallery['Gallery']['GalleryImage'])) {
-			$gallery['GalleryImage'] = $gallery['Gallery']['GalleryImage'];
-		}
-		# variables used in the gallery display element
-		if (!empty($gallery['GalleryImage'][0])) { 
-			$i = 0;
-			foreach ($gallery['GalleryImage'] as $image) {
-				$links[$i]['thumbId'] = $image['id'];
-				$links[$i]['thumbUrl'] = $image['dir'].'thumb/small/'.$image['filename'];
-				$links[$i]['thumbWidth'] = $gallery['Gallery']['thumb_width'];
-				$links[$i]['thumbHeight'] = $gallery['Gallery']['thumb_height'];
-				$links[$i]['thumbAlt'] = $image['alt'];
-				$links[$i]['fullUrl'] =  $image['dir'].'thumb/large/'.$image['filename'];
-				$links[$i]['title'] = $image['caption'];
-				$links[$i]['description'] = $image['description'];
-				$i++;
-			}
-		$value = array(
-			'type' => $gallery['Gallery']['type'],
-			'links' => $links,
-			);
-		return $value;
-		}
-	}
-	
 	function _galleryDefaults($data = null) {
 		if (!empty($data['Gallery']['type'])) : 
 			return $data;

@@ -5,8 +5,8 @@
 		<?php
 		echo $this->Form->input('Gallery.id');
 		echo $this->Form->input('Gallery.name');
-		echo $this->Form->input('Gallery.model', array('type' => 'hidden'));
-		echo $this->Form->input('Gallery.foreign_key', array('type' => 'hidden'));
+		echo $this->Form->hidden('Gallery.model', array('value' => $model));
+		echo $this->Form->hidden('Gallery.foreign_key', array('value' => $foreignKey));
 		echo $this->Form->input('Gallery.description', array('type' => 'richtext'));
 		?>
       	<legend><?php echo __('Gallery Options'); ?></legend>
@@ -18,6 +18,7 @@
 		echo $this->Form->input('Gallery.medium_height');
 		echo $this->Form->input('Gallery.full_width');
 		echo $this->Form->input('Gallery.full_height');
+		echo $this->Form->input('Gallery.conversion_type');
 		echo $this->Form->end('Submit');
 		?>
 	</fieldset>
@@ -42,7 +43,7 @@
     </fieldset>
 
 <h3><?php echo __('Gallery Preview'); ?></h3>
-<?php echo !empty($this->request->data['Gallery']['id']) ? $this->element($this->request->data['Gallery']['type'], array('id' => $this->request->data['Gallery']['id']), array('plugin' => 'galleries')) : null; ?>
+<?php echo $this->Element('gallery', array('model' => $model, 'foreignKey' => $foreignKey), array('plugin' => 'galleries')); ?>
     
 </div>
 
