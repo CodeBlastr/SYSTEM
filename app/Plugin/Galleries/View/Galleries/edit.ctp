@@ -53,7 +53,8 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Galleries',
 		'items' => array(
-			$this->Html->link(__('List Galleries', true), array('action' => 'index')),
+			$this->Html->link(__('View', true), array('action' => 'view', $model, $foreignKey)),
+			$this->Html->link(__('List', true), array('action' => 'index')),
 			)
 		),
 	)));

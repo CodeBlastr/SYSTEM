@@ -13,7 +13,7 @@ if (!empty($model) && !empty($foreignKey)) {
 	if (!empty($gallery)) {
 		echo $this->Element($gallery['Gallery']['galleryType'], array('gallery' => $gallery), array('plugin' => 'galleries'));
 	} else {
-		echo __('Gallery does not exist.');
+		# do nothing so so that other pages can test for null in the html of this gallery (like catalog items view does)
 	}
 } else {
 	echo __('Gallery model and foreignKey were not provided (Galleries/View/Elements/gallery.ctp)');
