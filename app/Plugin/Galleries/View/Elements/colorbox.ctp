@@ -29,12 +29,12 @@ if (!empty($gallery['GalleryImage'][0])) {
             $largeImage = $slide['dir'].'thumb/large/'.$slide['filename'];
             $image = $this->Html->image($largeImage,
                 array(
-                    'width' => $gallery['Gallery']['smallImageWidth'], 
-                    'height' => $gallery['Gallery']['smallImageHeight'],
+                    'width' => $gallery['GallerySettings']['smallImageWidth'], 
+                    'height' => $gallery['GallerySettings']['smallImageHeight'],
                     'alt' => $slide['alt'],
                     ),
                 array(
-                    'conversion' => $gallery['Gallery']['conversionType'],
+                    'conversion' => $gallery['GallerySettings']['conversionType'],
                     'quality' => 75,
                     ));	
             echo $this->Html->link($image,

@@ -62,12 +62,12 @@ if (!empty($gallery['GalleryImage'][0])) {
         $largeImage = $gallery['GalleryImage'][0]['dir'].'thumb/large/'.$gallery['GalleryImage'][0]['filename'];
         $image = $this->Html->image($largeImage, 
             array(
-                'width' => $gallery['Gallery']['mediumImageWidth'], 
-                'height' => $gallery['Gallery']['mediumImageHeight'],
+                'width' => $gallery['GallerySettings']['mediumImageWidth'], 
+                'height' => $gallery['GallerySettings']['mediumImageHeight'],
                 'alt' => $gallery['GalleryImage'][0]['alt'],
                 ), 
             array(
-                'conversion' => $gallery['Gallery']['conversionType'],
+                'conversion' => $gallery['GallerySettings']['conversionType'],
                 'quality' => 75,
                 ));		
         echo $this->Html->link($image,
@@ -91,13 +91,13 @@ if (!empty($gallery['GalleryImage'][0])) {
                 $largeImage = $slide['dir'].'thumb/large/'.$slide['filename'];
                 echo $this->Html->image($largeImage,
                     array(
-                        'width' => $gallery['Gallery']['smallImageWidth'], 
-                        'height' => $gallery['Gallery']['smallImageHeight'],
+                        'width' => $gallery['GallerySettings']['smallImageWidth'], 
+                        'height' => $gallery['GallerySettings']['smallImageHeight'],
                         'alt' => $slide['alt'],
                         'url' => $slide['dir'].'thumb/medium/'.$slide['filename'],
                         ),
                     array(
-                        'conversion' => $gallery['Gallery']['conversionType'],
+                        'conversion' => $gallery['GallerySettings']['conversionType'],
                         'quality' => 75,
                         )); ?>
             </li>
@@ -105,12 +105,12 @@ if (!empty($gallery['GalleryImage'][0])) {
                 <?php
                 $image = $this->Html->image($largeImage,
                     array(
-                        'width' => $gallery['Gallery']['mediumImageWidth'], 
-                        'height' => $gallery['Gallery']['mediumImageHeight'],
+                        'width' => $gallery['GallerySettings']['mediumImageWidth'], 
+                        'height' => $gallery['GallerySettings']['mediumImageHeight'],
                         'alt' => $slide['alt'],
                         ),
                     array(
-                        'conversion' => $gallery['Gallery']['conversionType'],
+                        'conversion' => $gallery['GallerySettings']['conversionType'],
                         'quality' => 75,
                         ));	
                 echo $this->Html->link($image,

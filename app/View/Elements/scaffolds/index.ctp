@@ -135,7 +135,32 @@ foreach ($data as $dat) {
 	}*/
 } // end individual data items loop ?>
   </div>
+  <?php 
+  echo $this->Element('paging'); ?>
 </div>
+
+
+
+<?php
+if (!empty($pageActions)) {
+	foreach ($pageActions as $pageAction) { 
+		$pageActionlinks[] = $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']);
+	} // end pageAction loop
+} else { 
+   	$pageActionLinks[] = $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add'));
+} // end pageActions 
+
+
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => $modelName,
+		'items' => $pageActionLinks,
+		),
+	))); ?>
+
+
+<!-- these are pagination sorting links and should not be up there 
 <div id="<?php echo $modelName; ?>Actions" class="index actions">
   <ul class="drop">
     <li class="actionHeading"><?php echo __('Sort by');?></li>
@@ -143,26 +168,20 @@ foreach ($data as $dat) {
 	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
     <li class="actionItem"><?php echo $this->Paginator->sort($keyName, array(), array('class' => 'sort'));?></li>
     <?php endif; endforeach; ?>
-    
-    <?php
-	if (!empty($pageActions)) { ?>
-	    <li class="actionHeading"><?php echo __('Action'); ?></li>
-    	<?php 
-		foreach ($pageActions as $pageAction) { ?>
-    		<li class="actionItem <?php echo !empty($pageAction['linkClass']) ? $pageAction['linkClass'] : ''; ?>"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
-    	<?php
-		} // end pageAction loop
-	} else { ?>
-   		<li class="actionHeading"><?php echo __('Action'); ?></li>
-	    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); ?></li>
-    <?php
-	} // end pageActions ?>
   </ul>
-</div>
-<?php 
-echo $this->Element('paging'); ?>
-<?php # echo $this->Element('ajax_edit',  array('editFields' => $editFields)); ?>
-<?php 
+</div> -->
+
+
+
+
+
+
+
+
+
+
+<?php
+# echo $this->Element('ajax_edit',  array('editFields' => $editFields)); 
 else : 
 # Don't show anything rom the index, show a default message  
 # pulled as an element called start, from the plugin folder you're in. ?>
