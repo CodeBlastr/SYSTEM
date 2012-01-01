@@ -25,9 +25,9 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Galleries',
 		'items' => array(
-			$this->Html->link(__('All Galleries', true), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'index')),
-			$this->Html->link(__('New Gallery', true), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'add'), array('checkPermissions' => true)),
-			$this->Html->link(__('Edit Gallery', true), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'edit', $gallery['Gallery']['model'], $gallery['Gallery']['foreign_key']), array('checkPermissions' => true)),
+			$this->Html->link(__('Edit'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'edit', $gallery['Gallery']['model'], $gallery['Gallery']['foreign_key'])),
+			$this->Html->link(__('List'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'index')),
+			$this->Html->link(__('Add'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'add')),
 			)
 		),
 	)));

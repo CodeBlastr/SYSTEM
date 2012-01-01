@@ -50,7 +50,7 @@ class GalleriesController extends GalleriesAppController {
 	        } 
 			$this->set(compact('gallery'));
 		} else {
-			return false;
+			$this->Session->setFlash(__('Invalid gallery request.'));
 		}
 	}
 

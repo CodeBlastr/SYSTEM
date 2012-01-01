@@ -133,8 +133,7 @@ if (!empty($gallery['GalleryImage'][0])) {
                 if (isset($watchList) && $watchList == true) {
                     echo $this->Favorites->toggleFavorite('watch', $slide['id']);
                 } 
-                echo $this->Element('actions', array('galleryId' => $gallery['Gallery']['id'], 'slideId' => $slide['id']), array('plugin' => 'galleries'));
-                } ?>
+                echo $this->Element('actions', array('galleryId' => $gallery['Gallery']['id'], 'slideId' => $slide['id']), array('plugin' => 'galleries')); ?>
             </li>
           </ul>
         </li>
