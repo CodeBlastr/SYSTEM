@@ -20,9 +20,9 @@
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
 if (!empty($model) && !empty($foreignKey)) {
-	$galleryThumb = $this->requestAction('/galleries/galleries/thumb/model:'.$model.'/foreignKey:'.$foreignKey);
+	$galleryThumb = $this->requestAction("/galleries/galleries/thumb/{$model}/{$foreignKey}");
 } else {
-	$galleryThumb = (!empty($id) ? $this->requestAction('/galleries/galleries/thumb/'.$id) : null);
+	echo __('Gallery model and foreignKey were not provided (Galleries/View/Elements/thumb.ctp)');
 }
 # set up the config vars
 $thumbLink = !empty($thumbLink) ? $thumbLink : '/galleries/galleries/view/'.$galleryThumb['Gallery']['id'];

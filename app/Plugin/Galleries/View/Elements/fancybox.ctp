@@ -1,14 +1,11 @@
 <?php
-// http://fancybox.net/blog
-// this should be at the top of every element created with format __ELEMENT_PLUGIN_ELEMENTNAME_instanceNumber.
-// it allows a database driven way of configuring elements, and having multiple instances of that configuration.
+# this should be at the top of every element created with format __ELEMENT_PLUGIN_ELEMENTNAME_instanceNumber.
+# it allows a database driven way of configuring elements, and having multiple instances of that configuration.
 if(!empty($instance) && defined('__ELEMENT_GALLERIES_FANCYBOX_'.$instance)) {
 	extract(unserialize(constant('__ELEMENT_GALLERIES_FANCYBOX_'.$instance)));
 } else if (defined('__ELEMENT_GALLERIES_FANCYBOX')) {
 	extract(unserialize(__ELEMENT_GALLERIES_FANCYBOX));
 }
-# make a request action to pull the gallery data
-$gallery = $this->requestAction('/galleries/galleries/view/'.$id); 
 
 # setup up your configurable options with defaults
 $overlayShow = !empty($overlayShow) ? $overlayShow : 'true'; // true, false (string)

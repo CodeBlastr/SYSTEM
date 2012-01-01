@@ -1,31 +1,31 @@
 <?php
-
-$gallery = $this->requestAction('/galleries/galleries/view/'.$id);
-
-if(!empty($gallery['Gallery']['GalleryImage'])) {
-	$gallery['GalleryImage'] = $gallery['Gallery']['GalleryImage'];
+# this should be at the top of every element created with format __ELEMENT_PLUGIN_ELEMENTNAME_instanceNumber.
+# it allows a database driven way of configuring elements, and having multiple instances of that configuration.
+if(!empty($instance) && defined('__ELEMENT_GALLERIES_COLORBOX_'.$instance)) {
+	extract(unserialize(constant('__ELEMENT_GALLERIES_COLORBOX_'.$instance)));
+} else if (defined('__ELEMENT_GALLERIES_COLORBOX')) {
+	extract(unserialize(__ELEMENT_GALLERIES_COLORBOX));
 }
 
 if (!empty($gallery['GalleryImage'][0])) { 
-	# more examples : http://colorpowered.com/colorbox/core/example2/index.html
-	# out put the css needed
+	# if its edit page we add a few actions
+	$editPage = strpos($this->request->url, 'edit/') ? true : false;
+	
+	# put default variable setups here
+	
+	# additional files needed for gallery display
 	echo $this->Html->css('/galleries/css/colorbox/colorbox', '', array('inline' => 0));
-	# out put the javascript needed 
-	echo $this->Html->script('/galleries/js/colorbox/jquery.colorbox-min', array('inline' => 0));
-	# small script for showing the boxes			
+	echo $this->Html->script('/galleries/js/colorbox/jquery.colorbox-min', array('inline' => 0));		
 	echo $this->Html->scriptBlock('
 		$(document).ready(function(){
 			$("a[rel=\'example4\']").colorbox({
 				slideshow:true,
 			});
 		});', array('inline' => 0)); 
-	if (strpos($this->request->url, 'edit/')) {
-		# this is an edit page we should show a delete button
-		$editPage = true;
-	}
-	
-	foreach ($gallery['GalleryImage'] as $slide) {
 ?>
+<div class="colorboxGallery">
+<?php 
+	foreach ($gallery['GalleryImage'] as $slide) { ?>
 	    <div id="galleryImage<?php echo $slide['id']; ?>" class="colorBoxGallerImage colorbox galleryImage">
 		<a href="<?php echo $slide['dir'].'thumb/large/'.$slide['filename']; ?>" rel="example4" title="<?php echo $slide['caption']; ?>"><img src="<?php echo $slide['dir'].'thumb/small/'.$slide['filename']; ?>" alt="<?php echo $slide['filename']; ?>"></a>
         
@@ -36,6 +36,7 @@ if (!empty($gallery['GalleryImage'][0])) {
 		<?php } ?>
 		</div>
 <?php 
-	}
-}
-?>
+	}?>
+</div>
+<?php
+}?>
