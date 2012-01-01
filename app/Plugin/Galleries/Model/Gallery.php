@@ -77,13 +77,13 @@ class Gallery extends GalleriesAppModel {
 		if (!empty($results[0]['Gallery'])) {
 			# handle hasMany results
 			$i=0; foreach ($results as $result) {
-				$results[$i] = Set::merge(array('Gallery' => $this->gallerySettings($result)), $result);
+				$results[$i] = Set::merge(array('GallerySettings' => $this->gallerySettings($result)), $result);
 				$i++;
 			}
 		}
 		
 		if (!empty($results['id'])) {
-			$results = Set::merge($this->gallerySettings($results), $results);
+			$results = Set::merge(array('GallerySettings' => $this->gallerySettings($results)), $results);
 		}
 		
 		return $results;

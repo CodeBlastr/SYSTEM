@@ -27,12 +27,12 @@ if (!empty($gallery['GalleryImage'][0])) {
             $largeImage = $gallery['GalleryImage'][0]['dir'].'thumb/large/'.$gallery['GalleryImage'][0]['filename'];
             echo $this->Html->image($largeImage,
                 array(
-                    'width' => $gallery['Gallery']['largeImageWidth'], 
-                    'height' => $gallery['Gallery']['largeImageHeight'],
+                    'width' => $gallery['GallerySettings']['largeImageWidth'], 
+                    'height' => $gallery['GallerySettings']['largeImageHeight'],
                     'alt' => $gallery['GalleryImage'][0]['alt'],
                     ),
                 array(
-                    'conversion' => $gallery['Gallery']['conversionType'],
+                    'conversion' => $gallery['GallerySettings']['conversionType'],
                     'quality' => 75,
                     )); ?>
           </div>
@@ -49,23 +49,23 @@ if (!empty($gallery['GalleryImage'][0])) {
             $largeImage = $slide['dir'].'thumb/large/'.$slide['filename'];
             $image = $this->Html->image($largeImage, 
             	array(
-                	'width' => $gallery['Gallery']['smallImageWidth'], 
-                    'height' => $gallery['Gallery']['smallImageHeight'],
+                	'width' => $gallery['GallerySettings']['smallImageWidth'], 
+                    'height' => $gallery['GallerySettings']['smallImageHeight'],
                     'alt' => $slide['alt'],
                     ), 
                 array(
-                    'conversion' => $gallery['Gallery']['conversionType'],
+                    'conversion' => $gallery['GallerySettings']['conversionType'],
                     'quality' => 75,
                     ));	
 			# make the large image for real now, because we link to it with the small image
 			$largeImage = $this->Html->image($largeImage, 
             	array(
-                	'width' => $gallery['Gallery']['largeImageWidth'], 
-                    'height' => $gallery['Gallery']['largeImageHeight'],
+                	'width' => $gallery['GallerySettings']['largeImageWidth'], 
+                    'height' => $gallery['GallerySettings']['largeImageHeight'],
                     'alt' => $slide['alt'],
                     ), 
                 array(
-                    'conversion' => $gallery['Gallery']['conversionType'],
+                    'conversion' => $gallery['GallerySettings']['conversionType'],
                     'quality' => 75,
                     ));	
 			$doc = new DOMDocument();

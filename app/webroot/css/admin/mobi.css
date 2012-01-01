@@ -706,7 +706,6 @@ div.paging span a {
 	line-height: 1.2em;
 	margin: 0.1em 125px .8em 92px;
 	padding: 0;
-	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 	outline: 0 !important;
@@ -1027,6 +1026,8 @@ div.paging span a {
 	list-style: none;
 	padding: 0;
 	margin: 0 0.5em 0 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 #content .metaDataPriorityDetail {
 	padding: 0;

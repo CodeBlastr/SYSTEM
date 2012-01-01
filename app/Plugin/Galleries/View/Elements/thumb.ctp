@@ -29,8 +29,8 @@ $thumbLink = !empty($thumbLink) ? $thumbLink : '/galleries/galleries/view/'.$gal
 $thumbTitle = !empty($thumbTitle) ? ' title ="'.$thumbTitle.'"' : ' title ="'.$galleryThumb['GalleryThumb']['filename'].'"';
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
 # get width from settings table
-$indexWidth = !empty($galleryThumb['Gallery']['indexImageWidth']) ? $galleryThumb['Gallery']['indexImageWidth'] : $galleryThumb['Gallery'][$thumbSize.'ImageWidth'];
-$indexHeight = !empty($galleryThumb['Gallery']['indexImageHeight']) ? $galleryThumb['Gallery']['indexImageHeight'] : $galleryThumb['Gallery'][$thumbSize.'ImageHeight'];
+$indexWidth = !empty($galleryThumb['GallerySettings']['indexImageWidth']) ? $galleryThumb['GallerySettings']['indexImageWidth'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'];
+$indexHeight = !empty($galleryThumb['GallerySettings']['indexImageHeight']) ? $galleryThumb['GallerySettings']['indexImageHeight'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'];
 # if the width was defined in the element call
 $thumbWidth = !empty($thumbWidth) ? $thumbWidth : $indexWidth;
 $thumbHeight = !empty($thumbHeight) ? $thumbHeight : $indexHeight;
@@ -52,7 +52,7 @@ if (!empty($galleryThumb)) {
 				'alt' => $thumbAlt,
 				),
 			array(
-				'conversion' => $galleryThumb['Gallery']['conversionType'],
+				'conversion' => $galleryThumb['GallerySettings']['conversionType'],
 				'quality' => 75,
 				));	
 		echo $this->Html->link($image . $thumbLinkAppend,
