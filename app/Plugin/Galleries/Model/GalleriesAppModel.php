@@ -87,6 +87,14 @@ class GalleriesAppModel extends AppModel {
 		}	
 		return $this->gallerySettings;
 	}
+	
+	public function conversionTypes() {
+		return array(
+			'resize' => 'Resize',
+			'resizeCrop' => 'Resize & Crop',
+			'crop' => 'Crop',
+			);
+	}
 
 }
 ?>

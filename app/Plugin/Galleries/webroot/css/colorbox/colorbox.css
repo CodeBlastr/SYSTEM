@@ -128,4 +128,15 @@
 
 .galleryImage {
 	float: left;
+	position: relative;
+}
+.galleryImage:hover .gallerySlideActions {
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 100%;
+}
+.gallerySlideActions {
+	display: none;
+	background: #FFF;
 }
