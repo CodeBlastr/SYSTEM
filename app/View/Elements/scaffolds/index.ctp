@@ -9,14 +9,14 @@ if (!empty($data)) :
 	$indexVar = Inflector::variable($controller); // contactPeople, projects
 	$humanModel = Inflector::humanize(Inflector::underscore($modelName)); // Contact Person
 	$humanCtrl = Inflector::humanize(Inflector::underscore($controller)); // Contact People
-	if (!empty($showGallery)) : 
+	if (!empty($showGallery)) { 
 		$galleryModel = !empty($galleryModel) ? $galleryModel : $modelName;
 		$galleryModelName = is_array($galleryModel) && !empty($galleryModel['name']) ? $galleryModel['name'] : $galleryModel;
 		$galleryModelAlias = is_array($galleryModel) && !empty($galleryModel['alias']) ? $galleryModel['alias'] : $galleryModel;
 		$galleryModelField = is_array($galleryModel) && !empty($galleryModel['field']) ? $galleryModel['field'] : null;
 		$galleryForeignKeyField = !empty($galleryForeignKey) ? $galleryForeignKey : 'user_id';
 		$galleryThumbSize = !empty($settings['galleryThumbSize']) ? $settings['galleryThumbSize'] : 'medium';
-	endif;
+	}
 ?>
 
 <div class="<?php echo $controller; ?> index">
@@ -25,8 +25,10 @@ if (!empty($data)) :
 $i = 0;
 foreach ($data as $dat) {
 	# individual record defaults
-	$galleryForeignKey = !empty($showGallery) ? $dat[$galleryModelAlias][$galleryForeignKeyField] : null;
-	$galleryModelName = !empty($galleryModelField) ? $dat[$galleryModelAlias][$galleryModelField] : $galleryModelName;
+	if (!empty($showGallery)) { 
+		$galleryForeignKey = !empty($showGallery) ? $dat[$galleryModelAlias][$galleryForeignKeyField] : null;
+		$galleryModelName = !empty($galleryModelField) ? $dat[$galleryModelAlias][$galleryModelField] : $galleryModelName;
+	}
 	$displayId = !empty($displayId) ? $displayId : 'id';
 	$id = !empty($dat[$modelName][$displayId]) ? $dat[$modelName][$displayId] : null;
 	unset($dat[$modelName][$displayId]);
@@ -38,8 +40,8 @@ foreach ($data as $dat) {
 	$link['pluginName'] = !empty($link['pluginName']) ? $link['pluginName'] : $pluginName;
 	$link['controllerName'] = !empty($link['controllerName']) ? $link['controllerName'] : $controller;
 	$link['actionName'] = !empty($link['actionName']) ? $link['actionName'] : 'view';
-	$link['pass'] = !empty($link['pass']) ? implode('/', $link['pass']) : $id; 
-	$link['pass'] = preg_replace('/\{([a-zA-Z_]+)\}/e', "$$1", $link['pass']);
+	$linkPass = !empty($link['pass']) ? preg_replace('/\{([a-zA-Z_]+)\}/e', "$$1", $link['pass']) : array($id); 
+	$viewUrl = array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName']) + $linkPass;
 	
 	$class = null;
 	if ($i++ % 2 == 0) {
@@ -47,7 +49,7 @@ foreach ($data as $dat) {
 	}
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
-      <div class="indexCell imageCell"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$link['pass']), array('plugin' => 'galleries')) : null; ?> </span> </div>
+      <div class="indexCell imageCell"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => $viewUrl), array('plugin' => 'galleries')) : null; ?> </span> </div>
       <div class="indexCell metaCell">
         <ul class="metaData">
           <?php 
@@ -81,7 +83,7 @@ foreach ($data as $dat) {
       <div class="indexCell indexData">
         <div class="indexCell titleCell">
           <div class="recorddat">
-            <h3> <?php echo $this->Html->link($name, array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $link['pass']), array('escape' => false)); ?></h3>
+            <h3> <?php echo $this->Html->link($name, $viewUrl, array('escape' => false)); ?></h3>
           </div>
         </div>
         <?php if (!empty($displayDescription)) { ?>
@@ -99,7 +101,7 @@ foreach ($data as $dat) {
                 <?php $patterns = array('{', '}', '[', ']'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.str_replace($patterns, $replaces, urldecode($action)).'\';'; eval($action); ?>
               </li>
               <?php endforeach; else: ?>
-              <li><?php echo $this->Html->link('View', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id)); ?></li>
+              <li><?php echo $this->Html->link('View', $viewUrl); ?></li>
               <li><?php echo $this->Html->link('Edit', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
               <li><?php echo $this->Html->link('Delete', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
               <?php endif; ?>
@@ -131,7 +133,6 @@ foreach ($data as $dat) {
 			'type' => 'text'  
 			);
 	}*/
-	unset($link);
 } // end individual data items loop ?>
   </div>
 </div>
@@ -142,14 +143,20 @@ foreach ($data as $dat) {
 	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
     <li class="actionItem"><?php echo $this->Paginator->sort($keyName, array(), array('class' => 'sort'));?></li>
     <?php endif; endforeach; ?>
-    <?php if (!empty($pageActions)) : ?>
-    <li class="actionHeading"><?php echo __('Action'); ?></li>
-    <?php foreach ($pageActions as $pageAction) : ?>
-    <li class="actionItem <?php echo !empty($pageAction['linkClass']) ? $pageAction['linkClass'] : ''; ?>"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
-    <?php endforeach; else : ?>
-    <li class="actionHeading"><?php echo __('Action'); ?></li>
-    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); ?></li>
-    <?php endif; ?>
+    
+    <?php
+	if (!empty($pageActions)) { ?>
+	    <li class="actionHeading"><?php echo __('Action'); ?></li>
+    	<?php 
+		foreach ($pageActions as $pageAction) { ?>
+    		<li class="actionItem <?php echo !empty($pageAction['linkClass']) ? $pageAction['linkClass'] : ''; ?>"><?php echo $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']); ?></li>
+    	<?php
+		} // end pageAction loop
+	} else { ?>
+   		<li class="actionHeading"><?php echo __('Action'); ?></li>
+	    <li class="actionItem"><?php echo $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); ?></li>
+    <?php
+	} // end pageActions ?>
   </ul>
 </div>
 <?php 
