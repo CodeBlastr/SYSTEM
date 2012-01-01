@@ -9,13 +9,11 @@ if (!empty($data)) :
 	$indexVar = Inflector::variable($controller); // contactPeople, projects
 	$humanModel = Inflector::humanize(Inflector::underscore($modelName)); // Contact Person
 	$humanCtrl = Inflector::humanize(Inflector::underscore($controller)); // Contact People
-	$link['pluginName'] = !empty($link['pluginName']) ? $link['pluginName'] : $pluginName;
-	$link['controllerName'] = !empty($link['controllerName']) ? $link['controllerName'] : $controller;
-	$link['actionName'] = !empty($link['actionName']) ? $link['actionName'] : 'view';
 	if (!empty($showGallery)) : 
 		$galleryModel = !empty($galleryModel) ? $galleryModel : $modelName;
-		$galleryModelName = is_array($galleryModel) ? $galleryModel['name'] : $galleryModel;
-		$galleryModelAlias = is_array($galleryModel) ? $galleryModel['alias'] : $galleryModel;
+		$galleryModelName = is_array($galleryModel) && !empty($galleryModel['name']) ? $galleryModel['name'] : $galleryModel;
+		$galleryModelAlias = is_array($galleryModel) && !empty($galleryModel['alias']) ? $galleryModel['alias'] : $galleryModel;
+		$galleryModelField = is_array($galleryModel) && !empty($galleryModel['field']) ? $galleryModel['field'] : null;
 		$galleryForeignKeyField = !empty($galleryForeignKey) ? $galleryForeignKey : 'user_id';
 		$galleryThumbSize = !empty($settings['galleryThumbSize']) ? $settings['galleryThumbSize'] : 'medium';
 	endif;
@@ -25,9 +23,10 @@ if (!empty($data)) :
   <div class="indexContainer <?php echo $indexClass; ?>">
     <?php
 $i = 0;
-foreach ($data as $dat):
-	#this value needs to be set here in case we unset it a few lines after.
+foreach ($data as $dat) {
+	# individual record defaults
 	$galleryForeignKey = !empty($showGallery) ? $dat[$galleryModelAlias][$galleryForeignKeyField] : null;
+	$galleryModelName = !empty($galleryModelField) ? $dat[$galleryModelAlias][$galleryModelField] : $galleryModelName;
 	$displayId = !empty($displayId) ? $displayId : 'id';
 	$id = !empty($dat[$modelName][$displayId]) ? $dat[$modelName][$displayId] : null;
 	unset($dat[$modelName][$displayId]);
@@ -35,6 +34,12 @@ foreach ($data as $dat):
 	unset($dat[$modelName][$displayName]);
 	$description = !empty($dat[$modelName][$displayDescription]) ? $dat[$modelName][$displayDescription] : null;
 	unset($dat[$modelName][$displayDescription]);
+	extract($dat[$modelName]); // this allows us to access fields from the view page with {var} as a tag
+	$link['pluginName'] = !empty($link['pluginName']) ? $link['pluginName'] : $pluginName;
+	$link['controllerName'] = !empty($link['controllerName']) ? $link['controllerName'] : $controller;
+	$link['actionName'] = !empty($link['actionName']) ? $link['actionName'] : 'view';
+	$link['pass'] = !empty($link['pass']) ? implode('/', $link['pass']) : $id; 
+	$link['pass'] = preg_replace('/\{([a-zA-Z_]+)\}/e', "$$1", $link['pass']);
 	
 	$class = null;
 	if ($i++ % 2 == 0) {
@@ -42,46 +47,50 @@ foreach ($data as $dat):
 	}
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
-      <div class="indexCell imageCell"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$galleryForeignKey), array('plugin' => 'galleries')) : null; ?> </span> </div>
+      <div class="indexCell imageCell"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => '/'.$link['pluginName'].'/'.$link['controllerName'].'/'.$link['actionName'].'/'.$link['pass']), array('plugin' => 'galleries')) : null; ?> </span> </div>
       <div class="indexCell metaCell">
         <ul class="metaData">
-          <?php foreach($dat[$modelName] as $keyName => $keyValue) : 
+          <?php 
+		  foreach($dat[$modelName] as $keyName => $keyValue) {
 			# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
 			$_keyName = $keyName;
 			$humanKeyName = Inflector::humanize(str_replace('_id', '', $keyName)); 
 			$keyName = str_replace(' ', '', Inflector::humanize(str_replace('_id', '', $keyName))); 
-       		if(strpos($_keyName, '_') && !empty($dat[$modelName][str_replace(' ', '', $keyName)]) && is_array($dat[$modelName][str_replace(' ', '', $keyName)])) :  
-			else :
-			# over write the keyValue if its belongsTo associated record to display (ie. assignee_id = full_name)
-			if (!empty($associations) && array_key_exists($keyName, $associations)) :
-				$displayField = $associations[Inflector::humanize(str_replace('_id', '', $keyName))]['displayField'];
-				# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
-				$keyValue = !empty($dat[$modelName][$keyName][$displayField]) && is_array($dat[$modelName][$keyName]) ? 
+       		if(strpos($_keyName, '_') && !empty($dat[$modelName][str_replace(' ', '', $keyName)]) && is_array($dat[$modelName][str_replace(' ', '', $keyName)])) { 
+				
+			} else {
+				# over write the keyValue if its belongsTo associated record to display (ie. assignee_id = full_name)
+				if (!empty($associations) && array_key_exists($keyName, $associations)) {
+					$displayField = $associations[Inflector::humanize(str_replace('_id', '', $keyName))]['displayField'];
+					# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
+					$keyValue = !empty($dat[$modelName][$keyName][$displayField]) && is_array($dat[$modelName][$keyName]) ? 
 						$dat[$modelName][$keyName][$displayField] : 
 						(!empty($dat[$keyName][$displayField]) ? $dat[$keyName][$displayField] : null); 
-			endif;
-			$keyName = Inflector::humanize($keyName);
-			# if its a date parse it into words
-			if ($keyValue == date('Y-m-d h:i:s', strtotime($keyValue)) || $keyValue == date('Y-m-d', strtotime($keyValue))) : $keyValue = $this->Time->timeAgoInWords($keyValue); endif; // human readable dates 
-			?>
-          <li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
-          <?php endif; ?>
-          <?php endforeach; ?>
+				}
+				$keyName = Inflector::humanize($keyName);
+				# if its a date parse it into words
+				if ($keyValue == date('Y-m-d h:i:s', strtotime($keyValue)) || $keyValue == date('Y-m-d', strtotime($keyValue))) {
+					$keyValue = $this->Time->timeAgoInWords($keyValue); 
+				} // human readable dates ?>
+         	<li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
+          <?php 
+			}
+		  } // end metadata loop ?>
         </ul>
       </div>
       <div class="indexCell indexData">
         <div class="indexCell titleCell">
           <div class="recorddat">
-            <h3> <?php echo $this->Html->link($name, array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $id), array('escape' => false)); ?></h3>
+            <h3> <?php echo $this->Html->link($name, array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $link['pass']), array('escape' => false)); ?></h3>
           </div>
         </div>
-        <?php if (!empty($displayDescription)) : ?>
+        <?php if (!empty($displayDescription)) { ?>
         <div class="indexCell descriptionCell">
           <div class="recorddat">
             <div class="truncate"> <span name="<?php echo $displayDescription; ?>" id="<?php echo $id; ?>"><?php echo $description; ?></span> </div>
           </div>
         </div>
-        <?php endif; ?>
+        <?php } ?>
         <div class="indexCell actionCell">
           <div class="drop-holder indexDrop actions">
             <ul class="drop">
@@ -100,30 +109,30 @@ foreach ($data as $dat):
       </div>
     </div>
     <?php
-  /* used for ajax editing
-  # needs to be here because it has to be before the forech ends
-  $editFields[] =  array(
-	'name' => $displayDescription,
-	'tagId' => $id,
-	'plugin' => $pluginName,
-	'controller' => $controller,
-	'fieldId' => 'data['.$modelName.'][id]',
-	'fieldName' => 'data['.$modelName.']['.$displayDescription.']',
-	'type' => 'text'
-	);
-  foreach($dat[$modelName] as $keyName => $keyValue) :
-	  $editFields[] =  array(
-		'name' => $keyName,
+	/* used for ajax editing
+	# needs to be here because it has to be before the forech ends
+	$editFields[] =  array(
+		'name' => $displayDescription,
 		'tagId' => $id,
 		'plugin' => $pluginName,
 		'controller' => $controller,
 		'fieldId' => 'data['.$modelName.'][id]',
-		'fieldName' => 'data['.$modelName.']['.$keyName.']',
-		'type' => 'text'  
+		'fieldName' => 'data['.$modelName.']['.$displayDescription.']',
+		'type' => 'text'
 		);
-	endforeach;*/
-endforeach;
-?>
+	foreach($dat[$modelName] as $keyName => $keyValue) {
+		$editFields[] =  array(
+			'name' => $keyName,
+			'tagId' => $id,
+			'plugin' => $pluginName,
+			'controller' => $controller,
+			'fieldId' => 'data['.$modelName.'][id]',
+			'fieldName' => 'data['.$modelName.']['.$keyName.']',
+			'type' => 'text'  
+			);
+	}*/
+	unset($link);
+} // end individual data items loop ?>
   </div>
 </div>
 <div id="<?php echo $modelName; ?>Actions" class="index actions">
@@ -145,13 +154,11 @@ endforeach;
 </div>
 <?php 
 echo $this->Element('paging'); ?>
-<?php #echo $this->Element('ajax_edit',  array('editFields' => $editFields));
-?>
+<?php # echo $this->Element('ajax_edit',  array('editFields' => $editFields)); ?>
 <?php 
 else : 
-// Don't show anything rom the index, show a default message  
-// pulled as an element called start, from the plugin folder you're in.
-?>
+# Don't show anything rom the index, show a default message  
+# pulled as an element called start, from the plugin folder you're in. ?>
 <div class="index noItems"> <?php echo $this->Element('start', array(), array('plugin' => $pluginName)); ?>
   <?php if (empty($indexOnThisPage)) : ?>
   <div class="actions">
@@ -163,5 +170,4 @@ else :
 </div>
 <?php
 endif;
-$this->set('indexOnThisPage', true);  // used when there is more than one index on the page calling this element. This variable keeps it the actions from the second index element from over writing the first index element actions.
-?>
+$this->set('indexOnThisPage', true);  // used when there is more than one index on the page calling this element. This variable keeps it the actions from the second index element from over writing the first index element actions. ?>
