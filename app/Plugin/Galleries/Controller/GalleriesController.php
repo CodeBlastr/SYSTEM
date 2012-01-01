@@ -130,7 +130,8 @@ class GalleriesController extends GalleriesAppController {
 		}
 		
 		$types = $this->Gallery->types();
-		$this->set(compact('model', 'foreignKey', 'gallery', 'types'));
+		$conversionTypes = $this->Gallery->conversionTypes();
+		$this->set(compact('model', 'foreignKey', 'gallery', 'types', 'conversionTypes'));
 	}
 	
 	
