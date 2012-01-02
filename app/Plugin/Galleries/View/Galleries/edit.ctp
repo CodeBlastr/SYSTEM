@@ -18,7 +18,7 @@
 		echo $this->Form->input('Gallery.medium_height');
 		echo $this->Form->input('Gallery.full_width');
 		echo $this->Form->input('Gallery.full_height');
-		echo $this->Form->input('Gallery.conversion_type', array('type' => 'select', 'options' => $conversionTypes));
+		echo $this->Form->input('Gallery.conversion_type', array('type' => 'select', 'options' => $conversionTypes, 'empty' => true));
 		echo $this->Form->end('Submit');
 		?>
 	</fieldset>

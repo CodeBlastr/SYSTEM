@@ -166,6 +166,19 @@ if (!empty($pageActions)) {
    	$pageActionLinks[] = $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add'));
 } // end pageActions 
 
+
+# echo $this->Element('ajax_edit',  array('editFields' => $editFields)); 
+else : 
+# Don't show anything rom the index, show a default message  
+# pulled as an element called start, from the plugin folder you're in. ?>
+<div class="index noItems">
+	<?php
+	echo $this->Element('start', array(), array('plugin' => $pluginName));
+	if (empty($indexOnThisPage)) { 
+ 		$pageActionLinks[] = $this->Html->link('Add', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); 
+	} ?>
+</div>
+<?php
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
@@ -173,20 +186,5 @@ $this->set('context_menu', array('menus' => array(
 		'items' => $pageActionLinks,
 		),
 	))); 
-
-# echo $this->Element('ajax_edit',  array('editFields' => $editFields)); 
-else : 
-# Don't show anything rom the index, show a default message  
-# pulled as an element called start, from the plugin folder you're in. ?>
-<div class="index noItems"> <?php echo $this->Element('start', array(), array('plugin' => $pluginName)); ?>
-  <?php if (empty($indexOnThisPage)) : ?>
-  <div class="actions">
-    <ul class="drop">
-      <li class="actionItem"><?php echo $this->Html->link('Add '.$modelName, array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); ?></li>
-    </ul>
-  </div>
-  <?php endif; ?>
-</div>
-<?php
 endif;
 $this->set('indexOnThisPage', true);  // used when there is more than one index on the page calling this element. This variable keeps it the actions from the second index element from over writing the first index element actions. ?>
