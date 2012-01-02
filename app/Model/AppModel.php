@@ -25,14 +25,14 @@ App::uses('Model', 'Model');
 
 class AppModel extends Model {  
 
-	var $actsAs = array('Containable');
-  	var $recursive = -1;
+	public $actsAs = array('Containable');
+  	public $recursive = -1;
 
 /**
  * Manipulate data before it is saved.
  * @todo    Move this record level access stuff to a behavior
  */
-	function beforeSave(&$model) {
+	public function beforeSave(&$model) {
 	    # Start Record Level Access Save #
 	    // If the model needs Record Level Access add an Aco
 	    if (!empty($this->data['RecordLevelAccess']['UserRole'])) {
@@ -69,7 +69,7 @@ class AppModel extends Model {
 /**
  * Condition Check, checks to see if any conditions from the conditions table were met.
  */
-	function afterSave($created) {
+	public function afterSave($created) {
 	    # Start Condition Check #
     	$this->Condition = ClassRegistry::init('Condition');
 	    #get the id that was just inserted so you can call back on it.
@@ -88,7 +88,7 @@ class AppModel extends Model {
 /**
  * Condition Check, checks to see if any conditions from the conditions table were met.
  */
-	function afterDelete() {
+	public function afterDelete() {
     	# Start Condition Check #
 	    App::Import('Model', 'Condition');
 	    $this->Condition = new Condition;
@@ -104,7 +104,7 @@ class AppModel extends Model {
  * With this function our total_count now appears with the rest of the fields in the resulting data array.
  * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
  */ 
-	function afterFind($results, $primary = false) {
+	public function afterFind($results, $primary = false) {
     	if($primary == true) {
         	if(Set::check($results, '0.0')) {
             	$fieldName = key($results[0][0]);
@@ -118,7 +118,7 @@ class AppModel extends Model {
 	}
   
   
-	function listPlugins($remove = array(), $merge = true) {
+	public function listPlugins($remove = array(), $merge = true) {
 	    $defaultRemove = array('Acl Extras', 'Api Generator', 'Recaptcha', 'Favorites.needs.upgrade', 'Forum.needs.upgrade');
 	    $remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
 	    $plugins = CakePlugin::loaded();
@@ -130,7 +130,7 @@ class AppModel extends Model {
 	}
   
   
-	function listModels($pluginPath = null, $remove = array(), $merge = true) {
+	public function listModels($pluginPath = null, $remove = array(), $merge = true) {
 	    # defaultRemove originally done for this page : /admin/categories/categories/add/ 
 	    # if you add items for removal from this list make sure that they should also be removed from there
 	    # or customize the categories_controller so that listModels() function to not merge
@@ -150,12 +150,13 @@ class AppModel extends Model {
     
     	return array_diff($return, $remove);
 	}
-  
-  
+	
+	
 /**
- * Don't know what this is for, I'd like to see a comment placed.
+ * Don't know what this is for, I'd like to see a comment placed. OLD
+ * Update... parentNode has something to do with ACL and how they are saved using the Behavior.  Not sure exactly how this one is used though.  1/2/2012 RK
  */
-	function parentNode() {
+	public function parentNode() {
 		$this->name;
 	}
   
@@ -167,7 +168,7 @@ class AppModel extends Model {
  * @return {array}        An array of user ids that should have access to the record.  (ie. assignee_id, user_id)
  * @todo            We could easily add UserRole to this array, and control group record level access for groups per save as well.  We would need to just add a model = key into the aro lookup in acl_extra as well.
  */
-	function _isRecordLevelRecord($recordEntities) {
+	private function _isRecordLevelRecord($recordEntities) {
 	    # create the array
 	    $data = $this->data;
 	    $recordEntities = explode(',', $recordEntities);
@@ -198,7 +199,7 @@ class AppModel extends Model {
  * returns a 40 digit random key and adds the prefix if provided.
  * $table : array(Model => action)  if uniqueness is required across any table and column
  */
-    function __uuid($prefix = null, $table = null) {
+    public function __uuid($prefix = null, $table = null) {
         // creates a 6 digit key
         $uid = substr(md5(uniqid(rand(), true)), 0, 40);
         if ($prefix)
@@ -220,7 +221,7 @@ class AppModel extends Model {
     }
 	
 	
-    function _generateUUID() {
+    public function _generateUUID() {
         $uuid = $this->query('SELECT UUID() AS uuid');
         return $uuid[0][0]['uuid'];
     }

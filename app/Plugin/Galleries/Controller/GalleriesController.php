@@ -4,29 +4,24 @@ class GalleriesController extends GalleriesAppController {
 	public $name = 'Galleries';
 	public $uses = 'Galleries.Gallery';
 	public $allowedActions = array('thumb');
+	public $paginate = array();
+
 
 /**
  * Index for gallery.
  * 
  */
-	public function index() { 
-		# see if this gallery 
-		$params['conditions'] = !empty($this->request->params['pass'][0]) && !empty($this->request->params['pass'][1]) ? 
-			array('Gallery.model' => $this->request->params['pass'][0], 'Gallery.foreign_key' => $this->request->params['pass'][1]) : 
-			null;
-		# we need the main image for the gallery to show a thumbnail
-		$params['contain'] = array('GalleryImage');
+	public function index() {
 		# paginate the results
-		$this->paginate = array(
-			'fields' => array(
+		$this->paginate['fields'] = array(
 				'Gallery.name',
 				'Gallery.description',
 				'Gallery.model',
 				'Gallery.foreign_key',
 				'Gallery.type',
 				'Gallery.created',
-				),
-			);
+				);
+		
 		$this->set('galleries', $this->paginate());
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', 'description');
@@ -176,7 +171,8 @@ class GalleriesController extends GalleriesAppController {
  * Area to manage galleries and gallery settings.
  */
 	public function dashboard() {
-		
+		$this->paginate['limit'] = 5;
+		$this->index();
 	}
 
 }
