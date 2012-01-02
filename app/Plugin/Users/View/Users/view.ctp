@@ -1,7 +1,7 @@
 <div id="users-view" class="users view">
   <div id="user-information">
     <h2><?php echo $user['User']['first_name'] . ' ' . $user['User']['last_name'] ?></h2>
-    <?php echo $this->element('snpsht', array('useGallery' => true, 'userId' => $user['User']['id'], 'thumbSize' => 'medium', 'thumbLink' => 'default'));  ?>
+    <?php echo $this->Element('snpsht', array('useGallery' => true, 'userId' => $user['User']['id'], 'thumbSize' => 'medium', 'thumbLink' => array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'User', $user['User']['id'])));  ?>
   </div>
 </div>
 <div class="follow action">

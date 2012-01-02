@@ -32,10 +32,32 @@ Note that the class names could be updated and change often.
 .error-message, .error {
 	color: #C00;
 }
-
+.toggleClick.toggle:before {
+	content: '\25BC \ ';
+    border: 1px solid #AAAAAA;
+    border-radius: 0.2em 0.2em 0.2em 0.2em;
+    color: #AAAAAA;
+    display: block;
+    float: left;
+    font-size: 0.8em;
+    margin: 0 0.5em 0 0;
+    padding: 0 0.18em 0 0.14em;
+}
+.toggleClick.toggled:before {
+	content: '\25B2 \ ';
+    border: 1px solid #AAAAAA;
+    border-radius: 0.2em 0.2em 0.2em 0.2em;
+    color: #AAAAAA;
+    display: block;
+    float: left;
+    font-size: 0.8em;
+    margin: 0 0.5em 0 0;
+    padding: 0 0.18em 0 0.14em;
+}
 .toggleClick, .toggleHover {
 	cursor: pointer;
 }
+
 .hide {
 	display: none;
 }
