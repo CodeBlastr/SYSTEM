@@ -37,7 +37,6 @@
 	$showViewLink = (!empty($showViewLink) && !empty($userId) ? $showViewLink : false);
 	$showEditLink = (!empty($showEditLink) && !empty($userId) && $userId == $sessionUserId ? $showEditLink : false);
 	$thumbLink = (!empty($thumbLink) ? $thumbLink : '/users/users/view/'.$userId);
-	if ($thumbLink == 'default') { unset($thumbLink); }
 	$thumbTitle = (!empty($thumbTitle) ? $thumbTitle : null);
 	$thumbSize = (!empty($thumbSize) ? $thumbSize : 'medium');
 	$thumbWidth = (!empty($thumbWidth) ? $thumbWidth : null);

@@ -58,6 +58,7 @@ class Gallery extends GalleriesAppModel {
 		)
 	);
 	
+	
 	function afterSave($created) {
 		$gallery = $this->find('first', array('Gallery.id' => $this->id));
 		if (!empty($gallery) && empty($gallery['Gallery']['model']) && empty($gallery['Gallery']['foreign_key'])) {
@@ -71,14 +72,30 @@ class Gallery extends GalleriesAppModel {
 		}
 	}
 	
-	/** 
-	 * Adds a gallery, and uploads the image using the GalleryImage model.  The image that is uploaded during Gallery creation is also used as the default thumbnail image for the gallery. 
-	 * 
-	 * @param {data}		An array of data to be saved.
-	 * @return {bool}		True if saved completely, false otherwise.
-	 * @todo				As part of the roll back methods, we could also delete the images that were uploaded.
-	 *
-	 */
+	
+	public function afterFind($results) {
+		if (!empty($results[0]['Gallery'])) {
+			# handle hasMany results
+			$i=0; foreach ($results as $result) {
+				$results[$i] = Set::merge(array('GallerySettings' => $this->gallerySettings($result)), $result);
+				$i++;
+			}
+		}
+		
+		if (!empty($results['id'])) {
+			$results = Set::merge(array('GallerySettings' => $this->gallerySettings($results)), $results);
+		}
+		
+		return $results;
+	}
+	
+/** 
+ * Adds a gallery, and uploads the image using the GalleryImage model.  The image that is uploaded during Gallery creation is also used as the default thumbnail image for the gallery. 
+ * 
+ * @param {data}		An array of data to be saved.
+ * @return {bool}		True if saved completely, false otherwise.
+ * @todo				As part of the roll back methods, we could also delete the images that were uploaded.
+ */
 	function add($data, $fileName) {
 		// Making it so that you only need GalleryImage->add in a controller to make all the work happen. 
 		// Take special note of the "rollback" features.  I really like rolling back whenever possible on failures.  
@@ -86,7 +103,7 @@ class Gallery extends GalleriesAppModel {
 		$data['Gallery']['name'] = !empty($data['Gallery']['name']) ? $data['Gallery']['name'] : $data['Gallery']['model']; 
 		# set any Gallery model fields not filled in data with app or system defaults.
 		$data = $this->_galleryDefaults($data);
-		$data = $this->GalleryImage->_galleryImageDefaults($data);
+		$data = $this->GalleryImage->galleryImageDefaults($data);
 		# create the gallery as the first step
 		if ($this->save($data)) {
 			# now if an image exists in data, save the image as the default thumbnail as well
@@ -118,34 +135,6 @@ class Gallery extends GalleriesAppModel {
 		} else {
 			throw new Exception(__d('galleries', 'ERROR : Gallery save update failed.', true));
 		}		
-	}
-	
-	
-	
-	function _galleryVars($gallery = null) {
-		if(!empty($gallery['Gallery']['GalleryImage'])) {
-			$gallery['GalleryImage'] = $gallery['Gallery']['GalleryImage'];
-		}
-		# variables used in the gallery display element
-		if (!empty($gallery['GalleryImage'][0])) { 
-			$i = 0;
-			foreach ($gallery['GalleryImage'] as $image) {
-				$links[$i]['thumbId'] = $image['id'];
-				$links[$i]['thumbUrl'] = $image['dir'].'thumb/small/'.$image['filename'];
-				$links[$i]['thumbWidth'] = $gallery['Gallery']['thumb_width'];
-				$links[$i]['thumbHeight'] = $gallery['Gallery']['thumb_height'];
-				$links[$i]['thumbAlt'] = $image['alt'];
-				$links[$i]['fullUrl'] =  $image['dir'].'thumb/large/'.$image['filename'];
-				$links[$i]['title'] = $image['caption'];
-				$links[$i]['description'] = $image['description'];
-				$i++;
-			}
-		$value = array(
-			'type' => $gallery['Gallery']['type'],
-			'links' => $links,
-			);
-		return $value;
-		}
 	}
 	
 	function _galleryDefaults($data = null) {

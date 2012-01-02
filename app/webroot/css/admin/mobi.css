@@ -397,35 +397,31 @@ form {
 }
 fieldset, .viewRow .recordData {
 	padding: 0;
-	margin: 0.5em 0 0 0;
+	margin: 0.5em 0;
 	width: 100%;
-	border-right: 1px solid #CCC;
-	border-bottom: 1px solid #CCC;
-	border-left: 1px solid #CCC;
-	border-top-right-radius:0.5em;
-	border-top-left-radius:0.5em;
-	-webkit-border-top-right-radius:0.5em;
-	-webkit-border-top-left-radius:0.5em;
-	-moz-border-top-right-radius:0.5em;
-	-moz-border-top-left-radius:0.5em;
+	border: 1px solid #CCC;
+	border-radius:0.5em;
+	-webkit-border-radius:0.5em;
+	-moz-border-radius:0.5em;
 	-webkit-box-shadow: 0 0 5px #CCC;
 	-moz-box-shadow: 0 0 5px #CCC;
 	box-shadow: 0 0 5px #CCC;
 }
 fieldset legend, .viewRow .metaData {
 	font-weight: bold;
+	margin: 0.5em;
 	
-	border: 1px solid #CCC;
-	border-top-right-radius:0.5em;
-	border-top-left-radius:0.5em;
+	bo.rder: 1px solid #CCC;
+	bor.der-top-right-radius:0.5em;
+	bord.er-top-left-radius:0.5em;
 	-webkit-border-top-right-radius:0.5em;
 	-webkit-border-top-left-radius:0.5em;
 	-moz-border-top-right-radius:0.5em;
 	-moz-border-top-left-radius:0.5em;
 	
-	background-image: -moz-linear-gradient(top, #fdfdfd, #DDD);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fdfdfd), color-stop(1, #DDD));
-	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#DDD')";
+	backgr.ound-image: -moz-linear-gradient(top, #fdfdfd, #DDD);
+	backgr.ound-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fdfdfd), color-stop(1, #DDD));
+	-ms-f.ilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fdfdfd', EndColorStr='#DDD')";
 	
 	width: 100%;
 	float: left;
@@ -437,7 +433,7 @@ fieldset legend h1, fieldset legend h2, fieldset legend h3, fieldset legend h4, 
 	padding: 0.2em 0 0 0.3em;
 }
 fieldset legend span.button, fieldset legend a.button {
-	margin-top: 0.4em;
+	margin: 0 1.4em 0 0;
 	float: right;
 	color: white;
 	background-color: #D14836;
@@ -458,14 +454,12 @@ fieldset legend span.button, fieldset legend a.button {
 	-moz-border-radius:0px;
 }
 fieldset legend span.button:hover, fieldset legend a.button:hover {
-	margin-top: 0.4em;
-	color: white;
-	background-color: #D14836;
-	background-image: -webkit-linear-gradient(top,#dd4b39,#d14836);
-	background-image: -moz-linear-gradient(top,#dd4b39,#d14836);
-	background-image: -ms-linear-gradient(top,#dd4b39,#d14836);
-	background-image: -o-linear-gradient(top,#dd4b39,#d14836);
-	background-image: linear-gradient(top,#dd4b39,#d14836);
+	background-color: #060;
+	background-image: -webkit-linear-gradient(top,#060,#090);
+	background-image: -moz-linear-gradient(top,#060,#090);
+	background-image: -ms-linear-gradient(top,#060,#090);
+	background-image: -o-linear-gradient(top,#060,#090);
+	background-image: linear-gradient(top,#060,#090);
 	text-shadow: 0 1px rgba(0, 0, 0, 1);
 	border: 0;
 	font-size: 0.9em;
@@ -476,8 +470,6 @@ fieldset legend span.button:hover, fieldset legend a.button:hover {
 	border-radius:0px;
 	-webkit-border-radius:0px;
 	-moz-border-radius:0px;
-}
-fieldset legend.toggleClick {
 }
 fieldset fieldset {
 	margin: 0;
@@ -524,7 +516,7 @@ label a {
 input, textarea, select {
 	float: left;
 	padding: 0.5em;
-	min-width: 21em;
+	min-width: 20em;
 	background: #f5f5f5;
 	margin: 0;
 	border: 1px solid #AAA;
@@ -575,7 +567,8 @@ textarea {
 select {
 	clear: both;
 	vertical-align: text-bottom;
-	padding: 0.5em;
+	padding: 0.4em;
+	min-width: 21.1em;
 }
 .ui-datepicker-title select {
 	min-width: 1px;
@@ -709,7 +702,6 @@ div.paging span a {
 	line-height: 1.2em;
 	margin: 0.1em 125px .8em 92px;
 	padding: 0;
-	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 	outline: 0 !important;
@@ -1030,6 +1022,8 @@ div.paging span a {
 	list-style: none;
 	padding: 0;
 	margin: 0 0.5em 0 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 #content .metaDataPriorityDetail {
 	padding: 0;

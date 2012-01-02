@@ -118,9 +118,20 @@ $(function() {
 
 	// hides form elements except the legend (click the legend to show form elements
   	$('legend.toggleClick').siblings().hide();
+	$('legend.toggleClick').addClass("toggle");
 	
   	$('legend.toggleClick').click(function(){
     	$(this).siblings().slideToggle("toggle");
+		if ($(this).is(".toggle")) {
+			$(this).removeClass("toggle");
+			$(this).addClass("toggled");
+		} else {
+			$(this).removeClass("toggled");
+			$(this).addClass("toggle");
+		}
+		//$(this).removeClass("toggleInit");
+		//$(this).addClass("toggleConc");
+		//if ($(this).attr("class") == 
     });
 	
 	
