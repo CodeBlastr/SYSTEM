@@ -19,52 +19,65 @@
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
-?>
-<?php 
 if (!empty($model) && !empty($foreignKey)) {
-	$galleryThumb = $this->requestAction('/galleries/galleries/thumb/model:'.$model.'/foreignKey:'.$foreignKey);
+	$galleryThumb = $this->requestAction("/galleries/galleries/thumb/{$model}/{$foreignKey}");
 } else {
-	$galleryThumb = (!empty($id) ? $this->requestAction('/galleries/galleries/thumb/'.$id) : null);
+	#echo __('Gallery model and foreignKey were not provided (Galleries/View/Elements/thumb.ctp)');
 }
+# set up the config vars
+$thumbLink = !empty($thumbLink) ? $thumbLink : array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'Gallery', $galleryThumb['Gallery']['id']);
+$thumbTitle = !empty($thumbTitle) ? ' title ="'.$thumbTitle.'"' : ' title ="'.$galleryThumb['GalleryThumb']['filename'].'"';
+$thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
+# get width from settings table
+$indexWidth = !empty($galleryThumb['GallerySettings']['indexImageWidth']) ? $galleryThumb['GallerySettings']['indexImageWidth'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'];
+$indexHeight = !empty($galleryThumb['GallerySettings']['indexImageHeight']) ? $galleryThumb['GallerySettings']['indexImageHeight'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'];
+# if the width was defined in the element call
+$thumbWidth = !empty($thumbWidth) ? $thumbWidth : $indexWidth;
+$thumbHeight = !empty($thumbHeight) ? $thumbHeight : $indexHeight;
 
-// set up the config vars
-$thumbLink = (!empty($thumbLink) ? $thumbLink : '/galleries/galleries/view/'.$galleryThumb['Gallery']['id']);
-$thumbTitle = (!empty($thumbTitle) ? ' title ="'.$thumbTitle.'"' : ' title ="'.$galleryThumb['GalleryThumb']['filename'].'"');
-$thumbSize = (!empty($thumbSize) ? $thumbSize : 'small');
-$thumbWidth = (!empty($thumbWidth) ? ' width="'.$thumbWidth.'"' : null);
-$thumbHeight = (!empty($thumbHeight) ? ' height="'.$thumbHeight.'"' : null);
-$thumbAlt = (!empty($thumbAlt) ? ' alt="'.$thumbAlt.'"' : ' alt="'.$galleryThumb['GalleryThumb']['filename'].'"');
-$thumbClass = (!empty($thumbClass) ? ' class="'.$thumbClass.'"' : ' class="gallery-thumb"');
-$thumbId = (!empty($thumbId) ? ' id="'.$thumbId.'"' : ' id="gallery'.$galleryThumb['Gallery']['id'].'"');
-$thumbDiv = (isset($thumbDiv) ? ($thumbDiv==true ? true : false) : true); //added to skip the display of div on demand (true/false)
-$thumbLinkClass = (!empty($thumbLinkClass) ? ' class="'.$thumbLinkClass.'"' : ''); //can have  class="gallery-thumb-link-class"
-$thumbLinkAppend = (!empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''); //to append anything to the image within the link
+$thumbAlt = !empty($thumbAlt) ? $thumbAlt : $galleryThumb['GalleryThumb']['filename'];
+$thumbClass = !empty($thumbClass) ? ' class="'.$thumbClass.'"' : ' class="gallery-thumb"';
+$thumbId = !empty($thumbId) ? ' id="'.$thumbId.'"' : ' id="gallery'.$galleryThumb['Gallery']['id'].'"';
+$thumbDiv = isset($thumbDiv) ? ($thumbDiv==true ? true : false) : true; //added to skip the display of div on demand (true/false)
+$thumbLinkClass = !empty($thumbLinkClass) ? $thumbLinkClass : ''; //can have  class="gallery-thumb-link-class"
+$thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; //to append anything to the image within the link
 
 if (!empty($galleryThumb)) {
-?>
- <?php if($thumbDiv)	{ ?>
-  <div <?php echo $thumbClass; echo $thumbId; ?>>
- <?php } ?>
-	<a href="<?php echo $thumbLink; ?>" <?php echo $thumbTitle; ?> <?php echo $thumbLinkClass; ?>>
-	<img src="<?php echo $galleryThumb['GalleryThumb']['dir']; ?>thumb/<?php echo $thumbSize; ?>/<?php echo $galleryThumb['GalleryThumb']['filename']; ?>" <?php echo $thumbAlt;  echo $thumbWidth; echo $thumbHeight; ?> /><?php echo $thumbLinkAppend; ?>
-	</a>
-<?php if($thumbDiv)	{ ?>
-  </div>
- <?php } ?>
-
-<?php 
+	if($thumbDiv)	{ echo "<div {$thumbClass} {$thumbId}>";  } 
+		$imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'.$thumbSize.'/'.$galleryThumb['GalleryThumb']['filename'];
+        $image = $this->Html->image($imagePath,
+			array(
+				'width' => $thumbWidth, 
+				'height' => $thumbHeight,
+				'alt' => $thumbAlt,
+				),
+			array(
+				'conversion' => $galleryThumb['GallerySettings']['conversionType'],
+				'quality' => 75,
+				));	
+		echo $this->Html->link($image . $thumbLinkAppend,
+			$thumbLink, 
+			array(
+				'escape' => false,
+				'class' => $thumbLinkClass,
+				'title' => $thumbTitle,
+				)); 
+	if($thumbDiv) { echo "</div>"; } 
 } else {
-	
-?>	
-  <?php if($thumbDiv)	{ ?>
-  <div <?php echo $thumbClass; echo $thumbId; ?>>
-  <?php } ?>
-	<a href="<?php echo $thumbLink; ?>" <?php echo $thumbTitle; ?> <?php echo $thumbLinkClass; ?>>
-	<img src="/img/noImage.jpg" <?php echo $thumbAlt;  echo $thumbWidth; echo $thumbHeight; ?> /><?php echo $thumbLinkAppend; ?>
-	</a>
-  <?php if($thumbDiv)	{ ?>
-  </div>
-  <?php } ?>
-<?php
+	if($thumbDiv) {  echo "<div {$thumbClass} {$thumbId}>"; }
+		$imagePath = '/img/noImage.jpg';
+        $image = $this->Html->image($imagePath,
+			array(
+				'width' => $thumbWidth, 
+				'height' => $thumbHeight,
+				'alt' => 'no image',
+				));	
+		echo $this->Html->link($image . $thumbLinkAppend,
+			$thumbLink, 
+			array(
+				'escape' => false,
+				'class' => $thumbLinkClass,
+				'title' => $thumbTitle,
+				));
+	if($thumbDiv) { echo '</div>'; } 
 }
-?>

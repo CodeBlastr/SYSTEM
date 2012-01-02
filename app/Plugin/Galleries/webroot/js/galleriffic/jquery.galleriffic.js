@@ -761,7 +761,7 @@
 					if (i >= startIndex && i <= stopIndex) {
 						$li.show();
 					} else {
-						$li.hide();
+						//$li.hide();
 					}
 				});
 

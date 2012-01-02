@@ -124,3 +124,19 @@
 .cboxSlideshow_off #cboxSlideshow.hover {
 	background-position:-75px -25px;
 }
+
+
+.galleryImage {
+	float: left;
+	position: relative;
+}
+.galleryImage:hover .gallerySlideActions {
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 100%;
+}
+.gallerySlideActions {
+	display: none;
+	background: #FFF;
+}

@@ -1,23 +1,18 @@
 #inlineGallery {
 	/*width: 100%;*/
+	float: left;
 }
 div.gallery-content {
 	/* The display of content is enabled using jQuery so that the slideshow content won't display unless javascript is enabled. */
 	display: none;
 	float: right;
 	/*width: 80%; */
-	overflow: hidden;
 }
 div.gallery-content a, div.navigation a {
 	text-decoration: none;
-	color: #777;
 }
 div.gallery-content a:focus, div.gallery-content a:hover, div.gallery-content a:active {
 	text-decoration: underline;
-}
-div.controls {
-	margin-top: 5px;
-	height: 23px;
 }
 div.controls a {
 	padding: 5px;
@@ -32,6 +27,8 @@ div.slideshow-container {
 	position: relative;
 	clear: both;
 	/*height: 502px;  This should be set to be at least the height of the largest image in the slideshow */
+	border: 1px solid #ccc;
+	overflow: hidden;
 }
 div.loader {
 	position: absolute;
@@ -44,7 +41,6 @@ div.loader {
 	height: 502px; This should be set to be at least the height of the largest image in the slideshow */
 }
 div.slideshow {
-
 }
 div.slideshow span.image-wrapper {
 	display: block;
@@ -58,13 +54,12 @@ div.slideshow a.advance-link {
 	height: 502px;  This should be set to be at least the height of the largest image in the slideshow */
 	/*line-height: 502px;  This should be set to be at least the height of the largest image in the slideshow */
 	text-align: center;
+	font-size: 0;
 }
 div.slideshow a.advance-link:hover, div.slideshow a.advance-link:active, div.slideshow a.advance-link:visited {
 	text-decoration: none;
 }
 div.slideshow img {
-	vertical-align: middle;
-	border: 1px solid #ccc;
 }
 div.download {
 	float: right;
@@ -77,8 +72,7 @@ div.caption-container {
 span.image-caption {
 	display: block;
 	position: absolute;
-	top: 0;
-	left: 0;
+	bottom: 0;
 }
 div.caption {
 	padding: 12px;
@@ -94,15 +88,38 @@ div.image-desc {
 div.navigation {
 	/* The navigation style is set using jQuery so that the javascript specific styles won't be applied unless javascript is enabled. */
 }
+#thumbs {
+	clear: both;
+}
 ul.thumbs {
 	clear: both;
 	margin: 0;
 	padding: 0;
+	list-style: none;
+	float: left;
+}
+ul.thumbs li {
+	float: left;
+	position: relative;
+}
+ul.thumbs li:hover .gallerySlideActions {
+	display: block;
+	position: absolute;
+	left: 0;
+	top: -100%;
+}
+ul.thumbs li:hover .gallerySlideActions li {
+	display: block;
+}
+.gallerySlideActions {
+	display: none;
+	background: #FFF;
+	border: 1px solid #CCC;
 }
 ul.thumbs li {
 	float: left;
 	padding: 0;
-	margin: 5px 10px 5px 0;
+	margin: 0 5px 0 0;
 	list-style: none;
 }
 a.thumb {
