@@ -433,7 +433,7 @@ fieldset legend h1, fieldset legend h2, fieldset legend h3, fieldset legend h4, 
 	padding: 0.2em 0 0 0.3em;
 }
 fieldset legend span.button, fieldset legend a.button {
-	margin-top: 0.4em;
+	margin: 0 1.4em 0 0;
 	float: right;
 	color: white;
 	background-color: #D14836;
@@ -454,14 +454,12 @@ fieldset legend span.button, fieldset legend a.button {
 	-moz-border-radius:0px;
 }
 fieldset legend span.button:hover, fieldset legend a.button:hover {
-	margin-top: 0.4em;
-	color: white;
-	background-color: #D14836;
-	background-image: -webkit-linear-gradient(top,#dd4b39,#d14836);
-	background-image: -moz-linear-gradient(top,#dd4b39,#d14836);
-	background-image: -ms-linear-gradient(top,#dd4b39,#d14836);
-	background-image: -o-linear-gradient(top,#dd4b39,#d14836);
-	background-image: linear-gradient(top,#dd4b39,#d14836);
+	background-color: #060;
+	background-image: -webkit-linear-gradient(top,#060,#090);
+	background-image: -moz-linear-gradient(top,#060,#090);
+	background-image: -ms-linear-gradient(top,#060,#090);
+	background-image: -o-linear-gradient(top,#060,#090);
+	background-image: linear-gradient(top,#060,#090);
 	text-shadow: 0 1px rgba(0, 0, 0, 1);
 	border: 0;
 	font-size: 0.9em;
@@ -472,8 +470,6 @@ fieldset legend span.button:hover, fieldset legend a.button:hover {
 	border-radius:0px;
 	-webkit-border-radius:0px;
 	-moz-border-radius:0px;
-}
-fieldset legend.toggleClick {
 }
 fieldset fieldset {
 	margin: 0;

@@ -22,10 +22,10 @@
 if (!empty($model) && !empty($foreignKey)) {
 	$galleryThumb = $this->requestAction("/galleries/galleries/thumb/{$model}/{$foreignKey}");
 } else {
-	echo __('Gallery model and foreignKey were not provided (Galleries/View/Elements/thumb.ctp)');
+	#echo __('Gallery model and foreignKey were not provided (Galleries/View/Elements/thumb.ctp)');
 }
 # set up the config vars
-$thumbLink = !empty($thumbLink) ? $thumbLink : '/galleries/galleries/view/'.$galleryThumb['Gallery']['id'];
+$thumbLink = !empty($thumbLink) ? $thumbLink : array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'Gallery', $galleryThumb['Gallery']['id']);
 $thumbTitle = !empty($thumbTitle) ? ' title ="'.$thumbTitle.'"' : ' title ="'.$galleryThumb['GalleryThumb']['filename'].'"';
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
 # get width from settings table

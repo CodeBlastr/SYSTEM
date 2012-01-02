@@ -89,22 +89,25 @@ foreach ($data as $dat) {
         <?php if (!empty($displayDescription)) { ?>
         <div class="indexCell descriptionCell">
           <div class="recorddat">
-            <div class="truncate"> <span name="<?php echo $displayDescription; ?>" id="<?php echo $id; ?>"><?php echo $description; ?></span> </div>
+            <div class="truncate"> <span name="<?php echo $displayDescription; ?>" id="<?php echo $id; ?>"><?php echo strip_tags($description); ?></span> </div>
           </div>
         </div>
         <?php } ?>
         <div class="indexCell actionCell">
           <div class="drop-holder indexDrop actions">
             <ul class="drop">
-              <?php if(!empty($actions) && is_array($actions)) : foreach ($actions as $action) : ?>
-              <li>
-                <?php $patterns = array('{', '}', '[', ']'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.str_replace($patterns, $replaces, urldecode($action)).'\';'; eval($action); ?>
-              </li>
-              <?php endforeach; else: ?>
-              <li><?php echo $this->Html->link('View', $viewUrl); ?></li>
-              <li><?php echo $this->Html->link('Edit', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
-              <li><?php echo $this->Html->link('Delete', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
-              <?php endif; ?>
+              <?php
+			  if(!empty($actions) && is_array($actions)) {
+				  foreach ($actions as $action) { ?>
+		              <li><?php $patterns = array('{', '}', '[', ']'); $replaces = array('\'.$', '.\'', '[\'', '\']'); $action = 'echo \''.str_replace($patterns, $replaces, urldecode($action)).'\';'; eval($action); ?></li>
+              <?php
+				  }
+			  } else { ?>
+		      	  <li><?php echo $this->Html->link('View', $viewUrl); ?></li>
+        		  <li><?php echo $this->Html->link('Edit', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => 'edit', $id)); ?></li>
+              	  <li><?php echo $this->Html->link('Delete', array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => 'delete', $id), array(), 'Are you sure you want to delete "'.strip_tags($name).'"'); ?></li>
+              <?php
+			  } ?>
             </ul>
           </div>
         </div>
@@ -141,26 +144,11 @@ foreach ($data as $dat) {
 
 
 
-<?php
-if (!empty($pageActions)) {
-	foreach ($pageActions as $pageAction) { 
-		$pageActionlinks[] = $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']);
-	} // end pageAction loop
-} else { 
-   	$pageActionLinks[] = $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add'));
-} // end pageActions 
 
 
-// set the contextual menu items
-$this->set('context_menu', array('menus' => array(
-	array(
-		'heading' => $modelName,
-		'items' => $pageActionLinks,
-		),
-	))); ?>
 
-
-<!-- these are pagination sorting links and should not be up there 
+<?php 
+/* these are pagination sorting links and should not be compbined with action links (make a drop down or something) 
 <div id="<?php echo $modelName; ?>Actions" class="index actions">
   <ul class="drop">
     <li class="actionHeading"><?php echo __('Sort by');?></li>
@@ -169,18 +157,23 @@ $this->set('context_menu', array('menus' => array(
     <li class="actionItem"><?php echo $this->Paginator->sort($keyName, array(), array('class' => 'sort'));?></li>
     <?php endif; endforeach; ?>
   </ul>
-</div> -->
+</div> */ 
+if (!empty($pageActions)) {
+	foreach ($pageActions as $pageAction) { 
+		$pageActionLinks[] = $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']);
+	} // end pageAction loop
+} else { 
+   	$pageActionLinks[] = $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add'));
+} // end pageActions 
 
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => $modelName,
+		'items' => $pageActionLinks,
+		),
+	))); 
 
-
-
-
-
-
-
-
-
-<?php
 # echo $this->Element('ajax_edit',  array('editFields' => $editFields)); 
 else : 
 # Don't show anything rom the index, show a default message  
