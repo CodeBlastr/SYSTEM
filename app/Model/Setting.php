@@ -298,7 +298,7 @@ class Setting extends AppModel {
  */
 	public function add($data, $append = false) {
 		$data = $this->_cleanSettingData($data, $append);
-		# save the data
+		
 		if ($this->saveAll($data)) {
 			# call all settings and write the ini file
 			if($this->writeSettingsIniData()) {
@@ -404,21 +404,6 @@ class Setting extends AppModel {
  * @param {array}		An array of Setting data
  */
 	private function _cleanSettingData($data, $append = false){
-		# see if the setting already exists
-		$setting = $this->find('first', array(
-			'conditions' => array(
-				'Setting.name' => $data['Setting']['name'],
-				'Setting.type' => $data['Setting']['type'],
-				),
-			));
-		if(!empty($setting)) {
-			# if it does, then set the id, so that we over write instead of creating a new setting
-			$data['Setting']['id'] = $setting['Setting']['id'];
-		}
-
-		if (!empty($append) && !empty($setting)) {
-			$data['Setting']['value'] = $setting['Setting']['value'].PHP_EOL.$data['Setting']['value'];
-		}
 		
 		if (!empty($data['Setting'][0])) {
 			$i=0; foreach ($data['Setting'] as $setting) {
@@ -433,10 +418,31 @@ class Setting extends AppModel {
 				$data['Setting'][$i]['value'] = $newValue;
 				$i++;
 			} // end setting loop
+			$data = $data['Setting']; // because we are using saveAll
+		}
+		
+		#@todo break these out into individual setting function in a foreach loop that will handle many and single records to save
+		
+		if (!empty($data['Setting']['name']) && !empty($data['Setting']['type'])) {
+			# see if the setting already exists
+			$setting = $this->find('first', array(
+				'conditions' => array(
+					'Setting.name' => $data['Setting']['name'],
+					'Setting.type' => $data['Setting']['type'],
+					),
+				));
+			if(!empty($setting)) {
+				# if it does, then set the id, so that we over write instead of creating a new setting
+				$data['Setting']['id'] = $setting['Setting']['id'];
+			}
+	
+			if (!empty($append) && !empty($setting)) {
+				$data['Setting']['value'] = $setting['Setting']['value'].PHP_EOL.$data['Setting']['value'];
+			}
 		}
 
 		# some values need to be encrypted.  We do that here (@todo put this in its own two functions.  One for "encode" function, and one for which settings should be encoded, so that we can specify all settings which need encryption, and reuse this instead of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well.
-		if ($data['Setting']['name'] == 'SMTP' && !parse_ini_string($data['Setting']['name'])) :
+		if (!empty($data['Setting']['name']) && $data['Setting']['name'] == 'SMTP' && !parse_ini_string($data['Setting']['name'])) :
 			$data['Setting']['value'] = 'smtp = "'.base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'))).'"';
 			#$data['Setting']['value'] = 'smtp = "'.base64_encode(gzcompress($data['Setting']['value'])).'"';
 			#$data['Setting']['value'] = base64_decode($data['Setting']['value']);
