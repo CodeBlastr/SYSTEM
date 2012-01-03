@@ -43,7 +43,7 @@
           <li><?php echo $this->Html->link('<span>Blogs</span>', array('plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'index'), array('escape' => false, 'title' => 'Create new content quickly, with your own blog.')); ?></li>
           <li><?php echo $this->Html->link('<span>Faqs</span>', array('plugin' => 'faqs', 'controller' => 'faqs', 'action' => 'index'), array('escape' => false, 'title' => 'Support your users by providing answers to frequently asked questions.')); ?></li>
           <li><?php echo $this->Html->link('<span>Maps</span>', array('plugin' => 'maps', 'controller' => 'maps', 'action' => 'index'), array('escape' => false, 'title' => 'Plot locations on a map and show your users geographic locations they should be interested in.')); ?></li>
-          <li><?php echo $this->Html->link('<span>Galleries</span>', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'index'), array('escape' => false, 'title' => 'Manage groups of images in viewable galleries.')); ?></li>
+          <li><?php echo $this->Html->link('<span>Galleries</span>', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Manage groups of images in viewable galleries.')); ?></li>
           <li><?php echo $this->Html->link('<span>Wikis</span>', array('plugin' => 'wikis', 'controller' => 'wikis', 'action' => 'index'), array('escape' => false, 'title' => 'Create content, and let your users add to and edit that content.')); ?></li>
         </ul>
       </li>
