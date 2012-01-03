@@ -102,7 +102,6 @@ class Gallery extends GalleriesAppModel {
 		// It keeps the database clean.
 		$data['Gallery']['name'] = !empty($data['Gallery']['name']) ? $data['Gallery']['name'] : $data['Gallery']['model']; 
 		# set any Gallery model fields not filled in data with app or system defaults.
-		$data = $this->_galleryDefaults($data);
 		$data = $this->GalleryImage->galleryImageDefaults($data);
 		# create the gallery as the first step
 		if ($this->save($data)) {
@@ -119,6 +118,7 @@ class Gallery extends GalleriesAppModel {
 					if ($this->makeThumb($newData)) {
 						return true;
 					} else {
+
 						# roll back everything the resave failed.
 						$this->GalleryImage->delete($galleryImageId);
 						$this->delete($galleryId);
@@ -135,18 +135,6 @@ class Gallery extends GalleriesAppModel {
 		} else {
 			throw new Exception(__d('galleries', 'ERROR : Gallery save update failed.', true));
 		}		
-	}
-	
-	function _galleryDefaults($data = null) {
-		if (!empty($data['Gallery']['type'])) : 
-			return $data;
-		elseif (defined('__GALLERY_DEFAULT_TYPE')) :
-			$data['Gallery']['type'] = __GALLERY_DEFAULT_TYPE;
-		else :
-			$data['Gallery']['type'] = $this->galleryType;
-		endif;
-		
-		return $data;
 	}
 	
 	function makeThumb($data) {

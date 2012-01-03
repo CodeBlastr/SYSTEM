@@ -18,7 +18,6 @@
 		<td><?php echo $webpageCss['WebpageCss']['type']; ?>&nbsp;</td>
 		<td><?php echo $webpageCss['WebpageCss']['name']; ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $webpageCss['WebpageCss']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $webpageCss['WebpageCss']['id'])); ?>
 			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $webpageCss['WebpageCss']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $webpageCss['WebpageCss']['id'])); ?>
 		</td>

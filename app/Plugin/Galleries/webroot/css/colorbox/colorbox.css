@@ -134,9 +134,13 @@
 	display: block;
 	position: absolute;
 	left: 0;
-	top: 100%;
+	top: 90%;
 }
 .gallerySlideActions {
 	display: none;
 	background: #FFF;
+	margin: 0;
+	padding: 0.3em;
+	list-style-type: none;
+	border: 1px solid #EAEAEA;
 }

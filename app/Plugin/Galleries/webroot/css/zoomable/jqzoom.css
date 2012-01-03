@@ -68,6 +68,8 @@ div.jqZoomTitle {
 .thumbs {
 	float: left;
 	clear: both;
+	margin: 0;
+	padding: 0;
 }
 
 .zoomableGallery {
@@ -87,6 +89,8 @@ div.jqZoomTitle {
 .thumb, .thumb ul {
 	float: left;
 	list-style-type: none;
+	margin: 0;
+	padding: 0;
 }
 .thumb, .thumb ul li {
 	margin: 0 0.5em 0.5em 0;
