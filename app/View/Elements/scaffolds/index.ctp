@@ -158,6 +158,7 @@ foreach ($data as $dat) {
     <?php endif; endforeach; ?>
   </ul>
 </div> */ 
+
 if (!empty($pageActions)) {
 	foreach ($pageActions as $pageAction) { 
 		$pageActionLinks[] = $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']);
@@ -179,6 +180,7 @@ else :
 	} ?>
 </div>
 <?php
+endif;
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
@@ -186,5 +188,4 @@ $this->set('context_menu', array('menus' => array(
 		'items' => $pageActionLinks,
 		),
 	))); 
-endif;
 $this->set('indexOnThisPage', true);  // used when there is more than one index on the page calling this element. This variable keeps it the actions from the second index element from over writing the first index element actions. ?>
