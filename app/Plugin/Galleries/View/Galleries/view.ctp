@@ -10,11 +10,7 @@
 		<?php echo $gallery['Gallery']['description']; ?>
     </div>
 	
-	<div id="tabscontent">
-		<div id="tabContent1" class="tabContent" style="display:yes;">
-			<?php echo $this->element($gallery['Gallery']['type'], array('id' => $gallery['Gallery']['id'])); ?>
-		</div> 
-	</div>
+	<?php echo $this->Element($gallery['GallerySettings']['galleryType'], array('gallery' => $gallery), array('plugin' => 'galleries')); ?>
     
     <!--p class="timing"><strong><?php echo __($gallery['Gallery']['name']);?></strong><?php echo __(' was '); ?><strong><?php echo __('Created: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['created']); ?><?php echo __(', '); ?><strong><?php echo __('Last Modified: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['modified']); ?></p-->
 
