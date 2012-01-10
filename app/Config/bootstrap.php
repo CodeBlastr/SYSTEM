@@ -78,7 +78,6 @@ App::build(array(
  * Inflector::rules('plural', array('rules' => array(), 'irregular' => array(), 'uninflected' => array()));
  *
  */
-	
 	function __setConstants($path = null, $return = false) {
 		$path = (!empty($path) ? $path : CONFIGS);
 		if (file_exists($path .'defaults.ini')) {
@@ -185,10 +184,8 @@ App::build(array(
 	}
 	
 	
-	
-	
 /**
- * To add to the Set core utility with cake for array parsing functions.
+ * To add to the core cake utility Inflector
  */
 class ZuhaInflector { 
 	

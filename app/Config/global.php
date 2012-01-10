@@ -1,6 +1,8 @@
 <?php	
+/**
+ * Core functions for zuha 
+ */
 class Zuha {
-	
 	
 /**
  * Convenience function for finding enumerations
