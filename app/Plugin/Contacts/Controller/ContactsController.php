@@ -130,8 +130,8 @@ class ContactsController extends ContactsAppController {
 				'Employer',
 				),
 			));
-		$contactDetailTypes = enum('CONTACTDETAIL');
-		$contactAddressTypes = enum('CONTACTADDRESS');
+		$contactDetailTypes = Zuha::enum('CONTACTDETAIL');
+		$contactAddressTypes = Zuha::enum('CONTACTADDRESS');
 		$this->set(compact('contact', 'contactDetailTypes', 'contactAddressTypes', 'contactActivityTypes'));
 		
 		# get paginated related contacts
@@ -181,12 +181,12 @@ class ContactsController extends ContactsAppController {
 		$employers = $this->Contact->Employer->findCompanies('list');
 		$people = $this->Contact->Employer->findPeople('list');
 		$this->request->data['Employer']['Employer'] = !empty($contactId) ? $contactId : null;
-		$contacts = enum('CONTACTTYPE');
-		$contactTypes = enum('CONTACTTYPE');
-		$contactSources = enum('CONTACTSOURCE');
-		$contactIndustries = enum('CONTACTINDUSTRY');
-		$contactRatings = enum('CONTACTRATING');
-		$contactDetailTypes = enum('CONTACTDETAIL');
+		$contacts = Zuha::enum('CONTACTTYPE');
+		$contactTypes = Zuha::enum('CONTACTTYPE');
+		$contactSources = Zuha::enum('CONTACTSOURCE');
+		$contactIndustries = Zuha::enum('CONTACTINDUSTRY');
+		$contactRatings = Zuha::enum('CONTACTRATING');
+		$contactDetailTypes = Zuha::enum('CONTACTDETAIL');
 			
 		$this->set(compact('employers', 'people', 'contactDetailTypes', 'contactTypes', 'contactSources', 'contactIndustries', 'contactRatings'));
 		$this->set('page_title_for_layout', 'Add a '.$contactType);

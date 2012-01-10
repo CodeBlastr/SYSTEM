@@ -1,7 +1,7 @@
 <?php 
 # setup defaults
 $modelName = !empty($modelName) ? $modelName : Inflector::classify($this->request->params['controller']); // ContactPerson
-$pluginName = !empty($pluginName) ? $pluginName : pluginize($modelName); // contacts
+$pluginName = !empty($pluginName) ? $pluginName : ZuhaInflector::pluginize($modelName); // contacts
 $controller = !empty($controller) ? $controller : Inflector::tableize($modelName); // contact_people, projects
 $indexClass = !empty($indexClass) ? $indexClass : null; // collapsed value will reduce it to headlines only by default
 if (!empty($data)) : 

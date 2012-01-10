@@ -465,7 +465,7 @@ class Setting extends AppModel {
  */
 	public function getNames($typeName = null) {
 		if (!empty($typeName)) {
-			#$preFix = enum($typeName);
+			#$preFix = Zuha::enum($typeName);
 			return $this->names[$typeName];
 		}
 

@@ -57,7 +57,7 @@
 			preg_match_all ("/(\{var:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
 			if (!empty($matches[2][0])) {
 				mb_parse_str($matches[2][0], $match);
-				$outputVar = myIntersect($___dataForView, $match);
+				$outputVar = ZuhaSet::array_intersect_r($___dataForView, $match);
 				$i = 0;
 				foreach ($matches[0] as $varMatch) {
 					$varMatch = trim($varMatch);
