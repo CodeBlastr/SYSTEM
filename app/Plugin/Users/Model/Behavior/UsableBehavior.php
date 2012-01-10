@@ -9,13 +9,13 @@ class UsableBehavior extends ModelBehavior {
 	public $restrictRedirect = false;
 
 
-	function setup(&$Model, $settings = array()) {
+	public function setup(&$Model, $settings = array()) {
 		$this->defaultRole = !empty($settings['defaultRole']) ? $settings['defaultRole'] : null;
 		$this->superAdminRoleId = defined('__USERS_SUPER_ADMIN_ROLE_ID') ? __USERS_SUPER_ADMIN_ROLE_ID : $this->superAdminRoleId;
 	}
 
 
-	function beforeSave(&$Model) {
+	public function beforeSave(&$Model) {
 		#remove habtm user data and give it to the afterSave() function
 		if (!empty($Model->data['User']['User'])) :
 			$this->userData = $Model->data;
@@ -35,7 +35,7 @@ class UsableBehavior extends ModelBehavior {
  * @param {array}		An array specifying the conditions for the query to be triggered.
  * @todo				I'm semi-sure that the big query this makes could be optimized better.  An OR and a NOT IN in one query isn't exactly high performance.   But after 9 hours coming up with that we'll leave optimization for another day. 
  */
-	function beforeFind(&$Model, $queryData) {
+	public function beforeFind(&$Model, $queryData) {
 		$authUser = CakeSession::read('Auth.User');
 		$userRole = $authUser['user_role_id'];
 		$userId = $authUser['id'];
@@ -154,7 +154,7 @@ class UsableBehavior extends ModelBehavior {
 /**
  * Callback used to save related users, into the used table, with the proper relationship.
  */
-	function afterSave(&$Model, $created) {
+	public function afterSave(&$Model, $created) {
 		# get current users using, so that we can merge and keep duplicates out later
 		$currentUsers = $this->findUsedUsers($Model, $foreignKey = $Model->data[$Model->alias]['id'], $type = 'all');
 		
@@ -222,7 +222,7 @@ class UsableBehavior extends ModelBehavior {
  * finds used objects based on the userId specified and model asking for this function.
  * uses standard find() parameters after userId
  */
-	function findUsedObjects(&$Model, $userId = null, $type = 'list', $params = array()) {
+	public function findUsedObjects(&$Model, $userId = null, $type = 'list', $params = array()) {
 		$joins = array('joins' => array(array(
 			'table' => 'used',
 			'alias' => 'Used',
@@ -250,7 +250,7 @@ class UsableBehavior extends ModelBehavior {
  * finds users based on the foreign_key specified and model asking for this function.
  * uses standard find() parameters after foreignKey
  */
-	function findUsedUsers(&$Model, $foreignKey = null, $type = 'list', $params = null) {
+	public function findUsedUsers(&$Model, $foreignKey = null, $type = 'list', $params = null) {
 		$joins = array('joins' => array(array(
 			'table' => 'used',
 			'alias' => 'Used',
@@ -284,7 +284,7 @@ class UsableBehavior extends ModelBehavior {
 /** 
  * Add a used user to an object
  */
-	function addUsedUser(&$Model, $data) {
+	public function addUsedUser(&$Model, $data) {
 		# do a check to see if the user is already a part of this object (we don't want duplicates)
 		$objects = $this->findUsedObjects($Model, $data['Used']['user_id'], 'all', array('conditions' => array('Used.foreign_key' => $data['Used']['foreign_key'])));
 		$objectIds = Set::extract("/{$Model->alias}/id", $objects);
@@ -303,7 +303,7 @@ class UsableBehavior extends ModelBehavior {
 /** 
  * Remove used users from the object
  */
-	function removeUsedUser(&$Model, $userId = null, $foreignKey = null) {
+	public function removeUsedUser(&$Model, $userId = null, $foreignKey = null) {
 		if ($Model->Used->deleteAll(array('Used.user_id' => $userId, 'Used.foreign_key' => $foreignKey))) : 
 			return true;
 		else : 
@@ -315,7 +315,7 @@ class UsableBehavior extends ModelBehavior {
 /**
  * Find child contacts of a parent contact and add them to the data user list
  */
-	function getChildContacts(&$Model) {
+	public function getChildContacts(&$Model) {
 		if (!empty($Model->data[$Model->alias]['contact_id']) && $Model->data[$Model->alias]['contact_all_access']) : 
 			# add all of the companies people to the used table
 			# note, if the model has contact_id, then it should belongTo Contact

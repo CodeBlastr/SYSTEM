@@ -195,6 +195,7 @@
 			'Settings' => '',
 			'Member' => 'Members',
 			'Media' => 'Media',
+			'Message' => 'Messages',
 			'Webpage' => 'Webpages',
 			);
 		if ($allowed[$name] !== null) {
