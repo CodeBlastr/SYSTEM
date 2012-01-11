@@ -19,25 +19,23 @@
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  * @todo		  Its time to move the different template tags to a new place.  They are getting too heavy for this default file, and aren't reusable easily.  (Things like {helper: content_for_layout} etc.)
- * @todo		Make it so that if no default template exists that you still do a content_for_layout
  */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php        
 if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html>'; } ?>
-	<head>
-    
-	<?php echo $this->Html->charset(); ?>
-	<title><?php echo $title_for_layout; ?></title>
-    <!--[if lt IE 9]>
+<head>
+<?php echo $this->Html->charset(); ?>
+<title><?php echo $title_for_layout; ?></title>
+<!--[if lt IE 9]>
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
-	<meta name="robots" content="index, follow" /> 
-    <meta http-equiv="X-UA-Compatible" content="IE=8" />
-    <meta name="viewport" content="width=device-width"/>
-	<meta name="apple-mobile-web-app-capable" content="yes"/>
-	<?php
+<meta name="robots" content="index, follow" />
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<meta name="viewport" content="width=device-width"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<?php
 		echo $this->Html->meta('icon');
 		
 		# load in css files from settings
@@ -91,70 +89,10 @@ if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html
 			echo $this->Element('analytics', array(), array('plugin' => 'reports'));
 		endif;
 	?>
-    
-  <script type="text/javascript" src="/js/ckeditor/plugins/video_js/video.js" ></script>
-  <script type="text/javascript">
-    // Must come after the video.js library
-
-    // Add VideoJS to all video tags on the page when the DOM is ready
-    VideoJS.setupAllWhenReady();
-
-    /* ============= OR ============ */
-
-    // Setup and store a reference to the player(s).
-    // Must happen after the DOM is loaded
-    // You can use any library's DOM Ready method instead of VideoJS.DOMReady
-
-    /*
-    VideoJS.DOMReady(function(){
-      
-      // Using the video's ID or element
-      var myPlayer = VideoJS.setup("example_video_1");
-      
-      // OR using an array of video elements/IDs
-      // Note: It returns an array of players
-      var myManyPlayers = VideoJS.setup(["example_video_1", "example_video_2", video3Element]);
-
-      // OR all videos on the page
-      var myManyPlayers = VideoJS.setup("All");
-
-      // After you have references to your players you can...(example)
-      myPlayer.play(); // Starts playing the video for this player.
-    });
-    */
-
-    /* ========= SETTING OPTIONS ========= */
-
-    // Set options when setting up the videos. The defaults are shown here.
-
-    /*
-    VideoJS.setupAllWhenReady({
-      controlsBelow: false, // Display control bar below video instead of in front of
-      controlsHiding: true, // Hide controls when mouse is not over the video
-      defaultVolume: 0.85, // Will be overridden by user's last volume if available
-      flashVersion: 9, // Required flash version for fallback
-      linksHiding: true // Hide download links when video is supported
-    });
-    */
-
-    // Or as the second option of VideoJS.setup
-    
-    /*
-    VideoJS.DOMReady(function(){
-      var myPlayer = VideoJS.setup("example_video_1", {
-        // Same options
-      });
-    });
-    */
-
-  </script>
-
-  <!-- Include the VideoJS Stylesheet -->
-  <link rel="stylesheet" href="/js/ckeditor/plugins/video_js/video-js.css" type="text/css" media="screen" title="Video JS">
 </head>
 <body class="<?php echo $this->request->params['controller']; echo ($this->Session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?> <?php echo $this->request->params['action']; ?>" id="<?php echo !empty($this->request->params['pass'][0]) ? strtolower($this->request->params['controller'].'_'.$this->request->params['action'].'_'.$this->request->params['pass'][0]) : strtolower($this->request->params['controller'].'_'.$this->request->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
 <div id="corewrap">
-<?php 
+  <?php 
 echo $this->Element('modal_editor', array(), array('plugin' => 'webpages'));
 
 $flash_for_layout = $this->Session->flash();
@@ -248,11 +186,9 @@ if (!empty($defaultTemplate)) {
 } 
 
 echo(base64_decode('PGEgc3R5bGU9ImRpc3BsYXk6IG5vbmU7IiB0aXRsZT0iV2ViIERlc2lnbiAmIFdlYiBEZXZlbG9wbWVudCBDb21wYW55IiBocmVmPSJodHRwOi8vd3d3LnJhem9yaXQuY29tLyI+V2ViIERlc2lnbiAmIFdlYiBEZXZlbG9wbWVudCBDb21wYW55PC9hPg0KPGEgc3R5bGU9ImRpc3BsYXk6IG5vbmU7IiB0aXRsZT0iSW52b2ljaW5nLCBQcm9qZWN0IE1hbmFnZW1lbnQsIENSTSwgQ29udGVudCBNYW5hZ2VtZW50IFN5c3RlbSIgaHJlZj0iaHR0cDovL3p1aGEuY29tIj5JbnZvaWNpbmcsIFByb2plY3QgTWFuYWdlbWVudCwgQ1JNLCBDb250ZW50IE1hbmFnZW1lbnQgU3lzdGVtPC9hPg==')); ?>
-<?php #echo round((getMicroTime() - $_SERVER['REQUEST_TIME']) * 1000) ?>
-</div> 
-<?php echo $this->element("ajax-login"); ?>
-<?php echo $this->element('sql_dump');  ?>  
-<?php echo !empty($dbSyncError) ? $dbSyncError : null; ?>
+  <?php #echo round((getMicroTime() - $_SERVER['REQUEST_TIME']) * 1000) ?>
+</div>
+<?php echo $this->element("ajax-login"); ?> <?php echo $this->element('sql_dump');  ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?>
 </body>
 <?php  if(!empty($this->Facebook)) {echo $this->Facebook->init(); } ?>
 </html>

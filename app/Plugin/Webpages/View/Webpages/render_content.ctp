@@ -22,5 +22,3 @@
 
  # display the database driven default template
  echo $content_str;
-
-?>
