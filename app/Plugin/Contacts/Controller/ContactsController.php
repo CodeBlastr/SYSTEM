@@ -3,7 +3,18 @@ class ContactsController extends ContactsAppController {
 
 	public $name = 'Contacts';
 	public $uses = 'Contacts.Contact';
-	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User', 'actionNames' => array('task')));
+	
+	
+	public function __construct($request = null, $response = null) {
+		parent::__construct($request, $response);		
+		if (in_array('Comments', CakePlugin::loaded())) {
+			$this->components['Comments.Comments'] = array(
+				'userModelClass' => 'Users.User', 
+				'actionNames' => array('task'),
+				);
+		}
+	}
+	
 	
 	function beforeFilter() {
 		parent::beforeFilter();

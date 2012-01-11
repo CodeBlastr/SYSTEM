@@ -730,10 +730,13 @@ class AppController extends Controller {
 				#debug($this->Acl->Aro->node($this->_userAro($user['id'])));
 				#debug($this->Acl->check($aro, $aco));
 				#debug($user);
+				#debug($this->Session->read());
 				#debug($aro);
 				#debug($aco);
 				#break;
-				$this->Session->setFlash(__('You are logged in, but all access checks have failed.', true));
+				$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
+				$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
+				$this->Session->setFlash(__('%s does not have access to %s.', $requestor, $requested));
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'restricted'));
 			}
 		}

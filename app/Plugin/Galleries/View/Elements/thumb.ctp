@@ -25,7 +25,7 @@ if (!empty($model) && !empty($foreignKey)) {
 	#echo __('Gallery model and foreignKey were not provided (Galleries/View/Elements/thumb.ctp)');
 }
 # set up the config vars
-$thumbLink = !empty($thumbLink) ? $thumbLink : array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'Gallery', $galleryThumb['Gallery']['id']);
+$thumbLink = !empty($thumbLink) ? $thumbLink : !empty($galleryThumb) ? array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'Gallery', $galleryThumb['Gallery']['id']) : null;
 $thumbTitle = !empty($thumbTitle) ? ' title ="'.$thumbTitle.'"' : ' title ="'.$galleryThumb['GalleryThumb']['filename'].'"';
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
 # get width from settings table
@@ -66,24 +66,20 @@ if (!empty($galleryThumb)) {
 } else {
 	if($thumbDiv) {  echo "<div {$thumbClass} {$thumbId}>"; }
 		$imagePath = '/img/noImage.jpg';
-        /*$image = $this->Html->image($imagePath,
-			array(
-				'width' => $thumbWidth, 
-				'height' => $thumbHeight,
-				'alt' => 'no image',
-				));	*/
-		echo $this->Html->image($imagePath,
+        $image = $this->Html->image($imagePath,
 			array(
 				'width' => $thumbWidth, 
 				'height' => $thumbHeight,
 				'alt' => 'no image',
 				));	
-		/*echo $this->Html->link($image . $thumbLinkAppend,
-			$thumbLink, 
-			array(
-				'escape' => false,
-				'class' => $thumbLinkClass,
-				'title' => $thumbTitle,
-				));*/
+		echo !empty($thumbLink) ? 
+			$this->Html->link($image . $thumbLinkAppend,
+				$thumbLink, 
+				array(
+					'escape' => false,
+					'class' => $thumbLinkClass,
+					'title' => $thumbTitle,
+					)) :
+			$image;
 	if($thumbDiv) { echo '</div>'; } 
 }
