@@ -92,7 +92,10 @@ foreach ($data as $dat) {
             <div class="truncate"> <span name="<?php echo $displayDescription; ?>" id="<?php echo $id; ?>"><?php echo strip_tags($description); ?></span> </div>
           </div>
         </div>
-        <?php } ?>
+        <?php } 
+	  	if ($actions === false) {
+		  # show nothing 
+		} else { ?>
         <div class="indexCell actionCell">
           <div class="drop-holder indexDrop actions">
             <ul class="drop">
@@ -111,6 +114,8 @@ foreach ($data as $dat) {
             </ul>
           </div>
         </div>
+        <?php 
+		} // end actions false check ?>
       </div>
     </div>
     <?php
