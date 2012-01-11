@@ -1,11 +1,10 @@
 <?php 
 if($this->Session->read('Auth.User.user_role_id') == 1) { 
 	echo $this->Html->css('/webpages/css/editor');
-	echo $this->Html->script('/js/ckeditor/ckeditor');
-?>
-<script type="text/javascript" >
-	//admin dock panel
+	echo $this->Html->script('/js/ckeditor/ckeditor'); ?>
 	
+	<script type="text/javascript" >
+
 	$(document).ready(function() {
 		var slideDockHeight = $('#slidedock').height();
 		$('body').css('position', 'relative');
@@ -14,12 +13,12 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 	
 
 	var myStyles = new Array('tmp');
-	//TODO Fix session lose
+	
 	function goEdit(id) {
 		if (!destroyCKE()) {
 			return false;
 		}
-		if ($('#' + id).length < 1) return 'Оп нежданчик!';
+		if ($('#' + id).length < 1) return 'О russian text!';
 		//edit_width    = $('#' + id).width();
         //edit_height   = $('#' + id).height() + 100;
 		edit_width 		= $("#modalEditorWrap").width();
@@ -35,14 +34,23 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 			}
 		});
         $(document.body).append('<div id="background_layer" onclick="offEditMode(true);"></div>');
-		var editor = CKEDITOR.replace('modalEditor', {extraPlugins: 'media', filebrowserBrowseUrl: '/js/kcfinder/browse.php?type=files&kcfinderuploadDir=<?php echo SITE_DIR; ?>', filebrowserImageBrowseUrl: '/js/kcfinder/browse.php?type=images&kcfinderuploadDir=<?php echo SITE_DIR; ?>', filebrowserFlashBrowseUrl: '/js/kcfinder/browse.php?type=flash&kcfinderuploadDir=<?php echo SITE_DIR; ?>', filebrowserUploadUrl: '/js/kcfinder/upload.php?type=files&kcfinderuploadDir=<?php echo SITE_DIR; ?>', filebrowserImageUploadUrl: '/js/kcfinder/upload.php?type=images&kcfinderuploadDir=<?php echo SITE_DIR; ?>', filebrowserFlashUploadUrl: '/js/kcfinder/upload.php?type=flash&kcfinderuploadDir=<?php echo SITE_DIR; ?>', width: edit_width, height: edit_height, /*toolbar: [['Save', 'Source', '-', 'Bold','Italic','Underline','FontSize','TextColor','BGColor','-','NumberedList','BulletedList','Blockquote','JustifyLeft','JustifyCenter','JustifyRight','-','Link','Unlink','-', 'Image', 'Media']],*/ toolbarCanCollapse: true, startupFocus: true});
-        // Move editor into body
-        /*var editor_left = $(editor.container.$).position().left;
-        var editor_top  =  $(editor.container.$).position().top;
-        $(editor.container.$).css('position', 'absolute');
-        var editor_element = $(editor.container.$).detach();
-        $(document.body).append(editor_element);
-        editor_element.css({top: editor_top, left: editor_left});*/
+		var editor = CKEDITOR.replace('modalEditor', {
+			extraPlugins: 'media', 
+			filebrowserBrowseUrl: '/js/kcfinder/browse.php?type=files&kcfinderuploadDir=<?php echo SITE_DIR; ?>', 
+			filebrowserImageBrowseUrl: '/js/kcfinder/browse.php?type=images&kcfinderuploadDir=<?php echo SITE_DIR; ?>',
+			filebrowserFlashBrowseUrl: '/js/kcfinder/browse.php?type=flash&kcfinderuploadDir=<?php echo SITE_DIR; ?>',
+			filebrowserUploadUrl: '/js/kcfinder/upload.php?type=files&kcfinderuploadDir=<?php echo SITE_DIR; ?>',
+			filebrowserImageUploadUrl: '/js/kcfinder/upload.php?type=images&kcfinderuploadDir=<?php echo SITE_DIR; ?>',
+			filebrowserFlashUploadUrl: '/js/kcfinder/upload.php?type=flash&kcfinderuploadDir=<?php echo SITE_DIR; ?>', 
+			width: edit_width, 
+			height: edit_height, 
+			/*toolbar: [[
+				'Save', 'Source', '-', 'Bold', 'Italic', 'Underline', 'FontSize', 'TextColor', 'BGColor',
+				'-', 'NumberedList', 'BulletedList', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight',
+				'-', 'Link', 'Unlink', '-', 'Image', 'Media']],*/ 
+			toolbarCanCollapse: true, 
+			startupFocus: true});
+		
         editor.setData(page_data);
         //dirty hack for fix ckeditor focus
         if ($.inArray(id, myStyles)) {
@@ -84,28 +92,12 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 					return false;
 				}
 			}
-         	/*	renders the page (but isn't needed if you reload
-			var page_id   = $('#' + i).attr('pageid');
-     		$.ajax({
-    			async: false, 
-    			type: 'post',  
-    			url: '/webpages/webpages/getRenderPage/' + page_id,
-    			success: function (data, textStatus, XMLHttpRequest) {
-    				page_data = $.parseJSON(data).page.Webpage.content;
-    			}
-    		});*/
-            //CKEDITOR.instances[i].destroy();
-            //$('#' + i).html(page_data);
         }
 		return true;
 	}
 	
 	
 	function editAreasOn () {
-		//$("div[id^='edit_webpage_include']").css({
-		//		width : $(this).find("div:first-child").width + "px",
-		//});
-		
 		$('#webpage_content').append('<div class="hover_div"></div>');
 		$("div[id^='edit_webpage_include']").append('<div class="hover_div"></div>');
 		
@@ -114,11 +106,11 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 		$(".hover_div").parent().css({ position : "relative", });
        
 	    $(".hover_div").css({
-				position : "absolute",
-				top : "0px",
-				left: "0px",
-				width:  "100%",
-				height: "100%"
+			position : "absolute",
+			top : "0px",
+			left: "0px",
+			width:  "100%",
+			height: "100%"
         });
 	}
 	
@@ -134,7 +126,6 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 			goEdit($(this).parent().attr("id"));
 			editAreasOff();
 		});
-		
 		
         $('#edit_button').unbind('click');
 		$('#edit_button').click( function() {
@@ -173,32 +164,26 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
       	  	$('#background_layer').remove();
 			return true;
 		}
-		
 	}
 
 	function saveCKEData() {
         for (i in CKEDITOR.instances) {
             var editor = CKEDITOR.instances[i];
-			//var pageid = $('#' + i).attr('pageid');
             var pageid = $("#cke_modalEditor").attr('pageid');
-            /* Commented out on 6/9/2011  Delete if its a month later and its still commented out.
-			if (isNaN($('#webpage_content').attr('pageid'))) {
-                    alert('Error! Page Id Not Found');
-                    return false;
-            }*/
             $.ajax({
-                    async: true,
-                    type: 'post',
-                    data: {pageData: editor.getData()},
-                    url: '/webpages/webpages/savePage/' + pageid,
-                    success: function (data, textStatus, XMLHttpRequest) {
-                        alert($.parseJSON(data).msg);
-                    }
-                });
-                editor.resetDirty();
+	            async: true,
+                type: 'post',
+                data: {pageData: editor.getData()},
+                url: '/webpages/webpages/savePage/' + pageid,
+                success: function (data, textStatus, XMLHttpRequest) {
+    	            alert($.parseJSON(data).msg);
+				}
+			});
+        	editor.resetDirty();
         }
 		return true;
 	}
+
 
     $(document).ready( function () {
 		$('#edit_button').click( function() {
@@ -217,14 +202,12 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 		});
 	});
 
-	CKEDITOR.on('instanceReady', function (evt) {
-	    //editor
-	    var editor = evt.editor;
 
-	    //webkit not redraw iframe correctly when editor's width is < 310px (300px iframe + 10px paddings)
+	CKEDITOR.on('instanceReady', function (evt) {
+	    var editor = evt.editor;
+		
 	    if (CKEDITOR.env.webkit && parseInt(editor.config.width) < 310) {
 	        var iframe = document.getElementById('cke_contents_' + editor.name).firstChild;
-	       // iframe.style.display = 'none';
 	        iframe.style.display = 'block';
 	    }
 	});
@@ -239,12 +222,13 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 	    this.css("left", left + "px");
     	return this;
 	}
-</script>
+	</script>
 
-<div id="modalEditorWrap" class="draggable">
-  <div class="closeEditor">x</div>
-  <div class="handle">..<br />..<br />..<br />..<br />..<br />..<br />..</div>
-  <div id="modalEditor"></div>
-</div>
-<?php echo $this->Element('navigation', array(), array('plugin' => 'webpages')); ?>
-<?php } ?>
+	<div id="modalEditorWrap" class="draggable">
+		<div class="closeEditor">x</div>
+		<div class="handle">..<br />..<br />..<br />..<br />..<br />..<br />..</div>
+		<div id="modalEditor"></div>
+	</div>
+	<?php 
+	echo $this->Element('navigation', array(), array('plugin' => 'webpages')); 
+} ?>
