@@ -237,3 +237,6 @@ input[type=radio], input[type=checkbox] {
 	clear:none;
 }
 	
+.richtextarea {
+	clear: both;
+}

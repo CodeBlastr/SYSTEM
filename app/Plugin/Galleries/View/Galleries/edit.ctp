@@ -26,11 +26,11 @@
     
 <?php echo $this->Form->create('GalleryImage', array('enctype'=>'multipart/form-data'));?>
 	<fieldset>
- 		<legend class="toggleClick"><?php echo __('Add Images'); ?></legend>
+ 		<legend><?php echo __('Add Images'); ?></legend>
 		<?php
 		echo $this->Form->input('GalleryImage.gallery_id', array('type' => 'hidden', 'value' => $this->request->data['Gallery']['id']));
-		echo $this->Form->input('Gallery.model', array('type' => 'hidden'));
-		echo $this->Form->input('Gallery.foreign_key', array('type' => 'hidden'));
+		echo $this->Form->input('Gallery.model', array('type' => 'hidden', 'value' => $model));
+		echo $this->Form->input('Gallery.foreign_key', array('type' => 'hidden', 'value' => $foreignKey));
 		echo $this->Form->input('GalleryImage.filename', array('type' => 'file'));
 		echo $this->Form->input('GalleryImage.caption', array('type' => 'text'));
 		echo $this->Form->input('GalleryImage.description', array('type' => 'richtext'));
