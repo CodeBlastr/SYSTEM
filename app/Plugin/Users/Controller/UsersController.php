@@ -26,6 +26,7 @@ class UsersController extends UsersAppController {
 	public $uses = 'Users.User';
 	public $uid;
 	public $components = array('Email');
+	public $paginate = array();
 	public $allowedActions = array(
 		'login',
 		'desktop_login',
@@ -37,6 +38,7 @@ class UsersController extends UsersAppController {
 		'checkLogin',
 		'restricted',
 		);
+	
 	
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
@@ -178,6 +180,7 @@ class UsersController extends UsersAppController {
 		echo json_encode($data);
     }
 
+
 /**
  * Used for Zuha Desktop integration.
  *
@@ -294,11 +297,37 @@ class UsersController extends UsersAppController {
 		$this->set('user', $user);
 	}
 
+
 	function index() {
 		#$this->User->recursive = 0;
 		$this->paginate = !empty($this->userId) ? array('conditions' => array('User.id !=' => $this->userId)) : $this->paginate;
+		$this->paginate['fields'] = array(
+			'User.id',
+			'User.first_name',
+			);
 		$this->set('users', $this->paginate());
+		$this->set('displayName', 'first_name');
+		$this->set('displayDescription', ''); 
+		$this->set('indexClass', ''); 
+		$this->set('showGallery', true);
+		$this->set('galleryForeignKey', 'id');
+		$this->set('pageActions', array(
+			array(
+				'linkText' => 'Create',
+				'linkUrl' => array(
+					'action' => 'add',
+					),
+				),
+			array(
+				'linkText' => 'Archived',
+				'linkUrl' => array(
+					'action' => 'index',
+					'archived' => 1,
+					),
+				),
+			));
 	}
+
 
 	function edit($id = null) {
 		# looking for an existing user to edit
