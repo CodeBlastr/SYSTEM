@@ -370,7 +370,7 @@ class HtmlHelper extends AppHelper {
  */
 	public function link($title, $url = null, $options = array(), $confirmMessage = false) {
 		if (is_array($url) && !empty($url['plugin']) && $url['plugin'] != '/' && !in_array(Inflector::camelize($url['plugin']), CakePlugin::loaded())) { // zuha added
-			break; return null;
+			return null;
 		} else {
 			$escapeTitle = true;
 			if ($url !== null) {
