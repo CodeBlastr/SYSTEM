@@ -25,7 +25,7 @@ if (!empty($model) && !empty($foreignKey)) {
 	#echo __('Gallery model and foreignKey were not provided (Galleries/View/Elements/thumb.ctp)');
 }
 # set up the config vars
-$thumbLink = !empty($thumbLink) ? $thumbLink : !empty($galleryThumb) ? array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'Gallery', $galleryThumb['Gallery']['id']) : null;
+$thumbLink = !empty($thumbLink) ? $thumbLink : (!empty($galleryThumb) ? array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'Gallery', $galleryThumb['Gallery']['id']) : null);
 $thumbTitle = !empty($thumbTitle) ? ' title ="'.$thumbTitle.'"' : ' title ="'.$galleryThumb['GalleryThumb']['filename'].'"';
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
 # get width from settings table

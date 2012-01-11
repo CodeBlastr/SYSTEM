@@ -216,16 +216,12 @@ class UsersController extends UsersAppController {
 				# upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
-			if($this->User->save($this->request->data)) {
-				if (in_array('Orders', CakePlugin::loaded())) : 
-					$this->User->OrderPayment->save($this->request->data);
-					$this->User->OrderShipment->save($this->request->data);
-				endif;
+			try {
+				$this->User->update($this->request->data);
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
-			}
-			else {
-				$this->Session->setFlash('There was an error updating user');
+			} catch(Exception $e){
+				$this->Session->setFlash('There was an error updating user' . $e);
 			}
 		} else {
 			$this->Session->setFlash('Invalid user');
