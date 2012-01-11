@@ -3,6 +3,8 @@
 <?php #echo $this->Html->meta('description', $webpage['Webpage']['description'], array('inline' => false)); ?>
 
 <div class="gallery view">
+<?php
+if (!empty($gallery)) { ?>
 	<div class="galleryname">
 		<h2><span id="gallery-name"><?php echo __($gallery['Gallery']['name']); ?></span></h2>
 	</div>
@@ -10,10 +12,13 @@
 		<?php echo $gallery['Gallery']['description']; ?>
     </div>
 	
-	<?php echo $this->Element($gallery['GallerySettings']['galleryType'], array('gallery' => $gallery), array('plugin' => 'galleries')); ?>
-    
-    <!--p class="timing"><strong><?php echo __($gallery['Gallery']['name']);?></strong><?php echo __(' was '); ?><strong><?php echo __('Created: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['created']); ?><?php echo __(', '); ?><strong><?php echo __('Last Modified: '); ?></strong><?php echo $this->Time->relativeTime($gallery['Gallery']['modified']); ?></p-->
-
+	<?php echo $this->Element($gallery['GallerySettings']['galleryType'], array('gallery' => $gallery), array('plugin' => 'galleries'));
+} else { ?>
+	<div class="noData">
+    	<p> No gallery to display. <?php echo $this->Html->link('Go back', $referer); ?> </p>
+    </div>
+<?php
+} ?>
 </div>
 <?php 
 // set the contextual menu items

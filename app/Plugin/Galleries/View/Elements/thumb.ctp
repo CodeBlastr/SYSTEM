@@ -66,18 +66,24 @@ if (!empty($galleryThumb)) {
 } else {
 	if($thumbDiv) {  echo "<div {$thumbClass} {$thumbId}>"; }
 		$imagePath = '/img/noImage.jpg';
-        $image = $this->Html->image($imagePath,
+        /*$image = $this->Html->image($imagePath,
+			array(
+				'width' => $thumbWidth, 
+				'height' => $thumbHeight,
+				'alt' => 'no image',
+				));	*/
+		echo $this->Html->image($imagePath,
 			array(
 				'width' => $thumbWidth, 
 				'height' => $thumbHeight,
 				'alt' => 'no image',
 				));	
-		echo $this->Html->link($image . $thumbLinkAppend,
+		/*echo $this->Html->link($image . $thumbLinkAppend,
 			$thumbLink, 
 			array(
 				'escape' => false,
 				'class' => $thumbLinkClass,
 				'title' => $thumbTitle,
-				));
+				));*/
 	if($thumbDiv) { echo '</div>'; } 
 }

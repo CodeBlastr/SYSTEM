@@ -143,6 +143,7 @@ class AppController extends Controller {
 		if($this->RequestHandler->isAjax()) :
             Configure::write('debug', 0);
 		endif;
+		$this->set('referer', $this->referer()); // used for back button links, and could be useful for breadcrumbs possibly
 	}
 	
 	
