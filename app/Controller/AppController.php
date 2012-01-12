@@ -23,18 +23,21 @@
 //Note : Enable CURL PHP in php.ini file to use Facebook.Connect component of facebook plugin: Faheem
 class AppController extends Controller {
 
-	var $userId = '';
-    var $uses = array('Condition');
-	var $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html');
-	var $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'SwiftMailer', 'RegisterCallbacks' /*'RegisterCallbacks', 'SwiftMailer', 'Security' Desktop Login Stops Working When This is On*/);
-	var $viewClass = 'Theme';
-	var $theme = 'Default';
-	var $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
-	// update this so that it uses the full list of actual user roles
-	var $userRoles = array('administrators', 'guests');
-	var $userRoleName = 'guests';
-	var $params = array();
-	var $templateId = '';
+	public $userId = '';
+    public $uses = array('Condition');
+	public $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html');
+	public $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'SwiftMailer', 'RegisterCallbacks' /*'Security' Desktop Login Stops Working When This is On*/);
+	public $viewClass = 'Theme';
+	public $theme = 'Default';
+	public $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
+	
+/**
+ * @todo update this so that it uses the full list of actual user roles
+ */
+	public $userRoles = array('administrators', 'guests');
+	public $userRoleName = 'guests';
+	public $params = array();
+	public $templateId = '';
 	
 	
 	public function __construct($request = null, $response = null) {
@@ -48,7 +51,7 @@ class AppController extends Controller {
 /**
  * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
  */
-	function redirect($url, $status = null, $exit = true) {
+	public function redirect($url, $status = null, $exit = true) {
 		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') :
 			return parent::redirect($this->request->data['Success']['redirect'], $status, $exit);
 		elseif (!empty($this->request->data['Error']['redirect']) && $status == 'error') :
@@ -62,7 +65,7 @@ class AppController extends Controller {
 
 
 
-	function beforeFilter() {
+	public function beforeFilter() {
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
@@ -119,7 +122,24 @@ class AppController extends Controller {
 		#$this->_siteStatus();	
 	}
 	
-	function _handleJson($beforeFilter = true) {
+
+	/**
+	 * @todo convert to a full REST application and this might not be necessary
+	 */
+    public function beforeRender() {
+		# This turns off debug so that ajax views don't get severly messed up
+		if($this->RequestHandler->isAjax()) :
+            Configure::write('debug', 0);
+		endif;
+		$this->set('referer', $this->referer()); // used for back button links, and could be useful for breadcrumbs possibly
+	}
+	
+	
+	public function afterFilter() {
+		$this->_handleJson(false);
+	}
+	
+	private function _handleJson($beforeFilter = true) {
 		if (!empty($beforeFilter)) {
 			# Support for json file types when using json extensions
 			#$this->RequestHandler->setContent('json', 'text/x-json');
@@ -133,62 +153,57 @@ class AppController extends Controller {
 			}
 		}
 	}
-	
 
-	/**
-	 * @todo convert to a full REST application and this might not be necessary
-	 */
-    function beforeRender() {
-		# This turns off debug so that ajax views don't get severly messed up
-		if($this->RequestHandler->isAjax()) :
-            Configure::write('debug', 0);
-		endif;
-		$this->set('referer', $this->referer()); // used for back button links, and could be useful for breadcrumbs possibly
-	}
-	
-	
-	function afterFilter() {
-		$this->_handleJson(false);
-	}
-
-
-	/**
-	 * List plugins
-	 */
-	function _list_plugins() {
-		$this->set('plugins', $this->listPlugins);
-	}
-
-
-
-
-	/**
-	 * Convenience admin_add
-	 * The goal is to make less code necessary in individual controllers
-	 * and have more reusable code.
-	 */
-	function __admin_add() {
-		$model = Inflector::camelize(Inflector::singularize($this->request->params['controller']));
-		if (!empty($this->request->data)) {
-			$this->$model->create();
-			if ($this->$model->save($this->request->data)) {
-				$this->Session->setFlash(__('Saved.', true));
-				$this->redirect($this->referer());
-			} else {
-				$this->Session->setFlash(__('Could not be saved', true));
-			}
+/**
+ * Returns a list of items to the list element for any model
+ * 
+ * @param {int} 	We can have multiple calls to this on a single page.  Instance makes each one unique.
+ */
+	public function itemize($instance = null) {
+		if(!empty($instance) && defined('__ELEMENT_LIST_'.$instance)) {
+			extract(unserialize(constant('__ELEMENT_LIST_'.$instance)));
+		} else if (defined('__ELEMENT_LIST')) {
+			extract(unserialize(__ELEMENT_LIST));
 		}
+		$options = array();
+		$options['controller'] =  !empty($controller) ? strtolower($controller) : null;
+		
+		$options['plugin'] =  !empty($plugin) ? strtolower($plugin) : strtolower(ZuhaInflector::pluginize($options['controller']));
+		$options['model'] = !empty($model) ? $model : Inflector::classify($options['controller']);
+		$options['sortField'] = !empty($sortField) ? strtolower($sortField) : 'id';
+		$options['sortOrder'] = !empty($sortOrder) ? strtolower($sortOrder) : 'ASC';
+		$options['resultsCount'] = !empty($resultsCount) ? strtolower($resultsCount) : 10;
+		$options['viewPlugin'] = !empty($viewPlugin) ? $viewPlugin : $plugin;
+		$options['viewController'] = !empty($viewController) ? $viewController : $controller;
+		$options['viewAction'] = !empty($viewAction) ? strtolower($viewAction) : 'view';
+		$options['displayField'] = !empty($displayField) ? strtolower($displayField) : 'name';
+		$options['displayDescription'] = !empty($displayDescription) ? strtolower($displayDescription) : 'description';
+		$options['idField'] = !empty($idField) ? strtolower($idField) : 'id';
+		$options['showGallery'] = !empty($showGallery) ? $showGallery : false;
+		$options['galleryModelName'] = !empty($galleryModelName) ? $galleryModelName : $options['model'];
+		$options['galleryForeignKey'] = !empty($galleryForeignKey) ? $galleryForeignKey : $options['idField'];
+		$options['galleryThumbSize'] = !empty($galleryThumbSize) ? $galleryThumbSize : 'small';; 
+
+		App::uses($options['model'], $plugin.'.Model');
+		$Model = new $options['model']();
+		$results = $Model->find('all', array(
+			'order' => array(
+				$options['model'].'.'.$options['sortField'] => $options['sortOrder'],
+				),
+			'limit' => $options['resultsCount'],
+			));
+		return array('results' => $results, 'options' => $options);			
 	}
 
 
-	/**
-	 * Convenience admin_delete
-	 * The goal is to make less code necessary in individual controllers
-	 * and have more reusable code.
-	 * @param int $id
-	 * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
-	 */
-	function __delete($model = null, $id = null) {
+/**
+ * Convenience admin_delete
+ * The goal is to make less code necessary in individual controllers
+ * and have more reusable code.
+ * @param int $id
+ * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
+ */
+	public function __delete($model = null, $id = null) {
 		// set default class & message for setFlash
 		$class = 'flash_bad';
 		$msg   = 'Invalid Id';
@@ -225,12 +240,12 @@ class AppController extends Controller {
 	}
 
 
-	/**
-	 * Convenience __ajax_edit
-	 * The goal is to make less code necessary in individual controllers
-	 * and have more reusable code.
-	 */
-	function __ajax_edit($id = null) {
+/**
+ * Convenience __ajax_edit
+ * The goal is to make less code necessary in individual controllers
+ * and have more reusable code.
+ */
+	public function __ajax_edit($id = null) {
         if ($this->request->data) {
 			# This will not work for multiple fields, and is meant for a form with a single value to update
 			# Create the model name from the controller requested in the url
@@ -286,11 +301,11 @@ class AppController extends Controller {
 	}
 
 
-	/**
-	 * Used to show admin layout for admin pages & userRole views if they exist
-	 * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
-	 */
-	function _siteTemplate() {
+/**
+ * Used to show admin layout for admin pages & userRole views if they exist
+ * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
+ */
+	public function _siteTemplate() {
 		$checkUrl = strpos($this->request->here, '/') === 0 ? substr($this->request->here, 1) : $this->request->here;
 		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) :
 			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
@@ -329,13 +344,13 @@ class AppController extends Controller {
 	}
 
 
-	/**
-	 * Used to find the template and makes a call to parse all page views.  Sets the defaultTemplate variable for the layout.
-	 * This function parses the settings for templates, in order to decide which template to use, based on url, and user role.
-	 *
-	 * @todo 		Move this to the webpage model.
-	 */
-	function _getTemplate() {
+/**
+ * Used to find the template and makes a call to parse all page views.  Sets the defaultTemplate variable for the layout.
+ * This function parses the settings for templates, in order to decide which template to use, based on url, and user role.
+ *
+ * @todo 		Move this to the webpage model.
+ */
+	public function _getTemplate() {
 		if (defined('__APP_TEMPLATES')) :
 			$settings = unserialize(__APP_TEMPLATES);
 			$i = 0;
@@ -415,12 +430,12 @@ class AppController extends Controller {
 	}
 
 
-	/**
-	 * check if the template selected is available to the current users role
-	 *
-	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
-	 */
-	function _userTemplate($data) {
+/**
+ * check if the template selected is available to the current users role
+ *
+ * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
+ */
+	private function _userTemplate($data) {
 		// check if the url being requested matches any template settings for user roles
 
 		# set a new template id if the session is over writing it
@@ -443,12 +458,12 @@ class AppController extends Controller {
 		endif;
 	}
 
-	/**
-	 * check if the selected template is available to the current url
-	 *
-	 * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
-	 */
-	function _urlTemplate($data) {
+/**
+ * check if the selected template is available to the current url
+ *
+ * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
+ */
+	private function _urlTemplate($data) {
 		// check if the url being requested matches any template settings for specific urls
 		if (!empty($data['urls'])) :
 			$i=0;
@@ -474,12 +489,12 @@ class AppController extends Controller {
 
 
 
-	/**
-	 * Add conditions based on user role for the template
-	 *
-	 * @todo		Make slideDock menu available to anyone with permissions to $webpages->edit().  Not just admin
-	 */
-	function _templateConditions() {
+/**
+ * Add conditions based on user role for the template
+ *
+ * @todo		Make slideDock menu available to anyone with permissions to $webpages->edit().  Not just admin
+ */
+	private function _templateConditions() {
 		# contain the menus for output into the slideDock if its the admin user
 		if ($this->userRoleId == 1 && in_array('Menus', CakePlugin::loaded())) :
 			# this allows the admin to edit menus
@@ -507,13 +522,43 @@ class AppController extends Controller {
 		endif;
 	}
 
+
+/**
+ * Loads components dynamically using both system wide, and per controller loading abilities.
+ *
+ * You can create a comma separated (no spaces) list if you only need a system wide component.  If you would like to specify components on a per controller basis, then you use ControllerName[] = Plugin.Component. (ie. Projects[] = Ratings.Ratings).  If you want both per controller, and system wide, then use the key components[] = Plugin.Component for each system wide component to load.  Note: You cannot have a comma separated list, and the named list at the same time.
+ */
+	private function _getComponents() {
+		if(defined('__APP_LOAD_APP_COMPONENTS')) {
+			$settings = __APP_LOAD_APP_COMPONENTS;
+			if ($components = @unserialize($settings)) {
+				foreach ($components as $key => $value) {
+					if ($key == 'components') {
+						foreach ($value as $val) {
+							$this->components[] = $val;
+						}
+					} else if ($key == $this->name) {
+						if (is_array($value)) {
+							foreach ($value as $val) {
+								$this->components[] = $val;
+							}
+						} else {
+							$this->components[] = $value;
+						}
+					}
+				}
+			} else {
+				$this->components = array_merge($this->components, explode(',', $settings));
+			}
+		}
+	}
+
 		
 	
 /**
  * Loads helpers dynamically system wide, and per controller loading abilities.
- *
  */
-	function _getHelpers() {
+	private function _getHelpers() {
 		if (in_array('Menus', CakePlugin::loaded())) : 
 			$this->helpers[] = 'Menus.Tree'; 
 		endif;
@@ -543,6 +588,19 @@ class AppController extends Controller {
 	}
 	
 	
+/**
+ * Loads uses dynamically system wide
+ */	
+	private function _getUses() {
+		if (is_array($this->uses)) {
+			$this->uses = array_merge($this->uses, array('Webpages.Webpage')); 
+		} else {
+			# there is only one (non-array) in $this->uses
+			$this->uses = array($this->uses, 'Webpages.Webpage'); 
+		} 
+	}
+	
+	
 /** 
  * Checks whether the settings are synced up between defaults and the current settings file. 
  * The idea is, if they aren't in sync then your database is out of date and you need a warning message.
@@ -550,7 +608,7 @@ class AppController extends Controller {
  * @todo	I think we need to put $uses = 'Setting' into the app model.  (please communicate whether you agree)
  * @todo 	We're now loading these settings files two times on every page load (or more).  This needs to be optimized.
  */
-	function _siteStatus() {
+	private function _siteStatus() {
 		if ($this->userRoleId == 1) {
 			$fileSettings = new File(CONFIGS.'settings.ini');
 			$fileDefaults = new File(CONFIGS.'defaults.ini');
@@ -566,56 +624,13 @@ class AppController extends Controller {
 			 }
 		 }
 	 }
-
-
-	/**
-	 * Loads components dynamically using both system wide, and per controller loading abilities.
-	 *
-	 * You can create a comma separated (no spaces) list if you only need a system wide component.  If you would like to specify components on a per controller basis, then you use ControllerName[] = Plugin.Component. (ie. Projects[] = Ratings.Ratings).  If you want both per controller, and system wide, then use the key components[] = Plugin.Component for each system wide component to load.  Note: You cannot have a comma separated list, and the named list at the same time.
-	 */
-	function _getComponents() {
-		if(defined('__APP_LOAD_APP_COMPONENTS')) {
-			$settings = __APP_LOAD_APP_COMPONENTS;
-			if ($components = @unserialize($settings)) {
-				foreach ($components as $key => $value) {
-					if ($key == 'components') {
-						foreach ($value as $val) {
-							$this->components[] = $val;
-						}
-					} else if ($key == $this->name) {
-						if (is_array($value)) {
-							foreach ($value as $val) {
-								$this->components[] = $val;
-							}
-						} else {
-							$this->components[] = $value;
-						}
-					}
-				}
-			} else {
-				$this->components = array_merge($this->components, explode(',', $settings));
-			}
-		}
-	}
-	
-	
-	function _getUses() {
-		if (in_array('Webpages', CakePlugin::loaded())) : 
-			if (is_array($this->uses)) :
-				$this->uses = array_merge($this->uses, array('Webpages.Webpage')); 
-			else :
-				# there is only one (non-array) in $this->uses
-				$this->uses = array($this->uses, 'Webpages.Webpage'); 
-			endif;
-		endif;
-	}
    
    
 		 
 /**
  * Configure AuthComponent
  */
-   public function _configAuth() { 
+   private function _configAuth() { 
 		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? 
 			array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : 
 			array('message'=> 'Please register or login to access that feature.');
@@ -635,7 +650,7 @@ class AppController extends Controller {
         );
 		        
 		$this->Auth->actionPath = 'controllers/';
-		$this->Auth->allowedActions = array('display');
+		$this->Auth->allowedActions = array('display', 'itemize');
 		
 		if (!empty($this->allowedActions)) {
 			$allowedActions = array_merge($this->Auth->allowedActions, $this->allowedActions);
@@ -655,7 +670,7 @@ class AppController extends Controller {
  * $template to be picked from folder for email. By default, if $mail is given in any template, especially default, 
  * Else modify the template from the view file and set the variables from action via $this->set
  */
-	function __sendMail($email = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
+	public function __sendMail($email = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
 
 		if (defined('__SYSTEM_SMTP')) :
 			extract(unserialize(__SYSTEM_SMTP));
@@ -700,13 +715,13 @@ class AppController extends Controller {
 ##############################################################
 
 
-	/**
-	 * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in.
-	 *
-	 * @todo		Move this to the permissions app_controller or somewhere over there.
-	 * @todo		Optimize this somehow, someway.
-	 */
-	function isAuthorized($user) {
+/**
+ * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in.
+ *
+ * @todo		Move this to the permissions app_controller or somewhere over there.
+ * @todo		Optimize this somehow, someway.
+ */
+	public function isAuthorized($user) {
 		# this allows all users in the administrators group access to everything
 		# using user_role_id is deprecated and will be removed in future versions
 		if ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1) { return true; }
@@ -742,13 +757,13 @@ class AppController extends Controller {
 		}
 	}
 
-	/**
-	 * Gets the variables used to lookup the aco id for the action type of lookup
-	 * VERY IMPORTANT : If the aco is a record level type of aco (ie. model and foreign_key lookup) that means that all groups and users who have access rights must be defined.  You cannot have negative values for access permissions, and thats okay, because we deny everything by default.
-	 *
-	 * return {array || string}		The path to the aco to look up.
-	 */
-	function _getAcoPath() {
+/**
+ * Gets the variables used to lookup the aco id for the action type of lookup
+ * VERY IMPORTANT : If the aco is a record level type of aco (ie. model and foreign_key lookup) that means that all groups and users who have access rights must be defined.  You cannot have negative values for access permissions, and thats okay, because we deny everything by default.
+ *
+ * return {array || string}		The path to the aco to look up.
+ */
+	private function _getAcoPath() {
 		if (!empty($this->request->params['pass'][0])) { 
 			# check if the record level aco exists first
 			$aco = $this->Acl->Aco->find('first', array(
@@ -769,19 +784,19 @@ class AppController extends Controller {
 	}
 
 
-	/**
-	 * Gets the variables used for the lookup of the aro id
-	 */
-	function _userAro($userId) {
+/**
+ * Gets the variables used for the lookup of the aro id
+ */
+	private function _userAro($userId) {
 		$guestsAro = array('model' => 'User', 'foreign_key' => $userId);
 		return $guestsAro;
 	}
 
 
-	/**
-	 * Gets the variables used for the lookup of the guest aro id
-	 */
-	function _guestsAro() {
+/**
+ * Gets the variables used for the lookup of the guest aro id
+ */
+	private function _guestsAro() {
 		if (defined('__SYSTEM_GUESTS_USER_ROLE_ID')) {
 			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYSTEM_GUESTS_USER_ROLE_ID);
 		} else {
@@ -791,7 +806,7 @@ class AppController extends Controller {
 	}
 
 
-	function authentication(){
+	public function authentication(){
 		$this->layout = false;
 		$this->autoRender = false;
 
@@ -806,7 +821,11 @@ class AppController extends Controller {
 		echo json_encode($data);
 	}
 
-	function runcron()	{
+
+/**
+ * Supposedly makes it so that any plugin can tie into the cron job that is run, but haven't tested 1/11/2012 RK
+ */
+	public function runcron()	{
 		$this->render(false);
 	}
 }

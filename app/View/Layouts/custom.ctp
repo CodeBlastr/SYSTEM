@@ -130,11 +130,11 @@ if (!empty($defaultTemplate)) {
 		$element = trim($matches[3][$i]);
 		if (preg_match('/([a-zA-Z0-9_\.]+)([a-zA-Z0-9_]+\.[0-9]+)/', $element)) {
 			# means there is an instance number at the end
-			$element = explode('.', $element); 
+			$element = explode('.', $element);
 			# these account for the possibility of a plugin or no plugin
+			$instance = !empty($element[2]) ? $element[2] : $element[1]; 
 			$plugin = !empty($element[2]) ? $element[0] : null;
 			$element = !empty($element[2]) ? $element[1] : $element[0];
-			$instance = !empty($element[2]) ? $element[2] : $element[1]; 
 		} else if (strpos($element, '.')) {
 			# this is used to handle non plugin elements with no instance number in the tag
 			$element = explode('.', $element);  
