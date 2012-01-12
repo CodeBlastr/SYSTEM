@@ -122,21 +122,21 @@ if (!empty($defaultTemplate)) {
 		}		
 	}
 	
-	# matches element template tags like {element: plugin.name.Instance} for example {element: contacts.recent.2}
+	# matches element template tags like {element: plugin.name.instance} for example {element: contacts.recent.2}
 	preg_match_all ("/(\{element: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
-	
-	$i = 0;
+
+	$i=0; 
 	foreach ($matches[0] as $elementMatch) {
 		$element = trim($matches[3][$i]);
-		# this matches two separate periods in the element template tag
-		if (preg_match('/([a-zA-Z0-9]*)\.([a-zA-Z0-9]*)\.([0-9]*)/', $element)) {
-			# this is used to handle plugin elements
+		if (preg_match('/([a-zA-Z0-9_\.]+)([a-zA-Z0-9_]+\.[0-9]+)/', $element)) {
+			# means there is an instance number at the end
 			$element = explode('.', $element); 
-			$instance = $element[2];
-			$plugin = $element[0];  
-			$element = $element[1]; 
+			# these account for the possibility of a plugin or no plugin
+			$plugin = !empty($element[2]) ? $element[0] : null;
+			$element = !empty($element[2]) ? $element[1] : $element[0];
+			$instance = !empty($element[2]) ? $element[2] : $element[1]; 
 		} else if (strpos($element, '.')) {
-			# this is used to handle non plugin elements
+			# this is used to handle non plugin elements with no instance number in the tag
 			$element = explode('.', $element);  
 			$plugin = $element[0];
 			$element = $element[1];  
@@ -145,7 +145,7 @@ if (!empty($defaultTemplate)) {
 		# $elementCfg['cache'] = (!empty($userId) ? array('key' => $userId.$element, 'time' => '+2 days') : null);
 		$elementPlugin['plugin'] = (!empty($plugin) ? $plugin : null);
 		$elementCfg['instance'] = (!empty($instance) ? $instance : null);
-		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg, $elementPlugin), $defaultTemplate['Webpage']['content']);
+		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg, $elementPlugin), $defaultTemplate['Webpage']['content']); 
 		$i++;
 	}
 	
