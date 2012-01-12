@@ -16,13 +16,13 @@ class ContactsController extends ContactsAppController {
 	}
 	
 	
-	function beforeFilter() {
+	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->passedArgs['comment_view_type'] = 'threaded';
 	}
 	
 	
-	function index() {
+	public function index() {
 		$this->paginate = array(
 			'conditions' => array(
 				'Contact.is_company' => 1,
@@ -70,7 +70,7 @@ class ContactsController extends ContactsAppController {
 	}
 	
 	
-	function people() {
+	public function people() {
 		$this->paginate = array(
 			'conditions' => array(
 				'Contact.is_company' => 0,
@@ -117,7 +117,7 @@ class ContactsController extends ContactsAppController {
 		$this->set('associations', $associations);
 	}
 
-	function view($id = null) {
+	public function view($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid Contact.', true));
 			$this->redirect(array('action'=>'index'));
@@ -171,12 +171,12 @@ class ContactsController extends ContactsAppController {
 		$this->set('title_for_layout',  $contact['Contact']['name']);
 	}
 
-	/**
-	 * Handles the saving of new contacts, and gets the variables to use for the contact add form.
-	 *
-	 * @todo			Most of the list variables below need to have a find function put into those models, which finds the right enumeration type by default.  Its really ugly to have multiple instances of the "type" spelled out all over the place.
-	 */	 
-	function add($contactType = 'company', $contactId = null) {
+/**
+ * Handles the saving of new contacts, and gets the variables to use for the contact add form.
+ *
+ * @todo			Most of the list variables below need to have a find function put into those models, which finds the right enumeration type by default.  Its really ugly to have multiple instances of the "type" spelled out all over the place.
+ */	 
+	public function add($contactType = 'company', $contactId = null) {
 		if (!empty($this->request->data)) {
 			try {
 				$message = $this->Contact->add($this->request->data);
@@ -205,7 +205,7 @@ class ContactsController extends ContactsAppController {
 		$this->render('add_'.$contactType);
 	}
 
-	function edit($id = null) {
+	public function edit($id = null) {
 		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid contact', true));
 			$this->redirect(array('action' => 'index'));
@@ -230,7 +230,7 @@ class ContactsController extends ContactsAppController {
 		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users', 'contacts'));
 	}
 
-	function delete($id = null) {
+	public function delete($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for contact', true));
 			$this->redirect(array('action'=>'index'));
@@ -243,7 +243,7 @@ class ContactsController extends ContactsAppController {
 		$this->redirect(array('action' => 'index'));
 	}
 	
-	function ajax_edit(){
+	public function ajax_edit(){
 		$this->__ajax_edit();
 	} 
 	
@@ -251,7 +251,7 @@ class ContactsController extends ContactsAppController {
  * Show the tasks related to this contact
  * @todo 	Make this so that it renders using an element from the tasks plugin
  */
-	function tasks($contactId = null) {
+	public function tasks($contactId = null) {
 		$this->paginate = array(
 			'conditions' => array(
 				'Task.model' => 'Contact',
@@ -292,11 +292,11 @@ class ContactsController extends ContactsAppController {
 	}
 	
 	
-	/**
-	 * Show the tasks related to this contact.
-	 * @todo 	Make this so that it renders using an element from the tasks plugin
-	 */
-	function task($taskId = null) {				
+/**
+ * Show the tasks related to this contact.
+ * @todo 	Make this so that it renders using an element from the tasks plugin
+ */
+	public function task($taskId = null) {				
 		$task = $this->Contact->Task->find('first', array(
 			'conditions' => array(
 				'Task.id' => $taskId,
@@ -352,7 +352,7 @@ class ContactsController extends ContactsAppController {
 		$this->set('tabsElement', '/contacts');
 	}
 	
-	function dashboard() {
+	public function dashboard() {
 	}
 }
 ?>
