@@ -30,6 +30,7 @@ class AppController extends Controller {
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
+	public $paginate = array('page' => 1, 'limit' => 25, 'maxLimit' => 100, 'paramType' => 'named');
 	
 /**
  * @todo update this so that it uses the full list of actual user roles
@@ -65,7 +66,7 @@ class AppController extends Controller {
 
 
 
-	public function beforeFilter() {		
+	public function beforeFilter() {	
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
@@ -81,6 +82,7 @@ class AppController extends Controller {
 		# End DO NOT DELETE #
 		
 		$this->_handlePaginatorSorting();
+		$this->_handlePaginatorFiltering();
 		$this->_configAuth();
 		$this->_handleJson();
 
@@ -124,9 +126,9 @@ class AppController extends Controller {
 	}
 	
 
-	/**
-	 * @todo convert to a full REST application and this might not be necessary
-	 */
+/**
+ * @todo convert to a full REST application and this might not be necessary
+ */
     public function beforeRender() {
 		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
 	}
@@ -163,6 +165,55 @@ class AppController extends Controller {
 		#debug($this->request->url.$this->request->query['contextSorter']);
 		if (!empty($this->request->query['contextSorter'])) {
 			$this->redirect($this->request->query['contextSorter']);
+		}
+	}
+	
+/**
+ * Handles auto filtering using named parameters on index pages.
+ * Decides whether there are multiple filters or one.
+ */
+ 	private function _handlePaginatorFiltering() {
+		$named = !empty($this->request->params['named']['filter']) ? $this->request->params['named']['filter'] : null;
+		if (!empty($named) && is_array($named)) {
+			# use an OR filter if we do multiple filters
+			foreach ($named as $name) {
+				$this->__handlePaginatorFiltering($name);
+			}
+		} else if (!empty($named)) {
+			$this->__handlePaginatorFiltering($named);
+		}
+	}
+
+/**
+ * The actual handling of filtering for paginated pages
+ * Adds additional conditions to the paginate variable (one at time)
+ */
+	private function __handlePaginatorFiltering($named) {
+		$modelName = $this->modelClass; // the model name for this controller
+		$modelFields = $this->$modelName->schema(); // list of table columns for this model
+		$fieldValue = substr($named, strpos($named, ':') + 1); // returns 'incart' from 'status:incart'
+		$fieldValue = $fieldValue == 'null' ? null : $fieldValue;  // handle null as a value
+		$fieldName = Inflector::underscore(substr($named, 0, strpos($named, ':'))); // standardizes various name types (catalogItem become catalog_item
+		
+		if (!empty($modelFields[$fieldName])) {
+			# match exact field name (no change necessary) 
+		} else if (!empty($modelFields[$fieldName.'_id'])) {
+			# match something_id naming convention
+			$fieldName = $fieldName.'_id';
+		} else if (!empty($modelFields['is_'.$fieldName])) { 
+			# match is_something naming convention
+			$fieldName = 'is_'.$fieldName;
+		} 
+		
+		if (!empty($fieldName)) {
+			if ($modelFields[$fieldName]['type'] == 'datetime' || $modelFields[$fieldName]['type'] == 'date') {
+				$this->paginate['conditions'][$modelName.'.'.$fieldName.' >'] = $fieldValue;
+			} else {
+				$this->paginate['conditions'][$modelName.'.'.$fieldName] = $fieldValue;
+			}
+		} else {
+			# no matching field don't filter anything
+			$this->Session->setFlash(__('Invalid filter attempted.'));
 		}
 	}
 
