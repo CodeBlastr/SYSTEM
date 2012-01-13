@@ -26,7 +26,7 @@
 class SettingsController extends AppController {
 
 	public $name = 'Settings';
-    public $uses = array('Setting', 'Template');
+    public $uses = array('Setting');
 
 
 	public function update_defaults() {
