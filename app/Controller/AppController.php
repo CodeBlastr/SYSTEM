@@ -65,7 +65,7 @@ class AppController extends Controller {
 
 
 
-	public function beforeFilter() {
+	public function beforeFilter() {		
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
@@ -80,6 +80,7 @@ class AppController extends Controller {
 		# End Condition Check #
 		# End DO NOT DELETE #
 		
+		$this->_handlePaginatorSorting();
 		$this->_configAuth();
 		$this->_handleJson();
 
@@ -147,6 +148,21 @@ class AppController extends Controller {
 			if ($this->request->ext == 'json') {
 				$this->render(false, 'default');
 			}
+		}
+	}
+	
+/**
+ * Handles when a page is being called after the context_sort element is used. 
+ * This element will call the same page it is sitting on, and add a get variable to the end
+ * We want to take that get variable and redirect to the current page with those variables on the end.
+ *
+ * if the variable contextSorter is set we redirect to http://domain/current_url/contextSorterVar
+ * @return null
+ */
+	private function _handlePaginatorSorting() {
+		#debug($this->request->url.$this->request->query['contextSorter']);
+		if (!empty($this->request->query['contextSorter'])) {
+			$this->redirect($this->request->query['contextSorter']);
 		}
 	}
 

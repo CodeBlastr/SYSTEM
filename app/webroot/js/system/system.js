@@ -100,4 +100,10 @@ $().ready(function() {
 			if ($.isFunction(window.selectCallBack)) { selectCallBack(data); }
 	    });
 	});
+	
+	// paginator sorter drop down
+	$(".contextSorterForm input[type=submit]").hide();
+	$(".contextSorterForm").change(function() {
+ 		window.location = $(".sorterSelect", this).val();
+	});
 });

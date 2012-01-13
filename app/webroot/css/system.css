@@ -240,3 +240,11 @@ input[type=radio], input[type=checkbox] {
 .richtextarea {
 	clear: both;
 }
+
+
+.contextSorter form select option.des:after {
+	content: '\25B2 \ ';
+}
+.contextSorter form select option.asc:after {
+	content: '\25BC \ ';
+}
