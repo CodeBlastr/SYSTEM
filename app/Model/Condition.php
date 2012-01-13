@@ -86,6 +86,10 @@ class Condition extends AppModel {
  * @param {type} 		Four valid values, 'is_create', 'is_read', 'is_update', 'is_delete'.
  * @param {lookups}		An array with possible indexes of model, plugin, controller action, or extra_values.
  * @return {array}		Returns all an array including of matched conditions information
+ * @todo				SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+Test case: ModelDeleteTest(testDeleteHabtmReferenceWithConditions)  FROM All Model Unit Test
+ * @todo				SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
  */	
 	function checkConditions($type, $lookups) {
 		$fields = $this->_conditionConditions($lookups);
