@@ -22,7 +22,7 @@
     <div id="bottomNavigation">
       <div class="gridRow">
         <div class="gridCol12"> 
-          <div id="legalLinks"> <a href="/admin/settings"><span><?php echo 'Zuha Version: '.__SYSTEM_ZUHA_DB_VERSION; ?></span></a> <a href="#" id="helpOpen">Turn Help Text On</a> </div>
+          <div id="legalLinks"> <a href="/admin/settings"><span><?php echo defined('__SYSTEM_ZUHA_DB_VERSION') ? 'Zuha Version: '.__SYSTEM_ZUHA_DB_VERSION : 'Version undefined'; ?></span></a> <a href="#" id="helpOpen">Turn Help Text On</a> </div>
           <div id="legalLinks"> <a href="http://zuha.org/">Privacy policy</a> - <a href="http://zuha.org">Legal</a> <span>&copy; 2010 Zuha Foundation</span> <a id="fontSize1">A</a> <a id="fontSize2">A</a> <a id="fontSize3">A</a></div>
         </div>
       </div>

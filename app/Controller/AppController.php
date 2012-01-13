@@ -29,7 +29,7 @@ class AppController extends Controller {
 	public $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'SwiftMailer', 'RegisterCallbacks' /*'Security' Desktop Login Stops Working When This is On*/);
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
-	public $userRoleId = __SYSTEM_GUESTS_USER_ROLE_ID;
+	public $userRoleId = 5;
 	
 /**
  * @todo update this so that it uses the full list of actual user roles
@@ -111,7 +111,7 @@ class AppController extends Controller {
 		 */
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
 		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
-		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : __SYSTEM_GUESTS_USER_ROLE_ID;
+		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 
 		$this->_siteTemplate();
@@ -127,11 +127,7 @@ class AppController extends Controller {
 	 * @todo convert to a full REST application and this might not be necessary
 	 */
     public function beforeRender() {
-		# This turns off debug so that ajax views don't get severly messed up
-		if($this->RequestHandler->isAjax()) :
-            Configure::write('debug', 0);
-		endif;
-		$this->set('referer', $this->referer()); // used for back button links, and could be useful for breadcrumbs possibly
+		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
 	}
 	
 	
@@ -797,11 +793,10 @@ class AppController extends Controller {
  * Gets the variables used for the lookup of the guest aro id
  */
 	private function _guestsAro() {
+		$guestsAro = array('model' => 'UserRole', 'foreign_key' => 5);
 		if (defined('__SYSTEM_GUESTS_USER_ROLE_ID')) {
 			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYSTEM_GUESTS_USER_ROLE_ID);
-		} else {
-			echo 'In /admin/settings key: SYSTEM, value: GUESTS_USER_ROLE_ID must be defined for guest access to work.';
-		}
+		} 
 		return $guestsAro;
 	}
 
