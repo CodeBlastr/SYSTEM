@@ -6,7 +6,7 @@ class ContactsController extends ContactsAppController {
 	
 	
 	public function __construct($request = null, $response = null) {
-		parent::__construct($request, $response);		
+		parent::__construct($request, $response);
 		if (in_array('Comments', CakePlugin::loaded())) {
 			$this->components['Comments.Comments'] = array(
 				'userModelClass' => 'Users.User', 

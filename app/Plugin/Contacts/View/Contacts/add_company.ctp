@@ -61,9 +61,14 @@
   </fieldset>
   <?php echo $this->Form->end('Submit');?> </div>
 
-<div class="actions">
-	<ul>
-    	<li>Companies</li>
-    	<li><?php echo $this->Html->link(__('List Companies', true), array('plugin' => 'contacts', 'controller' => 'contact_companies', 'action' => 'index')); ?></li>
-    </ul>
-</div>
+<?php
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Contacts',
+		'items' => array(
+			$this->Html->link(__('List Companies'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index')),
+			$this->Html->link(__('List People'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'people')),
+			),
+		),
+	)));  ?>

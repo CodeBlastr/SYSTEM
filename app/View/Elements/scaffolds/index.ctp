@@ -93,7 +93,7 @@ foreach ($data as $dat) {
           </div>
         </div>
         <?php } 
-	  	if ($actions === false) {
+	  	if (isset($actions) && $actions === false) {
 		  # show nothing 
 		} else { ?>
         <div class="indexCell actionCell">
