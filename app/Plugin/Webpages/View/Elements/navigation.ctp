@@ -55,11 +55,7 @@
           <li><?php echo $this->Html->link('<span>Activities</span>', array('plugin' => 'messages', 'controller' => 'messages', 'action' => 'index'), array('escape' => false, 'title' => 'Track the activity made for leads so that its easy to refer to later.')); ?></li>
         </ul>
       </li>
-      <li><?php echo $this->Html->link('<span>Ecommerce</span>', array('plugin' => 'catalogs', 'controller' => 'catalogs', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Catalogs, Orders')); ?>
-      	<ul>
-          <li><?php echo $this->Html->link('<span>Catalog Items</span>', array('plugin' => 'catalogs', 'controller' => 'catalog_items', 'action' => 'index'), array('escape' => false, 'title' => 'Add, edit, view, delete catalog items.')); ?></li>
-          <li><?php echo $this->Html->link('<span>Orders</span>', array('plugin' => 'orders', 'controller' => 'order_transactions', 'action' => 'index'), array('escape' => false, 'title' => 'Manage &amp; track sales, and fulfill orders.')); ?></li>
-        </ul>      
+      <li><?php echo $this->Html->link('<span>Ecommerce</span>', array('plugin' => 'catalogs', 'controller' => 'catalogs', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Catalogs, Orders')); ?>     
       </li>
       <li><?php echo $this->Html->link('<span>Billing</span>', array('plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Estimates, Invoices')); ?>
       	<ul>
