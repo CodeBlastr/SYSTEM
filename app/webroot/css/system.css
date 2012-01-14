@@ -248,3 +248,16 @@ input[type=radio], input[type=checkbox] {
 .contextSorter form select option.asc:after {
 	content: '\25BC \ ';
 }
+
+/* Some dashboard css */
+.dashboard {
+	position: relative;
+}
+.dashboard .dashboardBox {
+	float: left;
+	margin: 1em;
+	padding: 1em;
+	width: 24%;
+	/* height is set with javascript */
+	border: 1px solid #CCC;
+}
