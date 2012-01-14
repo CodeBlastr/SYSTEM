@@ -64,7 +64,6 @@ $(function() {
 	});
 	
 	
-	
 	// reusable select box update
 	// requires json attribute, which is equal to the relative url to call
 	// requires element attribute, which is equal to select (other types in other functions)
@@ -100,21 +99,6 @@ $(function() {
 		return false;
 	});
 	
-	
-	/* Tabs 
-	$('#contentWrapper div.tabs a').click(function(e){
-		$('#contentWrapper div.tabs a').removeClass('active');
-		$('#tabTwo, #tabOne').hide();
-	
-		$(this).addClass('active');
-	
-		$('#contentWrapper div.tabs a span.ls,#contentWrapper div.tabs a span.rs').removeAttr('style');
-			var id = $(this).attr('rel');
-			$('#'+id).show();
-			e.preventDefault();
-	
-	});*/
-
 
 	// hides form elements except the legend (click the legend to show form elements
   	$('legend.toggleClick').siblings().hide();
@@ -129,9 +113,6 @@ $(function() {
 			$(this).removeClass("toggled");
 			$(this).addClass("toggle");
 		}
-		//$(this).removeClass("toggleInit");
-		//$(this).addClass("toggleConc");
-		//if ($(this).attr("class") == 
     });
 	
 	
@@ -147,19 +128,7 @@ $(function() {
 	}, function() {
 		$("#siteSearch").slideUp('slow');
 	});
-		
-	//$('#tabs').tabs({fx:{height: "toggle"}});	
-	//$('.tabs').parent().tabs({fx:{height: "toggle"}});
-	/* make the current tab have the class active
-	$('#tabs a').click(function() {
-		$('#tabs a').removeClass('active');
-		$(this).addClass('active');
-	});
-	$('#navigation a').click(function() {
-		$('#navigation a').removeClass('active');
-		$(this).addClass('active');
-	});**/
-	
+
 	
 	/* Index pages */ 
 	
@@ -187,31 +156,7 @@ $(function() {
 	$('#fontSize3').click(function(e){
 		$('body').css('font-size', '1.6em');
 		$.cookie('fontSize', '1.6em', { expires: 999 });
-	});
-	
-	
-	/* Layout Fixes */
-	/* Stick Footer 
-	positionFooter(); 
-	function positionFooter(){
-		var padding_top = $("#awesomeFooter").css("padding-top").replace("px", "");
-		var page_height = $(document.body).height() - padding_top;
-		var window_height = $(window).height();
-		var difference = window_height - page_height;
-		if (difference < 0) 
-			difference = 0;
- 
-		$("#awesomeFooter").css({
-			padding: difference + "px 0 0 0"
-		})
-	}
- 
-	$(window)
-		.resize(positionFooter)*/
-		
-	/* Wider than containing box */
-	
-	
+	});	
 	
 	
 	/*  Make any select a combox by adding class="combox" 
