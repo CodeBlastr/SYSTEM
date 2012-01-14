@@ -106,7 +106,7 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Contacts',
 		'items' => array(
-			$this->Html->link(__('Add Person to '.$contact['Contact']['name'], true), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'add', 'person', $contact['Contact']['id'])),
+			$this->Html->link(__('Add Person to %s', $contact['Contact']['name']), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'add', 'person', $contact['Contact']['id'])),
 			),
 		),
 	array(
