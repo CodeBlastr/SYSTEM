@@ -198,6 +198,16 @@ class ZuhaInflector {
 		return number_format($price, 2);
 	}
 	
+/**
+ * Function for formatting dates (yes I know about the Time helper, and I don't like it.
+ * But mainly this will alos allow a default time format on a per site need (using a setting).
+ * 
+ * @todo	Have options for the time, like timeAgo and/or date format string.   
+ */
+	public function dateize($date, $options = null) {
+		return date('M j, Y', strtotime($date));
+	}
+	
 	
 /**
  * return a plugin name from a controller name
@@ -224,6 +234,10 @@ class ZuhaInflector {
 			'Invoice' => 'Invoices',
 			'InvoiceItem' => 'Invoices',
 			'InvoiceTime' => 'Invoices',
+			'OrderItem' => 'Orders',
+			'order_items' => 'Orders',
+			'OrderTransactions' => 'Orders',
+			'order_transactions' => 'Orders',
 			'Project' => 'Projects',
 			'Question' => 'Questions',
 			'QuestionAnswer' => 'Questions',
@@ -236,7 +250,7 @@ class ZuhaInflector {
 			'Message' => 'Messages',
 			'Webpage' => 'Webpages',
 			);
-		if ($allowed[$name] !== null) {
+		if (!empty($name) && $allowed[$name] !== null) {
 			return $allowed[$name];
 		} else {
 			return Inflector::tableize($name);
