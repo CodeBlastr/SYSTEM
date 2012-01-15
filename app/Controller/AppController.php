@@ -772,7 +772,7 @@ class AppController extends Controller {
  * Easily over ridden by individual controllers.
  */
 	private function _pageTitleForLayout() {
-		return $this->pageTitleForLayout = Inflector::humanize(Inflector::underscore($this->pageTitleForLayout));
+		return $this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(strtolower($this->pageTitleForLayout)));
 	}
 	
 	private function _titleForLayout() {
