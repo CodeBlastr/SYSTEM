@@ -9,11 +9,14 @@ if(!empty($instance) && defined('__ELEMENT_LIST_'.$instance)) {
 # Set the defaults
 $plugin = !empty($plugin) ? strtolower($plugin) : null;
 $controller = !empty($controller) ? strtolower($controller) : null;
+$instance = !empty($instance) ? strtolower($instance) : null;
+if (!empty($displayField)) { $displayField = strtolower($displayField); } // can't have the var set at all if not already there
+if (!empty($displayDescription)) { $displayDescription = strtolower($displayDescription); }
 
 if (!empty($controller)) {
 	# Get the data and put it into variables
 	$results = $this->requestAction('/'.$plugin.'/'.$controller.'/itemize/'.$instance);
-	extract($results['options']);
+	extract($results['options'], EXTR_PREFIX_SAME, 'ext');
 	$results = $results['results'];
 	
 	if (!empty($results)) { ?>
@@ -28,7 +31,7 @@ if (!empty($controller)) {
 		    <li>
 	    	<?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => $viewLink), array('plugin' => 'galleries')) : null; ?>
 		        <h3><?php echo $this->Html->link($result[$model][$displayField], $viewLink); ?></h3>
-		        <p> <?php echo $result[$model][$displayDescription]; ?> </p> 
+		       	<?php !empty($displayDescription) ? '<p>' . $result[$model][$displayDescription] . '</p>' : null; ?>
 		    </li>
 			<?php } // end foreach ?>
 		</ul> 

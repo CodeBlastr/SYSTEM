@@ -7,7 +7,7 @@ class Zuha {
 /**
  * Convenience function for finding enumerations
  *
- * @param {mixed} 		The type string (ie. PRICETYPE, SETTING_TYPE), if null we find all enumerations. If an integer then we return the single exact enum being called.
+ * @param {mixed} 		The type string (ie. PRICE_TYPE, SETTING_TYPE), if null we find all enumerations. If an integer then we return the single exact enum being called.
  * @param {mixed}		A string or an array of names to find.  If null we find all for the type, if string we find a single enum, if an array we find all which match both the type and the array of names.
  */
 	public function enum($type = null, $name = null) {

@@ -28,7 +28,9 @@
  */
 class EnumerationsController extends AppController {
 	
-	function search() {
+    public $uses = array('Enumeration');
+	
+	public function search() {
 		if(!empty($this->request->data)) {
 			$this->request->data['Enumeration']['query'] = str_replace('*','%',$this->request->data['Enumeration']['query']);
 			$this->request->data = $this->paginate('Enumeration',array(
@@ -40,22 +42,16 @@ class EnumerationsController extends AppController {
 		$this->render('admin_index');
 	}
 	
-	function index() {
-		$this->paginate = array(
-			'order' => array(
+	public function index() {
+		$this->paginate['order'] = array(
 				'Enumeration.type' => 'ASC',
 				'Enumeration.weight' => 'ASC',
 				'Enumeration.name' => 'ASC',
-			)
-		);
-		$conditions = array();
-		if(isset($this->request->params['named']['filter'])) {
-			$conditions['Enumeration.type LIKE'] = $this->request->params['named']['filter'] . '%';
-		}
-		$this->request->data = $this->paginate('Enumeration',$conditions);
+			);
+		$this->request->data = $this->paginate();
 	}
 	
-	function changeOrder($id=null,$mode='increase') {
+	public function changeOrder($id=null,$mode='increase') {
 		$enumeration = $this->Enumeration->find('first',array(
 			'conditions' => array(
 				'Enumeration.id' => $id
@@ -73,12 +69,12 @@ class EnumerationsController extends AppController {
 		$this->redirect($this->referer());
 	}
 	
-	function add() {
+	public function add($type = null) {
 		if(!empty($this->request->data)) {
 			$this->request->data['Enumeration']['type'] = strtoupper($this->request->data['Enumeration']['type']);
 			if($this->Enumeration->save($this->request->data)) {
 				$this->Session->setFlash('Enumeration saved!');
-				$this->redirect('/admin/Enumerations');
+				$this->redirect(array('action' => 'index'));
 			}
 			else {
 				$this->Session->setFlash('Unable to save Enumeration.');
@@ -94,7 +90,7 @@ class EnumerationsController extends AppController {
 		$this->set('enumerationTypes',$enumerationTypes);
 	}
 	
-	function edit($id=null) {
+	public function edit($id=null) {
 		if(!empty($this->request->data)) {
 			$this->request->data['Enumeration']['type'] = strtoupper($this->request->data['Enumeration']['type']);
 			if($this->Enumeration->save($this->request->data)) {
@@ -120,7 +116,7 @@ class EnumerationsController extends AppController {
 		$this->set('enumerationTypes',$enumerationTypes);
 	}
 	
-	function delete($id=null) {
+	public function delete($id=null) {
 		if($this->Enumeration->delete($id)) {
 			$this->Session->setFlash('Enumeration deleted');
 		} else {

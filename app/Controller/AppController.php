@@ -39,6 +39,7 @@ class AppController extends Controller {
 	public $userRoleName = 'guests';
 	public $params = array();
 	public $templateId = '';
+	public $pageTitleForLayout;
 	
 	
 	public function __construct($request = null, $response = null) {
@@ -46,6 +47,7 @@ class AppController extends Controller {
 		$this->_getHelpers();
 		$this->_getComponents();
 		$this->_getUses();
+		$this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(' ' . $this->name . ' '));
 	}
 
 
@@ -123,6 +125,12 @@ class AppController extends Controller {
 		 * Check whether the site is sync'd up
 		 */
 		#$this->_siteStatus();	
+		
+		/**
+		 * Automatic view vars available (this location is pretty important, so that other beforeFilter functions run first)
+		 */
+		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
+		$this->set('title_for_layout', $this->_titleForLayout());
 	}
 	
 
@@ -173,14 +181,50 @@ class AppController extends Controller {
  * Decides whether there are multiple filters or one.
  */
  	private function _handlePaginatorFiltering() {
-		$named = !empty($this->request->params['named']['filter']) ? urldecode($this->request->params['named']['filter']) : null;
-		if (!empty($named) && is_array($named)) {
+		#filter by database field full value
+		$filter = !empty($this->request->params['named']['filter']) ? $this->request->params['named']['filter'] : null;
+		if (!empty($filter) && is_array($filter)) {
 			# use an OR filter if we do multiple filters
-			foreach ($named as $name) {
-				$this->__handlePaginatorFiltering($name);
+			foreach ($filter as $name) {
+				$this->__handlePaginatorFiltering(urldecode($name));
 			}
-		} else if (!empty($named)) {
-			$this->__handlePaginatorFiltering($named);
+		} else if (!empty($filter)) {
+			$this->__handlePaginatorFiltering(urldecode($filter));
+		}
+		
+		#filter by starting letter of database field
+		$starter = !empty($this->request->params['named']['start']) ? $this->request->params['named']['start'] : null;
+		if (!empty($starter) && is_array($starter)) {
+			# use an OR filter if we do multiple filters
+			foreach ($starter as $start) {
+				$this->__handlePaginatorStarter(urldecode($start));
+			}
+		} else if (!empty($starter)) {
+			$this->__handlePaginatorStarter(urldecode($starter));
+		}
+	}
+
+/**
+ * The actual handling of filtering for paginated pages by full field value
+ * Adds additional conditions to the paginate variable (one at time)
+ */
+	private function __handlePaginatorFiltering($named) {
+		$fieldValue = substr($named, strpos($named, ':') + 1); // returns 'incart' from 'status:incart'
+		$fieldValue = $fieldValue == 'null' ? null : $fieldValue;  // handle null as a value		
+		$fieldName = $this->__paginatorFieldName($named);
+		$this->pageTitleForLayout = __(' %s ', $fieldValue) . $this->pageTitleForLayout;
+		
+		if (!empty($fieldName)) {
+			$modelName = $this->modelClass; // the model name for this controller
+			$modelFields = $this->$modelName->schema(); // list of table columns for this model
+			if ($modelFields[$fieldName]['type'] == 'datetime' || $modelFields[$fieldName]['type'] == 'date') {
+				$this->paginate['conditions'][$this->modelClass.'.'.$fieldName.' >'] = $fieldValue;
+			} else {
+				$this->paginate['conditions'][$this->modelClass.'.'.$fieldName] = $fieldValue;
+			}
+		} else {
+			# no matching field don't filter anything
+			$this->Session->setFlash(__('Invalid field filter attempted.'));
 		}
 	}
 
@@ -188,34 +232,40 @@ class AppController extends Controller {
  * The actual handling of filtering for paginated pages
  * Adds additional conditions to the paginate variable (one at time)
  */
-	private function __handlePaginatorFiltering($named) {
+	private function __handlePaginatorStarter($startString) {
+		$fieldValue = substr($startString, strpos($startString, ':') + 1); // returns 'incart' from 'status:incart'
+		$fieldValue = $fieldValue == 'null' ? null : $fieldValue;  // handle null as a value
+		$fieldName = $this->__paginatorFieldName($startString);
+		$this->pageTitleForLayout = __(' %s ', $fieldValue) . $this->pageTitleForLayout;
+		
+		if (!empty($fieldName)) {
+			$this->paginate['conditions'][$this->modelClass.'.'.$fieldName.' LIKE'] = $fieldValue . '%';
+		} else {
+			# no matching field don't filter anything
+			$this->Session->setFlash(__('Invalid starter filter attempted.'));
+		}
+	}
+	
+	
+	private function __paginatorFieldName($string) {
 		$modelName = $this->modelClass; // the model name for this controller
 		$modelFields = $this->$modelName->schema(); // list of table columns for this model
-		$fieldValue = substr($named, strpos($named, ':') + 1); // returns 'incart' from 'status:incart'
-		$fieldValue = $fieldValue == 'null' ? null : $fieldValue;  // handle null as a value
-		$fieldName = Inflector::underscore(substr($named, 0, strpos($named, ':'))); // standardizes various name types (catalogItem become catalog_item
+		$fieldName = Inflector::underscore(substr($string, 0, strpos($string, ':'))); // standardizes various name versions
 		
 		if (!empty($modelFields[$fieldName])) {
 			# match exact field name (no change necessary) 
+			return $fieldName;
 		} else if (!empty($modelFields[$fieldName.'_id'])) {
 			# match something_id naming convention
-			$fieldName = $fieldName.'_id';
+			return $fieldName.'_id';
 		} else if (!empty($modelFields['is_'.$fieldName])) { 
 			# match is_something naming convention
-			$fieldName = 'is_'.$fieldName;
-		} 
-		
-		if (!empty($fieldName)) {
-			if ($modelFields[$fieldName]['type'] == 'datetime' || $modelFields[$fieldName]['type'] == 'date') {
-				$this->paginate['conditions'][$modelName.'.'.$fieldName.' >'] = $fieldValue;
-			} else {
-				$this->paginate['conditions'][$modelName.'.'.$fieldName] = $fieldValue;
-			}
+			return 'is_'.$fieldName;
 		} else {
-			# no matching field don't filter anything
-			$this->Session->setFlash(__('Invalid filter attempted.'));
+			return false;
 		}
 	}
+	
 
 /**
  * Returns a list of items to the list element for any model
@@ -229,25 +279,23 @@ class AppController extends Controller {
 			extract(unserialize(__ELEMENT_LIST));
 		}
 		$options = array();
-		$options['controller'] =  !empty($controller) ? strtolower($controller) : null;
-		
-		$options['plugin'] =  !empty($plugin) ? strtolower($plugin) : strtolower(ZuhaInflector::pluginize($options['controller']));
+		$options['controller'] =  empty($this->request->controller) ? strtolower($this->request->controller) :  null;
+		$options['plugin'] =  !empty($this->request->plugin) ? strtolower($this->request->plugin) : strtolower(ZuhaInflector::pluginize($options['controller']));
 		$options['model'] = !empty($model) ? $model : Inflector::classify($options['controller']);
 		$options['sortField'] = !empty($sortField) ? strtolower($sortField) : 'id';
 		$options['sortOrder'] = !empty($sortOrder) ? strtolower($sortOrder) : 'ASC';
 		$options['resultsCount'] = !empty($resultsCount) ? strtolower($resultsCount) : 10;
-		$options['viewPlugin'] = !empty($viewPlugin) ? $viewPlugin : $plugin;
-		$options['viewController'] = !empty($viewController) ? $viewController : $controller;
+		$options['viewPlugin'] = !empty($viewPlugin) ? $viewPlugin : $options['plugin'];
+		$options['viewController'] = !empty($viewController) ? $viewController : $options['controller'];
 		$options['viewAction'] = !empty($viewAction) ? strtolower($viewAction) : 'view';
 		$options['displayField'] = !empty($displayField) ? strtolower($displayField) : 'name';
-		$options['displayDescription'] = !empty($displayDescription) ? strtolower($displayDescription) : 'description';
+		$options['displayDescription'] = !empty($displayDescription) ? strtolower($displayDescription) : null;
 		$options['idField'] = !empty($idField) ? strtolower($idField) : 'id';
 		$options['showGallery'] = !empty($showGallery) ? $showGallery : false;
 		$options['galleryModelName'] = !empty($galleryModelName) ? $galleryModelName : $options['model'];
 		$options['galleryForeignKey'] = !empty($galleryForeignKey) ? $galleryForeignKey : $options['idField'];
 		$options['galleryThumbSize'] = !empty($galleryThumbSize) ? $galleryThumbSize : 'small';; 
-
-		App::uses($options['model'], $plugin.'.Model');
+		App::uses($options['model'], Inflector::camelize($options['plugin']).'.Model');
 		$Model = new $options['model']();
 		$results = $Model->find('all', array(
 			'order' => array(
@@ -718,6 +766,18 @@ class AppController extends Controller {
 			$this->Auth->allowedActions = $allowedActions;
 		}
    }
+   
+/**
+ * Handle various auto page title variables.
+ * Easily over ridden by individual controllers.
+ */
+	private function _pageTitleForLayout() {
+		return $this->pageTitleForLayout = Inflector::humanize(Inflector::underscore($this->pageTitleForLayout));
+	}
+	
+	private function _titleForLayout() {
+		return $this->titleForLayout = Inflector::humanize(Inflector::underscore($this->titleForLayout));
+	}
 
 
 /**
