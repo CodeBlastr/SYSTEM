@@ -167,6 +167,7 @@ class AppController extends Controller {
  * We want to take that get variable and redirect to the current page with those variables on the end.
  *
  * if the variable contextSorter is set we redirect to http://domain/current_url/contextSorterVar
+ *
  * @return null
  */
 	private function _handlePaginatorSorting() {
@@ -179,8 +180,16 @@ class AppController extends Controller {
 /**
  * Handles auto filtering using named parameters on index pages.
  * Decides whether there are multiple filters or one.
+ * 
+ * @param void
+ * @return void
  */
  	private function _handlePaginatorFiltering() {
+		$empty = empty($this->request->params['named']['filter']) ? true : false;
+		if (!empty($empty)) {
+			$this->__handlePaginatorArchivable();
+		}
+		
 		#filter by database field full value
 		$filter = !empty($this->request->params['named']['filter']) ? $this->request->params['named']['filter'] : null;
 		if (!empty($filter) && is_array($filter)) {
@@ -203,10 +212,27 @@ class AppController extends Controller {
 			$this->__handlePaginatorStarter(urldecode($starter));
 		}
 	}
+	
+/**
+ * Removed archived records from paginated lists by default.
+ *
+ * @param void
+ * @return void
+ */
+	private function __handlePaginatorArchivable() {
+		$modelName = $this->modelClass; // the model name for this controller
+		$modelFields = $this->$modelName->schema(); // list of table columns for this model
+		if (!empty($modelFields['is_archived'])) {
+			$this->redirect(array('filter' => 'archived:0'));
+		}
+	}
 
 /**
  * The actual handling of filtering for paginated pages by full field value
  * Adds additional conditions to the paginate variable (one at time)
+ *
+ * @param mixed
+ * @return void
  */
 	private function __handlePaginatorFiltering($named) {
 		$fieldValue = substr($named, strpos($named, ':') + 1); // returns 'incart' from 'status:incart'
@@ -231,6 +257,9 @@ class AppController extends Controller {
 /**
  * The actual handling of filtering for paginated pages
  * Adds additional conditions to the paginate variable (one at time)
+ *
+ * @param mixed
+ * @return void
  */
 	private function __handlePaginatorStarter($startString) {
 		$fieldValue = substr($startString, strpos($startString, ':') + 1); // returns 'incart' from 'status:incart'
@@ -247,6 +276,12 @@ class AppController extends Controller {
 	}
 	
 	
+/**
+ * Get the field name with if its close
+ *
+ * @param string	A string which is close to a db field name.
+ * @return string
+ */
 	private function __paginatorFieldName($string) {
 		$modelName = $this->modelClass; // the model name for this controller
 		$modelFields = $this->$modelName->schema(); // list of table columns for this model
@@ -271,6 +306,7 @@ class AppController extends Controller {
  * Returns a list of items to the list element for any model
  * 
  * @param {int} 	We can have multiple calls to this on a single page.  Instance makes each one unique.
+ * @return array
  */
 	public function itemize($instance = null) {
 		if(!empty($instance) && defined('__ELEMENT_LIST_'.$instance)) {
@@ -311,7 +347,10 @@ class AppController extends Controller {
  * Convenience admin_delete
  * The goal is to make less code necessary in individual controllers
  * and have more reusable code.
- * @param int $id
+ *
+ * @param string 	model name
+ * @param int 		$id
+ * @return string
  * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
  */
 	public function __delete($model = null, $id = null) {
