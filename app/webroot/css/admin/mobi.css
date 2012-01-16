@@ -475,6 +475,14 @@ fieldset fieldset {
 	margin: 0;
 	padding: 0.5em 2em;
 	clear: both;
+	width: auto;
+	border: none;
+	border-radius: none;
+	-webkit-border-radius: none;
+	-moz-border-radius: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
 }
 fieldset fieldset div {
 	margin: 0 20px;
@@ -575,7 +583,7 @@ textarea {
 select {
 	clear: both;
 	vertical-align: text-bottom;
-	padding: 0.4em;
+	padding: 0.39em;
 	min-width: 21.1em;
 }
 .ui-datepicker-title select {
