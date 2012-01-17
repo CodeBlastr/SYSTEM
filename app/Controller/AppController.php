@@ -82,9 +82,6 @@ class AppController extends Controller {
 		#$this->Condition->checkAndFire('is_read', $conditions, $this->request->data); */
 		# End Condition Check #
 		# End DO NOT DELETE #
-		
-		$this->_handlePaginatorSorting();
-		$this->_handlePaginatorFiltering();
 		$this->_configAuth();
 		$this->_handleJson();
 
@@ -160,6 +157,22 @@ class AppController extends Controller {
 			}
 		}
 	}
+
+
+/**
+ * Over write of core paginate method
+ * to handle auto filtering.
+ *
+ * @param string
+ * @param array
+ * @param array
+ */
+	public function paginate($object = null, $scope = array(), $whitelist = array()) {
+		$this->_handlePaginatorSorting();
+		$this->_handlePaginatorFiltering();
+		return parent::paginate($object, $scope, $whitelist);
+	}
+
 	
 /**
  * Handles when a page is being called after the context_sort element is used. 
