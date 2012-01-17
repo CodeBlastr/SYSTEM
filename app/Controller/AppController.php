@@ -168,8 +168,8 @@ class AppController extends Controller {
  * @param array
  */
 	public function paginate($object = null, $scope = array(), $whitelist = array()) {
-		$this->_handlePaginatorSorting();
-		$this->_handlePaginatorFiltering();
+		$this->_handlePaginatorSorting($object);
+		$this->_handlePaginatorFiltering($object);
 		return parent::paginate($object, $scope, $whitelist);
 	}
 
@@ -183,7 +183,7 @@ class AppController extends Controller {
  *
  * @return null
  */
-	private function _handlePaginatorSorting() {
+	private function _handlePaginatorSorting($object = null) {
 		#debug($this->request->url.$this->request->query['contextSorter']);
 		if (!empty($this->request->query['contextSorter'])) {
 			$this->redirect($this->request->query['contextSorter']);
@@ -197,10 +197,10 @@ class AppController extends Controller {
  * @param void
  * @return void
  */
- 	private function _handlePaginatorFiltering() {
+ 	private function _handlePaginatorFiltering($object = null) {
 		$empty = empty($this->request->params['named']['filter']) ? true : false;
 		if (!empty($empty)) {
-			$this->__handlePaginatorArchivable();
+			$this->__handlePaginatorArchivable($object);
 		}
 		
 		#filter by database field full value
@@ -208,7 +208,7 @@ class AppController extends Controller {
 		if (!empty($filter) && is_array($filter)) {
 			# use an OR filter if we do multiple filters
 			foreach ($filter as $name) {
-				$this->__handlePaginatorFiltering(urldecode($name));
+				$this->__handlePaginatorFiltering(urldecode($name), $object);
 			}
 		} else if (!empty($filter)) {
 			$this->__handlePaginatorFiltering(urldecode($filter));
@@ -219,10 +219,10 @@ class AppController extends Controller {
 		if (!empty($starter) && is_array($starter)) {
 			# use an OR filter if we do multiple filters
 			foreach ($starter as $start) {
-				$this->__handlePaginatorStarter(urldecode($start));
+				$this->__handlePaginatorStarter(urldecode($start), $object);
 			}
 		} else if (!empty($starter)) {
-			$this->__handlePaginatorStarter(urldecode($starter));
+			$this->__handlePaginatorStarter(urldecode($starter), $object);
 		}
 	}
 	
@@ -232,11 +232,15 @@ class AppController extends Controller {
  * @param void
  * @return void
  */
-	private function __handlePaginatorArchivable() {
-		$modelName = $this->modelClass; // the model name for this controller
-		$modelFields = $this->$modelName->schema(); // list of table columns for this model
-		if (!empty($modelFields['is_archived'])) {
-			$this->redirect(array('filter' => 'archived:0'));
+	private function __handlePaginatorArchivable($object = null) {
+		$modelName = !empty($object) ? $object : $this->modelClass; // the model name for this controller
+		if (class_exists($modelName)) {
+			$Model = new $modelName;	
+			# list of table columns for this model	
+			$modelFields = $Model->schema(); 
+			if (!empty($modelFields['is_archived'])) {
+				$this->redirect(array('filter' => 'archived:0'));
+			}
 		}
 	}
 
@@ -247,7 +251,7 @@ class AppController extends Controller {
  * @param mixed
  * @return void
  */
-	private function __handlePaginatorFiltering($named) {
+	private function __handlePaginatorFiltering($named, $object = null) {
 		$fieldValue = substr($named, strpos($named, ':') + 1); // returns 'incart' from 'status:incart'
 		$fieldValue = $fieldValue == 'null' ? null : $fieldValue;  // handle null as a value		
 		$fieldName = $this->__paginatorFieldName($named);
@@ -274,7 +278,7 @@ class AppController extends Controller {
  * @param mixed
  * @return void
  */
-	private function __handlePaginatorStarter($startString) {
+	private function __handlePaginatorStarter($startString, $object = null) {
 		$fieldValue = substr($startString, strpos($startString, ':') + 1); // returns 'incart' from 'status:incart'
 		$fieldValue = $fieldValue == 'null' ? null : $fieldValue;  // handle null as a value
 		$fieldName = $this->__paginatorFieldName($startString);
@@ -295,7 +299,7 @@ class AppController extends Controller {
  * @param string	A string which is close to a db field name.
  * @return string
  */
-	private function __paginatorFieldName($string) {
+	private function __paginatorFieldName($string, $object = null) {
 		$modelName = $this->modelClass; // the model name for this controller
 		$modelFields = $this->$modelName->schema(); // list of table columns for this model
 		$fieldName = Inflector::underscore(substr($string, 0, strpos($string, ':'))); // standardizes various name versions
