@@ -74,7 +74,6 @@ class ZuhaSet {
 	    }
 		return $array;
 	}
-
 	
 /**
  * parse the ini within an ini string
@@ -89,6 +88,8 @@ class ZuhaSet {
 	
 /**
  * recursive array map
+ * takes an array as the first argument, and functions as the other arguments. 
+ * it applies those functions recursively to the array
  */
 	public function array_map_r() {
     	$args = func_get_args();
