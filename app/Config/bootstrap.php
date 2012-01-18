@@ -243,6 +243,7 @@ class ZuhaInflector {
 			'QuestionAnswer' => 'Questions',
 			'Used' => 'Users',
 			'User' => 'Users',
+			'Owner' => 'Users',
 			'Setting' => '',
 			'Settings' => '',
 			'Member' => 'Members',
