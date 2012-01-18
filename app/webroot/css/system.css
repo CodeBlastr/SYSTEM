@@ -32,6 +32,11 @@ Note that the class names could be updated and change often.
 .error-message, .error {
 	color: #C00;
 }
+ img:-moz-broken{
+    -moz-force-broken-image-icon:1;
+    width:24px;
+    height:24px;
+  }
 .toggleClick.toggle:before {
 	content: '\25BC \ ';
     border: 1px solid #AAAAAA;

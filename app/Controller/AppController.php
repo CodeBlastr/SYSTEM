@@ -168,7 +168,7 @@ class AppController extends Controller {
  * @param array
  */
 	public function paginate($object = null, $scope = array(), $whitelist = array()) {
-		$this->_handlePaginatorSorting($object);
+		$this->_handlePaginatorSorting();
 		$this->_handlePaginatorFiltering($object);
 		return parent::paginate($object, $scope, $whitelist);
 	}
@@ -183,7 +183,7 @@ class AppController extends Controller {
  *
  * @return null
  */
-	private function _handlePaginatorSorting($object = null) {
+	private function _handlePaginatorSorting() {
 		#debug($this->request->url.$this->request->query['contextSorter']);
 		if (!empty($this->request->query['contextSorter'])) {
 			$this->redirect($this->request->query['contextSorter']);
@@ -197,7 +197,7 @@ class AppController extends Controller {
  * @param void
  * @return void
  */
- 	private function _handlePaginatorFiltering($object = null) {
+ 	private function _handlePaginatorFiltering($object = null) {		
 		$empty = empty($this->request->params['named']['filter']) ? true : false;
 		if (!empty($empty)) {
 			$this->__handlePaginatorArchivable($object);
@@ -211,7 +211,7 @@ class AppController extends Controller {
 				$this->__handlePaginatorFiltering(urldecode($name), $object);
 			}
 		} else if (!empty($filter)) {
-			$this->__handlePaginatorFiltering(urldecode($filter));
+			$this->__handlePaginatorFiltering(urldecode($filter), $object);
 		}
 		
 		#filter by starting letter of database field
@@ -225,6 +225,36 @@ class AppController extends Controller {
 			$this->__handlePaginatorStarter(urldecode($starter), $object);
 		}
 	}
+
+/**
+ * Checks to see if we're paginating a sub model one level deep.
+ *
+ * If we are then we get the class and return the model schema, if not return false.
+ * @param string
+ * @return mixed
+ */
+	private function _getPaginatorVars($object, $field) {
+		$ModelName = $this->modelClass;
+		if (@$this->$object->name) {
+			$Object = $this->$object;
+		} else if (@$this->$ModelName->$object->name) {
+			$Object = $this->$ModelName->$object;
+		} else if (@$this->$ModelName->name) {
+			$Object = $this->$ModelName;
+		} 
+		
+		if (@$Object->name) {
+			$options['alias'] = !empty($object) ? $object : $ModelName;
+			$options['schema'] = $Object->schema();
+			$options['fieldName'] = $this->__paginatorFieldName($field, $options['schema']);
+			$options['fieldValue'] = substr($field, strpos($field, ':') + 1); // returns 'incart' from 'status:incart'
+			$options['fieldValue'] = $options['fieldValue'] == 'null' ? null : $options['fieldValue'];  // handle null as a value
+		
+			return $options;
+		} else {
+			return null;
+		}			
+	}
 	
 /**
  * Removed archived records from paginated lists by default.
@@ -232,15 +262,11 @@ class AppController extends Controller {
  * @param void
  * @return void
  */
-	private function __handlePaginatorArchivable($object = null) {
-		$modelName = !empty($object) ? $object : $this->modelClass; // the model name for this controller
-		if (class_exists($modelName)) {
-			$Model = new $modelName;	
-			# list of table columns for this model	
-			$modelFields = $Model->schema(); 
-			if (!empty($modelFields['is_archived'])) {
-				$this->redirect(array('filter' => 'archived:0'));
-			}
+	private function __handlePaginatorArchivable($object) {
+		$options = $this->_getPaginatorVars($object, 'is_archived');
+		
+		if (!empty($options['schema']['is_archived'])) {
+			$this->redirect(array('filter' => 'archived:0'));
 		}
 	}
 
@@ -251,20 +277,16 @@ class AppController extends Controller {
  * @param mixed
  * @return void
  */
-	private function __handlePaginatorFiltering($named, $object = null) {
-		$fieldValue = substr($named, strpos($named, ':') + 1); // returns 'incart' from 'status:incart'
-		$fieldValue = $fieldValue == 'null' ? null : $fieldValue;  // handle null as a value		
-		$fieldName = $this->__paginatorFieldName($named);
-		$this->pageTitleForLayout = __(' %s ', $fieldValue) . $this->pageTitleForLayout;
+	private function __handlePaginatorFiltering($field, $object) {
+		$options = $this->_getPaginatorVars($object, $field);
 		
-		if (!empty($fieldName)) {
-			$modelName = $this->modelClass; // the model name for this controller
-			$modelFields = $this->$modelName->schema(); // list of table columns for this model
-			if ($modelFields[$fieldName]['type'] == 'datetime' || $modelFields[$fieldName]['type'] == 'date') {
-				$this->paginate['conditions'][$this->modelClass.'.'.$fieldName.' >'] = $fieldValue;
+		if (!empty($options['fieldName'])) {
+			if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {
+				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' >'] = $options['fieldValue'];
 			} else {
-				$this->paginate['conditions'][$this->modelClass.'.'.$fieldName] = $fieldValue;
+				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']] = $options['fieldValue'];
 			}
+			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
 			# no matching field don't filter anything
 			$this->Session->setFlash(__('Invalid field filter attempted.'));
@@ -278,14 +300,12 @@ class AppController extends Controller {
  * @param mixed
  * @return void
  */
-	private function __handlePaginatorStarter($startString, $object = null) {
-		$fieldValue = substr($startString, strpos($startString, ':') + 1); // returns 'incart' from 'status:incart'
-		$fieldValue = $fieldValue == 'null' ? null : $fieldValue;  // handle null as a value
-		$fieldName = $this->__paginatorFieldName($startString);
-		$this->pageTitleForLayout = __(' %s ', $fieldValue) . $this->pageTitleForLayout;
+	private function __handlePaginatorStarter($startField, $object) {
+		$options = $this->_getPaginatorVars($object, $startField);
 		
-		if (!empty($fieldName)) {
-			$this->paginate['conditions'][$this->modelClass.'.'.$fieldName.' LIKE'] = $fieldValue . '%';
+		if (!empty($options['fieldName'])) {
+			$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' LIKE'] = $options['fieldValue'] . '%';
+			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
 			# no matching field don't filter anything
 			$this->Session->setFlash(__('Invalid starter filter attempted.'));
@@ -299,9 +319,7 @@ class AppController extends Controller {
  * @param string	A string which is close to a db field name.
  * @return string
  */
-	private function __paginatorFieldName($string, $object = null) {
-		$modelName = $this->modelClass; // the model name for this controller
-		$modelFields = $this->$modelName->schema(); // list of table columns for this model
+	private function __paginatorFieldName($string, $modelFields) {
 		$fieldName = Inflector::underscore(substr($string, 0, strpos($string, ':'))); // standardizes various name versions
 		
 		if (!empty($modelFields[$fieldName])) {
@@ -314,7 +332,7 @@ class AppController extends Controller {
 			# match is_something naming convention
 			return 'is_'.$fieldName;
 		} else {
-			return false;
+			return null;
 		}
 	}
 	

@@ -21,5 +21,4 @@ $this->set('context_menu', array('menus' => array(
 			$this->Html->link(__('Login', true), array('plugin' => 'users', 'controller' => 'users', 'action' => 'login', 'admin' => 0)),
 			 )
 		),
-	)));
-?>
+	))); ?>
