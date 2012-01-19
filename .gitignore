@@ -7,6 +7,8 @@
 /app/tmp/cache/persistent/cake*
 /app/tmp/cache/views/cake*
 /app/tmp/cache/cake*
+/app/tmp/testscake*
+/app/tmp/tests/cake*
 \#*\#
 /plugins
 /sites/**/Config/database.php
