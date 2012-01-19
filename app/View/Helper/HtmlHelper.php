@@ -312,7 +312,9 @@ class HtmlHelper extends AppHelper {
             
             $finaloptions = array_merge($defaultoptions, $options);
 
-            echo $this->script('ckeditor/plugins/video_js/video_js');
+            echo $this->script('ckeditor/plugins/video_js/video', array('inline' => false));
+            echo $this->css('ckeditor/plugins/video_js/video-js', array('inline' => false));
+			echo $this->scriptBlock('VideoJS.setupAllWhenReady();', array('inline' => false));
 
             $videoPlayer = '<div class="video-js-box">'
                             .'<video id="example_video_1" class="video-js" width="' . $finaloptions['width'] . '" height="' . $finaloptions['height'] . '" controls="' . $finaloptions['controls'] . '" preload="' . $finaloptions['preload'] . '" poster="' . $finaloptions['poster'] . '">';
@@ -331,7 +333,6 @@ class HtmlHelper extends AppHelper {
             } else {
                 //if video path param is string
                 $videoPlayer .= '<source src="' . $videopath . '" />';
-
                 $flashFallbackSource = $videopath;
             }
 
