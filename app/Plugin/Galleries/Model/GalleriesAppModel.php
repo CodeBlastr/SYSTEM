@@ -19,10 +19,10 @@ class GalleriesAppModel extends AppModel {
 		$galleryType = defined('__GALLERY_DEFAULT_TYPE') ? __GALLERY_DEFAULT_TYPE : null;
 		$smallImageWidth = defined('__GALLERY_IMAGE_DEFAULT_THUMB_WIDTH') ? __GALLERY_IMAGE_DEFAULT_THUMB_WIDTH : null;
 		$smallImageHeight = defined('__GALLERY_IMAGE_DEFAULT_THUMB_HEIGHT') ? __GALLERY_IMAGE_DEFAULT_THUMB_HEIGHT : null;
-		$mediumImageWidth = defined('__GALLERY_DEFAULT_THUMB_WIDTH') ? __GALLERY_IMAGE_DEFAULT_THUMB_WIDTH : null;
-		$mediumImageHeight = defined('__GALLERY_DEFAULT_THUMB_HEIGHT') ? __GALLERY_IMAGE_DEFAULT_THUMB_WIDTH : null;
-		$largeImageWidth = defined('__GALLERY_IMAGE_DEFAULT_FULL_WIDTH') ? __GALLERY_IMAGE_DEFAULT_THUMB_WIDTH : null;
-		$largeImageHeight = defined('__GALLERY_IMAGE_DEFAULT_FULL_HEIGHT') ? __GALLERY_IMAGE_DEFAULT_THUMB_WIDTH : null;
+		$mediumImageWidth = defined('__GALLERY_DEFAULT_THUMB_WIDTH') ? __GALLERY_DEFAULT_THUMB_WIDTH : null;
+		$mediumImageHeight = defined('__GALLERY_DEFAULT_THUMB_HEIGHT') ? __GALLERY_DEFAULT_THUMB_HEIGHT : null;
+		$largeImageWidth = defined('__GALLERY_IMAGE_DEFAULT_FULL_WIDTH') ? __GALLERY_IMAGE_DEFAULT_FULL_WIDTH : null;
+		$largeImageHeight = defined('__GALLERY_IMAGE_DEFAULT_FULL_HEIGHT') ? __GALLERY_IMAGE_DEFAULT_FULL_HEIGHT : null;
 		$conversionType = defined('__GALLERY_RESIZE_OR_CROP') ? __GALLERY_RESIZE_OR_CROP : null;
 		
 		# gallery default setting constants

@@ -23,7 +23,7 @@ $this->set('context_menu', array('menus' => array(
 			$this->Html->link(__('List Enumerations', true), array('controller' => 'enumerations', 'action' => 'index')),
 			$this->Html->link(__('New Contact Detail Type', true), array('controller' => 'enumerations', 'action' => 'add')),
 			$this->Html->link(__('List Contacts', true), array('controller' => 'contacts', 'action' => 'index')),
-			echo $this->Html->link(__('New Contact', true), array('controller' => 'contacts', 'action' => 'add')),
+			$this->Html->link(__('New Contact', true), array('controller' => 'contacts', 'action' => 'add')),
 			)
 		),
 	)));

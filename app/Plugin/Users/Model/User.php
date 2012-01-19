@@ -248,6 +248,28 @@ class User extends AppModel {
 			throw new Exception(__d('users', 'Invalid user data.', true));
 		}
 	}
+	
+	
+/**
+ * Handles a user update
+ *
+ * @param {array}		An array in the array(model => array(field)) format
+ * @todo		 		Not sure the rollback for user_id works in all cases (Line 66)
+ */
+	public function update($data) {
+		$data = $this->_cleanAddData($data);
+		
+		if ($this->saveAll($data)) {
+			return true;
+			/** Hopefully saveAll will handle this now (if the data is coming in formatted right it should be)...
+			if (in_array('Orders', CakePlugin::loaded())) : 
+				$this->User->OrderPayment->save($this->request->data);
+				$this->User->OrderShipment->save($this->request->data);
+			endif; */
+		} else {
+			throw new Exception(__d('users', 'Invalid user data.' . implode(', ', $this->invalidFields)));
+		}
+	}
 
 
 /**
@@ -492,6 +514,11 @@ class User extends AppModel {
 			$data['User']['last_name'] = trim(preg_replace('/(.*)[ ]/i', '', $data['User']['full_name']));
 		}
 		
+		# update first name and last name into full_name
+		if (!empty($data['User']['first_name']) && !empty($data['User']['last_name']) && empty($data['User']['full_name'])) {
+			$data['User']['full_name'] = $data['User']['first_name'] . ' ' . $data['User']['last_name'];
+		}
+				
 		return $data;
 	}
 	

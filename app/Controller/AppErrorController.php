@@ -31,7 +31,7 @@ class AppErrorController extends AppController {
 
 		
     public function handleError($request) {		
-		if (Configure::read('debug') < 1) : 
+		if (Configure::read('debug') < 1) { 
 			$Alias = ClassRegistry::init('Alias');
 			if ($request->here == '/') {
 				$request->here = 'home';
@@ -65,7 +65,7 @@ class AppErrorController extends AppController {
 				endif;
 			endif;
 	        exit;
-		endif;  
+		}  
     }
 
 

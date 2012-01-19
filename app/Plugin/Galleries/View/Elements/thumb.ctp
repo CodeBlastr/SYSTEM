@@ -25,43 +25,33 @@ if (!empty($model) && !empty($foreignKey)) {
 	#echo __('Gallery model and foreignKey were not provided (Galleries/View/Elements/thumb.ctp)');
 }
 # set up the config vars
-$thumbLink = !empty($thumbLink) ? $thumbLink : array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'Gallery', $galleryThumb['Gallery']['id']);
-$thumbTitle = !empty($thumbTitle) ? ' title ="'.$thumbTitle.'"' : ' title ="'.$galleryThumb['GalleryThumb']['filename'].'"';
+$thumbLink = !empty($thumbLink) ? $thumbLink : (!empty($galleryThumb) ? array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'Gallery', $galleryThumb['Gallery']['id']) : null);
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
 # get width from settings table
 $indexWidth = !empty($galleryThumb['GallerySettings']['indexImageWidth']) ? $galleryThumb['GallerySettings']['indexImageWidth'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'];
 $indexHeight = !empty($galleryThumb['GallerySettings']['indexImageHeight']) ? $galleryThumb['GallerySettings']['indexImageHeight'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'];
 # if the width was defined in the element call
-$thumbWidth = !empty($thumbWidth) ? $thumbWidth : $indexWidth;
-$thumbHeight = !empty($thumbHeight) ? $thumbHeight : $indexHeight;
+$thumbWidth = !empty($thumbWidth) ? array('width' => $thumbWidth) : array('width' => $indexWidth);
+$thumbHeight = !empty($thumbHeight) ? array('height' => $thumbHeight) : array('height' => $indexHeight);
+$thumbAlt = !empty($thumbAlt) ? array('alt' => $thumbAlt) : array('alt' => $galleryThumb['GalleryThumb']['filename']);
+$thumbClass = !empty($thumbClass) ? array('class' => $thumbClass) : array('class' => 'gallery-thumb');
+$thumbId = !empty($thumbId) ? array('id' => $thumbId) : array('id' => 'gallery'.$galleryThumb['Gallery']['id']);
+$thumbImageOptions = array_merge($thumbWidth, $thumbHeight, $thumbAlt, $thumbClass, $thumbId);
 
-$thumbAlt = !empty($thumbAlt) ? $thumbAlt : $galleryThumb['GalleryThumb']['filename'];
-$thumbClass = !empty($thumbClass) ? ' class="'.$thumbClass.'"' : ' class="gallery-thumb"';
-$thumbId = !empty($thumbId) ? ' id="'.$thumbId.'"' : ' id="gallery'.$galleryThumb['Gallery']['id'].'"';
 $thumbDiv = isset($thumbDiv) ? ($thumbDiv==true ? true : false) : true; //added to skip the display of div on demand (true/false)
-$thumbLinkClass = !empty($thumbLinkClass) ? $thumbLinkClass : ''; //can have  class="gallery-thumb-link-class"
+$thumbLinkOptions = !empty($thumbLinkOptions) ? array_merge($thumbClass, $thumbId, $thumbLinkOptions, array('escape' => false)) : array('escape' => false);
 $thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; //to append anything to the image within the link
 
 if (!empty($galleryThumb)) {
 	if($thumbDiv)	{ echo "<div {$thumbClass} {$thumbId}>";  } 
 		$imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'.$thumbSize.'/'.$galleryThumb['GalleryThumb']['filename'];
-        $image = $this->Html->image($imagePath,
-			array(
-				'width' => $thumbWidth, 
-				'height' => $thumbHeight,
-				'alt' => $thumbAlt,
-				),
+        $image = $this->Html->image($imagePath, $thumbImageOptions,
 			array(
 				'conversion' => $galleryThumb['GallerySettings']['conversionType'],
 				'quality' => 75,
 				));	
-		echo $this->Html->link($image . $thumbLinkAppend,
-			$thumbLink, 
-			array(
-				'escape' => false,
-				'class' => $thumbLinkClass,
-				'title' => $thumbTitle,
-				)); 
+		echo $this->Html->link($image . $thumbLinkAppend, $thumbLink, $thumbLinkOptions); 
+		
 	if($thumbDiv) { echo "</div>"; } 
 } else {
 	if($thumbDiv) {  echo "<div {$thumbClass} {$thumbId}>"; }
@@ -72,12 +62,8 @@ if (!empty($galleryThumb)) {
 				'height' => $thumbHeight,
 				'alt' => 'no image',
 				));	
-		echo $this->Html->link($image . $thumbLinkAppend,
-			$thumbLink, 
-			array(
-				'escape' => false,
-				'class' => $thumbLinkClass,
-				'title' => $thumbTitle,
-				));
+		echo !empty($thumbLink) ? 
+			$this->Html->link($image . $thumbLinkAppend, $thumbLink, $thumbLinkOptions) :
+			$image;
 	if($thumbDiv) { echo '</div>'; } 
 }

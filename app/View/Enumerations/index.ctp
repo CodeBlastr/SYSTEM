@@ -1,16 +1,11 @@
-<div>
+<div class="index enumerations">
+	<h2><?php echo $page_title_for_layout; ?></h2>
+	<p><span class="label">Filter:</span> | <?php  echo $this->Html->link('ALL', array('controller' => 'enumerations', 'action' => 'index')) ?> |
 	<?php
-	echo $this->Paginator->prev();
-	echo $this->Paginator->numbers();
-	echo $this->Paginator->next();
-	?>
-	<div style='text-align:right;'><b>Type Filter:</b> | <?php  echo $this->Paginator->link('ALL') ?> |
-		<?php
-		foreach(range('A','Z') as $letter) {
-			echo ' ' . $this->Paginator->link($letter,array('filter'=>$letter)) . ' |';
-		}
-		?>
-	</div>
+	foreach(range('A','Z') as $letter) {
+		echo ' ' . $this->Html->link($letter, array('start:type' => $letter)) . ' |';
+	}?>
+	</p>
 	<table>
 		<tr>
 			<th>Type</th>
@@ -27,21 +22,21 @@
 				<a class='arrow-down-graphic' href='/admin/enumerations/changeOrder/<?php echo $enumeration['Enumeration']['id'] ?>/decrease' title='Decrease'>Decrease</a>
 			</td>
 			<td>
-				<a class='sym-button' href='/admin/enumerations/edit/<?php echo $enumeration['Enumeration']['id'] ?>'>Edit</a>
+            	<?php echo $this->Html->link('Edit', array('action' => 'edit', $enumeration['Enumeration']['id'])); ?>
 				<a class='sym-button' href='/admin/enumerations/delete/<?php echo $enumeration['Enumeration']['id'] ?>' onclick='return confirmDelete("<?php echo $enumeration['Enumeration']['name'] ?>")' >Delete</a>
 			</td>
 		</tr>
 		<?php } ?>
 	</table>
-	<?php
-	echo $this->Paginator->prev();
-	echo $this->Paginator->numbers();
-	echo $this->Paginator->next();
-	?>
-	<div style='text-align:right;margin-top:4px;'><a class='sym-button' href='/admin/<?php echo $this->request->params['controller'] ?>/add'>Add <?php echo ucwords(Inflector::singularize($this->request->params['controller'])); ?></a></div>
 </div>
-<script type='text/javascript'>
-function confirmDelete(string) {
-	return confirm('Are you sure you want to delete "' + string + '"');
-}
-</script>
+<?php
+echo $this->element('paging');
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Enumerations',
+		'items' => array(
+			$this->Html->link('Add', array('plugin' => null, 'controller' => 'enumerations', 'action' => 'add')),    
+			)
+		),
+	))); ?>

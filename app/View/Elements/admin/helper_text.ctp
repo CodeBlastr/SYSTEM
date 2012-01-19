@@ -3,22 +3,14 @@
 
 <div id="helperText">
 <?php if (isset($_GET['e']) && $_GET['e'] == 'sent') { ?>
-
-	<p>Thank you for the suggestion.</p>
-    
+	<p>Thank you for the suggestion.</p>    
 <?php } else if (!empty($helper_text_for_layout)) { ?>
-		
-     <?php echo $helper_text_for_layout; ?>
-        
+     <?php echo $helper_text_for_layout; ?>        
 <?php } else if ($url == 'users.user_groups.admin_index') { ?>
-
 	<p>Group users into departments and/or and group themselves for social networking. <a href="#" class="toggleClick" name="helperForm">Suggest Help Text Improvement</a></p>
-    
 <?php } else { ?>
-
   <p>No help text available for this page. <a href="#" class="toggleClick" name="helperForm">Please make a suggestion</a></p> 	
-  
-<?php }?>  
+<?php } ?>  
 	<div style="display: none; margin: 1em 0 0 0;" id="helperForm">
 		<form action="/js/ckeditor/email_process.php" method="post">
 	    	<div class="inputs">

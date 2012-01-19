@@ -1,8 +1,9 @@
 <div class="privileges">
 	<h1>List of Sync'd Plugins</h1>
-    <p>Continue hitting "run aco sync" until you reach workflows, to fully update the sections available to the management of privileges.</p>
+    <p>This page will automatically refresh, until the sections available to the management of privileges are fully updated.</p>
+    <p>This may take a few minutes.  Please wait until the process completes.</p>
     <ul>
-    
+
 <?php
 foreach (CakeSession::read('Privileges.lastPlugin') as $text) :
 	echo '<li>' . $text . '</li>';

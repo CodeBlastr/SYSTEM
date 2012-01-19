@@ -13,6 +13,8 @@
 		echo $this->Form->input('User.confirm_password', array('value' => '', 'type' => 'password'));
 	} else {
 		echo $this->element('snpsht', array('useGallery' => true, 'userId' => $this->request->data['User']['id'], 'thumbSize' => 'medium', 'thumbLink' => 'default')); 
+    	echo $this->Html->link('Change Photo', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'edit', 'User', $this->request->data['User']['id'])); echo ' ';
+    	echo $this->Html->link('Change Password', array('action' => 'edit', $this->request->data['User']['id'], 'cpw' => 1));
 		echo $this->Form->input('User.first_name');
 		echo $this->Form->input('User.last_name');
 		echo $this->Form->input('User.username');

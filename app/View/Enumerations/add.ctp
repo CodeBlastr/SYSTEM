@@ -8,7 +8,7 @@ if(count($enumerationTypes)) {
 else {
 	echo $this->Form->input('Enumeration.type');
 }
-echo $this->Form->button('Done',array('type'=>'submit'));
+echo $this->Form->end('Done');
 ?>
 
 <script type='text/javascript'>
