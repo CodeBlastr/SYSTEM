@@ -198,9 +198,8 @@ class AppController extends Controller {
  * @param void
  * @return void
  */
- 	private function _handlePaginatorFiltering($object = null) {		
-		$empty = empty($this->request->params['named']['filter']) ? true : false;
-		if (!empty($empty)) {
+ 	private function _handlePaginatorFiltering($object = null) {
+		if (empty($this->request->params['named']['filter'])) {
 			$this->__handlePaginatorArchivable($object);
 		}
 		
@@ -266,7 +265,7 @@ class AppController extends Controller {
 	private function __handlePaginatorArchivable($object) {
 		$options = $this->_getPaginatorVars($object, 'is_archived');
 		if (!empty($options['schema']['is_archived'])) {
-			$this->redirect($this->request->here . '/filter:archived:0/');
+			$this->redirect(Router::reverse($this->request->params + array('filter' => 'archived:0')));
 		}
 	}
 
