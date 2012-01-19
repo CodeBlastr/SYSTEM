@@ -22,11 +22,18 @@
  */
 class AdminController extends AppController {
 
-	var $name = 'Admin';
-    var $uses = array();
-	var $dbVersion = __SYSTEM_ZUHA_DB_VERSION;
+	public $name = 'Admin';
+    public $uses = array();
+	public $dbVersion = null;
 
 
+	public function __construct($request = null, $response = null) {
+		parent::__construct($request, $response);
+		if (defined('__SYSTEM_ZUHA_DB_VERSION')) {
+			$this->dbVersion = __SYSTEM_ZUHA_DB_VERSION;
+		}
+	}
+	
 	/**
 	 * Loads variables from section reporting to send to the view for display. 
 	 *
@@ -90,7 +97,7 @@ class AdminController extends AppController {
 	function _updateSettingVersion() {
 		$this->request->data['Setting']['type'] = 'System';
 		$this->request->data['Setting']['name'] = 'ZUHA_DB_VERSION';
-		$this->request->data['Setting']['value'] = $this->dbVersion + 0.0001;
+		$this->request->data['Setting']['value'] = $this->dbVersion;
 		
 		if ($this->Setting->add($this->request->data)) {
 			$this->dbVersion = $this->dbVersion + 0.0001;

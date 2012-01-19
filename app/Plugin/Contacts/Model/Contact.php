@@ -81,19 +81,6 @@ class Contact extends ContactsAppModel {
 			'finderQuery' => '',
 			'counterQuery' => ''
 		),
-		'Task' => array(
-			'className' => 'Tasks.Task',
-			'foreignKey' => 'foreign_key',
-			'dependent' => true,
-			'conditions' => array('Task.model' => 'Contact'),
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		),
 	);
 
 
@@ -132,7 +119,25 @@ class Contact extends ContactsAppModel {
 	
 	function __construct($id = false, $table = null, $ds = null) {
     	parent::__construct($id, $table, $ds);
-		$this->order = array("{$this->alias}.name");		
+		$this->order = array("{$this->alias}.name");	
+		
+		if (in_array('Tasks', CakePlugin::loaded())) {
+			$this->hasMany[] = array(
+				'Task' => array(
+					'className' => 'Tasks.Task',
+					'foreignKey' => 'foreign_key',
+					'dependent' => true,
+					'conditions' => array('Task.model' => 'Contact'),
+					'fields' => '',
+					'order' => '',
+					'limit' => '',
+					'offset' => '',
+					'exclusive' => '',
+					'finderQuery' => '',
+					'counterQuery' => ''
+				),
+			);
+		}
     }
 	
 	

@@ -29,38 +29,34 @@
 		extract(unserialize(__ELEMENT_USERS_SNPSHT));
 	}
 // set up the config vars
-	$useGallery = (!empty($useGallery) ? $useGallery : false);
+	$useGallery = !empty($useGallery) ? $useGallery : false;
 	$sessionUserId = $this->Session->read('Auth.User.id');
-	$userId = (!empty($userId) ? $userId : (!empty($sessionUserId) && empty($userId) ? $sessionUserId : false));
-	$showFirstName = (!empty($showFirstName) ? $showFirstName : false);
-	$showLastName = (!empty($showLastName) ? $showLastName : false);
-	$showViewLink = (!empty($showViewLink) && !empty($userId) ? $showViewLink : false);
-	$showEditLink = (!empty($showEditLink) && !empty($userId) && $userId == $sessionUserId ? $showEditLink : false);
-	$thumbLink = (!empty($thumbLink) ? $thumbLink : '/users/users/view/'.$userId);
-	$thumbTitle = (!empty($thumbTitle) ? $thumbTitle : null);
-	$thumbSize = (!empty($thumbSize) ? $thumbSize : 'medium');
-	$thumbWidth = (!empty($thumbWidth) ? $thumbWidth : null);
-	$thumbHeight = (!empty($thumbHeight) ? $thumbHeight : null);
-	$thumbAlt = (!empty($thumbAlt) ? $thumbAlt : null);
-	$thumbClass = (!empty($thumbClass) ? $thumbClass : 'user-thumb');
-	$thumbId = (!empty($thumbId) ? $thumbId : 'userThumb'.$userId);
+	$userId = !empty($userId) ? $userId : (!empty($sessionUserId) && empty($userId) ? $sessionUserId : false);
+	$showFirstName = !empty($showFirstName) ? $showFirstName : false;
+	$showLastName = !empty($showLastName) ? $showLastName : false;
+	$showViewLink = !empty($showViewLink) && !empty($userId) ? $showViewLink : false;
+	$showEditLink = !empty($showEditLink) && !empty($userId) && $userId == $sessionUserId ? $showEditLink : false;
+	$thumbLink = !empty($thumbLink) ? $thumbLink : '/users/users/view/'.$userId;
+	$thumbSize = !empty($thumbSize) ? $thumbSize : 'medium';
+	#image options
+	$thumbWidth = !empty($thumbWidth) ? array('width' => $thumbWidth) : array();
+	$thumbHeight = !empty($thumbHeight) ? array('height' => $thumbHeight) : array();
+	$thumbAlt = !empty($thumbAlt) ? array('alt' => $thumbAlt) : array('alt' => 'snpsht');
+	$thumbImageOptions = array_merge($thumbWidth, $thumbHeight, $thumbAlt);
+	#link options
+	$thumbTitle = !empty($thumbTitle) ? array('title' => $thumbTitle) : array();
+	$thumbClass = !empty($thumbClass) ? array('class' => $thumbClass) : array('class' => 'user-thumb');
+	$thumbId = !empty($thumbId) ? array('id' => $thumbId) : array('id' => 'userThumb'.$userId);
+	$thumbLinkOptions = array_merge($thumbTitle, $thumbClass, $thumbId);
 ?>
 
 <?php 
 	$cfg['model'] = 'User';
 	$cfg['foreignKey'] = $userId;
-	#NOTE : I had to remove this cache because there are places where the user gallery
-	# would link to the gallery, and other places where it would link to the user profile
-	# therefore we need to give it a unique id based on the thumblink as well.
-	#$cfg['cache'] = array('key' => 'gallery-thumb-'.$thumbSize.'-'.$userId, 'time' => '+2 days');
-	$cfg['thumbLink'] = (!empty($thumbLink) ? $thumbLink : null);
-	$cfg['thumbTitle'] = $thumbTitle;
 	$cfg['thumbSize'] = $thumbSize;
-	$cfg['thumbWidth'] = $thumbWidth;
-	$cfg['thumbHeight'] = $thumbHeight;
-	$cfg['thumbAlt'] = $thumbAlt;
-	$cfg['thumbClass'] = $thumbClass;
-	$cfg['thumbId'] = $thumbId;
+	$cfg['thumbLink'] = (!empty($thumbLink) ? $thumbLink : null);
+	$cfg['thumbLinkOptions'] = $thumbLinkOptions;
+	$cfg['thumbImageOptions'] = $thumbImageOptions;
 	
  	$user = (!empty($userId) ? $this->requestAction('/users/users/view/'.$userId) : null);
 ?>

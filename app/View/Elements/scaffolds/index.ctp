@@ -1,10 +1,10 @@
 <?php 
 # setup defaults
 $modelName = !empty($modelName) ? $modelName : Inflector::classify($this->request->params['controller']); // ContactPerson
-$pluginName = !empty($pluginName) ? $pluginName : pluginize($modelName); // contacts
+$pluginName = !empty($pluginName) ? $pluginName : ZuhaInflector::pluginize($modelName); // contacts
 $controller = !empty($controller) ? $controller : Inflector::tableize($modelName); // contact_people, projects
 $indexClass = !empty($indexClass) ? $indexClass : null; // collapsed value will reduce it to headlines only by default
-if (!empty($data)) : 
+if (!empty($data)) { 
 	# setup defaults
 	$indexVar = Inflector::variable($controller); // contactPeople, projects
 	$humanModel = Inflector::humanize(Inflector::underscore($modelName)); // Contact Person
@@ -42,6 +42,7 @@ foreach ($data as $dat) {
 	$link['actionName'] = !empty($link['actionName']) ? $link['actionName'] : 'view';
 	$linkPass = !empty($link['pass']) ? preg_replace('/\{([a-zA-Z_]+)\}/e', "$$1", $link['pass']) : array($id); 
 	$viewUrl = array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName']) + $linkPass;
+	$viewUrlOptions = !empty($linkOptions) ? $linkOptions : array();
 	
 	$class = null;
 	if ($i++ % 2 == 0) {
@@ -49,7 +50,7 @@ foreach ($data as $dat) {
 	}
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
-      <div class="indexCell imageCell"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => $viewUrl), array('plugin' => 'galleries')) : null; ?> </span> </div>
+      <div class="indexCell imageCell"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => $viewUrl, 'thumbLinkOptions' => $viewUrlOptions), array('plugin' => 'galleries')) : null; ?> </span> </div>
       <div class="indexCell metaCell">
         <ul class="metaData">
           <?php 
@@ -69,12 +70,12 @@ foreach ($data as $dat) {
 						$dat[$modelName][$keyName][$displayField] : 
 						(!empty($dat[$keyName][$displayField]) ? $dat[$keyName][$displayField] : null); 
 				}
-				$keyName = Inflector::humanize($keyName);
 				# if its a date parse it into words
-				if ($keyValue == date('Y-m-d h:i:s', strtotime($keyValue)) || $keyValue == date('Y-m-d', strtotime($keyValue))) {
+				$keyDate = strtotime($keyValue);
+				if (!empty($keyDate)) {
 					$keyValue = $this->Time->timeAgoInWords($keyValue); 
 				} // human readable dates ?>
-         	<li><span class="metaDataLabel"> <?php echo $keyName.' : '; ?></span><span class="metaDataDetail" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
+         	<li class="metaDataLi <?php echo $keyName; ?>"><span class="metaDataLabel <?php echo $keyName; ?>"> <?php echo Inflector::humanize(Inflector::underscore($keyName)).' : '; ?></span><span class="metaDataDetail" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
           <?php 
 			}
 		  } // end metadata loop ?>
@@ -83,7 +84,7 @@ foreach ($data as $dat) {
       <div class="indexCell indexData">
         <div class="indexCell titleCell">
           <div class="recorddat">
-            <h3> <?php echo $this->Html->link($name, $viewUrl, array('escape' => false)); ?></h3>
+            <h3> <?php echo $this->Html->link($name, $viewUrl, array_merge($viewUrlOptions + array('escape' => false))); ?></h3>
           </div>
         </div>
         <?php if (!empty($displayDescription)) { ?>
@@ -92,7 +93,10 @@ foreach ($data as $dat) {
             <div class="truncate"> <span name="<?php echo $displayDescription; ?>" id="<?php echo $id; ?>"><?php echo strip_tags($description); ?></span> </div>
           </div>
         </div>
-        <?php } ?>
+        <?php } 
+	  	if (isset($actions) && $actions === false) {
+		  # show nothing 
+		} else { ?>
         <div class="indexCell actionCell">
           <div class="drop-holder indexDrop actions">
             <ul class="drop">
@@ -111,6 +115,8 @@ foreach ($data as $dat) {
             </ul>
           </div>
         </div>
+        <?php 
+		} // end actions false check ?>
       </div>
     </div>
     <?php
@@ -159,28 +165,29 @@ foreach ($data as $dat) {
   </ul>
 </div> */ 
 
-if (!empty($pageActions)) {
-	foreach ($pageActions as $pageAction) { 
-		$pageActionLinks[] = $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']);
-	} // end pageAction loop
-} else { 
-   	$pageActionLinks[] = $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add'));
-} // end pageActions 
+	if (!empty($pageActions)) {
+		foreach ($pageActions as $pageAction) { 
+			$pageActionLinks[] = $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']);
+		} // end pageAction loop
+	}  // end pageActions 
 
 
 # echo $this->Element('ajax_edit',  array('editFields' => $editFields)); 
-else : 
+} else {
 # Don't show anything rom the index, show a default message  
 # pulled as an element called start, from the plugin folder you're in. ?>
 <div class="index noItems">
 	<?php
-	echo $this->Element('start', array(), array('plugin' => $pluginName));
+	$startElement = !empty($startElement) ? $startElement : 'start';
+	echo $this->Element($startElement, array(), array('plugin' => $pluginName));
 	if (empty($indexOnThisPage)) { 
  		$pageActionLinks[] = $this->Html->link('Add', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add')); 
 	} ?>
 </div>
 <?php
-endif;
+} 
+
+$pageActionLinks[] = $this->Html->link(' Add ', array('plugin' => strtolower($pluginName), 'controller' => $controller, 'action' => 'add'), array('class' => 'add'));
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(

@@ -26,6 +26,7 @@ class UsersController extends UsersAppController {
 	public $uses = 'Users.User';
 	public $uid;
 	public $components = array('Email');
+	public $paginate = array();
 	public $allowedActions = array(
 		'login',
 		'desktop_login',
@@ -38,6 +39,7 @@ class UsersController extends UsersAppController {
 		'restricted',
 		);
 	
+	
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
 		if (in_array('Invite', CakePlugin::loaded())) : 
@@ -48,167 +50,39 @@ class UsersController extends UsersAppController {
 		endif;
 	}
 
-/**
- * A page to stop infinite redirect loops when there are errors.
- */
-	public function restricted() {
-	}
 
-
-/**
- * Public login function to verify access to restricted areas.
- */
-	public function login() {
-		if (!empty($this->request->data)) {
-			if ($this->Auth->login()) {
-				try {
-					$this->User->loginMeta($this->request->data);
-					#debug($this->Auth->redirect);
-					#debug($this->Auth->redirect());
-					#debug($this->Session->read());
-					#debug($this->_loginRedirect());
-	        		$this->redirect($this->_loginRedirect());
-				} catch (Exception $e) {
-					$this->Session->setFlash($e->getMessage());
-	        		$this->redirect($this->_logoutRedirect());
-				}
-		    } else {
-		        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
-		    }
-		}
-		$userRoles = $this->User->UserRole->find('list');
-		unset($userRoles[1]); // remove the administrators group by default - too insecure
-		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
-		$this->set(compact('userRoleId', 'userRoles'));
-		if (empty($this->templateId)) { $this->layout = 'login'; }
-	}
-
-
-    public function logout() {
-		if ($this->Auth->logout() || $this->Session->delete('Auth')) :
-			$this->Session->destroy();
-			$this->Session->setFlash('Successful Logout');
-			$this->redirect($this->_logoutRedirect());
-		else :
-			$this->Session->setFlash('Logout Failed');
-			$this->redirect($this->_loginRedirect());
-		endif;
-    }
-	
-
-/**
- * Set the default redirect variables, using the settings table constant.
- */
-	function _loginRedirect() {
-		# this handles redirects where a url was called that redirected you to the login page
-		$redirect = $this->Auth->redirect();
-		
-		if ($redirect == '/') {
-			# default login location
-			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
-			
-			if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) { 
-				# this setting name is deprecated, will be deleted (got rid of the DEFAULT in the setting name.)
-				if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
-					$redirect = $urlParams;
-				}
-				$redirect = __APP_DEFAULT_LOGIN_REDIRECT_URL;
-			}
-		
-			if (defined('__APP_LOGIN_REDIRECT_URL')) {
-				$urlParams = @unserialize(__APP_LOGIN_REDIRECT_URL);
-				if (!empty($urlParams) && is_numeric(key($urlParams)) && $this->Session->read('Auth.User.user_role_id')) {
-					# if the keys are numbers we're looking for a user role
-					if (!empty($urlParams[$this->Session->read('Auth.User.user_role_id')])) {
-						# if the user role is the index key then we have a special login redirect just for them 
-						#debug($urlParams[$this->Session->read('Auth.User.user_role_id')]); break; 
-						return $urlParams[$this->Session->read('Auth.User.user_role_id')];
-					} else {
-						# need a return here, to stop processing of the $redirect var
-						#debug($redirect); break; 
-						return $redirect;
-					}
-				} 
-				if (!empty($urlParams) && is_string(key($urlParams))) {
-					# if the keys are strings we've just formatted the settings by plugin, controller, action, instead of a text url
-					$redirect = $urlParams;
-				} 
-				# its not an array because it couldn't be unserialized
-				$redirect = __APP_LOGIN_REDIRECT_URL;
-			}
-		}		
-		#debug($redirect); break; 
-		return $redirect;
-	}
-	
-
-/**
- * Set the default redirect variables, using the settings table constant.
- */
-	function _logoutRedirect() {
-		if (defined('__APP_LOGOUT_REDIRECT_URL')) {
-			if ($urlParams = @unserialize(__APP_LOGOUT_REDIRECT_URL)) {
-				if (is_numeric(key($urlParams))) {
-					return $urlParams[$this->Session->read('Auth.User.user_role_id')];
-				} else {
-					return $urlParams;
-				}
-			} else {
-				return __APP_LOGOUT_REDIRECT_URL;
-			}
-		} else {
-			return array(
-				'plugin' => 'users',
-				'controller' => 'users',
-				'action' => 'login',
+	public function index() {
+		#$this->User->recursive = 0;
+		$this->paginate = !empty($this->userId) ? array('conditions' => array('User.id !=' => $this->userId)) : $this->paginate;
+		$this->paginate['fields'] = array(
+			'User.id',
+			'User.first_name',
 			);
-		}
+		$this->set('users', $this->paginate());
+		$this->set('displayName', 'first_name');
+		$this->set('displayDescription', ''); 
+		$this->set('indexClass', ''); 
+		$this->set('showGallery', true);
+		$this->set('galleryForeignKey', 'id');
+		$this->set('pageActions', array(
+			array(
+				'linkText' => 'Create',
+				'linkUrl' => array(
+					'action' => 'add',
+					),
+				),
+			array(
+				'linkText' => 'Archived',
+				'linkUrl' => array(
+					'action' => 'index',
+					'archived' => 1,
+					),
+				),
+			));
 	}
 
 
-	function checkLogin() {
-		$this->layout = false;
-		$this->autoRender = false;
-        $user = $this->User->find('first', array('conditions' => array('User.username' => $this->request->data['User']['username'], 'User.password' => AuthComponent::password($this->request->data['User']['password']))));
-     	if($user){
-     		$data['login'] = 1;
-		} else {
-		    $data['login'] = 0;
-		}
-		echo json_encode($data);
-    }
-
-/**
- * Used for Zuha Desktop integration.
- *
- * @todo 		This should be updated to some kind of API login (maybe REST) so that any apps can authenticate.
- */
-	function desktop_login() {
-
-        $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => AuthComponent::password($this->request->data['User']['password']))));
-        if($user!= null ){
-	        echo $user['User']['id'];
-			$this->layout(false);
-			$this->render(false);
-		} else{
-		    echo "Fail";
-			$this->layout(false);
-			$this->render(false);
-		}
-    }
-
-	function my() {
-		$userId = $this->Session->read('Auth.User.id');
-		if (!empty($userId)) {
-			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $userId));
-		} else {
-			$this->Session->setFlash('No Session');
-			$this->redirect('/');
-		}
-	}
-
-
-	function view($id) {
+	public function view($id) {
 		$user = $this->User->find('first', array('conditions' => array('User.id' => $id)));
 
 		# This is here, because we have an element doing a request action on it.
@@ -294,13 +168,8 @@ class UsersController extends UsersAppController {
 		$this->set('user', $user);
 	}
 
-	function index() {
-		#$this->User->recursive = 0;
-		$this->paginate = !empty($this->userId) ? array('conditions' => array('User.id !=' => $this->userId)) : $this->paginate;
-		$this->set('users', $this->paginate());
-	}
 
-	function edit($id = null) {
+	public function edit($id = null) {
 		# looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
 			$conditions = array('User.user_id' => $this->request->params['named']['user_id']);
@@ -347,16 +216,12 @@ class UsersController extends UsersAppController {
 				# upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
-			if($this->User->save($this->request->data)) {
-				if (in_array('Orders', CakePlugin::loaded())) : 
-					$this->User->OrderPayment->save($this->request->data);
-					$this->User->OrderShipment->save($this->request->data);
-				endif;
+			try {
+				$this->User->update($this->request->data);
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
-			}
-			else {
-				$this->Session->setFlash('There was an error updating user');
+			} catch(Exception $e){
+				$this->Session->setFlash('There was an error updating user' . $e);
 			}
 		} else {
 			$this->Session->setFlash('Invalid user');
@@ -368,7 +233,7 @@ class UsersController extends UsersAppController {
 /**
  * @todo	Not sure I like the use of contact in the url being possible.  My guess is that you could change the id and register as a different contact, and probably gain access to things you shouldn't.  Maybe switch to some kind of Security::cipher thing.  (on second thought, the database having a unique index on contact_id might keep this from happening)
  */
-	function register() {		
+	public function register() {		
 		if (!empty($this->request->data)) {
 			try {
 				$result = $this->User->add($this->request->data);
@@ -405,6 +270,179 @@ class UsersController extends UsersAppController {
 	}
 
 
+	public function delete($id) {
+		$this->__delete('User', $id);
+	}
+	
+
+	public function dashboard() {
+	}
+
+/**
+ * A page to stop infinite redirect loops when there are errors.
+ */
+	public function restricted() {
+	}
+
+
+	public function my() {
+		$userId = $this->Session->read('Auth.User.id');
+		if (!empty($userId)) {
+			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $userId));
+		} else {
+			$this->Session->setFlash('No Session');
+			$this->redirect('/');
+		}
+	}
+
+
+/**
+ * Public login function to verify access to restricted areas.
+ */
+	public function login() {
+		if (!empty($this->request->data)) {
+			if ($this->Auth->login()) {
+				try {
+					$this->User->loginMeta($this->request->data);
+					#debug($this->Auth->redirect);
+					#debug($this->Auth->redirect());
+					#debug($this->Session->read());
+					#debug($this->_loginRedirect());
+	        		$this->redirect($this->_loginRedirect());
+				} catch (Exception $e) {
+					$this->Session->setFlash($e->getMessage());
+	        		$this->redirect($this->_logoutRedirect());
+				}
+		    } else {
+		        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
+		    }
+		}
+		$userRoles = $this->User->UserRole->find('list');
+		unset($userRoles[1]); // remove the administrators group by default - too insecure
+		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
+		$this->set(compact('userRoleId', 'userRoles'));
+		if (empty($this->templateId)) { $this->layout = 'login'; }
+	}
+
+
+    public function logout() {
+		if ($this->Auth->logout() || $this->Session->delete('Auth')) :
+			$this->Session->destroy();
+			$this->Session->setFlash('Successful Logout');
+			$this->redirect($this->_logoutRedirect());
+		else :
+			$this->Session->setFlash('Logout Failed');
+			$this->redirect($this->_loginRedirect());
+		endif;
+    }
+	
+
+/**
+ * Set the default redirect variables, using the settings table constant.
+ */
+	private function _loginRedirect() {
+		# this handles redirects where a url was called that redirected you to the login page
+		$redirect = $this->Auth->redirect();
+		
+		if ($redirect == '/') {
+			# default login location
+			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
+			
+			if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) { 
+				# this setting name is deprecated, will be deleted (got rid of the DEFAULT in the setting name.)
+				if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
+					$redirect = $urlParams;
+				}
+				$redirect = __APP_DEFAULT_LOGIN_REDIRECT_URL;
+			}
+		
+			if (defined('__APP_LOGIN_REDIRECT_URL')) {
+				$urlParams = @unserialize(__APP_LOGIN_REDIRECT_URL);
+				if (!empty($urlParams) && is_numeric(key($urlParams)) && $this->Session->read('Auth.User.user_role_id')) {
+					# if the keys are numbers we're looking for a user role
+					if (!empty($urlParams[$this->Session->read('Auth.User.user_role_id')])) {
+						# if the user role is the index key then we have a special login redirect just for them 
+						#debug($urlParams[$this->Session->read('Auth.User.user_role_id')]); break; 
+						return $urlParams[$this->Session->read('Auth.User.user_role_id')];
+					} else {
+						# need a return here, to stop processing of the $redirect var
+						#debug($redirect); break; 
+						return $redirect;
+					}
+				} 
+				if (!empty($urlParams) && is_string(key($urlParams))) {
+					# if the keys are strings we've just formatted the settings by plugin, controller, action, instead of a text url
+					$redirect = $urlParams;
+				} 
+				# its not an array because it couldn't be unserialized
+				$redirect = __APP_LOGIN_REDIRECT_URL;
+			}
+		}		
+		#debug($redirect); break; 
+		return $redirect;
+	}
+	
+
+/**
+ * Set the default redirect variables, using the settings table constant.
+ */
+	public function _logoutRedirect() {
+		if (defined('__APP_LOGOUT_REDIRECT_URL')) {
+			if ($urlParams = @unserialize(__APP_LOGOUT_REDIRECT_URL)) {
+				if (is_numeric(key($urlParams))) {
+					return $urlParams[$this->Session->read('Auth.User.user_role_id')];
+				} else {
+					return $urlParams;
+				}
+			} else {
+				return __APP_LOGOUT_REDIRECT_URL;
+			}
+		} else {
+			return array(
+				'plugin' => 'users',
+				'controller' => 'users',
+				'action' => 'login',
+			);
+		}
+	}
+
+
+/**
+ * Used in the ajax-login element to return whether the user is logged in.
+ */
+	public function checkLogin() {
+		$this->layout = false;
+		$this->autoRender = false;
+        $user = $this->User->find('first', array('conditions' => array('User.username' => $this->request->data['User']['username'], 'User.password' => AuthComponent::password($this->request->data['User']['password']))));
+     	if($user){
+     		$data['login'] = 1;
+		} else {
+		    $data['login'] = 0;
+		}
+		echo json_encode($data);
+    }
+
+
+/**
+ * Used for Zuha Desktop integration.
+ *
+ * @todo 		This should be updated to some kind of API login (maybe REST) so that any apps can authenticate.
+ */
+	public function desktop_login() {
+
+        $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => AuthComponent::password($this->request->data['User']['password']))));
+        if($user!= null ){
+	        echo $user['User']['id'];
+			$this->layout(false);
+			$this->render(false);
+		} else{
+		    echo "Fail";
+			$this->layout(false);
+			$this->render(false);
+		}
+    }
+
+
 /**
  * __welcome()
  * User can now register and then wait for an email confirmation to activate his account.
@@ -413,7 +451,7 @@ class UsersController extends UsersAppController {
  * @todo		This message needs to be configurable.
  * @todo		This needs to have the ability to resend in case the user didn't get it the first time or something.
  */
-	function _welcome($user_id) {
+	public function _welcome($user_id) {
 		$this->User->recursive = -1;
 		$user = $this->User->read(null, $user_id);
 		if (!$user)
@@ -439,7 +477,7 @@ If you have received this message in error please ignore, the link will be unusa
 	}
 
 
-	function __resetPasswordKey($userid) {
+	public function __resetPasswordKey($userid) {
 		$user = $this->User->find('first', array('conditions' => array('id' => $userid)));
 		unset($this->request->data['User']['username']);
 		$this->request->data['User']['id'] = $userid;
@@ -460,7 +498,7 @@ If you have received this message in error please ignore, the link will be unusa
  * Used same column `forgot_key` for storing key. It starts with W for activation, F for forget
  * @todo 	change the column name from forgot_key to something better, like maybe just "key"
  */
-	function reset_password($key = null) {
+	public function reset_password($key = null) {
 		$user = $this->User->verify_key($key);
 		if ($user) {
 			$this->Auth->login($user);
@@ -486,7 +524,7 @@ If you have received this message in error please ignore, the link will be unusa
  *
  * @todo			This message needs to be configurable.
  */
-	function forgot_password() {
+	public function forgot_password() {
 		if(!empty($this->request->data))	{
 			# we need to check the username field and the email field
 		  	$user = $this->User->findbyUsername(trim($this->request->data['User']['username']));
@@ -522,14 +560,6 @@ If you have received this message in error please ignore, the link will be unusa
 				$this->Session->setFlash('Invalid user.');
 			}
 		}
-	}
-
-
-	function delete($id) {
-		$this->__delete('User', $id);
-	}
-
-	function dashboard() {
 	}
 
 }

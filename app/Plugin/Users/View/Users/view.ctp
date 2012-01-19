@@ -2,6 +2,7 @@
   <div id="user-information">
     <h2><?php echo $user['User']['first_name'] . ' ' . $user['User']['last_name'] ?></h2>
     <?php echo $this->Element('snpsht', array('useGallery' => true, 'userId' => $user['User']['id'], 'thumbSize' => 'medium', 'thumbLink' => array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'User', $user['User']['id'])));  ?>
+    <?php echo !empty($is_self) ? $this->Html->link('Edit Profile', array('action' => 'edit', $user['User']['id'])) : null; ?>
   </div>
 </div>
 <div class="follow action">

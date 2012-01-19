@@ -298,7 +298,6 @@ class Setting extends AppModel {
  */
 	public function add($data, $append = false) {
 		$data = $this->_cleanSettingData($data, $append);
-		
 		if ($this->saveAll($data)) {
 			# call all settings and write the ini file
 			if($this->writeSettingsIniData()) {
@@ -333,7 +332,6 @@ class Setting extends AppModel {
 				$writeData .= PHP_EOL;
 			}
 		}
-
 		$writeData .= !empty($holdSettings) ? $this->finishIniData($holdSettings) : '';
 		return $writeData;
 	}
@@ -366,6 +364,7 @@ class Setting extends AppModel {
 		$file = new File(CONFIGS.'settings.ini');
 		#$file->path = CONFIGS.'settings.ini';
 		$writeData = $this->prepareSettingsIniData();
+		
 		if($file->write($file->prepare($writeData))) {
 			if($this->writeDefaultsIniData()) {
 				return true;
@@ -449,10 +448,11 @@ class Setting extends AppModel {
 			#$data['Setting']['value'] = Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'));
 		endif;
 
-		if (!empty($data['Query']) && $data['Setting']['name'] == 'ZUHA_DB_VERSION') :
+		if (!empty($data['Query']) && $data['Setting']['name'] == 'ZUHA_DB_VERSION') {
 			$data['Setting']['value'] =  $data['Setting']['value'] + 0.0001;
-		endif;
+		}
 
+		
 		return $data;
 	}
 
@@ -465,7 +465,7 @@ class Setting extends AppModel {
  */
 	public function getNames($typeName = null) {
 		if (!empty($typeName)) {
-			#$preFix = enum($typeName);
+			#$preFix = Zuha::enum($typeName);
 			return $this->names[$typeName];
 		}
 

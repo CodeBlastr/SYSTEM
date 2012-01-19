@@ -7,7 +7,6 @@ class InstallController extends AppController {
 
 	public $name = 'Install';
     public $uses = array();
-	public $dbVersion = __SYSTEM_ZUHA_DB_VERSION;
 	public $params;
 	public $progress;
 	public $options;
@@ -23,6 +22,7 @@ class InstallController extends AppController {
 	
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
+		
 		$name = $path = $connection = $plugin = null;
 		if (!empty($this->params['name'])) {
 			$name = $this->params['name'];
