@@ -113,8 +113,8 @@ class AppController extends Controller {
 		 */
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
 		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
-		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
+		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
 
 		$this->_siteTemplate();
 		
@@ -128,6 +128,7 @@ class AppController extends Controller {
 		 */
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
 		$this->set('title_for_layout', $this->_titleForLayout());
+		$this->set('userRoleId', $this->userRoleId);
 	}
 	
 
