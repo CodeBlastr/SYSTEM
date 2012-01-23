@@ -744,9 +744,9 @@ class AppController extends Controller {
  * Loads helpers dynamically system wide, and per controller loading abilities.
  */
 	private function _getHelpers() {
-		if (in_array('Menus', CakePlugin::loaded())) : 
+		if (in_array('Menus', CakePlugin::loaded())) { 
 			$this->helpers[] = 'Menus.Tree'; 
-		endif;
+		}
 		
 		if(defined('__APP_LOAD_APP_HELPERS')) {
 			$settings = __APP_LOAD_APP_HELPERS;

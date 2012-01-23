@@ -43,7 +43,7 @@ class AppErrorController extends AppController {
 				$request->here = substr($request->here, 1);
 			}
 			$alias = $Alias->find("first", array("conditions" => array( "name" => str_replace('/', '', urldecode($request->here)))));
-			if(!empty($alias)) :
+			if(!empty($alias)) {
 				$request->params['controller'] = $alias['Alias']['controller'];
 				$request->params['plugin'] = $alias['Alias']['plugin'];
 				$request->params['action'] = $alias['Alias']['action'];
@@ -57,25 +57,25 @@ class AppErrorController extends AppController {
 				$request->here = substr($request->url, 1, -1);
 				$dispatcher = new Dispatcher();
 				$result = $dispatcher->dispatch($request, new CakeResponse());
-			else :
-				if($this->addPageRedirect($request->url)) : 
+			} else {
+				if($this->addPageRedirect($request->url)) {
 					// error will be redirected if you're the admin
-				else :
+				} else {
 					throw new MissingControllerException('Page not found.');
-				endif;
-			endif;
+				}
+			}
 	        exit;
 		}  
     }
 
 
-	/** 
-	 * Checks to see whether the user is logged in as an admin, and then redirects to the add page form 
-	 * to see if they would like to create a page for that url.
-	 *
-	 * @return		a redirect action, or false
-	 */
-	function addPageRedirect($alias) {
+/** 
+ * Checks to see whether the user is logged in as an admin, and then redirects to the add page form 
+ * to see if they would like to create a page for that url.
+ *
+ * @return		a redirect action, or false
+ */
+	public function addPageRedirect($alias) {
 		# lets see if the user would like to add a page if they are an admin
 		$userRole = CakeSession::read('Auth.User.user_role_id');
 		if($userRole == 1 /* Admin user role */) {
