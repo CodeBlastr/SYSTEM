@@ -188,7 +188,9 @@ if (!empty($defaultTemplate)) {
 echo(base64_decode('PGEgc3R5bGU9ImRpc3BsYXk6IG5vbmU7IiB0aXRsZT0iV2ViIERlc2lnbiAmIFdlYiBEZXZlbG9wbWVudCBDb21wYW55IiBocmVmPSJodHRwOi8vd3d3LnJhem9yaXQuY29tLyI+V2ViIERlc2lnbiAmIFdlYiBEZXZlbG9wbWVudCBDb21wYW55PC9hPg0KPGEgc3R5bGU9ImRpc3BsYXk6IG5vbmU7IiB0aXRsZT0iSW52b2ljaW5nLCBQcm9qZWN0IE1hbmFnZW1lbnQsIENSTSwgQ29udGVudCBNYW5hZ2VtZW50IFN5c3RlbSIgaHJlZj0iaHR0cDovL3p1aGEuY29tIj5JbnZvaWNpbmcsIFByb2plY3QgTWFuYWdlbWVudCwgQ1JNLCBDb250ZW50IE1hbmFnZW1lbnQgU3lzdGVtPC9hPg==')); ?>
   <?php #echo round((getMicroTime() - $_SERVER['REQUEST_TIME']) * 1000) ?>
 </div>
-<?php echo $this->element("ajax-login"); ?> <?php echo $this->element('sql_dump');  ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?>
+<?php # echo $this->element("ajax-login"); ?> 
+<?php echo $this->element('sql_dump');  ?> 
+<?php echo !empty($dbSyncError) ? $dbSyncError : null; ?>
 </body>
 <?php  if(!empty($this->Facebook)) {echo $this->Facebook->init(); } ?>
 </html>
