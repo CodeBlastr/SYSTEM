@@ -1,9 +1,9 @@
-<?php   
+<?php
 if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php')) :
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php');
-else : 
+else :
 
-/** 
+/**
  * Default bootstrap.php file from here down.
  */
 
@@ -14,14 +14,14 @@ require_once(ROOT.DS.APP_DIR.DS.'Config'.DS.'global.php');
  * This is related to Ticket #470 (https://trac.cakephp.org/ticket/470)
  *
  */
- 
+
 if (!defined('SITE_DIR')) {
 	define('SITE_DIR', null);
-} 
+}
 if (!defined('CONFIGS')) {
 	define('CONFIGS', null);
-} 
-    
+}
+
 App::build(array(
 	'plugins' => array(
 		ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
@@ -105,14 +105,14 @@ App::build(array(
 		}
 		#debug(get_defined_constants());
 	}
-	
+
 	__setConstants();
-	
+
 /**
  * Plugins need to be loaded manually, you can either load them one by one or all of them in a single call
  * Uncomment one of the lines below, as you need. make sure you read the documentation on CakePlugin to use more
  * advanced ways of loading plugins
- * 
+ *
  */
  #CakePlugin::loadAll(); // Loads all plugins at once
 	if (defined('__SYSTEM_LOAD_PLUGINS')) :
@@ -121,11 +121,11 @@ App::build(array(
 	else :
 		CakePlugin::loadAll(); // Loads all plugins at once
 	endif;
-	
-	
+
+
 /**
  * convenience function for states options
- * 
+ *
  * @todo 	delete this all together after making it db based
  */
 	function states() {
@@ -175,40 +175,41 @@ App::build(array(
 			'TX' => 'Texas',
 			'UT' => 'Utah',
 			'VT' => 'Vermont',
-			'VA' => 'Virginia', 
-			'WA' => 'Washington', 
-			'WV' => 'West Virginia', 
-			'WI' => 'Wisconsin', 
-			'WY' => 'Wyoming', 	 	 	
+			'VA' => 'Virginia',
+			'WA' => 'Washington',
+			'WV' => 'West Virginia',
+			'WI' => 'Wisconsin',
+			'WY' => 'Wyoming',
  			);
 	}
-	
-	
+
+
 /**
  * To add to the core cake utility Inflector
  */
-class ZuhaInflector { 
-	
+class ZuhaInflector {
+
 /**
  * Function for formatting the pricing of an item.
  *
- * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet. 
+ * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
  */
 	public function pricify($price) {
-		return number_format($price, 2);
+        if($price === NULL) return NULL;
+		else return number_format($price, 2);
 	}
-	
+
 /**
  * Function for formatting dates (yes I know about the Time helper, and I don't like it.
  * But mainly this will alos allow a default time format on a per site need (using a setting).
- * 
- * @todo	Have options for the time, like timeAgo and/or date format string.   
+ *
+ * @todo	Have options for the time, like timeAgo and/or date format string.
  */
 	public function dateize($date, $options = null) {
 		return date('M j, Y', strtotime($date));
 	}
-	
-	
+
+
 /**
  * return a plugin name from a controller name
  */
