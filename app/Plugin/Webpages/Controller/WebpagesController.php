@@ -224,6 +224,7 @@ class WebpagesController extends WebpagesAppController {
 	}
 	
 	function dashboard() {
+		$this->set('page_title_for_layout', __('Content Dashboard'));
 	}
 
 }
