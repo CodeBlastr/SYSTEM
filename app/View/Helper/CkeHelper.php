@@ -48,12 +48,13 @@ class CkeHelper extends Helper {
 		if (defined('SITE_DIR')) {
 			$paths = '';
 			# default file paths needed if this is a multiple site setup
-			$paths .= "filebrowserBrowseUrl: '/js/kcfinder/browse.php?type=files&kcfinderuploadDir=".SITE_DIR."',";
-			$paths .= "filebrowserImageBrowseUrl: '/js/kcfinder/browse.php?type=images&kcfinderuploadDir=".SITE_DIR."',";
-			$paths .= "filebrowserFlashBrowseUrl: '/js/kcfinder/browse.php?type=flash&kcfinderuploadDir=".SITE_DIR."',";
-			$paths .= "filebrowserUploadUrl: '/js/kcfinder/upload.php?type=files&kcfinderuploadDir=".SITE_DIR."',";
-			$paths .= "filebrowserImageUploadUrl: '/js/kcfinder/upload.php?type=images&kcfinderuploadDir=".SITE_DIR."',";
-			$paths .= "filebrowserFlashUploadUrl: '/js/kcfinder/upload.php?type=flash&kcfinderuploadDir=".SITE_DIR."',";
+			$dir = str_replace('sites'.DS, '', SITE_DIR);
+			$paths .= "filebrowserBrowseUrl: '/js/kcfinder/browse.php?type=files&kcfinderuploadDir=".$dir."',";
+			$paths .= "filebrowserImageBrowseUrl: '/js/kcfinder/browse.php?type=images&kcfinderuploadDir=".$dir."',";
+			$paths .= "filebrowserFlashBrowseUrl: '/js/kcfinder/browse.php?type=flash&kcfinderuploadDir=".$dir."',";
+			$paths .= "filebrowserUploadUrl: '/js/kcfinder/upload.php?type=files&kcfinderuploadDir=".$dir."',";
+			$paths .= "filebrowserImageUploadUrl: '/js/kcfinder/upload.php?type=images&kcfinderuploadDir=".$dir."',";
+			$paths .= "filebrowserFlashUploadUrl: '/js/kcfinder/upload.php?type=flash&kcfinderuploadDir=".$dir."',";
 		}
 					
 		if (!empty($settings['paths'])) {
