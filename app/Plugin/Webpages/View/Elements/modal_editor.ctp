@@ -43,11 +43,9 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 			filebrowserImageUploadUrl: '/js/kcfinder/upload.php?type=images&kcfinderuploadDir=<?php echo SITE_DIR; ?>',
 			filebrowserFlashUploadUrl: '/js/kcfinder/upload.php?type=flash&kcfinderuploadDir=<?php echo SITE_DIR; ?>', 
 			width: edit_width, 
-			height: edit_height, 
-			/*toolbar: [[
-				'Save', 'Source', '-', 'Bold', 'Italic', 'Underline', 'FontSize', 'TextColor', 'BGColor',
-				'-', 'NumberedList', 'BulletedList', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight',
-				'-', 'Link', 'Unlink', '-', 'Image', 'Media']],*/ 
+			height: edit_height,
+			// copied from config with the addition of save, and the subtraction of maximize
+			toolbar: [['Source','-','Save','ShowBlocks','Templates'], ['Copy','Paste'], ['Undo','Redo','-','Replace','-','RemoveFormat'], ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'],['Bold','Italic','Underline','Strike','-','Subscript','Superscript'], ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'], ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], ['Link','Unlink','Anchor'], ['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'], ['Format','Font','FontSize'], ['TextColor','BGColor'], ['Media', 'Video_JS']],
 			toolbarCanCollapse: true, 
 			startupFocus: true});
 		
