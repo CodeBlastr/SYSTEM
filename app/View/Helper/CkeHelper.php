@@ -28,8 +28,8 @@ class CkeHelper extends Helper {
 		
         $code = "
   			$('#".$did."').ckeditor(function(){ 
-				$('.cke_toolbox').hide();
-				$('.cke_toolbox_collapser').addClass('cke_toolbox_collapser_min');
+				//$('.cke_toolbox').hide();
+				//$('.cke_toolbox_collapser').addClass('cke_toolbox_collapser_min');
 				}, 
 				{".$configuration."});
         "; 
