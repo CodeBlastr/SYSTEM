@@ -526,7 +526,7 @@ label {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	max-width: 320px;
+	max-width: 300px;
 }
 label a {
 	color: #333;
@@ -578,6 +578,9 @@ td input, td textarea, td select {
 input:focus, select:focus, textarea:focus {
 	background: #FFF;
 	-moz-box-shadow: none;
+}
+input[type="file"] {
+	min-width: 23em;
 }
 input[type="text"] {
 	clear: both;
