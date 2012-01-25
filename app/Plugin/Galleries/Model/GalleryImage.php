@@ -1,11 +1,11 @@
 <?php
 class GalleryImage extends GalleriesAppModel {
 
-	var $name = 'GalleryImage';
-	var $displayField = 'filename';
+	public $name = 'GalleryImage';
+	public $displayField = 'filename';
 	
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'Gallery' => array(
 			'className' => 'Galleries.Gallery',
 			'foreignKey' => 'gallery_id',

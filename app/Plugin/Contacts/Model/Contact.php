@@ -1,8 +1,8 @@
 <?php
 class Contact extends ContactsAppModel {
-	var $name = 'Contact';
-	var $displayField = 'name';
-	var $validate = array(
+	public $name = 'Contact';
+	public $displayField = 'name';
+	public $validate = array(
 		'name' => array(
 			'notempty' => array(
 				'rule' => array('notempty'),
@@ -16,7 +16,7 @@ class Contact extends ContactsAppModel {
 	);
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'ContactType' => array(
 			'className' => 'Enumeration',
 			'foreignKey' => 'contact_type_id',
@@ -54,7 +54,7 @@ class Contact extends ContactsAppModel {
 		),
 	);
 
-	var $hasMany = array(
+	public $hasMany = array(
 		'ContactAddress' => array(
 			'className' => 'Contacts.ContactAddress',
 			'foreignKey' => 'contact_id',
@@ -84,7 +84,7 @@ class Contact extends ContactsAppModel {
 	);
 
 
-	var $hasAndBelongsToMany = array(
+	public $hasAndBelongsToMany = array(
 		'Employer' => array(
 			'className' => 'Contacts.Contact',
 			'joinTable' => 'contacts_contacts',
@@ -117,7 +117,7 @@ class Contact extends ContactsAppModel {
 		),
 	);
 	
-	function __construct($id = false, $table = null, $ds = null) {
+	public function __construct($id = false, $table = null, $ds = null) {
     	parent::__construct($id, $table, $ds);
 		$this->order = array("{$this->alias}.name");	
 		
@@ -141,7 +141,7 @@ class Contact extends ContactsAppModel {
     }
 	
 	
-	function add($data) {
+	public function add($data) {
 		$data = $this->_cleanContactData($data);
 		
 		if ($this->saveAll($data)) {
@@ -159,7 +159,7 @@ class Contact extends ContactsAppModel {
 		}
 	}
 	
-	function findCompanies($type = 'list', $params = null) {
+	public function findCompanies($type = 'list', $params = null) {
 		$params['conditions'] = array(
 			"{$this->alias}.is_company" => 1,
 			);
@@ -168,7 +168,7 @@ class Contact extends ContactsAppModel {
 		return $this->find($type, $params);
 	}
 	
-	function findPeople($type = 'list', $params = null) {
+	public function findPeople($type = 'list', $params = null) {
 		$params['conditions'] = array(
 			"{$this->alias}.is_company" => 0,
 			);
@@ -177,7 +177,7 @@ class Contact extends ContactsAppModel {
 		return $this->find($type, $params);
 	}
 	
-	function findCompaniesWithRegisteredUsers($type = 'list', $params = null) {
+	public function findCompaniesWithRegisteredUsers($type = 'list', $params = null) {
 		#first find registered people
 		$people = $this->find('list', array(
 			'conditions' => array(
@@ -206,7 +206,7 @@ class Contact extends ContactsAppModel {
 	 *
 	 * @todo 	I had an instance where this could be put into the ContactDetail model instead, but didn't seem to work when you were entering multiple details at once, so left it here instead.  If you know how to get it into the contact detail model, please do, and inform us how it was done. 
 	 */
-	function _cleanContactData($data) {
+	private function _cleanContactData($data) {
 		# if id is here, then merge the data with the existing data (new data over writes old)
 		if (!empty($data['Contact']['id'])) :
 			$contact = $this->find('first', array(
