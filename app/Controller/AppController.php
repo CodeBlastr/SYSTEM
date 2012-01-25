@@ -198,9 +198,8 @@ class AppController extends Controller {
  * @param void
  * @return void
  */
- 	private function _handlePaginatorFiltering($object = null) {		
-		$empty = empty($this->request->params['named']['filter']) ? true : false;
-		if (!empty($empty)) {
+ 	private function _handlePaginatorFiltering($object = null) {
+		if (empty($this->request->params['named']['filter'])) {
 			$this->__handlePaginatorArchivable($object);
 		}
 		
@@ -265,9 +264,8 @@ class AppController extends Controller {
  */
 	private function __handlePaginatorArchivable($object) {
 		$options = $this->_getPaginatorVars($object, 'is_archived');
-		
 		if (!empty($options['schema']['is_archived'])) {
-			$this->redirect(array('filter' => 'archived:0'));
+			$this->redirect(Router::reverse($this->request->params + array('filter' => 'archived:0')));
 		}
 	}
 
@@ -280,7 +278,6 @@ class AppController extends Controller {
  */
 	private function __handlePaginatorFiltering($field, $object) {
 		$options = $this->_getPaginatorVars($object, $field);
-		
 		if (!empty($options['fieldName'])) {
 			if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {
 				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' >'] = $options['fieldValue'];
@@ -290,7 +287,9 @@ class AppController extends Controller {
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
 			# no matching field don't filter anything
-			$this->Session->setFlash(__('Invalid field filter attempted.'));
+			if (Configure::read('debug') > 0) {
+				$this->Session->setFlash(__('Invalid field filter attempted on ' . $options['alias']));
+			}
 		}
 	}
 
@@ -309,7 +308,9 @@ class AppController extends Controller {
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
 			# no matching field don't filter anything
-			$this->Session->setFlash(__('Invalid starter filter attempted.'));
+			if (Configure::read('debug') > 0) {	
+				$this->Session->setFlash(__('Invalid starter filter attempted.'));
+			}
 		}
 	}
 	
@@ -743,9 +744,9 @@ class AppController extends Controller {
  * Loads helpers dynamically system wide, and per controller loading abilities.
  */
 	private function _getHelpers() {
-		if (in_array('Menus', CakePlugin::loaded())) : 
+		if (in_array('Menus', CakePlugin::loaded())) { 
 			$this->helpers[] = 'Menus.Tree'; 
-		endif;
+		}
 		
 		if(defined('__APP_LOAD_APP_HELPERS')) {
 			$settings = __APP_LOAD_APP_HELPERS;

@@ -105,6 +105,11 @@
 	width: 80%;
 	height: 60%;
 }
+#modalEditorWrap #cke_modalEditor {
+	-webkit-box-shadow: 2px 2px 3px 0px #000000;
+	-moz-box-shadow: 2px 2px 3px 0px #000000;
+	box-shadow: 2px 2px 3px 0px #000000;  
+}
 #modalEditorWrap .closeEditor {
 	color: #000;
 	font-size: 14px;
