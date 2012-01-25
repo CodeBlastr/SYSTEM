@@ -8,8 +8,8 @@
     
     <div class="dashboardBox">
 		<ul>
-			<li><?php echo $this->Html->link('Image Manager', array('controller' => 'admin', 'action' => 'files_image')); ?></li>
-            <li><?php echo $this->Html->link('Document Manager', array('controller' => 'admin', 'action' => 'files_files')); ?></li>
+			<li><?php echo $this->Html->link('Image Manager', array('plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
+            <li><?php echo $this->Html->link('Document Manager', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
         </ul>
     </div>
     
