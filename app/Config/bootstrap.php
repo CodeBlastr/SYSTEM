@@ -217,6 +217,8 @@ class ZuhaInflector {
 		# list of models and controllers to rename to the corresponding plugin
 		$allowed = array(
 			'Banner' => 'Banners',
+			'Blog' => 'Blogs',
+			'BlogPost' => 'Blogs',
 			'Category' => 'Categories',
 			'Categories' => 'Categories',
 			'Catalog' => 'Catalogs',
