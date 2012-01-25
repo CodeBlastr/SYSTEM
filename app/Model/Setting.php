@@ -206,6 +206,10 @@ class Setting extends AppModel {
 							'name' => 'DEFAULT_RATE',
 							'description' => 'Defines the default hourly rate for invoices.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'18.50',
 							),
+						array(
+							'name' => 'EMAIL_TEMPLATES',
+							'description' => 'Defines the email message templates for use when sending emails about invoices to invoice recipients.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.PHP_EOL.'template[] = "<p>Hello, </p><p>Thank you for your business. Please view your invoice by visiting this link : </p>',
+							),
 						),
 				  'Galleries' => array(
 						array(
