@@ -7,15 +7,15 @@
  */
 class Webpage extends WebpagesAppModel {
 	
-	var $name = 'Webpage';
-	var $displayField = 'name';
-	var $validate = array(
+	public $name = 'Webpage';
+	public $displayField = 'name';
+	public $validate = array(
 		'name' => array('notempty'),
 	);
 
-	var $fullName = "Webpages.Webpage";
+	public $fullName = "Webpages.Webpage";
 
-	var $hasOne = array(
+	public $hasOne = array(
 		'Alias' => array(
 			'className' => 'Alias',
 			'foreignKey' => 'value',
@@ -26,7 +26,7 @@ class Webpage extends WebpagesAppModel {
 		),
 	);
 
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'Creator' => array(
 			'className' => 'Users.User',
 			'foreignKey' => 'creator_id',
@@ -44,7 +44,7 @@ class Webpage extends WebpagesAppModel {
 	);
 	
 	
-    var $filterArgs = array(
+    public $filterArgs = array(
         array('name' => 'name', 'type' => 'like'),
         #array('name' => 'search', 'type' => 'like', 'field' => 'Webpage.description'),
         #array('name' => 'range', 'type' => 'expression', 'method' => 'makeRangeCondition', 'field' => 'Webpage.views BETWEEN ? AND ?'),
@@ -73,12 +73,12 @@ class Webpage extends WebpagesAppModel {
 		endif;
 	}
 
-	function afterDelete() {
+	public function afterDelete() {
 		# delete template settings
 		$this->_saveTemplateSettings($this->id, null, true);
 	}
 
-    function orConditions($data = array()) {
+    public function orConditions($data = array()) {
         $filter = $data['filter'];
 		debug($filter);
         $cond = array(
@@ -91,7 +91,7 @@ class Webpage extends WebpagesAppModel {
     }
 	
 	
-	function add($data = array()) {
+	public function add($data = array()) {
 		$data = $this->cleanInputData($data);
 		# save webpage first
 		if ($this->saveAll($data)) {
@@ -114,7 +114,7 @@ class Webpage extends WebpagesAppModel {
 		*/
 	}	
 	
-	function update($data = array()) {
+	public function update($data = array()) {
 		$data = $this->cleanInputData($data);
 		# save webpage first
 		if ($this->saveAll($data)) {
@@ -137,13 +137,13 @@ class Webpage extends WebpagesAppModel {
 		*/
 	}
 	
-	/**
-	 * When a page is a template we have to save the settings for that template, so that Zuha knows when to show it.
-	 *
-	 *@param {int}			The id of the page we're making settings for
-	 *@param {array}		An array of data to get the template, and template settings from
-	 */
-	function _saveTemplateSettings($pageId, $data = null, $delete = false) {
+/**
+ * When a page is a template we have to save the settings for that template, so that Zuha knows when to show it.
+ *
+ *@param {int}			The id of the page we're making settings for
+ *@param {array}		An array of data to get the template, and template settings from
+ */
+	private function _saveTemplateSettings($pageId, $data = null, $delete = false) {
 		if(!empty($data)) {
 			$settingsArray = array(
 				'templateId' => $pageId,
@@ -177,7 +177,7 @@ class Webpage extends WebpagesAppModel {
 	}
 		
 	
-	function parseIncludedPages(&$webpage, $parents = array (), $action = 'page', $userRoleId = null) {
+	public function parseIncludedPages(&$webpage, $parents = array (), $action = 'page', $userRoleId = null) {
 		$matches = array ();
 		$parents[] = $webpage['Webpage']['id'];
 		preg_match_all ("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
@@ -209,14 +209,14 @@ class Webpage extends WebpagesAppModel {
 		}
 	}
 	
-	function types() {
+	public function types() {
 		return array('template' => 'Template', 'element' => 'Element', 'page_content' => 'Page');
 	}
 	
-	/**
-	 * @todo		 Clean out alias data for templates and elements.
-	 */
-	function cleanInputData($data) {
+/**
+ * @todo		 Clean out alias data for templates and elements.
+ */
+	public function cleanInputData($data) {
 		if (!empty($data['Webpage']['user_roles']) && is_array($data['Webpage']['user_roles'])) :
 			# serialize user roles
 			$data['Webpage']['user_roles'] = serialize($data['Webpage']['user_roles']);
@@ -245,10 +245,10 @@ class Webpage extends WebpagesAppModel {
 	}
 	
 	
-	/**
-	 * @todo		 Clean out alias data for templates and elements.
-	 */
-	function cleanOutputData($data) {
+/**
+ * @todo		 Clean out alias data for templates and elements.
+ */
+	public function cleanOutputData($data) {
 		if (!empty($data['Webpage']['user_roles'])) :
 			$data['Webpage']['user_roles'] = unserialize($data['Webpage']['user_roles']);
 		endif;
@@ -258,6 +258,18 @@ class Webpage extends WebpagesAppModel {
 		endif;		
 		
 		return $data;
+	}
+	
+	
+	public function handleError($webpage, $request) {
+		$userRole = CakeSession::read('Auth.User.user_role_id');
+		$addLink = $userRole == 1 ? '<p class="message">Page Not Found : <a href="/webpages/webpages/add/alias:' . $_GET['referer'] . '"> Click here to add a page at http://' . $_SERVER['HTTP_HOST'] . '/' . $_GET['referer'] . '</a>. <br /><br /><small>Because you are the admin you can add the page you requested.  After you add the page http://' . $_SERVER['HTTP_HOST'] . '/' . $_GET['referer'] . ' you can visit it again and it will be a working page.</small></p>' : '';
+		$webpage['Webpage']['content'] = $addLink . $webpage['Webpage']['content'];
+		return $webpage;
+	}
+	
+	private function _addPage() {
+		return 'addition';
 	}
 	
 }
