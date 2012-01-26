@@ -20,7 +20,6 @@
 	echo $this->Html->script('admin/jquery-ui-1.8.13.custom.min');
 	echo $this->Html->script('jquery.jeditable');
 	echo $this->Html->script('admin/jquery.truncator');
-	echo $this->Html->script('system/jquery.cookie');
 	echo $this->Html->script('admin/admin');
 	echo $scripts_for_layout;
 	if (defined('__REPORTS_ANALYTICS')) :

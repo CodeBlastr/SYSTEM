@@ -57,7 +57,7 @@ $this->set('context_menu', array('menus' => array(
 		'heading' => 'Webpages',
 		'items' => array(
 			$this->Paginator->sort('name'),
-			$this->Html->link(__('New', true), array('controller' => 'webpages', 'action' => 'add')),
+			$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add'), array('class' => 'add')),
 			)
 		),
 	)));

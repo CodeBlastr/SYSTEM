@@ -27,15 +27,15 @@ class WebpagesController extends WebpagesAppController {
 	#var $components = array('Comments.Comments' => array('userModelClass' => 'User'));
 
 	/* This is part of the search plugin */
-    var $presetVars = array(array('field' => 'name', 'type' => 'value'));
+    public $presetVars = array(array('field' => 'name', 'type' => 'value'));
 	
 	
-	function beforeFilter() {
+	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->passedArgs['comment_view_type'] = 'flat';
 	}
 
-	function index() {
+	public function index() {
 		if (!empty($this->request->params['named']['type'])) :
 			$this->paginate['conditions']['Webpage.type'] = $this->request->params['named']['type'];
 		endif;
@@ -44,7 +44,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('webpages', $this->paginate());
 	}
 
-	function view($id = null) {
+	public function view($id = null) {
 		if (!$id) {
 			$this->flash(__('Invalid Webpage', true), array('action'=>'index'));
 		}
@@ -60,7 +60,6 @@ class WebpagesController extends WebpagesAppController {
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
             $this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId);
 			$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
-			$this->set('webpage', $webpage);
 		} else {
 			$this->Session->setFlash(__('Invalid Webpage', true));
 			$this->redirect(array('action' => 'index'));
@@ -68,9 +67,13 @@ class WebpagesController extends WebpagesAppController {
 		if (!empty($webpage['Webpage']['title'])) {
 			$this->set('title',  $webpage['Webpage']['title']);
 		}
+		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error/') {
+			$webpage = $this->Webpage->handleError($webpage, $this->request);
+		}
+		$this->set(compact('webpage'));
 	}
 	
-	function add() {	
+	public function add() {	
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->add($this->request->data);
@@ -89,7 +92,7 @@ class WebpagesController extends WebpagesAppController {
     	$this->set(compact('userRoles', 'types'));
 	}
 	
-	function edit($id = null) {		
+	public function edit($id = null) {		
 	
 		if (empty($id) && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid Webpage', true));
@@ -142,7 +145,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set(compact('templateUrls'));
 	}
 
-	function delete($id = null) {
+	public function delete($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid Webpage', true));
 			$this->redirect(array('action'=>'index'));
@@ -158,7 +161,7 @@ class WebpagesController extends WebpagesAppController {
 	
 	
 
-	function savePage ($id = null) {
+	public function savePage ($id = null) {
 		$this->render(false);
 		$msg   = "";
 		$err   = false;
@@ -187,7 +190,7 @@ class WebpagesController extends WebpagesAppController {
 		//TODO Add response without ajax
 	}
 
-	function getRawPage ($id = null) {
+	public function getRawPage ($id = null) {
 		Inflector::variable("Webpage");
 		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
 		if($this->RequestHandler->isAjax()) {
@@ -198,7 +201,7 @@ class WebpagesController extends WebpagesAppController {
 		//TODO Add response without ajax
 	}
 	
-	function getRenderPage ($id = null) {
+	public function getRenderPage ($id = null) {
 		Inflector::variable("Webpage");
 		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
@@ -213,17 +216,17 @@ class WebpagesController extends WebpagesAppController {
 	}
 	
 
-    function __parseIncludedElements($content_str) {
+    public function __parseIncludedElements($content_str) {
         $this->autoRender = $this->layout = false;
         $this->set('content_str', $content_str);
         $content_str = $this->render('webpages/render_content');
         return $content_str;
     }
 	
-	function theme() {
+	public function theme() {
 	}
 	
-	function dashboard() {
+	public function dashboard() {
 		$this->set('page_title_for_layout', __('Content Dashboard'));
 	}
 

@@ -9,13 +9,18 @@ class AppExceptionRenderer extends ExceptionRenderer {
 			$request = new CakeRequest();
 		}
 		$response = new CakeResponse(array('charset' => Configure::read('App.encoding')));
+		$Controller = new AppErrorController($request, $response);
 		try {
-			$Controller = new AppErrorController($request, $response);
+			$Controller::handleAlias($request); // checks for alias match
 		} catch (Exception $e) {
-			$Controller = new Controller($request, $response);
-			$Controller->viewPath = 'Errors';
+			try {
+				$Controller::handleNotFound($request, $response, $e);
+			} catch (Exception $e) {
+				$Controller = new Controller($request, $response);
+				$Controller->viewPath = 'Errors';
+			}
 		}
 		return $Controller;
-	}
+	} 
 	
 }
