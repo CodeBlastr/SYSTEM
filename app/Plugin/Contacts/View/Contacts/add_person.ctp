@@ -1,3 +1,7 @@
+<p class="message">Search for : "Added a slight delay to form submissions" in javascript files because I had to remove something which was helping this form to work in the case of the change not working.  It needs to be made so that it works only when autocomplete is used, as it was causing a conflict with the validation js.</p>
+
+
+
 <div class="contact form"> <?php echo $this->Form->create('Contact');?>
   <fieldset>
     <legend> <?php echo __('Add a New Person');?>  </legend>

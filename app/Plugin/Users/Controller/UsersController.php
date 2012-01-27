@@ -32,11 +32,12 @@ class UsersController extends UsersAppController {
 		'desktop_login',
 		'logout',
 		'forgot_password',
-		'reset_password',
+		'verify',
 		'my',
 		'register',
 		'checkLogin',
 		'restricted',
+		'reverify',
 		);
 	
 	
@@ -236,27 +237,13 @@ class UsersController extends UsersAppController {
 	public function register() {		
 		if (!empty($this->request->data)) {
 			try {
-				$result = $this->User->add($this->request->data);
-				if ($result === true) {
-					$this->Session->setFlash(__d('users', 'Successful Registration', true));
-					$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
-				} else {
-					$this->request->data = $result;
-				}
+				$this->User->add($this->request->data);
+				$this->Session->setFlash(__d('users', 'Successful Registration'));
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 			} catch (Exception $e) {
 				# if registration verification is required the model will return this code
-				if ($e->getCode() == 834726476) {
-					if ($this->_welcome($this->User->id)) {
-						$this->Session->setFlash($e->getMessage());
-						$this->Auth->logout();
-					} else {
-						$this->Session->setFlash(__('User saved, but a problem sending verification. Use forgot password, to resend.', true));
-						$this->Auth->logout();
-					}
-				} else {
-					$this->Session->setFlash($e->getMessage());
-					$this->Auth->logout();
-				}
+				$this->Session->setFlash($e->getMessage());
+				$this->Auth->logout();
 			}
 		}
 
@@ -303,13 +290,13 @@ class UsersController extends UsersAppController {
 		if (!empty($this->request->data)) {
 			if ($this->Auth->login()) {
 				try {
+					# make sure you don't need to verify your email first
+					$this->User->checkEmailVerification($this->request->data);
+					# save the login meta data
 					$this->User->loginMeta($this->request->data);
-					#debug($this->Auth->redirect);
-					#debug($this->Auth->redirect());
-					#debug($this->Session->read());
-					#debug($this->_loginRedirect());
 	        		$this->redirect($this->_loginRedirect());
 				} catch (Exception $e) {
+					$this->Auth->logout();
 					$this->Session->setFlash($e->getMessage());
 	        		$this->redirect($this->_logoutRedirect());
 				}
@@ -443,40 +430,6 @@ class UsersController extends UsersAppController {
     }
 
 
-/**
- * __welcome()
- * User can now register and then wait for an email confirmation to activate his account.
- * If he doesn't activate his account, he cant access the system. The key expires in 3 days.
- * @todo		temp change for error in swift mailer
- * @todo		This message needs to be configurable.
- * @todo		This needs to have the ability to resend in case the user didn't get it the first time or something.
- */
-	public function _welcome($user_id) {
-		$this->User->recursive = -1;
-		$user = $this->User->read(null, $user_id);
-		if (!$user)
-			return false;
-
-		$this->set('name', $user['User']['full_name']);
-		$this->set('key', $user['User']['forgot_key']);
-		// todo: temp change for error in swift mailer
-		$url =   Router::url(array('controller'=>'users', 'action'=>'reset_password', $user['User']['forgot_key']), true);
-		$mail =
-		"Dear {$user['User']['full_name']},
-<br></br><br></br>
-    Congratulations! You have created an account with us.
-<br></br><br></br>
-    To complete the registration please activate your account by following the link below or by copying it to your browser:
-<br></br><br></br>
-{$url}<br></br>
-If you have received this message in error please ignore, the link will be unusable in three days.
-<br></br><br></br>
-    Thank you for registering with us and welcome to the community.";
-
-		return $this->__sendMail($user['User']['email'] , 'Welcome', $mail, 'welcome');
-	}
-
-
 	public function __resetPasswordKey($userid) {
 		$user = $this->User->find('first', array('conditions' => array('id' => $userid)));
 		unset($this->request->data['User']['username']);
@@ -495,23 +448,39 @@ If you have received this message in error please ignore, the link will be unusa
 
 
 /**
+ * Resend verification
+ *
+ * @return void
+ */
+ 	public function reverify() {
+		if(!empty($this->request->data)) {
+			try {
+				$this->User->welcome($this->request->data['User']['username']);
+				$this->Session->setFlash('Verification email resent.');
+			} catch (Exception $e) {
+				$this->Session->setFlash($e->getMessage());
+			}
+		}
+	}
+
+	
+	
+/**
  * Used same column `forgot_key` for storing key. It starts with W for activation, F for forget
+ *
  * @todo 	change the column name from forgot_key to something better, like maybe just "key"
  */
-	public function reset_password($key = null) {
+	public function verify($key = null) {
 		$user = $this->User->verify_key($key);
 		if ($user) {
-			$this->Auth->login($user);
-			$this->User->loginMeta($user);
 			if ($key[0] == 'W') {
-				$this->Session->setFlash('Successful account verification, Welcome.');
+				$this->Session->setFlash('Welcome, successful account verification. Please login.');
 				$this->redirect(array('action'=>'login'));
 			} else {
 				$this->Session->setFlash('Successful account verification, change your password.');
-				$this->redirect(array('action'=>'edit', $user['User']['id']));
+				$this->redirect(array('action' => 'edit', $user['User']['id']));
 			}
-		}
-		else {
+		} else {
 			$this->Session->setFlash('Reset code invalid, expired or already used, please try again.');
 			$this->redirect(array('action'=>'forgot_password'));
 		}
@@ -525,7 +494,7 @@ If you have received this message in error please ignore, the link will be unusa
  * @todo			This message needs to be configurable.
  */
 	public function forgot_password() {
-		if(!empty($this->request->data))	{
+		if(!empty($this->request->data)) {
 			# we need to check the username field and the email field
 		  	$user = $this->User->findbyUsername(trim($this->request->data['User']['username']));
 			if (!empty($user['User']['id']) && !empty($user['User']['email'])) {
@@ -536,7 +505,7 @@ If you have received this message in error please ignore, the link will be unusa
 					# then lets email the user a link to the reset password page
 					$this->set('name', $user['User']['full_name']);
 					$this->set('key', $forgotKey);
-					$url = Router::url(array('controller'=>'users', 'action'=>'reset_password', $forgotKey), true);
+					$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $forgotKey), true);
 					$mail =
 		"Dear {$user['User']['full_name']},
 <br></br><br></br>

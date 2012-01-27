@@ -1,5 +1,7 @@
 <?php
-class UserRole extends AppModel {
+App::uses('UsersAppModel', 'Users.Model');
+
+class UserRole extends UsersAppModel {
 
 	var $name = 'UserRole';	
 	var $actsAs = array('Acl' => array('requester'), 'Tree');
