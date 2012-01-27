@@ -715,7 +715,7 @@ class User extends UsersAppModel {
 			$this->set('name', $user['User']['full_name']);
 			$this->set('key', $user['User']['forgot_key']);
 			// todo: temp change for error in swift mailer
-			$url =   Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'reset_password', $user['User']['forgot_key']), true);
+			$url =   Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $user['User']['forgot_key']), true);
 			$message ="Dear {$user['User']['full_name']}, <br></br>
 Congratulations! You have created an account with us.<br><br>
 To complete the registration please activate your account by following the link below or by copying it to your browser:</br>			{$url}<br></br>
