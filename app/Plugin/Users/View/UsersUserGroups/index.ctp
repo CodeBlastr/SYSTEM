@@ -1,5 +1,5 @@
 <div class="UsersUserGroups index">
-	<h2><?php echo __('Users User Goups');?></h2>
+	<h2><?php echo __('Users, Groups');?></h2>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id');?></th>
@@ -35,27 +35,19 @@
 	</tr>
 <?php endforeach; ?>
 	</table>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-	'format' => __('Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%', true)
-	));
-	?>	</p>
-
-	<div class="paging">
-		<?php echo $this->Paginator->prev('<< ' . __('previous', true), array(), null, array('class'=>'disabled'));?>
-	 | 	<?php echo $this->Paginator->numbers();?>
- |
-		<?php echo $this->Paginator->next(__('next', true) . ' >>', array(), null, array('class' => 'disabled'));?>
-	</div>
+<?php echo $this->Element('paging'); ?>
 </div>
-<div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New Users User Goup', true), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User', true), array('controller' => 'users', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List User Groups', true), array('controller' => 'user_groups', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New User Group', true), array('controller' => 'user_groups', 'action' => 'add')); ?> </li>
-	</ul>
-</div>
+<?php 
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Users, User Groups',
+		'items' => array(
+			$this->Html->link(__('New Group', true), array('action' => 'add'), array('class' => 'add')),
+						 
+			$this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index'), array('class' => 'index')),
+			$this->Html->link(__('List Groups', true), array('controller' => 'user_groups', 'action' => 'index'), array('class' => 'index')),
+			$this->Html->link(__('Add Group', true), array('controller' => 'user_groups', 'action' => 'add'), array('class' => 'add'))
+			)
+		),
+	))); ?>

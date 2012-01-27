@@ -26,7 +26,7 @@ class AppController extends Controller {
 	public $userId = '';
     public $uses = array('Condition');
 	public $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html');
-	public $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'SwiftMailer', 'RegisterCallbacks' /*'Security' Desktop Login Stops Working When This is On*/);
+	public $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'RegisterCallbacks' /*'Security' Desktop Login Stops Working When This is On*/);
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
@@ -857,48 +857,47 @@ class AppController extends Controller {
 
 
 /**
- * sendMail
- *
- * Send emails.
- * $email: Array - address/name pairs (e.g.: array(example@address.com => name, ...)
- * String - address to send email to
- * $subject: subject of email.
- * $message['html'] in the layout will be replaced with this text. 
- * $template to be picked from folder for email. By default, if $mail is given in any template, especially default, 
- * Else modify the template from the view file and set the variables from action via $this->set
+ * Make sending email available to all controllers (AppModel calls to this function)
+ * 
+ * @param string		String - address to send email to
+ * @param sring			$subject: subject of email.
+ * @param string		$message['html'] in the layout will be replaced with this text. 
+ * @param string		$template to be picked from folder for email. By default, if $mail is given in any template.
+ * @param array			address/name pairs (e.g.: array(example@address.com => name, ...)
+ * @param UNKNOWN		Have not used it don't know what it does or if it works.
+ * @return bool			
  */
-	public function __sendMail($email = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
-
-		if (defined('__SYSTEM_SMTP')) :
+	public function __sendMail($toEmail = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
+		$this->SwiftMailer = $this->Components->load('SwiftMailer');
+		if (defined('__SYSTEM_SMTP')) {
 			extract(unserialize(__SYSTEM_SMTP));
 			$smtp = base64_decode($smtp);
 			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
-			if(parse_ini_string($smtp)) :
-				$this->SwiftMailer->to = $email;
+			if(parse_ini_string($smtp)) {
+				$this->SwiftMailer->to = $toEmail;
 				$this->SwiftMailer->template = $template;
 
 				$this->SwiftMailer->layout = 'email';
 				$this->SwiftMailer->sendAs = 'html';
 
-				if ($message) :
+				if ($message) {
 					$this->SwiftMailer->content = $message;
 					$message['html'] = $message;
 					$this->set('message', $message);
-				endif;
+				}
 
-				if (!$subject) :
+				if (!$subject) {
 					$subject = 'No Subject';
-				endif;
-
+				}
 
 				//Set view variables as normal
 				return $this->SwiftMailer->send($template, $subject);
-			else :
-				return false;
-			endif;
-		else :
-			return false;
-		endif;
+			} else {
+				throw new Exception(__('SMTP Ini parsing failed.'));
+			}
+		} else {
+			throw new Exception(__('SMTP Settings not defined.'));
+		}
    }
 
 

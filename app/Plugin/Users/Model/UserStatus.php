@@ -1,4 +1,6 @@
 <?php
+App::uses('UsersAppModel', 'Users.Model');
+
 class UserStatus extends UsersAppModel {
 	var $name = 'UserStatus';
 	var $displayField = 'status';

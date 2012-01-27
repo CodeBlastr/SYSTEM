@@ -205,7 +205,7 @@ class UsableBehavior extends ModelBehavior {
 				$data[$i]['Used']['user_id'] = $user;
 				$data[$i]['Used']['foreign_key'] = $Model->id;
 				$data[$i]['Used']['model'] = $Model->alias;
-				$data[$i]['Used']['role'] = $this->defaultRole; // this is temporary, until we start doing real acl 
+				$data[$i]['Used']['role'] = $this->defaultRole; 
 				$i++;
 			endforeach;
 			
@@ -341,7 +341,7 @@ class UsableBehavior extends ModelBehavior {
 			foreach ($users as $user) : 
 				$Model->data['User'][$i]['user_id'] = $user['id'];
 				$Model->data['User'][$i]['model'] = $Model->name;
-				$Model->data['User'][$i]['role'] = $this->defaultRole; // temporary, until we start doing real acl within systems
+				$Model->data['User'][$i]['role'] = $this->defaultRole;
 				$i++;
 			endforeach;
 		endif;

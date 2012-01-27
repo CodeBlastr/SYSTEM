@@ -52,5 +52,4 @@ $this->set('context_menu', array('menus' => array(
 			$this->Html->link(__('Change Password', true), array($this->request->data['User']['id'], 'cpw' => 1)),
 			)
 		),
-	)));
-?>
+	))); ?>

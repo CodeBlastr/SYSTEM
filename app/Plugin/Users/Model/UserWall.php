@@ -1,4 +1,6 @@
 <?php
+App::uses('UsersAppModel', 'Users.Model');
+
 class UserWall extends UsersAppModel {
 	var $name = 'UserWall';
 	var $displayField = 'post';

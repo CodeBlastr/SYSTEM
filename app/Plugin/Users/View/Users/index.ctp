@@ -20,5 +20,4 @@ $this->set('context_menu', array('menus' => array(
 			 $this->Html->link(__('List User Roles', true), array('controller' => 'user_roles', 'action' => 'index')),
 			 )
 		),
-	)));
-?>
+	)));?>
