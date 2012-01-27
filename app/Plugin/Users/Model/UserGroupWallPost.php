@@ -1,4 +1,6 @@
 <?php
+App::uses('UsersAppModel', 'Users.Model');
+
 class UserGroupWallPost extends UsersAppModel {
 	var $name = 'UserGroupWallPost';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed

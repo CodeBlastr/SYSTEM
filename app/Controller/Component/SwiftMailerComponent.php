@@ -201,51 +201,49 @@ class SwiftMailerComponent extends Component {
 	var $postErrors = array();
 
 	var $content = null; // todo: be removed temp for layout issue;
-	/**
-	 * Initialize component
-	 *
-	 * @param Object $controller reference to controller
-	 * @access Public
-	 */
-	function initialize(&$controller) {				
-		$this->__controller = $controller;
-		# get the smtp settings (required for sending email)
-		if (defined('__SYSTEM_SMTP')) :
+
+/**
+ * Initialize component
+ *
+ * @param Object $controller reference to controller
+ * @access Public
+ */
+	public function __construct(ComponentCollection $collection, $settings = array()) {
+		$this->_controller = $collection->getController();
+		if (defined('__SYSTEM_SMTP')) {
 			extract(unserialize(__SYSTEM_SMTP));
 			$smtp = base64_decode($smtp);
 			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
-			if (@$smtp = parse_ini_string($smtp)) :
+			if (@$smtp = parse_ini_string($smtp)) {
 				$this->smtpUsername = !empty($smtp['smtpUsername']) ? $smtp['smtpUsername'] : $this->smtpUsername;
 				$this->smtpPassword = !empty($smtp['smtpPassword']) ? $smtp['smtpPassword'] : $this->smtpPassword;
 				$this->smtpHost = !empty($smtp['smtpHost']) ? $smtp['smtpHost'] : $this->smtpHost;
 				$this->smtpPort = !empty($smtp['smtpPort']) ? $smtp['smtpPort'] : $this->smtpPort;
 				$this->from = !empty($smtp['from']) ? $smtp['from'] : $this->from;
 				$this->fromName = !empty($smtp['fromName']) ? $smtp['fromName'] : $this->fromName;
-			else :
+			} else {
 				return false;
-			endif;
-		else : 
+			}
+		} else {
 			return false;
-		endif;
+		}
+		parent::__construct($collection, $settings);
 	}
-	function startup() { }
-	function beforeRender() { }
-	function beforeRedirect() { }
-	function shutdown() { }
+	
 
-	/**
-	 * Retrieves html/text or plain/text content from /app/views/elements/$this->viewPath/$type/$template.ctp
-	 * and wraps it in layout /app/views/layouts/$this->viewPath/$type/$this->layout.ctp
-	 *
-	 * @param String $template - name of the template for content
-	 * @param String $type - content type:
-	 * 		html - html/text
-	 * 		text - plain/text
-	 * @return String content from template wraped in layout
-	 * @access Protected
-	 */
+/**
+ * Retrieves html/text or plain/text content from /app/views/elements/$this->viewPath/$type/$template.ctp
+ * and wraps it in layout /app/views/layouts/$this->viewPath/$type/$this->layout.ctp
+ *
+ * @param String $template - name of the template for content
+ * @param String $type - content type:
+ * 		html - html/text
+ * 		text - plain/text
+ * @return String content from template wraped in layout
+ * @access Protected
+ */
 	function _emailBodyPart($template, $type = 'html') {
-// @todo: temporary comment. Needto bring this back after finding out view rendering issue;
+	// @todo: temporary comment. Needto bring this back after finding out view rendering issue;
 		$content = $this->content;
 		/*$viewClass = $this->__controller->view;
 
@@ -270,19 +268,19 @@ class SwiftMailerComponent extends Component {
 		return $content;
 	}
 
-	/**
-	 * Sends Email depending on parameters specified, using method $method,
-	 * mail template $view and subject $subject
-	 *
-	 * @param String $view - template for mail content
-	 * @param String $subject - email message subject
-	 * @param String $method - email message sending method, possible values are:
-	 * 		"smtp" - Simple Mail Transfer Protocol method
-	 * 		"sendmail" - Sendmail method http://www.sendmail.org/
-	 * 		"native" - Native PHP mail method
-	 * @return Integer - number of emails sent
-	 * @access Public
-	 */
+/**
+ * Sends Email depending on parameters specified, using method $method,
+ * mail template $view and subject $subject
+ *
+ * @param String $view - template for mail content
+ * @param String $subject - email message subject
+ * @param String $method - email message sending method, possible values are:
+ * 		"smtp" - Simple Mail Transfer Protocol method
+ * 		"sendmail" - Sendmail method http://www.sendmail.org/
+ * 		"native" - Native PHP mail method
+ * @return Integer - number of emails sent
+ * @access Public
+ */
 	function send($view = 'default', $subject = '', $method = 'smtp') {
 		// Check subject charset, asuming we are by default using "utf-8"
 		if (strtolower($this->subjectCharset) != 'utf-8') {
@@ -442,15 +440,15 @@ class SwiftMailerComponent extends Component {
 		return $mailer->send($message, $this->postErrors);
 	}
 
-	/**
-	 * Registers a plugin supported by SwiftMailer
-	 * function parameters are limited to 5
-	 * first argument is plugin name (e.g.: if SwiftMailer plugin class is named "Swift_Plugins_AntiFloodPlugin",
-	 * so you should pass name like "AntiFloodPlugin")
-	 * All other Mixed arguments included in plugin creation call
-	 *
-	 * @return Integer 1 on success 0 on failure
-	 */
+/**
+ * Registers a plugin supported by SwiftMailer
+ * function parameters are limited to 5
+ * first argument is plugin name (e.g.: if SwiftMailer plugin class is named "Swift_Plugins_AntiFloodPlugin",
+ * so you should pass name like "AntiFloodPlugin")
+ * All other Mixed arguments included in plugin creation call
+ *
+ * @return Integer 1 on success 0 on failure
+ */
 	function registerPlugin() {
 		if (func_num_args()) {
 			$args = func_get_args();
@@ -460,20 +458,22 @@ class SwiftMailerComponent extends Component {
 		return false;
 	}
 
-	/**
-	 * Run a specific by $type callback on controller
-	 * who`s action is being executed. This functionality
-	 * is used to perform additional specific methods
-	 * if any is required
-	 *
-	 * @param mixed $object - object callback being executed on
-	 * @param string $type - type of callback to run
-	 * @return void
-	 */
+/**
+ * Run a specific by $type callback on controller
+ * who`s action is being executed. This functionality
+ * is used to perform additional specific methods
+ * if any is required
+ *
+ * @param mixed $object - object callback being executed on
+ * @param string $type - type of callback to run
+ * @return void
+ */
 	function __runCallback(&$object, $type) {
-		$call = '__'.$type.'On'.Inflector::camelize($this->__controller->action);
-		if (method_exists($this->__controller, $call)) {
-			$this->__controller->{$call}($object);
+		if (is_object($this->__controller)) {
+			$call = '__'.$type.'On'.Inflector::camelize($this->__controller->action);
+			if (method_exists($this->__controller, $call)) {
+				$this->__controller->{$call}($object);
+			}
 		}
 	}
 }
