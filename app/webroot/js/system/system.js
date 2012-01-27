@@ -240,13 +240,13 @@ $(function() {
 	
 	
 	/* Added a slight delay to form submissions in order to allow the change events to be triggered before the submit event when you go directly from an input to a submit button without losing focus on the changed input first.  Contacts Add Person with autocomplete would not work reliably without this, and since the form is so simple we cannot depend on the user first going to another input before hitting submit */
-	$("form").submit(function(e) {
+	/*$("form").submit(function(e) {
 		e.preventDefault();
 		var self = this;
 		window.setTimeout(function() {
 			self.submit();
 		}, 200);
-	});
+	});*/
 	
 	
 	$('.masonry').masonry({
