@@ -1,5 +1,7 @@
 <?php
-class User extends AppModel {
+App::uses('UsersAppModel', 'Users.Model');
+
+class User extends UsersAppModel {
 
 	public $name = 'User';
 	public $displayField = 'full_name';
@@ -97,14 +99,21 @@ class User extends AppModel {
 		);
 	
 	public $hasAndBelongsToMany = array(
-        'UsersUserGroup' =>
-            array(
-                'className' => 'Users.UsersUserGroup',
-                'joinTable' => 'users_user_groups',
-                'foreignKey' => 'user_group_id',
-                'associationForeignKey' => 'user_id'
-            ),
-  	  );
+        /*  bad name for this, changed 1/26/2012
+		'UsersUserGroup' => array(
+			'className' => 'Users.UsersUserGroup',
+			'joinTable' => 'users_user_groups',
+			'foreignKey' => 'user_group_id',
+			'associationForeignKey' => 'user_id',
+			), */
+        'UserGroup' => array(
+			'className' => 'Users.UserGroup',
+			'joinTable' => 'users_user_groups',
+			'foreignKey' => 'user_group_id',
+			'associationForeignKey' => 'user_id',
+			'dependent' => true,
+			),
+		);
 	
 	public function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
@@ -138,14 +147,14 @@ class User extends AppModel {
 	protected function _comparePassword() {
 		# fyi, confirm password is hashed in the beforeValidate method
 		if (isset($this->data['User']['confirm_password']) && 
-				($this->data['User']['password'] == $this->data['User']['confirm_password'])) :
+				($this->data['User']['password'] == $this->data['User']['confirm_password'])) {
 			return true;
-		elseif (!isset($this->data['User']['confirm_password'])) :
+		} else if (!isset($this->data['User']['confirm_password'])) {
 			# if confirm_password isn't in the form fields then we aren't updating passwords
 			return true;
-		else :
+		} else {
 			return false;
-		endif;
+		}
 	}
 	
 	protected function _emailRequired() {
@@ -194,7 +203,6 @@ class User extends AppModel {
  */
 	public function add($data) {
 		$data = $this->_cleanAddData($data);
-		
 		if ($data = $this->_userContact($data)) {
 			# setup a verification key
 			$data['User']['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null; 
@@ -207,10 +215,15 @@ class User extends AppModel {
 			# and saves the recursive data of contact person / contact company this way.
 			if ($this->Contact->add($data)) {
 				
-				//Update Referral User Credits on a new registration
-				if(defined('__USERS_NEW_REGISTRATION_CREDITS') && !empty($data['User']['parent_id'])) {
+				# update referral user credits on a new registration
+				if (defined('__USERS_NEW_REGISTRATION_CREDITS') && !empty($data['User']['parent_id'])) {
 					$this->updateUserCredits(__USERS_NEW_REGISTRATION_CREDITS, $data['User']['parent_id']);
 				}	
+				
+				# add the user to a group if the data for the group exists
+				if (!empty($data['UserGroup']['UserGroup']['id'])) {
+					$this->UserGroup->UsersUserGroup->add($data);
+				}
 				
 				if (in_array('Orders', CakePlugin::loaded())) : 
 					# setup and save data for a related order shipment record for prefilled checkout 
@@ -237,15 +250,18 @@ class User extends AppModel {
 					}
 				}
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-					throw new Exception(__d('users', 'Check your email to verify account.', true), 834726476);
+					if ($this->welcome($data['User']['username'])) {
+						throw new Exception(__d('users', 'Thank you, please check your email to verify your account.'), 834726476);
+					} else {
+					}
 				} else {
 					return true;
 				}
 			} else {
-				throw new Exception(__d('users', 'Error, user could not be saved, Please try again.', true));
+				throw new Exception(__d('users', 'Error, user could not be saved, Please try again.'));
 			}
 		} else {
-			throw new Exception(__d('users', 'Invalid user data.', true));
+			throw new Exception(__d('users', 'Invalid user data.'));
 		}
 	}
 	
@@ -403,6 +419,7 @@ class User extends AppModel {
 
 /**
  * verifies the key passed and if valid key, remove it from DB and return user else 
+ *
  * @return {mixed}			user data array, or null. 
  */
 	public function verify_key($key = null) {
@@ -420,8 +437,11 @@ class User extends AppModel {
 				$this->id = $user['User']['id'];
 				$this->set('forgot_key', null);
 				$this->set('forgot_key_created', null);
-				if (!$this->save()) {
-					$user = null; 
+				$this->validate = null;
+				if ($this->save()) {
+					#$user = null; 
+				} else {
+					throw new Exception(__('Verfication key failed to update.'));
 				}
 			} 
 		}
@@ -625,7 +645,7 @@ class User extends AppModel {
 			));
 		$user['User']['credit_total'] += $credits; 
 		if(!($this->save($user, false))){
-			throw new Exception(__d('Credits not Saved', true));
+			throw new Exception(__('Credits not Saved'));
 		}
 	}
 
@@ -635,7 +655,7 @@ class User extends AppModel {
  * it will update user credits according to the price paid for credits
  * price * __USERS_CREDITS_PER_PRICE_UNIT
  */
-	function creditsUpdate($data = null){
+	public function creditsUpdate($data = null){
 		$user = $this->find('first' , array(
 			'fields' => array('id', 'credit_total'),
 			'conditions' =>
@@ -650,7 +670,64 @@ class User extends AppModel {
 
 		$this->Behaviors->detach('Acl');
 		if(!($this->save($user, false))){
-			throw new Exception(__d('Credits not Saved', true));
+			throw new Exception(__('Credits not Saved'));
+		}
+	}
+
+/**
+ * Used same column `forgot_key` for storing key. It starts with W for activation, F for forget
+ *
+ * @todo 	change the column name from forgot_key to something better, like maybe just "key"
+ */
+	public function checkEmailVerification($data) {
+		if(!empty($data['User']['username'])) {
+			$user = $this->find('first', array(
+				'conditions' => array(
+					'User.username' => $data['User']['username'],
+					),
+				'fields' => array(
+					'User.forgot_key',
+					),
+				));
+			# W at the start of the key tells us the account needs to be verified still.
+			if ($user['User']['forgot_key'][0] != 'W') {
+				return $user;												
+			} else {
+				throw new Exception(__('Account must be verified. %s', '<a href="/users/users/reverify">Resend Verification?</a>'));
+			}
+		} else {
+			throw new Exception(__('Invalid login request'));
+		}
+	}
+
+
+/**
+ * __welcome()
+ * User can now register and then wait for an email confirmation to activate his account.
+ * If he doesn't activate his account, he cant access the system. The key expires in 3 days.
+ * @todo		temp change for error in swift mailer
+ * @todo		This message needs to be configurable.
+ * @todo		This needs to have the ability to resend in case the user didn't get it the first time or something.
+ */
+	public function welcome($username) {
+		$user = $this->find('first', array('conditions' => array('User.username' => $username)));
+		if (!empty($user)) {
+			$this->set('name', $user['User']['full_name']);
+			$this->set('key', $user['User']['forgot_key']);
+			// todo: temp change for error in swift mailer
+			$url =   Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $user['User']['forgot_key']), true);
+			$message ="Dear {$user['User']['full_name']}, <br></br>
+Congratulations! You have created an account with us.<br><br>
+To complete the registration please activate your account by following the link below or by copying it to your browser:</br>			{$url}<br></br>
+If you have received this message in error please ignore, the link will be unusable in three days.<br></br>
+Thank you for registering with us and welcome to the community.";
+			if ($this->__sendMail($user['User']['email'], 'Welcome', $message)) {
+				return true;
+			} else {
+				throw new Exception(__('Verification email failed to send.'));
+			}
+		} else {
+			throw new Exception(__('Unverified user not found.'));
 		}
 	}
 

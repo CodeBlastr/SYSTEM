@@ -1,5 +1,5 @@
-<h1><?php echo __('Reset Password'); ?></h1>
-<div class="users form" id="forgotPassword">
+<h1><?php echo __('Resend Verification'); ?></h1>
+<div class="users form" id="reverify">
 <?php
     echo $this->Form->create('User');
     echo $this->Form->input('username', array('label' => 'Username or Email'));
