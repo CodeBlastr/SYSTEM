@@ -142,19 +142,20 @@ class Contact extends ContactsAppModel {
 	
 	
 	public function add($data) {
-		$data = $this->_cleanContactData($data);
-		
+		$data = $this->_cleanContactData($data);		
 		if ($this->saveAll($data)) {
-			return __d('contacts', 'Contact saved successfully.', true);
+			return __d('contacts', 'Contact saved successfully.');
 		} else {
 			$error = 'Error : ';
-			foreach ($this->invalidFields() as $models) :
-				if (is_array($models)) : foreach ($models as $err) :
-					$error .= $err . ', ';
-				endforeach; else :
+			foreach ($this->invalidFields() as $models) {
+				if (is_array($models)) {
+					foreach ($models as $err) {
+						$error .= $err . ', ';
+					}
+				} else {
 					$error .= $models;
-				endif;
-			endforeach;			
+				}
+			}
 			throw new Exception($error);
 		}
 	}

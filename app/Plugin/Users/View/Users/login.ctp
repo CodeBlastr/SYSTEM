@@ -1,11 +1,8 @@
-
-
-
 <div class="login form">
   <?php
     echo $this->Form->create('User', array('action' => 'login')); ?>
   <fieldset>
-    <legend><h2><?php echo __('Login'); ?></h2></legend>
+    <legend><h2><?php echo $this->Html->image('/images/logo.png') ? $this->Html->image('/images/logo.png') :  __('Login'); ?></h2></legend>
   <?php
     echo $this->Form->input('username');
     echo $this->Form->input('password', array('label' => 'Password '));

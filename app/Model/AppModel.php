@@ -226,5 +226,22 @@ class AppModel extends Model {
         return $uuid[0][0]['uuid'];
     }
 	
+/**
+ * Make sending email available to models (as well as controllers)
+ * 
+ * @param string		String - address to send email to
+ * @param sring			$subject: subject of email.
+ * @param string		$message['html'] in the layout will be replaced with this text. 
+ * @param string		$template to be picked from folder for email. By default, if $mail is given in any template.
+ * @param array			address/name pairs (e.g.: array(example@address.com => name, ...)
+ * @param UNKNOWN		Have not used it don't know what it does or if it works.
+ * @return bool			
+ */
+	public function __sendMail($toEmail = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
+		App::uses('AppController', 'Controller');
+		$Controller = new AppController;
+		return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
+	}
+	
 }
 ?>

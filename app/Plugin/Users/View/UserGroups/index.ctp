@@ -39,8 +39,7 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'User Groups',
 		'items' => array(
-			$this->Html->link(__('New User Group', true), array('action' => 'add')),
+			$this->Html->link(__('Add', true), array('action' => 'add'), array('class' => 'add')),
 			)
 		),
-	)));
-?>
+	))); ?>
