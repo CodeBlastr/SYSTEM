@@ -50,7 +50,7 @@ foreach ($data as $dat) {
 	}
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
-      <div class="indexCell imageCell"> <span> <?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => $viewUrl, 'thumbLinkOptions' => $viewUrlOptions), array('plugin' => 'galleries')) : null; ?> </span> </div>
+      <div class="indexCell imageCell"> <span><?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => $viewUrl, 'thumbLinkOptions' => $viewUrlOptions), array('plugin' => 'galleries')) : null; ?> </span> </div>
       <div class="indexCell metaCell">
         <ul class="metaData">
           <?php 
