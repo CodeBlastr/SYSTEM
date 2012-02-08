@@ -1,7 +1,7 @@
 <?php
-if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'database.php')) :
+if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'database.php')) {
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'database.php');
-else : 
+} else {
 
 	class DATABASE_CONFIG {
 	
@@ -38,4 +38,5 @@ else :
 			//'encoding' => 'utf8',
 		);
 	}
-endif;
+	
+}
