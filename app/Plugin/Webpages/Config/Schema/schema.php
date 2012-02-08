@@ -1,5 +1,5 @@
 <?php 
-/* Webpages schema generated on: 2011-12-16 22:44:59 : 1324075499*/
+/* Webpages schema generated on: 2012-02-08 23:36:01 : 1328744161*/
 class WebpagesSchema extends CakeSchema {
 	function before($event = array()) {
 		return true;
@@ -45,6 +45,7 @@ class WebpagesSchema extends CakeSchema {
 	var $webpage_css = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary', 'collate' => NULL, 'comment' => ''),
 		'webpage_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'collate' => NULL, 'comment' => ''),
+		'type' => array('type' => 'string', 'null' => false, 'default' => 'all', 'length' => 100, 'collate' => 'utf8_general_ci', 'comment' => '', 'charset' => 'utf8'),
 		'name' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 50, 'key' => 'unique', 'collate' => 'utf8_general_ci', 'comment' => '', 'charset' => 'utf8'),
 		'content' => array('type' => 'text', 'null' => false, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => '', 'charset' => 'utf8'),
 		'creator_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'collate' => NULL, 'comment' => ''),

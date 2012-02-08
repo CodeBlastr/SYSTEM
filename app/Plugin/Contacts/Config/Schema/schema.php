@@ -1,5 +1,5 @@
 <?php 
-/* Contacts schema generated on: 2011-12-15 15:52:17 : 1323964337*/
+/* Contacts schema generated on: 2012-02-08 23:34:08 : 1328744048*/
 class ContactsSchema extends CakeSchema {
 	function before($event = array()) {
 		return true;
