@@ -257,6 +257,14 @@ $(function() {
 	});
 	
 	
+	$('.masonry').masonry({
+		// http://masonry.desandro.com/ 
+		itemSelector: '.box',
+		isFitWidth: true,
+		isResizable: false,
+	});
+	
+	
 	// only for the admin layout right now
 	$(".helpBox").click(function() {
 		alert($(this).attr("title"));
