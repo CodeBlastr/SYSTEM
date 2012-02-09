@@ -21,8 +21,8 @@
  */
 class Condition extends AppModel {
 
-	var $name = 'Condition';
-	var $validate = array(
+	public $name = 'Condition';
+	public $validate = array(
 		'name' => array('notempty'),
 		'bind_model' => array('notempty'),
 		'creator_id' => array('numeric'),
@@ -30,7 +30,7 @@ class Condition extends AppModel {
 	);
 	
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'Creator' => array(
 			'className' => 'Users.User',
 			'foreignKey' => 'creator_id',
@@ -56,7 +56,7 @@ class Condition extends AppModel {
  * @param {data}		The data that we're checking against and saving if a match is made.
  * @return {array}		returns an array of ids and the models to bind those to, when the conditions are met.
  */
-	function checkAndFire($type, $lookups, $data) {
+	public function checkAndFire($type, $lookups, $data) {
 		# first check a condtion for plugin, controller, model, action, extra values and type matches
 		if ($conditions = $this->checkConditions($type, $lookups)) {
 			# if those are matched traverse this data with the sub condtion to see if its a 100% match
@@ -91,7 +91,7 @@ Test case: ModelDeleteTest(testDeleteHabtmReferenceWithConditions)  FROM All Mod
  * @todo				SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
 Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
  */	
-	function checkConditions($type, $lookups) {
+	public function checkConditions($type, $lookups) {
 		$fields = $this->_conditionConditions($lookups);
 		$conditions = $this->find('all', array(
 			'conditions' => array(
@@ -116,7 +116,7 @@ Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
  * @param {data}		This is all of the form submitted data, to read and see if the sub condition was met.
  * @return {bool}		Returns true if all sub conditions were met or don't exist, and false if they were not met.
  */	
-	function _checkSubConditions($condition, $data) {
+	protected function _checkSubConditions($condition, $data) {
 		if (!empty($condition['Condition']['condition'])) {
 			# check the sub condition code goes here. 
 			$conditionsArray = explode(',',$condition['Condition']['condition']);
@@ -195,7 +195,7 @@ Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
 	
 		# This has been saved so that we can use it when we finish of the extra condition checking in the condition model
 	# If it exists there, then delete this function, but NOT until then.
-	function __checkExtraCondition($conditionTrigger) {
+	protected function __checkExtraCondition($conditionTrigger) {
 	}
 	
 	
@@ -207,7 +207,7 @@ Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
  * @param {lookups} 	An array with possible indexes of model, plugin, controller action, or extra_values.
  * @return {array}		Returns an array of conditions.
  */	
-	function _conditionConditions($lookups) {
+	protected function _conditionConditions($lookups) {
 		$model = !empty($lookups['model']) ? $lookups['model'] : null;
 		$plugin = !empty($lookups['plugin']) ? $lookups['plugin'] : null;
 		$controller = !empty($lookups['controller']) ? $lookups['controller'] : null;
@@ -236,7 +236,7 @@ Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
  * @param {data}		An array of data that was originally entered into the form. Use it for creating new actions from the single action that triggered this. 
  * @return {}			Does not return anything. This is a silent operation, and gives no feedback unless a fatal error occurs.
  */
-	function fireAction($id, $model, $data) {
+	public function fireAction($id, $model, $data) {
 		# import the bind model and fire a model action called triggered.
 		App::import('Model', $model);
 		$thisModel = explode('.', $model);
@@ -253,7 +253,7 @@ Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
 	}
 	
 	
-	function addRecursiveData($model, $data) {
+	public function addRecursiveData($model, $data) {
 		$Model = ClassRegistry::init($model);
 		$Model->recursive = 1;
 		$data = $Model->find('first', array(
