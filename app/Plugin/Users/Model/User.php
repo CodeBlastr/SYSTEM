@@ -117,10 +117,11 @@ class User extends UsersAppModel {
 
 	public function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
-		if (in_array('Affiliates', CakePlugin::loaded())) :
+		if (in_array('Affiliates', CakePlugin::loaded())) {
 			$this->Behaviors->attach('Affiliates.Referrable');
-		endif;
-		if (in_array('Orders', CakePlugin::loaded())) :
+		}
+		
+		if (in_array('Orders', CakePlugin::loaded())) {
 			$this->hasMany['OrderPayment'] = array(
 				'className' => 'Orders.OrderPayment',
 				'foreign_key' => 'user_id'
@@ -134,14 +135,15 @@ class User extends UsersAppModel {
 				'foreignKey' => 'owner_id',
 				'dependent' => false,
 				);
-		endif;
-		if (in_array('Catalogs', CakePlugin::loaded())) :
+		}
+		
+		if (in_array('Catalogs', CakePlugin::loaded())) {
 			$this->hasMany['CatalogItemBrand'] = array(
 				'className' => 'Catalogs.CatalogItemBrand',
 				'foreignKey' => 'owner_id',
 				'dependent' => false,
 				);
-		endif;
+		}
 	}
 
 	protected function _comparePassword() {

@@ -523,7 +523,7 @@ class AppController extends Controller {
 				endif;
 			endforeach;
 			$this->layout = 'default';
-		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax') && ($this->request->query['url'] == $checkUrl)) {
+		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax') && (!empty($this->request->query['url']) && $this->request->query['url'] == $checkUrl)) {
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		}
@@ -778,12 +778,14 @@ class AppController extends Controller {
  * Loads uses dynamically system wide
  */	
 	private function _getUses() {
-		if (is_array($this->uses)) {
-			$this->uses = array_merge($this->uses, array('Webpages.Webpage')); 
-		} else {
-			# there is only one (non-array) in $this->uses
-			$this->uses = array($this->uses, 'Webpages.Webpage'); 
-		} 
+		if (!empty($this->request)) { // this is so that it doesn't load during console activities
+			if (is_array($this->uses)) {
+				$this->uses = array_merge($this->uses, array('Webpages.Webpage')); 
+			} else {
+				# there is only one (non-array) in $this->uses
+				$this->uses = array($this->uses, 'Webpages.Webpage'); 
+			} 
+		}
 	}
 	
 	
