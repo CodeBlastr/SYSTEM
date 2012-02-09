@@ -1,5 +1,4 @@
 <?php
-
 App::uses('CakeSchema', 'Model');
 	
 	
@@ -71,7 +70,7 @@ class InstallController extends AppController {
 /**
  * write the class vars that are used through out the functions in this class
  */
-	private function _handleInputVars($data) {
+	protected function _handleInputVars($data) {
 		$this->options['siteName'] = $this->request->data['Install']['site_name'];
 		if (strpos($this->request->data['Install']['site_domain'], ',')) :
 			# comma separated domain handler
@@ -91,8 +90,59 @@ class InstallController extends AppController {
 		endif;
 	}
 	
-	
 	public function index() {
+		$currentlyLoadedPlugins = CakePlugin::loaded();
+		
+		CakePlugin::loadAll();
+		$unloadedPlugins = array_diff(CakePlugin::loaded(), $currentlyLoadedPlugins);
+		
+		foreach ($unloadedPlugins as $unloadedPlugin) {
+			# unload the plugins just loaded
+			CakePlugin::unload($unloadedPlugin);
+		}
+		$this->set(compact('unloadedPlugins'));
+	}
+	
+/**
+ * Install a plugin to the current site.
+ */
+	public function plugin($plugin = null) {
+		if (!empty($plugin) && defined('__SYSTEM_LOAD_PLUGINS') ) {
+			CakePlugin::load($plugin);
+			if ($this->_installPluginSchema($plugin, $plugin)) {
+				$plugins = unserialize(__SYSTEM_LOAD_PLUGINS);
+				$sqlData = '';
+				foreach ($plugins['plugins'] as $sql) {
+					$sqlData .= 'plugins[] = ' . $sql . PHP_EOL;
+				}
+				$sqlData = $sqlData . "plugins[] = {$plugin}";
+				# "UPDATE `settings` SET `value` = 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges' WHERE `name` = 'LOAD_PLUGINS';";
+				App::uses('Setting', 'Model');
+				$Setting = new Setting;
+				$data['Setting']['type'] = 'System';
+				$data['Setting']['name'] = 'LOAD_PLUGINS';
+				$data['Setting']['value'] = $sqlData;
+				if ($Setting->add($data)) {
+					$this->Session->setFlash(__('Plugin successfully installed.'));
+					$this->redirect(array('action' => 'index'));
+				} else {
+					$this->Session->setFlash(__('Settings update failed.'));
+					$this->redirect(array('action' => 'index'));
+				}
+			} else {
+				$this->Session->setFlash(__('Plugin install failed.'));
+				$this->redirect(array('action' => 'index'));
+			}
+		} else {
+			$this->Session->setFlash(__('Current plugin setup not valid.'));
+			$this->redirect(array('action' => 'index'));
+		}
+	}
+	
+/**
+ * Install a new site
+ */
+	public function site() {
 		if (!empty($this->request->data)) :
 			# move everything here down to its own function
 			$this->_handleInputVars($this->request->data);
@@ -217,7 +267,7 @@ class InstallController extends AppController {
  * 
  * @todo 		Probably should change this to catch throw syntax because there are a lot of errors with no feedback.
  */
-	private function _installCoreFiles() {
+	protected function _installCoreFiles() {
 		if (!empty($this->options['siteDomain']) && !empty($this->config)) : 
 			# copy example.com
 			$templateDir = ROOT.DS.'sites'.DS.'example.com';
@@ -251,7 +301,7 @@ class InstallController extends AppController {
 	}
 	
 	
-	private function _updateBootstrapPhp() {
+	protected function _updateBootstrapPhp() {
 		$filename = ROOT.DS.'sites'.DS.'bootstrap.php';
 		$filesize = filesize($filename);
 		$file = fopen($filename, 'r');
@@ -278,7 +328,7 @@ class InstallController extends AppController {
 	}
 	
 	
-	private function _createFile($fileName = null, $contents = null) {
+	protected function _createFile($fileName = null, $contents = null) {
 		$fh = fopen($fileName, 'w') or die("can't open file");
 		if (fwrite($fh, $contents)) : 
 			fclose($fh);
@@ -300,7 +350,7 @@ class InstallController extends AppController {
 	
 	
 	
-	private function _installPluginSchema($name = null, $plugin = null) {
+	protected function _installPluginSchema($name = null, $plugin = null) {
 		if (!empty($name) && !empty($plugin)) : 
 			$this->params['name'] = $name;
 			$this->params['plugin'] = $plugin;
@@ -501,7 +551,8 @@ class InstallController extends AppController {
 	}
 	
 	
-	private function _installCoreData(&$db) {
+	
+	protected function _installCoreData(&$db) {
 		try {
 			# run each data sql insert
 			foreach ($this->_getInstallSqlData() as $sql) :
@@ -552,7 +603,7 @@ class InstallController extends AppController {
  *
  * @todo 		Needs an error to return false
  */	
-	private function _copy_directory($src, $dst) {
+	protected function _copy_directory($src, $dst) {
 	    $dir = opendir($src);
 	    @mkdir($dst);
 	    while(false !== ( $file = readdir($dir)) ) {
