@@ -4,7 +4,7 @@
   <fieldset>
     <legend><h2><?php echo $this->Html->image('/images/logo.png') ? $this->Html->image('/images/logo.png') :  __('Login'); ?></h2></legend>
   <?php
-    echo $this->Form->input('username');
+    echo $this->Form->input('username', array('label' => 'Email '));
     echo $this->Form->input('password', array('label' => 'Password '));
     echo $this->Form->end('Login'); 
 ?>
