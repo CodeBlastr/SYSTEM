@@ -54,8 +54,9 @@ $this->set('context_menu', array('menus' => array(
 		'heading' => 'Galleries',
 		'items' => array(
 			$this->Html->link(__('View', true), array('action' => 'view', $model, $foreignKey)),
-			$this->Html->link(__('List', true), array('action' => 'index')),
+			$this->Html->link(__('List', true), array('action' => 'index'), array('class' => 'index')),
+			$this->Html->link(__('Add'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'add'), array('class' => 'add')),
+			$this->Html->link(__('Delete'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'delete', $gallery['Gallery']['id']), array('class' => 'delete'), array('class' => 'index'), 'Are you sure you want to permanently delete?'),
 			)
 		),
-	)));
-?>
+	))); ?>
