@@ -239,12 +239,13 @@ class UsersController extends UsersAppController {
 			try {
 				$this->User->add($this->request->data);
 				$this->Session->setFlash(__d('users', 'Successful Registration'));
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+				$this->_login();
 			} catch (Exception $e) {
 				# if registration verification is required the model will return this code
 				$this->Session->setFlash($e->getMessage());
 				$this->Auth->logout();
 			}
+
 		}
 
 		$userRoles = $this->User->UserRole->find('list');
@@ -288,27 +289,32 @@ class UsersController extends UsersAppController {
  */
 	public function login() {
 		if (!empty($this->request->data)) {
-			if ($this->Auth->login()) {
-				try {
-					# make sure you don't need to verify your email first
-					$this->User->checkEmailVerification($this->request->data);
-					# save the login meta data
-					$this->User->loginMeta($this->request->data);
-	        		$this->redirect($this->_loginRedirect());
-				} catch (Exception $e) {
-					$this->Auth->logout();
-					$this->Session->setFlash($e->getMessage());
-	        		$this->redirect($this->_logoutRedirect());
-				}
-		    } else {
-		        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
-		    }
+			$this->_login();
 		}
 		$userRoles = $this->User->UserRole->find('list');
 		unset($userRoles[1]); // remove the administrators group by default - too insecure
 		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
 		$this->set(compact('userRoleId', 'userRoles'));
 		if (empty($this->templateId)) { $this->layout = 'login'; }
+	}
+	
+	
+	protected function _login() {
+		if ($this->Auth->login()) {
+			try {
+				# make sure you don't need to verify your email first
+				$this->User->checkEmailVerification($this->request->data);
+				# save the login meta data
+				$this->User->loginMeta($this->request->data);
+		        $this->redirect($this->_loginRedirect());
+			} catch (Exception $e) {
+				$this->Auth->logout();
+				$this->Session->setFlash($e->getMessage());
+		        $this->redirect($this->_logoutRedirect());
+			}
+	    } else {
+	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
+	    }			
 	}
 
 

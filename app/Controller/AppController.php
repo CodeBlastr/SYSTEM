@@ -950,7 +950,8 @@ class AppController extends Controller {
 				#break;
 				$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
 				$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
-				$this->Session->setFlash(__('%s does not have access to the %s page.', $requestor, $requested));
+				$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';
+				$this->Session->setFlash(__('%s %s %s.', $requestor, $message, $requested));
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'restricted'));
 			}
 		}
