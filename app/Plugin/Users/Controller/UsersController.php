@@ -246,6 +246,7 @@ class UsersController extends UsersAppController {
 				$this->Auth->logout();
 			}
 
+
 		}
 
 		$userRoles = $this->User->UserRole->find('list');
