@@ -1,5 +1,6 @@
 <?php 
 # setup defaults
+$indexCount = empty($indexCount) ? 1 : $indexCount;
 $modelName = !empty($modelName) ? $modelName : Inflector::classify($this->request->params['controller']); // ContactPerson
 $pluginName = !empty($pluginName) ? $pluginName : ZuhaInflector::pluginize($modelName); // contacts
 $controller = !empty($controller) ? $controller : Inflector::tableize($modelName); // contact_people, projects
@@ -19,7 +20,7 @@ if (!empty($data)) {
 	}
 ?>
 
-<div class="<?php echo $controller; ?> index">
+<div id="<?php echo $modelName . $indexCount; ?>" class="<?php echo $controller; ?> index">
   <div class="indexContainer <?php echo $indexClass; ?>">
     <?php
 $i = 0;
@@ -32,10 +33,19 @@ foreach ($data as $dat) {
 	$displayId = !empty($displayId) ? $displayId : 'id';
 	$id = !empty($dat[$modelName][$displayId]) ? $dat[$modelName][$displayId] : null;
 	unset($dat[$modelName][$displayId]);
-	$name = !empty($dat[$modelName][$displayName]) ? $dat[$modelName][$displayName] : null;
-	unset($dat[$modelName][$displayName]);
-	$description = !empty($dat[$modelName][$displayDescription]) ? $dat[$modelName][$displayDescription] : null;
-	unset($dat[$modelName][$displayDescription]);
+	
+	# name can be a field_name or a Model.field_name format
+	$nameModel = strpos($displayName, '.') ? substr($displayName, 0, strpos($displayName, '.')) : $modelName;
+	$displayNameField = strpos($displayName, '.') ? substr($displayName, strpos($displayName, '.') + 1) : $displayName;
+	$name = !empty($dat[$nameModel][$displayNameField]) ? $dat[$nameModel][$displayNameField] : null;
+	unset($dat[$nameModel][$displayNameField]);
+	
+	# description can be a field_name or a Model.field_name format
+	$descriptionModel = strpos($displayDescription, '.') ? substr($displayDescription, 0, strpos($displayDescription, '.')) : $modelName;
+	$displayDescriptionField = strpos($displayDescription, '.') ? substr($displayDescription, strpos($displayDescription, '.') + 1) : $displayDescription;
+	$description = !empty($dat[$descriptionModel][$displayDescriptionField]) ? $dat[$descriptionModel][$displayDescriptionField] : null;
+	unset($dat[$descriptionModel][$displayDescriptionField]);
+	
 	extract($dat[$modelName]); // this allows us to access fields from the view page with {var} as a tag
 	$link['pluginName'] = !empty($link['pluginName']) ? $link['pluginName'] : $pluginName;
 	$link['controllerName'] = !empty($link['controllerName']) ? $link['controllerName'] : $controller;
@@ -176,7 +186,7 @@ foreach ($data as $dat) {
 } else {
 # Don't show anything rom the index, show a default message  
 # pulled as an element called start, from the plugin folder you're in. ?>
-<div class="index noItems">
+<div id="<?php echo $modelName . $indexCount; ?>" class="index noItems">
 	<?php
 	$startElement = !empty($startElement) ? $startElement : 'start';
 	echo $this->Element($startElement, array(), array('plugin' => $pluginName));

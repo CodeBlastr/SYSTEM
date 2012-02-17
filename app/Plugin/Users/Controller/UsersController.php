@@ -84,7 +84,14 @@ class UsersController extends UsersAppController {
 
 
 	public function view($id) {
-		$user = $this->User->find('first', array('conditions' => array('User.id' => $id)));
+		$user = $this->User->find('first', array(
+			'conditions' => array(
+				'User.id' => $id
+				),
+			'contain' => array(
+				'UserGroup',
+				),
+			));
 
 		# This is here, because we have an element doing a request action on it.
 		if (isset($this->request->params['requested'])) {
@@ -182,7 +189,7 @@ class UsersController extends UsersAppController {
 		if (empty($this->request->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
-			));
+				));
 			
 			if (in_array('Orders', CakePlugin::loaded())) : 
 				$userShippingAddress = $this->User->OrderShipment->find('first',array(
