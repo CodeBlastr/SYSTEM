@@ -109,8 +109,8 @@ class User extends UsersAppModel {
         'UserGroup' => array(
 			'className' => 'Users.UserGroup',
 			'joinTable' => 'users_user_groups',
-			'foreignKey' => 'user_group_id',
-			'associationForeignKey' => 'user_id',
+			'foreignKey' => 'user_id',
+			'associationForeignKey' => 'user_group_id',
 			'dependent' => true,
 			),
 		);
