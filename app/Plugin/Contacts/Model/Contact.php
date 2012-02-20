@@ -122,20 +122,18 @@ class Contact extends ContactsAppModel {
 		$this->order = array("{$this->alias}.name");	
 		
 		if (in_array('Tasks', CakePlugin::loaded())) {
-			$this->hasMany[] = array(
-				'Task' => array(
-					'className' => 'Tasks.Task',
-					'foreignKey' => 'foreign_key',
-					'dependent' => true,
-					'conditions' => array('Task.model' => 'Contact'),
-					'fields' => '',
-					'order' => '',
-					'limit' => '',
-					'offset' => '',
-					'exclusive' => '',
-					'finderQuery' => '',
-					'counterQuery' => ''
-				),
+			$this->hasMany['Task'] = array(
+				'className' => 'Tasks.Task',
+				'foreignKey' => 'foreign_key',
+				'dependent' => true,
+				'conditions' => array('Task.model' => 'Contact'),
+				'fields' => '',
+				'order' => '',
+				'limit' => '',
+				'offset' => '',
+				'exclusive' => '',
+				'finderQuery' => '',
+				'counterQuery' => ''
 			);
 		}
     }

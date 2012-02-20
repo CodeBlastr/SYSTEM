@@ -129,6 +129,7 @@
 .galleryImage {
 	float: left;
 	position: relative;
+	margin: 0 0.2em 0.2em 0;
 }
 .galleryImage:hover .gallerySlideActions {
 	display: block;

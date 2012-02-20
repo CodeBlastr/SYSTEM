@@ -5,13 +5,13 @@ class User extends UsersAppModel {
 
 	public $name = 'User';
 	public $displayField = 'full_name';
-	public $actsAs = array( 
-		'Acl' => array('type' => 'requester'), 
+	public $actsAs = array(
+		'Acl' => array('type' => 'requester'),
 		'Users.Usable' => array('defaultRole' => 'friend')
 		);
 	public $order = array('last_name', 'full_name', 'first_name');
 
-	
+
 	public $validate = array(
 		'password' => array(
 			'notempty' => array(
@@ -84,20 +84,20 @@ class User extends UsersAppModel {
 			'dependent' => false,
 			),
 		);
-	
+
 	public $hasOne = array(
 		'UserWall' => array(
 			'className' => 'Users.UserWall',
 			'foreignKey' => 'user_id',
 			'dependent' => true
-			), 
+			),
 		'Contact' => array(
 			'className' => 'Contacts.Contact',
 			'foreignKey' => 'user_id',
 			'dependent' => false
-			), 
+			),
 		);
-	
+
 	public $hasAndBelongsToMany = array(
         /*  bad name for this, changed 1/26/2012
 		'UsersUserGroup' => array(
@@ -109,18 +109,19 @@ class User extends UsersAppModel {
         'UserGroup' => array(
 			'className' => 'Users.UserGroup',
 			'joinTable' => 'users_user_groups',
-			'foreignKey' => 'user_group_id',
-			'associationForeignKey' => 'user_id',
+			'foreignKey' => 'user_id',
+			'associationForeignKey' => 'user_group_id',
 			'dependent' => true,
 			),
 		);
-	
+
 	public function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
-		if (in_array('Affiliates', CakePlugin::loaded())) : 
-			$this->actsAs[] = 'Affiliates.Referrable';
-		endif;
-		if (in_array('Orders', CakePlugin::loaded())) : 
+		if (in_array('Affiliates', CakePlugin::loaded())) {
+			$this->Behaviors->attach('Affiliates.Referrable');
+		}
+		
+		if (in_array('Orders', CakePlugin::loaded())) {
 			$this->hasMany['OrderPayment'] = array(
 				'className' => 'Orders.OrderPayment',
 				'foreign_key' => 'user_id'
@@ -134,19 +135,20 @@ class User extends UsersAppModel {
 				'foreignKey' => 'owner_id',
 				'dependent' => false,
 				);
-		endif;
-		if (in_array('Catalogs', CakePlugin::loaded())) : 
+		}
+		
+		if (in_array('Catalogs', CakePlugin::loaded())) {
 			$this->hasMany['CatalogItemBrand'] = array(
 				'className' => 'Catalogs.CatalogItemBrand',
 				'foreignKey' => 'owner_id',
 				'dependent' => false,
 				);
-		endif;
+		}
 	}
-	
+
 	protected function _comparePassword() {
 		# fyi, confirm password is hashed in the beforeValidate method
-		if (isset($this->data['User']['confirm_password']) && 
+		if (isset($this->data['User']['confirm_password']) &&
 				($this->data['User']['password'] == $this->data['User']['confirm_password'])) {
 			return true;
 		} else if (!isset($this->data['User']['confirm_password'])) {
@@ -156,7 +158,7 @@ class User extends UsersAppModel {
 			return false;
 		}
 	}
-	
+
 	protected function _emailRequired() {
 		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION') && empty($this->data['User']['email'])) {
 			return false;
@@ -164,8 +166,8 @@ class User extends UsersAppModel {
 			return true;
 		}
 	}
-	
-/** 
+
+/**
  * For relating the user to the correct parent user role in the aros table.
  */
 	function parentNode() {
@@ -185,16 +187,16 @@ class User extends UsersAppModel {
 	        return array('UserRole' => array('id' => $roleNode[0]['Aro']['foreign_key']));
 	    }
 	}
-	
-	
+
+
 	public function beforeSave($options = array()) {
-		if (!empty($this->data['User']['password'])) : 
+		if (!empty($this->data['User']['password'])) :
 	        $this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
 		endif;
         return true;
     }
-	
-	
+
+
 /**
  * Handles the data of adding of a user
  *
@@ -205,36 +207,36 @@ class User extends UsersAppModel {
 		$data = $this->_cleanAddData($data);
 		if ($data = $this->_userContact($data)) {
 			# setup a verification key
-			$data['User']['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null; 
+			$data['User']['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null;
 			$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
-			
-			$data['User']['parent_id'] = !empty($data['User']['referal_code']) ? 
-						$this->getParentId($data['User']['referal_code']) : ''; 
+
+			$data['User']['parent_id'] = !empty($data['User']['referal_code']) ?
+						$this->getParentId($data['User']['referal_code']) : '';
 			$data['User']['reference_code'] = $this->generateRandomCode();
 			# the contact model calls back to the User model when using save all
 			# and saves the recursive data of contact person / contact company this way.
 			if ($this->Contact->add($data)) {
-				
+
 				# update referral user credits on a new registration
 				if (defined('__USERS_NEW_REGISTRATION_CREDITS') && !empty($data['User']['parent_id'])) {
 					$this->updateUserCredits(__USERS_NEW_REGISTRATION_CREDITS, $data['User']['parent_id']);
-				}	
-				
+				}
+
 				# add the user to a group if the data for the group exists
 				if (!empty($data['UserGroup']['UserGroup']['id'])) {
 					$this->UserGroup->UsersUserGroup->add($data);
 				}
-				
-				if (in_array('Orders', CakePlugin::loaded())) : 
-					# setup and save data for a related order shipment record for prefilled checkout 
-					$data['OrderShipment']['first_name'] = !empty($data['User']['first_name']) ? $data['User']['first_name'] : ''; 
+
+				if (in_array('Orders', CakePlugin::loaded())) :
+					# setup and save data for a related order shipment record for prefilled checkout
+					$data['OrderShipment']['first_name'] = !empty($data['User']['first_name']) ? $data['User']['first_name'] : '';
 					$data['OrderShipment']['last_name'] =  !empty($data['User']['last_name']) ? $data['User']['last_name'] : '';
 					$data['OrderPayment']['user_id'] = $this->id;
 					$data['OrderShipment']['user_id'] = $this->id;
 					$this->OrderPayment->save($data);
 					$this->OrderShipment->save($data);
 				endif;
-				
+
 				# create a gallery for this user.
 				if (!empty($data['User']['avatar']['name'])) {
 					$data['Gallery']['model'] = 'User';
@@ -245,8 +247,8 @@ class User extends UsersAppModel {
 					} else if (!empty($data['GalleryImage']['filename'])) {
 						#return true;
 						# gallery image wasn't saved but I'll leave this error message as a todo,
-						# because I don't have a decision on whether we should roll back the user 
-						# if that happens, or just create the user anyway. 
+						# because I don't have a decision on whether we should roll back the user
+						# if that happens, or just create the user anyway.
 					}
 				}
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
@@ -264,8 +266,8 @@ class User extends UsersAppModel {
 			throw new Exception(__d('users', 'Invalid user data.'));
 		}
 	}
-	
-	
+
+
 /**
  * Handles a user update
  *
@@ -274,11 +276,11 @@ class User extends UsersAppModel {
  */
 	public function update($data) {
 		$data = $this->_cleanAddData($data);
-		
+
 		if ($this->saveAll($data)) {
 			return true;
 			/** Hopefully saveAll will handle this now (if the data is coming in formatted right it should be)...
-			if (in_array('Orders', CakePlugin::loaded())) : 
+			if (in_array('Orders', CakePlugin::loaded())) :
 				$this->User->OrderPayment->save($this->request->data);
 				$this->User->OrderShipment->save($this->request->data);
 			endif; */
@@ -300,10 +302,10 @@ class User extends UsersAppModel {
 			$data['Contact'] = $contact['Contact'];
 		} else if (!empty($data['User']['id'])) {
 			$contact = $this->Contact->findByUserId($data['User']['id']);
-			if (!empty($contact)) : 
+			if (!empty($contact)) :
 				$data['Contact'] = $contact['Contact'];
 				$data['User']['full_name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : $contact['Contact']['name'];
-			else : 
+			else :
 				$data['User']['full_name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : 'N/A';
 			endif;
 		} else if (!empty($data['Contact']['user_id'])) {
@@ -314,8 +316,8 @@ class User extends UsersAppModel {
 		}
 		return $data;
 	}
-	
-/** 
+
+/**
  * Function to change the role of the user submitted
  */
 	public function changeRole($data = null) {
@@ -333,7 +335,7 @@ class User extends UsersAppModel {
 			return false;
 		}
 	}
-	
+
 /**
  * a function which goes through the different ways to get to a user id
  */
@@ -348,8 +350,8 @@ class User extends UsersAppModel {
 			}
 		}
 	}
-	
-	
+
+
 /**
  * a function which goes through the different ways to get to a user role id
  */
@@ -369,10 +371,10 @@ class User extends UsersAppModel {
 				} else {
 					return $user['role'];
 				}
-			} 
+			}
 		}
 	}
-	
+
 
 /**
  * Saves meta data when login occurrs.  For example it updates the last_login field.
@@ -418,9 +420,9 @@ class User extends UsersAppModel {
 
 
 /**
- * verifies the key passed and if valid key, remove it from DB and return user else 
+ * verifies the key passed and if valid key, remove it from DB and return user else
  *
- * @return {mixed}			user data array, or null. 
+ * @return {mixed}			user data array, or null.
  */
 	public function verify_key($key = null) {
 		$user = null;
@@ -439,11 +441,11 @@ class User extends UsersAppModel {
 				$this->set('forgot_key_created', null);
 				$this->validate = null;
 				if ($this->save()) {
-					#$user = null; 
+					#$user = null;
 				} else {
 					throw new Exception(__('Verfication key failed to update.'));
 				}
-			} 
+			}
 		}
 		return $user;
 	}
@@ -477,12 +479,12 @@ class User extends UsersAppModel {
 
 
 /**
- * facebook registration functions ... 
- * 
+ * facebook registration functions ...
+ *
  * @todo 		Document why you put these in here and what they do! (12/9/2011)
  */
 	public function parse_signed_request($signed_request, $secret) {
-		list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
+		list($encoded_sig, $payload) = explode('.', $signed_request, 2);
 		// decode the data
 		$sig = $this->base64_url_decode($encoded_sig);
 		$data = json_decode($this->base64_url_decode($payload), true);
@@ -501,13 +503,13 @@ class User extends UsersAppModel {
 
 
 /**
- * 
+ *
  * @todo Where is this used, and why would it be a User model specific function?  (12/9/2011)
  */
 	public function base64_url_decode($input) {
 		return base64_decode(strtr($input, '-_', '+/'));
 	}
-	
+
 
 /**
  * Updates data for user to prepare it for saving.
@@ -519,38 +521,38 @@ class User extends UsersAppModel {
 		if (isset($data['User']['username']) && strpos($data['User']['username'], '@')) :
 			$data['User']['email'] = $data['User']['username'];
 		endif;
-		
+
 		if(!isset($data['User']['user_role_id'])) {
 			$data['User']['user_role_id'] = (defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : 3 ;
 		}
-					
+
 		if(!isset($data['User']['contact_type'])) {
 			$data['User']['contact_type'] = (defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) ? __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE : 'person' ;
 		}
-					
+
 		# update name into first and last name
 		if (!empty($data['User']['full_name']) && empty($data['User']['first_name'])) {
 			$data['User']['first_name'] = trim(preg_replace('/[ ](.*)/i', '', $data['User']['full_name']));
 			$data['User']['last_name'] = trim(preg_replace('/(.*)[ ]/i', '', $data['User']['full_name']));
 		}
-		
+
 		# update first name and last name into full_name
 		if (!empty($data['User']['first_name']) && !empty($data['User']['last_name']) && empty($data['User']['full_name'])) {
 			$data['User']['full_name'] = $data['User']['first_name'] . ' ' . $data['User']['last_name'];
 		}
-				
+
 		return $data;
 	}
-	
-	
-/** 
+
+
+/**
  * Generate Referal Code
- * Generate Referal Code and makes a new entry to database to Users Table 
+ * Generate Referal Code and makes a new entry to database to Users Table
  * @param {array}	    	array data
  * @return {mixed}			a reference code string, or boolean
  */
 	public function generateReferalCode($user = null){
-		
+
 		$data = array();
 		if(is_numeric($user)) {
 			$this->recursive = -1;
@@ -558,7 +560,7 @@ class User extends UsersAppModel {
 		} else {
 			$data = $user;
 		}
-		
+
 		if(empty($data['User']['reference_code'])) {
 			$code =  $this->generateRandomCode();
 			// Checks if user with same code already exists
@@ -571,13 +573,13 @@ class User extends UsersAppModel {
 				} else {
 					return false;
 				}
-			}	
+			}
 		} else {
 			return $data['User']['reference_code'];
 		}
-		
+
 	}
-	
+
 /**
  * checkCodeExists
  * Check whether code with same string exists
@@ -595,8 +597,8 @@ class User extends UsersAppModel {
 			return false;
 		}
 	}
-	
-	
+
+
 /**
  * generateRandomCode
  * Generates a random Code of length 5
@@ -605,21 +607,21 @@ class User extends UsersAppModel {
 	public function generateRandomCode() {
 	    $length = 8;
 	    $characters = "0123456789abcdefghijklmnopqrstuvwxyz";
-	    $code = "";    
+	    $code = "";
 		for ($i = 0; $i < $length; $i++) {
 	        $code .= $characters[mt_rand(0, strlen($characters)-1)];
 	    }
-	    
+
 	    if(!$this->ifCodeExists($code)) {
 	    	return $code;
-	    } else { 
+	    } else {
 			return $this->generateRandomCode();
 		}
 	}
-	
-	
+
+
 /**
- * Get Parent Id 
+ * Get Parent Id
  * @params referal_code
  * @return User.Id
  */
@@ -627,7 +629,7 @@ class User extends UsersAppModel {
 		$parent = $this->find('first', array(
 			'conditions' => array('reference_code' => $referral_code)
 			));
-		return $parent['User']['id']; 
+		return $parent['User']['id'];
 	}
 
 
@@ -643,7 +645,7 @@ class User extends UsersAppModel {
 				'User.id' => $userId,
 				),
 			));
-		$user['User']['credit_total'] += $credits; 
+		$user['User']['credit_total'] += $credits;
 		if(!($this->save($user, false))){
 			throw new Exception(__('Credits not Saved'));
 		}
@@ -691,7 +693,7 @@ class User extends UsersAppModel {
 				));
 			# W at the start of the key tells us the account needs to be verified still.
 			if ($user['User']['forgot_key'][0] != 'W') {
-				return $user;												
+				return $user;
 			} else {
 				throw new Exception(__('Account must be verified. %s', '<a href="/users/users/reverify">Resend Verification?</a>'));
 			}

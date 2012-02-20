@@ -257,6 +257,14 @@ $(function() {
 	});
 	
 	
+	$('.masonry').masonry({
+		// http://masonry.desandro.com/ 
+		itemSelector: '.box',
+		isFitWidth: true,
+		isResizable: false,
+	});
+	
+	
 	// only for the admin layout right now
 	$(".helpBox").click(function() {
 		alert($(this).attr("title"));
@@ -432,3 +440,24 @@ jQuery.cookie = function(name, value, options) {
     }
 };
 
+/* HTML 5 Placeholder Attribute for Older Browsers */
+$('[placeholder]').focus(function() {
+  var input = $(this);
+  if (input.val() == input.attr('placeholder')) {
+    input.val('');
+    input.removeClass('placeholder');
+  }
+}).blur(function() {
+  var input = $(this);
+  if (input.val() == '' || input.val() == input.attr('placeholder')) {
+    input.addClass('placeholder');
+    input.val(input.attr('placeholder'));
+  }
+}).blur().parents('form').submit(function() {
+  $(this).find('[placeholder]').each(function() {
+    var input = $(this);
+    if (input.val() == input.attr('placeholder')) {
+      input.val('');
+    }
+  })
+});

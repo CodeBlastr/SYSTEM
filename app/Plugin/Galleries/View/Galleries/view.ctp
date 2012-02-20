@@ -26,10 +26,10 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Galleries',
 		'items' => array(
-			$this->Html->link(__('Edit'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'edit', $gallery['Gallery']['model'], $gallery['Gallery']['foreign_key'])),
-			$this->Html->link(__('List'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'index')),
-			$this->Html->link(__('Add'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'add')),
+			$this->Html->link(__('Edit'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'edit', $gallery['Gallery']['model'], $gallery['Gallery']['foreign_key']), array('class' => 'edit')),
+			$this->Html->link(__('List'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'index'), array('class' => 'index')),
+			$this->Html->link(__('Add'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'add'), array('class' => 'add')),
+			$this->Html->link(__('Delete'), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'delete', $gallery['Gallery']['id']), array('class' => 'delete'), 'Are you sure you want to permanently delete?'),
 			)
 		),
-	)));
-?>
+	))); ?>
