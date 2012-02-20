@@ -3,13 +3,6 @@
 Join our community today.
 
 
-# August 2011 Accomplishments
-
-Lots of ecommerce and project management updates.  We now have multiple sites using ecommerce on our system and that has enabled us to build out a more robust guest cart, and checkout system.  Project management was also took a big improvement and now is a few updates away from competing with the likes of basecamp and others.   
-
-Due to these updates we've graduated to Alpha-Phase
-
-
 ## Installation Tips
 * Php 5.3 or higher is required.  (Seriously, anything lower will not work.)
 
