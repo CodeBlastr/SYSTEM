@@ -1,3 +1,3 @@
 [submodule "app/Plugin/Favorites"]
 	path = app/Plugin/Favorites
-	url = git@razorit.beanstalkapp.com:/razorit/favorites.git
+	url = git@razorit.beanstalkapp.com:/favorites.git
