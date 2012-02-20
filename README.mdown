@@ -1,6 +1,6 @@
-# Lets change the world fellow programmers!
-
-Join our community today (test)
+# Welcome to Zuha
+A collection of ever expanding functionality to rapidly build new sites.
+Built on an MVC framework (CakePHP).
 
 
 ## Installation Tips
