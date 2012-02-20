@@ -20,8 +20,6 @@ Due to these updates we've graduated to Alpha-Phase
  
 * Ceate a database.php file in ROOT/app/config/ using ROOT/app/config/database.default.php as a template, fixing the variables with correct values. 
  
-* Import ROOT/zuha_dirty.sql  OR ROOT/zuha_clean.sql -  We strive to keep the "clean" version as free of data as possible, and the dirty version can often include testing data that you may need to delete, but also may help with getting started. 
- 
 * ZuHa works best when installed at a root domain or subdomain of a site.  (ex. myDomain.com OR subDomain.myDomain.com OR subDomain.localhost).
  
 * It is possible to get it to get a Hello World setup inside a sub directory, but you must rename or delete the ROOT/.htaccess file.  However, please note : webroot files (css / js / etc) will not work without further customization.  So its virtually worthless to use it in sub directories.
