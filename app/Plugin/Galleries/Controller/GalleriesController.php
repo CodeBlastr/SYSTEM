@@ -14,13 +14,13 @@ class GalleriesController extends GalleriesAppController {
 	public function index() {
 		# paginate the results
 		$this->paginate['fields'] = array(
-				'Gallery.name',
-				'Gallery.description',
-				'Gallery.model',
-				'Gallery.foreign_key',
-				'Gallery.type',
-				'Gallery.created',
-				);
+			'Gallery.name',
+			'Gallery.description',
+			'Gallery.model',
+			'Gallery.foreign_key',
+			'Gallery.type',
+			'Gallery.created',
+			);
 		
 		$this->set('galleries', $this->paginate());
 		$this->set('displayName', 'name');
@@ -180,4 +180,3 @@ class GalleriesController extends GalleriesAppController {
 	}
 
 }
-?>

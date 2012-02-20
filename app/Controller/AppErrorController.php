@@ -69,11 +69,13 @@ class AppErrorController extends AppController {
     }
 	
     public function handleNotFound($request, $response, $error) {
-		$Alias = ClassRegistry::init('Alias');
-		$alias = $Alias->find('first', array('conditions' => array('name' => 'error')));
-		if (!empty($alias['Alias']['name'])) {
-			$Controller = new AppController($request, $response);
-			$Controller->redirect('/error/?referer=' . $request->url);
+		if (Configure::read('debug') < 3) {
+			$Alias = ClassRegistry::init('Alias');
+			$alias = $Alias->find('first', array('conditions' => array('name' => 'error')));
+			if (!empty($alias['Alias']['name'])) {
+				$Controller = new AppController($request, $response);
+				$Controller->redirect('/error/?referer=' . $request->url);
+			}
 		}
 	}
 	

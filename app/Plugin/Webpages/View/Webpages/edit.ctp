@@ -6,13 +6,13 @@
 		echo $this->Form->input('Webpage.id');
 		echo $this->Form->input('Alias.id');
 		echo $this->Form->input('Alias.value', array('type' => 'hidden', 'value' => $this->Form->value('Webpage.id')));
-		echo $this->Form->input('Alias.name', array('label' => 'SEO Url (unique)'));
+		echo $this->Form->input('Alias.name', array('label' => false, 'placeholder' => 'Unique Permanent SEO Url Address'));
 		echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => 'webpages'));
 		echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => 'webpages'));
 		echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => 'view'));
-		echo $this->Form->input('Webpage.title', array('label' => 'SEO Title'));
-		echo $this->Form->input('Webpage.keywords', array('label' => 'SEO Keywords'));
-		echo $this->Form->input('Webpage.description', array('label' => 'SEO Description'));
+		echo $this->Form->input('Webpage.title', array('label' => false, 'placeholder' => 'SEO Title'));
+		echo $this->Form->input('Webpage.keywords', array('label' => false, 'placeholder' => 'SEO Keywords'));
+		echo $this->Form->input('Webpage.description', array('label' => false, 'placeholder' => 'SEO Description'));
 	?>
   </fieldset>
   <fieldset>

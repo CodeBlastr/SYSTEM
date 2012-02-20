@@ -255,10 +255,10 @@ input[type=radio], input[type=checkbox] {
 }
 
 /* Some dashboard css */
-.dashboard {
+.dashboard, .masonry {
 	position: relative;
 }
-.dashboard .dashboardBox {
+.dashboard .dashboardBox, .masonry .masonryBox {
 	float: left;
 	margin: 0.5em;
 	padding: 1em;
@@ -267,7 +267,7 @@ input[type=radio], input[type=checkbox] {
 	/* height is set with javascript */
 	border: 1px solid #CCC;
 }
-.dashboard .dashboardBox ul {
+.dashboard .dashboardBox ul, .masonry .masonryBox ul {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;

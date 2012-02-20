@@ -1,4 +1,5 @@
 <?php
+App::uses('Controller', 'Controller');
 /**
  * App Wide Methods
  *
@@ -522,7 +523,7 @@ class AppController extends Controller {
 				endif;
 			endforeach;
 			$this->layout = 'default';
-		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax') && ($this->request->query['url'] == $checkUrl)) {
+		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax') && (!empty($this->request->query['url']) && $this->request->query['url'] == $checkUrl)) {
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		}
@@ -777,12 +778,14 @@ class AppController extends Controller {
  * Loads uses dynamically system wide
  */	
 	private function _getUses() {
-		if (is_array($this->uses)) {
-			$this->uses = array_merge($this->uses, array('Webpages.Webpage')); 
-		} else {
-			# there is only one (non-array) in $this->uses
-			$this->uses = array($this->uses, 'Webpages.Webpage'); 
-		} 
+		if (!empty($this->request)) { // this is so that it doesn't load during console activities
+			if (is_array($this->uses)) {
+				$this->uses = array_merge($this->uses, array('Webpages.Webpage')); 
+			} else {
+				# there is only one (non-array) in $this->uses
+				$this->uses = array($this->uses, 'Webpages.Webpage'); 
+			} 
+		}
 	}
 	
 	
@@ -820,11 +823,9 @@ class AppController extends Controller {
 			array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : 
 			array('message'=> 'Please register or login to access that feature.');
 		$this->Auth->authError = $authError['message'];
-        $this->Auth->loginAction = array(
-			'plugin' => 'users',
-			'controller' => 'users',
-			'action' => 'login',
-			);
+        $this->Auth->loginAction = defined('__APP_LOGIN_ACTION') ? 
+			__APP_LOGIN_ACTION : 
+			array('plugin' => 'users', 'controller' => 'users', 'action' => 'login');
 		$this->Auth->authorize = array('Controller');
 		$this->Auth->authenticate = array(
             'Form' => array(
@@ -947,7 +948,8 @@ class AppController extends Controller {
 				#break;
 				$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
 				$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
-				$this->Session->setFlash(__('%s does not have access to the %s page.', $requestor, $requested));
+				$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';
+				$this->Session->setFlash(__('%s %s %s.', $requestor, $message, $requested));
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'restricted'));
 			}
 		}
