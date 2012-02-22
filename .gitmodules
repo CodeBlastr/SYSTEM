@@ -3,4 +3,4 @@
 	url = git@github.com:zuha/favorites.git
 [submodule "sites"]
 	path = sites
-	url = git@razorit.beanstalkapp.com:/zuha-sites.git
+	url = git@razorit.beanstalkapp.com:/razorit/zuha-sites.git
