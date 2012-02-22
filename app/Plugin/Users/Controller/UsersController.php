@@ -32,6 +32,7 @@ class UsersController extends UsersAppController {
 		'desktop_login',
 		'logout',
 		'forgot_password',
+		'change_password',
 		'verify',
 		'my',
 		'register',
@@ -307,8 +308,8 @@ class UsersController extends UsersAppController {
 	}
 	
 	
-	protected function _login() {
-		if ($this->Auth->login()) {
+	protected function _login($user = null) {
+		if ($this->Auth->login($user)) {
 			try {
 				# make sure you don't need to verify your email first
 				$this->User->checkEmailVerification($this->request->data);
@@ -492,11 +493,40 @@ class UsersController extends UsersAppController {
 				$this->redirect(array('action'=>'login'));
 			} else {
 				$this->Session->setFlash('Successful account verification, change your password.');
-				$this->redirect(array('action' => 'edit', $user['User']['id']));
+				$this->redirect(array('action' => 'change_password', $user['User']['password'], $user['User']['id']));
 			}
 		} else {
 			$this->Session->setFlash('Reset code invalid, expired or already used, please try again.');
-			$this->redirect(array('action'=>'forgot_password'));
+			$this->redirect(array('action' => 'forgot_password'));
+		}
+	}
+	
+/**
+ * Change password method
+ * 
+ * @todo For time's sake used the password instead of a key.  This should be changed, but the key gets deleted from the verify() function so that needs to be rewritten too. 
+ */
+	public function change_password($userPassword = null, $userId = null) {
+		if (!empty($this->request->data)) {
+			$this->User->id = $this->request->data['User']['id'];
+			if (!$this->User->exists()) {
+				throw new NotFoundException(__('Invalid user'));
+			}
+			if ($this->User->save($this->request->data)) {
+				$this->Session->setFlash('Password changed.');
+				$this->_login();
+			} else {
+				$this->Session->setFlash('Password could not be changed.');
+				$this->redirect(array('action' => 'forgot_password'));
+			}
+		}
+		
+		$user = $this->User->find('first', array('conditions' => array('User.password' => $userPassword, 'User.id' => $userId))); 
+		if (!empty($user)) {
+			$this->request->data = $user;
+		} else {
+			$this->Session->setFlash('Invalid User Key');
+			$this->redirect(array('action' => 'forgot_password'));
 		}
 	}
 

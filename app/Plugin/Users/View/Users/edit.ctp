@@ -1,4 +1,4 @@
-<div id="users-edit" class="users edit">
+<div id="users-edit" class="users edit form">
 <?php 
 	echo $this->Form->create('User', array('enctype'=>'multipart/form-data')); 	?>
     
