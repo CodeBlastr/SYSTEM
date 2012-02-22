@@ -4,3 +4,6 @@
 [submodule "sites"]
 	path = sites
 	url = git@razorit.beanstalkapp.com:/zuha-sites.git
+[submodule "app/Plugin/Favorites"]
+	path = app/Plugin/Favorites
+	url = git@github.com:zuha/cakephp.git
