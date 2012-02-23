@@ -143,16 +143,15 @@ class InstallController extends AppController {
  * Install a new site
  */
 	public function site() {
-		if (!empty($this->request->data)) :
+		if (!empty($this->request->data)) {
 			# move everything here down to its own function
 			$this->_handleInputVars($this->request->data);
-			$db = ConnectionManager::getDataSource('default');
-			$db->disconnect();
-			$db->setConfig($this->config);
-			$db->connect();
 			
-			# test the db connection to make sure the info is good.
-			if ($db->connected) :
+			try {
+				$db = ConnectionManager::getDataSource('default');
+				$db->disconnect();
+				$db->setConfig($this->config);
+				$db->connect();
 				try {
 					# test the table name
 					$sql = ' SHOW TABLES IN ' . $this->config['database'];
@@ -202,16 +201,15 @@ class InstallController extends AppController {
 					$this->Session->setFlash(__('Database Error : ' . $error));
 					$this->redirect($this->referer());
 				}
-			else :
+			} catch (Exception $e) {
 				$db->disconnect();
-				$this->Session->setFlash(__('Database Connection Failed'));
+				$this->Session->setFlash(__('Database Connection Failed. Please try again.'));
 				$this->redirect($this->referer());
-			endif;
-			
+			}			
 			#debug($this->Schema);
 			#debug($this->request->data);
 			#break;
-		endif;
+		} // end request data check
 		
 		$this->layout = false;
 	}
@@ -395,8 +393,8 @@ class InstallController extends AppController {
 		$Schema = $this->Schema->load($options);
 
 		if (!$Schema) {
-			$this->err(__d('cake_console', '%s could not be loaded', $this->Schema->path . DS . $this->Schema->file));
-			$this->_stop();
+			$this->Session->setFlash(__('No schema file found for this plugin.'));
+			$this->redirect($this->referer());
 		}
 		$table = null;
 		if (isset($this->args[1])) {
