@@ -59,11 +59,14 @@
 	$cfg['thumbImageOptions'] = $thumbImageOptions;
 	
  	$user = (!empty($userId) ? $this->requestAction('/users/users/view/'.$userId) : null);
+	$firstName = !empty($showFirstName) ? $user['User']['first_name'] : null;
+	$lastName = !empty($showLastName) ? $user['User']['last_name'] : null;
+	$name = $firstName || $lastName ? '<h2>' . $this->Html->link(__('%s %s', $firstName, $lastName), array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $user['User']['id'])) . '</h2>' : null;
 ?>
 <div class="box">
     <?php echo $this->Element('thumb', $cfg, array('plugin' => 'galleries')); ?>
 	<div class="descript">
-		<h2><?php if($showFirstName) { echo $user['User']['first_name']; } echo ' '; if($showLastName) { echo $user['User']['last_name']; }?></h2>
+		<?php echo $name; ?>
         <?php if($showViewLink || $showEditLink) { ?>
 		<ul>
         	<?php if($showViewLink) { ?>
