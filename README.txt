@@ -1,16 +1,6 @@
-# Lets change the world fellow programmers!
-
-We need open source contributors!  We have a chance to make an open source version of what is only available from large conglomerates today.  We can and will compete with Zoho, Google Docs, Microsoft and others, and bring small businesses a way to collaborate and manage their businesses better than they ever have.  
-
-We have made great progress, but its time to build our community in order to really compete.  We have ecommerce, crm, project management, multi-sites, multi-user blogs, workflows, auto-notifications, cms, and much more.  Come in now, and help us put the polish on it so that we can bring this great tool to market. 
-
-
-
-# August 2011 Accomplishments
-
-Lots of ecommerce and project management updates.  We now have multiple sites using ecommerce on our system and that has enabled us to build out a more robust guest cart, and checkout system.  Project management was also took a big improvement and now is a few updates away from competing with the likes of basecamp and others.   
-
-Due to these updates we've graduated to Alpha-Phase
+# Welcome to Zuha
+A collection of ever expanding functionality to rapidly build new sites.
+Built on an MVC framework (CakePHP).
 
 
 ## Installation Tips
@@ -19,8 +9,6 @@ Due to these updates we've graduated to Alpha-Phase
 * Upload the files to the root directory (Your server is required to have .htaccess and mod_rewrite turned on)
  
 * Ceate a database.php file in ROOT/app/config/ using ROOT/app/config/database.default.php as a template, fixing the variables with correct values. 
- 
-* Import ROOT/zuha_dirty.sql  OR ROOT/zuha_clean.sql -  We strive to keep the "clean" version as free of data as possible, and the dirty version can often include testing data that you may need to delete, but also may help with getting started. 
  
 * ZuHa works best when installed at a root domain or subdomain of a site.  (ex. myDomain.com OR subDomain.myDomain.com OR subDomain.localhost).
  
