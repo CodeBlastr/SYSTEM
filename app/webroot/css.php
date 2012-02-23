@@ -45,6 +45,7 @@ if (!class_exists('File')) {
 		$output = " /* file: $name, ratio: $ratio% */ " . $output;
 		return $output;
 	}
+
 /**
  * Write CSS cache
  *
