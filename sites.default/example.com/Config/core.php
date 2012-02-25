@@ -1,7 +1,23 @@
 <?php
-if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php')) :
-	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php');
-else : 
+/**
+ * This is core configuration file.
+ *
+ * Use it to configure core behavior of Cake.
+ *
+ * PHP 5
+ *
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @package       app.Config
+ * @since         CakePHP(tm) v 0.2.9
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 
 /**
  * CakePHP Debug Level:
@@ -16,10 +32,10 @@ else :
  * In production mode, flash messages redirect after a time interval.
  * In development mode, you need to click the flash message to continue.
  */
- 	$debugger = !empty($_GET['debugger']) ? $_GET['debugger'] : 0;
+ 	$debugger = isset($_GET['debugger']) ? $_GET['debugger'] : 0;
 	#Configure::write('debug', 2);
 	Configure::write('debug', $debugger);
-	#Configure::write('Config.language', 'en');
+	Configure::write('Config.language', 'en');
 
 /**
  * Configure the Error handler used to handle errors for your application.  By default
@@ -96,6 +112,7 @@ else :
  *
  * Enables:
  *	`admin_index()` and `/admin/controller/index`
+
  *	`manager_index()` and `/manager/controller/index`
  *
  */
@@ -173,12 +190,12 @@ else :
 /**
  * A random string used in security hashing methods.
  */
-	Configure::write('Security.salt', 'DYhuf9xxxxxxxxxxxxxxxxxxxxxxxxxxxxk4j98C9mi');
+	Configure::write('Security.salt', 'DYxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxmi');
 
 /**
  * A random numeric string (digits only) used to encrypt/decrypt strings.
  */
-	Configure::write('Security.cipherSeed', '76851111111111111111111111117498');
+	Configure::write('Security.cipherSeed', '3911111111111111111111111111113');
 
 /**
  * Apply timestamps with the last modified time to static assets (js, css, images).
@@ -319,4 +336,3 @@ Cache::config('_cake_model_', array(
 	'serialize' => ($engine === 'File'),
 	'duration' => $duration
 ));
-endif; 

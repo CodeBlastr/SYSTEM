@@ -27,7 +27,7 @@ class AppController extends Controller {
 	public $userId = '';
     public $uses = array('Condition');
 	public $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html');
-	public $components = array('Acl', 'Auth', 'Session', 'RequestHandler', 'RegisterCallbacks' /*'Security' Desktop Login Stops Working When This is On*/);
+	public $components = array();
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
@@ -602,7 +602,7 @@ class AppController extends Controller {
 		endif;
 
 		$conditions = $this->_templateConditions();
-		$templated = $this->Webpage->find('first', $conditions);
+		$templated = $this->request->controller != 'install' ? $this->Webpage->find('first', $conditions) : null;
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
         $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId);
         $this->set('defaultTemplate', $templated);
@@ -715,7 +715,16 @@ class AppController extends Controller {
  * You can create a comma separated (no spaces) list if you only need a system wide component.  If you would like to specify components on a per controller basis, then you use ControllerName[] = Plugin.Component. (ie. Projects[] = Ratings.Ratings).  If you want both per controller, and system wide, then use the key components[] = Plugin.Component for each system wide component to load.  Note: You cannot have a comma separated list, and the named list at the same time.
  */
 	private function _getComponents() {
-		if(defined('__APP_LOAD_APP_COMPONENTS')) {
+		if ($this->request->controller != 'install') {
+			$this->components[] = 'Acl';
+		}
+		
+		$this->components[] = 'Auth';
+		$this->components[] = 'Session';
+		$this->components[] = 'RequestHandler';
+		$this->components[] = 'RegisterCallbacks';  /*'Security' Desktop Login Stops Working When This is On*/
+		
+		if (defined('__APP_LOAD_APP_COMPONENTS')) {
 			$settings = __APP_LOAD_APP_COMPONENTS;
 			if ($components = @unserialize($settings)) {
 				foreach ($components as $key => $value) {

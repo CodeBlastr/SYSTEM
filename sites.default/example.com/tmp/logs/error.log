@@ -1,0 +1,3 @@
+2012-02-25 02:37:16 Error: [MissingControllerException] Controller class Controller could not be found.
+#0 C:\wamp\www\zuha\app\webroot\index.php(128): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
+#1 {main}

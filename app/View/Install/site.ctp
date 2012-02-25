@@ -73,15 +73,16 @@ legend {
 <?php echo $this->Session->flash(); ?>
 <div class="install form">
 	<br /><img src = "/img/admin/logo.png" />
-    <h4>Instantly install as many <br /> sites as you'd like.</h4>
+    <h4>You're about 10 seconds away a new Zuha site.</h4>
   
-<?php echo $this->Form->create('Setting', array('type' => 'file')); ?>
+<?php echo $this->Form->create(false, array('type' => 'file')); ?>
 	<fieldset>
     	<legend><?php echo __('Site Info'); ?></legend>
         <?php
 		echo $this->Form->input('Install.site_name');
-		echo $this->Form->input('Install.site_domain', array('value' => 'mydomain.com', 'label' => 'Domain Name: <br /><span style="font-size: 0.6em;">No http or www necessary.<br />Comma separated works too.</span>'));
+		echo $this->Form->input('Install.site_domain', array('value' => $_SERVER['HTTP_HOST'], 'label' => 'Domain Name: '));
 		?>
+        <span style="font-size: 0.6em;">No http necessary. Comma separate domain variations and subdomains.  All domains and sub domains should be working and pointing to the directory this zuha install is located in for install to succeed.</span>
     </fieldset>
 	<fieldset>
  		<legend><?php echo __('Database Information');?></legend>

@@ -40,15 +40,24 @@
     
 /**
 * For multi site setups 
-* There are two methods for hosting multiple sites
-* Easy method : create a folder called /sites/myDomain.com 
-* (replacing myDomain with actual domain name that will be used)
-* Named method : care a folder called /sites/AnyName
-* and define the urls that will resolve to that sites folder
-* in the file /sites/bootstrap.php
+* Define which the urls point to which sites directories in the file /sites/bootstrap.php
 */
 	if (file_exists(ROOT . DS . 'sites' . DS . 'bootstrap.php')) {
-		include(ROOT . DS . 'sites' . DS . 'bootstrap.php');
+		require_once(ROOT . DS . 'sites' . DS . 'bootstrap.php');
+	} 
+
+/** 
+ * Redirect to install if zuha isn't installed yet.
+ */
+	if (!defined('SITE_DIR')) {
+		if (file_exists(ROOT.DS.'sites.default')) {
+			if(rename(ROOT.DS.'sites.default', ROOT.DS.'sites')) {
+			} else {
+				echo 'permission to rename directories is required';
+				die;
+			}
+		}
+		header('Location: /install');
 	} 
     
 /**
@@ -62,13 +71,13 @@
 /**
  * Zuha updated tmp directory to support sites directory
  */
-	if (!defined('TMP')) :
-		if (SITE_DIR) :
+	if (!defined('TMP')) {
+		if (defined('SITE_DIR')) {
  			define('TMP', ROOT . DS . SITE_DIR . DS . 'tmp' . DS);
-		else : 
+		} else {
  			define('TMP', ROOT . DS . APP_DIR . DS . 'tmp' . DS);
-		endif;
-	endif;
+		}
+	}
 	
 /**
  * Zuha added constant because CakePHP 2.0 removed it
