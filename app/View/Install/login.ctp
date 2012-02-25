@@ -64,6 +64,10 @@ legend {
 	font-weight: bold;
 	padding: 1em;
 }
+h4 {
+	color: #3C0;
+	font-size: 2em;
+}
 --> 
 </style>
 
@@ -73,12 +77,11 @@ legend {
 <?php echo $this->Session->flash(); ?>
 <div class="install form">
 	<br /><img src = "/img/admin/logo.png" />
-    <h4>Congratulations on the successful install!!!</h4>
-    <p> Please choose a username and password for the admin user. <br /> (current login is user: admin, pass: test). </p>
+    <h4>Congratulations on the <br /> successful install!!!</h4>
   
 <?php echo $this->Form->create('User', array('type' => 'file')); ?>
 	<fieldset>
-    	<legend><?php echo __('New Password for Username "admin"'); ?></legend>
+    	<legend><?php echo __('Set a password for username "admin"'); ?></legend>
         <?php
 		echo $this->Form->input('User.id', array('value' => $user['User']['id']));
 		echo $this->Form->hidden('User.user_role_id', array('value' => $user['User']['user_role_id']));
@@ -87,7 +90,7 @@ legend {
 		?>
     </fieldset>
 	<fieldset>
-    	<legend><?php echo __('Optional Updates'); ?></legend>
+    	<legend><?php echo __('Administrator info'); ?></legend>
         <?php
 		echo $this->Form->input('User.full_name', array('value' => $user['User']['full_name']));
 		echo $this->Form->input('User.username', array('value' => $user['User']['username']));

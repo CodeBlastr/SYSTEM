@@ -10,7 +10,7 @@ class InstallController extends AppController {
 	public $progress;
 	public $options;
 	public $config;
-	public $allowedActions = array('login');
+	public $allowedActions = array('index', 'site', 'login');
 
 /**
  * Schema class being used.
@@ -20,8 +20,16 @@ class InstallController extends AppController {
 	public $Schema;
 	
 	public function __construct($request = null, $response = null) {
+		
 		parent::__construct($request, $response);
 		
+		if ($request->action == 'site') {
+			Configure::write('Session', array(
+				'defaults' => 'php',
+				'cookie' => 'ZUHA'
+			));
+		}
+	
 		$name = $path = $connection = $plugin = null;
 		if (!empty($this->params['name'])) {
 			$name = $this->params['name'];
@@ -100,7 +108,12 @@ class InstallController extends AppController {
 			# unload the plugins just loaded
 			CakePlugin::unload($unloadedPlugin);
 		}
-		$this->set(compact('unloadedPlugins'));
+		
+		if (!empty($unloadedPlugins)) {
+			$this->set(compact('unloadedPlugins'));
+		} else {
+			$this->redirect(array('action' => 'site'));
+		}
 	}
 	
 /**
@@ -141,6 +154,8 @@ class InstallController extends AppController {
 	
 /**
  * Install a new site
+ *
+ * @todo		  We need some additional security on this.
  */
 	public function site() {
 		if (!empty($this->request->data)) {
@@ -176,7 +191,6 @@ class InstallController extends AppController {
 							# run the required data
 							if ($install = $this->_installCoreData($db)) :
 								if ($this->_installCoreFiles()) : 
-									$this->Session->setFlash(__('Database and files installed successfully ' . $install));
 									$this->redirect('http://'.$this->options['siteDomain'].'/install/login');
 								else : 
 									$this->Session->setFlash(__('File copy failed.' . $install));
@@ -218,12 +232,12 @@ class InstallController extends AppController {
  * Used to verify an install, update the username and password, and then write the settings.ini files.
  */
 	public function login() {
-		# write the ini data for the new site
+		// write the ini data for the new site
 		App::uses('Setting', 'Model');
 		$Setting = new Setting;
-		if ($Setting->writeSettingsIniData()) :
+		if ($Setting->writeSettingsIniData()) {
 		
-			# get the user from the install data
+			// get the user from the install data
 			App::uses('User', 'Users.Model');
 			$User = new User;
 			$user = $User->find('first', array(
@@ -233,28 +247,31 @@ class InstallController extends AppController {
 					),
 				));
 			
-			if(!empty($user)) : 
+			if(!empty($user)) { 
 				$this->set(compact('user'));
-			else :
-				$this->Session->setFlash(__('Install login require first time user.'));
-				$this->redirect($this->referer());
-			endif;
+			} else {
+				$this->Session->setFlash(__('Install completed.'));
+				// this was changed from referer() because after an install you would be redirected here
+				// thanks to Auth redirect having /install/login as the referring url after login for redirect.
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'my'));
+			}
 		
 		
-			if (!empty($this->request->data)) :
+			if (!empty($this->request->data)) {
 				$this->request->data['User']['last_login'] = date('Y-m-d h:i:s');
-				if ($User->add($this->request->data)) :
-					$this->Session->setFlash(__('Install completed! Test your new admin login (and a good first place to go is to privileges, to run the sections update, or to the admin page and run any upgrades needed).'));
+				if ($User->add($this->request->data)) {
+					$this->Session->write('Auth.redirect', null);
+					$this->Session->setFlash(__('Install completed! Test your new admin login (and a good first place to go is Dashbooard > Privileges, to run the first setup of privileges so that you can allow the public to view your site.'));
 					$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
-				else : 
+				} else {
 					$this->Session->setFlash(__('User update failure.'));
 					$this->redirect($this->referer());
-				endif;
-			endif;
-		else : 
+				}
+			}
+		} else {
 			$this->Session->setFlash(__('Required settings, update failed.'));
 			$this->redirect($this->referer());
-		endif; // write settings ini 
+		} // write settings ini 
 		
 		$this->layout = false;
 	}
@@ -275,15 +292,10 @@ class InstallController extends AppController {
 				$fileName = $this->newDir.DS.'Config'.DS.'database.php';
 				$contents = "<?php".PHP_EOL.PHP_EOL."class DATABASE_CONFIG {".PHP_EOL.PHP_EOL."\tpublic \$default = array(".PHP_EOL."\t\t'datasource' => 'Database/Mysql',".PHP_EOL."\t\t'persistent' => false,".PHP_EOL."\t\t'host' => '".$this->config['host']."',".PHP_EOL."\t\t'login' => '".$this->config['login']."',".PHP_EOL."\t\t'password' => '".$this->config['password']."',".PHP_EOL."\t\t'database' => '".$this->config['database']."',".PHP_EOL."\t\t'prefix' => '',".PHP_EOL."\t\t//'encoding' => 'utf8',".PHP_EOL."\t);".PHP_EOL."}";
 				if ($this->_createFile($fileName, $contents)) : 
-					# create core.php
-					if (copy($this->newDir.DS.'Config'.DS.'core.default.php', $this->newDir.DS.'Config'.DS.'core.php')) :
-						# update sites/bootstrap.php
-						if ($this->_updateBootstrapPhp()) :
-							# run settings
-							return true;
-						else :
-							break; return false;
-						endif;
+					# update sites/bootstrap.php
+					if ($this->_updateBootstrapPhp()) :
+						# run settings
+						return true;
 					else :
 						break; return false;
 					endif;
