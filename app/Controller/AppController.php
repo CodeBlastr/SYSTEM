@@ -266,7 +266,7 @@ class AppController extends Controller {
 	private function __handlePaginatorArchivable($object) {
 		$options = $this->_getPaginatorVars($object, 'is_archived');
 		if (!empty($options['schema']['is_archived'])) {
-			$this->redirect(Router::reverse($this->request->params + array('filter' => 'archived:0')));
+			$this->redirect(Router::reverse($this->request->params + array('filter' => 'archived:0', 'url' => null)));
 		}
 	}
 
