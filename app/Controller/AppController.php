@@ -27,7 +27,7 @@ class AppController extends Controller {
 	public $userId = '';
     public $uses = array('Condition');
 	public $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html');
-	public $components = array();
+	public $components = array('Auth', 'Session', 'RequestHandler', 'RegisterCallbacks'  /*, 'Security' Desktop Login Stops Working When This is On*/);
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
@@ -45,8 +45,8 @@ class AppController extends Controller {
 	
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
-		$this->_getHelpers();
 		$this->_getComponents();
+		$this->_getHelpers();
 		$this->_getUses();
 		$this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(' ' . $this->name . ' '));
 	}
@@ -715,14 +715,9 @@ class AppController extends Controller {
  * You can create a comma separated (no spaces) list if you only need a system wide component.  If you would like to specify components on a per controller basis, then you use ControllerName[] = Plugin.Component. (ie. Projects[] = Ratings.Ratings).  If you want both per controller, and system wide, then use the key components[] = Plugin.Component for each system wide component to load.  Note: You cannot have a comma separated list, and the named list at the same time.
  */
 	private function _getComponents() {
-		if ($this->request->controller != 'install') {
+		if (basename($_SERVER['REQUEST_URI']) != 'site') {
 			$this->components[] = 'Acl';
 		}
-		
-		$this->components[] = 'Auth';
-		$this->components[] = 'Session';
-		$this->components[] = 'RequestHandler';
-		$this->components[] = 'RegisterCallbacks';  /*'Security' Desktop Login Stops Working When This is On*/
 		
 		if (defined('__APP_LOAD_APP_COMPONENTS')) {
 			$settings = __APP_LOAD_APP_COMPONENTS;
