@@ -353,7 +353,7 @@ class AppController extends Controller {
 			extract(unserialize(__ELEMENT_LIST));
 		}
 		$options = array();
-		$options['controller'] =  empty($this->request->controller) ? strtolower($this->request->controller) :  null;
+		$options['controller'] =  !empty($this->request->controller) ? strtolower($this->request->controller) :  null;
 		$options['plugin'] =  !empty($this->request->plugin) ? strtolower($this->request->plugin) : strtolower(ZuhaInflector::pluginize($options['controller']));
 		$options['model'] = !empty($model) ? $model : Inflector::classify($options['controller']);
 		$options['sortField'] = !empty($sortField) ? strtolower($sortField) : 'id';
