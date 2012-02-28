@@ -76,6 +76,18 @@ class ZuhaSet {
 	}
 	
 /**
+ * Remove a value from an array and reindex
+ */
+	public function devalue($array, $unwantedValue) {
+		foreach($array as $key => $value) {
+			if ($value != $unwantedValue) {
+				$newArray[$key] = $value;
+			} 
+		}
+		return array_values($newArray);
+	}
+	
+/**
  * parse the ini within an ini string
  */
 	public function parse_ini_r($arg) {

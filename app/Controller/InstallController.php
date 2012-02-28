@@ -23,7 +23,9 @@ class InstallController extends AppController {
 		
 		parent::__construct($request, $response);
 		
-		if ($request->action == 'site') {
+		$this->_handleSitesDirectory();
+		
+		if ($request->controller == 'install' || $request->action == 'site') {
 			Configure::write('Session', array(
 				'defaults' => 'php',
 				'cookie' => 'ZUHA'
@@ -87,6 +89,7 @@ class InstallController extends AppController {
 		else : 
 			$this->options['siteDomain'] = $this->request->data['Install']['site_domain'] == 'mydomain.com' ? '' : $this->request->data['Install']['site_domain'];
 		endif;
+		$this->config['datasource'] = 'Database/Mysql';
 		$this->config['host'] = $data['Database']['host'];
 		$this->config['login'] = $data['Database']['username'];
 		$this->config['password'] = $data['Database']['password'];
@@ -99,6 +102,7 @@ class InstallController extends AppController {
 	}
 	
 	public function index() {
+		$this->_handleSecurity();
 		$currentlyLoadedPlugins = CakePlugin::loaded();
 		
 		CakePlugin::loadAll();
@@ -152,21 +156,20 @@ class InstallController extends AppController {
 		}
 	}
 	
+
 /**
  * Install a new site
  *
  * @todo		  We need some additional security on this.
  */
 	public function site() {
+		$this->_handleSecurity();
 		if (!empty($this->request->data)) {
 			# move everything here down to its own function
 			$this->_handleInputVars($this->request->data);
 			
 			try {
-				$db = ConnectionManager::getDataSource('default');
-				$db->disconnect();
-				$db->setConfig($this->config);
-				$db->connect();
+				$db = ConnectionManager::create('default', $this->config);
 				try {
 					# test the table name
 					$sql = ' SHOW TABLES IN ' . $this->config['database'];
@@ -216,13 +219,9 @@ class InstallController extends AppController {
 					$this->redirect($this->referer());
 				}
 			} catch (Exception $e) {
-				$db->disconnect();
-				$this->Session->setFlash(__('Database Connection Failed. Please try again.'));
+				$this->Session->setFlash(__('Database Connection Failed. ' . $e->getMessage()));
 				$this->redirect($this->referer());
-			}			
-			#debug($this->Schema);
-			#debug($this->request->data);
-			#break;
+			}
 		} // end request data check
 		
 		$this->layout = false;
@@ -605,7 +604,18 @@ class InstallController extends AppController {
 		
 	}
 	
-	
+/**
+ * Creates the sites folder if it doesn't exist as a copy of sites.default
+ */
+	protected function _handleSitesDirectory() {
+		if (file_exists(ROOT.DS.'sites.default') && !file_exists(ROOT.DS.'sites')) {
+			if($this->_copy_directory(ROOT.DS.'sites.default', ROOT.DS.'sites')) {
+			} else {
+				echo 'permission to rename directories is required';
+				die;
+			}
+		}
+	}
 	
 	
 /**
@@ -679,5 +689,22 @@ class InstallController extends AppController {
 				return $sqlQueries;
 			}
 		}
+	}
+	
+	
+/**
+ * If its the first upload of the files we want index() and site() to be allowed.
+ * If it is not the first upload then we want access to index() and site() to be restricted.
+ */
+	protected function _handleSecurity() {
+		$auth = $this->Session->read('Auth');
+		$siteDir = defined('SITE_DIR') ? SITE_DIR : null;
+		if ($siteDir && defined('IS_ZUHA')) {
+			return true;
+		} else if (!empty($siteDir) && empty($auth)) {
+			$this->Session->setFlash(__('Install access restricted.'));
+			$this->redirect('/users/users/login');
+		}
+		return true;
 	}
 }

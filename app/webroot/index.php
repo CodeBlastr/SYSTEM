@@ -49,15 +49,8 @@
 /** 
  * Redirect to install if zuha isn't installed yet.
  */
-	if (!defined('SITE_DIR')) {
-		if (file_exists(ROOT.DS.'sites.default')) {
-			if(rename(ROOT.DS.'sites.default', ROOT.DS.'sites')) {
-			} else {
-				echo 'permission to rename directories is required';
-				die;
-			}
-		}
-		header('Location: /install');
+	if (!defined('SITE_DIR') && basename($_SERVER['REQUEST_URI']) != 'install' && basename($_SERVER['REQUEST_URI']) != 'site') {
+		header('Location: /install/site/');
 	} 
     
 /**

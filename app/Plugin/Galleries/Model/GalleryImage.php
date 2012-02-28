@@ -38,15 +38,32 @@ class GalleryImage extends GalleriesAppModel {
 		parent::__construct($id, $table, $ds);
 	}
 	
+	
+	public function afterSave() {
+		if (!empty($this->data['GalleryImage']['is_thumb'])) {
+			try {
+				$data['Gallery']['id'] = $this->data['GalleryImage']['gallery_id'];
+				$data['GalleryImage']['id'] = $this->data['GalleryImage']['id'];
+				$this->Gallery->makeThumb($data);
+				return true;				
+			} catch (Exception $e) {
+				throw new Exception(__d('galleries', 'Gallery thumb update failed : ' . $e->getMessage(), true));
+			}
+		}
+	}
+	
+	
 /**
  *
  * @todo	We may want to check whether the gallery actually exists, instead of just trusting that the gallery_id is right.
  */
 	public function add($data, $uploadFieldName) {	
+		$data = $this->_cleanData($data);
+		
 		if (!empty($data['GalleryImage']['gallery_id'])) {
 			# gallery id was given so check the defaults, attach the upload behavior, and perform the upload
 			$uploadOptions[$uploadFieldName] = $this->_getImageOptions($data);
-			$this->Behaviors->attach('MeioUpload', $uploadOptions);
+			$this->Behaviors->attach('MeioUpload', $uploadOptions);			
 			if ($this->save($data)) {
 				return true;
 			} else {
@@ -66,6 +83,21 @@ class GalleryImage extends GalleriesAppModel {
 			}
 		}
 		break;
+	}
+	
+	protected function _cleanData($data) {
+		if (empty($data['GalleryImage']['gallery_id']) && !empty($data['GalleryImage']['model']) && !empty($data['GalleryImage']['foreign_key'])) {
+			$gallery = $this->Gallery->find('first', array(
+				'conditions' => array(
+					'Gallery.model' => $data['GalleryImage']['model'],
+					'Gallery.foreign_key' => $data['GalleryImage']['foreign_key'],
+					),
+				));
+			if (!empty($gallery)) {
+				$data['GalleryImage']['gallery_id'] = $gallery['Gallery']['id'];
+			}
+		}
+		return $data;
 	}
 	
 /** 
