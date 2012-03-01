@@ -69,7 +69,7 @@ class AppController extends Controller {
 
 
 
-	public function beforeFilter() {	
+	public function beforeFilter() {
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #
@@ -602,7 +602,8 @@ class AppController extends Controller {
 		endif;
 
 		$conditions = $this->_templateConditions();
-		$templated = $this->request->controller != 'install' ? $this->Webpage->find('first', $conditions) : null;
+		// this is because the Webpage model is not loaded for the install site page.
+		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', $conditions); 
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
         $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId);
         $this->set('defaultTemplate', $templated);
