@@ -1,7 +1,6 @@
 <?php
 App::uses('CakeSchema', 'Model');
 	
-	
 class InstallController extends AppController {
 
 	public $name = 'Install';
@@ -10,7 +9,7 @@ class InstallController extends AppController {
 	public $progress;
 	public $options;
 	public $config;
-	public $allowedActions = array('index', 'site', 'login');
+	public $allowedActions = array('index', 'site', 'login', 'plugin');
 
 /**
  * Schema class being used.
@@ -28,7 +27,7 @@ class InstallController extends AppController {
 		if ($request->controller == 'install' || $request->action == 'site') {
 			Configure::write('Session', array(
 				'defaults' => 'php',
-				'cookie' => 'ZUHA'
+				'cookie' => 'CAKEPHP'
 			));
 		}
 	
@@ -73,7 +72,7 @@ class InstallController extends AppController {
 	}
 	
 	
-	private function _out($out) {
+	protected function _out($out) {
 		debug($out);
 	}
 
@@ -124,6 +123,7 @@ class InstallController extends AppController {
  * Install a plugin to the current site.
  */
 	public function plugin($plugin = null) {
+		$this->_handleSecurity();
 		if (!empty($plugin) && defined('__SYSTEM_LOAD_PLUGINS') ) {
 			CakePlugin::load($plugin);
 			if ($this->_installPluginSchema($plugin, $plugin)) {
@@ -400,7 +400,6 @@ class InstallController extends AppController {
 			$fileName = rtrim($this->Schema->file, '.php');
 			$options['file'] = $fileName . '_' . $this->params['snapshot'] . '.php';
 		}
-
 		$Schema = $this->Schema->load($options);
 
 		if (!$Schema) {
@@ -697,11 +696,11 @@ class InstallController extends AppController {
  * If it is not the first upload then we want access to index() and site() to be restricted.
  */
 	protected function _handleSecurity() {
-		$auth = $this->Session->read('Auth');
+		$userRoleId = $this->Session->read('Auth.User.user_role_id');
 		$siteDir = defined('SITE_DIR') ? SITE_DIR : null;
 		if ($siteDir && defined('IS_ZUHA')) {
 			return true;
-		} else if (!empty($siteDir) && empty($auth)) {
+		} else if (!empty($siteDir) && $userRoleId != 1) {
 			$this->Session->setFlash(__('Install access restricted.'));
 			$this->redirect('/users/users/login');
 		}
