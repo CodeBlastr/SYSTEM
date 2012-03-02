@@ -309,7 +309,7 @@ class HtmlHelper extends AppHelper {
             $defaultoptions['preload'] = 'auto';
             $defaultoptions['controls'] = 'controls';
             $defaultoptions['poster'] = '/img/noImage.jpg';
-            
+
             $finaloptions = array_merge($defaultoptions, $options);
 
             echo $this->script('ckeditor/plugins/video_js/video', array('inline' => false));
@@ -381,17 +381,17 @@ class HtmlHelper extends AppHelper {
 				$title = $url;
 				$escapeTitle = false;
 			}
-	
+
 			if (isset($options['escape'])) {
 				$escapeTitle = $options['escape'];
 			}
-	
+
 			if ($escapeTitle === true) {
 				$title = h($title);
 			} elseif (is_string($escapeTitle)) {
 				$title = htmlentities($title, ENT_QUOTES, $escapeTitle);
 			}
-	
+
 			if (!empty($options['confirm'])) {
 				$confirmMessage = $options['confirm'];
 				unset($options['confirm']);
@@ -409,7 +409,7 @@ class HtmlHelper extends AppHelper {
 				unset($options['default']);
 			}
 			return sprintf($this->_tags['link'], $url, $this->_parseAttributes($options), $title);
-		}			
+		}
 	}
 
 /**
@@ -768,7 +768,7 @@ class HtmlHelper extends AppHelper {
 			$url = $options['url'];
 			unset($options['url']);
 		}
-		
+
 		$image = sprintf($this->_tags['image'], $path, $this->_parseAttributes($options, null, '', ' '));
 		$image = $this->_resize($image, $path, $options, $extOptions); // zuha added
 
@@ -777,8 +777,8 @@ class HtmlHelper extends AppHelper {
 		}
 		return $image;
 	}
-	
-	
+
+
 
 /**
  * Returns a row of formatted and named TABLE headers.
@@ -1173,8 +1173,8 @@ class HtmlHelper extends AppHelper {
 
 
 
-	
-/** 
+
+/**
  * Resizes images dynamically as they are called if extOptions is not null.
  * Uses the same parameters from $this->image() with the addition of image at the start.
  *
@@ -1185,7 +1185,7 @@ class HtmlHelper extends AppHelper {
  * @version	1.0
  */
 	private function _resize($image, $path, $options = array(), $extOptions = null) {
-		
+
 		if (is_array($extOptions)) {
 			if (empty($options['width']) && empty($options['height'])) {
 				# attempt to get the image width and height
@@ -1194,12 +1194,12 @@ class HtmlHelper extends AppHelper {
 					$options['height'] = $size[1];
 				}
 			}
-			
+
 			if (!empty($options['width']) && !empty($options['height'])) {
 				# default extended options for images
 				$extOptions['conversion'] = !empty($extOptions['conversion']) ? $extOptions['conversion'] : 'resizeCrop'; // resize, resizeCrop, crop
 				$extOptions['quality'] = !empty($extOptions['quality']) ? $extOptions['quality'] : 75;
-				
+
 				if (strpos($path, 'theme') > 0 /*|| strpos($path, 'theme') === 0*/) {
 					# this only works for theme images
 					$fileName = substr(strrchr($path, '/'), 1);
@@ -1226,12 +1226,12 @@ class HtmlHelper extends AppHelper {
 
 
 /**
- * PImageComponent: component to resize or crop images 
+ * PImageComponent: component to resize or crop images
  * @author: Wendy Perkins aka The Perkster
- * @website: http://www.perksterdesigns.com/ 
+ * @website: http://www.perksterdesigns.com/
  * @license: MIT
  * @version: 0.8.3.1
- * @param $cType - the conversion type: resize (default), resizeCrop (square), crop (from center) 
+ * @param $cType - the conversion type: resize (default), resizeCrop (square), crop (from center)
  * @param $id - image filename
  * @param $imgFolder  - the folder where the image is
  * @param $newName - include extension (if desired)
@@ -1243,9 +1243,9 @@ class HtmlHelper extends AppHelper {
     private function _resizeImage($cType = 'resize', $id, $imgFolder, $newName = false, $newWidth=false, $newHeight=false, $quality = 75, $bgcolor = false) {
         $img = $imgFolder . $id;
 		if (file_exists($img)) {
-	        list($oldWidth, $oldHeight, $type) = getimagesize($img); 
+	        list($oldWidth, $oldHeight, $type) = getimagesize($img);
 	        $ext = $this->image_type_to_extension($type);
-		
+
 			# check for and create cacheFolder
 			$cacheFolder = 'cache';
 			$cachePath = $imgFolder . $cacheFolder;
@@ -1259,7 +1259,7 @@ class HtmlHelper extends AppHelper {
 					break;
 				}
 			}
-	        
+
 	        //check to make sure that the file is writeable, if so, create destination image (temp image)
 	        if (is_writeable($cachePath)) {
 	            if($newName){
@@ -1275,7 +1275,7 @@ class HtmlHelper extends AppHelper {
 	            debug("Run \"chmod 777 on '$imgFolder' folder\"");
 	            exit();
 	        }
-	        
+
 	        //check to make sure that something is requested, otherwise there is nothing to resize.
 	        //although, could create option for quality only
 	        if ($newWidth || $newHeight) {
@@ -1289,7 +1289,7 @@ class HtmlHelper extends AppHelper {
 						'path' => $cacheFolder . '/' . $newName. '.' . $id,
 						'width' => $size[0],
 						'height' => $size[1],
-						);				
+						);
 	                #unlink($dest);
 	            } else {
 	                switch ($cType){
@@ -1299,13 +1299,13 @@ class HtmlHelper extends AppHelper {
 	                        # within the maxW(newWidth) and maxH(newHeight) (thus some side will be smaller)
 	                        $widthScale = 2;
 	                        $heightScale = 2;
-	                        
+
 	                        if($newWidth) $widthScale = $newWidth / $oldWidth;
 	                        if($newHeight) $heightScale = $newHeight / $oldHeight;
 	                        //debug("W: $widthScale  H: $heightScale<br>");
 	                        if($widthScale < $heightScale) {
 	                            $maxWidth = $newWidth;
-	                            $maxHeight = false;                            
+	                            $maxHeight = false;
 	                        } elseif ($widthScale > $heightScale ) {
 	                            $maxHeight = $newHeight;
     	                        $maxWidth = false;
@@ -1313,7 +1313,7 @@ class HtmlHelper extends AppHelper {
 	                            $maxHeight = $newHeight;
 	                            $maxWidth = $newWidth;
 	                        }
-	                        
+
 	                        if($maxWidth > $maxHeight){
 	                            $applyWidth = $maxWidth;
 	                            $applyHeight = ($oldHeight*$applyWidth)/$oldWidth;
@@ -1321,7 +1321,7 @@ class HtmlHelper extends AppHelper {
 	                            $applyHeight = $maxHeight;
 	                            $applyWidth = ($applyHeight*$oldWidth)/$oldHeight;
 	                        } else {
-	                            $applyWidth = $maxWidth; 
+	                            $applyWidth = $maxWidth;
 	                            $applyHeight = $maxHeight;
 	                        }
 	                        #debug("oW: $oldWidth oH: $oldHeight mW: $maxWidth mH: $maxHeight<br>");
@@ -1334,13 +1334,13 @@ class HtmlHelper extends AppHelper {
 	                        // -- resize to max, then crop to center
 	                        $ratioX = $newWidth / $oldWidth;
 	                        $ratioY = $newHeight / $oldHeight;
-	    
-	                        if ($ratioX < $ratioY) { 
+
+	                        if ($ratioX < $ratioY) {
 	                            $startX = round(($oldWidth - ($newWidth / $ratioY))/2);
 	                            $startY = 0;
 	                            $oldWidth = round($newWidth / $ratioY);
 	                            $oldHeight = $oldHeight;
-	                        } else { 
+	                        } else {
 	                            $startX = 0;
 	                            $startY = round(($oldHeight - ($newHeight / $ratioX))/2);
 	                            $oldWidth = $oldWidth;
@@ -1355,11 +1355,11 @@ class HtmlHelper extends AppHelper {
 	                        $startX = ($oldWidth - $newWidth)/2;
 	                        $oldHeight = $newHeight;
 	                        $applyHeight = $newHeight;
-	                        $oldWidth = $newWidth; 
+	                        $oldWidth = $newWidth;
 	                        $applyWidth = $newWidth;
 	                        break;
 	                }
-	                
+
 	                switch($ext) {
 	                    case 'gif' :
 	                        $oldImage = imagecreatefromgif($img);
@@ -1376,19 +1376,26 @@ class HtmlHelper extends AppHelper {
 	                        return false;
 	                        break;
 	                }
-	                
+
 	                //create new image
 	                $newImage = imagecreatetruecolor($applyWidth, $applyHeight);
-	                
+
 	                if($bgcolor) {
 	                //set up background color for new image
 	                    sscanf($bgcolor, "%2x%2x%2x", $red, $green, $blue);
-	                    $newColor = ImageColorAllocate($newImage, $red, $green, $blue); 
+	                    $newColor = ImageColorAllocate($newImage, $red, $green, $blue);
 	                    imagefill($newImage,0,0,$newColor);
 					};
 	                
+                    // preserve transparency
+                    if($ext == 'gif' || $ext == 'png'){
+                        imagecolortransparent($newImage, imagecolorallocatealpha($newImage, 0, 0, 0, 127));
+                        imagealphablending($newImage, false);
+                        imagesavealpha($newImage, true);
+                    }
+
 	                //put old image on top of new image
-	                imagecopyresampled($newImage, $oldImage, 0,0 , $startX, $startY, $applyWidth, $applyHeight, $oldWidth, $oldHeight);	                
+	                imagecopyresampled($newImage, $oldImage, 0,0 , $startX, $startY, $applyWidth, $applyHeight, $oldWidth, $oldHeight);
     	                switch($ext) {
 	                        case 'gif' :
 	                            imagegif($newImage, $dest, $quality);
@@ -1404,23 +1411,23 @@ class HtmlHelper extends AppHelper {
 	                            return false;
 	                            break;
 	                    }
-                
+
          	       imagedestroy($newImage);
 	                imagedestroy($oldImage);
-	                
+
 	                if(!$newName){
 	                    unlink($img);
 	                    rename($dest, $img);
 	                }
-	                
+
 					$size = @getimagesize($cacheFolder . '/' . $newName. '.' . $id);
 					return array(
 						'path' => $cacheFolder . '/' . $newName. '.' . $id,
 						'width' => $applyWidth,
 						'height' => $applyHeight,
-						);	
+						);
 	            }
-	
+
 	        } else {
 	            return false;
 	        }
@@ -1451,5 +1458,5 @@ class HtmlHelper extends AppHelper {
             default                : return false;
         }
     }
-    
+
 }
