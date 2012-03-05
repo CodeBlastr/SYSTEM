@@ -43,7 +43,7 @@ $thumbLinkOptions = !empty($thumbLinkOptions) ? array_merge($thumbClass, $thumbI
 $thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; //to append anything to the image within the link
 
 if (!empty($galleryThumb)) {
-	if($thumbDiv)	{ echo "<div {$thumbClass} {$thumbId}>";  } 
+	if($thumbDiv)	{ echo "<div class=\"{$thumbClass['class']}\" id=\"{$thumbId['id']}\">";  } 
 		$imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'.$thumbSize.'/'.$galleryThumb['GalleryThumb']['filename'];
         $image = $this->Html->image($imagePath, $thumbImageOptions,
 			array(
