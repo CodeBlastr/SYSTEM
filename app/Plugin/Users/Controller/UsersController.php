@@ -25,7 +25,7 @@ class UsersController extends UsersAppController {
 	public $name = 'Users';
 	public $uses = 'Users.User';
 	public $uid;
-	public $components = array('Email');
+	public $components = array('Email', 'Ssl');
 	public $paginate = array();
 	public $allowedActions = array(
 		'login',
@@ -242,7 +242,10 @@ class UsersController extends UsersAppController {
 /**
  * @todo	Not sure I like the use of contact in the url being possible.  My guess is that you could change the id and register as a different contact, and probably gain access to things you shouldn't.  Maybe switch to some kind of Security::cipher thing.  (on second thought, the database having a unique index on contact_id might keep this from happening)
  */
-	public function register() {		
+	public function register() {
+		# force ssl for PCI compliance during regristration and login
+		if (defined('__ORDERS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
+		
 		if (!empty($this->request->data)) {
 			try {
 				$this->User->add($this->request->data);
@@ -297,6 +300,9 @@ class UsersController extends UsersAppController {
  * Public login function to verify access to restricted areas.
  */
 	public function login() {
+		# force ssl for PCI compliance during regristration and login
+		if (defined('__ORDERS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
+		
 		if (!empty($this->request->data)) {
 			$this->_login();
 		}
