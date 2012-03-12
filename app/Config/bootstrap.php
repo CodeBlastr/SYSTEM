@@ -247,6 +247,7 @@ class ZuhaInflector {
 			'Used' => 'Users',
 			'User' => 'Users',
 			'Owner' => 'Users',
+			'Record' => 'Records',
 			'Setting' => '',
 			'Settings' => '',
 			'Member' => 'Members',
