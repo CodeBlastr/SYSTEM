@@ -3,10 +3,21 @@
 <div id="slidedock">
   <div id="slidedock_content">
     <ul>
-      <li><a class="dock_btn edit_button" id="edit_button" title="On edit mode"><span>Edit Mode : Off</span></a></li>
-      <li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').$requestUrl; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?> This Page</span></a>
+      <li><a href="http://www.razorit.com/"><img src="/img/admin/navicon.png" width="12" height="12" /></span></a>
+      	<ul>
+        	<li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').$requestUrl; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?> This Page</span></a></li>
+	    	<li><?php echo $this->Html->link('<span>Dashboard</span>', array('plugin' => null, 'controller' => 'admin', 'action' => 'index'), array('escape' => false, 'title' => 'Privileges, Settings, Workflows, Conditions, Custom Forms', 'id' => 'navAdmin')); ?></li>
+            <li><?php echo $this->Html->link('<span>Theme</span>', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'theme'), array('escape' => false, 'title' => 'Templates, CSS, Javascript, File Manager')); ?></li>
+		  	<li><?php echo $this->Html->link('<span>Bug Report</span>', 'http://www.razorit.com/support/', array('escape' => false, 'target' => '_blank')); ?></li>
+        </ul>
+      </li>
+      
+      <li><a class="dock_btn edit_button" id="edit_button" title="On edit mode"><span>Edit : Off</span></a>
       <?php echo $this->Element('context_menu'); ?>
       </li>
+      
+      
+      <?php /*
       <li><?php echo $this->Html->link('<span>Dashboard</span>', array('plugin' => null, 'controller' => 'admin', 'action' => 'index'), array('escape' => false, 'title' => 'Privileges, Settings, Workflows, Conditions, Custom Forms', 'id' => 'navAdmin')); ?>
         <ul>
           <li><?php echo $this->Html->link('<span>Privileges</span>', array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index'), array('escape' => false, 'title' => 'Manage user role access to sections.')); ?></li>
@@ -15,7 +26,7 @@
           <li><?php echo $this->Html->link('<span>Conditions</span>', array('plugin' => null, 'controller' => 'conditions', 'action' => 'index'), array('escape' => false, 'title' => 'Advanced website automation by matching conditions to future actions.')); ?></li>
           <li><?php echo $this->Html->link('<span>Workflows</span>', array('plugin' => 'workflows', 'controller' => 'workflows', 'action' => 'index'), array('escape' => false, 'title' => 'The actions your conditions will force to happen.')); ?></li>
         </ul>
-      </li>
+      </li> 
       <li><?php echo $this->Html->link('<span>Theme</span>', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'theme'), array('escape' => false, 'title' => 'Templates, CSS, Javascript, File Manager')); ?>
       
         <ul>
@@ -27,7 +38,7 @@
           <li><?php echo $this->Html->link('<span>Image Files</span>', array('plugin' => 'media', 'controller' => 'media', 'action' => 'images'), array('escape' => false, 'title' => 'Upload and manage images on your site.')); ?></li>
           <li><?php echo $this->Html->link('<span>Documents</span>', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files'), array('escape' => false, 'title' => 'Upload and manage documents for your site.')); ?></li>
         </ul>
-      </li>
+      </li> */ ?>
       <li><?php echo $this->Html->link('<span>Content</span>', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Pages, Blogs, Wikis, and more...')); ?>
         <ul>
           <li><?php echo $this->Html->link('<span>Pages</span>', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index'), array('escape' => false, 'title' => 'Add and edit content type pages.')); ?></li>

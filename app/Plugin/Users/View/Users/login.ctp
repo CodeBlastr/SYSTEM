@@ -1,4 +1,4 @@
-<div class="login form">
+<div class="login form" id="userLogin">
   <?php
     echo $this->Form->create('User', array('action' => 'login')); ?>
   <fieldset>

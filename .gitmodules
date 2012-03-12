@@ -1,6 +1,9 @@
 [submodule "app/Plugin/Favorites"]
 	path = app/Plugin/Favorites
 	url = git@github.com:zuha/favorites.git
+[submodule "app/Plugin/Records"]
+	path = app/Plugin/Records
+	url = git@github.com:zuha/directories.git
 [submodule "sites"]
 	path = sites
 	url = git@razorit.beanstalkapp.com:/razorit/zuha-sites.git
