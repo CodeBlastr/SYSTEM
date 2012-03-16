@@ -1240,7 +1240,7 @@ class HtmlHelper extends AppHelper {
  * @param $quality - the quality of the image
  * @param $bgcolor - this was from a previous option that was removed, but required for backward compatibility
  */
-    private function _resizeImage($cType = 'resize', $id, $imgFolder, $newName = false, $newWidth=false, $newHeight=false, $quality = 75, $bgcolor = false) {
+    protected function _resizeImage($cType = 'resize', $id, $imgFolder, $newName = false, $newWidth=false, $newHeight=false, $quality = 75, $bgcolor = false) {
         $img = $imgFolder . $id;
 		if (file_exists($img)) {
 	        list($oldWidth, $oldHeight, $type) = getimagesize($img);
