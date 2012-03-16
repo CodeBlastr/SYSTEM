@@ -13,3 +13,6 @@
 [submodule "app/Plugin/Twitter"]
 	path = app/Plugin/Twitter
 	url = git@github.com:zuha/twitter-cakephp-plugin.git
+[submodule "app/Plugin/Tags"]
+	path = app/Plugin/Tags
+	url = git@github.com:zuha/tags-cakephp-plugin.git
