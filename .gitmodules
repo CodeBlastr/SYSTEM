@@ -16,3 +16,6 @@
 [submodule "app/Plugin/Tags"]
 	path = app/Plugin/Tags
 	url = git@github.com:zuha/tags-cakephp-plugin.git
+[submodule "app/Plugin/Polls"]
+	path = app/Plugin/Polls
+	url = git@github.com:zuha/polls-cakephp-plugin.git
