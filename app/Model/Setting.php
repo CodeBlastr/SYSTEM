@@ -23,7 +23,7 @@
 class Setting extends AppModel {
 
 	public $name = 'Setting';
-	
+
 /**
  * instead of storing available settings in a database we store all of the available settings here
  */
@@ -76,6 +76,18 @@ class Setting extends AppModel {
 							'name' => 'TRANSACTIONS_AUTHORIZENET_MODE',
 							'description' => 'Defines whether authorize.net is in test mode.  Any value at all, means its in test mode, otherwise it is live. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
 							),
+                        array(
+                            'name' => 'ORDERS_TRANSACTIONS_SAGEPAY_VENDOR',
+                            'description' => 'The Vendor Name that you registered at SagePay.  Default is razorit which is a simulation account.'.'Default value : razorit',
+                        ),
+                        array(
+                            'name' => 'ORDERS_TRANSACTIONS_SAGEPAY_CURRENCY',
+                            'description' => 'The currency to use for SagePay. gbp/usd'.PHP_EOL.PHP_EOL.'Default value : usd',
+                        ),
+                        array(
+                            'name' => 'ORDERS_TRANSACTIONS_SAGEPAY_MODE',
+                            'description' => 'The mode to run SagePay in. SIMULATOR/DEVELOPMENT/LIVE'.PHP_EOL.PHP_EOL.'Default value : SIMULATOR',
+                        ),
 						array(
 							'name' => 'PAYPAL',
 							'description' => 'Defines the credentials to Access Paypal Payment PRO : https://www.paypal.com/us/cgi-bin/webscr?cmd=_profile-api-add-direct-access.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'API_USERNAME = webpro_126328478_biz_api1.example.com'.PHP_EOL.'API_PASSWORD = 9294399233'.PHP_EOL.'API_SIGNATURE = ApJtg.JrUW0YLN.tPmmGiu-exM.va778w7f873mX29QghYJnTf'.PHP_EOL.'API_ENDPOINT = https://api-3t.sandbox.paypal.com/nvp'.PHP_EOL.'PROXY_HOST = 127.0.0.1'.PHP_EOL.'PROXY_PORT = 808'.PHP_EOL.'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="'.PHP_EOL.'VERSION  = 51.0'.PHP_EOL.'USE_PROXY = "FALSE"',
@@ -151,7 +163,7 @@ class Setting extends AppModel {
 						),
 				  'App' => array(
 						array(
-							'name' => 'LOGIN_ACTION', 
+							'name' => 'LOGIN_ACTION',
 							'description' => 'Defines where users will be redirected to if they reach a page they do not have access to.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'/some-page',
 							),
 						array(
@@ -373,7 +385,7 @@ class Setting extends AppModel {
 		$file = new File(CONFIGS.'settings.ini');
 		#$file->path = CONFIGS.'settings.ini';
 		$writeData = $this->prepareSettingsIniData();
-		
+
 		if($file->write($file->prepare($writeData))) {
 			if($this->writeDefaultsIniData()) {
 				return true;
@@ -412,7 +424,7 @@ class Setting extends AppModel {
  * @param {array}		An array of Setting data
  */
 	private function _cleanSettingData($data, $append = false){
-		
+
 		if (!empty($data['Setting'][0])) {
 			$i=0; foreach ($data['Setting'] as $setting) {
 				if (is_array($setting['value'])) {
@@ -428,9 +440,9 @@ class Setting extends AppModel {
 			} // end setting loop
 			$data = $data['Setting']; // because we are using saveAll
 		}
-		
+
 		#@todo break these out into individual setting function in a foreach loop that will handle many and single records to save
-		
+
 		if (!empty($data['Setting']['name']) && !empty($data['Setting']['type'])) {
 			# see if the setting already exists
 			$setting = $this->find('first', array(
@@ -443,7 +455,7 @@ class Setting extends AppModel {
 				# if it does, then set the id, so that we over write instead of creating a new setting
 				$data['Setting']['id'] = $setting['Setting']['id'];
 			}
-	
+
 			if (!empty($append) && !empty($setting)) {
 				$data['Setting']['value'] = $setting['Setting']['value'].PHP_EOL.$data['Setting']['value'];
 			}
@@ -461,7 +473,7 @@ class Setting extends AppModel {
 			$data['Setting']['value'] =  $data['Setting']['value'] + 0.0001;
 		}
 
-		
+
 		return $data;
 	}
 
@@ -522,13 +534,13 @@ class Setting extends AppModel {
 /**
  * returns settings in a way that can be parsed into an editable form
  *
- * @param {string} 	same as find() 
+ * @param {string} 	same as find()
  * @options {array}	same as find()
  * @return {array}
  */
 	public function getFormSettings($type = 'all', $params = array()) {
 		$settings = $this->find($type, $params);
-		
+
 		$i=0; foreach ($settings as $key => $setting) {
 			$settings['Setting'][$i] = $setting['Setting'];
 			$settings['Setting'][$i]['value'] = $this->_settingFormInputs($setting['Setting']['type'], $setting['Setting']['name'], $setting['Setting']['value']);
@@ -537,28 +549,28 @@ class Setting extends AppModel {
 		}
 		return $settings;
 	}
-	
+
 
 /**
- * @todo  Ha, convoluted enough?  This like all the settings need to be available if and only if the plugin is loaded, and then they should get the available properties using a standardized callback to the individual plugin.   Maybe something like, Galleries.Config.settings... Configure::write('SETTINGS', array('galleryType' =>  array('description' => 'xyz', 'formInput' => array('type' => 'select', etc.)));    
+ * @todo  Ha, convoluted enough?  This like all the settings need to be available if and only if the plugin is loaded, and then they should get the available properties using a standardized callback to the individual plugin.   Maybe something like, Galleries.Config.settings... Configure::write('SETTINGS', array('galleryType' =>  array('description' => 'xyz', 'formInput' => array('type' => 'select', etc.)));
 																																																																																															  ^^^^^^^^^^^ DO THIS BEFORE YOU PUT TOO MANY SETTINGS HERE ^^^^^^^^^^^^^
-																																																																																															
+
  */
 	private function _settingFormInputs($type, $name, $value) {
 		if (strpos($value, '=')) {
 			$value = parse_ini_string($value);
 			foreach ($value as $key => $val) {
 				switch ($type) {
-					case 'Galleries' : 
+					case 'Galleries' :
 						switch ($name) {
-							case 'SETTINGS' : 
+							case 'SETTINGS' :
 								switch ($key) {
 									case 'galleryType' :
 										App::uses('Gallery', 'Galleries.Model');
 										$Gallery = new Gallery;
 										$value[$key] = array(
-											'value' => $val, 
-											'type' => 'select', 
+											'value' => $val,
+											'type' => 'select',
 											'options' => $Gallery->types()
 											);
 										break;
@@ -567,7 +579,7 @@ class Setting extends AppModel {
 										$Gallery = new Gallery;
 										$value[$key] = array(
 											'value' => $val,
-											'type' => 'select', 
+											'type' => 'select',
 											'options' => $Gallery->conversionTypes());
 										break;
 									default :
@@ -576,18 +588,18 @@ class Setting extends AppModel {
 										$value[$key] = array('value' => $val);
 								}
 								break;
-							default : 
+							default :
 								$value[$key] = array('value' => $val);
 						}
 							break;
-						default : 
+						default :
 							$value[$key] = array('value' => $val);
 				}
 			}
 		}
-		
+
 		return $value;
 	}
-	
+
 }
 ?>
