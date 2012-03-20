@@ -716,7 +716,7 @@ class AppController extends Controller {
  * You can create a comma separated (no spaces) list if you only need a system wide component.  If you would like to specify components on a per controller basis, then you use ControllerName[] = Plugin.Component. (ie. Projects[] = Ratings.Ratings).  If you want both per controller, and system wide, then use the key components[] = Plugin.Component for each system wide component to load.  Note: You cannot have a comma separated list, and the named list at the same time.
  */
 	private function _getComponents() {
-		if (basename($_SERVER['REQUEST_URI']) != 'site') {
+		if (!empty($_SERVER['REQUEST_URI']) && basename($_SERVER['REQUEST_URI']) != 'site') {
 			$this->components[] = 'Acl';
 		}
 		
