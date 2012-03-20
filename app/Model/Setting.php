@@ -77,15 +77,15 @@ class Setting extends AppModel {
 							'description' => 'Defines whether authorize.net is in test mode.  Any value at all, means its in test mode, otherwise it is live. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
 							),
                         array(
-                            'name' => 'ORDERS_TRANSACTIONS_SAGEPAY_VENDOR',
+                            'name' => 'TRANSACTIONS_SAGEPAY_VENDOR',
                             'description' => 'The Vendor Name that you registered at SagePay.  Default is razorit which is a simulation account.'.'Default value : razorit',
                         ),
                         array(
-                            'name' => 'ORDERS_TRANSACTIONS_SAGEPAY_CURRENCY',
+                            'name' => 'TRANSACTIONS_SAGEPAY_CURRENCY',
                             'description' => 'The currency to use for SagePay. gbp/usd'.PHP_EOL.PHP_EOL.'Default value : usd',
                         ),
                         array(
-                            'name' => 'ORDERS_TRANSACTIONS_SAGEPAY_MODE',
+                            'name' => 'TRANSACTIONS_SAGEPAY_MODE',
                             'description' => 'The mode to run SagePay in. SIMULATOR/DEVELOPMENT/LIVE'.PHP_EOL.PHP_EOL.'Default value : SIMULATOR',
                         ),
 						array(
