@@ -2585,11 +2585,11 @@ class FormHelper extends AppHelper {
 	}
 	
 	
-	/**
-	 * Parse the ajax output back to the form element
-	 * Created so that if there is a case where we need to do something to 
-	 * the form element not already covered we would do it here.
-	 */
+/**
+ * Parse the ajax output back to the form element
+ * Created so that if there is a case where we need to do something to 
+ * the form element not already covered we would do it here.
+ */
 	function ajaxElement($attributes) {
 		$attributes = array_merge($attributes, $attributes['ajax']);
 		unset($attributes['ajax']);
