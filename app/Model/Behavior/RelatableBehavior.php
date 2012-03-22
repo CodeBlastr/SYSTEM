@@ -6,11 +6,11 @@
  */
 class RelatableBehavior extends ModelBehavior {
 
-	var $__model = '';
-	var $__foreignKey = '';
-	var $__key = 'id';
+	public $__model = '';
+	public $__foreignKey = '';
+	public $__key = 'id';
 
-	function setup(&$Model, $settings = array()) {
+	public function setup(&$Model, $settings = array()) {
 		# I know this is bad.  I'm in a time crunch.
 		$this->__model = (!empty($_GET['m']) ? $_GET['m'] : null);
 		$this->__foreignKey = (!empty($_GET['f']) ? $_GET['f'] : null);
@@ -18,7 +18,7 @@ class RelatableBehavior extends ModelBehavior {
 	}
 
 
-	function beforeFind(&$Model, $queryData) {
+	public function beforeFind(&$Model, $queryData) {
 		if (!empty($queryData['conditions']) && !empty($this->__key) && !empty($this->__model) && !empty($this->__foreignKey)) {
 			unset($queryData['conditions'][$Model->alias.'.'.$this->__key]);
 			$queryData['conditions'][$Model->alias.'.model'] = $this->__model;
