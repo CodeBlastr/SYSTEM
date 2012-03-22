@@ -51,8 +51,11 @@ foreach ($data as $dat) {
 	$link['controllerName'] = !empty($link['controllerName']) ? $link['controllerName'] : $controller;
 	$link['actionName'] = !empty($link['actionName']) ? $link['actionName'] : 'view';
 	$linkPass = !empty($link['pass']) ? preg_replace('/\{([a-zA-Z_]+)\}/e', "$$1", $link['pass']) : array($id); 
+	$galleryLinkPass = !empty($galleryLink['pass']) ? array(preg_replace('/\{([a-zA-Z_]+)\}/e', "$$1", $galleryLink['pass'])) : $linkPass;
 	$viewUrl = array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName']) + $linkPass;
 	$viewUrlOptions = !empty($linkOptions) ? $linkOptions : array();
+	$galleryViewUrl = !empty($galleryLink) ?  array('plugin' => strtolower($galleryLink['pluginName']), 'controller' => $galleryLink['controllerName'], 'action' => $galleryLink['actionName']) + $galleryLinkPass : $viewUrl;
+	$galleryViewUrlOptions = !empty($galleryLinkoptions) ? $galleryLinkOptions : $viewUrlOptions;
 	
 	$class = null;
 	if ($i++ % 2 == 0) {
@@ -60,7 +63,7 @@ foreach ($data as $dat) {
 	}
 ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
-      <div class="indexCell imageCell"> <span><?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => $viewUrl, 'thumbLinkOptions' => $viewUrlOptions), array('plugin' => 'galleries')) : null; ?> </span> </div>
+      <div class="indexCell imageCell"> <span><?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => $galleryViewUrl, 'thumbLinkOptions' => $galleryViewUrlOptions), array('plugin' => 'galleries')) : null; ?> </span> </div>
       <div class="indexCell metaCell">
         <ul class="metaData">
           <?php 

@@ -42,6 +42,8 @@ class ConditionsController extends AppController {
 	}
 
 	function edit($id = null) {
+		$this->redirect(array('plugin' => 'workflows', 'controller' => 'workflows', 'action' => 'add'));
+		/*
 		if (!empty($this->request->data)) {
 			if ($this->Condition->save($this->request->data)) {
 				$this->Session->setFlash(__('The Condition has been saved', true));
@@ -52,7 +54,7 @@ class ConditionsController extends AppController {
 		}
 		if (empty($this->request->data)) {
 			$this->request->data = $this->Condition->read(null, $id);
-		}
+		}*/
 	}
 
 	function delete($id = null) {
