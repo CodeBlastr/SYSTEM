@@ -160,6 +160,10 @@ class Setting extends AppModel {
 							'name' => 'ENABLE_SINGLE_PAYMENT_TYPE',
 							'description' => 'Defines whether to use single payment method for payment.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'true',
 							),
+						array(
+							'name' => 'ENABLE_GUEST_CHECKOUT',
+							'description' => 'Defines whether or not guest checkout is enabled.'.PHP_EOL.PHP_EOL.'Default Value : '.PHP_EOL.'false',
+							),
 						),
 				  'App' => array(
 						array(
