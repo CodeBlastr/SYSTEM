@@ -160,6 +160,10 @@ class Setting extends AppModel {
 							'name' => 'ENABLE_SINGLE_PAYMENT_TYPE',
 							'description' => 'Defines whether to use single payment method for payment.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'true',
 							),
+						array(
+							'name' => 'ENABLE_GUEST_CHECKOUT',
+							'description' => 'Defines whether or not guest checkout is enabled.'.PHP_EOL.PHP_EOL.'Default Value : '.PHP_EOL.'false',
+							),
 						),
 				  'App' => array(
 						array(
@@ -276,6 +280,27 @@ class Setting extends AppModel {
 						array(
 							'name' => 'BLOGS_LATEST',
 							'description' => 'Defines setting variables for the latest blog posts module.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'moduleTitle = "My Custom Title"'.PHP_EOL.'numberOfPosts = 5'.PHP_EOL.'blogID = 1',
+							),
+						array(
+							'name' => 'USERS_LOGIN',
+							'description' => 'Customize the User Login elements.'
+                            .PHP_EOL.PHP_EOL
+                            .'Default Values : '.PHP_EOL
+                            .'divId = "loginElement"'.PHP_EOL
+                            .'divClass = "loginElement"'.PHP_EOL
+                            .'textWelcome = "Welcome : "'.PHP_EOL
+                            .'textRegister = "Register"'.PHP_EOL
+                            .'linkRegisterUrl = "/usrs/users/register"'.PHP_EOL
+                            .'textLogIn = "Login"'.PHP_EOL
+                            .'linkLoginUrl = "/users/users/login"'.PHP_EOL
+                            .'textLogOut = "Logout"'.PHP_EOL
+                            .'textSeparator = "-"'.PHP_EOL
+                            .'linkClass = "loginLink"'.PHP_EOL
+                            .'linkIdUser = "useridLink"'.PHP_EOL
+                            .'linkIdLogin = "useridLink"'.PHP_EOL
+                            .'linkIdLogout = "logoutLink"'.PHP_EOL
+                            .'linkIdSignUp = "signupLink"'.PHP_EOL
+                            .'linkIdSignIn = "signinLink"'.PHP_EOL
 							),
 						),
 				  'Media' => array(
