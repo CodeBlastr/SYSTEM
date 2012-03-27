@@ -27,7 +27,7 @@ class ContactDetailsController extends ContactsAppController {
 				$this->Session->setFlash(__('The contact detail could not be saved. Please, try again.', true));
 			}
 		}
-		$contactDetailTypes = $this->ContactDetail->ContactDetailType->find('list');
+		$contactDetailTypes = $this->ContactDetail->types();
 		$contacts = $this->ContactDetail->Contact->find('list');
 		$this->set(compact('contactDetailTypes', 'contacts'));
 	}
@@ -48,7 +48,7 @@ class ContactDetailsController extends ContactsAppController {
 		if (empty($this->request->data)) {
 			$this->request->data = $this->ContactDetail->read(null, $id);
 		}
-		$contactDetailTypes = $this->ContactDetail->ContactDetailType->find('list');
+		$contactDetailTypes = $this->ContactDetail->types();
 		$contacts = $this->ContactDetail->Contact->find('list');
 		$this->set(compact('contactDetailTypes', 'contacts'));
 	}

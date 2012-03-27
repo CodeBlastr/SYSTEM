@@ -3,7 +3,7 @@
 	<fieldset>
  		<legend><?php echo __('Add Contact Detail'); ?></legend>
 	<?php
-		echo $this->Form->input('contact_detail_type_id');
+		echo $this->Form->input('contact_detail_type');
 		echo $this->Form->input('value');
 		echo $this->Form->input('primary');
 		echo $this->Form->input('contact_id');

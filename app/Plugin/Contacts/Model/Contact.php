@@ -262,7 +262,7 @@ class Contact extends ContactsAppModel {
  *
  * @return array
  */
-	private function _cleanContactData($data) {
+	protected function _cleanContactData($data) {
 		# if id is here, then merge the data with the existing data (new data over writes old)
 		if (!empty($data['Contact']['id'])) :
 			$contact = $this->find('first', array(

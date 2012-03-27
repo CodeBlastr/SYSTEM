@@ -17,13 +17,6 @@ class ContactDetail extends ContactsAppModel {
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	var $belongsTo = array(
-		'ContactDetailType' => array(
-			'className' => 'Enumerations',
-			'foreignKey' => 'contact_detail_type_id',
-			'conditions' => array('ContactDetailType.type' => 'CONTACTDETAIL'),
-			'fields' => '',
-			'order' => ''
-		),
 		'Contact' => array(
 			'className' => 'Contacts.Contact',
 			'foreignKey' => 'contact_id',
@@ -32,5 +25,14 @@ class ContactDetail extends ContactsAppModel {
 			'order' => ''
 		)
 	);
+
+
+	public function types() {
+		$types = array();
+		foreach(Zuha::enum('CONTACT_DETAIL') as $type) {
+			$types[Inflector::underscore($type)] = $type;
+		}
+		return array_merge(array('email' => 'Email'), $types);
+	}
 }
 ?>

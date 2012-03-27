@@ -3,7 +3,7 @@
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id');?></th>
-			<th><?php echo $this->Paginator->sort('contact_detail_type_id');?></th>
+			<th><?php echo $this->Paginator->sort('contact_detail_type');?></th>
 			<th><?php echo $this->Paginator->sort('value');?></th>
 			<th><?php echo $this->Paginator->sort('primary');?></th>
 			<th><?php echo $this->Paginator->sort('contact_id');?></th>
@@ -24,7 +24,7 @@
 	<tr<?php echo $class;?>>
 		<td><?php echo $contactDetail['ContactDetail']['id']; ?>&nbsp;</td>
 		<td>
-			<?php echo $this->Html->link($contactDetail['ContactDetailType']['name'], array('controller' => 'enumerations', 'action' => 'view', $contactDetail['ContactDetailType']['id'])); ?>
+			<?php echo $this->Html->link($contactDetail['ContactDetail']['contact_detail_type'], array('controller' => 'enumerations', 'action' => 'view', $contactDetail['ContactDetail']['id'])); ?>
 		</td>
 		<td><?php echo $contactDetail['ContactDetail']['value']; ?>&nbsp;</td>
 		<td><?php echo $contactDetail['ContactDetail']['primary']; ?>&nbsp;</td>
