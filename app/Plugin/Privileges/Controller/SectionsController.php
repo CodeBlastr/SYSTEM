@@ -95,7 +95,7 @@ class SectionsController extends PrivilegesAppController {
 		
 		$groups = $this->Section->Requestor->find('all' , array(
 			'conditions' => array(
-				'Requestor.model'=>'UserRole'
+				'Requestor.model' => 'UserRole'
 				),
 			'contain'=>array(
 				'UserRole'=>array(
