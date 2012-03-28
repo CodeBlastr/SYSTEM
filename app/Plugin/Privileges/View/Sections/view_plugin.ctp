@@ -42,11 +42,11 @@
     						}
     					
     					?>
-		    			<?php if($has_check):?>		
+		    			<?php if($has_check) { ?>		
 		    				<td><?php echo $this->Form->input($field_name , array('type'=>'checkbox' , 'label'=>'' , 'checked'=>'true'));?></td>
-		    			<?php else:?>
+		    			<?php } else { ?>
 		    				<td><?php echo $this->Form->input($field_name , array('type'=>'checkbox' , 'label'=>''));?></td>
-		    			<?php endif;?>
+		    			<?php } ?>
 		    		<?php endif;?>
 	    		<?php else:?>
 	    			<?php if($groups[$i]["UserRole"]['id'] != 1):?>
