@@ -40,15 +40,15 @@ class UsersController extends UsersAppController {
 		'restricted',
 		'reverify',
 		);
-	
-	
+
+
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
-		if (in_array('Invite', CakePlugin::loaded())) : 
-			$this->components[] = 'Invite.InviteHandler'; 
+		if (in_array('Invite', CakePlugin::loaded())) :
+			$this->components[] = 'Invite.InviteHandler';
 		endif;
-		if (in_array('Recaptcha', CakePlugin::loaded())) : 
-			$this->helpers[] = 'Recaptcha.Recaptcha'; 
+		if (in_array('Recaptcha', CakePlugin::loaded())) :
+			$this->helpers[] = 'Recaptcha.Recaptcha';
 		endif;
 	}
 
@@ -62,8 +62,8 @@ class UsersController extends UsersAppController {
 			);
 		$this->set('users', $this->paginate());
 		$this->set('displayName', 'first_name');
-		$this->set('displayDescription', ''); 
-		$this->set('indexClass', ''); 
+		$this->set('displayDescription', '');
+		$this->set('indexClass', '');
 		$this->set('showGallery', true);
 		$this->set('galleryForeignKey', 'id');
 		$this->set('pageActions', array(
@@ -191,8 +191,8 @@ class UsersController extends UsersAppController {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
 				));
-			
-			if (in_array('Orders', CakePlugin::loaded())) : 
+
+			if (in_array('Orders', CakePlugin::loaded())) :
 				$userShippingAddress = $this->User->OrderShipment->find('first',array(
 					'conditions' => array(
 						'OrderShipment.user_id' => $id,
@@ -245,7 +245,7 @@ class UsersController extends UsersAppController {
 	public function register() {
 		# force ssl for PCI compliance during regristration and login
 		if (defined('__ORDERS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
-		
+
 		if (!empty($this->request->data)) {
 			try {
 				$this->User->add($this->request->data);
@@ -273,7 +273,7 @@ class UsersController extends UsersAppController {
 	public function delete($id) {
 		$this->__delete('User', $id);
 	}
-	
+
 
 	public function dashboard() {
 	}
@@ -302,7 +302,7 @@ class UsersController extends UsersAppController {
 	public function login() {
 		# force ssl for PCI compliance during regristration and login
 		if (defined('__ORDERS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
-		
+
 		if (!empty($this->request->data)) {
 			$this->_login();
 		}
@@ -312,8 +312,8 @@ class UsersController extends UsersAppController {
 		$this->set(compact('userRoleId', 'userRoles'));
 		if (empty($this->templateId)) { $this->layout = 'login'; }
 	}
-	
-	
+
+
 	protected function _login($user = null) {
 		if ($this->Auth->login($user)) {
 			try {
@@ -329,7 +329,7 @@ class UsersController extends UsersAppController {
 			}
 	    } else {
 	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
-	    }			
+	    }
 	}
 
 
@@ -343,7 +343,7 @@ class UsersController extends UsersAppController {
 			$this->redirect($this->_loginRedirect());
 		endif;
     }
-	
+
 
 /**
  * Set the default redirect variables, using the settings table constant.
@@ -351,45 +351,45 @@ class UsersController extends UsersAppController {
 	private function _loginRedirect() {
 		# this handles redirects where a url was called that redirected you to the login page
 		$redirect = $this->Auth->redirect();
-		
+
 		if ($redirect == '/') {
 			# default login location
 			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
-			
-			if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) { 
+
+			if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
 				# this setting name is deprecated, will be deleted (got rid of the DEFAULT in the setting name.)
 				if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
 					$redirect = $urlParams;
 				}
 				$redirect = __APP_DEFAULT_LOGIN_REDIRECT_URL;
 			}
-		
+
 			if (defined('__APP_LOGIN_REDIRECT_URL')) {
 				$urlParams = @unserialize(__APP_LOGIN_REDIRECT_URL);
 				if (!empty($urlParams) && is_numeric(key($urlParams)) && $this->Session->read('Auth.User.user_role_id')) {
 					# if the keys are numbers we're looking for a user role
 					if (!empty($urlParams[$this->Session->read('Auth.User.user_role_id')])) {
-						# if the user role is the index key then we have a special login redirect just for them 
-						#debug($urlParams[$this->Session->read('Auth.User.user_role_id')]); break; 
+						# if the user role is the index key then we have a special login redirect just for them
+						#debug($urlParams[$this->Session->read('Auth.User.user_role_id')]); break;
 						return $urlParams[$this->Session->read('Auth.User.user_role_id')];
 					} else {
 						# need a return here, to stop processing of the $redirect var
-						#debug($redirect); break; 
+						#debug($redirect); break;
 						return $redirect;
 					}
-				} 
+				}
 				if (!empty($urlParams) && is_string(key($urlParams))) {
 					# if the keys are strings we've just formatted the settings by plugin, controller, action, instead of a text url
 					$redirect = $urlParams;
-				} 
+				}
 				# its not an array because it couldn't be unserialized
 				$redirect = __APP_LOGIN_REDIRECT_URL;
 			}
-		}		
-		#debug($redirect); break; 
+		}
+		#debug($redirect); break;
 		return $redirect;
 	}
-	
+
 
 /**
  * Set the default redirect variables, using the settings table constant.
@@ -451,23 +451,6 @@ class UsersController extends UsersAppController {
     }
 
 
-	public function __resetPasswordKey($userid) {
-		$user = $this->User->find('first', array('conditions' => array('id' => $userid)));
-		unset($this->request->data['User']['username']);
-		$this->request->data['User']['id'] = $userid;
-		$this->request->data['User']['forgot_key'] = $this->User->__uuid('F');
-		$this->request->data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
-		$this->request->data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
-		$this->request->data['User']['user_role_id'] = $user['User']['user_role_id'];
-		$this->User->Behaviors->detach('Translate');
-		if ($this->User->save($this->request->data, array('validate' => false))) {
-			return $this->request->data['User']['forgot_key'];
-		} else {
-			return false;
-		}
-	}
-
-
 /**
  * Resend verification
  *
@@ -484,8 +467,8 @@ class UsersController extends UsersAppController {
 		}
 	}
 
-	
-	
+
+
 /**
  * Used same column `forgot_key` for storing key. It starts with W for activation, F for forget
  *
@@ -506,11 +489,11 @@ class UsersController extends UsersAppController {
 			$this->redirect(array('action' => 'forgot_password'));
 		}
 	}
-	
+
 /**
  * Change password method
- * 
- * @todo For time's sake used the password instead of a key.  This should be changed, but the key gets deleted from the verify() function so that needs to be rewritten too. 
+ *
+ * @todo For time's sake used the password instead of a key.  This should be changed, but the key gets deleted from the verify() function so that needs to be rewritten too.
  */
 	public function change_password($userPassword = null, $userId = null) {
 		if (!empty($this->request->data)) {
@@ -526,8 +509,8 @@ class UsersController extends UsersAppController {
 				$this->redirect(array('action' => 'forgot_password'));
 			}
 		}
-		
-		$user = $this->User->find('first', array('conditions' => array('User.password' => $userPassword, 'User.id' => $userId))); 
+
+		$user = $this->User->find('first', array('conditions' => array('User.password' => $userPassword, 'User.id' => $userId)));
 		if (!empty($user)) {
 			$this->request->data = $user;
 		} else {
@@ -550,7 +533,7 @@ class UsersController extends UsersAppController {
 			if (!empty($user['User']['id']) && !empty($user['User']['email'])) {
 				# the user details exist
 				# so first lets update the user record with a temporary uid key to use for resetting password
-				$forgotKey = $this->__resetPasswordKey($user['User']['id']);
+				$forgotKey = $this->User->resetPassword($user['User']['id']);
 				if (!empty($forgotKey)) {
 					# then lets email the user a link to the reset password page
 					$this->set('name', $user['User']['full_name']);

@@ -13,7 +13,7 @@
     </legend>
     <p>Add one contact detail for now, you can add all of the additional details you want after you save.</p>
     <?php
-	 echo $this->Form->input('ContactDetail.0.contact_detail_type_id', array('label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTDETAIL'), array('class' => 'dialog', 'title' => 'Edit Detail List')))); 
+	 echo $this->Form->input('ContactDetail.0.contact_detail_type', array('label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACT_DETAIL'), array('class' => 'dialog', 'title' => 'Edit Detail List')))); 
 	 echo $this->Form->input('ContactDetail.0.value');
 	?>
   <fieldset>

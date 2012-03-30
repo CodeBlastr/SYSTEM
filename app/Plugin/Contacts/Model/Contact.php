@@ -1,7 +1,25 @@
 <?php
 class Contact extends ContactsAppModel {
+
+/**
+ * Name
+ *
+ * @var string
+ */
 	public $name = 'Contact';
+	
+/**
+ * Display field
+ *
+ * @var string
+ */
 	public $displayField = 'name';
+	
+/**
+ * Validate
+ *
+ * @var array
+ */
 	public $validate = array(
 		'name' => array(
 			'notempty' => array(
@@ -14,8 +32,12 @@ class Contact extends ContactsAppModel {
 			),
 		),
 	);
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
-
+	
+/**
+ * Belongs to
+ *
+ * @var array
+ */
 	public $belongsTo = array(
 		'ContactType' => array(
 			'className' => 'Enumeration',
@@ -54,6 +76,12 @@ class Contact extends ContactsAppModel {
 		),
 	);
 
+	
+/**
+ * Has many
+ *
+ * @var array
+ */
 	public $hasMany = array(
 		'ContactAddress' => array(
 			'className' => 'Contacts.ContactAddress',
@@ -83,7 +111,12 @@ class Contact extends ContactsAppModel {
 		),
 	);
 
-
+	
+/**
+ * Has and belongs to many
+ *
+ * @var array
+ */
 	public $hasAndBelongsToMany = array(
 		'Employer' => array(
 			'className' => 'Contacts.Contact',
@@ -117,6 +150,12 @@ class Contact extends ContactsAppModel {
 		),
 	);
 	
+	
+/**
+ * Construct 
+ *
+ * @return null
+ */
 	public function __construct($id = false, $table = null, $ds = null) {
     	parent::__construct($id, $table, $ds);
 		$this->order = array("{$this->alias}.name");	
@@ -138,7 +177,11 @@ class Contact extends ContactsAppModel {
 		}
     }
 	
-	
+/**
+ * Add method
+ * 
+ * @return bool
+ */
 	public function add($data) {
 		$data = $this->_cleanContactData($data);		
 		if ($this->saveAll($data)) {
@@ -158,6 +201,11 @@ class Contact extends ContactsAppModel {
 		}
 	}
 	
+/**
+ * Find companies
+ * 
+ * @return array
+ */
 	public function findCompanies($type = 'list', $params = null) {
 		$params['conditions'] = array(
 			"{$this->alias}.is_company" => 1,
@@ -167,6 +215,11 @@ class Contact extends ContactsAppModel {
 		return $this->find($type, $params);
 	}
 	
+/**
+ * Find people 
+ * 
+ * @return array
+ */
 	public function findPeople($type = 'list', $params = null) {
 		$params['conditions'] = array(
 			"{$this->alias}.is_company" => 0,
@@ -176,6 +229,11 @@ class Contact extends ContactsAppModel {
 		return $this->find($type, $params);
 	}
 	
+/** 
+ * Find companies with registered users
+ *
+ * @return array
+ */
 	public function findCompaniesWithRegisteredUsers($type = 'list', $params = null) {
 		#first find registered people
 		$people = $this->find('list', array(
@@ -199,13 +257,12 @@ class Contact extends ContactsAppModel {
 	}
 	
 	
-	/**
-	 * Function created to fix up data that is submitted from various sources
-	 * so that it will work with the saveAll function.
-	 *
-	 * @todo 	I had an instance where this could be put into the ContactDetail model instead, but didn't seem to work when you were entering multiple details at once, so left it here instead.  If you know how to get it into the contact detail model, please do, and inform us how it was done. 
-	 */
-	private function _cleanContactData($data) {
+/**
+ * Clean data for saving
+ *
+ * @return array
+ */
+	protected function _cleanContactData($data) {
 		# if id is here, then merge the data with the existing data (new data over writes old)
 		if (!empty($data['Contact']['id'])) :
 			$contact = $this->find('first', array(
