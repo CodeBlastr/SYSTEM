@@ -754,5 +754,4 @@ Thank you for registering with us and welcome to the community.";
 			return false;
 		}
 	}
-
 }

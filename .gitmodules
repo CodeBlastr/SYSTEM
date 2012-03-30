@@ -19,3 +19,6 @@
 [submodule "app/Plugin/Polls"]
 	path = app/Plugin/Polls
 	url = git@github.com:zuha/polls-cakephp-plugin.git
+[submodule "app/Plugin/Forms"]
+	path = app/Plugin/Forms
+	url = git@github.com:zuha/forms-zuha-cakephp-plugin.git

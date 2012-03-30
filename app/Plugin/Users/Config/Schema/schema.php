@@ -1,5 +1,5 @@
 <?php 
-/* generated on: 2012-03-13 17:54:16 : 1331661256 */
+/* generated on: 2012-03-24 14:20:48 : 1332598848 */
 class UsersSchema extends CakeSchema {
 
 	public function before($event = array()) {
