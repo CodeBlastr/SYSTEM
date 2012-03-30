@@ -8,7 +8,7 @@
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Contact Detail Type'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $this->Html->link($contactDetail['ContactDetailType']['name'], array('controller' => 'enumerations', 'action' => 'view', $contactDetail['ContactDetailType']['id'])); ?>
+			<?php echo $this->Html->link($contactDetail['ContactDetail']['contact_detail_type'], array('controller' => 'enumerations', 'action' => 'view', $contactDetail['ContactDetail']['id'])); ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Value'); ?></dt>

@@ -89,7 +89,6 @@ $(function() {
 	$('select[element="select"]').change(function(){
 		var url = '/' + $(this).attr('json') + '/' + $(this).val() + '.json';
 		var variable = $(this).attr('variable');
-		alert(variable);
 		var target = $(this).attr('rel');
 		$.getJSON(url, function(data){
 			var items = [];

@@ -138,4 +138,53 @@ class ZuhaSet {
         #return $master; // returns the full associative array with the value filled in
 		return $finalParsedVar;
     }
+	
+/**
+ * Key as Paths   ZuhaSet::keyAsPaths($data, $options)
+ *
+ * Recursively flatten an array.  So that array('key1' => array('key2' => 'value')) becomes array(key1.key2 => value)
+ * You can also parse it into html using the options array.  The default parsed output is an unordered list. 
+ *
+ * @var array   Any multi-dimensional array
+ * @var array 	Options, separator, parse, start, startItem, betweenItem, endItem, end.  
+ * @return array	When parse is false (default) you get a flattened array returned.  Where you can specifiy the separator.  $options['separator'].  The output is array(key1[$options['separator']key2 => value);
+ * @return string 	When parse is true, by default you get an unordered list returned, but you can also control each piece of html surrounding the values. Default is <ul><li>key1.key2 : value</li></ul>  																																					
+ */
+	public function keyAsPaths($data, $options = null, $index = null) {
+		$options['separator'] = empty($options['separator']) ? '.' : $options['separator'];
+		$options['parse'] = empty($options['parse']) ? false : true;
+		$options['start'] = empty($options['start']) ? '<ul>' : $options['start'];
+		$options['startItem'] = empty($options['startItem']) ? '<li>' : $options['startItem'];
+		$options['betweenItem'] = empty($options['betweenItem']) ? ' : ' : $options['betweenItem'];
+		$options['endItem'] = empty($options['endItem']) ? '</li>' : $options['endItem'];
+		$options['end'] = empty($options['end']) ? '</ul>' : $options['end'];
+		
+		if (is_array($data)) {
+			// then send it back
+			foreach ($data as $key => $value) {
+				if (!is_array($value)) {
+					$output[$index . $key] = $value;
+				} else {
+					$output[$index . $key . $options['separator']] = ZuhaSet::keyAsPaths($value, array('separator' => $options['separator']), $index . $key . $options['separator']);
+				}
+			}
+		} else {
+			$output[$index] = $data;
+		}
+		$return = array();
+	    array_walk_recursive($output, function($a, $b) use (&$return) { $return[$b] = $a; });
+		
+		if ($options['parse']) {
+			$parsed = $options['start'];
+			foreach ($return as $key => $value) {
+				$parsed .= $options['startItem'].$key.$options['betweenItem'].$value.$options['endItem'];
+			}
+			$parsed .= $options['end'];
+			return $parsed;
+		}
+				
+		return $return;
+    }
+
+
 }

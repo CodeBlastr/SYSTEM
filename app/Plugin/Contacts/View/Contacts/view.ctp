@@ -26,7 +26,7 @@
 <?php 		if (!empty($contact['ContactDetail'][0])) : 
 		       foreach ($contact['ContactDetail'] as $detail) : 
 ?>
-          <li><span class="metaDataLabel"><?php echo $detail['ContactDetailType']['name'] . ' : '; ?></span><span name="type" class="metaDataDetail"><?php echo $detail['value']; ?></span></li>
+          <li><span class="metaDataLabel"><?php echo $detail['contact_detail_type'] . ' : '; ?></span><span name="type" class="metaDataDetail"><?php echo $detail['value']; ?></span></li>
 <?php 
         	    endforeach;
      	    endif;
@@ -183,7 +183,7 @@ endif;
 			<?php echo $this->Form->create('ContactDetail', array('url'=> array('action'=>'add')));?>
 				<?php
 					echo $this->Form->input('contact_id', array('type' => 'hidden', 'value' => $contact['Contact']['id'])); 
-					echo $this->Form->input('contact_detail_type_id', array('label' => $this->Html->link(__('Detail Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTDETAIL', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Detail List')))); 
+					echo $this->Form->input('contact_detail_type', array('label' => $this->Html->link(__('Detail Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACT_DETAIL', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Detail List')))); 
 					echo $this->Form->input('value');
 				?>
 			<?php echo $this->Form->end('Submit');?>
@@ -192,7 +192,7 @@ endif;
 if ($contact['Contact']['ContactDetail']) : 
 ?>		
 			<?php foreach ($contact['Contact']['ContactDetail'] as $detail) : ?>
-			<li><strong><?php echo __($detail['ContactDetailType']['name'].': '); ?></strong><span name="detail" class="edit" id="<?php echo __($detail['id']); ?>"><?php echo $detail['value']; ?></span>
+			<li><strong><?php echo __($detail['ContactDetail']['contact_detail_type'].': '); ?></strong><span name="detail" class="edit" id="<?php echo __($detail['id']); ?>"><?php echo $detail['value']; ?></span>
 			<p class="action"><?php echo $this->Html->link(__('Delete', true), array('plugin' => 'contacts', 'controller' => 'contact_details', 'action' => 'delete', $detail['id']), null, 'Are you sure you want to delete "'.$detail['value']); ?></p></li>
 			<?php endforeach; ?>
 		

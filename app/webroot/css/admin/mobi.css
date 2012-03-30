@@ -23,7 +23,7 @@ html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pr
 	outline-width:0;
 	vertical-align: baseline;
 }
-ul {
+ul, ol {
 	margin: 0 0 0 2em;
 }
 :focus {
@@ -506,7 +506,7 @@ form div.input p {
 	font-size: 0.6em;
 }
 form div.input.checkbox {
-	padding: 3em 0.4em 0 0.4em;
+	padding: 2em 0.4em 0;
 }
 form div.richtext {
 	display: block;
@@ -604,7 +604,7 @@ option {
 input[type=checkbox] {
 	clear: left;
 	float: left;
-	margin: 0px 6px 7px 0px;
+	margin: 4px 6px 7px 0;
 	width: auto;
 	min-width: 0;
 }
@@ -1389,5 +1389,24 @@ body#users_login #userRegister, body#users_login .login.form {
 	margin: 0 auto;
 }
 	
-	
-
+.clear {
+	clear: both;
+}
+form label.error {
+	float: left;
+}
+form .editFormSpan {
+	position: relative;
+	display: block;
+	width: 1px;
+	height: 1px;
+}
+form .editFormSpan .editFormInput {
+	position: absolute;
+	top: 1.6em;
+	left: -1.4em;
+	text-indent: -3000px;
+	width: 23px;
+	height: 23px;
+	background: url('/img/admin/icons/icon-sprite.png') -581px -116px no-repeat;
+} 

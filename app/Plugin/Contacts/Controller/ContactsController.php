@@ -132,16 +132,14 @@ class ContactsController extends ContactsAppController {
 				'ContactSource',
 				'ContactIndustry',
 				'ContactRating',
-				'ContactDetail' => array(
-					'ContactDetailType',
-					),
+				'ContactDetail',
 				'ContactAddress' => array(
 					'ContactAddressType',
 					),
 				'Employer',
 				),
 			));
-		$contactDetailTypes = Zuha::enum('CONTACTDETAIL');
+		$contactDetailTypes = $this->Contact->ContactDetail->types();
 		$contactAddressTypes = Zuha::enum('CONTACTADDRESS');
 		$this->set(compact('contact', 'contactDetailTypes', 'contactAddressTypes', 'contactActivityTypes'));
 		
@@ -197,7 +195,7 @@ class ContactsController extends ContactsAppController {
 		$contactSources = Zuha::enum('CONTACTSOURCE');
 		$contactIndustries = Zuha::enum('CONTACTINDUSTRY');
 		$contactRatings = Zuha::enum('CONTACTRATING');
-		$contactDetailTypes = Zuha::enum('CONTACTDETAIL');
+		$contactDetailTypes = $this->Contact->ContactDetail->types();
 			
 		$this->set(compact('employers', 'people', 'contactDetailTypes', 'contactTypes', 'contactSources', 'contactIndustries', 'contactRatings'));
 		$this->set('page_title_for_layout', 'Add a '.$contactType);
