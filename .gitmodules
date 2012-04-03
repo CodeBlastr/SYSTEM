@@ -1,9 +1,9 @@
 [submodule "app/Plugin/Favorites"]
 	path = app/Plugin/Favorites
-	url = git@github.com:zuha/favorites.git
+	url = git@github.com:zuha/Favorites-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Records"]
 	path = app/Plugin/Records
-	url = git@github.com:zuha/directories.git
+	url = git@github.com:zuha/Directories-Zuha-Cakephp-Plugin.git
 [submodule "sites"]
 	path = sites
 	url = git@razorit.beanstalkapp.com:/razorit/zuha-sites.git
@@ -12,13 +12,13 @@
 	url = git@github.com:zuha/cakephp.git
 [submodule "app/Plugin/Twitter"]
 	path = app/Plugin/Twitter
-	url = git@github.com:zuha/twitter-cakephp-plugin.git
+	url = git@github.com:zuha/Twitter-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Tags"]
 	path = app/Plugin/Tags
-	url = git@github.com:zuha/tags-cakephp-plugin.git
+	url = git@github.com:zuha/Tags-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Polls"]
 	path = app/Plugin/Polls
-	url = git@github.com:zuha/polls-cakephp-plugin.git
+	url = git@github.com:zuha/Polls-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Forms"]
 	path = app/Plugin/Forms
-	url = git@github.com:zuha/forms-zuha-cakephp-plugin.git
+	url = git@github.com:zuha/Custom-Forms-Zuha-Cakephp-Plugin.git
