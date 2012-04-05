@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP version 5.3+
+ * PHP version 5.3
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
