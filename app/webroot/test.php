@@ -38,6 +38,21 @@ ini_set('display_errors', 1);
 	if (!defined('ROOT')) {
 		define('ROOT', dirname(dirname(dirname(__FILE__))));
 	}
+    
+/**
+* For multi site setups 
+* Define which the urls point to which sites directories in the file /sites/bootstrap.php
+*/
+	if (file_exists(ROOT . DS . 'sites' . DS . 'bootstrap.php')) {
+		require_once(ROOT . DS . 'sites' . DS . 'bootstrap.php');
+	} 
+
+/** 
+ * Redirect to install if zuha isn't installed yet.
+ */
+	if (!defined('SITE_DIR') && basename($_SERVER['REQUEST_URI']) != 'install' && basename($_SERVER['REQUEST_URI']) != 'site') {
+		header('Location: /install/site/');
+	} 
 /**
  * The actual directory name for the "app".
  *
@@ -45,6 +60,29 @@ ini_set('display_errors', 1);
 	if (!defined('APP_DIR')) {
 		define('APP_DIR', basename(dirname(dirname(__FILE__))));
 	}
+	
+/**
+ * Zuha updated tmp directory to support sites directory
+ */
+	if (!defined('TMP')) {
+		if (defined('SITE_DIR')) {
+ 			define('TMP', ROOT . DS . SITE_DIR . DS . 'tmp' . DS);
+		} else {
+ 			define('TMP', ROOT . DS . APP_DIR . DS . 'tmp' . DS);
+		}
+	}
+	
+/**
+ * Zuha added constant because CakePHP 2.0 removed it
+ *
+ */
+	if (!defined('CONFIGS')) :
+		if (defined('SITE_DIR')) : 
+			define('CONFIGS', ROOT .DS . SITE_DIR . DS . 'Config' . DS);
+		else : 
+			define('CONFIGS', ROOT .DS . APP_DIR . DS . 'Config' . DS);
+		endif;
+	endif;
 
 /**
  * The absolute path to the "Cake" directory, WITHOUT a trailing DS.
