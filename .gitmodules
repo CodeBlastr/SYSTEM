@@ -25,3 +25,6 @@
 [submodule "app/Plugin/Catalogs"]
 	path = app/Plugin/Catalogs
 	url = git@github.com:zuha/Catalogs-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Orders"]
+	path = app/Plugin/Orders
+	url = git@github.com:zuha/Ecommerce-Zuha-Cakephp-Plugin.git
