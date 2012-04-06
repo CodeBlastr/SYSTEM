@@ -22,3 +22,6 @@
 [submodule "app/Plugin/Forms"]
 	path = app/Plugin/Forms
 	url = git@github.com:zuha/Custom-Forms-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Catalogs"]
+	path = app/Plugin/Catalogs
+	url = git@github.com:zuha/Catalogs-Zuha-Cakephp-Plugin.git
