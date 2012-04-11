@@ -17,6 +17,7 @@
 		echo $this->Form->input('User.last_name');
 		echo $this->Form->input('User.username');
 		echo $this->Form->input('User.email');
+		echo $this->Form->input('User.credit_total');
 		echo $this->Form->input('User.user_role_id');
 	}
 	echo $this->Form->end('Submit');
