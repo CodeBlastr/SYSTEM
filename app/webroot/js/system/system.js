@@ -440,24 +440,22 @@ jQuery.cookie = function(name, value, options) {
     }
 };
 
-/* HTML 5 Placeholder Attribute for Older Browsers */
-$('[placeholder]').focus(function() {
-  var input = $(this);
-  if (input.val() == input.attr('placeholder')) {
-    input.val('');
-    input.removeClass('placeholder');
-  }
-}).blur(function() {
-  var input = $(this);
-  if (input.val() == '' || input.val() == input.attr('placeholder')) {
-    input.addClass('placeholder');
-    input.val(input.attr('placeholder'));
-  }
-}).blur().parents('form').submit(function() {
-  $(this).find('[placeholder]').each(function() {
-    var input = $(this);
-    if (input.val() == input.attr('placeholder')) {
-      input.val('');
-    }
-  })
+$(function() {
+	if(!$.support.placeholder) { 
+		var active = document.activeElement;
+		$(':text, textarea').focus(function () {
+			if ($(this).attr('placeholder') != '' && $(this).val() == $(this).attr('placeholder')) {
+				$(this).val('').removeClass('hasPlaceholder');
+			}
+		}).blur(function () {
+			if ($(this).attr('placeholder') != '' && ($(this).val() == '' || $(this).val() == $(this).attr('placeholder'))) {
+				$(this).val($(this).attr('placeholder')).addClass('hasPlaceholder');
+			}
+		});
+		$(':text, textarea').blur();
+		$(active).focus();
+		$('form').submit(function () {
+			$(this).find('.hasPlaceholder').each(function() { $(this).val(''); });
+		});
+	}
 });
