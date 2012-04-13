@@ -1,4 +1,7 @@
 <?php
+
+App::uses('ContactsAppModel', 'Contacts.Model');
+
 class Contact extends ContactsAppModel {
 
 /**
@@ -284,12 +287,14 @@ class Contact extends ContactsAppModel {
 			unset($data['Employer']);
 			$data['Employer']['Employer'] = $mergedEmployers;
 		endif;
-				
+
+		if (!empty($data['User'])) :
 		foreach ($data['User'] as $key => $userData) :
 			if (is_array($userData)) :
 				$data['User'][$key] = implode(',', $userData);
 			endif;
 		endforeach;
+		endif;
 		
 		//add contact name if its empty
 		if (empty($data['Contact']['name'])) :
