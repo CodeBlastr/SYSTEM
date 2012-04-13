@@ -167,19 +167,21 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 
 	function saveCKEData() {
         for (i in CKEDITOR.instances) {
-            var editor = CKEDITOR.instances[i];
-            var pageid = $("#cke_modalEditor").attr('pageid');
-            $.ajax({
-	            async: true,
-                type: 'post',
-                data: {pageData: editor.getData()},
-                url: '/webpages/webpages/savePage/' + pageid,
-                success: function (data, textStatus, XMLHttpRequest) {
-    	            alert($.parseJSON(data).msg);
-				}
-			});
-        	editor.resetDirty();
-        }
+			if (i != 'WebpageContent') { // check to make sure we're not on /webpages/edit/X
+	            var editor = CKEDITOR.instances[i];
+	            var pageid = $("#cke_modalEditor").attr('pageid');
+				$.ajax({
+		            async: true,
+	                type: 'post',
+	                data: {pageData: editor.getData()},
+	                url: '/webpages/webpages/savePage/' + pageid,
+	                success: function (data, textStatus, XMLHttpRequest) {
+	    	            alert($.parseJSON(data).msg);
+					}
+				});
+	        	editor.resetDirty();
+	        }
+		}
 		return true;
 	}
 
