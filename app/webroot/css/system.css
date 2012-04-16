@@ -272,3 +272,17 @@ input[type=radio], input[type=checkbox] {
 	padding: 0;
 	margin: 0;
 }
+
+.ajaxLoader {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 9999999999;
+	padding: 3em;
+	background-color:rgba(255,255,255,0.8);
+	border: 1px solid #999;
+	border-radius: 1em;
+	margin-top: -5em;
+	margin-left: -6em;
+	display: none;
+}
