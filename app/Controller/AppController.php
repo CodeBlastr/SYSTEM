@@ -494,7 +494,6 @@ class AppController extends Controller {
  * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
  */
 	public function _siteTemplate() {
-		$checkUrl = urldecode(ltrim($this->request->here, '/'));
 		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
 			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
@@ -503,7 +502,6 @@ class AppController extends Controller {
 				# this elseif checks to see if the user role has a specific view file
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
 				unset($this->request->params['prefix']);
-				$this->request->query['url'] = str_replace('admin/', '', $this->request->query['url']);
 				$this->request->url = str_replace('admin/', '', $this->request->url);
 				$this->request->here = str_replace('/admin', '', $this->request->here);
 				$Dispatcher = new Dispatcher();
@@ -514,16 +512,16 @@ class AppController extends Controller {
 				$this->redirect($this->referer());
 			endif;
 		} else if (!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) {
-			foreach (App::path('views') as $path) :
+			foreach (App::path('views') as $path) {
 				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'View', DS.'Plugin'.DS.ucfirst($this->request->params['plugin']).DS.'View', $path) : $path;
-			endforeach;
-			foreach ($paths as $path) :
-				if (file_exists($path.CakeSession::read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) :
+			} // end app::path loop
+			foreach ($paths as $path) {
+				if (file_exists($path.CakeSession::read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) {
 					$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.ucfirst($this->request->params['controller']);
-				endif;
-			endforeach;
+				} // end view prefix loop
+			} // end paths loop
 			$this->layout = 'default';
-		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax') && (!empty($this->request->query['url']) && $this->request->query['url'] == $checkUrl)) {
+		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax')) {
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		}
@@ -540,12 +538,14 @@ class AppController extends Controller {
 		if (defined('__APP_TEMPLATES')) :
 			$settings = unserialize(__APP_TEMPLATES);
 			$i = 0;
-			if (!empty($settings['template'])) : foreach ($settings['template'] as $setting) :
-				$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
-				$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
-				$templates[$i]['urls'] = $templates[$i]['urls'] == '""' ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
-				$i++;
-			endforeach; endif;
+			if (!empty($settings['template'])) { 
+				foreach ($settings['template'] as $setting) {
+					$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
+					$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
+					$templates[$i]['urls'] = $templates[$i]['urls'] == '""' ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
+					$i++;
+				}
+			}
 
 			if (!empty($templates)) : foreach ($templates as $key => $template) :
 				// check urls first so that we don't accidentally use a default template before a template set for this url.
@@ -652,26 +652,25 @@ class AppController extends Controller {
  */
 	private function _urlTemplate($data) {
 		// check if the url being requested matches any template settings for specific urls
-		if (!empty($data['urls'])) :
+		if (!empty($data['urls'])) {
 			$i=0;
-			foreach ($data['urls'] as $url) :
+			foreach ($data['urls'] as $url) {
 				$urlString = str_replace('/', '\/', trim($url));
 				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
 				$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
 				$url = $this->request->url;
 				$urlCompare = strpos($url, '/') === 0 ? substr($url, 1) : $url;
-				if (preg_match($urlRegEx, $urlCompare)) :
+				if (preg_match($urlRegEx, $urlCompare)) {
 					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateId'];
-				endif;
+				}
 			$i++;
-			endforeach;
-		endif;
-
-		if (!empty($templateId)) :
+			}
+		}
+		if (!empty($templateId)) {
 			return $templateId;
-		else :
+		} else {
 			return null;
-		endif;
+		}
 	}
 
 
