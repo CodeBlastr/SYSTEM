@@ -32,7 +32,7 @@ class AppModel extends Model {
  * Manipulate data before it is saved.
  * @todo    Move this record level access stuff to a behavior
  */
-	public function beforeSave(&$model) {
+	public function beforeSave($model) {
 	    # Start Record Level Access Save #
 	    // If the model needs Record Level Access add an Aco
 	    if (!empty($this->data['RecordLevelAccess']['UserRole'])) {
