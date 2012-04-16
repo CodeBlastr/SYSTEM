@@ -5,7 +5,7 @@ App::uses('InstallController', 'Controller');
 /**
  * TestConditions *
  */
-class TestInstall extends InstallController {
+class TestInstall extends CakeTestModel {
 /**
  * Auto render
  *
@@ -45,7 +45,7 @@ class InstallTestCase extends ControllerTestCase {
 
 	public function testIndex() {
    		$result = $this->testAction('/install', array('return' => 'vars'));
-		debug($result['unloadedPlugins']);
+		$this->assertTrue(!empty($result['page_title_for_layout']));
 	}
 	
 	public function testPluginRedirect() {
