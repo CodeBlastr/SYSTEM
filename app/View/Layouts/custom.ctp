@@ -191,6 +191,7 @@ echo(base64_decode('PGEgc3R5bGU9ImRpc3BsYXk6IG5vbmU7IiB0aXRsZT0iV2ViIERlc2lnbiAm
 <?php # echo $this->element("ajax-login"); ?> 
 <?php echo $this->element('sql_dump');  ?> 
 <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?>
+<div class="ajaxLoader"><img src="/img/ajax-loader.gif" /></div>
 </body>
 <?php  if(!empty($this->Facebook)) {echo $this->Facebook->init(); } ?>
 </html>
