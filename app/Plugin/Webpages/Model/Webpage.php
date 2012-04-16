@@ -46,31 +46,17 @@ class Webpage extends WebpagesAppModel {
 	
     public $filterArgs = array(
         array('name' => 'name', 'type' => 'like'),
-        #array('name' => 'search', 'type' => 'like', 'field' => 'Webpage.description'),
-        #array('name' => 'range', 'type' => 'expression', 'method' => 'makeRangeCondition', 'field' => 'Webpage.views BETWEEN ? AND ?'),
-        #array('name' => 'username', 'type' => 'like', 'field' => 'User.username'),
-        #array('name' => 'tags', 'type' => 'subquery', 'method' => 'findByTags', 'field' => 'Article.id'),
         array('name' => 'filter', 'type' => 'query', 'method' => 'orConditions'),
     );
-
-/* Part of the search plugin testing.  Apparently you can use functions to conduct some search customization like the commented out versions above.  Find info here : https://github.com/CakeDC/search
-    function findByTags($data = array()) {
-        $this->Tagged->Behaviors->attach('Containable', array('autoFields' => false));
-        $this->Tagged->Behaviors->attach('Search.Searchable');
-        $query = $this->Tagged->getQuery('all', array(
-            'conditions' => array('Tag.name'  => $data['tags']),
-            'fields' => array('foreign_key'),
-            'contain' => array('Tag')
-        ));
-        return $query;
-    }
-*/
 	
 	public function __construct($id = false, $table = null, $ds = null) {
-		parent::__construct($id, $table, $ds);
-		if (in_array('Search', CakePlugin::loaded())) : 
+		if (in_array('Search', CakePlugin::loaded())) { 
 			$this->actsAs[] = 'Search.Searchable';
-		endif;
+		}
+		if (in_array('Drafts', CakePlugin::loaded())) {
+			$this->actsAs['Drafts.Draftable'] = array('conditions' => array('type' => 'page_content'));
+		}
+		parent::__construct($id, $table, $ds);
 	}
 
 	public function afterDelete() {
