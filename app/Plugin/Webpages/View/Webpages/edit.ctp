@@ -5,11 +5,11 @@
     <?php 
 		echo $this->Form->input('Webpage.id');
 		echo $this->Form->input('Alias.id');
-		echo $this->Form->input('Alias.value', array('type' => 'hidden', 'value' => $this->Form->value('Webpage.id')));
+		echo $this->Form->hidden('Alias.value', array('value' => $this->Form->value('Webpage.id')));
+		echo $this->Form->hidden('Alias.plugin', array('value' => 'webpages'));
+		echo $this->Form->hidden('Alias.controller', array('value' => 'webpages'));
+		echo $this->Form->hidden('Alias.action', array('value' => 'view'));
 		echo $this->Form->input('Alias.name', array('label' => false, 'placeholder' => 'Unique Permanent SEO Url Address'));
-		echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => 'webpages'));
-		echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => 'webpages'));
-		echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => 'view'));
 		echo $this->Form->input('Webpage.title', array('label' => false, 'placeholder' => 'SEO Title'));
 		echo $this->Form->input('Webpage.keywords', array('label' => false, 'placeholder' => 'SEO Keywords'));
 		echo $this->Form->input('Webpage.description', array('label' => false, 'placeholder' => 'SEO Description'));
@@ -24,22 +24,24 @@
   <fieldset>
     <legend> <?php echo __('Add Webpage');?> </legend>
     <?php
-		echo $this->Form->input('type', array('default' => 'page_content'));
-	?>
+		echo $this->Form->input('type', array('default' => 'page_content')); ?>
     <fieldset>
       <legend> <?php echo __('Template Settings'); ?> </legend>
       <?php
-		echo $this->Form->input('is_default', array('type' => 'checkbox'));
-		echo $this->Form->input('template_urls', array('type' => 'textarea', 'value' => $templateUrls, 'after' => ' <br>One url per line. (ex. /tickets/tickets/view/*)'));
-		echo $this->Form->input('user_roles', array('type' => 'select', 'options' => $userRoles, 'multiple' => 'checkbox'));
-	?>
+	  echo $this->Form->input('is_default', array('type' => 'checkbox'));
+	  echo $this->Form->input('template_urls', array('type' => 'textarea', 'value' => $templateUrls, 'after' => ' <br>One url per line. (ex. /tickets/tickets/view/*)'));
+	  echo $this->Form->input('user_roles', array('type' => 'select', 'options' => $userRoles, 'multiple' => 'checkbox'));
+	  ?>
     </fieldset>
     <?php
-		echo $this->Form->input('Webpage.name');
-		echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'ckeSettings' => $ckeSettings));
-	?>
+	echo $this->Form->input('Webpage.name');
+	echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'ckeSettings' => $ckeSettings));	?>
   </fieldset>
-<?php echo $this->Form->end('Save Webpage');?>
+<?php 
+if (in_array('Drafts', CakePlugin::loaded())) { 
+	echo $this->Form->input('Webpage.draft', array('type' => 'checkbox', 'value' => 0, 'checked' => 'checked'));
+}
+echo $this->Form->end('Publish Update'); ?>
 </div>
 
 <?php
@@ -52,10 +54,10 @@ $this->set('context_menu', array('menus' => array(
 			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?'), $this->Form->value('Webpage.id'))),
 				 )
 			)
-	  )));
-?>
+	  ))); ?>
 <script type="text/javascript">
 $(function() {
+		   
 	var webpageType = $("#WebpageType").val();
 	$("#WebpageIsDefault").parent().parent().hide();
 	if (webpageType == 'template' || webpageType == 'element') {
@@ -95,5 +97,59 @@ $(function() {
 			$("#WebpageTemplateUrls").parent().show();
 		}
 	});
+	
+	
+<?php if (in_array('Drafts', CakePlugin::loaded())) {  ?>
+	updateSubmitButton();
+	var tid = setInterval(timedDraftSubmit, 30000);
+
+	$("#WebpageDraft").change(function() {
+		updateSubmitButton();
+	});
+	
+	$("#WebpageEditForm").submit(function() {
+		if ($("#WebpageDraft").is(":checked")) {
+			ajaxDraftSubmit(true) 
+			return false;
+		} else {
+			return true;
+		}
+	});
+<?php } ?>
+		
 });
+
+
+function updateSubmitButton() {
+	if ($("#WebpageDraft").is(":checked")) {
+		$(".submit input").attr("value", "Save Draft & Preview");
+	} else {
+		$(".submit input").attr("value", "Publish Update");
+	}
+}
+
+function timedDraftSubmit() {
+	if ($("#WebpageDraft").is(":checked")) {
+		ajaxDraftSubmit(false)
+	}
+}
+	
+
+function ajaxDraftSubmit(openwindow) {
+	$(".ajaxLoader").show("slow");
+	$.ajax({
+		type: "POST",
+		data: $('#WebpageEditForm').serialize(),
+		url: "/webpages/webpages/edit.json" ,
+		dataType: "text",
+		success:function(data){
+			if (openwindow) {
+				window.open('/webpages/webpages/view/<?php echo $this->request->data['Webpage']['id']; ?>/draft:1', 'preview')
+			}
+			$(".ajaxLoader").hide("slow");
+		}
+	});  			
+}
+
+
 </script>

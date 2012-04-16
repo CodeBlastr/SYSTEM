@@ -33,6 +33,10 @@ class WebpagesController extends WebpagesAppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->passedArgs['comment_view_type'] = 'flat';
+		
+		if (in_array('Drafts', CakePlugin::loaded()) && !empty($this->request->params['named']['draft'])) { 
+			$this->Webpage->Behaviors->attach('Drafts.Draftable', array('returnVersion' => $this->request->params['named']['draft']));
+		}
 	}
 
 	public function index() {

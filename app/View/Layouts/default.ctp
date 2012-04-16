@@ -39,5 +39,6 @@ endif; ?>
     </div>
   </div>
   <?php echo $this->Element('admin/footer_nav'); ?> <?php echo $this->Element('sql_dump');  ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> </div>
+<div class="ajaxLoader"><img src="/img/ajax-loader.gif" /></div>
 </body>
 </html>
