@@ -47,7 +47,7 @@ class AppErrorController extends AppController {
 			$request->here = substr($request->here, 1);
 		}
 		$Alias = ClassRegistry::init('Alias');
-		$alias = $Alias->find('first', array('conditions' => array('name' => str_replace('/', '', urldecode($request->here)))));
+		$alias = $Alias->find('first', array('conditions' => array('name' => trim(urldecode($request->here), "/"))));
 		if(!empty($alias)) {
 			$request->params['controller'] = $alias['Alias']['controller'];
 			$request->params['plugin'] = $alias['Alias']['plugin'];
