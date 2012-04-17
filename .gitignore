@@ -4,6 +4,7 @@
 /app/tmp/cache/models/cake*
 /app/tmp/cache/persistent/cake*
 /app/tmp/cache/views/cake*
+/app/tmp/cache/test*
 /app/tmp/cache/views/element*
 /app/tmp/cache/cake*
 /app/tmp/testscake*
