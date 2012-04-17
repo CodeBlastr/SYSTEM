@@ -6,13 +6,15 @@ App::uses('Enumeration', 'Model');
  * Enumeration Test Case
  *
  */
-class EnumerationTestCase extends CakeTestCase {
+class EnumerationModelTestCase extends CakeTestCase {
 /**
  * Fixtures
  *
  * @var array
  */
-	public $fixtures = array('app.enumeration');
+	public $fixtures = array(
+		'app.enumeration'
+		);
 
 /**
  * setUp method

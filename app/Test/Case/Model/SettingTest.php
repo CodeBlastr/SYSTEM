@@ -6,13 +6,18 @@ App::uses('Setting', 'Model');
  * Setting Test Case
  *
  */
-class SettingTestCase extends CakeTestCase {
+class SettingModelTestCase extends CakeTestCase {
 /**
  * Fixtures
  *
  * @var array
  */
-	public $fixtures = array('app.setting');
+	public $fixtures = array(
+		'app.setting',
+		'app.aco',
+		'app.aro',
+		'app.aros_aco',
+		);
 
 /**
  * setUp method

@@ -23,7 +23,6 @@ class InstallController extends AppController {
 		parent::__construct($request, $response);
 		
 		$this->_handleSitesDirectory();
-		
 		if ($request->controller == 'install' || $request->action == 'site') {
 			Configure::write('Session', array(
 				'defaults' => 'php',

@@ -925,7 +925,7 @@ class AppController extends Controller {
 	public function isAuthorized($user) {
 		# this allows all users in the administrators group access to everything
 		# using user_role_id is deprecated and will be removed in future versions
-		if ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1) { return true; }
+		if (!empty($user['view_prefix']) && ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1)) { return true; }
 		# check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
