@@ -3,7 +3,7 @@
 App::uses('InstallController', 'Controller');
 
 /**
- * TestConditions *
+ * TestInstall *
  */
 class TestInstall extends CakeTestModel {
 /**
@@ -27,10 +27,29 @@ class TestInstall extends CakeTestModel {
 }
 
 /**
+ * TestInstall *
+ */
+class Request {
+	
+	public $controller = 'install';
+	public $action = 'site';
+}
+
+/**
  * Conditions Test Case
  *
  */
-class InstallTestCase extends ControllerTestCase {
+class InstallControllerTestCase extends ControllerTestCase {
+/**
+ * Fixtures
+ *
+ * @var array
+ */
+	public $fixtures = array(
+		'app.aco',
+		'app.aro',
+		'app.aros_aco',
+		);
 /**
  * setUp method
  *
@@ -40,7 +59,9 @@ class InstallTestCase extends ControllerTestCase {
 		parent::setUp();
 
 		$this->Install = new TestInstall();
-		#$this->Install->constructClasses();
+		$request = new Request();
+		$this->InstallController = new InstallController($request);
+		//$this->Install->constructClasses();
 	}
 
 	public function testIndex() {
