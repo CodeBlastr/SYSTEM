@@ -3,7 +3,7 @@ A collection of ever expanding functionality to rapidly build new sites.
 
 Including content management, project management, invoicing, customer relationship management (CRM), ecommerce, multi-user blogs, social networking, video recording, and even more.
 
-Built on an MVC framework (CakePHP).
+Built on an MVC framework (CakePHP), by a CakePHP contributor.
 
 ## Installation
 
