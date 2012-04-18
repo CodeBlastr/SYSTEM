@@ -28,7 +28,7 @@ Built on an MVC framework (CakePHP).
 
 ## Versions
 
-Alpha
+Beta
 
 ## License
 
