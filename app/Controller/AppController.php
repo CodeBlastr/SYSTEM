@@ -27,7 +27,7 @@ class AppController extends Controller {
 	public $userId = '';
     public $uses = array('Condition');
 	public $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html');
-	public $components = array('Auth', 'Session', 'RequestHandler', 'RegisterCallbacks'  /*, 'Security' Desktop Login Stops Working When This is On*/);
+	public $components = array('Auth', 'Session', 'RequestHandler',  /*'RegisterCallbacks' , 'Security' Desktop Login Stops Working When This is On*/);
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
@@ -84,8 +84,6 @@ class AppController extends Controller {
 		# End Condition Check #
 		# End DO NOT DELETE #
 		$this->_configAuth();
-		$this->_handleJson();
-
 		/**
 		 * @todo 	create this function, so that conditions can fire on the view of records
 				$this->checkConditions($plugin, $controller, $action, $extraValues);
@@ -132,32 +130,11 @@ class AppController extends Controller {
 		$this->set('userRoleId', $this->userRoleId);
 	}
 	
-
-/**
- * @todo convert to a full REST application and this might not be necessary
- */
+	
     public function beforeRender() {
-		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
-	}
-	
-	
-	public function afterFilter() {
-		$this->_handleJson(false);
-	}
-	
-	private function _handleJson($beforeFilter = true) {
-		if (!empty($beforeFilter)) {
-			# Support for json file types when using json extensions
-			#$this->RequestHandler->setContent('json', 'text/x-json');
-			
-			if ($this->request->ext == 'json') {
-				$this->autoRender = false;
-			}
-		} else {
-			if ($this->request->ext == 'json') {
-				$this->render(false, 'default');
-			}
-		}
+		parent::beforeRender();
+		$this->set('referer', 'test'); // used for back button links, could be useful for breadcrumbs possibly
+		$this->set('_serialize', array_keys($this->viewVars));
 	}
 
 
