@@ -38,6 +38,9 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 		$suite->addTestFile($pluginsPath . 'Drafts' . $modelPath . DS . 'DraftTest.php');
 		$suite->addTestFile($pluginsPath . 'Drafts' . $behaviorPath  . DS . 'DraftableBehaviorTest.php');
 		
+		// Forms Plugin
+		$suite->addTestFile($pluginsPath . 'Forms' . $controllerPath . DS . 'FormsControllerTest.php');
+		
 		return $suite;
 	}
 }
