@@ -132,8 +132,9 @@ class AppController extends Controller {
 	
 	
     public function beforeRender() {
+		parent::beforeRender();
 		$this->set('referer', 'test'); // used for back button links, could be useful for breadcrumbs possibly
-		$this->jsonSerialize = true; // used in View/JsonView to auto serialize
+		$this->set('_serialize', array_keys($this->viewVars));
 	}
 
 
