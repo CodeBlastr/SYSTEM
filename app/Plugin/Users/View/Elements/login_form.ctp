@@ -40,10 +40,13 @@
 	$inputClass = !empty($inputClass) ? $inputClass : 'text';
 	$submitDiv = !empty($submitDiv) ? $submitDiv : false;
 	$checkboxClass = !empty($checkboxClass) ? $checkboxClass : 'checkbox';
+	$remember = isset($remember) ? $remember : true;
 	$rememberLabel = !empty($rememberLabel) ? $rememberLabel : 'Keep me logged in';
 	$forgotPasswordTitle = !empty($forgotPasswordTitle) ? $forgotPasswordTitle : 'Forgot Password?';
 	$loggedElement = (isset($loggedElement) ? (!empty($loggedElement) ? $loggedElement : 'login_form_logged') : 'login_form_logged');
 	$textWelcome = !empty($textWelcome) ? $textWelcome : 'Welcome : ';
+	$linkRegisterText = !empty($linkRegisterText) ? $linkRegisterText : false;
+	$linkRegisterUrl = !empty($linkRegisterUrl) ? $linkRegisterUrl : false;
 	$linkClass = !empty($linkClass) ? $linkClass : 'loginLink';
 	$linkIdUser = !empty($linkIdUser) ? $linkIdUser : 'useridLink';
 	$textSeparator = !empty($textSeparator) ? $textSeparator : '-';
@@ -67,18 +70,27 @@
 			<div class="<?php echo $columnClass?>">
 				<div class="<?php echo $holderClass?>">
 					<?php echo $this->Form->input('username', array('label'=>$usernameLabel, 'class'=>$inputClass, 'div'=>$rowClass)); ?>
+                    <?php if (!empty($remember)) { ?>
 					<div class="<?php echo $rowClass; ?>">
 						<?php echo $this->Form->input('remember_me', array('label'=>false, 'class'=>$checkboxClass, 'div'=>false, 'type'=>'checkbox')); ?>
 						<label for="UserRememberMe"><?php echo $rememberLabel; ?></label>
 					</div>
+                    <?php } ?>
 				</div>
 			</div>
 			<div class="<?php echo $columnClass?>">
 				<div class="<?php echo $holderClass?>">			
 					<?php echo $this->Form->input('password', array('label'=>$passwordLabel, 'class'=>$inputClass, 'div'=>$rowClass)); ?>
+                    
 					<div class="<?php echo $rowClass; ?>">
 						<?php echo $this->Html->link($forgotPasswordTitle, array('plugin' => 'users', 'controller' => 'users', 'action' => 'forgot_password')); ?>
 					</div>
+                    
+                    <?php if (!empty($linkRegisterText)) { ?>
+					<div class="<?php echo $rowClass; ?>">
+						<?php echo $this->Html->link($linkRegisterText, $linkRegisterUrl); ?>
+					</div>
+                    <?php } ?>
 				</div>
 			</div>
 			<?php echo $this->Form->submit($submitLabel, array('class'=>$submitClass, 'div'=>$submitDiv)); ?>
