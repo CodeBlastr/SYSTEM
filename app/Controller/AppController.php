@@ -102,7 +102,7 @@ class AppController extends Controller {
 			# this first one checks record level if record level exists
 			# which it can exist and guests could still have access
 			if ($this->Acl->check($aro, $aco)) {
-				$this->Auth->allow('*');
+				$this->Auth->allow();
 			}
 		}
 
@@ -365,10 +365,11 @@ class AppController extends Controller {
  *
  * @param string 	model name
  * @param int 		$id
+ * @param array 	use $options['redirect'] to override default redirect (referer
  * @return string
  * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
  */
-	public function __delete($model = null, $id = null) {
+	public function __delete($model = null, $id = null, $options = null) {
 		// set default class & message for setFlash
 		$class = 'flash_bad';
 		$msg   = 'Invalid Id';
@@ -401,7 +402,11 @@ class AppController extends Controller {
 
 		// set flash message & redirect
 		$this->Session->setFlash(__($msg, true));
-		$this->redirect(Controller::$this->referer());
+		if (!empty($options['redirect'])) {
+			$this->redirect($options['redirect']);
+		} else {
+			$this->redirect(Controller::$this->referer());
+		}
 	}
 
 

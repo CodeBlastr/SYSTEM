@@ -79,8 +79,8 @@ class PrivilegesAppController extends AppController {
 		#parent::__construct();
 		$collection = new ComponentCollection();
 		$this->Acl = new AclComponent($collection);
-		$controller = null;
-		$this->Acl->startup($controller);
+		//$controller = null;
+		$this->Acl->startup($this);
 		$this->Aco = $this->Acl->Aco;
 		
 		$lastPlugins = CakeSession::read('Privileges.lastPlugin');
