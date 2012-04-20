@@ -32,7 +32,7 @@ class AppController extends Controller {
 	public $theme = 'Default';
 	public $userRoleId = 5;
 	public $paginate = array('page' => 1, 'limit' => 25, 'maxLimit' => 100, 'paramType' => 'named');
-	
+
 /**
  * @todo update this so that it uses the full list of actual user roles
  */
@@ -41,8 +41,8 @@ class AppController extends Controller {
 	public $params = array();
 	public $templateId = '';
 	public $pageTitleForLayout;
-	
-	
+
+
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
 		$this->_getComponents();
@@ -91,7 +91,7 @@ class AppController extends Controller {
 
 		/**
 		 * Implemented for allowing guests access through db acl control
-		 */ #$this->Auth->allow('*');
+		 */ #$this->Auth->allow();
 		$this->userId = $this->Session->read('Auth.User.id');
 		$allowed = array_search($this->request->params['action'], $this->Auth->allowedActions);
 		if ($allowed === 0 || $allowed > 0 ) {
@@ -116,12 +116,12 @@ class AppController extends Controller {
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
 
 		$this->_siteTemplate();
-		
+
 		/**
 		 * Check whether the site is sync'd up
 		 */
-		#$this->_siteStatus();	
-		
+		#$this->_siteStatus();
+
 		/**
 		 * Automatic view vars available (this location is pretty important, so that other beforeFilter functions run first)
 		 */
@@ -129,8 +129,8 @@ class AppController extends Controller {
 		$this->set('title_for_layout', $this->_titleForLayout());
 		$this->set('userRoleId', $this->userRoleId);
 	}
-	
-	
+
+
     public function beforeRender() {
 		parent::beforeRender();
 		$this->set('referer', 'test'); // used for back button links, could be useful for breadcrumbs possibly
@@ -152,9 +152,9 @@ class AppController extends Controller {
 		return parent::paginate($object, $scope, $whitelist);
 	}
 
-	
+
 /**
- * Handles when a page is being called after the context_sort element is used. 
+ * Handles when a page is being called after the context_sort element is used.
  * This element will call the same page it is sitting on, and add a get variable to the end
  * We want to take that get variable and redirect to the current page with those variables on the end.
  *
@@ -168,11 +168,11 @@ class AppController extends Controller {
 			$this->redirect($this->request->query['contextSorter']);
 		}
 	}
-	
+
 /**
  * Handles auto filtering using named parameters on index pages.
  * Decides whether there are multiple filters or one.
- * 
+ *
  * @param void
  * @return void
  */
@@ -180,7 +180,7 @@ class AppController extends Controller {
 		if (empty($this->request->params['named']['filter'])) {
 			$this->__handlePaginatorArchivable($object);
 		}
-		
+
 		#filter by database field full value
 		$filter = !empty($this->request->params['named']['filter']) ? $this->request->params['named']['filter'] : null;
 		if (!empty($filter) && is_array($filter)) {
@@ -191,7 +191,7 @@ class AppController extends Controller {
 		} else if (!empty($filter)) {
 			$this->__handlePaginatorFiltering(urldecode($filter), $object);
 		}
-		
+
 		#filter by starting letter of database field
 		$starter = !empty($this->request->params['named']['start']) ? $this->request->params['named']['start'] : null;
 		if (!empty($starter) && is_array($starter)) {
@@ -219,21 +219,21 @@ class AppController extends Controller {
 			$Object = $this->$ModelName->$object;
 		} else if (@$this->$ModelName->name) {
 			$Object = $this->$ModelName;
-		} 
-		
+		}
+
 		if (@$Object->name) {
 			$options['alias'] = !empty($object) ? $object : $ModelName;
 			$options['schema'] = $Object->schema();
 			$options['fieldName'] = $this->__paginatorFieldName($field, $options['schema']);
 			$options['fieldValue'] = substr($field, strpos($field, ':') + 1); // returns 'incart' from 'status:incart'
 			$options['fieldValue'] = $options['fieldValue'] == 'null' ? null : $options['fieldValue'];  // handle null as a value
-		
+
 			return $options;
 		} else {
 			return null;
-		}			
+		}
 	}
-	
+
 /**
  * Removed archived records from paginated lists by default.
  *
@@ -280,19 +280,19 @@ class AppController extends Controller {
  */
 	private function __handlePaginatorStarter($startField, $object) {
 		$options = $this->_getPaginatorVars($object, $startField);
-		
+
 		if (!empty($options['fieldName'])) {
 			$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' LIKE'] = $options['fieldValue'] . '%';
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
 			# no matching field don't filter anything
-			if (Configure::read('debug') > 0) {	
+			if (Configure::read('debug') > 0) {
 				$this->Session->setFlash(__('Invalid starter filter attempted.'));
 			}
 		}
 	}
-	
-	
+
+
 /**
  * Get the field name with if its close
  *
@@ -301,25 +301,25 @@ class AppController extends Controller {
  */
 	private function __paginatorFieldName($string, $modelFields) {
 		$fieldName = Inflector::underscore(substr($string, 0, strpos($string, ':'))); // standardizes various name versions
-		
+
 		if (!empty($modelFields[$fieldName])) {
-			# match exact field name (no change necessary) 
+			# match exact field name (no change necessary)
 			return $fieldName;
 		} else if (!empty($modelFields[$fieldName.'_id'])) {
 			# match something_id naming convention
 			return $fieldName.'_id';
-		} else if (!empty($modelFields['is_'.$fieldName])) { 
+		} else if (!empty($modelFields['is_'.$fieldName])) {
 			# match is_something naming convention
 			return 'is_'.$fieldName;
 		} else {
 			return null;
 		}
 	}
-	
+
 
 /**
  * Returns a list of items to the list element for any model
- * 
+ *
  * @param {int} 	We can have multiple calls to this on a single page.  Instance makes each one unique.
  * @return array
  */
@@ -345,7 +345,7 @@ class AppController extends Controller {
 		$options['showGallery'] = !empty($showGallery) ? $showGallery : false;
 		$options['galleryModelName'] = !empty($galleryModelName) ? $galleryModelName : $options['model'];
 		$options['galleryForeignKey'] = !empty($galleryForeignKey) ? $galleryForeignKey : $options['idField'];
-		$options['galleryThumbSize'] = !empty($galleryThumbSize) ? $galleryThumbSize : 'small';; 
+		$options['galleryThumbSize'] = !empty($galleryThumbSize) ? $galleryThumbSize : 'small';;
 		App::uses($options['model'], Inflector::camelize($options['plugin']).'.Model');
 		$Model = new $options['model']();
 		$results = $Model->find('all', array(
@@ -354,7 +354,7 @@ class AppController extends Controller {
 				),
 			'limit' => $options['resultsCount'],
 			));
-		return array('results' => $results, 'options' => $options);			
+		return array('results' => $results, 'options' => $options);
 	}
 
 
@@ -520,7 +520,7 @@ class AppController extends Controller {
 		if (defined('__APP_TEMPLATES')) :
 			$settings = unserialize(__APP_TEMPLATES);
 			$i = 0;
-			if (!empty($settings['template'])) { 
+			if (!empty($settings['template'])) {
 				foreach ($settings['template'] as $setting) {
 					$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
 					$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
@@ -585,7 +585,7 @@ class AppController extends Controller {
 
 		$conditions = $this->_templateConditions();
 		// this is because the Webpage model is not loaded for the install site page.
-		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', $conditions); 
+		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', $conditions);
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
         $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId);
         $this->set('defaultTemplate', $templated);
@@ -669,8 +669,8 @@ class AppController extends Controller {
 			$this->Webpage->bindModel(array(
 				'hasMany' => array(
 					'Menu' => array(
-						'className' => 'Menus.Menu', 
-						'foreignKey' => '', 
+						'className' => 'Menus.Menu',
+						'foreignKey' => '',
 						'conditions' => 'Menu.menu_id is null',
 						),
 					),
@@ -700,7 +700,7 @@ class AppController extends Controller {
 		if (!empty($_SERVER['REQUEST_URI']) && basename($_SERVER['REQUEST_URI']) != 'site') {
 			$this->components[] = 'Acl';
 		}
-		
+
 		if (defined('__APP_LOAD_APP_COMPONENTS')) {
 			$settings = __APP_LOAD_APP_COMPONENTS;
 			if ($components = @unserialize($settings)) {
@@ -725,16 +725,16 @@ class AppController extends Controller {
 		}
 	}
 
-		
-	
+
+
 /**
  * Loads helpers dynamically system wide, and per controller loading abilities.
  */
 	private function _getHelpers() {
-		if (in_array('Menus', CakePlugin::loaded())) { 
-			$this->helpers[] = 'Menus.Tree'; 
+		if (in_array('Menus', CakePlugin::loaded())) {
+			$this->helpers[] = 'Menus.Tree';
 		}
-		
+
 		if(defined('__APP_LOAD_APP_HELPERS')) {
 			$settings = __APP_LOAD_APP_HELPERS;
 			if ($helpers = @unserialize($settings)) {
@@ -758,27 +758,27 @@ class AppController extends Controller {
 			}
 		}
 	}
-	
-	
+
+
 /**
  * Loads uses dynamically system wide
- */	
+ */
 	private function _getUses() {
 		if (!empty($this->request)) { // this is so that it doesn't load during console activities
 			if (is_array($this->uses)) {
-				$this->uses = array_merge($this->uses, array('Webpages.Webpage')); 
+				$this->uses = array_merge($this->uses, array('Webpages.Webpage'));
 			} else {
 				# there is only one (non-array) in $this->uses
-				$this->uses = array($this->uses, 'Webpages.Webpage'); 
-			} 
+				$this->uses = array($this->uses, 'Webpages.Webpage');
+			}
 		}
 	}
-	
-	
-/** 
- * Checks whether the settings are synced up between defaults and the current settings file. 
+
+
+/**
+ * Checks whether the settings are synced up between defaults and the current settings file.
  * The idea is, if they aren't in sync then your database is out of date and you need a warning message.
- * 
+ *
  * @todo	I think we need to put $uses = 'Setting' into the app model.  (please communicate whether you agree)
  * @todo 	We're now loading these settings files two times on every page load (or more).  This needs to be optimized.
  */
@@ -798,19 +798,19 @@ class AppController extends Controller {
 			 }
 		 }
 	 }
-   
-   
-		 
+
+
+
 /**
  * Configure AuthComponent
  */
-   private function _configAuth() { 
-		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? 
-			array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : 
+   private function _configAuth() {
+		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ?
+			array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) :
 			array('message'=> 'Please register or login to access that feature.');
 		$this->Auth->authError = $authError['message'];
-        $this->Auth->loginAction = defined('__APP_LOGIN_ACTION') ? 
-			__APP_LOGIN_ACTION : 
+        $this->Auth->loginAction = defined('__APP_LOGIN_ACTION') ?
+			__APP_LOGIN_ACTION :
 			array('plugin' => 'users', 'controller' => 'users', 'action' => 'login');
 		$this->Auth->authorize = array('Controller');
 		$this->Auth->authenticate = array(
@@ -820,16 +820,16 @@ class AppController extends Controller {
                 /*'scope' => array('User.active' => 1)*/
             )
         );
-		        
+
 		$this->Auth->actionPath = 'controllers/';
 		$this->Auth->allowedActions = array('display', 'itemize');
-		
+
 		if (!empty($this->allowedActions)) {
 			$allowedActions = array_merge($this->Auth->allowedActions, $this->allowedActions);
 			$this->Auth->allowedActions = $allowedActions;
 		}
    }
-   
+
 /**
  * Handle various auto page title variables.
  * Easily over ridden by individual controllers.
@@ -837,7 +837,7 @@ class AppController extends Controller {
 	private function _pageTitleForLayout() {
 		return $this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(strtolower($this->pageTitleForLayout)));
 	}
-	
+
 	private function _titleForLayout() {
 		return $this->titleForLayout = Inflector::humanize(Inflector::underscore($this->titleForLayout));
 	}
@@ -845,14 +845,14 @@ class AppController extends Controller {
 
 /**
  * Make sending email available to all controllers (AppModel calls to this function)
- * 
+ *
  * @param string		String - address to send email to
  * @param sring			$subject: subject of email.
- * @param string		$message['html'] in the layout will be replaced with this text. 
+ * @param string		$message['html'] in the layout will be replaced with this text.
  * @param string		$template to be picked from folder for email. By default, if $mail is given in any template.
  * @param array			address/name pairs (e.g.: array(example@address.com => name, ...)
  * @param UNKNOWN		Have not used it don't know what it does or if it works.
- * @return bool			
+ * @return bool
  */
 	public function __sendMail($toEmail = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
 		$this->SwiftMailer = $this->Components->load('SwiftMailer');
@@ -948,7 +948,7 @@ class AppController extends Controller {
  * return {array || string}		The path to the aco to look up.
  */
 	private function _getAcoPath() {
-		if (!empty($this->request->params['pass'][0])) { 
+		if (!empty($this->request->params['pass'][0])) {
 			# check if the record level aco exists first
 			$aco = $this->Acl->Aco->find('first', array(
 				'conditions' => array(
@@ -984,7 +984,7 @@ class AppController extends Controller {
 		$guestsAro = array('model' => 'UserRole', 'foreign_key' => 5);
 		if (defined('__SYSTEM_GUESTS_USER_ROLE_ID')) {
 			$guestsAro = array('model' => 'UserRole', 'foreign_key' => __SYSTEM_GUESTS_USER_ROLE_ID);
-		} 
+		}
 		return $guestsAro;
 	}
 

@@ -14,40 +14,43 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 		$testPath = DS . 'Test' . DS . 'Case';
 		$modelPath = $testPath . DS . 'Model';
 		$controllerPath = $testPath . DS . 'Controller';
-		
+
 		$behaviorPath = $modelPath . DS . 'Behavior';
-/** 
- * core test files to run 
+/**
+ * core test files to run
  */
-		// core controller files to run 
+		// core controller files to run
 		$suite->addTestFile($path . 'Controller' . DS . 'ConditionsControllerTest.php');
 		$suite->addTestFile($path . 'Controller' . DS . 'InstallControllerTest.php');
-		
+
 		// core model files to run
 		$suite->addTestFile($path . 'Model' . DS . 'EnumerationTest.php');
 		$suite->addTestFile($path . 'Model' . DS . 'SettingTest.php');
-		
-		
+
+
 /**
  * plugins with test files to run
  */
 		// Activities Plugin
 		$suite->addTestFile($pluginsPath . 'Activities' . $controllerPath . DS .  'ActivitiesTest.php');
-		
+
 		// Drafts Plugin
 		$suite->addTestFile($pluginsPath . 'Drafts' . $modelPath . DS . 'DraftTest.php');
 		$suite->addTestFile($pluginsPath . 'Drafts' . $behaviorPath  . DS . 'DraftableBehaviorTest.php');
-		
+
 		// Forms Plugin
 		$suite->addTestFile($pluginsPath . 'Forms' . $controllerPath . DS . 'FormsControllerTest.php');
-		
+
+        // Galleries Plugin
+        $suite->addTestFile($pluginsPath . 'Galleries' . $modelPath . DS . 'GalleryTest.php');
+
 		// Orders Plugin
-		$suite->addTestFile($pluginsPath . 'Orders' . $modelPath . DS . 'OrderItemTest.php'); 
-		
+		$suite->addTestFile($pluginsPath . 'Orders' . $modelPath . DS . 'OrderItemTest.php');
+
 		// Workflows Plugin
-		$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowEventTest.php'); 
-		$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowItemEventTest.php'); 
-		
+		$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowEventTest.php');
+		$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowItemEventTest.php');
+
 		return $suite;
 	}
 }
