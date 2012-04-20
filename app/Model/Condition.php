@@ -254,7 +254,7 @@ Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
 	
 	
 	public function addRecursiveData($model, $data) {
-		$Model = ClassRegistry::init($model);
+		$Model = ClassRegistry::init(ZuhaInflector::pluginize($model) . '.' . $model);
 		$Model->recursive = 1;
 		$data = $Model->find('first', array(
 			'conditions' => array(
