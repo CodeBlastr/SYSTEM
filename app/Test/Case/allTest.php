@@ -44,6 +44,10 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 		// Orders Plugin
 		$suite->addTestFile($pluginsPath . 'Orders' . $modelPath . DS . 'OrderItemTest.php'); 
 		
+		// Workflows Plugin
+		$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowEventTest.php'); 
+		$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowItemEventTest.php'); 
+		
 		return $suite;
 	}
 }
