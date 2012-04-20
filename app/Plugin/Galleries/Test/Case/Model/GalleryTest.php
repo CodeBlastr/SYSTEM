@@ -11,7 +11,10 @@ class GalleryTestCase extends CakeTestCase {
  *
  * @var array
  */
-	public $fixtures = array('plugin.galleries.gallery', 'plugin.galleries.gallery_image', 'plugin.users.user', 'plugin.users.user_role', 'plugin.users.user_wall', 'plugin.contacts.contact', 'app.enumeration', 'plugin.contacts.contact_address', 'plugin.contacts.contact_detail', 'plugin.tasks.task', 'plugin.projects.project', 'plugin.projects.project_issue', 'plugin.timesheets.timesheet_time', 'plugin.timesheets.timesheet', 'app.timesheets_timesheet_time', 'plugin.projects.projects_member', 'plugin.users.user_group', 'plugin.users.users_user_group', 'plugin.users.user_group_wall_post', 'plugin.users.used', 'plugin.messages.message', 'plugin.tags.tag', 'plugin.tags.tagged', 'app.invoice', 'app.invoice_item', 'plugin.catalogs.catalog_item', 'plugin.catalogs.catalog', 'app.alias', 'plugin.catalogs.catalog_item_brand', 'plugin.categories.category', 'plugin.categories.category_option', 'plugin.categories.categorized_option', 'plugin.categories.categorized', 'app.location', 'plugin.orders.order_item', 'plugin.orders.order_payment', 'plugin.orders.order_transaction', 'plugin.orders.order_coupon', 'plugin.orders.order_shipment', 'plugin.catalogs.catalog_item_price', 'app.invoice_time', 'app.projects_watcher', 'plugin.wikis.wiki', 'plugin.wikis.wiki_page', 'plugin.wikis.wiki_content', 'plugin.wikis.wiki_content_version', 'app.projects_wiki', 'app.contacts_contact', 'plugin.users.user_status', 'plugin.users.user_follower');
+	public $fixtures = array(
+        'plugin.galleries.gallery',
+        'plugin.galleries.gallery_image',
+        );
 
 /**
  * setUp method
@@ -20,7 +23,7 @@ class GalleryTestCase extends CakeTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		$this->Gallery = ClassRegistry::init('Gallery');
+		$this->Gallery = ClassRegistry::init('Galleries.Gallery');
 	}
 
 /**
@@ -49,7 +52,22 @@ class GalleryTestCase extends CakeTestCase {
  */
 	public function testMakeThumb() {
 
+        $firstResult = $this->Gallery->find('first', array('Conditions' => array('Gallery.id' => 1)));
+        $this->assertTrue(!empty($firstResult['Gallery']['gallery_thumb_id'])); // test that gallery exists to edit
+
+        $data['Gallery']['id'] = 1;
+        $data['GalleryImage']['id'] = 23113;
+
+        $secondResult = $this->Gallery->makeThumb($data);
+        $this->assertEqual(true, $secondResult); // test that save occured
+
+        $thirdResult = $this->Gallery->find('first', array('Conditions' => array('Gallery.gallery_thumb_id' => $data['GalleryImage']['id'])));
+        $this->assertTrue(!empty($thirdResult)); // did the gallery_thumnb_id get updated?
+
+        $this->assertNotEqual($firstResult['Gallery']['gallery_thumb_id'], $thirdResult['Gallery']['gallery_thumb_id']); //test that gallery thumbs are changed
+
 	}
+
 /**
  * testTypes method
  *
