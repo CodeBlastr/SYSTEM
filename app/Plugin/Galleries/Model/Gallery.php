@@ -1,11 +1,12 @@
 <?php
+App::uses('GalleriesAppModel', 'Galleries.Model');
 class Gallery extends GalleriesAppModel {
 
-	var $name = 'Gallery'; 
+	var $name = 'Gallery';
 	// set up hard coded defaults, which get used if no data or site settings exist
 	var $galleryType = 'colorbox';
 	var $displayField = 'name';
-	
+
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	var $belongsTo = array(
 		'GalleryThumb' => array(
@@ -30,7 +31,7 @@ class Gallery extends GalleriesAppModel {
 			'order' => ''
 		)
 	);
-	
+
 	var $hasOne = array(
 		'Alias' => array(
 			'className' => 'Alias',
@@ -40,7 +41,7 @@ class Gallery extends GalleriesAppModel {
 			'fields' => '',
 			'order' => ''
 		),
-	); 
+	);
 
 	var $hasMany = array(
 		'GalleryImage' => array(
@@ -57,8 +58,8 @@ class Gallery extends GalleriesAppModel {
 			'counterQuery' => ''
 		)
 	);
-	
-	
+
+
 	function afterSave($created) {
 		$gallery = $this->find('first', array('Gallery.id' => $this->id));
 		if (!empty($gallery) && empty($gallery['Gallery']['model']) && empty($gallery['Gallery']['foreign_key'])) {
@@ -71,8 +72,8 @@ class Gallery extends GalleriesAppModel {
 			}
 		}
 	}
-	
-	
+
+
 	public function afterFind($results) {
 		if (!empty($results[0]['Gallery'])) {
 			# handle hasMany results
@@ -81,26 +82,26 @@ class Gallery extends GalleriesAppModel {
 				$i++;
 			}
 		}
-		
+
 		if (!empty($results['id'])) {
 			$results = Set::merge(array('GallerySettings' => $this->gallerySettings($results)), $results);
 		}
-		
+
 		return $results;
 	}
-	
-/** 
- * Adds a gallery, and uploads the image using the GalleryImage model.  The image that is uploaded during Gallery creation is also used as the default thumbnail image for the gallery. 
- * 
+
+/**
+ * Adds a gallery, and uploads the image using the GalleryImage model.  The image that is uploaded during Gallery creation is also used as the default thumbnail image for the gallery.
+ *
  * @param {data}		An array of data to be saved.
  * @return {bool}		True if saved completely, false otherwise.
  * @todo				As part of the roll back methods, we could also delete the images that were uploaded.
  */
 	function add($data, $fileName) {
-		// Making it so that you only need GalleryImage->add in a controller to make all the work happen. 
-		// Take special note of the "rollback" features.  I really like rolling back whenever possible on failures.  
+		// Making it so that you only need GalleryImage->add in a controller to make all the work happen.
+		// Take special note of the "rollback" features.  I really like rolling back whenever possible on failures.
 		// It keeps the database clean.
-		$data['Gallery']['name'] = !empty($data['Gallery']['name']) ? $data['Gallery']['name'] : $data['Gallery']['model']; 
+		$data['Gallery']['name'] = !empty($data['Gallery']['name']) ? $data['Gallery']['name'] : $data['Gallery']['model'];
 		# set any Gallery model fields not filled in data with app or system defaults.
 		$data = $this->GalleryImage->galleryImageDefaults($data);
 		# create the gallery as the first step
@@ -109,7 +110,7 @@ class Gallery extends GalleriesAppModel {
 			if (!empty($data['GalleryImage'])) {
 				$galleryId = $this->id;
 				$data['GalleryImage']['gallery_id'] = $galleryId;
-				if ($this->GalleryImage->add($data, $fileName)) { 
+				if ($this->GalleryImage->add($data, $fileName)) {
 					# RESAVE the Gallery with this image that was just uploaded as the default thumb.
 					$galleryImageId = $this->GalleryImage->id;
 					$newData['Gallery']['id'] = $galleryId;
@@ -134,9 +135,9 @@ class Gallery extends GalleriesAppModel {
 			}
 		} else {
 			throw new Exception(__d('galleries', 'ERROR : Gallery save update failed.', true));
-		}		
+		}
 	}
-	
+
 	function makeThumb($data) {
 		if (!empty($data['Gallery']['id']) && !empty($data['GalleryImage']['id'])) {
 			# if the image id is there just set it quick
@@ -160,12 +161,12 @@ class Gallery extends GalleriesAppModel {
 				}
 			} else {
 				throw new Exception(__d('galleries', 'ERROR : Gallery image add failed.', true));
-			}			
+			}
 		} else {
 			throw new Exception(__d('galleries', 'ERROR : Gallery id, and Gallery Image id must be provided', true));
 		}
 	}
-	
+
 	function types() {
 		return array(
 			'colorbox' => 'Colorbox',
@@ -174,6 +175,6 @@ class Gallery extends GalleriesAppModel {
 			'zoomable' => 'Zoomable',
 			);
 	}
-	
+
 }
 ?>
