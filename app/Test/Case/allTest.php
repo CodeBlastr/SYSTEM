@@ -32,24 +32,36 @@ class AllTests extends PHPUnit_Framework_TestSuite {
  * plugins with test files to run
  */
 		// Activities Plugin
-		$suite->addTestFile($pluginsPath . 'Activities' . $controllerPath . DS .  'ActivitiesTest.php');
+		if (in_array('Activities', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Activities' . $controllerPath . DS .  'ActivitiesTest.php');
+		}
 
 		// Drafts Plugin
-		$suite->addTestFile($pluginsPath . 'Drafts' . $modelPath . DS . 'DraftTest.php');
-		$suite->addTestFile($pluginsPath . 'Drafts' . $behaviorPath  . DS . 'DraftableBehaviorTest.php');
+		if (in_array('Drafts', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Drafts' . $modelPath . DS . 'DraftTest.php');
+			$suite->addTestFile($pluginsPath . 'Drafts' . $behaviorPath  . DS . 'DraftableBehaviorTest.php');
+		}
 
 		// Forms Plugin
-		$suite->addTestFile($pluginsPath . 'Forms' . $controllerPath . DS . 'FormsControllerTest.php');
+		if (in_array('Forms', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Forms' . $controllerPath . DS . 'FormsControllerTest.php');
+		}
 
         // Galleries Plugin
-        $suite->addTestFile($pluginsPath . 'Galleries' . $modelPath . DS . 'GalleryTest.php');
+		if (in_array('Galleries', CakePlugin::loaded())) {
+	        $suite->addTestFile($pluginsPath . 'Galleries' . $modelPath . DS . 'GalleryTest.php');
+		}
 
 		// Orders Plugin
-		$suite->addTestFile($pluginsPath . 'Orders' . $modelPath . DS . 'OrderItemTest.php');
+		if (in_array('Orders', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Orders' . $modelPath . DS . 'OrderItemTest.php');
+		}
 
 		// Workflows Plugin
-		$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowEventTest.php');
-		$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowItemEventTest.php');
+		if (in_array('Workflows', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowEventTest.php');
+			$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowItemEventTest.php');
+		}
 
 		return $suite;
 	}
