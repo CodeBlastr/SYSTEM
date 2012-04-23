@@ -1,6 +1,6 @@
 <?php
 App::uses('CakeSchema', 'Model');
-	
+
 class InstallController extends AppController {
 
 	public $name = 'Install';
@@ -17,11 +17,11 @@ class InstallController extends AppController {
  * @var CakeSchema
  */
 	public $Schema;
-	
+
 	public function __construct($request = null, $response = null) {
-		
+
 		parent::__construct($request, $response);
-		
+
 		$this->_handleSitesDirectory();
 		if ($request->controller == 'install' || $request->action == 'site') {
 			Configure::write('Session', array(
@@ -29,7 +29,7 @@ class InstallController extends AppController {
 				'cookie' => 'CAKEPHP'
 			));
 		}
-	
+
 		$name = $path = $connection = $plugin = null;
 		if (!empty($this->params['name'])) {
 			$name = $this->params['name'];
@@ -69,8 +69,8 @@ class InstallController extends AppController {
 		}
 		$this->Schema = new CakeSchema(compact('name', 'path', 'file', 'connection', 'plugin'));
 	}
-	
-	
+
+
 	protected function _out($out) {
 		debug($out);
 	}
@@ -84,7 +84,7 @@ class InstallController extends AppController {
 			# comma separated domain handler
 			$this->siteDomains = array_map('trim', explode(',', $this->request->data['Install']['site_domain']));
 			$this->options['siteDomain'] = $this->siteDomains[0];
-		else : 
+		else :
 			$this->options['siteDomain'] = $this->request->data['Install']['site_domain'] == 'mydomain.com' ? '' : $this->request->data['Install']['site_domain'];
 		endif;
 		$this->config['datasource'] = 'Database/Mysql';
@@ -98,26 +98,26 @@ class InstallController extends AppController {
 			$this->redirect($this->referer());
 		endif;
 	}
-	
+
 	public function index() {
 		$this->_handleSecurity();
 		$currentlyLoadedPlugins = CakePlugin::loaded();
-		
+
 		CakePlugin::loadAll();
 		$unloadedPlugins = array_diff(CakePlugin::loaded(), $currentlyLoadedPlugins);
-		
+
 		foreach ($unloadedPlugins as $unloadedPlugin) {
 			# unload the plugins just loaded
 			CakePlugin::unload($unloadedPlugin);
 		}
-		
+
 		if (!empty($unloadedPlugins)) {
 			$this->set(compact('unloadedPlugins'));
 		} else {
 			$this->redirect(array('action' => 'site'));
 		}
 	}
-	
+
 /**
  * Install a plugin to the current site.
  */
@@ -154,7 +154,7 @@ class InstallController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		}
 	}
-	
+
 
 /**
  * Install a new site
@@ -166,7 +166,7 @@ class InstallController extends AppController {
 		if (!empty($this->request->data)) {
 			# move everything here down to its own function
 			$this->_handleInputVars($this->request->data);
-			
+
 			try {
 				$db = ConnectionManager::create('default', $this->config);
 				try {
@@ -175,38 +175,38 @@ class InstallController extends AppController {
 					$db->execute($sql);
 					# run the core table queries
 					$this->_create($db);
-					if ($this->lastTableName == $this->progress) : 
+					if ($this->lastTableName == $this->progress) :
 						# run the required plugins
-						if ($this->_installPluginSchema('Users', 'Users')) : 
+						if ($this->_installPluginSchema('Users', 'Users')) :
 							$users = true;
 						endif;
-						if ($this->_installPluginSchema('Webpages', 'Webpages')) : 
+						if ($this->_installPluginSchema('Webpages', 'Webpages')) :
 							$webpages = true;
 						endif;
-						if ($this->_installPluginSchema('Contacts', 'Contacts')) : 
+						if ($this->_installPluginSchema('Contacts', 'Contacts')) :
 							$contacts = true;
 						endif;
-						if ($this->_installPluginSchema('Galleries', 'Galleries')) : 
+						if ($this->_installPluginSchema('Galleries', 'Galleries')) :
 							$galleries = true;
 						endif;
 						if ($users && $webpages && $contacts && $galleries) :
 							# run the required data
 							if ($install = $this->_installCoreData($db)) :
-								if ($this->_installCoreFiles()) : 
+								if ($this->_installCoreFiles()) :
 									$this->redirect('http://'.$this->options['siteDomain'].'/install/login');
-								else : 
+								else :
 									$this->Session->setFlash(__('File copy failed.' . $install));
 									$this->redirect($this->referer());
 								endif;
 							else :
 								$this->Session->setFlash(__('Database data insert broke (schema completed).'));
 								$this->redirect($this->referer());
-							endif;								
-						else : 
-							$this->Session->setFlash(__("Error : 
-								Users: {$users}, 
-								Webpages: {$webpages}, 
-								Contacts: {$contacts}, 
+							endif;
+						else :
+							$this->Session->setFlash(__("Error :
+								Users: {$users},
+								Webpages: {$webpages},
+								Contacts: {$contacts},
 								Galleries: {$galleries}"));
 							$this->redirect($this->referer());
 						endif;
@@ -222,11 +222,11 @@ class InstallController extends AppController {
 				$this->redirect($this->referer());
 			}
 		} // end request data check
-		
+
 		$this->layout = false;
 	}
-	
-/** 
+
+/**
  * Used to verify an install, update the username and password, and then write the settings.ini files.
  */
 	public function login() {
@@ -234,7 +234,7 @@ class InstallController extends AppController {
 		App::uses('Setting', 'Model');
 		$Setting = new Setting;
 		if ($Setting->writeSettingsIniData()) {
-		
+
 			// get the user from the install data
 			App::uses('User', 'Users.Model');
 			$User = new User;
@@ -244,8 +244,8 @@ class InstallController extends AppController {
 					'User.last_login' => null,
 					),
 				));
-			
-			if(!empty($user)) { 
+
+			if(!empty($user)) {
 				$this->set(compact('user'));
 			} else {
 				$this->Session->setFlash(__('Install completed.'));
@@ -253,8 +253,8 @@ class InstallController extends AppController {
 				// thanks to Auth redirect having /install/login as the referring url after login for redirect.
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'my'));
 			}
-		
-		
+
+
 			if (!empty($this->request->data)) {
 				$this->request->data['User']['last_login'] = date('Y-m-d h:i:s');
 				if ($User->add($this->request->data)) {
@@ -269,27 +269,27 @@ class InstallController extends AppController {
 		} else {
 			$this->Session->setFlash(__('Required settings, update failed.'));
 			$this->redirect($this->referer());
-		} // write settings ini 
-		
+		} // write settings ini
+
 		$this->layout = false;
 	}
-	
+
 
 /**
  * Copies example.com, creates the database.php, and core.php files.
- * 
+ *
  * @todo 		Probably should change this to catch throw syntax because there are a lot of errors with no feedback.
  */
 	protected function _installCoreFiles() {
-		if (!empty($this->options['siteDomain']) && !empty($this->config)) : 
+		if (!empty($this->options['siteDomain']) && !empty($this->config)) :
 			# copy example.com
 			$templateDir = ROOT.DS.'sites'.DS.'example.com';
-			
+
 			if ($this->_copy_directory($templateDir, $this->newDir)) :
 				# create database.php
 				$fileName = $this->newDir.DS.'Config'.DS.'database.php';
 				$contents = "<?php".PHP_EOL.PHP_EOL."class DATABASE_CONFIG {".PHP_EOL.PHP_EOL."\tpublic \$default = array(".PHP_EOL."\t\t'datasource' => 'Database/Mysql',".PHP_EOL."\t\t'persistent' => false,".PHP_EOL."\t\t'host' => '".$this->config['host']."',".PHP_EOL."\t\t'login' => '".$this->config['login']."',".PHP_EOL."\t\t'password' => '".$this->config['password']."',".PHP_EOL."\t\t'database' => '".$this->config['database']."',".PHP_EOL."\t\t'prefix' => '',".PHP_EOL."\t\t//'encoding' => 'utf8',".PHP_EOL."\t);".PHP_EOL."}";
-				if ($this->_createFile($fileName, $contents)) : 
+				if ($this->_createFile($fileName, $contents)) :
 					# update sites/bootstrap.php
 					if ($this->_updateBootstrapPhp()) :
 						# run settings
@@ -300,22 +300,22 @@ class InstallController extends AppController {
 				else :
 					break; return false;
 				endif;
-			else : 
+			else :
 				break; return false;
-			endif;			
+			endif;
 		else:
 			break; return false;
 		endif;
 	}
-	
-	
+
+
 	protected function _updateBootstrapPhp() {
 		$filename = ROOT.DS.'sites'.DS.'bootstrap.php';
 		$filesize = filesize($filename);
 		$file = fopen($filename, 'r');
 		$filecontents = fread($file, $filesize);
 		fclose($file);
-		
+
 		if (!empty($this->siteDomains)) :
 			$replace = '';
 			foreach($this->siteDomains as $site) :
@@ -324,27 +324,27 @@ class InstallController extends AppController {
 		else :
 			$replace = "\$domains['".$this->options['siteDomain']."'] = '".$this->options['siteDomain']."';".PHP_EOL;
 		endif;
-		
+
 		# make a back up first
 		if (copy($filename, ROOT.DS.'sites'.DS.'bootstrap.'.date('Ymdhis').'.php')) :
 			$contents = str_replace('/** end **/', $replace.PHP_EOL.'/** end **/', $filecontents);
-			if(file_put_contents($filename, $contents)) : 
+			if(file_put_contents($filename, $contents)) :
 				return true;
 			endif;
 		endif;
 		return false;
 	}
-	
-	
+
+
 	protected function _createFile($fileName = null, $contents = null) {
 		$fh = fopen($fileName, 'w') or die("can't open file");
-		if (fwrite($fh, $contents)) : 
+		if (fwrite($fh, $contents)) :
 			fclose($fh);
 			return true;
 		endif;
-			
+
 		return false;
-		
+
 		/*
 		$this->newDir
 			$this->options['siteName'] = $this->request->data['Install']['site_name'];
@@ -355,25 +355,25 @@ class InstallController extends AppController {
 			$this->config['database'] = $dataSource['name'];
 			*/
 	}
-	
-	
-	
+
+
+
 	protected function _installPluginSchema($name = null, $plugin = null) {
-		if (!empty($name) && !empty($plugin)) : 
+		if (!empty($name) && !empty($plugin)) :
 			$this->params['name'] = $name;
 			$this->params['plugin'] = $plugin;
 			$blank = '';
 			$this->_create($blank);
-			if ($this->lastTableName == $this->progress) : 
+			if ($this->lastTableName == $this->progress) :
 				return true;
 			else :
 				return false;
 			endif;
-		else : 
+		else :
 			return false;
 		endif;
 	}
-	
+
 
 /**
  * Prepares the Schema objects for database operations.
@@ -436,10 +436,10 @@ class InstallController extends AppController {
 			$create[$table] = $db->createSchema($Schema, $table);
 		}
 		$end = $create; end($end);
-		$this->lastTableName = key($end); // get the last key in the array 
+		$this->lastTableName = key($end); // get the last key in the array
 		$this->_run($drop, 'drop', $Schema);
 		$this->_run($create, 'create', $Schema);
-		
+
 		/* These are some checks that aren't needed for the initial install
 		if (empty($drop) || empty($create)) {
 			$this->_out(__d('cake_console', 'Schema is up to date.'));
@@ -460,7 +460,7 @@ class InstallController extends AppController {
 		if ('y' == $this->in(__d('cake_console', 'Are you sure you want to create the table(s)?'), array('y', 'n'), 'y')) {
 			$this->_out(__d('cake_console', 'Creating table(s).'));
 			$this->_run($create, 'create', $Schema);
-		} 
+		}
 		$this->_out(__d('cake_console', 'End create.'));*/
 	}
 
@@ -556,9 +556,9 @@ class InstallController extends AppController {
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	protected function _installCoreData(&$db) {
 		try {
 			# run each data sql insert
@@ -569,22 +569,22 @@ class InstallController extends AppController {
 		} catch (PDOException $e) {
 			$error = $e->getMessage();
 			return $error;
-		}		
+		}
 	}
-	
-	
+
+
 /**
  * The least amount of sql needed to successfully install zuha.
  */
 	private function _getInstallSqlData() {
-		
+
 		$options['siteName'] = !empty($this->options['siteName']) ? $this->options['siteName'] : 'My Site';
-		
+
 		$dataStrings[] = "INSERT INTO `aliases` (`id`, `plugin`, `controller`, `action`, `value`, `name`, `created`, `modified`) VALUES
 (1, 'webpages', 'webpages', 'view', 1, 'home', '2011-12-15 22:46:29', '2011-12-15 22:47:07');";
-		
+
 		$dataStrings[] = "INSERT INTO `aros` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `rght`) VALUES (1, NULL, 'UserRole', 1, NULL, 1, 4), (2, NULL, 'UserRole', 2, NULL, 5, 6), (3, NULL, 'UserRole', 3, NULL, 7, 8), (6, 1, 'User', 1, NULL, 2, 3), (5, NULL, 'UserRole', 5, NULL, 9, 10);";
-		
+
 		$dataStrings[] = "INSERT INTO `contacts` (`id`, `name`, `contact_type_id`, `contact_source_id`, `contact_industry_id`, `contact_rating_id`, `user_id`, `is_company`, `creator_id`, `modifier_id`, `created`, `modified`) VALUES
 ('4eea7b66-6fb4-4635-93b5-0b28124e0d46', 'Zuha Administrator', NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, '2011-12-15 22:57:42', '2011-12-15 22:57:42');";
 
@@ -599,9 +599,9 @@ class InstallController extends AppController {
 (1, 'Homepage', '', 'Congratulations!&nbsp;&nbsp; Welcome to the first page of your new Zuha install.&nbsp;&nbsp; ', NULL, NULL, NULL, '', '', 0, '', '', 1, 1, '2011-12-15 22:46:29', '2011-12-15 22:47:07');";
 
 		return $dataStrings;
-		
+
 	}
-	
+
 /**
  * Creates the sites folder if it doesn't exist as a copy of sites.default
  */
@@ -614,13 +614,13 @@ class InstallController extends AppController {
 			}
 		}
 	}
-	
-	
+
+
 /**
  * recurisive directory copying
  *
  * @todo 		Needs an error to return false
- */	
+ */
 	protected function _copy_directory($src, $dst) {
 	    $dir = opendir($src);
 	    @mkdir($dst);
@@ -636,24 +636,24 @@ class InstallController extends AppController {
     	closedir($dir);
 		return true;
 	}
-	
-	
+
+
 	public function mysql_import($filename) {
 		$prefix = '';
 
 		$return = false;
 		$sql_start = array('INSERT', 'UPDATE', 'DELETE', 'DROP', 'GRANT', 'REVOKE', 'CREATE', 'ALTER');
 		$sql_run_last = array('INSERT');
-	
+
 		if (file_exists($filename)) {
 			$lines = file($filename);
 			$queries = array();
 			$query = '';
-	
+
 			if (is_array($lines)) {
 				foreach ($lines as $line) {
 					$line = trim($line);
-	
+
 					if(!preg_match("'^--'", $line)) {
 						if (!trim($line)) {
 							if ($query != '') {
@@ -662,12 +662,12 @@ class InstallController extends AppController {
 									$pos = strpos($query, '`')+1;
 									$query = substr($query, 0, $pos) . $prefix . substr($query, $pos);
 								}
-	
+
 								$priority = 1;
 								if (in_array($first_word, $sql_run_last)) {
 									$priority = 10;
-								} 
-	
+								}
+
 								$queries[$priority][] = $query;
 								$query = '';
 							}
@@ -676,9 +676,9 @@ class InstallController extends AppController {
 						}
 					}
 				}
-	
+
 				ksort($queries);
-	
+
 				foreach ($queries as $priority=>$to_run) {
 					foreach ($to_run as $i=>$sql) {
 						$sqlQueries[] = $sql;
@@ -688,8 +688,8 @@ class InstallController extends AppController {
 			}
 		}
 	}
-	
-	
+
+
 /**
  * If its the first upload of the files we want index() and site() to be allowed.
  * If it is not the first upload then we want access to index() and site() to be restricted.
