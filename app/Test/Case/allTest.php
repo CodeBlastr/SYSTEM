@@ -56,6 +56,11 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 		if (in_array('Orders', CakePlugin::loaded())) {
 			$suite->addTestFile($pluginsPath . 'Orders' . $modelPath . DS . 'OrderItemTest.php');
 		}
+		
+		// Users Plugin
+		if (in_array('Users', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Users' . $behaviorPath . DS . 'UsableBehaviorTest.php');
+		}
 
 		// Workflows Plugin
 		if (in_array('Workflows', CakePlugin::loaded())) {
