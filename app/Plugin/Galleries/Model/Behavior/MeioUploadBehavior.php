@@ -1176,9 +1176,16 @@ class MeioUploadBehavior extends ModelBehavior {
  */
 	function _copyFileFromTemp($tmpName, $saveAs) {
 		$results = true;
-		if (!is_uploaded_file($tmpName)) {
-			return false;
+		
+		if (!empty($tmpName[0]) && $tmpName[0] === '_bypassUploadFileCheck') {
+			// zuha bypass for files already on the server, using a server side variable
+			$tmpName = $tmpName[1];
+		} else {
+			if (!is_uploaded_file($tmpName)) {
+				return false;
+			}
 		}
+		
 		$file = new File($tmpName, $saveAs);
 		$temp = new File($saveAs, true);
 		if (!$temp->write($file->read())) {

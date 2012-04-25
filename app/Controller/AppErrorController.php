@@ -36,7 +36,7 @@ class AppErrorController extends AppController {
  * @param object
  * @return mixed
  */
-    public function handleAlias($request) {
+    public function handleAlias($request, $exception) {
 		if ($request->here == '/') {
 			$request->here = 'home';
 		} else {
@@ -68,8 +68,12 @@ class AppErrorController extends AppController {
 	    exit;
     }
 	
-    public function handleNotFound($request, $response, $error) {
-		if (Configure::read('debug') < 3) {
+    public function handleNotFound($request, $response, $error, $originalException) {
+		$eName = get_class($originalException);
+		//print_r('.'.$eName.'.'); break;
+		if (Configure::read('debug') == 2 && $eName != 'MissingControllerException') {
+			throw new $eName($originalException->getMessage());
+		} else {
 			$Alias = ClassRegistry::init('Alias');
 			$alias = $Alias->find('first', array('conditions' => array('name' => 'error')));
 			if (!empty($alias['Alias']['name'])) {
