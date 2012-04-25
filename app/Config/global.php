@@ -185,6 +185,18 @@ class ZuhaSet {
 				
 		return $return;
     }
+	
+/**
+ * take a relative path used for urls and return the path from within the webroot folder
+ *
+ * @param string
+ * @return string
+ */
+ 	public function webrootSubPath($relativePath) {
+		$path = str_replace('/', DS, $relativePath); // get webroot directory
+		$path = str_replace('theme'.DS.'default'.DS, '', $path); // get webroot directory
+		return $path;
+	}
 
 
 }

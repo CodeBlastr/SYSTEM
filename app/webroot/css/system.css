@@ -293,3 +293,11 @@ input[type=radio], input[type=checkbox] {
 	margin-left: -6em;
 	display: none;
 }
+
+.preview {
+	border: 1px dashed #999; 
+	padding: 1em 1em 4em 1em;
+}
+.formPreview {
+	padding: 1em 1em 3em 1em;
+}
