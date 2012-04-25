@@ -1079,21 +1079,21 @@ class FormHelper extends AppHelper {
 			case 'time':
 				#$input = $this->dateTime($fieldName, null, $timeFormat, $options);
 				$options['value'] = $selected;
-				$options['class'] = 'timepicker';
+				$options['class'] = !empty($options['class']) ?  $options['class'] . ' timepicker' : 'timepicker';
 				$type = 'text';
 				$input = $this->{$type}($fieldName, $options);
 			break;
 			case 'date':
 				#$input = $this->dateTime($fieldName, $dateFormat, null, $options);
 				$options['value'] = $selected;
-				$options['class'] = 'datepicker';
+				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datepicker' : 'datepicker';
 				$type = 'text';
 				$input = $this->{$type}($fieldName, $options);
 			break;
 			case 'datetime':
 				#$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options);
 				$options['value'] = $selected;
-				$options['class'] = 'datetimepicker';
+				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datetimepicker' : 'datetimepicker';
 				$type = 'text';
 				$input = $this->{$type}($fieldName, $options);
 			break;

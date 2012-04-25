@@ -1,8 +1,26 @@
 <?php
+App::uses('GalleriesAppModel', 'Galleries.Model');
+/**
+ * Gallery Image Model Class
+ *
+ * @todo Add more documentation
+ */
 class GalleryImage extends GalleriesAppModel {
 
+/**
+ * var string
+ */
 	public $name = 'GalleryImage';
+
+/**
+ * var string
+ */
 	public $displayField = 'filename';
+
+/**
+ * var string
+ */
+	public $rootPath = '';
 	
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	public $belongsTo = array(
@@ -35,11 +53,16 @@ class GalleryImage extends GalleriesAppModel {
 				$this->actsAs[] = $behaviors[$this->name];
 			}
 		}
+		$this->rootPath = ROOT . DS . SITE_DIR . DS . 'View' . DS . 'Themed' . DS. 'Default' . DS . 'webroot';
 		parent::__construct($id, $table, $ds);
 	}
 	
-	
-	public function afterSave() {
+/**
+ * After save method
+ *
+ * @param bool
+ */
+	public function afterSave($created) {
 		if (!empty($this->data['GalleryImage']['is_thumb'])) {
 			try {
 				$data['Gallery']['id'] = $this->data['GalleryImage']['gallery_id'];
@@ -54,37 +77,76 @@ class GalleryImage extends GalleriesAppModel {
 	
 	
 /**
- *
- * @todo	We may want to check whether the gallery actually exists, instead of just trusting that the gallery_id is right.
+ * Add method
+ * 
+ * @access public
+ * @param array
+ * @param string
+ * @return bool
  */
-	public function add($data, $uploadFieldName) {	
+	public function add($data, $uploadFieldName) {
 		$data = $this->_cleanData($data);
-		
+		if (!empty($data['GalleryImage']['filename'][0])) {
+			$image = $data;
+			foreach ($data['GalleryImage']['filename'] as $fileName) {
+				$image['GalleryImage']['filename'] = $this->_fileName($fileName);
+				//debug($gallery);
+				$this->_add($image, $uploadFieldName);
+			}
+			return true;
+		} else {
+			return $this->_add($data, $uploadFieldName);
+		}
+	}
+	
+/**
+ * Protected add method
+ *
+ * If a gallery id is given, check the defaults, attach the upload behavior, and perform the upload.
+ * If no gallery id is given, create a gallery first using site settings, and make the submitted image the thumb
+ * The gallery add() function calls back to this function to perform the upload.
+ * 
+ * This protected version of the add function was pushed down so that it could be called multiple times.
+ * 
+ * @access protected
+ * @param array
+ * @param string
+ * @return bool
+ */
+	protected function _add($data, $uploadFieldName) {
 		if (!empty($data['GalleryImage']['gallery_id'])) {
-			# gallery id was given so check the defaults, attach the upload behavior, and perform the upload
+			// existing gallery
 			$uploadOptions[$uploadFieldName] = $this->_getImageOptions($data);
-			$this->Behaviors->attach('MeioUpload', $uploadOptions);			
+			$this->Behaviors->attach('Galleries.MeioUpload', $uploadOptions);
+			$this->create();
 			if ($this->save($data)) {
 				return true;
 			} else {
 				$errors = '';
-				foreach ($this->invalidFields() as $key => $error) :
+				foreach ($this->invalidFields() as $key => $error) {
 					$errors .= $key . ' - ' . $error . ', ';
-				endforeach;
-				throw new Exception(__d('galleries', 'ERROR : ' . $errors, true));
+				}
+				throw new Exception(__('ERROR : %s', $errors));
 			}
 		} else {
-			# no gallery id was given so create a gallery first using site settings and make the first image the thumb
-			# note: the image save will be performed from the gallery model which calls back to this function with gallery_id filled.
+			// new gallery
 			if ($this->Gallery->add($data, $uploadFieldName)) {
 				return true;
 			} else {
 				throw new Exception(__d('galleries', 'ERROR : Gallery add failed.', true));
 			}
 		}
-		break;
 	}
-	
+		
+/**
+ * Clean data method
+ * 
+ * Used to standardize data before creating or editing a gallery
+ * 
+ * @access protected
+ * @param array
+ * @return array
+ */
 	protected function _cleanData($data) {
 		if (empty($data['GalleryImage']['gallery_id']) && !empty($data['GalleryImage']['model']) && !empty($data['GalleryImage']['foreign_key'])) {
 			$gallery = $this->Gallery->find('first', array(
@@ -97,7 +159,54 @@ class GalleryImage extends GalleriesAppModel {
 				$data['GalleryImage']['gallery_id'] = $gallery['Gallery']['id'];
 			}
 		}
+		
+		if (!empty($data['GalleryImage']['serverfile'])) {
+			if (!empty($data['GalleryImage']['filename']['name'])) {
+				$filename = $data['GalleryImage']['filename'];
+				unset($data['GalleryImage']['filename']);
+				$data['GalleryImage']['filename'][] = $filename;
+			} else {
+				unset($data['GalleryImage']['filename']);
+			}
+			$serverFiles = explode(',', $data['GalleryImage']['serverfile']);
+			foreach ($serverFiles as $serverFile) {
+				if (!empty($serverFile)) {
+					$data['GalleryImage']['filename'][] = array(
+						'tmp_name' => array(
+							'_bypassUploadFileCheck',
+							$serverFile,
+							),
+						);
+				}
+			}
+		}
 		return $data;
+	}
+	
+/**
+ * Filename method
+ *
+ * Fill out the filename array as though it was a submitted file when it was really an existing file on the server.
+ *
+ * @param string
+ */
+ 	protected function _fileName($fileName) {
+		if (is_array($fileName['tmp_name'])) {
+			App::uses('File', 'Utility');
+			$fileName['tmp_name'][1] = $this->rootPath . ZuhaSet::webrootSubPath($fileName['tmp_name'][1]);
+			$File = new File($fileName['tmp_name'][1]);
+			$file = $File->info(); // get the file info (basename, extension, from Cake File class)
+			$file['type'] = $file['extension'] == 'jpg' ? 'image/jpeg' : 'image/' . $file['extension'];
+			return $fileName = array(
+				'name' => $file['basename'], 
+				'type' => $file['type'],
+				'tmp_name' => $fileName['tmp_name'],
+				'error' => 0,
+				'size' => $file['filesize'],
+				);
+		} else {
+			return $fileName;
+		}
 	}
 	
 /** 
@@ -146,6 +255,47 @@ class GalleryImage extends GalleriesAppModel {
 		$uploadOptions['thumbsizes']['large']['height'] = $this->largeImageHeight;
 		
 		return array_merge($data, $uploadOptions); 
+	}
+	
+/**
+ * Delete method
+ * 
+ * Delete both the record and the file on the server
+ * 
+ * @access public
+ * @param string
+ * @return bool
+ */
+ 	public function delete($id) {
+		$this->id = $id;
+		if (!$this->exists()) {
+			throw new Exception(__('Invalid file'));
+		}
+		$image = $this->read(null, $id);
+		$fileName = $image['GalleryImage']['filename'];
+		$file = $this->rootPath . ZuhaSet::webrootSubPath($image['GalleryImage']['dir']) . $fileName;
+		
+		
+		if (parent::delete($id)) {
+			if (file_exists($file)) {
+				unlink($file); // delete the largest file
+			}
+			$small = str_replace($fileName, 'thumb' . DS . 'small' . DS . $fileName, $file);
+			if (file_exists($small)) {
+				unlink($small); // delete the small thumb
+			}
+			$medium = str_replace($fileName, 'thumb' . DS . 'medium' . DS . $fileName, $file);
+			if (file_exists($medium)) {
+				unlink($medium); // delete the medium thumb
+			}
+			$large = str_replace($fileName, 'thumb' . DS . 'large' . DS . $fileName, $file);
+			if (file_exists($large)) {
+				unlink($large); // delete the medium thumb
+			}
+			return true;
+		} else {
+			throw new Exception(__('Delete failed'));
+		}
 	}
 		
 }

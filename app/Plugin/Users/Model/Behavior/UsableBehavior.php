@@ -1,4 +1,7 @@
 <?php
+App::uses('ModelBehavior', 'Model');
+App::uses('CakeSession', 'Model/Datasource');
+
 class UsableBehavior extends ModelBehavior {
 
 	public $model = '';
@@ -139,14 +142,39 @@ class UsableBehavior extends ModelBehavior {
 /**
  * Redirects to restricted if beforeFind emptied the results that would have otherwise not been empty
  *
+ * Adds pseudo field to denote whether the records is_used or not
+ *
  * @param {class} 		Model class triggering this callback
  * @param {array}		The data returned from the find query
  */
-	public function afterFind(&$Model, $results) {
-		if(empty($results) && str_replace('/', '', $_SERVER['REQUEST_URI']) != 'usersusersrestricted' && $this->restrictRedirect) : 
+	public function afterFind($Model, $results) {
+		if(empty($results) && str_replace('/', '', $_SERVER['REQUEST_URI']) != 'usersusersrestricted' && $this->restrictRedirect) { 
 			header("Location: /users/users/restricted");
 			break;
-		endif;
+		}
+		if (!empty($results)) {
+			$Model->bindModel(
+    	    	array('hasMany' => array(
+        	       	'Used' => array(
+            	       	'className' => 'Users.Used',
+						'foreignKey' => 'foreign_key',
+		        	    )
+	            	)));
+			$i=0;
+			foreach ($results as $result) {
+				if (!empty($result[$Model->alias][$Model->primaryKey])) {
+					$count = $Model->Used->find('count', array(
+						'conditions' => array(
+							'Used.foreign_key' => $result[$Model->alias][$Model->primaryKey],
+							'Used.model' => $Model->alias,
+							),
+						));;
+					$results[$i][$Model->alias]['__used'] = $count;
+				}
+				$i = $i + 1;
+			}
+		}
+		return $results;
 	}
 	
 	
@@ -156,25 +184,25 @@ class UsableBehavior extends ModelBehavior {
  */
 	public function afterSave(&$Model, $created) {
 		# get current users using, so that we can merge and keep duplicates out later
-		$currentUsers = $this->findUsedUsers($Model, $foreignKey = $Model->data[$Model->alias]['id'], $type = 'all');
+		$currentUsers = $this->findUsedUsers($Model, $Model->data[$Model->alias]['id'], 'all');
 		
 		# this is if we have a hasMany list of users coming in.
-		if (!empty($Model->data['User'][0])) :
-			foreach ($Model->data['User'] as $user) :
+		if (!empty($Model->data['User'][0])) {
+			foreach ($Model->data['User'] as $user) {
 				#$users[]['id'] = $user['user_id']; // before cakephp 2.0 upgrade
 				$users[]['id'] = !empty($user['user_id']) ? $user['user_id'] : $user['id'];
-			endforeach;
-		endif;
+			}
+		}
 		
 		# this is if we have a habtm list of users coming in.
-		if (!empty($this->userData['User']['User'][0])) :
-			foreach ($this->userData['User']['User'] as $userId) :
+		if (!empty($this->userData['User']['User'][0])) {
+			foreach ($this->userData['User']['User'] as $userId) {
 				$users[]['id'] = $userId;
-			endforeach;
-		endif;
+			}
+		}
 		
 		# this is if its a user group we need to look up.
-		if (!empty($Model->data[$Model->alias]['user_group_id'])) :
+		if (!empty($Model->data[$Model->alias]['user_group_id'])) {
 			# add all of the team members to the used table 
 			$userGroups = $Model->UserGroup->find('all', array(
 				'conditions' => array(
@@ -186,12 +214,12 @@ class UsableBehavior extends ModelBehavior {
 						),
 					),
 				));
-			foreach ($userGroups as $userGroup) :
-				if(!empty($userGroup['User'])) : 
+			foreach ($userGroups as $userGroup) {
+				if(!empty($userGroup['User'])) {
 					$users = !empty($users) ? array_merge($userGroup['User'], $users) : $userGroup['User'];
-				endif;
-			endforeach;
-		endif;
+				}
+			}
+		}
 		
 		
 		#gets rid of duplicate users from two arrays... @todo: maybe move this to its own function if its needed again
@@ -238,11 +266,11 @@ class UsableBehavior extends ModelBehavior {
 		$params = !empty($params) ? array_merge($joins, $params) : $joins;
 		# we can do a simple find with the model, because beforeFind of usable limits the results by user
 		$results = $Model->find($type, $params);
-		if (!empty($results)) : 
+		if (!empty($results)) { 
 			return $results;
-		else : 
+		} else {
 			return array();
-		endif;
+		}
 	}
 	
 	
@@ -273,30 +301,35 @@ class UsableBehavior extends ModelBehavior {
 			));
 		
 		$results = $Model->Used->User->find($type, $params);
-		if (!empty($results)) : 
+		if (!empty($results)) { 
 			return $results;
-		else : 
+		} else {
 			return array();
-		endif;
+		}
 	}
 	
 	
 /** 
  * Add a used user to an object
+ * 
+ * @param object
+ * @param array 		requires $data['Used']['foreign_key'], $data['Used']['user_id'], $data['Used']['model']
  */
-	public function addUsedUser(&$Model, $data) {
-		# do a check to see if the user is already a part of this object (we don't want duplicates)
-		$objects = $this->findUsedObjects($Model, $data['Used']['user_id'], 'all', array('conditions' => array('Used.foreign_key' => $data['Used']['foreign_key'])));
-		$objectIds = Set::extract("/{$Model->alias}/id", $objects);
-		if (array_search($data['Used']['foreign_key'], $objectIds)) : 
-			throw new Exception('User is already involved.');
-		else : 
-			if ($Model->Used->saveAll($data)) : 
-				return true;
-			else : 
-				throw new Exception('User add failed.');
-			endif;
-		endif;
+	public function addUsedUser($Model, $data) {
+		$Model->bindModel(
+        	array('hasMany' => array(
+               	'Used' => array(
+                   	'className' => 'Users.Used',
+					'foreignKey' => 'foreign_key',
+		            )
+	            )));
+		try {
+			$Model->Used->saveAll($data);
+			return true;
+		} catch (Exception $e) {
+			$message = strpos($e->getMessage(), 'USER_RECORDS') ? __('User is already involved') : $e->getMessage();
+			throw new Exception($message);
+		}
 	}
 	
 	
@@ -304,11 +337,11 @@ class UsableBehavior extends ModelBehavior {
  * Remove used users from the object
  */
 	public function removeUsedUser(&$Model, $userId = null, $foreignKey = null) {
-		if ($Model->Used->deleteAll(array('Used.user_id' => $userId, 'Used.foreign_key' => $foreignKey))) : 
+		if ($Model->Used->deleteAll(array('Used.user_id' => $userId, 'Used.foreign_key' => $foreignKey))) { 
 			return true;
-		else : 
+		} else {
 			return false;
-		endif;
+		}
 	}
 	
 	
@@ -346,6 +379,68 @@ class UsableBehavior extends ModelBehavior {
 			endforeach;
 		endif;
 		return $Model->data;
+	}
+
+/**
+ * Privatize method
+ * 
+ * Create a used record for the purpose of making it private.
+ *
+ * @param object
+ * @param array
+ * @access public
+ * @return bool
+ */
+	public function privatize($Model, $data) {
+		// if a user is not provided, then the logged in user will be the only allowed user. 
+		$data['Used']['user_id'] = !empty($data['Used']['user_id']) ? $data['Used']['user_id'] : CakeSession::read('Auth.User.id');
+		
+		// if a user is not provided, then the logged in user will be the only allowed user. 
+		$data['Used']['foreign_key'] = !empty($data['Used']['foreign_key']) ? $data['Used']['foreign_key'] : $Model->id;
+		
+		// if a user is not provided, then the logged in user will be the only allowed user. 
+		$data['Used']['model'] = !empty($data['Used']['model']) ? $data['Used']['model'] : $Model->alias;
+		
+		try {
+			$this->addUsedUser($Model, $data);
+			return true;
+		} catch (Exception $e) {
+			throw new Exception($e->getMessage());
+		}
+	}
+
+/**
+ * Publicize method
+ * 
+ * Delete all used records for a particular record. Thereby making it publicly available.
+ *
+ * @param object
+ * @param array
+ * @access public
+ * @return bool
+ */
+	public function publicize($Model, $data) {		
+		// if a foreignKey is not provided, then the most recent model id will be used
+		if (!empty($data['Used']['foreign_key'])) {
+			// if a model is not provided then use the current model alias
+			$data['Used']['model'] = !empty($data['Used']['model']) ? $data['Used']['model'] : $Model->alias;
+		
+			$Model->bindModel(
+        		array('hasMany' => array(
+                	'Used' => array(
+                    	'className' => 'Users.Used',
+						'foreignKey' => 'foreign_key',
+		                )
+	    	        )));
+			
+			if ($Model->Used->deleteAll(array('Used.foreign_key' => $data['Used']['foreign_key']))) { 
+				return true;
+			} else {
+				throw new Exception(__('Could not publicize'));
+			}
+		} else {
+			throw new Exception(__('Foreign required'));
+		}
 	}
 	
 }
