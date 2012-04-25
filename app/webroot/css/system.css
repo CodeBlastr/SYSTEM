@@ -296,8 +296,13 @@ input[type=radio], input[type=checkbox] {
 
 .preview {
 	border: 1px dashed #999; 
-	padding: 1em 1em 4em 1em;
+	padding: 1em;
+	margin: 0 0 1em 0;
 }
-.formPreview {
-	padding: 1em 1em 3em 1em;
+.preview:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
 }
