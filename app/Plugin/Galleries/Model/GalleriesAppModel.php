@@ -1,4 +1,5 @@
 <?php
+App::uses('AppModel', 'Model');
 class GalleriesAppModel extends AppModel {
 	
 	public $galleryType = 'fancybox';
