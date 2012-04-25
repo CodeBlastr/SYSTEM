@@ -1,16 +1,45 @@
 <?php
+/**
+ * GalleryImagesController Class
+ */
 class GalleryImagesController extends GalleriesAppController {
 
+/**
+ * var string
+ */
 	public $name = 'GalleryImages';
+
+/**
+ * var string
+ */
 	public $uses = 'Galleries.GalleryImage';
 
-	function edit($id = null) {
+
+/**
+ * View method
+ * 
+ * @param uuid/int
+ */
+	public function view($id = null) {
+		if (!$id) {
+			$this->Session->setFlash(__('Invalid GalleryImage.', true));
+			$this->redirect(array('action'=>'index'));
+		}
+		$this->set('galleryImage', $this->GalleryImage->read(null, $id));
+	}
+
+/**
+ * View method
+ * 
+ * @param uuid/int
+ */
+	public function edit($id = null) {
 		if (!empty($this->request->data)) {
 			if ($this->GalleryImage->add($this->request->data, 'filename')) {
-				$this->Session->setFlash(__('The image has been saved', true));
+				$this->Session->setFlash(__('The image has been saved'));
 				$this->redirect($this->referer());
 			} else {
-				$this->Session->setFlash(__('The image could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The image could not be saved. Please, try again.'));
 				$this->redirect($this->referer());
 			}
 		}
@@ -19,63 +48,20 @@ class GalleryImagesController extends GalleriesAppController {
 		}
 	}
 
-	function view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid GalleryImage.', true));
-			$this->redirect(array('action'=>'index'));
-		}
-		$this->set('galleryImage', $this->GalleryImage->read(null, $id));
-	}
-
-	function delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for Image', true));
+/**
+ * Delete method
+ *
+ * @param uuid/int
+ */
+	public function delete($id = null) {
+		try {
+			$this->GalleryImage->delete($id);
+			$this->Session->setFlash(__('Image deleted'));
 			$this->redirect($this->referer());
-		}
-		if ($this->GalleryImage->delete($id)) {
-			$this->Session->setFlash(__('Image deleted', true));
-			$this->redirect($this->referer());
-		}
-	}
-	
-	function admin_index() {
-		$this->GalleryImage->recursive = 0;
-		$this->set('galleryImages', $this->paginate());
-	}
-
-	function admin_view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid GalleryImage.', true));
-			$this->redirect(array('action'=>'index'));
-		}
-		$this->set('galleryImage', $this->GalleryImage->read(null, $id));
-	}
-
-	function admin_edit($id = null) {
-		if (!empty($this->request->data)) {
-			if ($this->GalleryImage->add($this->request->data)) {
-				$this->Session->setFlash(__('The image has been saved', true));
-				$this->redirect($this->referer());
-			} else {
-				$this->Session->setFlash(__('The image could not be saved. Please, try again.', true));
-				$this->redirect($this->referer());
-			}
-		}
-		if (empty($this->request->data)) {
-			$this->request->data = $this->GalleryImage->read(null, $id);
-		}
-	}
-
-	function admin_delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for GalleryImage', true));
-			$this->redirect($this->referer());
-		}
-		if ($this->GalleryImage->delete($id)) {
-			$this->Session->setFlash(__('GalleryImage deleted', true));
+		} catch (Exception $e) {
+			$this->Session->setFlash($e->getMessage());
 			$this->redirect($this->referer());
 		}
 	}
 
 }
-?>
