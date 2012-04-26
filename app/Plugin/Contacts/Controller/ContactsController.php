@@ -224,8 +224,7 @@ class ContactsController extends ContactsAppController {
 		$contactIndustries = $this->Contact->ContactIndustry->find('list');
 		$contactRatings = $this->Contact->ContactRating->find('list');
 		$users = $this->Contact->User->find('list');
-		$contacts = $this->Contact->Contact->find('list');
-		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users', 'contacts'));
+		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users'));
 	}
 
 	public function delete($id = null) {
