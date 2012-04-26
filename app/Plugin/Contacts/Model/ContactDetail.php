@@ -35,4 +35,3 @@ class ContactDetail extends ContactsAppModel {
 		return array_merge(array('email' => 'Email'), $types);
 	}
 }
-?>
