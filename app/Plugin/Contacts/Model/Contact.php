@@ -10,14 +10,14 @@ class Contact extends ContactsAppModel {
  * @var string
  */
 	public $name = 'Contact';
-	
+
 /**
  * Display field
  *
  * @var string
  */
 	public $displayField = 'name';
-	
+
 /**
  * Validate
  *
@@ -35,7 +35,7 @@ class Contact extends ContactsAppModel {
 			),
 		),
 	);
-	
+
 /**
  * Belongs to
  *
@@ -79,7 +79,7 @@ class Contact extends ContactsAppModel {
 		),
 	);
 
-	
+
 /**
  * Has many
  *
@@ -114,7 +114,7 @@ class Contact extends ContactsAppModel {
 		),
 	);
 
-	
+
 /**
  * Has and belongs to many
  *
@@ -152,17 +152,17 @@ class Contact extends ContactsAppModel {
 			'insertQuery' => ''
 		),
 	);
-	
-	
+
+
 /**
- * Construct 
+ * Construct
  *
  * @return null
  */
 	public function __construct($id = false, $table = null, $ds = null) {
     	parent::__construct($id, $table, $ds);
-		$this->order = array("{$this->alias}.name");	
-		
+		$this->order = array("{$this->alias}.name");
+
 		if (in_array('Tasks', CakePlugin::loaded())) {
 			$this->hasMany['Task'] = array(
 				'className' => 'Tasks.Task',
@@ -179,14 +179,14 @@ class Contact extends ContactsAppModel {
 			);
 		}
     }
-	
+
 /**
  * Add method
- * 
+ *
  * @return bool
  */
 	public function add($data) {
-		$data = $this->_cleanContactData($data);		
+		$data = $this->_cleanContactData($data);
 		if ($this->saveAll($data)) {
 			return __d('contacts', 'Contact saved successfully.');
 		} else {
@@ -194,7 +194,11 @@ class Contact extends ContactsAppModel {
 			foreach ($this->invalidFields() as $models) {
 				if (is_array($models)) {
 					foreach ($models as $err) {
-						$error .= $err . ', ';
+						if(is_string($err)) $error .= $err . ', ';
+						if(is_array($err)) {
+                          foreach($err as $er)
+                          $error .= $er . ', ';
+                        }
 					}
 				} else {
 					$error .= $models;
@@ -203,10 +207,10 @@ class Contact extends ContactsAppModel {
 			throw new Exception($error);
 		}
 	}
-	
+
 /**
  * Find companies
- * 
+ *
  * @return array
  */
 	public function findCompanies($type = 'list', $params = null) {
@@ -214,13 +218,13 @@ class Contact extends ContactsAppModel {
 			"{$this->alias}.is_company" => 1,
 			);
 		$params['order'] = empty($params['order']) ? "{$this->alias}.name" : $params['order'];
-		
+
 		return $this->find($type, $params);
 	}
-	
+
 /**
- * Find people 
- * 
+ * Find people
+ *
  * @return array
  */
 	public function findPeople($type = 'list', $params = null) {
@@ -228,11 +232,11 @@ class Contact extends ContactsAppModel {
 			"{$this->alias}.is_company" => 0,
 			);
 		$params['order'] = empty($params['order']) ? "{$this->alias}.name" : $params['order'];
-		
+
 		return $this->find($type, $params);
 	}
-	
-/** 
+
+/**
  * Find companies with registered users
  *
  * @return array
@@ -252,14 +256,14 @@ class Contact extends ContactsAppModel {
 				'ContactsContact.child_contact_id' => array_flip($people),
 				),
 			));
-		
+
 		$companies = Set::extract('/ContactsContact/parent_contact_id', $companies);
 		$params['conditions']['Contact.id'] = $companies;
-		
+
 		return $this->find($type, $params);
 	}
-	
-	
+
+
 /**
  * Clean data for saving
  *
@@ -280,7 +284,7 @@ class Contact extends ContactsAppModel {
 			$data = Set::merge($contact, $data);
 			unset($data['Contact']['modified']);
 		endif;
-		
+
 		# if employer is not empty merge all employers so that we don't lose any existing employers in the Habtm update
 		if (!empty($data['Employer'])) :
 			$mergedEmployers = Set::merge(Set::extract('/id', $data['Employer']), $data['Employer']['Employer']);
@@ -295,14 +299,14 @@ class Contact extends ContactsAppModel {
 			endif;
 		endforeach;
 		endif;
-		
+
 		//add contact name if its empty
 		if (empty($data['Contact']['name'])) :
 			$data['Contact']['name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : $data['User']['username'];
 			$data['Contact']['name'] = !empty($data['Contact']['name']) ? $data['Contact']['name'] : 'Unknown';
 		endif;
-		
-		
+
+
 		// remove empty contact detail values, because the form sets the array which makes a save attempt
 		if (!empty($data['ContactDetail'][0])) {
 			$i = 0;
@@ -323,7 +327,7 @@ class Contact extends ContactsAppModel {
 				$i++;
 			}
 		}
-		
+
 		return $data;
 	}
 
