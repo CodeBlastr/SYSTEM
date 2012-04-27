@@ -1086,15 +1086,15 @@ class FormHelper extends AppHelper {
 			case 'date':
 				#$input = $this->dateTime($fieldName, $dateFormat, null, $options);
 				$options['value'] = $selected;
-				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datepicker' : 'datepicker';
-				$type = 'text';
+				//$options['class'] = !empty($options['class']) ?  $options['class'] . ' datepicker' : 'datepicker';
+				//$type = 'text';
 				$input = $this->{$type}($fieldName, $options);
 			break;
 			case 'datetime':
-				#$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options);
+				$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options);
 				$options['value'] = $selected;
-				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datetimepicker' : 'datetimepicker';
-				$type = 'text';
+				//$options['class'] = !empty($options['class']) ?  $options['class'] . ' datetimepicker' : 'datetimepicker';
+				//$type = 'text';
 				$input = $this->{$type}($fieldName, $options);
 			break;
 			case 'richtext':
