@@ -523,10 +523,11 @@ form div.submit {
 }
 label {
 	display: block;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	max-width: 300px;
+    line-height: 1.4em;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 label a {
 	color: #333;
