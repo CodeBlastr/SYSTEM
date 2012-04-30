@@ -300,7 +300,7 @@ class UsersController extends UsersAppController {
  * Public login function to verify access to restricted areas.
  */
 	public function login() {
-		# force ssl for PCI compliance during regristration and login
+		// force ssl for PCI compliance during regristration and login
 		if (defined('__ORDERS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
 
 		if (!empty($this->request->data)) {
@@ -317,9 +317,9 @@ class UsersController extends UsersAppController {
 	protected function _login($user = null) {
 		if ($this->Auth->login($user)) {
 			try {
-				# make sure you don't need to verify your email first
+				// make sure you don't need to verify your email first
 				$this->User->checkEmailVerification($this->request->data);
-				# save the login meta data
+				// save the login meta data
 				$this->User->loginMeta($this->request->data);
 		        $this->redirect($this->_loginRedirect());
 			} catch (Exception $e) {
@@ -334,14 +334,14 @@ class UsersController extends UsersAppController {
 
 
     public function logout() {
-		if ($this->Auth->logout() || $this->Session->delete('Auth')) :
+		if ($this->Auth->logout() || $this->Session->delete('Auth')) {
 			$this->Session->destroy();
 			$this->Session->setFlash('Successful Logout');
 			$this->redirect($this->_logoutRedirect());
-		else :
+		} else {
 			$this->Session->setFlash('Logout Failed');
 			$this->redirect($this->_loginRedirect());
-		endif;
+		}
     }
 
 
@@ -349,15 +349,15 @@ class UsersController extends UsersAppController {
  * Set the default redirect variables, using the settings table constant.
  */
 	private function _loginRedirect() {
-		# this handles redirects where a url was called that redirected you to the login page
+		// this handles redirects where a url was called that redirected you to the login page
 		$redirect = $this->Auth->redirect();
 
 		if ($redirect == '/') {
-			# default login location
+			// default login location
 			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
 
 			if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
-				# this setting name is deprecated, will be deleted (got rid of the DEFAULT in the setting name.)
+				// this setting name is deprecated, will be deleted (got rid of the DEFAULT in the setting name.)
 				if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
 					$redirect = $urlParams;
 				}
@@ -367,26 +367,26 @@ class UsersController extends UsersAppController {
 			if (defined('__APP_LOGIN_REDIRECT_URL')) {
 				$urlParams = @unserialize(__APP_LOGIN_REDIRECT_URL);
 				if (!empty($urlParams) && is_numeric(key($urlParams)) && $this->Session->read('Auth.User.user_role_id')) {
-					# if the keys are numbers we're looking for a user role
+					// if the keys are numbers we're looking for a user role
 					if (!empty($urlParams[$this->Session->read('Auth.User.user_role_id')])) {
-						# if the user role is the index key then we have a special login redirect just for them
-						#debug($urlParams[$this->Session->read('Auth.User.user_role_id')]); break;
+						// if the user role is the index key then we have a special login redirect just for them
+						// debug($urlParams[$this->Session->read('Auth.User.user_role_id')]); break;
 						return $urlParams[$this->Session->read('Auth.User.user_role_id')];
 					} else {
-						# need a return here, to stop processing of the $redirect var
-						#debug($redirect); break;
+						// need a return here, to stop processing of the $redirect var
+						// debug($redirect); break;
 						return $redirect;
 					}
 				}
 				if (!empty($urlParams) && is_string(key($urlParams))) {
-					# if the keys are strings we've just formatted the settings by plugin, controller, action, instead of a text url
+					// if the keys are strings we've just formatted the settings by plugin, controller, action, instead of a text url
 					$redirect = $urlParams;
 				}
-				# its not an array because it couldn't be unserialized
+				// its not an array because it couldn't be unserialized
 				$redirect = __APP_LOGIN_REDIRECT_URL;
 			}
 		}
-		#debug($redirect); break;
+		// debug($redirect); break;
 		return $redirect;
 	}
 
