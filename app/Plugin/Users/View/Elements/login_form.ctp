@@ -75,16 +75,17 @@
 			<div class="<?php echo $columnClass; ?>">
 				<div class="<?php echo $holderClass; ?>">
 					<?php echo $this->Form->input('username', array('label'=>$usernameLabel, 'class'=>$inputClass, 'div'=>$rowClass)); ?>
-                    <?php if (!empty($remember)) { ?>
-					<div class="<?php echo $rowClass; ?>">
-						<?php echo $this->Form->input('remember_me', array('label' => $rememberLabel, 'class' => $checkboxClass, 'div' => false, 'type' => 'checkbox')); ?>
-					</div>
-                    <?php } ?>
 				</div>
 			</div>
 			<div class="<?php echo $columnClass?>">
 				<div class="<?php echo $holderClass?>">			
 					<?php echo $this->Form->input('password', array('label'=>$passwordLabel, 'class'=>$inputClass, 'div'=>$rowClass)); ?>
+                    
+                    <?php if (!empty($remember)) { ?>
+					<div class="<?php echo $rowClass; ?>">
+						<?php echo $this->Form->input('remember_me', array('label' => $rememberLabel, 'class' => $checkboxClass, 'div' => false, 'type' => 'checkbox')); ?>
+					</div>
+                    <?php } ?>
                     
 					<div class="<?php echo $rowClass; ?>">
 						<?php echo $this->Html->link($forgotPasswordTitle, array('plugin' => 'users', 'controller' => 'users', 'action' => 'forgot_password')); ?>
