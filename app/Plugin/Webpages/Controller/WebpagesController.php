@@ -54,7 +54,7 @@ class WebpagesController extends WebpagesAppController {
 		}
 		
 		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
-		# this is here because an element uses this view function
+		// this is here because an element uses this view function
 		if (!empty($webpage) && isset($this->request->params['requested'])) {
         	return $webpage;
         } 
@@ -88,7 +88,7 @@ class WebpagesController extends WebpagesAppController {
 			}
 		}
 		
-		# reuquired to have per page permissions
+		// reuquired to have per page permissions
 		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? $this->request->params['named']['alias'] : null;
 		$this->UserRole = ClassRegistry::init('Users.UserRole');
 		$userRoles = $this->UserRole->find('list');
@@ -106,8 +106,6 @@ class WebpagesController extends WebpagesAppController {
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->update($this->request->data);
-				#$this->Session->setFlash(__('Saved successfully', true));
-				#$this->redirect(array('action'=>'index'));
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}
@@ -119,7 +117,7 @@ class WebpagesController extends WebpagesAppController {
 			$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
 		}
 		
-		# reuquired to have per page permissions
+		// required to have per page permissions
 		$this->UserRole = ClassRegistry::init('Users.UserRole');
 		$userRoles = $this->UserRole->find('list');
 		$types = $this->Webpage->types();
@@ -140,7 +138,7 @@ class WebpagesController extends WebpagesAppController {
 			$this->set('ckeSettings', null);
 		}
 		
-		# parse this constant for output back into the form field for editing.
+		// parse this constant for output back into the form field for editing.
 		if (defined('__APP_TEMPLATES')) :
 			$templates = unserialize(__APP_TEMPLATES);
 			$template = !empty($templates['template'][$id]) ? unserialize(gzuncompress(base64_decode($templates['template'][$id]))): null;			
