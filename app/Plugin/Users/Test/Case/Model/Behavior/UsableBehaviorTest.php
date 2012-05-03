@@ -98,7 +98,6 @@ class UsableBehaviorTestCase extends CakeTestCase {
  * @return void
  */
 	public function testAddUsedUser() {
-		$this->Model->cacheQueries = false;
 		$data['Used']['user_id'] = 6;
 		$data['Used']['model'] = 'Article';
 		$data['Used']['foreign_key'] = '4f8c626b-8g8c-4c77-8bc1-1010124e0d46';
