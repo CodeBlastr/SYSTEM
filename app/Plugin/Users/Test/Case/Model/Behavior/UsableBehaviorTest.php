@@ -166,7 +166,9 @@ class UsableBehaviorTestCase extends CakeTestCase {
 				'Article.id' => $articleId,
 				),
 			));
-		$this->assertGreaterThan(1, $result['Article']['__used']); // test that it works with single records as well		
+		$this->assertGreaterThan(1, $result['Article']['__used']); // test that it works with single records as well
+		
+		CakeSession::destroy();
 	}
 	
 	
