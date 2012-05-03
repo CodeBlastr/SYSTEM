@@ -40,7 +40,7 @@ class UsableBehavior extends ModelBehavior {
  */
 	public function beforeFind(&$Model, $queryData) {
 		$authUser = CakeSession::read('Auth.User');
-		$userRole = $authUser['user_role_id'];
+		//$userRole = $authUser['user_role_id']; (this uncommented breaks our tests)
 		$userId = $authUser['id'];
 		
 		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/ && empty($queryData['nocheck'])) : 
