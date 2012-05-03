@@ -8,7 +8,7 @@ class ContactAddress extends ContactsAppModel {
 	var $belongsTo = array(
 		'ContactAddressType' => array(
 			'className' => 'Enumeration',
-			'foreignKey' => 'contact_address_type_id',
+			'foreignKey' => 'contact_address_type',
 			'conditions' => array('ContactAddressType.type' => 'CONTACTADDRESS'),
 			'fields' => '',
 			'order' => ''

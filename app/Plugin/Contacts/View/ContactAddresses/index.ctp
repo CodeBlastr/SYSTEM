@@ -3,19 +3,15 @@
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 			<th><?php echo $this->Paginator->sort('id');?></th>
-			<th><?php echo $this->Paginator->sort('contact_address_type_id');?></th>
+			<th><?php echo $this->Paginator->sort('contact_address_type');?></th>
 			<th><?php echo $this->Paginator->sort('street1');?></th>
 			<th><?php echo $this->Paginator->sort('street2');?></th>
 			<th><?php echo $this->Paginator->sort('city');?></th>
-			<th><?php echo $this->Paginator->sort('state_id');?></th>
+			<th><?php echo $this->Paginator->sort('state');?></th>
 			<th><?php echo $this->Paginator->sort('zip_postal');?></th>
-			<th><?php echo $this->Paginator->sort('country_id');?></th>
+			<th><?php echo $this->Paginator->sort('country');?></th>
 			<th><?php echo $this->Paginator->sort('primary');?></th>
 			<th><?php echo $this->Paginator->sort('contact_id');?></th>
-			<th><?php echo $this->Paginator->sort('creator_id');?></th>
-			<th><?php echo $this->Paginator->sort('modifier_id');?></th>
-			<th><?php echo $this->Paginator->sort('created');?></th>
-			<th><?php echo $this->Paginator->sort('modified');?></th>
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
@@ -34,17 +30,13 @@
 		<td><?php echo $contactAddress['ContactAddress']['street1']; ?>&nbsp;</td>
 		<td><?php echo $contactAddress['ContactAddress']['street2']; ?>&nbsp;</td>
 		<td><?php echo $contactAddress['ContactAddress']['city']; ?>&nbsp;</td>
-		<td><?php echo $contactAddress['ContactAddress']['state_id']; ?>&nbsp;</td>
+		<td><?php echo $contactAddress['ContactAddress']['state']; ?>&nbsp;</td>
 		<td><?php echo $contactAddress['ContactAddress']['zip_postal']; ?>&nbsp;</td>
-		<td><?php echo $contactAddress['ContactAddress']['country_id']; ?>&nbsp;</td>
+		<td><?php echo $contactAddress['ContactAddress']['country']; ?>&nbsp;</td>
 		<td><?php echo $contactAddress['ContactAddress']['primary']; ?>&nbsp;</td>
 		<td>
 			<?php echo $this->Html->link($contactAddress['Contact']['name'], array('controller' => 'contacts', 'action' => 'view', $contactAddress['Contact']['id'])); ?>
 		</td>
-		<td><?php echo $contactAddress['ContactAddress']['creator_id']; ?>&nbsp;</td>
-		<td><?php echo $contactAddress['ContactAddress']['modifier_id']; ?>&nbsp;</td>
-		<td><?php echo $contactAddress['ContactAddress']['created']; ?>&nbsp;</td>
-		<td><?php echo $contactAddress['ContactAddress']['modified']; ?>&nbsp;</td>
 		<td class="actions">
 			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $contactAddress['ContactAddress']['id'])); ?>
 			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $contactAddress['ContactAddress']['id'])); ?>

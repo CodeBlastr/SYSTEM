@@ -3,13 +3,13 @@
 	<fieldset>
  		<legend><?php echo __('Add Contact Address'); ?></legend>
 	<?php
-		echo $this->Form->input('contact_address_type_id');
+		echo $this->Form->input('contact_address_type');
 		echo $this->Form->input('street1');
 		echo $this->Form->input('street2');
 		echo $this->Form->input('city');
-		echo $this->Form->input('state_id');
+		echo $this->Form->input('state');
 		echo $this->Form->input('zip_postal');
-		echo $this->Form->input('country_id');
+		echo $this->Form->input('country');
 		echo $this->Form->input('primary');
 		echo $this->Form->input('contact_id');
 		echo $this->Form->input('creator_id');

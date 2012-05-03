@@ -26,9 +26,9 @@
 			<?php echo $contactAddress['ContactAddress']['city']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('State Id'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('State'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $contactAddress['ContactAddress']['state_id']; ?>
+			<?php echo $contactAddress['ContactAddress']['state']; ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Zip Postal'); ?></dt>
@@ -36,9 +36,9 @@
 			<?php echo $contactAddress['ContactAddress']['zip_postal']; ?>
 			&nbsp;
 		</dd>
-		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Country Id'); ?></dt>
+		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Country'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $contactAddress['ContactAddress']['country_id']; ?>
+			<?php echo $contactAddress['ContactAddress']['country']; ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Primary'); ?></dt>
