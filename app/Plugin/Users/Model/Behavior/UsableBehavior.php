@@ -327,7 +327,7 @@ class UsableBehavior extends ModelBehavior {
 			$Model->Used->saveAll($data);
 			return true;
 		} catch (Exception $e) {
-			$message = strpos($e->getMessage(), 'USER_RECORDS') ? __('User is already involved') : $e->getMessage();
+			$message = strpos($e->getMessage(), 'key') ? __('User is already involved') : $e->getMessage();
 			throw new Exception($message);
 		}
 	}
