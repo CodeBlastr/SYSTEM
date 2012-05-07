@@ -7,12 +7,12 @@
  * PHP versions 5
  *
  * Zuha(tm) : Business Management Applications (http://zuha.com)
- * Copyright 2009-2010, Zuha Foundation Inc. (http://zuhafoundation.org)
+ * Copyright 2009-2012, Zuha Foundation Inc. (http://zuhafoundation.org)
  *
  * Licensed under GPL v3 License
  * Must retain the above copyright notice and release modifications publicly.
  *
- * @copyright     Copyright 2009-2010, Zuha Foundation Inc. (http://zuha.com)
+ * @copyright     Copyright 2009-2012, Zuha Foundation Inc. (http://zuha.com)
  * @link          http://zuha.com Zuha™ Project
  * @package       zuha
  * @subpackage    zuha.app.views.admin
@@ -20,44 +20,28 @@
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
 ?>
-<?php 
-if (!empty($upgradeDB)) {
-?>
+<?php if (!empty($upgradeDb) && is_array($upgradeDb)) { ?>
 
 <div id="databaseUpgrades">
-  <h2>Database Upgrade Needed</h2>
-  <h6>The following database queries should run.</h6>
-  <?php 
-	echo $this->Form->create('Admin', array('url' => '/admin/')); 	
-	$n = 0;
-	foreach ($upgradeDB as $query) { 
-	?>
-  <p><?php echo $query; ?></p>
-  <?php
-		echo $this->Form->input('Query.'.$n.'.data', array('type' => 'hidden', 'value' => $query)); 
-		$n++;
-	}
-	echo $this->Form->end('Run Upgrade Queries');
-	?>
+	<?php echo $this->Form->create(''); ?>
+	<fieldset>
+    	<legend class="toggleClick">Database Upgrade Needed</legend>
+			<div style="padding: 2em;">
+        <?php
+		foreach ($upgradeDb as $value) {
+			echo __('On table <strong>%s</strong> the follow updates will run : <br />', $value['table']);
+			echo '<pre>' . $value['queries'] . '</pre>'; 
+		} ?>
+        </div>
+        <?php
+		echo $this->Form->hidden('Upgrade.confirmed', array('value' => true));
+        echo $this->Form->submit('Run Upgrade(s)'); ?>
+    </fieldset>
+	<?php echo $this->Form->end(); ?>
 </div>
-<?php 
-}
 
-if (!empty($previousUpgrade)) {
-?>
-<div id="databaseUpgrades">
-  <h2>Upgrade Queries Ran</h2>
-  <h6>The following database queries we're just ran.</h6>
-  <?php 
-	echo $this->Form->create('Admin', array('url' => '/admin/')); 	
-	$n = 0;
-	foreach ($previousUpgrade as $query) { ?>
-  <p><?php echo $query; ?></p>
-  <?php }	?>
-</div>
-<?php 
-}
-?>
+<?php } ?>
+
 <!-- /homeheader -->
 <div class="accordion">
   <ul>
