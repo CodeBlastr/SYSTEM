@@ -44,36 +44,67 @@ class AdminController extends AppController {
  * @return void
  */
     public function index () {
+		$this->_checkUpdates();
+	}
+	
+/**
+ * Check for updates
+ *
+ * Check all schema.php files against the current database to make sure we're fully up to date.
+ * 
+ * @access protected
+ * @param void
+ * @return void
+ */
+	protected function _checkUpdates() {
 		$debug = Configure::read('debug');
 		Configure::write('debug', 2);
 		$cacheDisable = Configure::read('Cache.disable');
 		Configure::write('Cache.disable', true);
-
-		foreach (CakePlugin::loaded() as $plugin) {
-			//$this->Schema = new CakeSchema(compact('name', 'path', 'file', 'connection', 'plugin'));
-			$this->Schema = new CakeSchema(array('name' => $plugin, 'path' => null, 'file' => false, 'connection' => 'default', 'plugin' => $plugin));
 		
-			$New = $this->Schema->load();
+		$this->Schema = new CakeSchema(array('path' => null, 'file' => false, 'connection' => 'default'));
+		$New = $this->Schema->load();
+		
+		if ($upgradeDb = $this->_update($New)) { // core updates
+			if ($upgradeDb === true) {
+    			$this->Session->setFlash(__('Update run. <a href="/admin">Check for more.</a>'));
+			} else {
+				$this->set(compact('upgradeDb'));
+			}
+		} else {
+			foreach (CakePlugin::loaded() as $plugin) {
+				$this->Schema = new CakeSchema(array('name' => $plugin, 'path' => null, 'file' => false, 'connection' => 'default', 'plugin' => $plugin));
 			
-			if ($upgradeDb = $this->_update($New)) {
-				if ($upgradeDb === true) {
-    				$this->Session->setFlash(__('Update run. <a href="/admin">Check for more.</a>'));
-					break; // so that we do one update at a time (really slow to check for updates)
-				} else {
-					$this->set(compact('upgradeDb'));
-					break; // so that we do one update at a time (really slow to check for updates)
+				$New = $this->Schema->load();
+			
+				if ($upgradeDb = $this->_update($New)) { // plugin updates
+					if ($upgradeDb === true) {
+	    				$this->Session->setFlash(__('Update run. <a href="/admin">Check for more.</a>'));
+						break; // so that we do one update at a time (really slow to check for updates)
+					} else {
+						$this->set(compact('upgradeDb'));
+						break; // so that we do one update at a time (really slow to check for updates)
+					}
 				}
-			} /*else {  // thinking about ways to speed up the updates (maybe by not checking already up to date ones)
-				$this->Session->write('Upgrade.done', array_merge($this->Session->read('Upgrade.done'), array($plugin)));
-				break;
-			} */
+			}
 		}
+			
 		
 		Configure::write('Cache.disable', $cacheDisable);	
 		Configure::write('debug', $debug);	
 	}
 	
-	
+/**
+ * Update method
+ *
+ * Check if update is needed, if confirmed is true, run the update
+ *
+ * @access protected
+ * @param object
+ * @param string
+ * @param bool
+ * @return mixed
+ */
 	protected function _update(&$Schema, $table = null, $confirmed = false) {
 		$db = ConnectionManager::getDataSource($this->Schema->connection);
 		$db->cacheSources = false;
