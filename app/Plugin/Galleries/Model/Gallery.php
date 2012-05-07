@@ -1,14 +1,15 @@
 <?php
 App::uses('GalleriesAppModel', 'Galleries.Model');
+
 class Gallery extends GalleriesAppModel {
 
-	var $name = 'Gallery';
+	public $name = 'Gallery';
 	// set up hard coded defaults, which get used if no data or site settings exist
-	var $galleryType = 'colorbox';
-	var $displayField = 'name';
+	public $galleryType = 'colorbox';
+	public $displayField = 'name';
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'GalleryThumb' => array(
 			'className' => 'Galleries.GalleryImage',
 			'foreignKey' => 'gallery_thumb_id',
@@ -32,7 +33,7 @@ class Gallery extends GalleriesAppModel {
 		)
 	);
 
-	var $hasOne = array(
+	public $hasOne = array(
 		'Alias' => array(
 			'className' => 'Alias',
 			'foreignKey' => 'value',
@@ -43,7 +44,7 @@ class Gallery extends GalleriesAppModel {
 		),
 	);
 
-	var $hasMany = array(
+	public $hasMany = array(
 		'GalleryImage' => array(
 			'className' => 'Galleries.GalleryImage',
 			'foreignKey' => 'gallery_id',
@@ -60,7 +61,7 @@ class Gallery extends GalleriesAppModel {
 	);
 
 
-	function afterSave($created) {
+	public function afterSave($created) {
 		$gallery = $this->find('first', array('Gallery.id' => $this->id));
 		if (!empty($gallery) && empty($gallery['Gallery']['model']) && empty($gallery['Gallery']['foreign_key'])) {
 			$gallery['Gallery']['model'] = 'Gallery';
@@ -97,7 +98,7 @@ class Gallery extends GalleriesAppModel {
  * @return {bool}		True if saved completely, false otherwise.
  * @todo				As part of the roll back methods, we could also delete the images that were uploaded.
  */
-	function add($data, $fileName) {
+	public function add($data, $fileName) {
 		// Making it so that you only need GalleryImage->add in a controller to make all the work happen.
 		// Take special note of the "rollback" features.  I really like rolling back whenever possible on failures.
 		// It keeps the database clean.
@@ -138,7 +139,7 @@ class Gallery extends GalleriesAppModel {
 		}
 	}
 
-	function makeThumb($data) {
+	public function makeThumb($data) {
 		if (!empty($data['Gallery']['id']) && !empty($data['GalleryImage']['id'])) {
 			# if the image id is there just set it quick
 			$data['Gallery']['gallery_thumb_id'] = $data['GalleryImage']['id'];
@@ -167,7 +168,7 @@ class Gallery extends GalleriesAppModel {
 		}
 	}
 
-	function types() {
+	public function types() {
 		return array(
 			'colorbox' => 'Colorbox',
 			'fancybox' => 'Fancybox',
@@ -177,4 +178,3 @@ class Gallery extends GalleriesAppModel {
 	}
 
 }
-?>

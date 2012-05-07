@@ -34,6 +34,7 @@
 		} ?>
         </div>
         <?php
+		echo $this->Form->hidden('Upgrade.plugin', array('value' => $upgradeDb[0]['plugin']));
 		echo $this->Form->hidden('Upgrade.confirmed', array('value' => true));
         echo $this->Form->submit('Run Upgrade(s)'); ?>
     </fieldset>
