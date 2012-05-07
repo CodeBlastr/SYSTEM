@@ -44,10 +44,11 @@ class AdminController extends AppController {
  * @return void
  */
     public function index () {
-		
+		$debug = Configure::read('debug');
+		Configure::write('debug', 2);
 		$cacheDisable = Configure::read('Cache.disable');
 		Configure::write('Cache.disable', true);
-			
+
 		foreach (CakePlugin::loaded() as $plugin) {
 			//$this->Schema = new CakeSchema(compact('name', 'path', 'file', 'connection', 'plugin'));
 			$this->Schema = new CakeSchema(array('name' => $plugin, 'path' => null, 'file' => false, 'connection' => 'default', 'plugin' => $plugin));
@@ -56,26 +57,32 @@ class AdminController extends AppController {
 			
 			if ($upgradeDb = $this->_update($New)) {
 				if ($upgradeDb === true) {
-    				$this->Session->setFlash(__('Update run'));
-					break;
+    				$this->Session->setFlash(__('Update run. <a href="/admin">Check for more.</a>'));
+					break; // so that we do one update at a time (really slow to check for updates)
 				} else {
 					$this->set(compact('upgradeDb'));
-					break;
+					break; // so that we do one update at a time (really slow to check for updates)
 				}
-			}		
+			} /*else {  // thinking about ways to speed up the updates (maybe by not checking already up to date ones)
+				$this->Session->write('Upgrade.done', array_merge($this->Session->read('Upgrade.done'), array($plugin)));
+				break;
+			} */
 		}
 		
-		Configure::write('Cache.disable', $cacheDisable);		
+		Configure::write('Cache.disable', $cacheDisable);	
+		Configure::write('debug', $debug);	
 	}
 	
 	
 	protected function _update(&$Schema, $table = null, $confirmed = false) {
 		$db = ConnectionManager::getDataSource($this->Schema->connection);
+		$db->cacheSources = false;
 
 		$options = array();
 		if (isset($this->params['force'])) {
 			$options['models'] = false;
 		}
+		
 		$Old = $this->Schema->read($options);
 		$compare = $this->Schema->compare($Old, $Schema);
 
@@ -97,12 +104,14 @@ class AdminController extends AppController {
 		foreach($contents as $key => $value) {
 			$out[$i]['table'] = $key;
 			$out[$i]['queries'] = $value;
+			$out[$i]['plugin'] = $this->Schema->plugin;
 			$i = $i + 1;
 		}
 		
 		if (!empty($this->request->data['Upgrade']['confirmed'])) {
 			try {
 				$this->_run($contents, 'update', $Schema);
+				return true;
 			} catch (Exception $e) {
 				debug($e);
 				break;
@@ -123,12 +132,11 @@ class AdminController extends AppController {
  */
 	protected function _run($contents, $event, &$Schema) {
 		if (empty($contents)) {
-			$this->err(__d('cake_console', 'Sql could not be run'));
-			return;
+			throw new Exception(__('Sql could not be run'));
 		}
+		
 		Configure::write('debug', 2);
 		$db = ConnectionManager::getDataSource($this->Schema->connection);
-
 		foreach ($contents as $table => $sql) {
 			if (empty($sql)) {
 				$out = __('%s is up to date.', $table);
@@ -137,6 +145,7 @@ class AdminController extends AppController {
 					return false;
 				}
 				$error = null;
+				
 				try {
 					$db->execute($sql);
 				} catch (PDOException $e) {
