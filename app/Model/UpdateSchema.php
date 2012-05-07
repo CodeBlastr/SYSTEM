@@ -69,8 +69,8 @@ class UpdateSchema extends Object {
 			foreach ($table as $old => $new) {
 				try {
 					$column = $this->db->query('SHOW COLUMNS FROM `' . $table . '_temp` LIKE \'' . $old . '\';');
-				} catch (PDOException $e) {
-					//  $e->getMessage();  ignore this exception we just want to know if this column exists
+				} catch (PDOException $e) { 
+					continue; // ignore this exception we just want to know if this column exists
 				} 
 				if (!empty($column)) {
 					try {
