@@ -22,7 +22,7 @@ class ZuhaSchemaShell extends SchemaShell {
  */
 	public function startup() {
 		$this->_welcome();
-		$this->out('Cake Schema Shell');
+		$this->out('Zuha Schema Shell');
 		$this->hr();
 
 		$name = $path = $connection = $plugin = null;

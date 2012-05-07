@@ -1,5 +1,11 @@
 <?php 
-class ZuhaSchema extends CakeSchema {
+class AppSchema extends CakeSchema {
+
+	public $renames = array();
+
+	public function __construct($options = array()) {
+		parent::__construct();
+	}
 
 	public function before($event = array()) {
 		App::uses('UpdateSchema', 'Model'); 
