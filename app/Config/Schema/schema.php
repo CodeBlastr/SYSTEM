@@ -2,10 +2,15 @@
 class ZuhaSchema extends CakeSchema {
 
 	public function before($event = array()) {
-		return true;
+		App::uses('UpdateSchema', 'Model'); 
+		$this->UpdateSchema = new UpdateSchema;
+		$before = $this->UpdateSchema->before($event);
+		return $before;
 	}
 
 	public function after($event = array()) {
+		$this->UpdateSchema->rename($event, $this->renames);
+		$this->UpdateSchema->after($event);
 	}
 
 	public $acos = array(
