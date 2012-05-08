@@ -68,7 +68,7 @@ if (empty($runUpdates)) { ?>
 
 	<?php
     $complete = CakeSession::read('Updates.complete');
-    if (empty($complete)) {  ?>
+    if (CakeSession::read('Updates') && empty($complete)) {  ?>
 		<script type="text/javascript">
         $(function() {
             //var pathname = window.location.pathname;

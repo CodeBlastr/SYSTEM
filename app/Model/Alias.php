@@ -1,9 +1,11 @@
 <?php
+App::uses('AppModel', 'Model');
+
 class Alias extends AppModel {
 
-	var $name = 'Alias';
+	public $name = 'Alias';
 	
-	var $validate = array(
+	public $validate = array(
 		#'name' => array('notempty'),
 		'alias' => array(
 			'notemptyRule' => array(
@@ -24,4 +26,3 @@ class Alias extends AppModel {
 	
 
 }
-?>
