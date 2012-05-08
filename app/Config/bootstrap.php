@@ -215,6 +215,8 @@ class ZuhaInflector {
  */
  	public function pluginize($name) {
 		# list of models and controllers to rename to the corresponding plugin
+		$name = Inflector::singularize(Inflector::camelize($name));
+		
 		$allowed = array(
 			'Banner' => 'Banners',
 			'Blog' => 'Blogs',

@@ -47,6 +47,8 @@ class AdminController extends AppController {
 		if (!empty($this->request->data['Upgrade']['all'])) {
 			$this->_checkUpdates();
 			$this->set('runUpdates', true);
+		} else {
+			$this->Session->delete('Updates');
 		}
 		$this->Session->write('Updates.end', end(CakePlugin::loaded()));
 	}
@@ -61,7 +63,8 @@ class AdminController extends AppController {
  * @return void
  */
 	protected function _checkUpdates() {
-		$lastTable = key($this->Session->read('Updates.last'));
+		$last = $this->Session->read('Updates.last') ? $this->Session->read('Updates.last') : array();
+		$lastTable = key(array_slice($this->Session->read('Updates.last'), -1));
 		
 		$debug = Configure::read('debug');
 		Configure::write('debug', 2);
@@ -71,21 +74,25 @@ class AdminController extends AppController {
 		$this->Schema = new CakeSchema(array('path' => null, 'file' => false, 'connection' => 'default'));
 		$New = $this->Schema->load();
 				
-		$lastPlugin = array_search(strtolower($lastTable), array_map('strtolower', CakePlugin::loaded()));
+		$lastPlugin = array_search(strtolower(ZuhaInflector::pluginize($lastTable)), array_map('strtolower', CakePlugin::loaded()));
 		
 		if ($lastPlugin === false && $upgrade = $this->_update($New)) {
-			$this->Session->write('Updates.last', $upgrade); // core updates
+			$this->Session->write('Updates.last', array_merge($last, $upgrade)); // core updates
 		} else {
 			$plugins = CakePlugin::loaded();
-			$next = current(array_slice($plugins, array_search(Inflector::camelize($lastTable), $plugins) + 1 ));			
+			$next = current(array_slice($plugins, array_search(ZuhaInflector::pluginize($lastTable), $plugins) + 1 ));			
+			
+			We're going to need to do $current and if current is up to date do the next one.
+			There might be a better way to handle this, by some how comparing tables to the tables in $last
+			and making sure they all exist or something.
 			
 			$this->Schema = new CakeSchema(array('name' => $next, 'path' => null, 'file' => false, 'connection' => 'default', 'plugin' => $next));				
 			$New = $this->Schema->load();
 			
 			if ($upgrade = $this->_update($New)) {
-				$this->Session->write('Updates.last', $upgrade); // plugin updates
+				$this->Session->write('Updates.last', array_merge($last, $upgrade)); // plugin updates
 			} else {
-				$this->Session->write('Updates.last', array(strtolower($next) => 'up to date')); // 
+				$this->Session->write('Updates.last', array_merge($last, array(strtolower($next) => 'up to date'))); // 
 			}
 		}
 		
