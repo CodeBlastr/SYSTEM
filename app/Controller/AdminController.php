@@ -45,13 +45,49 @@ class AdminController extends AppController {
  */
     public function index () {
 		if (!empty($this->request->data['Upgrade']['all'])) {
-			$this->_checkUpdates();
+			$this->_runUpdates();
 			$this->set('runUpdates', true);
 		} else {
 			$this->Session->delete('Updates');
 		}
 		$this->Session->write('Updates.end', end(CakePlugin::loaded()));
 	}
+	
+	
+	protected function _runUpdates() {
+		$tables = $this->_tables();
+		
+		// check the session for the last TABLE run (we need an array of all tables) 
+		debug($this->Session->read());
+		break;
+		// $db = ConnectionManager::getDataSource($connection);
+		// $db->listSources();
+		
+		// see if the NEXT TABLE is in a plugin or not
+		
+		// if NOT a plugin run the core update and write the session using the table name and status
+		
+		// if it is a plugin run the plugin update and write the session using the table name and status
+		
+		// find the next TABLE to run, use the TABLE's plugin to get the CakeSchema
+
+		
+		// if last TABLE run equals the end then quit and set a session Updates.complete = true and quit
+	}
+	
+	protected function _tables() {
+		$db = ConnectionManager::getDataSource('default');
+		foreach ($db->listSources() as $table) {
+			$tables[$table] = ZuhaInflector::pluginize($table);
+		}
+		
+		debug($tables);
+		break;
+	}
+	
+	
+	
+	
 	
 /**
  * Check for updates
@@ -82,9 +118,6 @@ class AdminController extends AppController {
 			$plugins = CakePlugin::loaded();
 			$next = current(array_slice($plugins, array_search(ZuhaInflector::pluginize($lastTable), $plugins) + 1 ));			
 			
-			We're going to need to do $current and if current is up to date do the next one.
-			There might be a better way to handle this, by some how comparing tables to the tables in $last
-			and making sure they all exist or something.
 			
 			$this->Schema = new CakeSchema(array('name' => $next, 'path' => null, 'file' => false, 'connection' => 'default', 'plugin' => $next));				
 			$New = $this->Schema->load();
