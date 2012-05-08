@@ -218,14 +218,14 @@ class ZuhaInflector {
 		$name = Inflector::singularize(Inflector::camelize($name));
 		
 		$allowed = array(
-			'Aco' => 'Privileges',
+			'Aco' => false,
 			'Activity' => 'Activities',
 			'AffiliateEarning' => 'Affiliates',
 			'Affiliated' => 'Affiliates',
 			'Affiliate' => 'Affiliates',
 			'Alias' => false,
-			'Aro' => 'Privileges',
-			'ArosAco' => 'Privileges',
+			'Aro' => false,
+			'ArosAco' => false,
 			'BlogPost' => 'Blogs',
 			'Blog' => 'Blogs',
 			'CatalogItemBrand' => 'Catalogs',
@@ -279,6 +279,7 @@ class ZuhaInflector {
 			'ProjectsWatcher' => 'Projects',
 			'ProjectsWiki' => 'Projects',
 			'Rating' => 'Ratings',
+			'Record' => 'Records',
 			'Setting' => false,
 			'Tagged' => 'Tags',
 			'Tag' => 'Tags',

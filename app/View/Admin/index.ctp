@@ -39,7 +39,7 @@ if (empty($runUpdates)) { ?>
       <ul>
         <li>
           <?php 
-            echo $this->Form->create(''); 
+            echo $this->Form->create('', array('id' => 'updateForm')); 
             echo $this->Form->hidden('Upgrade.all', array('value' => true));
             echo $this->Form->submit('Check for Updates');
             echo $this->Form->end(); ?>
@@ -51,24 +51,30 @@ if (empty($runUpdates)) { ?>
 <?php
 } else { ?>
 
-	<?php debug(CakeSession::read()); ?>
 	<div id="databaseUpgrades">
+   	  <?php 
+       $complete = CakeSession::read('Updates.complete');
+       echo $this->Form->create('', array('id' => 'autoUpdateForm')); 
+       echo $this->Form->hidden('Upgrade.all', array('value' => true));
+       //echo $this->Form->submit('Check for Updates');
+       echo $this->Form->end(); ?>
 	  <ul>
 	    <?php
-		foreach (CakeSession::read('Updates.last') as $text) {
-			echo '<li>' . $text . '</li>';
+		foreach (CakeSession::read('Updates.last') as $table => $action) {
+			echo __('<li>Table %s is %s</li>', $table, $action);
 		} ?>
 	  </ul>
 	</div>
 
 	<?php
-    $last = end(CakeSession::read('Updates.last'));
-    if (CakeSession::read('Updates.end') != $last && !empty($runUpdates)) {  ?>
+    $complete = CakeSession::read('Updates.complete');
+    if (empty($complete)) {  ?>
 		<script type="text/javascript">
         $(function() {
             //var pathname = window.location.pathname;
             //window.location.replace(pathname);
            // alert('lets refresh');
+		   $("#autoUpdateForm").submit();
         });
         </script>
 <?php 
