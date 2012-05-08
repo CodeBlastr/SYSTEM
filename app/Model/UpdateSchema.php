@@ -16,6 +16,15 @@ class UpdateSchema extends Object {
  */
   	public function before($event) {
 		if (!empty($event['update'])) {
+			
+			try {
+				// drop the table xyz_temp if it exists ( this was in the after(), and will probably go back, but for now, we leave it so that upgrades can be retrieved if it messes up data).
+				$this->db->query('DROP TABLE `' . $event['update'] . '_temp`;'); 
+				return true;
+			} catch (PDOException $e) {
+				// continue; the table didn't exist, no biggie, we were deleting it anyway (We're glad you're not there dirty table)
+			}
+			
 			try {
 				$this->db->execute('CREATE TABLE `' . $event['update'] . '_temp` LIKE `' . $event['update'] . '`;');
 				$this->db->execute('INSERT INTO `' . $event['update'] . '_temp` SELECT * FROM `' . $event['update'] . '`;');
@@ -39,7 +48,7 @@ class UpdateSchema extends Object {
  * @return bool
  */
   	public function after($event) {
-		if (!empty($event['update'])) {
+		/*if (!empty($event['update'])) {
 			try {
 				//$this->db->query('DROP TABLE `' . $event['update'] . '_temp`;'); 
 				return true;
@@ -49,7 +58,7 @@ class UpdateSchema extends Object {
 		} else {
 			debug($event);
 			break;
-		}
+		}*/
 		return true;
 	}
 	
