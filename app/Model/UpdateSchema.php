@@ -65,13 +65,15 @@ class UpdateSchema extends Object {
  */
   	public function rename($event, $schema) {	
 		if (!empty($schema[$event['update']])) { // ex. $schema['blog_posts'] 
-			$table = $schema[$event['update']];
-			foreach ($table as $old => $new) {
+			$table = $event['update'];
+			$columns = $schema[$event['update']];
+			foreach ($columns as $old => $new) {
 				try {
 					$column = $this->db->query('SHOW COLUMNS FROM `' . $table . '_temp` LIKE \'' . $old . '\';');
 				} catch (PDOException $e) { 
-					continue; // ignore this exception we just want to know if this column exists
-				} 
+					// throw new Exception($e->getMessage()); // turn this on to debug
+					continue;  // ignore this exception we just want to know if this column exists
+				}
 				if (!empty($column)) {
 					try {
 						$this->db->query('UPDATE `' . $table . '` AS `New` SET `New`.`' . $new . '` =  (SELECT `Temp`.`' . $old . '` FROM `' . $table . '_temp` AS `Temp` WHERE `Temp`.`id` = `New`.`id`);');
@@ -80,7 +82,7 @@ class UpdateSchema extends Object {
 						throw new Exception($event['update'] . ': ' . $e->getMessage());				
 					} 
 				}
-			}
+			} // end table loop
 		}
 		return true; // column doesn't exist it must have already been updated at some point
 	}
