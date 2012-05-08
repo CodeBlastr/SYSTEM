@@ -61,6 +61,7 @@ class AdminController extends AppController {
  * Run updates
  *
  * @todo write a test to make sure the plugin returns good values, and that will be a good way to test for whether the plugins array in bootstrap is still good during updates.
+ * @todo make it faster somehow... takes about 20 minutes right now  ( this might help... $db->describe($this); )
  */
 	protected function _runUpdates() {
 		$this->_tempSettings();
@@ -68,7 +69,7 @@ class AdminController extends AppController {
 		$lastTableWithPlugin = $this->Session->read('Updates.last'); // ex. array('blog_posts' => 'Blogs');
 		$lastTable = @array_pop(array_keys($this->Session->read('Updates.last'))); // check the session for the last TABLE run  
 		$nextTable = key(array_slice($allTables, array_search($lastTable, array_keys($allTables)) + 1));
-		$nextPlugin = $allTables[$nextTable];
+		$nextPlugin = !empty($nextTable) ? $allTables[$nextTable] : null;
 		$endTable = array_pop(array_keys($allTables)); // check the session for the last TABLE run  
 		
 		/* Turn on to debug 
