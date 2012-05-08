@@ -75,11 +75,13 @@ class ZuhaSchema extends CakeSchema {
 		$out .= "\t\tparent::__construct();\n";
 	
 		$className = $name . 'Schema';
-		include($this->path . DS . $this->file);
-		$Schema = new $className();
-		if (!empty($Schema->renames)) {
-			$tables = $this->_generateRenames($Schema->renames);
-			$out .= "\t\t\$this->renames = $tables";
+		@include($this->path . DS . $this->file);
+		if (class_exists($className)) {
+			$Schema = new $className();
+			if (!empty($Schema->renames)) {
+				$tables = $this->_generateRenames($Schema->renames);
+				$out .= "\t\t\$this->renames = $tables";
+			}
 		}
 		$out .= "\t}\n\n";
 		
