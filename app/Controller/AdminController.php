@@ -44,7 +44,11 @@ class AdminController extends AppController {
  * @return void
  */
     public function index () {
-		$this->_checkUpdates();
+		if (!empty($this->request->data['Upgrade']['all'])) {
+			$this->_checkUpdates();
+			$this->set('runUpdates', true);
+		}
+		$this->Session->write('Updates.end', end(CakePlugin::loaded()));
 	}
 	
 /**
@@ -57,6 +61,8 @@ class AdminController extends AppController {
  * @return void
  */
 	protected function _checkUpdates() {
+		$lastTable = key($this->Session->read('Updates.last'));
+		
 		$debug = Configure::read('debug');
 		Configure::write('debug', 2);
 		$cacheDisable = Configure::read('Cache.disable');
@@ -64,31 +70,24 @@ class AdminController extends AppController {
 		
 		$this->Schema = new CakeSchema(array('path' => null, 'file' => false, 'connection' => 'default'));
 		$New = $this->Schema->load();
+				
+		$lastPlugin = array_search(strtolower($lastTable), array_map('strtolower', CakePlugin::loaded()));
 		
-		if ($upgradeDb = $this->_update($New)) { // core updates
-			if ($upgradeDb === true) {
-    			$this->Session->setFlash(__('Update run. <a href="/admin">Check for more.</a>'));
-			} else {
-				$this->set(compact('upgradeDb'));
-			}
+		if ($lastPlugin === false && $upgrade = $this->_update($New)) {
+			$this->Session->write('Updates.last', $upgrade); // core updates
 		} else {
-			foreach (CakePlugin::loaded() as $plugin) {
-				$this->Schema = new CakeSchema(array('name' => $plugin, 'path' => null, 'file' => false, 'connection' => 'default', 'plugin' => $plugin));
+			$plugins = CakePlugin::loaded();
+			$next = current(array_slice($plugins, array_search(Inflector::camelize($lastTable), $plugins) + 1 ));			
 			
-				$New = $this->Schema->load();
+			$this->Schema = new CakeSchema(array('name' => $next, 'path' => null, 'file' => false, 'connection' => 'default', 'plugin' => $next));				
+			$New = $this->Schema->load();
 			
-				if ($upgradeDb = $this->_update($New)) { // plugin updates
-					if ($upgradeDb === true) {
-	    				$this->Session->setFlash(__('Update run. <a href="/admin">Check for more.</a>'));
-						break; // so that we do one update at a time (really slow to check for updates)
-					} else {
-						$this->set(compact('upgradeDb'));
-						break; // so that we do one update at a time (really slow to check for updates)
-					}
-				}
+			if ($upgrade = $this->_update($New)) {
+				$this->Session->write('Updates.last', $upgrade); // plugin updates
+			} else {
+				$this->Session->write('Updates.last', array(strtolower($next) => 'up to date')); // 
 			}
 		}
-			
 		
 		Configure::write('Cache.disable', $cacheDisable);	
 		Configure::write('debug', $debug);	
@@ -135,14 +134,15 @@ class AdminController extends AppController {
 		foreach($contents as $key => $value) {
 			$out[$i]['table'] = $key;
 			$out[$i]['queries'] = $value;
+			$out[$i]['name'] = $this->Schema->name;
 			$out[$i]['plugin'] = $this->Schema->plugin;
 			$i = $i + 1;
 		}
+		debug($out); // turn on to see queries after they run
 		
-		if (!empty($this->request->data['Upgrade']['confirmed'])) {
+		if (!empty($this->request->data['Upgrade']['all'])) {
 			try {
-				$this->_run($contents, 'update', $Schema);
-				return true;
+				return $this->_run($contents, 'update', $Schema);
 			} catch (Exception $e) {
 				debug($e);
 				break;
@@ -170,7 +170,7 @@ class AdminController extends AppController {
 		$db = ConnectionManager::getDataSource($this->Schema->connection);
 		foreach ($contents as $table => $sql) {
 			if (empty($sql)) {
-				$out = __('%s is up to date.', $table);
+				return array($table => 'up to date');
 			} else {
 				if (!$Schema->before(array($event => $table))) {
 					return false;
@@ -187,7 +187,7 @@ class AdminController extends AppController {
 				if (!empty($error)) {
 					throw new Exception($error);
 				} else {
-					return true; // update is run
+					return array($table => 'updated'); // update is run
 				}
 			}
 		}

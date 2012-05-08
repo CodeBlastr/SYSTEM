@@ -19,40 +19,58 @@
  * @since         Zuha(tm) v 0.0009
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
-?>
-<?php if (!empty($upgradeDb) && is_array($upgradeDb)) { ?>
+ 
+if (empty($runUpdates)) { ?>
 
-<div id="databaseUpgrades">
-	<?php echo $this->Form->create(''); ?>
-	<fieldset>
-    	<legend class="toggleClick">Database Upgrade Needed</legend>
-			<div style="padding: 2em;">
-        <?php
-		foreach ($upgradeDb as $value) {
-			echo __('On table <strong>%s</strong> the follow updates will run : <br />', $value['table']);
-			echo '<pre>' . $value['queries'] . '</pre>'; 
+    <div class="accordion">
+      <ul>
+        <li> <a href="#" title="Content"><span>Admin</span></a>
+      </ul>
+      <ul>
+        <li><?php echo $this->Html->link('Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index')); ?></li>
+        <li><?php echo $this->Html->link('Settings', array('plugin' => null, 'controller' => 'settings', 'action' => 'index')); ?></li>
+        <li><?php echo $this->Html->link('Custom Forms', array('plugin' => 'forms', 'controller' => 'forms', 'action' => 'index')); ?></li>
+        <li><?php echo $this->Html->link('Conditions', array('plugin' => null, 'controller' => 'conditions', 'action' => 'index')); ?></li>
+        <li><?php echo $this->Html->link('Workflows', array('plugin' => 'workflows', 'controller' => 'workflows', 'action' => 'index')); ?></li>
+      </ul>
+      <ul>
+        <li> <a href="#" title="Content"><span>Updates</span></a>
+      </ul>
+      <ul>
+        <li>
+          <?php 
+            echo $this->Form->create(''); 
+            echo $this->Form->hidden('Upgrade.all', array('value' => true));
+            echo $this->Form->submit('Check for Updates');
+            echo $this->Form->end(); ?>
+        </li>
+      </ul>
+    </div>
+
+
+<?php
+} else { ?>
+
+	<?php debug(CakeSession::read()); ?>
+	<div id="databaseUpgrades">
+	  <ul>
+	    <?php
+		foreach (CakeSession::read('Updates.last') as $text) {
+			echo '<li>' . $text . '</li>';
 		} ?>
-        </div>
-        <?php
-		echo $this->Form->hidden('Upgrade.plugin', array('value' => $upgradeDb[0]['plugin']));
-		echo $this->Form->hidden('Upgrade.confirmed', array('value' => true));
-        echo $this->Form->submit('Run Upgrade(s)'); ?>
-    </fieldset>
-	<?php echo $this->Form->end(); ?>
-</div>
+	  </ul>
+	</div>
 
-<?php } ?>
-
-<!-- /homeheader -->
-<div class="accordion">
-  <ul>
-    <li> <a href="#" title="Content"><span>Extend</span></a>
-  </ul>
-  <ul>
-    <li><?php echo $this->Html->link('Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index')); ?></li>
-    <li><?php echo $this->Html->link('Settings', array('plugin' => null, 'controller' => 'settings', 'action' => 'index')); ?></li>
-    <li><?php echo $this->Html->link('Custom Forms', array('plugin' => 'forms', 'controller' => 'forms', 'action' => 'index')); ?></li>
-    <li><?php echo $this->Html->link('Conditions', array('plugin' => null, 'controller' => 'conditions', 'action' => 'index')); ?></li>
-    <li><?php echo $this->Html->link('Workflows', array('plugin' => 'workflows', 'controller' => 'workflows', 'action' => 'index')); ?></li>
-  </ul>
-</div>
+	<?php
+    $last = end(CakeSession::read('Updates.last'));
+    if (CakeSession::read('Updates.end') != $last && !empty($runUpdates)) {  ?>
+		<script type="text/javascript">
+        $(function() {
+            //var pathname = window.location.pathname;
+            //window.location.replace(pathname);
+           // alert('lets refresh');
+        });
+        </script>
+<?php 
+    } 
+} ?>

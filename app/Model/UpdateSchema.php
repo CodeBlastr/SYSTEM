@@ -41,7 +41,7 @@ class UpdateSchema extends Object {
   	public function after($event) {
 		if (!empty($event['update'])) {
 			try {
-				$this->db->query('DROP TABLE `' . $event['update'] . '_temp`;');
+				//$this->db->query('DROP TABLE `' . $event['update'] . '_temp`;'); 
 				return true;
 			} catch (PDOException $e) {
 				throw new Exception($event['update'] . ': ' . $e->getMessage());
