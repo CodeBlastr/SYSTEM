@@ -4,35 +4,13 @@
  *
  */
 class GalleryFixture extends CakeTestFixture {
-
+	
 /**
- * Fields
+ * Import
  *
  * @var array
  */
-	public $fields = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
-		'gallery_thumb_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'comment' => 'The gallery image which serves as the front lead in to the gallery.'),
-		'name' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'description' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'model' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'foreign_key' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'type' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'thumb_width' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 4),
-		'thumb_height' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 4),
-		'medium_width' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 4),
-		'medium_height' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 4),
-		'full_width' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 4),
-		'full_height' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 4),
-		'conversion_type' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'transition_speed' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 5),
-		'creator_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
-		'modifier_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
-		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
-		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
-	);
+	public $import = array('config' => 'Galleries.Gallery');
 
 /**
  * Records
