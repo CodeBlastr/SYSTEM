@@ -44,7 +44,7 @@ class AdminController extends AppController {
  * @return void
  */
     public function index () {
-		//$this->Session->delete('Updates');
+		// $this->Session->delete('Updates');
 		// upgrade functionality...
 		if (!empty($this->request->data['Upgrade']['all'])) {
 			$this->_runUpdates();
