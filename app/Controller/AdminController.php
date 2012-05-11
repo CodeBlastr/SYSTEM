@@ -44,6 +44,7 @@ class AdminController extends AppController {
  * @return void
  */
     public function index () {
+		//$this->Session->delete('Updates');
 		// upgrade functionality...
 		if (!empty($this->request->data['Upgrade']['all'])) {
 			$this->_runUpdates();
@@ -71,6 +72,7 @@ class AdminController extends AppController {
 		$nextPlugin = !empty($nextTable) ? $allTables[$nextTable] : null;
 		$endTable = array_pop(array_keys($allTables)); // check the session for the last TABLE run  
 		
+		
 		/* Turn on to debug 
 		debug($lastTable);
 		debug($nextTable);
@@ -80,9 +82,15 @@ class AdminController extends AppController {
 		debug($this->Session->read());
 		break;*/
 		
+		if (!$this->Session->read('Updates.upgrade')) {
+			// there are some upgrades that have to be hard coded
+			$this->_upgrade();
+			$this->Session->write('Updates.upgrade', true);
+		}
+		
 		if (!empty($nextPlugin) && !in_array($nextPlugin, CakePlugin::loaded())) { 
 			// plugin is not loaded so downgrade
-			$this->Session->write('Updates.last', array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)));
+			$this->Session->write('Updates.last', !empty($lastTableWithPlugin) ? array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) : $this->_downgrade($nextTable, $lastTable));
 			return true;
 		} elseif ($endTable == $lastTable) {
 			// if last TABLE run equals the end then quit and set a session Updates.complete = true and quit
@@ -91,7 +99,6 @@ class AdminController extends AppController {
 			return true;
 		} elseif (empty($lastTable)) {
 			// The first time this is running, first time could be a plugin or a core
-			$this->_upgrade();
 			$nextTable = key($allTables);
 			$nextPlugin = current($allTables);
 			if (!empty($nextPlugin)) {
@@ -166,14 +173,22 @@ class AdminController extends AppController {
 		$db->cacheSources = false;
 		
 		try {
-			$db->query('DROP TABLE `zbk_' . $table . '`;'); 
+			$db->execute('DROP TABLE `zbk_' . $table . '`;'); 
 		} catch (PDOException $e) {
 			// do nothing, just tried deleting a table that doesn't exist
 		} 
 		
+		if ($db->query('SELECT * FROM `' . $table . '`;')) {
+			// backup a table that we're about to delete
+			try {
+				$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;');
+				$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
+			} catch (PDOException $e) {
+				throw new Exception($table . ': ' . $e->getMessage());
+			}
+		} 
+		
 		try {
-			$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;');
-			$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
 			$db->query('DROP TABLE `' . $table . '`;'); 
 			// need the last table, because the table just removed will no longer exist in the tables array
 			return array($lastTable => __('AND %s removed', $table));
@@ -369,6 +384,19 @@ class AdminController extends AppController {
 					if ($total[0]['total'] > 1) {
 						$limit = $total[0]['total'] - 1;
 						$db->query('DELETE FROM `used` WHERE `used`.`user_id` = \''.$total['used']['user_id'].'\' AND `used`.`model` = \''.$total['used']['model'].'\' AND `used`.`foreign_key` = \''.$total['used']['foreign_key'].'\'   LIMIT '.$limit.';');
+					}
+				}
+			}
+		}	
+		
+		if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0192) {
+			// eliminate used table duplicates so that the index can be added
+			if (array_search('user_followers', $tables)) {
+				$totals = $db->query('SELECT `id`, COUNT(*) AS total FROM `user_followers` GROUP BY `id` ORDER BY `total` DESC;');
+				foreach ($totals as $total) {
+					if ($total[0]['total'] > 1) {
+						$limit = $total[0]['total'] - 1;
+						$db->query('DELETE FROM `user_followers` WHERE `user_followers`.`id` = \''.$total['user_followers']['id'].'\'  LIMIT '.$limit.';');
 					}
 				}
 			}
