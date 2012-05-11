@@ -44,7 +44,6 @@ class AdminController extends AppController {
  * @return void
  */
     public function index () {
-		
 		// upgrade functionality...
 		if (!empty($this->request->data['Upgrade']['all'])) {
 			$this->_runUpdates();
@@ -79,14 +78,18 @@ class AdminController extends AppController {
 		debug($endTable);
 		debug($allTables);
 		debug($this->Session->read());
-		//break;*/
+		break;*/
 		
-		if ($endTable == $lastTable) {
+		if (!empty($nextPlugin) && !in_array($nextPlugin, CakePlugin::loaded())) { 
+			// plugin is not loaded so downgrade
+			$this->Session->write('Updates.last', array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)));
+			return true;
+		} elseif ($endTable == $lastTable) {
 			// if last TABLE run equals the end then quit and set a session Updates.complete = true and quit
 			$this->Session->write('Updates.complete', true);
 			$this->_tempSettings(false);
 			return true;
-		} else if (empty($lastTable)) {
+		} elseif (empty($lastTable)) {
 			// The first time this is running, first time could be a plugin or a core
 			$this->_upgrade();
 			$nextTable = key($allTables);
@@ -99,12 +102,12 @@ class AdminController extends AppController {
 			$this->Session->write('Updates.last', $update); 
 			$this->_tempSettings(false);
 			return true;			
-		} else if (!empty($lastTable) && empty($nextPlugin)) {
+		} elseif (!empty($lastTable) && empty($nextPlugin)) {
 			// NOT a plugin run the core update and write the session using the table name and status
 			$this->Session->write('Updates.last', array_merge($lastTableWithPlugin, $this->_runAppUpate($nextTable))); 
 			$this->_tempSettings(false);
 			return true;
-		} else if (!empty($lastTable) && !empty($nextPlugin)) {
+		} elseif (!empty($lastTable) && !empty($nextPlugin)) {
 			// if it is a plugin run the plugin update and write the session using the table name and status
 			$this->Session->write('Updates.last', array_merge($lastTableWithPlugin, $this->_runPluginUpate($nextPlugin, $nextTable)));
 			$this->_tempSettings(false);
@@ -145,6 +148,38 @@ class AdminController extends AppController {
 			));				
 		$New = $this->Schema->load();
 		return $this->_update($New, $table);
+	}
+	
+	
+/**
+ * Downgrade table method
+ *
+ * If a plugin table exists but the plugin isn't loaded remove the table. (for now we back it up)
+ *
+ * @access protected
+ * @param string
+ * @return array
+ * @todo maybe if the table is empty you don't back it up?
+ */
+	protected function _downgrade($table, $lastTable) {
+		$db = ConnectionManager::getDataSource('default');
+		$db->cacheSources = false;
+		
+		try {
+			$db->query('DROP TABLE `zbk_' . $table . '`;'); 
+		} catch (PDOException $e) {
+			// do nothing, just tried deleting a table that doesn't exist
+		} 
+		
+		try {
+			$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;');
+			$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
+			$db->query('DROP TABLE `' . $table . '`;'); 
+			// need the last table, because the table just removed will no longer exist in the tables array
+			return array($lastTable => __('AND %s removed', $table));
+		} catch (PDOException $e) {
+			throw new Exception($table . ': ' . $e->getMessage());
+		}
 	}
 	
 	
@@ -263,7 +298,7 @@ class AdminController extends AppController {
 	protected function _tables() {
 		$db = ConnectionManager::getDataSource('default');
 		foreach ($db->listSources() as $table) {
-			if (!strpos($table, '_temp')) {
+			if (strpos($table, 'zbk_') === false) {
 				$tables[$table] = ZuhaInflector::pluginize($table);
 			}
 		}

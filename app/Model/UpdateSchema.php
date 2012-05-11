@@ -18,16 +18,16 @@ class UpdateSchema extends Object {
 		if (!empty($event['update'])) {
 			
 			try {
-				// drop the table xyz_temp if it exists ( this was in the after(), and will probably go back, but for now, we leave it so that upgrades can be retrieved if it messes up data).
-				$this->db->query('DROP TABLE `' . $event['update'] . '_temp`;'); 
+				// drop the table zbk_oldname if it exists ( this was in the after(), and will probably go back, but for now, we leave it so that upgrades can be retrieved if it messes up data).
+				$this->db->query('DROP TABLE `zbk_' . $event['update'] . '`;'); 
 				return true;
 			} catch (PDOException $e) {
 				// continue; the table didn't exist, no biggie, we were deleting it anyway (We're glad you're not there dirty table)
 			}
 			
 			try {
-				$this->db->execute('CREATE TABLE `' . $event['update'] . '_temp` LIKE `' . $event['update'] . '`;');
-				$this->db->execute('INSERT INTO `' . $event['update'] . '_temp` SELECT * FROM `' . $event['update'] . '`;');
+				$this->db->execute('CREATE TABLE `zbk_' . $event['update'] . '` LIKE `' . $event['update'] . '`;');
+				$this->db->execute('INSERT INTO `zbk_' . $event['update'] . '` SELECT * FROM `' . $event['update'] . '`;');
 				return true;
 			} catch (PDOException $e) {
 				throw new Exception($event['update'] . ': ' . $e->getMessage());				
@@ -50,7 +50,7 @@ class UpdateSchema extends Object {
   	public function after($event) {
 		/*if (!empty($event['update'])) {
 			try {
-				//$this->db->query('DROP TABLE `' . $event['update'] . '_temp`;'); 
+				//$this->db->query('DROP TABLE `zbk_' . $event['update'] . '`;'); 
 				return true;
 			} catch (PDOException $e) {
 				throw new Exception($event['update'] . ': ' . $e->getMessage());
@@ -78,14 +78,14 @@ class UpdateSchema extends Object {
 			$columns = $schema[$event['update']];
 			foreach ($columns as $old => $new) {
 				try {
-					$column = $this->db->query('SHOW COLUMNS FROM `' . $table . '_temp` LIKE \'' . $old . '\';');
+					$column = $this->db->query('SHOW COLUMNS FROM `zbk_' . $table . '` LIKE \'' . $old . '\';');
 				} catch (PDOException $e) { 
 					// throw new Exception($e->getMessage()); // turn this on to debug
 					continue;  // ignore this exception we just want to know if this column exists
 				}
 				if (!empty($column)) {
 					try {
-						$this->db->query('UPDATE `' . $table . '` AS `New` SET `New`.`' . $new . '` =  (SELECT `Temp`.`' . $old . '` FROM `' . $table . '_temp` AS `Temp` WHERE `Temp`.`id` = `New`.`id`);');
+						$this->db->query('UPDATE `' . $table . '` AS `New` SET `New`.`' . $new . '` =  (SELECT `Temp`.`' . $old . '` FROM `zbk_' . $table . '` AS `Temp` WHERE `Temp`.`id` = `New`.`id`);');
 						return true;
 					} catch (PDOException $e) {
 						throw new Exception($event['update'] . ': ' . $e->getMessage());				
