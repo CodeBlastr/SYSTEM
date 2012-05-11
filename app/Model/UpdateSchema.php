@@ -25,12 +25,14 @@ class UpdateSchema extends Object {
 				// continue; the table didn't exist, no biggie, we were deleting it anyway (We're glad you're not there dirty table)
 			}
 			
-			try {
-				$this->db->execute('CREATE TABLE `zbk_' . $event['update'] . '` LIKE `' . $event['update'] . '`;');
-				$this->db->execute('INSERT INTO `zbk_' . $event['update'] . '` SELECT * FROM `' . $event['update'] . '`;');
-				return true;
-			} catch (PDOException $e) {
-				throw new Exception($event['update'] . ': ' . $e->getMessage());				
+			if ($this->db->query('SELECT * FROM `' . $event['update'] . '`;')) {
+				try {
+					$this->db->execute('CREATE TABLE `zbk_' . $event['update'] . '` LIKE `' . $event['update'] . '`;');
+					$this->db->execute('INSERT INTO `zbk_' . $event['update'] . '` SELECT * FROM `' . $event['update'] . '`;');
+					return true;
+				} catch (PDOException $e) {
+					throw new Exception($event['update'] . ': ' . $e->getMessage());				
+				}
 			}
 		} else {
 			debug($event);

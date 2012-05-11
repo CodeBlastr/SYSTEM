@@ -60,9 +60,11 @@ if (empty($runUpdates)) { ?>
        echo $this->Form->end(); ?>
 	  <ul>
 	    <?php
-		foreach (CakeSession::read('Updates.last') as $table => $action) {
-			echo __('<li>Table %s is %s</li>', $table, $action);
-		} ?>
+		if (CakeSession::read('Updates.last')) {
+			foreach (CakeSession::read('Updates.last') as $table => $action) {
+				echo __('<li>Table %s is %s</li>', $table, $action);
+			}
+		}?>
 	  </ul>
 	</div>
 
