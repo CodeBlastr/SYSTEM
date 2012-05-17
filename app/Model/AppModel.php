@@ -47,7 +47,7 @@ class AppModel extends Model {
 		// automatic upgrade the categories table 5/2/2012 
 		// temporary, will be removed soon
 		if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0191) {
-			$db = ConnectionManager::getDataSource('default');
+			$db = ConnectionManager::getDataSource(!empty($id['ds']) ? $id['ds'] : 'default');
 			$tables = $db->listSources();
 			if (array_search('categorizeds', $tables)) {
 				$this->uses = false;
