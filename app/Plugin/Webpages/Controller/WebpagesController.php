@@ -25,6 +25,7 @@ class WebpagesController extends WebpagesAppController {
 	public $uses = 'Webpages.Webpage';
 	public $paginate = array('limit' => 10, 'order' => array('Webpage.created' => 'desc'));
 	#var $components = array('Comments.Comments' => array('userModelClass' => 'User'));
+    public $helpers = array('Cke'); 
 
 	/* This is part of the search plugin */
     public $presetVars = array(array('field' => 'name', 'type' => 'value'));

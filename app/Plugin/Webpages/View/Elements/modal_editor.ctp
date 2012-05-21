@@ -15,6 +15,12 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 	var myStyles = new Array('tmp');
 	
 	function goEdit(id) {
+	<?php 
+	// taken from ckehelper 
+	if (CakeSession::read('Auth.User') && defined('SITE_DIR')) {
+		CakeSession::write('KCFINDER.disabled', false);
+		CakeSession::write('KCFINDER.uploadURL', '/theme/default/upload/' . CakeSession::read('Auth.User.id'));
+		CakeSession::write('KCFINDER.uploadDir', '../../../../' . SITE_DIR . '/View/Themed/Default/webroot/upload/' . CakeSession::read('Auth.User.id')); ?>
 		if (!destroyCKE()) {
 			return false;
 		}
@@ -34,15 +40,14 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 			}
 		});
         $(document.body).append('<div id="background_layer" onclick="offEditMode(true);"></div>');
-		<?php $dir = str_replace('sites'.DS, '', SITE_DIR); ?>
 		var editor = CKEDITOR.replace('modalEditor', {
 			extraPlugins: 'media', 
-			filebrowserBrowseUrl: '/js/kcfinder/browse.php?type=files&kcfinderuploadDir=<?php echo $dir; ?>', 
-			filebrowserImageBrowseUrl: '/js/kcfinder/browse.php?type=images&kcfinderuploadDir=<?php echo $dir; ?>',
-			filebrowserFlashBrowseUrl: '/js/kcfinder/browse.php?type=flash&kcfinderuploadDir=<?php echo $dir; ?>',
-			filebrowserUploadUrl: '/js/kcfinder/upload.php?type=files&kcfinderuploadDir=<?php echo $dir; ?>',
-			filebrowserImageUploadUrl: '/js/kcfinder/upload.php?type=images&kcfinderuploadDir=<?php echo $dir; ?>',
-			filebrowserFlashUploadUrl: '/js/kcfinder/upload.php?type=flash&kcfinderuploadDir=<?php echo $dir; ?>', 
+			filebrowserBrowseUrl: '/js/kcfinder/browse.php?type=files', 
+			filebrowserImageBrowseUrl: '/js/kcfinder/browse.php?type=img',
+			filebrowserFlashBrowseUrl: '/js/kcfinder/browse.php?type=flash',
+			filebrowserUploadUrl: '/js/kcfinder/upload.php?type=files',
+			filebrowserImageUploadUrl: '/js/kcfinder/upload.php?type=img',
+			filebrowserFlashUploadUrl: '/js/kcfinder/upload.php?type=flash', 
 			width: edit_width, 
 			height: edit_height,
 			// copied from config with the addition of save, and the subtraction of maximize
@@ -51,7 +56,7 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 			startupFocus: true});
 		
         editor.setData(page_data);
-        //dirty hack for fix ckeditor focus
+        // dirty hack for fix ckeditor focus
         if ($.inArray(id, myStyles)) {
 	        if (!CKEDITOR.env.ie) {$('<style type="text/css"> #cke_' + id + '{ position: fixed; z-index: 997} </style>').appendTo("head");}
 	        myStyles.push(id);
@@ -81,6 +86,8 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
             editor.focus();
 		});
 		return true;
+	<?php 
+	} // end the SITE DIR and User Session Check ?>
 	}
 
 	function destroyCKE () {

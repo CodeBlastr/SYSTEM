@@ -6,7 +6,7 @@
  */
 class CkeHelper extends Helper { 
 
-    var $helpers = Array('Html', 'Javascript'); 
+    public $helpers = array('Html', 'Javascript'); 
 
     public function load($id, $settings = null) { 		
 		# this is the id to replace the following two foreach's change it into the id format that cake uses from the field name.
@@ -35,6 +35,7 @@ class CkeHelper extends Helper {
         "; 
         return $this->Html->scriptBlock($code);  
     } 
+	
 	
 	protected function _fileManager() {
 		if (CakeSession::read('Auth.User') && defined('SITE_DIR')) {
