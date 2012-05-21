@@ -115,3 +115,6 @@
 [submodule "app/webroot/js/kcfinder"]
 	path = app/webroot/js/kcfinder
 	url = git@github.com:zuha/kcfinder.git
+[submodule "vendors/swift_mailer"]
+	path = vendors/swift_mailer
+	url = git@github.com:zuha/swift-mailer.git
