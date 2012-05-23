@@ -34,10 +34,7 @@ class UpdateSchema extends Object {
 					throw new Exception($event['update'] . ': ' . $e->getMessage());				
 				}
 			}
-		} else {
-			debug($event);
-			break;
-		}
+		} 
 		return true;
 	}
 	
@@ -75,7 +72,7 @@ class UpdateSchema extends Object {
  * @return bool
  */
   	public function rename($event, $schema) {	
-		if (!empty($schema[$event['update']])) { // ex. $schema['blog_posts'] 
+		if (!empty($event['update']) && !empty($schema[$event['update']])) { // ex. $schema['blog_posts'] 
 			$table = $event['update'];
 			$columns = $schema[$event['update']];
 			foreach ($columns as $old => $new) {

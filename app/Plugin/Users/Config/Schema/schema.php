@@ -128,7 +128,7 @@ class UsersSchema extends CakeSchema {
 		'forgot_key' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'forgot_key_created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'user_role_id' => array('type' => 'integer', 'null' => false, 'default' => NULL),
-		'credit_total' => array('type' => 'integer', 'null' => false, 'default' => NULL),
+		'credit_total' => array('type' => 'integer', 'null' => true, 'default' => NULL),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'username' => array('column' => 'username', 'unique' => 1)),
