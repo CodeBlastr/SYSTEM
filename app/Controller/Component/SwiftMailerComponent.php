@@ -229,7 +229,7 @@ class SwiftMailerComponent extends Component {
 		}
 		parent::__construct($collection, $settings);
 	}
-	
+
 
 /**
  * Retrieves html/text or plain/text content from /app/views/elements/$this->viewPath/$type/$template.ctp
