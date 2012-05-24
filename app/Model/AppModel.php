@@ -38,13 +38,13 @@ class AppModel extends Model {
  * @var int
  */
   	public $recursive = -1;
-	
+
 /**
  * Construct
  *
  */
 	public function __construct($id = false, $table = null, $ds = null) {
-		// automatic upgrade the categories table 5/2/2012 
+		// automatic upgrade the categories table 5/2/2012
 		// temporary, will be removed soon
 		if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0191) {
 			$db = ConnectionManager::getDataSource(!empty($id['ds']) ? $id['ds'] : 'default');
@@ -57,10 +57,10 @@ class AppModel extends Model {
 				break;
 			}
 		}
-		
+
 		parent::__construct($id, $table, $ds);
 	}
-	
+
 
 /**
  * Manipulate data before it is saved.

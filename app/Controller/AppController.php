@@ -254,7 +254,7 @@ class AppController extends Controller {
  * @param mixed
  * @return void
  */
-	private function __handlePaginatorFiltering($field, $object) {		
+	private function __handlePaginatorFiltering($field, $object) {
 		$options = $this->_getPaginatorVars($object, $field);
 		if (!empty($options['fieldName'])) {
 			if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {

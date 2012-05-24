@@ -256,6 +256,9 @@ class User extends UsersAppModel {
 						throw new Exception(__d('users', 'Thank you, please check your email to verify your account.'), 834726476);
 					} else {
 					}
+//				} elseif (defined('__APP_REGISTRATION_EMAIL_WELCOME')) {
+//                    $user = $this->find('first', array('conditions' => array('User.username' => $data['User']['username'])));
+//                    $this->__sendMail($user['User']['email'], '$subject', '$message', 'userAdd', '$from');
 				} else {
 					return true;
 				}

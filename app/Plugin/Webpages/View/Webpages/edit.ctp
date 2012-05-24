@@ -1,8 +1,8 @@
-<div class="webpages form"> 
+<div class="webpages form">
 <?php echo $this->Form->create('Webpage');?>
   <fieldset>
     <legend class="toggleClick"> <?php echo __('Search Engine Optimization');?> </legend>
-    <?php 
+    <?php
 		echo $this->Form->input('Webpage.id');
 		echo $this->Form->input('Alias.id');
 		echo $this->Form->hidden('Alias.value', array('value' => $this->Form->value('Webpage.id')));
@@ -17,7 +17,7 @@
   </fieldset>
   <fieldset>
     <legend class="toggleClick"> <?php echo __('Access Rights');?> </legend>
-    <?php 
+    <?php
 		echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => '', 'type' => 'select', 'multiple' => true, 'options' => $userRoles, 'between' => 'Customize page access. (Note : Uses global settings by default)'));
 	?>
   </fieldset>
@@ -37,8 +37,8 @@
 	echo $this->Form->input('Webpage.name');
 	echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'ckeSettings' => $ckeSettings));	?>
   </fieldset>
-<?php 
-if (in_array('Drafts', CakePlugin::loaded())) { 
+<?php
+if (in_array('Drafts', CakePlugin::loaded())) {
 	echo $this->Form->input('Webpage.draft', array('type' => 'checkbox', 'value' => 0, 'checked' => 'checked'));
 }
 echo $this->Form->end('Publish Update'); ?>
@@ -57,7 +57,7 @@ $this->set('context_menu', array('menus' => array(
 	  ))); ?>
 <script type="text/javascript">
 $(function() {
-		   
+
 	var webpageType = $("#WebpageType").val();
 	$("#WebpageIsDefault").parent().parent().hide();
 	if (webpageType == 'template' || webpageType == 'element') {
@@ -76,7 +76,7 @@ $(function() {
 			  $("#WebpageIsDefault").parent().parent().hide();
 			  $("#RecordLevelAccessUserRole").parent().parent().show();
 			  $("#AliasName").parent().parent().show();
-		}	
+		}
 		if (webpageType == 'template') {
 			$("#WebpageIsDefault").parent().parent().show();
 		}
@@ -84,12 +84,12 @@ $(function() {
 			$("#WebpageIsDefault").parent().parent().hide();
 		}
 	});
-	
-	
+
+
 	if ($("#WebpageIsDefault").is(":checked")) {
 		$("#WebpageTemplateUrls").parent().hide();
 	}
-	
+
 	$("#WebpageIsDefault").change(function() {
 		if ($(this).is(":checked")) {
 			$("#WebpageTemplateUrls").parent().hide();
@@ -97,8 +97,8 @@ $(function() {
 			$("#WebpageTemplateUrls").parent().show();
 		}
 	});
-	
-	
+
+
 <?php if (in_array('Drafts', CakePlugin::loaded())) {  ?>
 	updateSubmitButton();
 	var tid = setInterval(timedDraftSubmit, 30000);
@@ -106,17 +106,17 @@ $(function() {
 	$("#WebpageDraft").change(function() {
 		updateSubmitButton();
 	});
-	
+
 	$("#WebpageEditForm").submit(function() {
 		if ($("#WebpageDraft").is(":checked")) {
-			ajaxDraftSubmit(true) 
+			ajaxDraftSubmit(true)
 			return false;
 		} else {
 			return true;
 		}
 	});
 <?php } ?>
-		
+
 });
 
 
@@ -133,7 +133,7 @@ function timedDraftSubmit() {
 		ajaxDraftSubmit(false)
 	}
 }
-	
+
 
 function ajaxDraftSubmit(openwindow) {
 	$(".ajaxLoader").show("slow");
@@ -148,7 +148,7 @@ function ajaxDraftSubmit(openwindow) {
 			}
 			$(".ajaxLoader").hide("slow");
 		}
-	});  			
+	});
 }
 
 
