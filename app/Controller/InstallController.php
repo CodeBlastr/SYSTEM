@@ -175,7 +175,7 @@ class InstallController extends AppController {
 					$db->execute($sql);
 					# run the core table queries
 					$this->_create($db);
-					if ($this->lastTableName == $this->progress) :
+					if ($this->lastTableName == $this->progress) {
 						# run the required plugins
 						if ($this->_installPluginSchema('Users', 'Users')) :
 							$users = true;
@@ -189,28 +189,28 @@ class InstallController extends AppController {
 						if ($this->_installPluginSchema('Galleries', 'Galleries')) :
 							$galleries = true;
 						endif;
-						if ($users && $webpages && $contacts && $galleries) :
+						if ($users && $webpages && $contacts && $galleries) {
 							# run the required data
-							if ($install = $this->_installCoreData($db)) :
-								if ($this->_installCoreFiles()) :
-									$this->redirect('http://'.$this->options['siteDomain'].'/install/login');
-								else :
-									$this->Session->setFlash(__('File copy failed.' . $install));
-									$this->redirect($this->referer());
-								endif;
-							else :
-								$this->Session->setFlash(__('Database data insert broke (schema completed).'));
-								$this->redirect($this->referer());
-							endif;
-						else :
-							$this->Session->setFlash(__("Error :
+							try {
+								$this->_installCoreData($db);
+							} catch (Exception $e) {
+								throw new Exception($e->getMessage());
+							}
+							
+							try {
+								$this->_installCoreFiles();
+								$this->redirect('http://'.$this->options['siteDomain'].'/install/login');
+							} catch (Exception $e) {
+								throw new Exception(__('File copy failed. %s %s', $install, $e->getMessage()));
+							}
+						} else {
+							throw new Exception(__("Error :
 								Users: {$users},
 								Webpages: {$webpages},
 								Contacts: {$contacts},
 								Galleries: {$galleries}"));
-							$this->redirect($this->referer());
-						endif;
-					endif;
+						}
+					}
 				} catch (PDOException $e) {
 					$error = $e->getMessage();
 					$db->disconnect();
@@ -557,19 +557,22 @@ class InstallController extends AppController {
 		}
 	}
 
-
-
+/**
+ * Install the data necessary to have a working zuha site.
+ * 
+ * @todo Roll back the database (delete the tables) if it fails
+ */
 	protected function _installCoreData(&$db) {
-		try {
-			# run each data sql insert
-			foreach ($this->_getInstallSqlData() as $sql) :
-				$db->execute($sql);
-			endforeach;
-			return true;
-		} catch (PDOException $e) {
-			$error = $e->getMessage();
-			return $error;
+		# run each data sql insert
+		foreach ($this->_getInstallSqlData() as $sql) {
+			try {
+				$db->query($sql);
+			} catch (PDOException $e) {
+				$error = $e->getMessage();
+				throw new Exception($error);
+			}
 		}
+		return true;
 	}
 
 
@@ -585,18 +588,18 @@ class InstallController extends AppController {
 
 		$dataStrings[] = "INSERT INTO `aros` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `rght`) VALUES (1, NULL, 'UserRole', 1, NULL, 1, 4), (2, NULL, 'UserRole', 2, NULL, 5, 6), (3, NULL, 'UserRole', 3, NULL, 7, 8), (6, 1, 'User', 1, NULL, 2, 3), (5, NULL, 'UserRole', 5, NULL, 9, 10);";
 
-		$dataStrings[] = "INSERT INTO `contacts` (`id`, `name`, `contact_type_id`, `contact_source_id`, `contact_industry_id`, `contact_rating_id`, `user_id`, `is_company`, `creator_id`, `modifier_id`, `created`, `modified`) VALUES
-('4eea7b66-6fb4-4635-93b5-0b28124e0d46', 'Zuha Administrator', NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, '2011-12-15 22:57:42', '2011-12-15 22:57:42');";
+		$dataStrings[] = "INSERT INTO `contacts` (`id`, `name`, `user_id`, `is_company`, `created`, `modified`) VALUES
+('1', 'Zuha Administrator', 1, 0, '".date('Y-m-d h:i:s')."', '".date('Y-m-d h:i:s')."');";
 
-		$dataStrings[] = "INSERT INTO `settings` (`id`, `type`, `name`, `value`, `description`, `plugin`, `model`, `created`, `modified`) VALUES (1, 'System', 'ZUHA_DB_VERSION', '0.0176', '', NULL, NULL, '0000-00-00 00:00:00', '0000-00-00 00:00:00'), (2, 'System', 'GUESTS_USER_ROLE_ID', '5', '', NULL, NULL, '0000-00-00 00:00:00', '0000-00-00 00:00:00'), (3, 'System', 'LOAD_PLUGINS', 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges', '', NULL, NULL, '0000-00-00 00:00:00', '0000-00-00 00:00:00'), (4, 'System', 'SITE_NAME', '".$options['siteName']."', '', NULL, NULL, '0000-00-00 00:00:00', '0000-00-00 00:00:00');";
+		$dataStrings[] = "INSERT INTO `settings` (`id`, `type`, `name`, `value`) VALUES (1, 'System', 'ZUHA_DB_VERSION', '0.0176'), (2, 'System', 'GUESTS_USER_ROLE_ID', '5'), (3, 'System', 'LOAD_PLUGINS', 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges'), (4, 'System', 'SITE_NAME', '".$options['siteName']."');";
 
-		$dataStrings[] = "INSERT INTO `users` (`id`, `parent_id`, `reference_code`, `full_name`, `first_name`, `last_name`, `username`, `password`, `email`, `view_prefix`, `last_login`, `forgot_key`, `forgot_key_created`, `forgot_tries`, `user_role_id`, `credit_total`, `slug`, `created`, `modified`, `facebook_id`, `is_active`) VALUES
-(1, NULL, 'lqnvph9u', 'Zuha Administrator', 'Zuha', 'Administrator', 'admin', '3eb13b1a6738103665003dea496460a1069ac78a', 'admin@example.com', 'admin', NULL, NULL, '2011-12-15 10:57:42', NULL, 1, 0, NULL, '2011-12-15 22:57:42', '2011-12-16 13:47:58', NULL, 0);";
+		$dataStrings[] = "INSERT INTO `users` (`id`, `full_name`, `first_name`, `last_name`, `username`, `password`, `email`, `view_prefix`, `user_role_id`, `created`, `modified`) VALUES
+('1', 'Zuha Administrator', 'Zuha', 'Administrator', 'admin', '3eb13b1a6738103665003dea496460a1069ac78a', 'admin@example.com', 'admin', 1, '".date('Y-m-d h:i:s')."', '".date('Y-m-d h:i:s')."');";
 
 		$dataStrings[] = "INSERT INTO `user_roles` (`id`, `parent_id`, `name`, `lft`, `rght`, `view_prefix`, `is_system`, `created`, `modified`) VALUES (1, NULL, 'admin', 1, 2, 'admin', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:24'), (2, NULL, 'managers', 3, 4, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:41'), (3, NULL, 'users', 5, 6, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:50'), (5, NULL, 'guests', 7, 8, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:56:05');";
 
-		$dataStrings[] = "INSERT INTO `webpages` (`id`, `name`, `title`, `content`, `start_date`, `end_date`, `published`, `keywords`, `description`, `is_default`, `template_urls`, `user_roles`, `creator_id`, `modifier_id`, `created`, `modified`) VALUES
-(1, 'Homepage', '', 'Congratulations!&nbsp;&nbsp; Welcome to the first page of your new Zuha install.&nbsp;&nbsp; ', NULL, NULL, NULL, '', '', 0, '', '', 1, 1, '2011-12-15 22:46:29', '2011-12-15 22:47:07');";
+		$dataStrings[] = "INSERT INTO `webpages` (`id`, `name`, `content`) VALUES
+(1, 'Homepage', 'Congratulations!&nbsp;&nbsp; Welcome to the first page of your new Zuha install.&nbsp;&nbsp;');";
 
 		return $dataStrings;
 
