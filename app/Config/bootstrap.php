@@ -260,7 +260,7 @@ class ZuhaInflector {
 			'Form' => 'Forms',			
 			'Gallery' => 'Galleries',
 			'GalleryImage' => 'Galleries',
-			'Invite' => 'Invite',
+			'Invite' => 'Invites',
 			'InvoiceItem' => 'Invoices',
 			'InvoiceTime' => 'Invoices',
 			'Invoice' => 'Invoices',
