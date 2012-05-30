@@ -902,8 +902,8 @@ class MeioUploadBehavior extends ModelBehavior {
 			),
 			$params);
 		// Import phpThumb class
-		App::import('Vendor','phpthumb', array('file' => 'phpThumb'.DS.'phpthumb.class.php'));
-
+		//App::import('Vendor', 'Galleries.phpThumb', array('file' => 'phpThumb'.DS.'phpthumb.class.php'));
+		require_once(APP. 'Plugin' .DS. 'Galleries' .DS. 'vendors' . DS . 'phpThumb' .DS. 'phpthumb.class.php'); // @todo import
 		// Configuring thumbnail settings
 		$phpThumb = new phpthumb;
 		$phpThumb->setSourceFilename($source);
