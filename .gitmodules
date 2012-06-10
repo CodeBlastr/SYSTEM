@@ -123,4 +123,4 @@
 	url = git@github.com:zuha/Email-Marketing-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Facebook"]
 	path = app/Plugin/Facebook
-	url = https://github.com/zuha/Facebook-Zuha-Cakephp-Plugin.git
+	url = git@github.com:zuha/Facebook-Zuha-Cakephp-Plugin.git
