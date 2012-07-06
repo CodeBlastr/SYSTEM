@@ -14,3 +14,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php
       'log' => true
   ));
 }
+App::uses('AppErrorHandler', 'Lib/Error');
+Configure::write('Exception', array(
+	'handler' => 'AppErrorHandler::handleException',
+	'renderer' => 'AppExceptionRenderer',
+	'log' => true
+));

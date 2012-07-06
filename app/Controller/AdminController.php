@@ -171,29 +171,35 @@ class AdminController extends AppController {
 	protected function _downgrade($table, $lastTable) {
 		$db = ConnectionManager::getDataSource('default');
 		$db->cacheSources = false;
+		$tableCheck = $db->query('SHOW TABLES LIKE "' . $table . '";');
 		
-		try {
-			$db->execute('DROP TABLE `zbk_' . $table . '`;'); 
-		} catch (PDOException $e) {
-			// do nothing, just tried deleting a table that doesn't exist
-		} 
-		
-		if ($db->query('SELECT * FROM `' . $table . '`;')) {
-			// backup a table that we're about to delete
+		if (!empty($tableCheck)) {
 			try {
-				$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;');
-				$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
+				$db->execute('DROP TABLE `zbk_' . $table . '`;'); 
+			} catch (PDOException $e) {
+				// do nothing, just tried deleting a table that doesn't exist
+			} 
+			
+			if ($db->query('SELECT * FROM `' . $table . '`;')) {
+				// backup a table that we're about to delete
+				try {
+					$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;');
+					$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
+				} catch (PDOException $e) {
+					throw new Exception($table . ': ' . $e->getMessage());
+				}
+			} 
+			
+			try {
+				$db->query('DROP TABLE `' . $table . '`;'); 
+				// need the last table, because the table just removed will no longer exist in the tables array
+				return array($lastTable => __('AND %s removed', $table));
 			} catch (PDOException $e) {
 				throw new Exception($table . ': ' . $e->getMessage());
 			}
-		} 
-		
-		try {
-			$db->query('DROP TABLE `' . $table . '`;'); 
-			// need the last table, because the table just removed will no longer exist in the tables array
-			return array($lastTable => __('AND %s removed', $table));
-		} catch (PDOException $e) {
-			throw new Exception($table . ': ' . $e->getMessage());
+		} else {
+			// the table doesn't exist so its already downgrade
+			return array($table => __('AND %s was already gone'));
 		}
 	}
 	
