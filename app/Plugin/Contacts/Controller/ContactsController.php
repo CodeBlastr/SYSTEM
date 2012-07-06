@@ -23,44 +23,39 @@ class ContactsController extends ContactsAppController {
 	
 	
 	public function index() {
-		$this->paginate = array(
-			'conditions' => array(
-				'Contact.is_company' => 1,
-				),
-			'fields' => array(
-				'id',
-				'name',
-				'contact_type_id',
-				'contact_source_id',
-				'contact_industry_id',
-				'contact_rating_id',
-				),
-			'contain' => array(
-				'ContactType' => array(
-					'fields' => array(
-						'name',
-						),
-					),
-				'ContactSource' => array(
-					'fields' => array(
-						'name',
-						),
-					),
-				'ContactIndustry' => array(
-					'fields' => array(
-						'name',
-						),
-					),
-				'ContactRating' => array(
-					'fields' => array(
-						'name',
-						),
+		$this->paginate['conditions'] = array('Contact.is_company' => 1);
+		$this->paginate['fields'] = array(
+			'id',
+			'name',
+			'contact_type_id',
+			'contact_source_id',
+			'contact_industry_id',
+			'contact_rating_id',
+			);
+		$this->paginate['contain'] = array(
+			'ContactType' => array(
+				'fields' => array(
+					'name',
 					),
 				),
-			'order' => array(
-				'Contact.name'
+			'ContactSource' => array(
+				'fields' => array(
+					'name',
+					),
 				),
-			'limit' => 25,
+			'ContactIndustry' => array(
+				'fields' => array(
+					'name',
+					),
+				),
+			'ContactRating' => array(
+				'fields' => array(
+					'name',
+					),
+				),
+			);
+		$this->paginate['order'] = array(
+			'Contact.name'
 			);
 		$this->set('contacts', $this->paginate());
 		$this->set('displayName', 'name');
@@ -108,7 +103,6 @@ class ContactsController extends ContactsAppController {
 			'order' => array(
 				'Contact.name'
 				),
-			'limit' => 25,
 			);
 		$this->set('contacts', $this->paginate());
 		$this->set('displayName', 'name');
@@ -272,7 +266,6 @@ class ContactsController extends ContactsAppController {
 			'order' => array(
 				'Task.created DESC'
 				),
-			'limit' => 10,
 			);
 		$contact = $this->Contact->find('first', array(
 			'conditions' => array('Contact.id' =>  $contactId)));

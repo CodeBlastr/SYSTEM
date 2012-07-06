@@ -4,7 +4,6 @@ class GalleriesController extends GalleriesAppController {
 	public $name = 'Galleries';
 	public $uses = 'Galleries.Gallery';
 	public $allowedActions = array('thumb');
-	public $paginate = array();
 
 
 /**
