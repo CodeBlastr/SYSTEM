@@ -1,25 +1,5 @@
-<div id="quickNav">
-  <div id="quickNavLeft"><?php echo !empty($quickNavBeforeBack_callback) ? $quickNavAfterBack_callback : '' ; ?><?php echo !empty($quickNavAfterBack_callback) ? $quickNavAfterBack_callback : '<a onclick="history.go(-1)" class="back">Back</a>' ; ?></div>
-  <?php echo $this->Element('page_title'); ?>
-  <div id="quickNavRight"> <a href="/admin/" class="menu">Main Menu</a> <a href="/" class="search"><img src="data:image/png;base64,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" alt="Search" width="15" height="15"/></a> </div>
-</div>
-<div id="siteSearch" class="hide">
-  <form id="searchForm" method="get" action="/admin/searchable/search_indexes/">
-    <div class="input">
-      <input type="text" value="Search" id="searchInput" name="term" title="Search" class="grayOut toggleTitle">
-    </div>
-  </form>
-</div>
-<div id="siteMenu" class="hide">
-  <ul>
-    <li><?php echo $this->Html->link('<span>Dashboard</span>', array('plugin' => null, 'controller' => 'admin', 'action' => 'index'), array('escape' => false, 'title' => 'Privileges, Settings, Workflows, Conditions, Custom Forms', 'id' => 'navAdmin')); ?></li>
-    <li><?php echo $this->Html->link('<span>Theme</span>', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'theme'), array('escape' => false, 'title' => 'Templates, CSS, Javascript', 'id' => 'navTheme')); ?></li>
-    <li><?php echo $this->Html->link('<span>Content</span>', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Pages, Modules, Media, Categories, Tags, Enumerations', 'id' => 'navContent')); ?></li>
-    <li><?php echo $this->Html->link('<span>Contacts</span>', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Leads, Opportunities', 'id' => 'navContacts')); ?></li>
-    <li><?php echo $this->Html->link('<span>Ecommerce</span>', array('plugin' => 'catalogs', 'controller' => 'catalogs', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Catalogs, Orders', 'id' => 'navProducts')); ?></li>
-    <li><?php echo $this->Html->link('<span>Billing</span>', array('plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Estimates, Invoices', 'id' => 'navBilling')); ?></li>
-    <li><?php echo $this->Html->link('<span>Support</span>', array('plugin' => 'projects', 'controller' => 'projects', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Projects, Tickets, Timesheets', 'id' => 'navSupport')); ?></li>
-    <li><?php echo $this->Html->link('<span>Users</span>', array('plugin' => 'users', 'controller' => 'users', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Social, Groups, Members, Messages', 'id' => 'navUsers')); ?></li>
-    <li><?php echo $this->Html->link('<span>Reports</span>', array('plugin' => 'reports', 'controller' => 'reports', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Report Builder, Analytics', 'id' => 'navReports')); ?></li>
-  </ul>
-</div>
+	<div data-role="header">
+		<?php echo $this->Element('page_title'); ?>		
+		<?php echo !empty($quickNavBeforeBack_callback) ? $quickNavAfterBack_callback : '' ; ?><?php echo !empty($quickNavAfterBack_callback) ? $quickNavAfterBack_callback : '<a data-rel="back" data-icon="back" data-iconpos="notext" data-direction="reverse">Back</a>' ; ?>
+		<a href="/forms/forms/add" data-icon="search" data-iconpos="notext" data-rel="dialog" data-transition="fade">Search</a>
+	</div>
