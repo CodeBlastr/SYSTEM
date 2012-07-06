@@ -69,6 +69,12 @@ class AppErrorController extends AppController {
     }
 	
     public function handleNotFound($request, $response, $error, $originalException) {
+		$message = sprintf("[%s] %s\n%s",
+				get_class($originalException),
+				$originalException->getMessage(),
+				$originalException->getTraceAsString()
+			);
+		CakeLog::write(LOG_ERR, $message);
 		$eName = get_class($originalException);
 		//print_r('.'.$eName.'.'); break;
 		if (Configure::read('debug') == 2 && $eName != 'MissingControllerException') {
