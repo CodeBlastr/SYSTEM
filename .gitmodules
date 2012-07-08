@@ -34,9 +34,6 @@
 [submodule "app/Plugin/Activities"]
 	path = app/Plugin/Activities
 	url = git@github.com:zuha/Activities-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Affiliates"]
-	path = app/Plugin/Affiliates
-	url = git@github.com:zuha/Affiliates-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Blogs"]
 	path = app/Plugin/Blogs
 	url = git@github.com:zuha/Blogs-MultiUser-Zuha-Cakephp-Plugin.git
