@@ -61,9 +61,6 @@
 [submodule "app/Plugin/Media"]
 	path = app/Plugin/Media
 	url = git@github.com:zuha/Media-Files-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Members"]
-	path = app/Plugin/Members
-	url = git@github.com:zuha/Subscriptions-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Messages"]
 	path = app/Plugin/Messages
 	url = git@github.com:zuha/Messages-Zuha-Cakephp-Plugin.git
