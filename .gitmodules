@@ -46,9 +46,6 @@
 [submodule "app/Plugin/Credits"]
 	path = app/Plugin/Credits
 	url = git@github.com:zuha/Store-Credits-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Encoders"]
-	path = app/Plugin/Encoders
-	url = git@github.com:zuha/Encoders-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Invites"]
 	path = app/Plugin/Invites
 	url = git@github.com:zuha/Invites-Zuha-Cakephp-Plugin.git
