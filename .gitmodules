@@ -49,9 +49,6 @@
 [submodule "app/Plugin/Messages"]
 	path = app/Plugin/Messages
 	url = git@github.com:zuha/Messages-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/News"]
-	path = app/Plugin/News
-	url = git@github.com:zuha/News-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Projects"]
 	path = app/Plugin/Projects
 	url = git@github.com:zuha/Project-Management-Zuha-Cakephp-Plugin.git
