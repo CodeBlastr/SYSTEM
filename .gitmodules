@@ -1,6 +1,3 @@
-[submodule "app/Plugin/Favorites"]
-	path = app/Plugin/Favorites
-	url = git@github.com:zuha/Favorites-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Records"]
 	path = app/Plugin/Records
 	url = git@github.com:zuha/Directories-Zuha-Cakephp-Plugin.git
