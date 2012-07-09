@@ -106,9 +106,6 @@
 [submodule "vendors/swift_mailer"]
 	path = vendors/swift_mailer
 	url = git@github.com:zuha/swift-mailer.git
-[submodule "app/Plugin/Notifications"]
-	path = app/Plugin/Notifications
-	url = git@github.com:zuha/Email-Marketing-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Facebook"]
 	path = app/Plugin/Facebook
 	url = git@github.com:zuha/Facebook-Zuha-Cakephp-Plugin.git
