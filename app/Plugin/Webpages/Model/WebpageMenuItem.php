@@ -1,10 +1,10 @@
 <?php
-class MenuItem extends MenusAppModel {
-	var $name = 'MenuItem';
-	var $displayField = 'item_text';
-	var $useTable = 'menus';
-	var $actsAs = array('Tree');
-	var $validate = array(
+class WebpageMenuItem extends WebpagesAppModel {
+	public $name = 'WebpageMenuItem';
+	public $displayField = 'item_text';
+	public $useTable = 'webpage_menus';
+	public $actsAs = array('Tree');
+	public $validate = array(
 		'item_name' => array(
 			'numeric' => array(
 				'rule' => array('notempty'),
@@ -28,41 +28,27 @@ class MenuItem extends MenusAppModel {
 	);
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
-	var $belongsTo = array(
+	public $belongsTo = array(
 		# this would not work with the className as 'Menus.Menu'
-		'Menu' => array(
-			'className' => 'Menus.Menu',
+		'WebpageMenu' => array(
+			'className' => 'Webpages.WebpageMenu',
 			'foreignKey' => 'menu_id',
 			'conditions' => '',
 			'fields' => '',
-			'order' => 'Menu.order'
+			'order' => 'WebpageMenu.order'
 		),
 		'ParentMenuItem' => array(
-			'className' => 'Menus.MenuItem',
+			'className' => 'Webpages.WebpageMenuItem',
 			'foreignKey' => 'parent_id',
 			'conditions' => array('ParentMenuItem.menu_id' => 1),
 			'fields' => '',
 			'order' => 'ParentMenuItem.order'
-		),
-		'Creator' => array(
-			'className' => 'Users.User',
-			'foreignKey' => 'creator_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
-		'Modifier' => array(
-			'className' => 'Users.User',
-			'foreignKey' => 'modifier_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
 		)
 	);
 	
-	var $hasMany = array(
+	public $hasMany = array(
 		'ChildMenuItem' => array(
-			'className' => 'Menus.MenuItem',
+			'className' => 'Webpages.WebpageMenuItem',
 			'foreignKey' => 'parent_id',
 			'dependent' => false,
 			'conditions' => '',
@@ -76,7 +62,7 @@ class MenuItem extends MenusAppModel {
 		)
 	);
 	
-	function add($data) {
+	public function add($data) {
 		if ($this->save($data)) {
 			return true;
 		} else {
@@ -84,9 +70,8 @@ class MenuItem extends MenusAppModel {
 		}
 	}
 	
-	function itemTargets() {
+	public function itemTargets() {
 		return array('_blank' => '_blank', '_self' => '_self', '_parent' => '_parent', '_top' => '_top');
 	}
 
 }
-?>

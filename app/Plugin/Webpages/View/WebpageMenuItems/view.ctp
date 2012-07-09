@@ -3,22 +3,22 @@
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Menu'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $this->Html->link($menuItem['Menu']['name'], array('controller' => 'menus', 'action' => 'view', $menuItem['Menu']['id'])); ?>
+			<?php echo $this->Html->link($menuItem['WebpageMenu']['name'], array('controller' => 'menus', 'action' => 'view', $menuItem['WebpageMenu']['id'])); ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Item Text'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $menuItem['MenuItem']['item_text']; ?>
+			<?php echo $menuItem['WebpageMenuItem']['item_text']; ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Item Url'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $menuItem['MenuItem']['item_url']; ?>
+			<?php echo $menuItem['WebpageMenuItem']['item_url']; ?>
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __('Order'); ?></dt>
 		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
-			<?php echo $menuItem['MenuItem']['order']; ?>
+			<?php echo $menuItem['WebpageMenuItem']['order']; ?>
 			&nbsp;
 		</dd>
 	</dl>
@@ -26,14 +26,12 @@
 <div class="actions">
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
-		<li><?php echo $this->Html->link(__('Edit Menu', true), array('action' => 'edit', $menuItem['MenuItem']['id'])); ?> </li>
-		<li><?php echo $this->Html->link(__('Delete Menu', true), array('action' => 'delete', $menuItem['MenuItem']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $menuItem['MenuItem']['id'])); ?> </li>
+		<li><?php echo $this->Html->link(__('Edit Menu', true), array('action' => 'edit', $menuItem['WebpageMenuItem']['id'])); ?> </li>
+		<li><?php echo $this->Html->link(__('Delete Menu', true), array('action' => 'delete', $menuItem['WebpageMenuItem']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $menuItem['WebpageMenuItem']['id'])); ?> </li>
 		<li><?php echo $this->Html->link(__('List Menus', true), array('action' => 'index')); ?> </li>
 		<li><?php echo $this->Html->link(__('New Menu', true), array('action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Menus', true), array('controller' => 'menus', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Parent Menu', true), array('controller' => 'menus', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Creator', true), array('controller' => 'users', 'action' => 'add')); ?> </li>
+		<li><?php echo $this->Html->link(__('List Menus', true), array('controller' => 'webpage_menus', 'action' => 'index')); ?> </li>
+		<li><?php echo $this->Html->link(__('New Parent Menu', true), array('controller' => 'webpage_menus', 'action' => 'add')); ?> </li>
 	</ul>
 </div>
 <div class="related">
