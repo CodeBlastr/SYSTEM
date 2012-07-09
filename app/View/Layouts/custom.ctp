@@ -86,7 +86,7 @@ if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html
 		} 
 		echo $scripts_for_layout;
 		if (defined('__REPORTS_ANALYTICS')) :
-			echo $this->Element('analytics', array(), array('plugin' => 'reports'));
+			echo $this->Element('analytics', array(), array('plugin' => 'webpages'));
 		endif;
 	?>
 </head>
