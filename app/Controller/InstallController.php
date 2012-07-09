@@ -26,7 +26,7 @@ class InstallController extends AppController {
 		if ($request->controller == 'install' || $request->action == 'site') {
 			Configure::write('Session', array(
 				'defaults' => 'php',
-				'cookie' => 'CAKEPHP'
+				'cookie' => 'PHPSESSID'
 			));
 		}
 
@@ -399,8 +399,8 @@ class InstallController extends AppController {
 			$fileName = rtrim($this->Schema->file, '.php');
 			$options['file'] = $fileName . '_' . $this->params['snapshot'] . '.php';
 		}
-		$Schema = $this->Schema->load($options);
-
+		$Schema = $this->Schema->load($options);	
+		
 		if (!$Schema) {
 			$this->Session->setFlash(__('No schema file found for this plugin.'));
 			$this->redirect($this->referer());
