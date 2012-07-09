@@ -1,6 +1,3 @@
-[submodule "app/Plugin/Records"]
-	path = app/Plugin/Records
-	url = git@github.com:zuha/Directories-Zuha-Cakephp-Plugin.git
 [submodule "sites"]
 	path = sites
 	url = git@razorit.beanstalkapp.com:/razorit/zuha-sites.git
