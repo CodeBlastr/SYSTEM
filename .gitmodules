@@ -49,9 +49,6 @@
 [submodule "app/Plugin/Invoices"]
 	path = app/Plugin/Invoices
 	url = git@github.com:zuha/Invoices-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Locations"]
-	path = app/Plugin/Locations
-	url = git@github.com:zuha/Locations-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Media"]
 	path = app/Plugin/Media
 	url = git@github.com:zuha/Media-Files-Zuha-Cakephp-Plugin.git
