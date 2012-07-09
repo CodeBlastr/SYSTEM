@@ -10,9 +10,6 @@
 [submodule "app/Plugin/Tags"]
 	path = app/Plugin/Tags
 	url = git@github.com:zuha/Tags-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Polls"]
-	path = app/Plugin/Polls
-	url = git@github.com:zuha/Polls-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Forms"]
 	path = app/Plugin/Forms
 	url = git@github.com:zuha/Custom-Forms-Zuha-Cakephp-Plugin.git
