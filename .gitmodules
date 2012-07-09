@@ -58,9 +58,6 @@
 [submodule "app/Plugin/Searchable"]
 	path = app/Plugin/Searchable
 	url = git@github.com:zuha/Searches-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Shipping"]
-	path = app/Plugin/Shipping
-	url = git@github.com:zuha/Shipping-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Tasks"]
 	path = app/Plugin/Tasks
 	url = git@github.com:zuha/Tasks-Zuha-Cakephp-Plugin.git
