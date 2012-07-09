@@ -55,9 +55,6 @@
 [submodule "app/Plugin/Recaptcha"]
 	path = app/Plugin/Recaptcha
 	url = git@github.com:zuha/Recaptcha-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Rss"]
-	path = app/Plugin/Rss
-	url = git@github.com:zuha/Rss-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Search"]
 	path = app/Plugin/Search
 	url = git@github.com:zuha/Search-Zuha-Cakephp-Plugin.git
