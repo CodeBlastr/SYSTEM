@@ -1,9 +1,9 @@
 <div class="menus form">
-<?php echo $this->Form->create('MenuItem');?>
+<?php echo $this->Form->create('WebpageMenuItem');?>
 	<fieldset>
  		<legend><?php echo __('Item Location'); ?></legend>
 	<?php
-		echo !empty($menuId) ? $this->Form->input('menu_id', array('type' => 'hidden', 'value' => $menuId)) : $this->Form->input('menu_id');
+		echo $this->Form->input('menu_id');
 		echo $this->Form->input('parent_id', array('empty' => true));
 	?>
     </fieldset>
@@ -36,12 +36,10 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Menus',
 		'items' => array(
+			$this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('MenuItem.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Menu.id'))),
 			$this->Html->link(__('List Menus', true), array('action' => 'index')),
-			$this->Html->link(__('List Menus', true), array('controller' => 'menus', 'action' => 'index')),
-			$this->Html->link(__('New Parent Menu', true), array('controller' => 'menus', 'action' => 'add')),
-			$this->Html->link(__('List Users', true), array('controller' => 'users', 'action' => 'index')),
-			$this->Html->link(__('New Creator', true), array('controller' => 'users', 'action' => 'add')),
+			$this->Html->link(__('List Menus', true), array('controller' => 'webpage_menus', 'action' => 'index')),
+			$this->Html->link(__('New Parent Menu', true), array('controller' => 'webpage_menus', 'action' => 'add')),
 			)
 		),
-	)));
-?>
+	))); ?>

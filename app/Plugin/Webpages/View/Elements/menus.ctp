@@ -4,27 +4,27 @@
  *
  * @todo 	Move the menu types into their own elements or something, because it will get way too hectic in here.
  */
-$data = $this->requestAction(array('plugin' => 'menus', 'controller' => 'menus', 'action' => 'element', $id), array('pass' => array($id)));
+$data = $this->requestAction(array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'element', $id), array('pass' => array($id)));
 # $data['menu']['Menu']['type']
 # superfish
 # superfish sf-horizontal
 # superfish sf-vertical
 echo $this->Tree->generate($data['items'], array(
-			'model' => 'MenuItem', 
+			'model' => 'WebpageMenuItem', 
 			'alias' => 'item_text', 
-			'class' => 'menu '.$data['menu']['Menu']['type'], 
-			'id' => 'menu'.$data['menu']['Menu']['id'], 
+			'class' => 'menu '.$data['menu']['WebpageMenu']['type'], 
+			'id' => 'menu'.$data['menu']['WebpageMenu']['id'], 
 			'element' => 'item', 
 			'elementPlugin' => 'menus'));
 ?>
 
 <?php 
 # basic superfish horizontal with vertical drop downs
-if ($data['menu']['Menu']['type'] == 'superfish') { 
-	echo $this->Html->css('/menus/css/superfish'); 
-	echo $this->Html->script('/menus/js/jquery.hoverIntent.min'); 
-	echo $this->Html->script('/menus/js/jquery.superfish');
-	echo $this->Html->script('/menus/js/jquery.superSubs'); 
+if ($data['menu']['WebpageMenu']['type'] == 'superfish') { 
+	echo $this->Html->css('/webpages/menus/css/superfish'); 
+	echo $this->Html->script('/webpages/menus/js/jquery.hoverIntent.min'); 
+	echo $this->Html->script('/webpages/menus/js/jquery.superfish');
+	echo $this->Html->script('/webpages/menus/js/jquery.superSubs'); 
 ?> 
 <script> 
  
@@ -45,11 +45,11 @@ if ($data['menu']['Menu']['type'] == 'superfish') {
 
 <?php 
 # superfish horizontal with horizontal drop downs
-if ($data['menu']['Menu']['type'] == 'superfish sf-horizontal') { 
-	echo $this->Html->css('/menus/css/superfish'); 
-	echo $this->Html->css('/menus/css/superfish-horizontal'); 
-	echo $this->Html->script('/menus/js/jquery.hoverIntent.min'); 
-	echo $this->Html->script('/menus/js/jquery.superfish');
+if ($data['menu']['WebpageMenu']['type'] == 'superfish sf-horizontal') { 
+	echo $this->Html->css('/webpages/menus/css/superfish'); 
+	echo $this->Html->css('/webpages/menus/css/superfish-horizontal'); 
+	echo $this->Html->script('/webpages/menus/js/jquery.hoverIntent.min'); 
+	echo $this->Html->script('/webpages/menus/js/jquery.superfish');
 	?>
 <script> 
  
@@ -65,11 +65,11 @@ if ($data['menu']['Menu']['type'] == 'superfish sf-horizontal') {
 
 <?php 
 # superfish vertical 
-if ($data['menu']['Menu']['type'] == 'superfish sf-vertical') { 
-	echo $this->Html->css('/menus/css/superfish'); 
-	echo $this->Html->css('/menus/css/superfish-vertical'); 
-	echo $this->Html->script('/menus/js/jquery.hoverIntent.min'); 
-	echo $this->Html->script('/menus/js/jquery.superfish');
+if ($data['menu']['WebpageMenu']['type'] == 'superfish sf-vertical') { 
+	echo $this->Html->css('/webpages/menus/css/superfish'); 
+	echo $this->Html->css('/webpages/menus/css/superfish-vertical'); 
+	echo $this->Html->script('/webpages/menus/js/jquery.hoverIntent.min'); 
+	echo $this->Html->script('/webpages/menus/js/jquery.superfish');
 ?>
 <script> 
  
