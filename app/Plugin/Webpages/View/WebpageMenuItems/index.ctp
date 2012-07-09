@@ -18,18 +18,18 @@
 		}
 	?>
 	<tr<?php echo $class;?>>
-		<td><?php echo $menuItem['MenuItem']['id']; ?>&nbsp;</td>
+		<td><?php echo $menuItem['WebpageMenuItem']['id']; ?>&nbsp;</td>
 		<td>
-			<?php echo $this->Html->link($menuItem['Menu']['name'], array('controller' => 'menus', 'action' => 'view', $menuItem['Menu']['id'])); ?>
+			<?php echo $this->Html->link($menuItem['WebpageMenu']['name'], array('controller' => 'menus', 'action' => 'view', $menuItem['WebpageMenu']['id'])); ?>
             <?php #debug($menuItem['ChildMenuItem']); ?>
 		</td>
-		<td><?php echo $menuItem['MenuItem']['item_text']; ?>&nbsp;</td>
-		<td><?php echo $menuItem['MenuItem']['item_url']; ?>&nbsp;</td>
-		<td><?php echo $menuItem['MenuItem']['order']; ?>&nbsp;</td>
+		<td><?php echo $menuItem['WebpageMenuItem']['item_text']; ?>&nbsp;</td>
+		<td><?php echo $menuItem['WebpageMenuItem']['item_url']; ?>&nbsp;</td>
+		<td><?php echo $menuItem['WebpageMenuItem']['order']; ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $menuItem['MenuItem']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $menuItem['MenuItem']['id'])); ?>
-			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $menuItem['MenuItem']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $menuItem['MenuItem']['id'])); ?>
+			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $menuItem['WebpageMenuItem']['id'])); ?>
+			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $menuItem['WebpageMenuItem']['id'])); ?>
+			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $menuItem['WebpageMenuItem']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $menuItem['WebpageMenuItem']['id'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
@@ -52,6 +52,6 @@
 	<h3><?php echo __('Actions'); ?></h3>
 	<ul>
 		<li><?php echo $this->Html->link(__('New Menu Item', true), array('action' => 'add', $this->request->params['pass'][0])); ?></li>
-		<li><?php echo $this->Html->link(__('View Parent Menu', true), array('controller' => 'menus', 'action' => 'view', $this->request->params['pass'][0])); ?> </li>
+		<li><?php echo $this->Html->link(__('View Parent Menu', true), array('controller' => 'webpage_menus', 'action' => 'view', $this->request->params['pass'][0])); ?> </li>
 	</ul>
 </div>

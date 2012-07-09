@@ -1,5 +1,5 @@
 <div class="menus form">
-<?php echo $this->Form->create('Menu');?>
+<?php echo $this->Form->create('WebpagMenu');?>
 	<fieldset>
  		<legend><?php echo __('Edit Menu'); ?></legend>
 	<?php
@@ -24,10 +24,9 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Menus',
 		'items' => array(
-			$this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('Menu.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Menu.id'))),
+			$this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('WebpageMenu.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('WebpageMenu.id'))),
 			$this->Html->link(__('List Menus', true), array('action' => 'index')),
-			$this->Html->link(__('New Menu Item', true), array('controller' => 'menu_items', 'action' => 'add', $this->Form->value('Menu.id'))),
+			$this->Html->link(__('New Menu Item', true), array('controller' => 'webpage_menu_items', 'action' => 'add', $this->Form->value('WebpageMenu.id'))),
 			)
 		),
-	)));
-?>
+	))); ?>
