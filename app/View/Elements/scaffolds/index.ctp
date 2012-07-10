@@ -25,7 +25,7 @@ if (!empty($data)) {
 	}
 ?>
 
-	<ul data-mini="true" data-role="listview" data-filter="true" data-inset="true" class="<?php echo $controller; ?> index" id="<?php echo $modelName . $indexCount  . $indexClass; ?>" >
+	<ul data-role="listview" data-filter="true" data-inset="true" class="<?php echo $controller; ?> index" id="<?php echo $modelName . $indexCount  . $indexClass; ?>" >
     
 	<?php
 	foreach ($data as $dat) {
