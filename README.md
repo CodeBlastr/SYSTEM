@@ -10,10 +10,10 @@ Built on an MVC framework (CakePHP), by a CakePHP contributor.
 * Create a database and save the login details. (host, db name, user, password)
 
 * Upload the files to a supported server. 
-* * Php 5.3 or higher is required.  (Seriously, anything lower will not work.)
+* * Php 5.3 is required. 
 * * mod_rewrite and .htaccess must be turned on
 
-* Visit the domain that points to the directory Zuha was uploaded to. 
+* Visit the domain that points to the directory Zuha was uploaded to.
 
 ## Security Issues
 
