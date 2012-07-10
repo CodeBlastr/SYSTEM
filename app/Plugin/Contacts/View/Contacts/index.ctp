@@ -1,5 +1,3 @@
-<div class="ui-grid-a">
-  <div class="ui-block-a">
 	<ul id="leadList" data-mini="false" data-role="listview" data-filter="true" data-inset="true">
         <li data-role="list-divider">Leads</li>
 		<?php 
@@ -7,21 +5,9 @@
             echo __('<li data-filtertext="%s zqx%s">%s</li>', $contact['Contact']['name'], $contact['ContactType']['name'], $this->Html->link(__('%s', $contact['Contact']['name']), array('action' => 'view', $contact['Contact']['id'], array('data-transition' => 'flip')))); 
         } ?>
     </ul>
-  </div>
-  <div class="ui-block-b">    
-    <ul id="customerList" data-mini="false" data-role="listview" data-filter="true" data-inset="true">
-        <li data-role="list-divider">Customers</li>
-		<?php 
-        foreach ($contacts as $contact) { 
-            echo __('<li data-filtertext="%s zqx%s">%s</li>', $contact['Contact']['name'], $contact['ContactType']['name'], $this->Html->link(__('%s', $contact['Contact']['name']), array('action' => 'view', $contact['Contact']['id'], array('data-transition' => 'flip')))); 
-        } ?>
-	</ul>
-  </div>
-</div>
 
 
 <script type="text/javascript">
-	
 	$(document).bind("pageshow", function( event, ui){
 		// prefilter the first box
     	var preFilterText = "zqxLead";
@@ -52,5 +38,25 @@
     	});
 		
 	});
-	
 </script>
+
+
+<?php
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => '',
+		'items' => array(
+			$this->Html->link(__('Leads'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'type:leads'), array('data-icon' => 'grid')),
+			$this->Html->link(__('Customers'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'type:customers'), array('data-icon' => 'grid')),
+			$this->Html->link(__('Companies'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'type:customers'), array('data-icon' => 'grid')),
+			$this->Html->link(__('People'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'type:customers'), array('data-icon' => 'grid')),
+			),
+		),
+	array(
+		'heading' => '',
+		'items' => array(
+			$this->Html->link(__('Add'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'add'), array('data-icon' => 'plus')),
+			),
+		),
+	))); ?>

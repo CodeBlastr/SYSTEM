@@ -1,10 +1,13 @@
 <!DOCTYPE html> 
 <html> 
 <head> 
-	<title><?php echo $title_for_layout; __(' : Zuha Business Management'); ?></title>
+	
+    <title><?php echo $title_for_layout; __(' : Zuha Business Management'); ?></title>
 	<?php echo $this->Html->charset() . "\n"; ?>
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+    <?php echo $this->Html->css('system'); ?>
+    <?php echo $this->Html->css('mobile/mobile'); ?>
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
 	<?php 
@@ -19,7 +22,7 @@
 
 <div data-role="page">
 		
-	<?php echo $this->Element('admin/quick_nav'); ?> 
+	<?php echo $this->Element('mobile/header'); ?> 
 	<?php //echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array(), array('plugin' => $this->request->params['plugin'])) : ''; ?><!-- /header -->
 
 	<div data-role="content">
@@ -52,20 +55,8 @@
 			$content_for_layout = str_replace($elementMatch, $this->element($element, $elementCfg, $elementPlugin), $content_for_layout); 
 			$i++;
 		}
-		echo $content_for_layout;
-		echo $this->Element('context_menu'); ?> 
-		
-		<ul data-role="listview" data-inset="true">
-		    <li><?php echo $this->Html->link('<span>Dashboard</span>', array('plugin' => null, 'controller' => 'admin', 'action' => 'index'), array('escape' => false, 'title' => 'Privileges, Settings, Workflows, Conditions, Custom Forms', 'id' => 'navAdmin')); ?></li>
-		    <li><?php echo $this->Html->link('<span>Theme</span>', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'theme'), array('escape' => false, 'title' => 'Templates, CSS, Javascript', 'id' => 'navTheme')); ?></li>
-		    <li><?php echo $this->Html->link('<span>Content</span>', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Pages, Modules, Media, Categories, Tags, Enumerations', 'id' => 'navContent')); ?></li>
-		    <li><?php echo $this->Html->link('<span>Contacts</span>', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Leads, Opportunities', 'id' => 'navContacts')); ?></li>
-		    <li><?php echo $this->Html->link('<span>Ecommerce</span>', array('plugin' => 'catalogs', 'controller' => 'catalogs', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Catalogs, Orders', 'id' => 'navProducts')); ?></li>
-		    <li><?php echo $this->Html->link('<span>Billing</span>', array('plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Estimates, Invoices', 'id' => 'navBilling')); ?></li>
-		    <li><?php echo $this->Html->link('<span>Support</span>', array('plugin' => 'projects', 'controller' => 'projects', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Projects, Tickets, Timesheets', 'id' => 'navSupport')); ?></li>
-		    <li><?php echo $this->Html->link('<span>Users</span>', array('plugin' => 'users', 'controller' => 'users', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Social, Groups, Members, Messages', 'id' => 'navUsers')); ?></li>
-		    <li><?php echo $this->Html->link('<span>Reports</span>', array('plugin' => 'reports', 'controller' => 'reports', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Report Builder, Analytics', 'id' => 'navReports')); ?></li>
-		</ul>
+		echo $content_for_layout; ?> 
+
 	</div><!-- /content -->
 	
 	<div data-role="footer">
