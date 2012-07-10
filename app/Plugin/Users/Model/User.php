@@ -99,13 +99,6 @@ class User extends UsersAppModel {
 		);
 
 	public $hasAndBelongsToMany = array(
-        /*  bad name for this, changed 1/26/2012
-		'UsersUserGroup' => array(
-			'className' => 'Users.UsersUserGroup',
-			'joinTable' => 'users_user_groups',
-			'foreignKey' => 'user_group_id',
-			'associationForeignKey' => 'user_id',
-			), */
         'UserGroup' => array(
 			'className' => 'Users.UserGroup',
 			'joinTable' => 'users_user_groups',
@@ -116,10 +109,6 @@ class User extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
-		parent::__construct($id, $table, $ds);
-		if (in_array('Affiliates', CakePlugin::loaded())) {
-			$this->Behaviors->attach('Affiliates.Referrable');
-		}
 
 		if (in_array('Orders', CakePlugin::loaded())) {
 			$this->hasMany['OrderPayment'] = array(
@@ -144,6 +133,8 @@ class User extends UsersAppModel {
 				'dependent' => false,
 				);
 		}
+		
+		parent::__construct($id, $table, $ds);
 	}
 
 	protected function _comparePassword() {

@@ -30,3 +30,9 @@ else if (
       'log' => true
   ));
 }
+App::uses('AppErrorHandler', 'Lib/Error');
+Configure::write('Exception', array(
+	'handler' => 'AppErrorHandler::handleException',
+	'renderer' => 'AppExceptionRenderer',
+	'log' => true
+));
