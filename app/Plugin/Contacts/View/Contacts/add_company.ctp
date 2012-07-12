@@ -67,8 +67,8 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Contacts',
 		'items' => array(
-			$this->Html->link(__('List Companies'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index')),
-			$this->Html->link(__('List People'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'people')),
+			$this->Html->link(__('Companies'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index'), array('data-icon' => 'grid')),
+			$this->Html->link(__('People'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'people'), array('data-icon' => 'grid')),
 			),
 		),
 	)));  ?>

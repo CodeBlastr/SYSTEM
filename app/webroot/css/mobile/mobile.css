@@ -1,0 +1,200 @@
+/* CSS Document */
+
+/*	Resets
+	------	*/
+
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, sub, sup, var, b, i, hr, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figure, figcaption, hgroup, menu, footer, header, nav, section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0 none;
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:transparent none repeat scroll 0 0;
+	font-family:inherit;
+	font-style:inherit;
+	font-weight:inherit;
+	outline-color:-moz-use-text-color;
+	outline-style:none;
+	outline-width:0;
+	vertical-align: baseline;
+}
+ul, ol {
+	margin: 0 0 0 2em;
+}
+:focus {
+	outline: 0;
+}
+blockquote:before, blockquote:after, q:before, q:after {
+	content: "";
+}
+blockquote, q {
+	quotes: "" "";
+}
+article, aside, canvas, figure, figure img, figcaption, hgroup, footer, header, nav, section, audio, video {
+	display: block;
+}
+a img {
+	border: 0;
+}
+/*	Typography presets
+	------------------	*/
+
+.gigantic {
+	font-size: 2.8em;
+}
+.huge, h1 {
+	font-size: 2.2em;
+}
+.large, h2 {
+	font-size: 1.9em;
+}
+.bigger, h3 {
+	font-size: 1.4em;
+}
+.big, h4 {
+	font-size: 1.2em;
+}
+body {
+	font-family: sans-serif;
+	font-size: 1em;
+}
+.small, small {
+	font-size: 0.7em;
+}
+
+/* Selection colours (easy to forget) */
+
+::selection {
+	background: #F00;
+	color: #fff;
+}
+::-moz-selection {
+	background: #F00;
+	color: #fff;
+}
+img::selection {
+	background: rgb(255,255,158);
+}
+img::-moz-selection {
+	background: rgb(255,255,158);
+}
+body {
+	-webkit-tap-highlight-color: rgb(255,255,158);
+	/*border: 40px solid #DADBE4;*/
+}
+/*		Default Layout: 992px. 
+		Gutters: 24px.
+		Outer margins: 48px.
+		Leftover space for scrollbars @1024px: 32px.
+-------------------------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8      9      10
+px      68    160    252    344    436    528    620    712    804    896    */
+
+
+.ui-listview-filter-inset {
+	margin: 0 -5px -15px 0;	
+}
+.ui-header .ui-title, .ui-footer .ui-title {
+	margin: 0.3em 30% 0.1em;
+	position: relative;
+	top: -2px;
+}
+.ui-header .ui-select .ui-btn span.ui-btn-inner span.ui-btn-text {
+	max-width: 262px;
+}
+.ui-header .ui-listview:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+.ui-header .ui-controlgroup-horizontal {
+	float: left;
+	margin-right: 0.5em;
+} 
+.ui-header .ui-controlgroup-horizontal label {
+	padding: 0.6em;
+	float: left;
+}
+.ui-header .ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li {
+	overflow: auto;
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
+.floManagrLogo {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	color: #878787;
+	background: none;
+	border: none;
+	text-shadow: none;
+}
+.floManagrLogo span {
+	box-shadow: none;
+	font-size: 16px;
+}
+.floManagrLogoBlue {
+	color: #4E86B9;
+}
+
+
+/*		Tablet Layout: 768px.
+		Gutters: 24px.
+		Outer margins: 28px.
+		Inherits styles from: Default Layout.
+-----------------------------------------------------------------
+cols    1     2      3      4      5      6      7      8
+px      68    160    252    344    436    528    620    712    */
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+	.ui-header .ui-select .ui-btn span.ui-btn-inner span.ui-btn-text {
+		max-width: 262px;
+	}
+	
+}
+
+
+/*		Wide Mobile Layout: 480px.
+		Gutters: 24px.
+		Outer margins: 22px.
+		Inherits styles from: Default Layout, Mobile Layout.
+------------------------------------------------------------
+cols    1     2      3      4      5
+px      68    160    252    344    436    */
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+	.ui-header .ui-select .ui-btn span.ui-btn-inner span.ui-btn-text {
+		max-width: 155px;
+	}
+}
+
+
+
+/*		Mobile Layout: 320px.
+		Gutters: 24px.
+		Outer margins: 34px.
+		Inherits styles from: Default Layout.
+---------------------------------------------
+cols    1     2      3
+px      68    160    252    */
+
+@media only screen and (max-width: 481px) {
+
+	.ui-header .ui-select .ui-btn span.ui-btn-inner span.ui-btn-text {
+		max-width: 92px;
+	}
+}
+
+
+
+/*	Retina media query.
+	Overrides styles for devices with a 
+	device-pixel-ratio of 2+, such as iPhone 4.
+-----------------------------------------------    */
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+}

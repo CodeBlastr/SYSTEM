@@ -21,11 +21,10 @@
  */
 if (!empty($model) && !empty($foreignKey)) {
 	$galleryThumb = $this->requestAction("/galleries/galleries/thumb/{$model}/{$foreignKey}");
-} else {
-	#echo __('Gallery model and foreignKey were not provided (Galleries/View/Elements/thumb.ctp)');
-}
-# set up the config vars
-$thumbLink = !empty($thumbLink) ? $thumbLink : (!empty($galleryThumb) ? array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'view', 'Gallery', $galleryThumb['Gallery']['id']) : null);
+} 
+
+// set up the config vars
+$thumbLink = !empty($thumbLink) ? $thumbLink : null;
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
 # get width from settings table
 $indexWidth = !empty($galleryThumb['GallerySettings']['indexImageWidth']) ? $galleryThumb['GallerySettings']['indexImageWidth'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'];
@@ -38,32 +37,24 @@ $thumbClass = !empty($thumbClass) ? array('class' => $thumbClass) : array('class
 $thumbId = !empty($thumbId) ? array('id' => $thumbId) : array('id' => 'gallery'.$galleryThumb['Gallery']['id']);
 $thumbImageOptions = array_merge($thumbWidth, $thumbHeight, $thumbAlt, $thumbClass, $thumbId);
 
-$thumbDiv = isset($thumbDiv) ? ($thumbDiv==true ? true : false) : true; //added to skip the display of div on demand (true/false)
+$thumbDiv = isset($thumbDiv) ? ($thumbDiv==true ? true : false) : true; // added to skip the display of div on demand (true/false)
 $thumbLinkOptions = !empty($thumbLinkOptions) ? array_merge($thumbClass, $thumbId, $thumbLinkOptions, array('escape' => false)) : array('escape' => false);
-$thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; //to append anything to the image within the link
+$thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; // to append anything to the image within the link
 
 if (!empty($galleryThumb)) {
-	if($thumbDiv)	{ echo "<div class=\"{$thumbClass['class']}\" id=\"{$thumbId['id']}\">";  } 
-		$imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'.$thumbSize.'/'.$galleryThumb['GalleryThumb']['filename'];
-        $image = $this->Html->image($imagePath, $thumbImageOptions,
-			array(
-				'conversion' => $galleryThumb['GallerySettings']['conversionType'],
-				'quality' => 75,
-				));	
-		echo $this->Html->link($image . $thumbLinkAppend, $thumbLink, $thumbLinkOptions); 
-		
-	if($thumbDiv) { echo "</div>"; } 
+	$imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'.$thumbSize.'/'.$galleryThumb['GalleryThumb']['filename'];
+    $image = $this->Html->image($imagePath, $thumbImageOptions,	array(
+    	'conversion' => $galleryThumb['GallerySettings']['conversionType'],
+		'quality' => 75,
+		'alt' => 'thumbnail',
+		));	
 } else {
-	if($thumbDiv) {  echo "<div {$thumbClass} {$thumbId}>"; }
-		$imagePath = '/img/noImage.jpg';
-        $image = $this->Html->image($imagePath,
-			array(
-				'width' => $thumbWidth, 
-				'height' => $thumbHeight,
-				'alt' => 'no image',
-				));	
-		echo !empty($thumbLink) ? 
-			$this->Html->link($image . $thumbLinkAppend, $thumbLink, $thumbLinkOptions) :
-			$image;
-	if($thumbDiv) { echo '</div>'; } 
+	$imagePath = '/img/noImage.jpg';
+    $image = $this->Html->image($imagePath,	array(
+		'width' => $thumbWidth, 
+		'height' => $thumbHeight,
+		'alt' => 'no image',
+		));	
 }
+
+echo !empty($thumbLink) ? $this->Html->link($image . $thumbLinkAppend, $thumbLink, $thumbLinkOptions) :	$image;
