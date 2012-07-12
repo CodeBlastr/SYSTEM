@@ -31,7 +31,7 @@ class AppController extends Controller {
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
-	public $paginate = array('page' => 1, 'limit' => 25, 'maxLimit' => 100, 'paramType' => 'named');
+	public $paginate = array('page' => 1, 'limit' => 500, 'maxLimit' => 1000, 'paramType' => 'named');
 
 /**
  * @todo update this so that it uses the full list of actual user roles
@@ -56,20 +56,22 @@ class AppController extends Controller {
  * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
  */
 	public function redirect($url, $status = null, $exit = true) {
-		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') :
+		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') {
 			return parent::redirect($this->request->data['Success']['redirect'], $status, $exit);
-		elseif (!empty($this->request->data['Error']['redirect']) && $status == 'error') :
+		} elseif (!empty($this->request->data['Error']['redirect']) && $status == 'error') {
 			return parent::redirect($this->request->data['Error']['redirect'], $status, $exit);
-		elseif (!empty($this->request->data['Override']['redirect'])) :
+		} elseif (!empty($this->request->data['Override']['redirect'])) {
 			return parent::redirect($this->request->data['Override']['redirect'], $status, $exit);
-		else :
+		} else {
 			return parent::redirect($url, $status, $exit);
-		endif;
+		}
 	}
 
 
 
 	public function beforeFilter() {
+		$this->RequestHandler->ajaxLayout = 'default';
+	    
 		# DO NOT DELETE #
 		# commented out because for performance this should only be turned on if asked to be turned on
 		# Start Condition Check #

@@ -26,7 +26,6 @@ class UsersController extends UsersAppController {
 	public $uses = 'Users.User';
 	public $uid;
 	public $components = array('Email', 'Ssl');
-	public $paginate = array();
 	public $allowedActions = array(
 		'login',
 		'desktop_login',
@@ -54,8 +53,6 @@ class UsersController extends UsersAppController {
 
 
 	public function index() {
-		#$this->User->recursive = 0;
-		$this->paginate = !empty($this->userId) ? array('conditions' => array('User.id !=' => $this->userId)) : $this->paginate;
 		$this->paginate['fields'] = array(
 			'User.id',
 			'User.first_name',
@@ -131,7 +128,6 @@ class UsersController extends UsersAppController {
 			'order' => array(
 				'UserStatus.created DESC'
 				),
-			'limit' => 10,
 			));
 
 
@@ -310,7 +306,9 @@ class UsersController extends UsersAppController {
 		unset($userRoles[1]); // remove the administrators group by default - too insecure
 		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
 		$this->set(compact('userRoleId', 'userRoles'));
-		if (empty($this->templateId)) { $this->layout = 'login'; }
+		if (empty($this->templateId)) {
+			 $this->layout = 'login'; 
+		}
 	}
 
 

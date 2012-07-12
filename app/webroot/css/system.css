@@ -3,6 +3,9 @@ This is a system css file to define default css rules so that new sites are at l
 The css placed here should be easily over written even with simple css rules for site css.
 Note that the class names could be updated and change often.
 */
+* {
+	vertical-align: top;
+}
 
 /* Site Errors */
 #databaseUpgrades {
