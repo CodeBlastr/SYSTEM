@@ -2,7 +2,14 @@
         <li data-role="list-divider">Leads</li>
 		<?php 
         foreach ($contacts as $contact) { 
-            echo __('<li data-filtertext="%s zqx%s">%s</li>', $contact['Contact']['name'], $contact['ContactType']['name'], $this->Html->link(__('%s', $contact['Contact']['name']), array('action' => 'view', $contact['Contact']['id'], array('data-transition' => 'flip')))); 
+            echo __('<li data-filtertext="%s zqx%s">%s</li>', $contact['Contact']['name'], $contact['Contact']['contact_type'], $this->Html->link(__('%s', $contact['Contact']['name']), array('action' => 'view', $contact['Contact']['id']), array('data-transition' => 'flip'))); 
+        } ?>
+    </ul>
+    <ul id="customerList" data-mini="false" data-role="listview" data-filter="true" data-inset="true">
+        <li data-role="list-divider">Customers</li>
+		<?php 
+        foreach ($contacts as $contact) { 
+            echo __('<li data-filtertext="%s zqx%s">%s</li>', $contact['Contact']['name'], $contact['Contact']['contact_type'], $this->Html->link(__('%s', $contact['Contact']['name']), array('action' => 'view', $contact['Contact']['id']), array('data-transition' => 'flip'))); 
         } ?>
     </ul>
 
@@ -37,6 +44,9 @@
         	return preFilterText2 && text2.toString().indexOf( preFilterText2 ) === -1 ? true : text2.toString().toLowerCase().indexOf( searchValue2 ) === -1;
     	});
 		
+		if ($("#leadList").is(':visible')) {
+			alert('hello');
+		}
 	});
 </script>
 
@@ -47,7 +57,7 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => '',
 		'items' => array(
-			$this->Html->link(__('Leads'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'type:leads'), array('data-icon' => 'grid')),
+			$this->Html->link(__('Leads'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'contactType:leads'), array('data-icon' => 'grid', 'class' =>  'ui-btn-active', 'id' => 'leadsBtn')),
 			$this->Html->link(__('Customers'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'type:customers'), array('data-icon' => 'grid')),
 			$this->Html->link(__('Companies'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'type:customers'), array('data-icon' => 'grid')),
 			$this->Html->link(__('People'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'type:customers'), array('data-icon' => 'grid')),

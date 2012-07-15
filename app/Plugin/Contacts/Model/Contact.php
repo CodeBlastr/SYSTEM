@@ -44,28 +44,28 @@ class Contact extends ContactsAppModel {
 	public $belongsTo = array(
 		'ContactType' => array(
 			'className' => 'Enumeration',
-			'foreignKey' => 'contact_type_id',
+			'foreignKey' => 'contact_type',
 			'conditions' => array('ContactType.type' => 'CONTACTTYPE'),
 			'fields' => '',
 			'order' => ''
 		),
 		'ContactSource' => array(
 			'className' => 'Enumeration',
-			'foreignKey' => 'contact_source_id',
+			'foreignKey' => 'contact_source',
 			'conditions' => array('ContactSource.type' => 'CONTACTSOURCE'),
 			'fields' => '',
 			'order' => ''
 		),
 		'ContactIndustry' => array(
 			'className' => 'Enumeration',
-			'foreignKey' => 'contact_industry_id',
+			'foreignKey' => 'contact_industry',
 			'conditions' => array('ContactIndustry.type' => 'CONTACTINDUSTRY'),
 			'fields' => '',
 			'order' => ''
 		),
 		'ContactRating' => array(
 			'className' => 'Enumeration',
-			'foreignKey' => 'contact_rating_id',
+			'foreignKey' => 'contact_rating',
 			'conditions' => array('ContactRating.type' => 'CONTACTRATING'),
 			'fields' => '',
 			'order' => ''

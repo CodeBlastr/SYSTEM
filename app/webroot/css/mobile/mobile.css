@@ -100,7 +100,7 @@ px      68    160    252    344    436    528    620    712    804    896    */
 	position: relative;
 	top: -2px;
 }
-.ui-header .ui-select .ui-btn span.ui-btn-inner span.ui-btn-text {
+.ui-header .ui-btn-icon-right .ui-btn-inner, .ui-footer .ui-btn-icon-right .ui-btn-inner, .ui-mini .ui-btn-icon-right .ui-btn-inner {
 	max-width: 262px;
 }
 .ui-header .ui-listview:after {
@@ -150,7 +150,7 @@ px      68    160    252    344    436    528    620    712    */
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
 
-	.ui-header .ui-select .ui-btn span.ui-btn-inner span.ui-btn-text {
+	.ui-header .ui-btn-icon-right .ui-btn-inner, .ui-footer .ui-btn-icon-right .ui-btn-inner, .ui-mini .ui-btn-icon-right .ui-btn-inner {
 		max-width: 262px;
 	}
 	
@@ -167,7 +167,7 @@ px      68    160    252    344    436    */
 
 @media only screen and (min-width: 480px) and (max-width: 767px) {
 
-	.ui-header .ui-select .ui-btn span.ui-btn-inner span.ui-btn-text {
+	.ui-header .ui-btn-icon-right .ui-btn-inner, .ui-footer .ui-btn-icon-right .ui-btn-inner, .ui-mini .ui-btn-icon-right .ui-btn-inner {
 		max-width: 155px;
 	}
 }
@@ -184,7 +184,7 @@ px      68    160    252    */
 
 @media only screen and (max-width: 481px) {
 
-	.ui-header .ui-select .ui-btn span.ui-btn-inner span.ui-btn-text {
+	.ui-header .ui-btn-icon-right .ui-btn-inner, .ui-footer .ui-btn-icon-right .ui-btn-inner, .ui-mini .ui-btn-icon-right .ui-btn-inner {
 		max-width: 92px;
 	}
 }

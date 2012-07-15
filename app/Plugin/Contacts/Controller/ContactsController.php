@@ -3,6 +3,7 @@ class ContactsController extends ContactsAppController {
 
 	public $name = 'Contacts';
 	public $uses = 'Contacts.Contact';
+	public $allowedActions = array();
 	
 	
 	public function __construct($request = null, $response = null) {
@@ -23,36 +24,14 @@ class ContactsController extends ContactsAppController {
 	
 	
 	public function index() {
-		$this->paginate['conditions'] = array('Contact.is_company' => 1);
+		$this->paginate['conditions'] = array('Contact.is_company' => 1, 'Contact.contact_type IS NOT NULL');
 		$this->paginate['fields'] = array(
 			'id',
 			'name',
-			'contact_type_id',
-			'contact_source_id',
-			'contact_industry_id',
-			'contact_rating_id',
-			);
-		$this->paginate['contain'] = array(
-			'ContactType' => array(
-				'fields' => array(
-					'name',
-					),
-				),
-			'ContactSource' => array(
-				'fields' => array(
-					'name',
-					),
-				),
-			'ContactIndustry' => array(
-				'fields' => array(
-					'name',
-					),
-				),
-			'ContactRating' => array(
-				'fields' => array(
-					'name',
-					),
-				),
+			'contact_type',
+			'contact_source',
+			'contact_industry',
+			'contact_rating',
 			);
 		$this->paginate['order'] = array(
 			'Contact.name'
@@ -62,6 +41,12 @@ class ContactsController extends ContactsAppController {
 		$this->set('displayDescription', ''); 
 		$associations =  array('ContactType' => array('displayField' => 'name'), 'ContactSource' => array('displayField' => 'name'), 'ContactIndustry' => array('displayField' => 'name'), 'ContactRating' => array('displayField' => 'name'));
 		$this->set('associations', $associations);
+		$this->allowedActions[] = 'list';
+	}
+	
+	
+	public function mylist() {
+		$this->set('something', 'My Something');
 	}
 	
 	
@@ -73,32 +58,10 @@ class ContactsController extends ContactsAppController {
 			'fields' => array(
 				'id',
 				'name',
-				'contact_type_id',
-				'contact_source_id',
-				'contact_industry_id',
-				'contact_rating_id',
-				),
-			'contain' => array(
-				'ContactType' => array(
-					'fields' => array(
-						'name',
-						),
-					),
-				'ContactSource' => array(
-					'fields' => array(
-						'name',
-						),
-					),
-				'ContactIndustry' => array(
-					'fields' => array(
-						'name',
-						),
-					),
-				'ContactRating' => array(
-					'fields' => array(
-						'name',
-						),
-					),
+				'contact_type',
+				'contact_source',
+				'contact_industry',
+				'contact_rating',
 				),
 			'order' => array(
 				'Contact.name'
@@ -107,8 +70,6 @@ class ContactsController extends ContactsAppController {
 		$this->set('contacts', $this->paginate());
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', ''); 
-		$associations =  array('ContactType' => array('displayField' => 'name'), 'ContactSource' => array('displayField' => 'name'), 'ContactIndustry' => array('displayField' => 'name'), 'ContactRating' => array('displayField' => 'name'));
-		$this->set('associations', $associations);
 	}
 
 	public function view($id = null) {
@@ -122,10 +83,6 @@ class ContactsController extends ContactsAppController {
 				'Contact.id' => $id,
 				),
 			'contain' => array(
-				'ContactType',
-				'ContactSource',
-				'ContactIndustry',
-				'ContactRating',
 				'ContactDetail',
 				'ContactAddress' => array(
 					'ContactAddressType',
@@ -137,7 +94,7 @@ class ContactsController extends ContactsAppController {
 		$contactAddressTypes = Zuha::enum('CONTACTADDRESS');
 		$this->set(compact('contact', 'contactDetailTypes', 'contactAddressTypes', 'contactActivityTypes'));
 		
-		# get paginated related contacts
+		// get paginated related contacts
 		$this->paginate = array('Contact' => array(
 			'joins' => array(array(
 				'table' => 'contacts_contacts',
