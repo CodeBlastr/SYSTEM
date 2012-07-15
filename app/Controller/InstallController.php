@@ -599,7 +599,7 @@ class InstallController extends AppController {
 		$dataStrings[] = "INSERT INTO `user_roles` (`id`, `parent_id`, `name`, `lft`, `rght`, `view_prefix`, `is_system`, `created`, `modified`) VALUES (1, NULL, 'admin', 1, 2, 'admin', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:24'), (2, NULL, 'managers', 3, 4, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:41'), (3, NULL, 'users', 5, 6, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:50'), (5, NULL, 'guests', 7, 8, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:56:05');";
 
 		$dataStrings[] = "INSERT INTO `webpages` (`id`, `name`, `content`) VALUES
-(1, 'Homepage', 'Congratulations!&nbsp;&nbsp; Welcome to the first page of your new Zuha install.&nbsp;&nbsp;');";
+(1, 'Homepage', 'Congratulations!&nbsp;&nbsp; Welcome to the first page of your new install.&nbsp;&nbsp;');";
 
 		return $dataStrings;
 

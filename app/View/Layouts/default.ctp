@@ -23,6 +23,7 @@
 <div data-role="page">
 		
 	<?php echo $this->Element('mobile/header'); ?> 
+    
 	<?php //echo !empty($tabsElement) ? $this->Element($tabsElement.'/tabs', array(), array('plugin' => $this->request->params['plugin'])) : ''; ?><!-- /header -->
 
 	<div data-role="content">
@@ -62,7 +63,6 @@
 	<div data-role="footer">
 		<h4>Footer content</h4>
 	</div><!-- /footer -->
-
 </div><!-- /page -->
 <?php echo $this->Element('sql_dump');  ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> 
 </body>

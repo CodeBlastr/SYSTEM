@@ -50,9 +50,18 @@ class AppModel extends Model {
 			$db = ConnectionManager::getDataSource(!empty($id['ds']) ? $id['ds'] : 'default');
 			$tables = $db->listSources();
 			if (array_search('categorizeds', $tables)) {
-				$this->uses = false;
-				$this->useTable = false;
-				$this->query('RENAME TABLE `categorizeds` TO `categorized`');
+				$db->query('RENAME TABLE `categorizeds` TO `categorized`');
+				header('Location: ' . $_SERVER['REQUEST_URI']); // refresh the page to establish new table name
+				break;
+			}
+		}
+		// automatic upgrade the contacts and enumerations tables 7/11/2012
+		// temporary, will be removed soon
+		if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0191) {
+			$db = ConnectionManager::getDataSource(!empty($id['ds']) ? $id['ds'] : 'default');
+			$columns = $db->query('SHOW COLUMNS FROM `contacts`; ');
+			if ($columns[2]['COLUMNS']['Field'] == 'contact_type_id') {
+				$db->execute('ALTER TABLE `contacts` CHANGE `contact_type_id` `contact_type` VARCHAR( 100 ) NULL DEFAULT NULL; ALTER TABLE `contacts` CHANGE `contact_source_id` `contact_source` VARCHAR( 100 ) NULL DEFAULT NULL; ALTER TABLE `contacts` CHANGE `contact_industry_id` `contact_industry` VARCHAR( 100 ) NULL DEFAULT NULL ; ALTER TABLE `contacts` CHANGE `contact_rating_id` `contact_rating` VARCHAR( 100 ) NULL DEFAULT NULL ; UPDATE `contacts` SET `contact_type` = (SELECT `name` FROM `enumerations` WHERE `enumerations`.`id` = `contacts`.`contact_type`); DELETE FROM `enumerations` WHERE `enumerations`.`type` = \'CONTACTTYPE\'; UPDATE `contacts` SET `contact_source` = (SELECT `name` FROM `enumerations` WHERE `enumerations`.`id` = `contacts`.`contact_source`); DELETE FROM `enumerations` WHERE `enumerations`.`type` = \'CONTACTSOURCE\'; UPDATE `contacts` SET `contact_industry` = (SELECT `name` FROM `enumerations` WHERE `enumerations`.`id` = `contacts`.`contact_industry`); DELETE FROM `enumerations` WHERE `enumerations`.`type` = \'CONTACTINDUSTRY\'; UPDATE `contacts` SET `contact_rating` = (SELECT `name` FROM `enumerations` WHERE `enumerations`.`id` = `contacts`.`contact_rating`); DELETE FROM `enumerations` WHERE `enumerations`.`type` = \'CONTACTRATING\';');
 				header('Location: ' . $_SERVER['REQUEST_URI']); // refresh the page to establish new table name
 				break;
 			}
