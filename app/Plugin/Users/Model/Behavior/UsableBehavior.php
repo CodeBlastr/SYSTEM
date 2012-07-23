@@ -43,7 +43,7 @@ class UsableBehavior extends ModelBehavior {
 		//$userRole = $authUser['user_role_id']; (this uncommented breaks our tests)
 		$userId = $authUser['id'];
 		
-		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/ && empty($queryData['nocheck'])) : 
+		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/ && empty($queryData['nocheck'])) {
 			#this tells us whether the result would have returned something if UsableBehavior wasn't used
 			$queryData['nocheck'] = true;
 			#$originalSearchCount = $Model->find('count', $queryData);
@@ -131,9 +131,8 @@ class UsableBehavior extends ModelBehavior {
 				 ))
 				) 
 			LIMIT 25
-			*/		
-		endif;		
-		
+			*/	
+		}
 		return $queryData;
 	}
 	
@@ -223,26 +222,26 @@ class UsableBehavior extends ModelBehavior {
 		
 		
 		#gets rid of duplicate users from two arrays... @todo: maybe move this to its own function if its needed again
-		if (!empty($users)) :
+		if (!empty($users)) {
 			$users = Set::extract('/id', $users);
 			$currentUsers = Set::extract('/User/id', $currentUsers);
 			$users = array_diff($users, $currentUsers);
 		
 			$i=0;
-			foreach ($users as $user) : 
+			foreach ($users as $user) { 
 				$data[$i]['Used']['user_id'] = $user;
 				$data[$i]['Used']['foreign_key'] = $Model->id;
 				$data[$i]['Used']['model'] = $Model->alias;
 				$data[$i]['Used']['role'] = $this->defaultRole; 
 				$i++;
-			endforeach;
+			}
 			
 			$Used = ClassRegistry::init('Users.Used');
-			foreach ($data as $dat) : 
+			foreach ($data as $dat) { 
 				$Used->create();
 				$Used->save($dat);
-			endforeach;
-		endif;
+			}
+		}
 	}
 	
 	
@@ -349,7 +348,7 @@ class UsableBehavior extends ModelBehavior {
  * Find child contacts of a parent contact and add them to the data user list
  */
 	public function getChildContacts(&$Model) {
-		if (!empty($Model->data[$Model->alias]['contact_id']) && $Model->data[$Model->alias]['contact_all_access']) : 
+		if (!empty($Model->data[$Model->alias]['contact_id']) && $Model->data[$Model->alias]['contact_all_access']) {
 			# add all of the companies people to the used table
 			# note, if the model has contact_id, then it should belongTo Contact
 			$contacts = $Model->Contact->Employer->find('first', array(
@@ -362,22 +361,22 @@ class UsableBehavior extends ModelBehavior {
 						),
 					),
 				));
-			foreach ($contacts['Employee'] as $contact) :
-				if(!empty($contact['User'])) : 
+			foreach ($contacts['Employee'] as $contact) {
+				if(!empty($contact['User'])) {
 					$users[] = $contact['User'];
-				endif;
-			endforeach;
-		endif;
+				}
+			}
+		}
 		
-		if (!empty($users)) :
+		if (!empty($users)) {
 			$i=0;
-			foreach ($users as $user) : 
+			foreach ($users as $user) {
 				$Model->data['User'][$i]['user_id'] = $user['id'];
 				$Model->data['User'][$i]['model'] = $Model->name;
 				$Model->data['User'][$i]['role'] = $this->defaultRole;
 				$i++;
-			endforeach;
-		endif;
+			}
+		}
 		return $Model->data;
 	}
 
