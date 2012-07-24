@@ -24,7 +24,7 @@ class ContactsController extends ContactsAppController {
 	
 	
 	public function index() {
-		$this->paginate['conditions'] = array('Contact.is_company' => 1, 'Contact.contact_type IS NOT NULL');
+		//$this->paginate['conditions'] = array('Contact.is_company' => 1, 'Contact.contact_type IS NOT NULL');
 		$this->paginate['fields'] = array(
 			'id',
 			'name',
@@ -32,6 +32,7 @@ class ContactsController extends ContactsAppController {
 			'contact_source',
 			'contact_industry',
 			'contact_rating',
+			'is_company'
 			);
 		$this->paginate['order'] = array(
 			'Contact.name'
