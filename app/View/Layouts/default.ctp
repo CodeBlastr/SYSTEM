@@ -10,6 +10,7 @@
     <?php echo $this->Html->css('mobile/mobile'); ?>
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+    <?php echo $this->Html->script('system/system'); ?>
 	<?php 
 	echo $this->Html->meta('icon');
 	echo $scripts_for_layout;
