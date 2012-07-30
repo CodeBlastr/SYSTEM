@@ -61,7 +61,7 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => '',
 		'items' => array(
-			$this->Html->link(__('Add'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'add'), array('data-icon' => 'plus')),
+			$this->Html->link(__('Add New Company'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'add'), array('data-icon' => 'plus')),
 			),
 		),
 	))); ?>
