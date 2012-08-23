@@ -5,6 +5,7 @@ Including content management, project management, invoicing, customer relationsh
 
 Built on an MVC framework (CakePHP), by a CakePHP contributor.
 
+
 ## Installation
 
 * Create a database and save the login details. (host, db name, user, password)
