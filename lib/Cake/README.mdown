@@ -1,0 +1,9 @@
+# Git Submodule Version of CakePHP
+For use of CakePHP 2.0.6 as a submodule of another git repository. 
+
+# Notes
+We will update this repository each time we upgrade our Zuha Project to the latest version of CakePHP (which is often).  Please note there is one edit to the core cake files with the Security::cipher() function.  The core version is still there, just commented out if you want to put it back.
+
+[Zuha on GitHub](git@github.com:zuha/zuha.git)
+
+[CakePHP on GitHub](https://github.com/cakephp/cakephp)
