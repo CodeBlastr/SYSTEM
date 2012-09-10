@@ -8,6 +8,10 @@ Built on an MVC framework (CakePHP), by a CakePHP contributor.
 
 ## Installation
 
+* Follow the given below link to setup the git step by step.
+ 
+https://help.github.com/articles/set-up-git
+
 * Create a database and save the login details. (host, db name, user, password)
 
 * Upload the files to a supported server. 
