@@ -40,8 +40,10 @@ if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html
 			echo $this->Html->css('screen'); 
 		}
 		
-		# load in js files from settings
-		echo $this->Html->script('jquery-1.5.2.min');
+		?>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<?php
+                # load in js files from settings
 		echo $this->Html->script('admin/jquery-ui-1.8.13.custom.min');
 		echo $this->Html->script('system/system');
 		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
