@@ -435,16 +435,15 @@ class UsersController extends UsersAppController {
  * @todo 		This should be updated to some kind of API login (maybe REST) so that any apps can authenticate.
  */
 	public function desktop_login() {
-
         $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => AuthComponent::password($this->request->data['User']['password']))));
-        if($user!= null ){
-	        echo $user['User']['id'];
-			$this->layout(false);
-			$this->render(false);
-		} else{
-		    echo "Fail";
-			$this->layout(false);
-			$this->render(false);
+        if(!empty($user)){
+        	$this->set('data', $user['User']['id']);
+			$this->layout = false;
+			//$this->render(false);
+		} else {
+        	$this->set('data', "Fail");
+			$this->layout = false;
+			//$this->render(false);
 		}
     }
 

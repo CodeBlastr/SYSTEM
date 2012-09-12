@@ -115,12 +115,12 @@ App::build(array(
  *
  */
  #CakePlugin::loadAll(); // Loads all plugins at once
-	if (defined('__SYSTEM_LOAD_PLUGINS')) :
+	if (defined('__SYSTEM_LOAD_PLUGINS')) {
 	 	extract(unserialize(__SYSTEM_LOAD_PLUGINS));
 		CakePlugin::load($plugins);
-	else :
+	} else {
 		CakePlugin::loadAll(); // Loads all plugins at once
-	endif;
+	}
 
 
 /**
