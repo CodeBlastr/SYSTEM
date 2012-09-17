@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Zuha Install</title>
+<title>floManagr Install</title>
 <style type="text/css"> 
 <!-- 
 body  {
@@ -64,6 +64,12 @@ legend {
 	font-weight: bold;
 	padding: 1em;
 }
+.floManagrLogoBlue {
+	color: #4E86B9;
+}
+h1 {
+	margin-top: 1em;
+}
 --> 
 </style>
 
@@ -72,8 +78,7 @@ legend {
 
 <?php echo $this->Session->flash(); ?>
 <div class="install form">
-	<br /><img src = "/img/admin/logo.png" />
-    <h4>You're about 10 seconds away a new Zuha site.</h4>
+    <h1>flo<span class="floManagrLogoBlue">Managr</span> Install</h1>
   
 <?php echo $this->Form->create(false, array('type' => 'file')); ?>
 	<fieldset>
@@ -94,7 +99,7 @@ legend {
 		echo $this->Form->end('Install');
 		?>
 	</fieldset>
-    <p>Server requirement : MySQL version 5.X+, PHP version 5.3+, Apache mod_rewrite</p>
+    <p>Requires : MySQL version 5.X+, PHP version 5.3+, Apache mod_rewrite</p>
 </div>
 </body>
 </html>

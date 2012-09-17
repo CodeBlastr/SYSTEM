@@ -38,7 +38,7 @@
 	$submitLabel = !empty($submitLabel) ? $submitLabel : 'Login';	
 	$submitClass = !empty($submitClass) ? $submitClass : 'submit';
 	$inputClass = !empty($inputClass) ? $inputClass : 'text';
-	$submitDiv = !empty($submitDiv) ? $submitDiv : false;
+	//$submitDiv = !empty($submitDiv) ? $submitDiv : false; // don't think it will work with the standard end() function
 	$checkboxClass = !empty($checkboxClass) ? $checkboxClass : 'checkbox';
 	$remember = isset($remember) ? $remember : true;
 	$rememberLabel = !empty($rememberLabel) ? $rememberLabel : 'Keep me logged in';
@@ -82,12 +82,12 @@
 					<?php echo $this->Form->input('password', array('label'=>$passwordLabel, 'class'=>$inputClass, 'div'=>$rowClass)); ?>
                     
                     <?php if (!empty($remember)) { ?>
-					<div class="<?php echo $rowClass; ?>">
+					<div class="<?php echo $rowClass; ?> stayLoggedIn">
 						<?php echo $this->Form->input('remember_me', array('label' => $rememberLabel, 'class' => $checkboxClass, 'div' => false, 'type' => 'checkbox')); ?>
 					</div>
                     <?php } ?>
                     
-					<div class="<?php echo $rowClass; ?>">
+					<div class="<?php echo $rowClass; ?> forgotPassword">
 						<?php echo $this->Html->link($forgotPasswordTitle, array('plugin' => 'users', 'controller' => 'users', 'action' => 'forgot_password')); ?>
 					</div>
                     
@@ -98,10 +98,9 @@
                     <?php } ?>
 				</div>
 			</div>
-			<?php echo $this->Form->submit($submitLabel, array('class'=>$submitClass, 'div'=>$submitDiv)); ?>
 		</fieldset>
 <?php 
-echo $this->Form->end();
+echo $this->Form->end(array('label' => $submitLabel, 'div' => array('class' => $submitClass)));
 } else {
 	if($loggedElement)	{
 		echo $this->element($loggedElement, array('user'=>$this->Session->read('Auth')), array('plugin'=>'users'));
