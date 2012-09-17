@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Cake form helper is the core form helper that comes in the lib/Cake/View/Helper/FormHelper.php file by default.
+ * It has been copied to our app view directory in order to allow for partial overwrite instead of a full over write. 
+ */
 App::uses('CakeFormHelper', 'View/Helper');
 
 /**
@@ -26,6 +29,15 @@ class FormHelper extends CakeFormHelper {
 			$attributes = $this->ajaxElement($attributes);
 		}
 		return parent::select($fieldName, $options, $attributes);
+	}
+	
+	
+	public function end($options = null) {
+		if (!is_array($options)) {
+			$label = !empty($options) ? $options : 'Submit';
+			$options = array('label' => $options, 'before' => '<div data-role="fieldcontain"><label class="ui-input-text"></label>', 'after' => '</div>', 'data-theme' => 'b'); // Zuha for submit button formatting
+		}
+		return parent::end($options);
 	}
 	
 /**
@@ -125,6 +137,7 @@ class FormHelper extends CakeFormHelper {
 
 		if (!empty($div)) {
 			$divOptions['class'] = 'input';
+			$divOptions['data-role'] = 'fieldcontain'; // Zuha added for jquery mobile form elements
 			$divOptions = $this->addClass($divOptions, $options['type']);
 			if (is_string($div)) {
 				$divOptions['class'] = $div;

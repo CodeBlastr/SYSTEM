@@ -14,11 +14,11 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php
 		define('IS_ZUHA', true);
 		define('SITE_DIR', 'sites'.DS.'zuha.com');
 		require_once(ROOT.DS.'sites'.DS.'zuha.com'.DS.'Config'.DS.'core.php');
-}*/ else if (
+}else if (
 	!defined('SITE_DIR') && 
 	strpos($_SERVER['HTTP_HOST'], '.zuha.com')) {
 		//header('Location: /install/site');
-} else {
+} */ else {
   Configure::write('Error', array(
       'handler' => 'ErrorHandler::handleError',
       'level' => E_ALL & ~E_DEPRECATED,

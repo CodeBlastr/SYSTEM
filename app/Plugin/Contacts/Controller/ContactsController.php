@@ -119,6 +119,11 @@ class ContactsController extends ContactsAppController {
 		$this->set('tabsElement', '/contacts');
 		$this->set('page_title_for_layout', $contact['Contact']['name']);
 		$this->set('title_for_layout',  $contact['Contact']['name']);
+		if (!empty($contact['Contact']['is_company'])) {
+			$this->render('view_company');
+		} else {
+			$this->render('view_person');
+		}
 	}
 
 /**
@@ -161,21 +166,22 @@ class ContactsController extends ContactsAppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			if ($this->Contact->save($this->request->data)) {
-				$this->Session->setFlash(__('The contact has been saved', true));
-				$this->redirect(array('action' => 'index'));
+			if ($this->Contact->saveAll($this->request->data)) {
+				$this->Session->setFlash(__('The contact has been saved'));
 			} else {
-				$this->Session->setFlash(__('The contact could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The contact could not be saved. Please, try again.'));
 			}
 		}
 		if (empty($this->request->data)) {
+			$this->Contact->contain('ContactDetail');
 			$this->request->data = $this->Contact->read(null, $id);
 		}
-		$contactTypes = $this->Contact->ContactType->find('list');
+		$contactTypes = $this->Contact->types();
 		$contactSources = $this->Contact->ContactSource->find('list');
 		$contactIndustries = $this->Contact->ContactIndustry->find('list');
 		$contactRatings = $this->Contact->ContactRating->find('list');
 		$users = $this->Contact->User->find('list');
+		
 		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users'));
 	}
 
