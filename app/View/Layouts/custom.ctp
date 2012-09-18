@@ -9,7 +9,7 @@ if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html
 	<![endif]-->
 <meta name="robots" content="index, follow" />
 <meta http-equiv="X-UA-Compatible" content="IE=8" />
-<meta name="viewport" content="width=device-width"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <?php
 		echo $this->Html->meta('icon');
