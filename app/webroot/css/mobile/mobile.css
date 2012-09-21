@@ -64,13 +64,13 @@ body {
 }
 
 /* Selection colours (easy to forget) */
-
+/*
 ::selection {
-	background: #F00;
+	background: green;
 	color: #fff;
 }
 ::-moz-selection {
-	background: #F00;
+	background: green;
 	color: #fff;
 }
 img::selection {
@@ -78,7 +78,7 @@ img::selection {
 }
 img::-moz-selection {
 	background: rgb(255,255,158);
-}
+}*/
 body {
 	-webkit-tap-highlight-color: rgb(255,255,158);
 	/*border: 40px solid #DADBE4;*/
@@ -91,15 +91,13 @@ body {
 cols    1     2      3      4      5      6      7      8      9      10
 px      68    160    252    344    436    528    620    712    804    896    */
 
-
+.ui-grid-a .ui-btn, .ui-grid-b .ui-btn, .ui-grid-c .ui-btn, .ui-grid-d .ui-btn, .ui-grid-e .ui-btn {
+	margin: 0; /* temporary fix because jquery mobile hasn't quite worked out grid layouts and inset lists yet */
+}
 .ui-listview-filter-inset {
 	margin: 0 -5px -15px 0;	
 }
-.ui-header .ui-title, .ui-footer .ui-title {
-	margin: 0.3em 30% 0.1em;
-	position: relative;
-	top: -2px;
-}
+
 .ui-header .ui-btn-icon-right .ui-btn-inner, .ui-footer .ui-btn-icon-right .ui-btn-inner, .ui-mini .ui-btn-icon-right .ui-btn-inner {
 	max-width: 262px;
 }
@@ -120,7 +118,6 @@ px      68    160    252    344    436    528    620    712    804    896    */
 }
 .ui-header .ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li {
 	overflow: auto;
-	padding-bottom: 0;
 	border-bottom: 0;
 }
 

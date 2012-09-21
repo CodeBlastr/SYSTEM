@@ -10,10 +10,11 @@ class ContactDetailsController extends ContactsAppController {
 	}
 
 	function view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid contact detail', true));
-			$this->redirect(array('action' => 'index'));
+		$this->ContactDetail->id = $id;
+		if (!$this->ContactDetail->exists()) {
+			throw new NotFoundException(__('Invalid contact detail.'));
 		}
+		
 		$this->set('contactDetail', $this->ContactDetail->read(null, $id));
 	}
 
@@ -33,31 +34,31 @@ class ContactDetailsController extends ContactsAppController {
 	}
 
 	function edit($id = null) {
-		if (!$id && empty($this->request->data)) {
-			$this->Session->setFlash(__('Invalid contact detail', true));
-			$this->redirect(array('action' => 'index'));
+		$this->ContactDetail->id = $id;
+		if (!$this->ContactDetail->exists()) {
+			throw new NotFoundException(__('Invalid contact detail.'));
 		}
+
 		if (!empty($this->request->data)) {
 			if ($this->ContactDetail->save($this->request->data)) {
-				$this->Session->setFlash(__('The contact detail has been saved', true));
-				$this->redirect(array('action' => 'index'));
+				$this->Session->setFlash(__('The contact detail has been saved'));
 			} else {
-				$this->Session->setFlash(__('The contact detail could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The contact detail could not be saved. Please, try again.'));
 			}
 		}
-		if (empty($this->request->data)) {
-			$this->request->data = $this->ContactDetail->read(null, $id);
-		}
+		
+		$this->ContactDetail->contain('Contact');
+		$this->request->data = $this->ContactDetail->read(null, $id);
 		$contactDetailTypes = $this->ContactDetail->types();
-		$contacts = $this->ContactDetail->Contact->find('list');
-		$this->set(compact('contactDetailTypes', 'contacts'));
+		$this->set(compact('contactDetailTypes'));
 	}
 
 	function delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for contact detail', true));
-			$this->redirect(array('action'=>'index'));
+		$this->ContactDetail->id = $id;
+		if (!$this->ContactDetail->exists()) {
+			throw new NotFoundException(__('Invalid contact detail.'));
 		}
+		
 		if ($this->ContactDetail->delete($id)) {
 			$this->Session->setFlash(__('Contact detail deleted', true));
 			$this->redirect(array('action'=>'index'));
