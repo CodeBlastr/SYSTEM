@@ -45,28 +45,28 @@ class Contact extends ContactsAppModel {
 		'ContactType' => array(
 			'className' => 'Enumeration',
 			'foreignKey' => 'contact_type',
-			'conditions' => array('ContactType.type' => 'CONTACTTYPE'),
+			'conditions' => array('ContactType.type' => 'CONTACT_TYPE'),
 			'fields' => '',
 			'order' => ''
 		),
 		'ContactSource' => array(
 			'className' => 'Enumeration',
 			'foreignKey' => 'contact_source',
-			'conditions' => array('ContactSource.type' => 'CONTACTSOURCE'),
+			'conditions' => array('ContactSource.type' => 'CONTACT_SOURCE'),
 			'fields' => '',
 			'order' => ''
 		),
 		'ContactIndustry' => array(
 			'className' => 'Enumeration',
 			'foreignKey' => 'contact_industry',
-			'conditions' => array('ContactIndustry.type' => 'CONTACTINDUSTRY'),
+			'conditions' => array('ContactIndustry.type' => 'CONTACT_INDUSTRY'),
 			'fields' => '',
 			'order' => ''
 		),
 		'ContactRating' => array(
 			'className' => 'Enumeration',
 			'foreignKey' => 'contact_rating',
-			'conditions' => array('ContactRating.type' => 'CONTACTRATING'),
+			'conditions' => array('ContactRating.type' => 'CONTACT_RATING'),
 			'fields' => '',
 			'order' => ''
 		),
@@ -271,7 +271,7 @@ class Contact extends ContactsAppModel {
  */
 	protected function _cleanContactData($data) {
 		# if id is here, then merge the data with the existing data (new data over writes old)
-		if (!empty($data['Contact']['id'])) :
+		if (!empty($data['Contact']['id'])) {
 			$contact = $this->find('first', array(
 				'conditions' => array(
 					'Contact.id' => $data['Contact']['id'],
@@ -283,29 +283,28 @@ class Contact extends ContactsAppModel {
 				));
 			$data = Set::merge($contact, $data);
 			unset($data['Contact']['modified']);
-		endif;
+		}
 
 		# if employer is not empty merge all employers so that we don't lose any existing employers in the Habtm update
-		if (!empty($data['Employer'])) :
+		if (!empty($data['Employer'])) {
 			$mergedEmployers = Set::merge(Set::extract('/id', $data['Employer']), $data['Employer']['Employer']);
 			unset($data['Employer']);
 			$data['Employer']['Employer'] = $mergedEmployers;
-		endif;
+		}
 
-		if (!empty($data['User'])) :
-		foreach ($data['User'] as $key => $userData) :
-			if (is_array($userData)) :
-				$data['User'][$key] = implode(',', $userData);
-			endif;
-		endforeach;
-		endif;
+		if (!empty($data['User'])){
+			foreach ($data['User'] as $key => $userData) {
+				if (is_array($userData)) {
+					$data['User'][$key] = implode(',', $userData);
+				}
+			}
+		}
 
 		//add contact name if its empty
-		if (empty($data['Contact']['name'])) :
+		if (empty($data['Contact']['name'])) {
 			$data['Contact']['name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : $data['User']['username'];
 			$data['Contact']['name'] = !empty($data['Contact']['name']) ? $data['Contact']['name'] : 'Unknown';
-		endif;
-
+		}
 
 		// remove empty contact detail values, because the form sets the array which makes a save attempt
 		if (!empty($data['ContactDetail'][0])) {
@@ -317,6 +316,7 @@ class Contact extends ContactsAppModel {
 				$i++;
 			}
 		}
+		
 		// remove empty contact activity values, because the form sets the array which makes a save attempt
 		if (!empty($data['ContactActivity'][0])) {
 			$i = 0;
@@ -331,5 +331,12 @@ class Contact extends ContactsAppModel {
 		return $data;
 	}
 
+    public function types() {
+        $types = array();
+        foreach (Zuha::enum('CONTACT_TYPE') as $type) {
+            $types[Inflector::underscore($type)] = $type;
+        }
+        return array_merge(array('lead' => 'Lead'), $types);
+    }
+
 }
-?>

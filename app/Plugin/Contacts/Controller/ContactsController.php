@@ -23,6 +23,29 @@ class ContactsController extends ContactsAppController {
 	}
 	
 	
+	public function import($type) {
+		// http://www2.razorit.com/contacts/contacts/import/google
+		if ($type == 'google') {
+			$googleAccessToken = $this->Session->read('Google.accessToken'); // set in UserConnectsController
+			if (!empty($googleAccessToken)) {
+								
+				App::uses('UserConnect', 'Users.Model');
+				$UserConnect = new UserConnect();
+				debug($UserConnect->listGoogleContacts($googleAccessToken));
+				break;
+				
+				// post($accessTokenKey, $accessTokenSecret, $url, array $postData = array()) 
+				$response = $this->Client->post($params['code'], $params['client_secret'], 'https://accounts.google.com/o/oauth2/token', $params);
+				debug($googleAccessToken);
+				break;
+			} else {
+				$this->redirect('/users/user_connects/google/contacts%2Fcontacts%2Fimport%2Fgoogle');
+			}
+		}
+	}
+	
+	
+	
 	public function index() {
 		//$this->paginate['conditions'] = array('Contact.is_company' => 1, 'Contact.contact_type IS NOT NULL');
 		$this->paginate['fields'] = array(
@@ -43,11 +66,6 @@ class ContactsController extends ContactsAppController {
 		$associations =  array('ContactType' => array('displayField' => 'name'), 'ContactSource' => array('displayField' => 'name'), 'ContactIndustry' => array('displayField' => 'name'), 'ContactRating' => array('displayField' => 'name'));
 		$this->set('associations', $associations);
 		$this->allowedActions[] = 'list';
-	}
-	
-	
-	public function mylist() {
-		$this->set('something', 'My Something');
 	}
 	
 	
@@ -119,6 +137,11 @@ class ContactsController extends ContactsAppController {
 		$this->set('tabsElement', '/contacts');
 		$this->set('page_title_for_layout', $contact['Contact']['name']);
 		$this->set('title_for_layout',  $contact['Contact']['name']);
+		if (!empty($contact['Contact']['is_company'])) {
+			$this->render('view_company');
+		} else {
+			$this->render('view_person');
+		}
 	}
 
 /**
@@ -161,21 +184,22 @@ class ContactsController extends ContactsAppController {
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
-			if ($this->Contact->save($this->request->data)) {
-				$this->Session->setFlash(__('The contact has been saved', true));
-				$this->redirect(array('action' => 'index'));
+			if ($this->Contact->saveAll($this->request->data)) {
+				$this->Session->setFlash(__('The contact has been saved'));
 			} else {
-				$this->Session->setFlash(__('The contact could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The contact could not be saved. Please, try again.'));
 			}
 		}
 		if (empty($this->request->data)) {
+			$this->Contact->contain('ContactDetail');
 			$this->request->data = $this->Contact->read(null, $id);
 		}
-		$contactTypes = $this->Contact->ContactType->find('list');
+		$contactTypes = $this->Contact->types();
 		$contactSources = $this->Contact->ContactSource->find('list');
 		$contactIndustries = $this->Contact->ContactIndustry->find('list');
 		$contactRatings = $this->Contact->ContactRating->find('list');
 		$users = $this->Contact->User->find('list');
+		
 		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users'));
 	}
 
