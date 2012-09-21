@@ -71,7 +71,6 @@
 				), 
 			'class'=>$formClass
 			));	?>
-		<fieldset>
 			<div class="<?php echo $columnClass; ?>">
 				<div class="<?php echo $holderClass; ?>">
 					<?php echo $this->Form->input('username', array('label'=>$usernameLabel, 'class'=>$inputClass, 'div'=>$rowClass)); ?>
@@ -98,7 +97,6 @@
                     <?php } ?>
 				</div>
 			</div>
-		</fieldset>
 <?php 
 echo $this->Form->end(array('label' => $submitLabel, 'div' => array('class' => $submitClass)));
 } else {
