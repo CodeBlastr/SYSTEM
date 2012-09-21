@@ -1,5 +1,9 @@
 // Jquery Mobile Show Columns by Type 
 
+	
+$(document).bind('mobileinit',function(){
+   $.mobile.selectmenu.prototype.options.nativeMenu = false;
+});
 
 $(document).bind("pageshow", function( event, ui){
 

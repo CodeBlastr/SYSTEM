@@ -64,6 +64,12 @@ legend {
 	font-weight: bold;
 	padding: 1em;
 }
+.floManagrLogoBlue {
+	color: #4E86B9;
+}
+h1 {
+	margin-top: 1em;
+}
 h4 {
 	color: #3C0;
 	font-size: 2em;
@@ -76,15 +82,17 @@ h4 {
 
 <?php echo $this->Session->flash(); ?>
 <div class="install form">
-	<br /><img src = "/img/admin/logo.png" />
+    <h1>flo<span class="floManagrLogoBlue">Managr</span> Install</h1>
     <h4>Congratulations on the <br /> successful install!!!</h4>
   
 <?php echo $this->Form->create('User', array('type' => 'file')); ?>
 	<fieldset>
-    	<legend><?php echo __('Set a password for username "admin"'); ?></legend>
+    	<legend><?php echo __('Administrator Account'); ?></legend>
+		<p>Please create an administrator account login and keep your password in a secure and safe place.</p>
         <?php
 		echo $this->Form->input('User.id', array('value' => $user['User']['id']));
 		echo $this->Form->hidden('User.user_role_id', array('value' => $user['User']['user_role_id']));
+		echo $this->Form->input('User.username', array('value' => $user['User']['username']));
 		echo $this->Form->input('User.password', array('type' => 'password'));
 		echo $this->Form->input('User.confirm_password', array('type' => 'password'));
 		?>
@@ -93,7 +101,6 @@ h4 {
     	<legend><?php echo __('Administrator info'); ?></legend>
         <?php
 		echo $this->Form->input('User.full_name', array('value' => $user['User']['full_name']));
-		echo $this->Form->input('User.username', array('value' => $user['User']['username']));
 		echo $this->Form->input('User.email', array('value' => $user['User']['email']));
 		echo $this->Form->end('Update');
 		?>
