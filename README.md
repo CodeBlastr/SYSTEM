@@ -7,9 +7,15 @@ Built on an MVC framework (CakePHP), by a CakePHP contributor.
 
 ## Installation
 
-* Download the files or if you plan to make changes and submit a pull request, do a clone of the repository.
+* Download the files OR BETTER if you plan to contribute, do a clone of the repository.
 
-* * Clone with `git clone git://github.com/zuha/Zuha.git [DIRECTORY PATH]`
+* * Clone using the command `git clone git://github.com/zuha/Zuha.git [REPLACE WITH DESIRED INSTALL DIRECTORY PATH]`
+
+* * Php 5.3 is required, and MySQL 5+. 
+
+* * mod_rewrite and .htaccess must be turned on
+
+* * * Should have write permissions for all of the directories in "/app/tmp" and the "sites" directory. 
 
 * Create a domain or subdomain name that points to the directory the files are saved to. (**IMPORTANT : You can NOT install to a subfolder.  Like example.com/zuha**, However you can install with a subdomain, like zuha.localhost, just plain localhost, zuha.example.com, or example.com)
 
@@ -19,11 +25,9 @@ Built on an MVC framework (CakePHP), by a CakePHP contributor.
 
 * Create a database and keep the login details handy. (host, db name, user, password)
 
-* Upload the files to a supported server. 
-* * Php 5.3 is required. 
-* * mod_rewrite and .htaccess must be turned on
+* Visit the domain created in step two, and follow the prompts. 
 
-* Visit the domain that points to the directory Zuha was uploaded to.
+* * Depending on your system, you may be prompted to update folder permissions at this point.  
 
 ## Security Issues
 
