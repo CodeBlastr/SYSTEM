@@ -609,10 +609,10 @@ class InstallController extends AppController {
  * Creates the sites folder if it doesn't exist as a copy of sites.default
  */
 	protected function _handleSitesDirectory() {
-		if (file_exists(ROOT.DS.'sites.default') && !file_exists(ROOT.DS.'sites')) {
+		if (file_exists(ROOT.DS.'sites.default') && !file_exists(ROOT.DS.'sites/example.com')) {
 			if($this->_copy_directory(ROOT.DS.'sites.default', ROOT.DS.'sites')) {
 			} else {
-				echo 'permission to rename directories is required';
+				echo 'Please update write permissions for the "sites" directory.';
 				die;
 			}
 		}
@@ -632,12 +632,16 @@ class InstallController extends AppController {
 	            if ( is_dir($src . '/' . $file) ) {
 	                $this->_copy_directory($src . '/' . $file,$dst . '/' . $file);
     	        } else {
-            	    copy($src . '/' . $file,$dst . '/' . $file);
+            	    if (copy($src . '/' . $file,$dst . '/' . $file)) {
+						$return = true;
+					} else {
+						$return = false;
+					}
         	    }
     	    }
 	    }
     	closedir($dir);
-		return true;
+		return $return;
 	}
 
 
