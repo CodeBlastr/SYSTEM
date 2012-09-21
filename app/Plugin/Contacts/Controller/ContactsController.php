@@ -23,6 +23,29 @@ class ContactsController extends ContactsAppController {
 	}
 	
 	
+	public function import($type) {
+		// http://www2.razorit.com/contacts/contacts/import/google
+		if ($type == 'google') {
+			$googleAccessToken = $this->Session->read('Google.accessToken'); // set in UserConnectsController
+			if (!empty($googleAccessToken)) {
+								
+				App::uses('UserConnect', 'Users.Model');
+				$UserConnect = new UserConnect();
+				debug($UserConnect->listGoogleContacts($googleAccessToken));
+				break;
+				
+				// post($accessTokenKey, $accessTokenSecret, $url, array $postData = array()) 
+				$response = $this->Client->post($params['code'], $params['client_secret'], 'https://accounts.google.com/o/oauth2/token', $params);
+				debug($googleAccessToken);
+				break;
+			} else {
+				$this->redirect('/users/user_connects/google/contacts%2Fcontacts%2Fimport%2Fgoogle');
+			}
+		}
+	}
+	
+	
+	
 	public function index() {
 		//$this->paginate['conditions'] = array('Contact.is_company' => 1, 'Contact.contact_type IS NOT NULL');
 		$this->paginate['fields'] = array(
@@ -43,11 +66,6 @@ class ContactsController extends ContactsAppController {
 		$associations =  array('ContactType' => array('displayField' => 'name'), 'ContactSource' => array('displayField' => 'name'), 'ContactIndustry' => array('displayField' => 'name'), 'ContactRating' => array('displayField' => 'name'));
 		$this->set('associations', $associations);
 		$this->allowedActions[] = 'list';
-	}
-	
-	
-	public function mylist() {
-		$this->set('something', 'My Something');
 	}
 	
 	
