@@ -8,7 +8,7 @@ Built on an MVC framework (CakePHP), by a CakePHP contributor.
 
 ## Installation
 
-* Download the files OR BETTER if you plan to contribute, do a clone of the repository.
+1. Download the files OR BETTER if you plan to contribute, do a clone of the repository.
 
     * Clone using the command `git clone git://github.com/zuha/Zuha.git [REPLACE WITH DESIRED INSTALL DIRECTORY PATH]`
 
@@ -16,19 +16,18 @@ Built on an MVC framework (CakePHP), by a CakePHP contributor.
 
     * mod_rewrite and .htaccess must be turned on
 
-        * Should have write permissions for all of the directories in "/app/tmp" and the "sites" directory. 
++ Create a domain or subdomain name that points to the directory the files are saved to. 
+    * **IMPORTANT : You can NOT install to a subfolder.  Like example.com/zuha**, only domains like example.localhost, localhost, example.com, subdomain.example.com
 
-* Create a domain or subdomain name that points to the directory the files are saved to. (**IMPORTANT : You can NOT install to a subfolder.  Like example.com/zuha**, However you can install with a subdomain, like zuha.localhost, just plain localhost, zuha.example.com, or example.com)
+    * [For help creating a subdomain on localhost for mac](http://decoding.wordpress.com/2009/04/06/how-to-edit-the-hosts-file-in-mac-os-x-leopard/)
 
-    * for help creating a subdomain on mac : http://decoding.wordpress.com/2009/04/06/how-to-edit-the-hosts-file-in-mac-os-x-leopard/
+    * [For help creating a subdomain on localhost for windows](http://digitalpbk.blogspot.com/2007/01/making-subdomains-on-localhost.html)
 
-    * for help creating a subdomain on windows : http://digitalpbk.blogspot.com/2007/01/making-subdomains-on-localhost.html
++ Create a database and keep the login details handy. (host, db name, user, password)
 
-* Create a database and keep the login details handy. (host, db name, user, password)
++ Visit the domain created in step two, and follow the prompts. 
 
-* Visit the domain created in step two, and follow the prompts. 
-
-    * Depending on your system, you may be prompted to update folder permissions at this point.  
+    * Depending on your system, you may be prompted to update folder permissions at this point for the "/app/tmp" and the "sites" directories.  
 
 ## Security Issues
 
