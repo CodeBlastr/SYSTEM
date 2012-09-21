@@ -9,7 +9,7 @@ if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html
 	<![endif]-->
 <meta name="robots" content="index, follow" />
 <meta http-equiv="X-UA-Compatible" content="IE=8" />
-<meta name="viewport" content="width=device-width"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <?php
 		echo $this->Html->meta('icon');
@@ -40,8 +40,10 @@ if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html
 			echo $this->Html->css('screen'); 
 		}
 		
-		# load in js files from settings
-		echo $this->Html->script('jquery-1.5.2.min');
+		?>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<?php
+                # load in js files from settings
 		echo $this->Html->script('admin/jquery-ui-1.8.13.custom.min');
 		echo $this->Html->script('system/system');
 		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
