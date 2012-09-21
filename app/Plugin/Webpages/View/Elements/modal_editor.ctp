@@ -109,7 +109,7 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 		
 		
 		$(".hover_div").addClass("hover_include");
-		$(".hover_div").parent().css({ position : "relative", });
+		$(".hover_div").parent().css({ position : "relative" });
        
 	    $(".hover_div").css({
 			position : "absolute",
@@ -222,8 +222,8 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 	
 	jQuery.fn.center = function() {
    		this.css("position","fixed");
-		var top = (($(window).height() - this.outerHeight()) / 2);
-		var left = (($(window).width() - this.outerWidth()) / 2) + $(window).scrollLeft();
+		var top = (($(window).height() - this.outerHeight(false)) / 2);
+		var left = (($(window).width() - this.outerWidth(false)) / 2) + $(window).scrollLeft();
 		if (top < 10) { top = 10; }
 		if (left < 10) { left = 10; }
 		this.css("top", top + "px");
