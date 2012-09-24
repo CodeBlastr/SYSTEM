@@ -4,6 +4,4 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'database
 } else if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS)) {
 	echo 'No database.php file in the site/'.SITE_DIR.'/Config directory.';
 	break;
-} else {
-	require_once(ROOT.DS.'sites'.DS.'example.com'.DS.'Config'.DS.'database.php');
-}
+} 
