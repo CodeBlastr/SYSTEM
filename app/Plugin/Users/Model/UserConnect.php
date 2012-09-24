@@ -164,7 +164,7 @@ class UserConnect extends UsersAppModel {
 			); 
 			
 			
-		$contacts = $this->Client->getFullRequest($request);
+		$contacts = $this->Client->request($request);
 		$xml = Xml::toArray(Xml::build($contacts->body));
 		debug($xml);
 		break;
