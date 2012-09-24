@@ -259,7 +259,7 @@ class InstallController extends AppController {
 				$this->request->data['User']['last_login'] = date('Y-m-d h:i:s');
 				if ($User->add($this->request->data)) {
 					$this->Session->write('Auth.redirect', null);
-					$this->Session->setFlash(__('Install completed! Test your new admin login (and a good first place to go is Dashbooard > Privileges, to run the first setup of privileges so that you can allow the public to view your site.'));
+					$this->Session->setFlash(__('Install completed! Please test the admin login you just created.'));
 					$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 				} else {
 					$this->Session->setFlash(__('User update failure.'));
@@ -609,10 +609,25 @@ class InstallController extends AppController {
  * Creates the sites folder if it doesn't exist as a copy of sites.default
  */
 	protected function _handleSitesDirectory() {
-		if (file_exists(ROOT.DS.'sites.default') && !file_exists(ROOT.DS.'sites')) {
+		if (@!is_writable(ROOT.DS.'app'.DS.'tmp'.DS.'logs')) {
+			$errorOne = '<ul><li>Please give write permissions to the <strong>'.ROOT.DS.'app'.DS.'tmp'.DS.'logs</strong> directory. </li></ul>';
+			$die = true;
+		}
+		if (@!is_writable(ROOT.DS.'sites')) {
+			$errorTwo = '<ul><li>Please give write permissions to the <strong>'.ROOT.DS.'sites</strong> directory. </li></ul>';
+			$die = true;
+		}
+		if ($die === true) {
+			echo '<h1>Problem with server compatibility.</h1>';
+			echo $errorOne ? $errorOne : null;
+			echo $errorTwo ? $errorTwo : null;
+			die;
+		}
+		
+		if (file_exists(ROOT.DS.'sites.default') && !file_exists(ROOT.DS.'sites/example.com')) {
 			if($this->_copy_directory(ROOT.DS.'sites.default', ROOT.DS.'sites')) {
 			} else {
-				echo 'permission to rename directories is required';
+				echo 'Please update write permissions for the "sites" directory.';
 				die;
 			}
 		}
@@ -632,7 +647,12 @@ class InstallController extends AppController {
 	            if ( is_dir($src . '/' . $file) ) {
 	                $this->_copy_directory($src . '/' . $file,$dst . '/' . $file);
     	        } else {
-            	    copy($src . '/' . $file,$dst . '/' . $file);
+            	    if (copy($src . '/' . $file,$dst . '/' . $file)) {
+						
+					} else {
+						echo 'sites copy problem';
+						die;
+					}
         	    }
     	    }
 	    }

@@ -11,10 +11,10 @@ App::import('Core', array('Xml', 'HttpSocket'));
 class PaypalSource extends Datasource {
 
     public $description = 'Paypal API';
-    // CakePHP HttpSocket object
-    private $httpSocket = null;
+    public $useDbConfig = 'paypal';
+    private $_httpSocket = null;
     public $config = array(
-        'endpoint' => 'https://svcs.sandbox.paypal.com',
+        'environment' => 'sandbox',
         'api_username' => '',
         'api_password' => '',
         'api_signature' => '',
@@ -25,52 +25,68 @@ class PaypalSource extends Datasource {
     public function __construct($config = array()) {
         parent::__construct($config);
         $this->config = array_merge($this->config, $config);
-        $this->httpSocket = new HttpSocket();
+        if($this->config['environment'] == 'sandbox') {
+            $this->config['endpoint'] = 'https://svcs.sandbox.paypal.com';
+            $this->config['nvpEndpoint'] = 'https://api-3t.sandbox.paypal.com/nvp';
+        } else { /** @todo Set the live PayPal endpoints **/
+            $this->config['endpoint'] = 'https://svcs.paypal.com';
+            $this->config['nvpEndpoint'] = 'https://api-3t.sandbox.paypal.com/nvp';
+        }
+        $this->_httpSocket = new HttpSocket();
     }
 
     /**
-     *
-     * @param string $callbackPath
+     * This is our base Permissions API request sender.
+     * @param string $apiOperation
+     * @param type $query
+     * @return array
      */
-    public function requestPermissions($returnUrl = '') {
-        $query = array(
-            'scope' => $this->config['scope'],
-            'callback' => 'http://' . $_SERVER['SERVER_NAME'] . $returnUrl
+    public function sendRequest($apiOperation, $query) {
+
+        $query['requestEnvelope.errorLanguage'] = 'en_US';
+
+        $request = array(
+            'header' => array(
+                'X-PAYPAL-SECURITY-USERID' => $this->config['api_username'],
+                'X-PAYPAL-SECURITY-PASSWORD' => $this->config['api_password'],
+                'X-PAYPAL-SECURITY-SIGNATURE' => $this->config['api_signature'],
+                'X-PAYPAL-REQUEST-DATA-FORMAT' => 'JSON',
+                'X-PAYPAL-RESPONSE-DATA-FORMAT' => 'JSON',
+                'X-PAYPAL-APPLICATION-ID' => $this->config['app_id'],
+            )
         );
-        $result = $this->_sendRequest('/Permissions/RequestPermissions', $query);
-        if($this->ackHandler($result)) {
-            $this->Cookie->write('ZuhaPaypalToken', $result['token'], false, 900);
-            $this->redirect('https://www.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token='.$result['token']);
-        } else {
-            return FALSE;
-        }
+        if(strstr($this->config['endpoint'], 'sandbox'))
+                $request['header']['X-PAYPAL-SANDBOX-EMAIL-ADDRESS'] = 'paypal-sandboxer@razorit.com';
+        
+        $results = $this->_httpSocket->post($this->config['endpoint'].$apiOperation, $query, $request);
+	return $this->_ackHandler(json_decode($results));
+    }
+    
+    
+    /**
+     * This is our base NVP request sender.
+     * @param string $apiOperation
+     * @param type $query
+     * @return array
+     */
+    public function sendNvpRequest($method, $query) {
+
+        $query['METHOD'] = $method;
+        $query['VERSION'] = '51.0';
+        $query['USER'] = $this->config['api_username'];
+        $query['PWD'] = $this->config['api_password'];
+        $query['SIGNATURE'] = $this->config['api_signature'];
+
+        $results = $this->_httpSocket->post($this->config['nvpEndpoint'], $query);
+	return $this->_ackHandler(json_decode($results));
     }
 
-    public function getAccessToken($verificationCode) {
-
-        $query = array(
-            'token' => $this->Cookie->read('ZuhaPaypalToken'),
-            'verifier' => $verificationCode
-        );
-        $result = $this->_sendRequest('/Permissions/GetAccessToken', $query);
-        if($this->ackHandler($result)) {
-            $return = array(
-                'token' => $result['token'],
-                'tokenSecret' => $result['tokenSecret']
-            );
-            return $return;
-        } else {
-            return FALSE;
-        }
-
-    }
-
-     /**
-     * A probably reusable Pass/Fail response parser with error/warning logging capability
+    /**
+     * A Pass/Fail response parser with error/warning logging capability
      * @param array $result
      * @return boolean
      */
-    private function ackHandler($result) {
+    private function _ackHandler($result) {
         $ackCodes = array(
             'Success' => array(
                 'okay' => true,
@@ -102,36 +118,12 @@ class PaypalSource extends Datasource {
         }
 
         if($ackCodes[ $result['responseEnvelope']['ack'] ]['okay']) {
-            return TRUE;
+            return $result;
         } else {
             debug($result);
             return FALSE;
         }
 
     }
-
-    /**
-     * This is our base request sender.  All requests funnel through here.
-     * @param string $apiOperation
-     * @param type $request
-     * @return array
-     */
-    private function _sendRequest($apiOperation, $query) {
-
-        $query['requestEnvelope.errorLanguage'] = 'en_US';
-
-        $request = array(
-            'header' => array(
-                'X-PAYPAL-SECURITY-USERID' => $this->config['api_username'],
-                'X-PAYPAL-SECURITY-PASSWORD' => $this->config['api_password'],
-                'X-PAYPAL-SECURITY-SIGNATURE' => $this->config['api_signature'],
-                'X-PAYPAL-REQUEST-DATA-FORMAT' => 'JSON',
-                'X-PAYPAL-RESPONSE-DATA-FORMAT' => 'JSON',
-                'X-PAYPAL-APPLICATION-ID' => $this->config['app_id'],
-            )
-        );
-        $results = $this->httpSocket->get($this->config['endpoint'].$apiOperation, $query, $request);
-	return json_decode($results);
-    }
-
+    
 }

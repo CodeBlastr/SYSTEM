@@ -79,3 +79,6 @@
 [submodule "app/Plugin/Facebook"]
 	path = app/Plugin/Facebook
 	url = git@github.com:zuha/Facebook-Zuha-Cakephp-Plugin.git
+[submodule "vendors/OAuth"]
+	path = vendors/OAuth
+	url = git@github.com:zuha/OAuth-Consumer-Zuha-Cakephp.git
