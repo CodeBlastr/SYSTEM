@@ -82,3 +82,6 @@
 [submodule "vendors/OAuth"]
 	path = vendors/OAuth
 	url = git@github.com:zuha/OAuth-Consumer-Zuha-Cakephp.git
+[submodule "app/Plugin/Connections"]
+	path = app/Plugin/Connections
+	url = git@github.com:zuha/Connections-Zuha-Cakephp-Plugin.git

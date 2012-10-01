@@ -339,6 +339,39 @@ class Setting extends AppModel {
 							'description' => 'Defines setting variables for credits given to user on purchase of credits.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'5',
 							),
 						),
+                    'Connections' => array(
+                        array(
+                            'name' => 'PAYPAL',
+                            'description' => 'Defines testing environment. sandbox OR live'.PHP_EOL
+                            .PHP_EOL.'environment = sandbox'
+                            .PHP_EOL.'apiUsername = asdg33qb5haeh'
+                            .PHP_EOL.'apiPassword = 12345'
+                            .PHP_EOL.'apiSignature = 32jdnrjfmasdfk33qb5haeh'
+                            .PHP_EOL.'apiAppId = 42x'
+                            .PHP_EOL.'apiPermissionScope[] = ACCOUNT_BALANCE'
+                            .PHP_EOL.'chainedPrimaryPercentage = 2'
+                        ),
+                        array(
+                            'name' => 'PAYPAL_API_USERNAME',
+                            'description' => 'The API username to be used to connect to the PayPal API.'
+                        ),
+                        array(
+                            'name' => 'PAYPAL_API_PASSWORD',
+                            'description' => 'The password for the PayPal API uesrname.'
+                        ),
+                        array(
+                            'name' => 'PAYPAL_API_SIGNATURE',
+                            'description' => 'The API Signature to connect to the PayPal API.'
+                        ),
+                        array(
+                            'name' => 'PAYPAL_APP_ID',
+                            'description' => 'Your PayPal App ID.'
+                        ),
+                        array(
+                            'name' => 'PAYPAL_PERMISSION_SCOPE',
+                            'description' => 'A string or array of permssions to request from the PayPal user.'
+                        )
+                    ),
 				  );
 	}
 
