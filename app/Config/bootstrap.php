@@ -111,12 +111,14 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 * advanced ways of loading plugins
 	 *
 	 */
+        //debug(SITE_DIR);break;
 	if (defined('__SYSTEM_LOAD_PLUGINS')) {
-		extract(unserialize(__SYSTEM_LOAD_PLUGINS));
-		CakePlugin::load($plugins);
-	} else {
-		CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages')); // required plugins
-		// CakePlugin::loadAll(); // Loads all plugins at once
+            extract(unserialize(__SYSTEM_LOAD_PLUGINS));
+            CakePlugin::load($plugins);
+	} elseif (SITE_DIR === NULL){
+            CakePlugin::loadAll(); // Loads all plugins at once
+        } else {
+            CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages')); // required plugins    
 	}
 	
 	
@@ -241,6 +243,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'CategoryOption' => 'Categories',
 				'Comment' => 'Comments',
 				'Condition' => false,
+				'Connection' => 'Connections',
 				'ContactAddress' => 'Contacts',
 				'ContactDetail' => 'Contacts',
 				'Contact' => 'Contacts',
