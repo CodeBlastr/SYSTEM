@@ -35,6 +35,7 @@ input[type=submit] {
 	font-size: 6em;
 	text-align: center;
 	float: none;
+	-webkit-appearance: button;
 }
 input[type=text], input[type=password] {
 	clear: both;

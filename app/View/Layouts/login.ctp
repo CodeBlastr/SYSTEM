@@ -46,17 +46,21 @@ label {
 input[type=submit] {
 	margin: auto;
 	color: #000;
-	font-size: 6em;
+	font-size: 2em;
 	text-align: center;
 	float: none;
+	-webkit-appearance: button;
+	position: relative;
+	left: -27px;
 }
 input[type=text], input[type=password] {
 	clear: both;
-	font-size: 24px;
+	font-size: 1.7em;
 	margin: 0 0 10px 0;
 	color: #000;
 	border: 2px solid #999;
 	background: #eaeaea;
+	width: 9em;
 }
 input:focus {
 	border: 2px solid #6C3;
@@ -100,7 +104,7 @@ h1 {
 .forgotPassword {
 	position: absolute;
 	top: 45px;
-	left: 144px;
+	left: -1px;
 }
 -->
 </style>

@@ -2,7 +2,7 @@
 if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php')) {
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php');
 } else {
-
+	
 	/**
 	 * Default bootstrap.php file from here down.
 	 */
@@ -28,12 +28,12 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			ROOT.DS.SITE_DIR.DS.'plugins'.DS,
 			ROOT.DS.APP_DIR.DS.'Plugin'.DS
 			),
-	    'models' =>  array(
+		'models' =>  array(
 			ROOT.DS.SITE_DIR.DS.'Model'.DS,
 			ROOT.DS.SITE_DIR.DS.'models'.DS,
 			ROOT.DS.APP_DIR.DS.'Model'.DS
 			),
-	    'views' => array(
+		'views' => array(
 			ROOT.DS.SITE_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS,
 			ROOT.DS.SITE_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
 			ROOT.DS.SITE_DIR.DS.'View'.DS,
@@ -45,22 +45,22 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			ROOT.DS.SITE_DIR.DS.'controllers'.DS,
 			ROOT.DS.APP_DIR.DS.'Controller'.DS
 			),
-	    'datasources' => array(
+		'datasources' => array(
 			ROOT.DS.SITE_DIR.DS.'Model'.DS.'Datasource'.DS,
 			ROOT.DS.SITE_DIR.DS.'models'.DS.'datasources'.DS,
 			ROOT.DS.APP_DIR.DS.'models'.DS.'datasources'.DS
 			),
-	    'behaviors' => array(
+		'behaviors' => array(
 			ROOT.DS.SITE_DIR.DS.'Model'.DS.'Behavior'.DS,
 			ROOT.DS.SITE_DIR.DS.'models'.DS.'behaviors'.DS,
 			ROOT.DS.APP_DIR.DS.'Model'.DS.'Behavior'.DS
 			),
-	    'components' => array(
+		'components' => array(
 			ROOT.DS.SITE_DIR.DS.'Controller'.DS.'Component'.DS,
 			ROOT.DS.SITE_DIR.DS.'controllers'.DS.'components'.DS,
 			ROOT.DS.APP_DIR.DS.'Controller'.DS.'Component'.DS
 			),
-	    'helpers' => array(
+		'helpers' => array(
 			ROOT.DS.SITE_DIR.DS.'View'.DS.'Helper'.DS,
 			ROOT.DS.SITE_DIR.DS.'views'.DS.'helpers'.DS,
 			ROOT.DS.APP_DIR.DS.'View'.DS.'Helper'.DS
@@ -72,41 +72,38 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	
 	
 	/**
-	 * As of 1.3, additional rules for the inflector are added below
-	 *
-	 * Inflector::rules('singular', array('rules' => array(), 'irregular' => array(), 'uninflected' => array()));
-	 * Inflector::rules('plural', array('rules' => array(), 'irregular' => array(), 'uninflected' => array()));
-	 *
+	 * reads settings.ini (or defaults.ini if non-existent)
+	 * and sets configurable constants that are set in the settings db table
 	 */
-		function __setConstants($path = null, $return = false) {
-			$path = (!empty($path) ? $path : CONFIGS);
-			if (file_exists($path .'defaults.ini')) {
-				if (file_exists($path .'settings.ini')) {
-					$path .= 'settings.ini';
-				} else {
-					$path .= 'defaults.ini';
-				}
-				$settings = parse_ini_file($path, true);
-				if ($return == true) {
-					$settings = ZuhaSet::array_map_r($settings, 'ZuhaSet::parse_ini_r');
-					return $settings;
-				} else {
-					foreach ($settings as $key => $value) {
-						$key = trim($key);
-						if (!defined(strtoupper($key))) {
-							if (is_array($value)) {
-								define(strtoupper($key), serialize($value));
-							} else {
-								define(strtoupper($key), $value);
-							}
+	function __setConstants($path = null, $return = false) {
+		$path = (!empty($path) ? $path : CONFIGS);
+		if (file_exists($path .'defaults.ini')) {
+			if (file_exists($path .'settings.ini')) {
+				$path .= 'settings.ini';
+			} else {
+				$path .= 'defaults.ini';
+			}
+			$settings = parse_ini_file($path, true);
+			if ($return == true) {
+				$settings = ZuhaSet::array_map_r($settings, 'ZuhaSet::parse_ini_r');
+				return $settings;
+			} else {
+				foreach ($settings as $key => $value) {
+					$key = trim($key);
+					if (!defined(strtoupper($key))) {
+						if (is_array($value)) {
+							define(strtoupper($key), serialize($value));
+						} else {
+							define(strtoupper($key), $value);
 						}
 					}
 				}
 			}
 			#debug(get_defined_constants());
 		}
+	}
 	
-		__setConstants();
+	__setConstants();
 	
 	/**
 	 * Plugins need to be loaded manually, you can either load them one by one or all of them in a single call
@@ -114,74 +111,76 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 * advanced ways of loading plugins
 	 *
 	 */
-	 #CakePlugin::loadAll(); // Loads all plugins at once
-		if (defined('__SYSTEM_LOAD_PLUGINS')) {
-		 	extract(unserialize(__SYSTEM_LOAD_PLUGINS));
-			CakePlugin::load($plugins);
-		} else {
-			CakePlugin::loadAll(); // Loads all plugins at once
-		}
+        //debug(SITE_DIR);break;
+	if (defined('__SYSTEM_LOAD_PLUGINS')) {
+            extract(unserialize(__SYSTEM_LOAD_PLUGINS));
+            CakePlugin::load($plugins);
+	} elseif (SITE_DIR === NULL){
+            CakePlugin::loadAll(); // Loads all plugins at once
+        } else {
+            CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages')); // required plugins    
+	}
 	
 	
 	/**
-	 * convenience function for states options
+	 * temporary convenience function for states options
 	 *
 	 * @todo 	delete this all together after making it db based
 	 */
-		function states() {
-			return array(
-				'AL' => 'Alabama',
-				'AK' => 'Alaska',
-				'AZ' => 'Arizona',
-				'AR' => 'Arkansas',
-				'CA' => 'California',
-				'CO' => 'Colorado',
-				'CT' => 'Connecticut',
-				'DE' => 'Delaware',
-				'FL' => 'Florida',
-				'GA' => 'Georgia',
-				'HI' => 'Hawaii',
-				'ID' => 'Idaho',
-				'IL' => 'Illinois',
-				'IN' => 'Indiana',
-				'IA' => 'Iowa',
-				'KS' => 'Kansas',
-				'KY' => 'Kentucky',
-				'LA' => 'Louisiana',
-				'ME' => 'Maine',
-				'MD' => 'Maryland',
-				'MA' => 'Massachusetts',
-				'MI' => 'Michigan',
-				'MN' => 'Minnesota',
-				'MS' => 'Mississippi',
-				'MO' => 'Missouri',
-				'MT' => 'Montana',
-				'NE' => 'Nebraska',
-				'NV' => 'Nevada',
-				'NH' => 'New Hampshire',
-				'NJ' => 'New Jersey',
-				'NM' => 'New Mexico',
-				'NY' => 'New York',
-				'NC' => 'North Carolina',
-				'ND' => 'North Dakota',
-				'OH' => 'Ohio',
-				'OK' => 'Oklahoma',
-				'OR' => 'Oregon',
-				'PA' => 'Pennsylvania',
-				'RI' => 'Rhode Island',
-				'SC' => 'South Carolina',
-				'SD' => 'South Dakota',
-				'TN' => 'Tennessee',
-				'TX' => 'Texas',
-				'UT' => 'Utah',
-				'VT' => 'Vermont',
-				'VA' => 'Virginia',
-				'WA' => 'Washington',
-				'WV' => 'West Virginia',
-				'WI' => 'Wisconsin',
-				'WY' => 'Wyoming',
-	 			);
-		}
+	function states() {
+		return array(
+			'AL' => 'Alabama',
+			'AK' => 'Alaska',
+			'AZ' => 'Arizona',
+			'AR' => 'Arkansas',
+			'CA' => 'California',
+			'CO' => 'Colorado',
+			'CT' => 'Connecticut',
+			'DE' => 'Delaware',
+			'FL' => 'Florida',
+			'GA' => 'Georgia',
+			'HI' => 'Hawaii',
+			'ID' => 'Idaho',
+			'IL' => 'Illinois',
+			'IN' => 'Indiana',
+			'IA' => 'Iowa',
+			'KS' => 'Kansas',
+			'KY' => 'Kentucky',
+			'LA' => 'Louisiana',
+			'ME' => 'Maine',
+			'MD' => 'Maryland',
+			'MA' => 'Massachusetts',
+			'MI' => 'Michigan',
+			'MN' => 'Minnesota',
+			'MS' => 'Mississippi',
+			'MO' => 'Missouri',
+			'MT' => 'Montana',
+			'NE' => 'Nebraska',
+			'NV' => 'Nevada',
+			'NH' => 'New Hampshire',
+			'NJ' => 'New Jersey',
+			'NM' => 'New Mexico',
+			'NY' => 'New York',
+			'NC' => 'North Carolina',
+			'ND' => 'North Dakota',
+			'OH' => 'Ohio',
+			'OK' => 'Oklahoma',
+			'OR' => 'Oregon',
+			'PA' => 'Pennsylvania',
+			'RI' => 'Rhode Island',
+			'SC' => 'South Carolina',
+			'SD' => 'South Dakota',
+			'TN' => 'Tennessee',
+			'TX' => 'Texas',
+			'UT' => 'Utah',
+			'VT' => 'Vermont',
+			'VA' => 'Virginia',
+			'WA' => 'Washington',
+			'WV' => 'West Virginia',
+			'WI' => 'Wisconsin',
+			'WY' => 'Wyoming',
+			);
+	}
 	
 	
 	/**
@@ -195,7 +194,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
 	 */
 		public function pricify($price) {
-	        if($price === NULL) return NULL;
+			if($price === NULL) return NULL;
 			else return number_format($price, 2);
 		}
 	
@@ -212,8 +211,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	
 	/**
 	 * return a plugin name from a controller name
+	 *
+	 * @todo There must be a better way...
 	 */
-	 	public function pluginize($name) {
+		public function pluginize($name) {
 			# list of models and controllers to rename to the corresponding plugin
 			$name = Inflector::singularize(Inflector::camelize($name));
 			
@@ -242,6 +243,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'CategoryOption' => 'Categories',
 				'Comment' => 'Comments',
 				'Condition' => false,
+				'Connection' => 'Connections',
 				'ContactAddress' => 'Contacts',
 				'ContactDetail' => 'Contacts',
 				'Contact' => 'Contacts',
@@ -315,6 +317,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'WorkflowItemEvent' => 'Workflows',
 				'WorkflowItem' => 'Workflows',
 				'Workflow' => 'Workflows',
+				
+				// 
+				
 				'Question' => 'Questions',
 				'QuestionAnswer' => 'Questions',
 				);
@@ -324,6 +329,6 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				return Inflector::tableize($name);
 			}
 		}
-	} 
+	} // end ZuhaInflector class
 
-} // end app dir over write check
+} // end bootstrap overwrite check
