@@ -27,6 +27,13 @@ class UserConnect extends UsersAppModel {
 	public function __construct($id = false, $table = null, $ds = null) {
 		if (defined('__USERS_CONNECT_APPS')) {
 			extract(__USERS_CONNECT_APPS);
+			$this->googleClientId = !empty($googleClientId) ? $googleClientId : null; 
+			$this->googleClientAPIKey = !empty($googleClientAPIKey) ? $googleClientAPIKey : null; 
+			$this->googleClientSecret = !empty($googleClientSecret) ? $googleRedirectUri : null; 
+			$this->googleRedirectUri = !empty($googleRedirectUri) ? $googleRedirectUri : null;
+
+			$this->twitterClientAPIKey = !empty($twitterClientAPIKey) ? $twitterClientAPIKey : null;
+			$this->twitterClientSecret = !empty($twitterClientSecret) ? $twitterClientAPIKey : null; 
 		}
 		
     	parent::__construct($id, $table, $ds);
@@ -34,6 +41,8 @@ class UserConnect extends UsersAppModel {
 	
 	
 	public function google($accessCode) {
+		
+		$this->useDbConfig = 'Users.google';
 		
 		$connectType = 'google'; // used to match in case there is an update (don't change, unless you want all new records saved)
 		$this->Client = $this->createClient($connectType);
