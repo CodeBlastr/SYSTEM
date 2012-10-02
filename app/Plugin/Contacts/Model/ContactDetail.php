@@ -1,8 +1,8 @@
 <?php
 class ContactDetail extends ContactsAppModel {
-	var $name = 'ContactDetail';
-	var $displayField = 'value';
-	var $validate = array(
+	public $name = 'ContactDetail';
+	public $displayField = 'value';
+	public $validate = array(
 		'value' => array(
 			'notempty' => array(
 				'rule' => array('notempty'),
@@ -16,7 +16,7 @@ class ContactDetail extends ContactsAppModel {
 	);
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'Contact' => array(
 			'className' => 'Contacts.Contact',
 			'foreignKey' => 'contact_id',
