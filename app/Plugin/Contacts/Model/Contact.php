@@ -307,8 +307,9 @@ class Contact extends ContactsAppModel {
 		}
 
 		// remove empty contact detail values, because the form sets the array which makes a save attempt
-		if (!empty($data['ContactDetail'][0])) {
+		if (!empty($data['ContactDetail'])) {
 			$i = 0;
+			$data['ContactDetail'] = array_values($data['ContactDetail']);			
 			foreach ($data['ContactDetail'] as $detail) {
 				if (empty($detail['value'])) {
 					unset($data['ContactDetail'][$i]);
@@ -327,7 +328,6 @@ class Contact extends ContactsAppModel {
 				$i++;
 			}
 		}
-
 		return $data;
 	}
 

@@ -70,6 +70,7 @@ class AppController extends Controller {
 
 
 	public function beforeFilter() {
+		$this->_writeStats();
 		$this->RequestHandler->ajaxLayout = 'default';
 	    
 		# DO NOT DELETE #
@@ -138,7 +139,16 @@ class AppController extends Controller {
 		$this->set('referer', 'test'); // used for back button links, could be useful for breadcrumbs possibly
 		$this->set('_serialize', array_keys($this->viewVars));
 	}
-
+	
+/**
+ * Write stats session variables
+ */
+	protected function _writeStats() {		
+		$statsEntry = $this->Session->read('Stats.entry');
+		if (empty($statsEntry)) {
+			 $this->Session->write('Stats.entry', base64_encode(time()));  
+		}
+	}
 
 /**
  * Over write of core paginate method
