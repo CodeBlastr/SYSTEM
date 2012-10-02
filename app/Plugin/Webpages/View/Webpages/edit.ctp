@@ -1,5 +1,6 @@
 <div class="webpages form">
-<?php echo $this->Form->create('Webpage');?>
+<?php echo $this->Form->create('Webpage'); ?>
+    <h2><?php echo __('Webpage Editor');?></h2>
   <fieldset>
     <legend class="toggleClick"> <?php echo __('Search Engine Optimization');?> </legend>
     <?php
@@ -22,7 +23,7 @@
 	?>
   </fieldset>
   <fieldset>
-    <legend> <?php echo __('Add Webpage');?> </legend>
+    <legend> <?php echo __('Edit Webpage');?> </legend>
     <?php
 		echo $this->Form->input('type', array('default' => 'page_content')); ?>
     <fieldset>
@@ -45,14 +46,19 @@ echo $this->Form->end('Publish Update'); ?>
 </div>
 
 <?php
-$this->set('context_menu', array('menus' => array(
-	  array('heading' => 'Webpages',
-		'items' => array(
+$menuItems = array(
 			$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index')),
 			$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add'), array('title' => 'Add Webpage')),
 			$this->Html->link(__('View'), array('controller' => 'webpages', 'action' => 'view', $this->request->data['Webpage']['id'])),
 			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?'), $this->Form->value('Webpage.id'))),
-				 )
+				 );
+
+if($this->data['Webpage']['type'] == 'page_content')
+    $menuItems[] = $this->Html->link(__('Add Child'), array('controller' => 'webpages', 'action' => 'add', $this->request->data['Webpage']['id']), array('title' => 'Add Child'));
+
+$this->set('context_menu', array('menus' => array(
+	  array('heading' => 'Webpages',
+		'items' => $menuItems
 			)
 	  ))); ?>
 <script type="text/javascript">
