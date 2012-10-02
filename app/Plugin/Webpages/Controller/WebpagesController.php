@@ -57,13 +57,13 @@ class WebpagesController extends WebpagesAppController {
 		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
 		// this is here because an element uses this view function
 		if (!empty($webpage) && isset($this->request->params['requested'])) {
-        	return $webpage;
-        } 
+		    return $webpage;
+		}
 		
 		if(!empty($webpage) && is_array($webpage)) {
 			if ($webpage['Webpage']['type'] == 'template') $webpage['Webpage']['content'] = '';
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
-            $this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId);
+			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId);
 			$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
 		} else {
 			$this->Session->setFlash(__('Invalid Webpage', true));
@@ -78,7 +78,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set(compact('webpage'));
 	}
 	
-	public function add() {	
+	public function add($parentId = NULL) {
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->add($this->request->data);
@@ -94,7 +94,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->UserRole = ClassRegistry::init('Users.UserRole');
 		$userRoles = $this->UserRole->find('list');
 		$types = $this->Webpage->types();
-    	$this->set(compact('userRoles', 'types'));
+		$this->set(compact('userRoles', 'types', 'parentId'));
 	}
 	
 	public function edit($id = null) {		

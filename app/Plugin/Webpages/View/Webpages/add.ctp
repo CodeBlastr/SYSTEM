@@ -1,6 +1,6 @@
 <div class="webpages form">
 	<?php echo $this->Form->create('Webpage');?>
-	<h2><?php echo __('Webpage Builder');?></h2>
+	<h2><?php echo __('Webpage Builder');?><?php if($parentId) { echo ' <small>Creating child of Page #'.$parentId.'</small>'; }?></h2>
 	<fieldset>
 	<legend class="toggleClick"><?php echo __('Search Engine Optimization');?></legend>
     <?php 
@@ -8,6 +8,7 @@
 		echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => 'webpages'));
 		echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => 'webpages'));
 		echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => 'view'));
+		if($parentId) echo $this->Form->input('Webpage.parent_id', array('type' => 'hidden', 'value' => $parentId));
 		echo $this->Form->input('Webpage.title', array('label' => 'SEO Title'));
 		echo $this->Form->input('Webpage.keywords', array('label' => 'SEO Keywords'));
 		echo $this->Form->input('Webpage.description', array('label' => 'SEO Description'));
@@ -72,6 +73,11 @@ $(function() {
 			  $("#WebpageIsDefault").parent().parent().hide();
 			  $("#RecordLevelAccessUserRole").parent().parent().show();
 			  $("#AliasName").parent().parent().show();
+			<?php if($parentId) { ?>
+			$("#WebpageTemplateUrls").parent().parent().children().hide();
+			$("#WebpageTemplateUrls").parent().show();
+			$("#WebpageTemplateUrls").parent().parent().show();
+			<?php } ?>
 		}	
 		if (webpageType == 'template') {
 			$("#WebpageIsDefault").parent().parent().show();
@@ -93,5 +99,11 @@ $(function() {
 			$("#WebpageTemplateUrls").parent().show();
 		}
 	});
+	
+	<?php if($parentId) { ?>
+	$("#WebpageTemplateUrls").parent().parent().children().hide();
+	$("#WebpageTemplateUrls").parent().show();
+	$("#WebpageTemplateUrls").parent().parent().show();
+	<?php } ?>
 });
 </script>   
