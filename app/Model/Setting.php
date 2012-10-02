@@ -349,6 +349,7 @@ class Setting extends AppModel {
                             .PHP_EOL.'apiSignature = 32jdnrjfmasdfk33qb5haeh'
                             .PHP_EOL.'apiAppId = 42x'
                             .PHP_EOL.'apiPermissionScope[] = ACCOUNT_BALANCE'
+                            .PHP_EOL.'chainedPrimaryEmail = payMe1st@example.com'
                             .PHP_EOL.'chainedPrimaryPercentage = 2'
                         ),
                         array(
