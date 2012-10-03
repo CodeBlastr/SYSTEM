@@ -53,6 +53,7 @@ class AppErrorController extends AppController {
 			$request->params['plugin'] = $alias['Alias']['plugin'];
 			$request->params['action'] = $alias['Alias']['action'];
 			$request->params['pass'][] = $alias['Alias']['value'];
+			$request->params['alias'] = $alias['Alias']['name'];
 			$request->url = '/';
 			(!empty($alias['Alias']['plugin']) ? $request->url = $request->url.$alias['Alias']['plugin'].'/' : '');
 			(!empty($alias['Alias']['controller']) ? $request->url = $request->url.$alias['Alias']['controller'].'/' : '');

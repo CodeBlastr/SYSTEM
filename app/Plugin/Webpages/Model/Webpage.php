@@ -23,9 +23,17 @@ class Webpage extends WebpagesAppModel {
 			'conditions' => array('controller' => 'webpages'),
 			'fields' => '',
 			'order' => ''
-		),
-	);
+		    ),
+	    );
 
+	public $hasMany = array(
+	       	'Child' => array(
+			'className' => 'Webpages.Webpage',
+			'foreignKey' => 'parent_id',
+		        'conditions' => '',
+		    ),
+	    );
+	
 	public $belongsTo = array(
 		'Creator' => array(
 			'className' => 'Users.User',
@@ -33,15 +41,20 @@ class Webpage extends WebpagesAppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		),
+		    ),
 		'Modifier' => array(
 			'className' => 'Users.User',
 			'foreignKey' => 'modifier_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
-	);
+		    ),
+	    	'Parent' => array(
+			'className' => 'Webpages.Webpage',
+			'foreignKey' => 'parent_id',
+			'conditions' => ''
+		    ),
+	    );
 	
 	
     public $filterArgs = array(
@@ -163,36 +176,81 @@ class Webpage extends WebpagesAppModel {
 	}
 		
 	
-	public function parseIncludedPages(&$webpage, $parents = array (), $action = 'page', $userRoleId = null) {
-		$matches = array ();
-		$parents[] = $webpage['Webpage']['id'];
-		preg_match_all ("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
-		for ($i = 0; $i < sizeof ($matches[2]); $i++) {
-			if (in_array ($matches[2][$i], $parents)) {
-				$webpage["Webpage"]["content"] = str_replace($matches[0][$i], "", $webpage['Webpage']['content']);
-				continue;
-			}
-            switch ($action) {
-                case 'site_edit':
-                    $include_container = array('start' => '<div contenteditable="false" id="edit_webpage_include'.$matches[2][$i].'" pageid="'.trim($matches[2][$i]).'" class="global_edit_area">', 'end' => '</div>');
-                break;
-                default:
-                    $include_container = array('start' => '<div id="edit_webpage_include'.trim($matches[2][$i]).'" pageid="'.trim($matches[2][$i]).'" class="global_edit_area">', 'end' => '</div>');
-            }
-			
-			// remove the div.global_edit_area's if this user is not userRoleId = 1
-			if($userRoleId !== '1') $include_container = array('start' => '', 'end' => '');
+	public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
+	    $requestUrl = $request->url;
+	    $aliasName = $request->params['alias'];
 
-			$webpage2 = $this->find("first", array("conditions" => array( "id" => trim($matches[2][$i])) ) );		
-			if(empty($webpage2) || !is_array($webpage2)) continue;
-			$this->parseIncludedPages ($webpage2, $parents, $action, $userRoleId);
-			if ($webpage['Webpage']['type'] == 'template') :
-				$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $include_container['start'].$webpage2["Webpage"]["content"].$include_container['end'], $webpage["Webpage"]["content"]);
-			else :
-				$webpage["Webpage"]["content"] = str_replace ($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
-			endif;
-			#$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
+	    if($webpage['Alias']['name'] && empty($aliasName)) {
+		$aliasName = $webpage['Alias']['name'];
+	    }
+	    
+	    $matches = array();
+	    $parents[] = $webpage['Webpage']['id'];
+	    preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
+	    for ($i = 0; $i < sizeof($matches[2]); $i++) {
+		if (in_array($matches[2][$i], $parents)) {
+		    $webpage["Webpage"]["content"] = str_replace($matches[0][$i], "", $webpage['Webpage']['content']);
+		    continue;
 		}
+		switch ($action) {
+		    case 'site_edit':
+			$include_container = array('start' => '<div contenteditable="false" id="edit_webpage_include' . $matches[2][$i] . '" pageid="' . trim($matches[2][$i]) . '" class="global_edit_area">', 'end' => '</div>');
+			break;
+		    default:
+			$include_container = array('start' => '<div id="edit_webpage_include' . trim($matches[2][$i]) . '" pageid="' . trim($matches[2][$i]) . '" class="global_edit_area">', 'end' => '</div>');
+		}
+
+		// remove the div.global_edit_area's if this user is not userRoleId = 1
+		if ($userRoleId !== '1')
+		    $include_container = array('start' => '', 'end' => '');
+
+		$webpage2 = $this->find("first", array(
+		    "conditions" => array("Webpage.id" => trim($matches[2][$i])),
+		    'contain' => array('Child'),
+		    ));
+
+		/** @todo Find out WTF this was for **/
+		if (empty($webpage2) || !is_array($webpage2)) {
+		    continue;
+		}
+
+		if(!empty($webpage2['Child'])) {
+		    foreach($webpage2['Child'] as $child) {
+			$urls = unserialize(gzuncompress(base64_decode($child['template_urls'])));
+			if(!empty($urls)) {
+			    foreach($urls as $url) {
+				$urlString = str_replace('/', '\/', trim($url));
+				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
+				$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
+				$urlCompare = strpos($requestUrl, '/') === 0 ? substr($requestUrl, 1) : $requestUrl;
+
+				if (preg_match($urlRegEx, $urlCompare)) {
+				    $webpage2['Webpage'] = $child;
+				    break;
+				}
+
+				if(!empty($aliasName)) {
+				    if($aliasName[strlen($aliasName)-1] !== '/') $aliasName .= '/';
+				    $urlCompare = strpos($aliasName, '/') === 0 ? substr($aliasName, 1) : $aliasName;
+				    if (preg_match($urlRegEx, $urlCompare)) {
+					$webpage2['Webpage'] = $child;
+					break;
+				    }
+				}
+			    }
+			}
+		    }
+		}
+			
+		$this->parseIncludedPages($webpage2, $parents, $action, $userRoleId, $request);
+		if ($webpage['Webpage']['type'] == 'template') {
+		    $webpage["Webpage"]["content"] = str_replace($matches[0][$i], $include_container['start'] . $webpage2["Webpage"]["content"] . $include_container['end'], $webpage["Webpage"]["content"]);
+		} else {
+		    $webpage["Webpage"]["content"] = str_replace($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
+		    #debug($webpage2["Webpage"]["content"]);
+		}
+		#$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
+	    }
 	}
 	
 	public function types() {

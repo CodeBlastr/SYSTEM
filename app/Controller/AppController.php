@@ -599,7 +599,7 @@ class AppController extends Controller {
 		// this is because the Webpage model is not loaded for the install site page.
 		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', $conditions);
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
-        $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId);
+        $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId, $this->request);
         $this->set('defaultTemplate', $templated);
 
 		# the __APP_DEFAULT_TEMPLATE_ID is deprecated and will be removed

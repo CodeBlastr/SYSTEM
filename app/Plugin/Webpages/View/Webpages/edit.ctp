@@ -122,7 +122,11 @@ $(function() {
 		}
 	});
 <?php } ?>
-
+	<?php if($this->data['Webpage']['parent_id']) { ?>
+	$("#WebpageTemplateUrls").parent().parent().children().hide();
+	$("#WebpageTemplateUrls").parent().show();
+	$("#WebpageTemplateUrls").parent().parent().show();
+	<?php } ?>
 });
 
 
