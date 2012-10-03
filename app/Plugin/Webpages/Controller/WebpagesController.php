@@ -54,7 +54,10 @@ class WebpagesController extends WebpagesAppController {
 			$this->flash(__('Invalid Webpage', true), array('action'=>'index'));
 		}
 		
-		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
+		$webpage = $this->Webpage->find("first", array(
+		    "conditions" => array( "Webpage.id" => $id),
+		    'contain' => array('Alias')
+		    ));
 		// this is here because an element uses this view function
 		if (!empty($webpage) && isset($this->request->params['requested'])) {
 		    return $webpage;
@@ -63,7 +66,7 @@ class WebpagesController extends WebpagesAppController {
 		if(!empty($webpage) && is_array($webpage)) {
 			if ($webpage['Webpage']['type'] == 'template') $webpage['Webpage']['content'] = '';
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
-			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId);
+			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
 			$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
 		} else {
 			$this->Session->setFlash(__('Invalid Webpage', true));
