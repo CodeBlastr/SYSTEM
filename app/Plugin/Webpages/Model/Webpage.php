@@ -178,10 +178,16 @@ class Webpage extends WebpagesAppModel {
 	
 	public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
 	    $requestUrl = $request->url;
-	    $aliasName = $request->params['alias'];
+	    if(isset($request->params['alias'])) {
+		$aliasName = $request->params['alias'];
+	    } else {
+		$aliasName = '';
+	    }
 
-	    if($webpage['Alias']['name'] && empty($aliasName)) {
-		$aliasName = $webpage['Alias']['name'];
+	    if(isset($webpage['Alias'])) {
+		if(!empty($webpage['Alias']['name']) && empty($aliasName)) {
+		    $aliasName = $webpage['Alias']['name'];
+		}
 	    }
 	    
 	    $matches = array();
