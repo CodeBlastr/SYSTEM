@@ -7,7 +7,7 @@
     <?php
 		}
 	} else { ?>
-    	<p> No available plugins to install. </p>
+    	<p> No available plugins to install. <?php echo $this->Html->link(__('Install Site'), array('action' => 'site')); ?> </p>
     <?php
 	} ?>
 </div>
