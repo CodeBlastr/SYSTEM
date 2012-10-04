@@ -113,6 +113,8 @@ class InstallController extends AppController {
 
 		if (!empty($unloadedPlugins)) {
 			$this->set(compact('unloadedPlugins'));
+		} elseif (empty($unloadedPlugins) && defined('SITE_DIR')) {
+			// continue
 		} else {
 			$this->redirect(array('action' => 'site'));
 		}
@@ -617,7 +619,7 @@ class InstallController extends AppController {
 			$errorTwo = '<ul><li>Please give write permissions to the <strong>'.ROOT.DS.'sites</strong> directory. </li></ul>';
 			$die = true;
 		}
-		if ($die === true) {
+		if (!empty($die) && $die === true) {
 			echo '<h1>Problem with server compatibility.</h1>';
 			echo $errorOne ? $errorOne : null;
 			echo $errorTwo ? $errorTwo : null;
