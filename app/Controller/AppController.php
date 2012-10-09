@@ -492,7 +492,7 @@ class AppController extends Controller {
 			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
 		} else if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
-			if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) :
+			if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
 				# this elseif checks to see if the user role has a specific view file
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
 				unset($this->request->params['prefix']);
@@ -501,10 +501,10 @@ class AppController extends Controller {
 				$Dispatcher = new Dispatcher();
 				$Dispatcher->dispatch($this->request, new CakeResponse(array('charset' => Configure::read('App.encoding'))));
 				break;
-			else :
+			} else {
 				$this->Session->setFlash(__('Section access restricted.', true));
 				$this->redirect($this->referer());
-			endif;
+			}
 		} else if (!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) {
 			foreach (App::path('views') as $path) {
 				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'View', DS.'Plugin'.DS.ucfirst($this->request->params['plugin']).DS.'View', $path) : $path;
@@ -622,21 +622,21 @@ class AppController extends Controller {
 		# set a new template id if the session is over writing it
 		$currentUserRole = $this->Session->read('viewingRole') ? $this->Session->read('viewingRole') : $this->userRoleId;
 
-		if (!empty($data['userRoles'])) :
-			foreach ($data['userRoles'] as $userRole) :
-				if ($userRole == $currentUserRole) :
+		if (!empty($data['userRoles'])) {
+			foreach ($data['userRoles'] as $userRole) {
+				if ($userRole == $currentUserRole) {
 					$templateId = $data['templateId'];
-				endif;
-			endforeach;
-		elseif (!empty($data['templateId'])) :
+				}
+			} // end userRole loop
+		} elseif (!empty($data['templateId'])) {
 			$templateId = $data['templateId'];
-		endif;
+		}
 
-		if (!empty($templateId)) :
+		if (!empty($templateId)) {
 			return $templateId;
-		else :
+		} else {
 			return null;
-		endif;
+		}
 	}
 
 /**
