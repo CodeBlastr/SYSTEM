@@ -67,6 +67,14 @@ class AppModel extends Model {
 			}
 		}
 
+		$db = ConnectionManager::getDataSource(!empty($id['ds']) ? $id['ds'] : 'default');
+		$columns = $db->query('SHOW COLUMNS FROM `webpages`; ');
+		if ($columns[1]['COLUMNS']['Field'] == 'name') {
+			$db->execute('ALTER TABLE `webpages` ADD `parent_id` INT( 11 ) NULL AFTER `id` ;');
+			header('Location: ' . $_SERVER['REQUEST_URI']); // refresh the page to establish new table name
+			break;
+		}
+			
 		parent::__construct($id, $table, $ds);
 	}
 
