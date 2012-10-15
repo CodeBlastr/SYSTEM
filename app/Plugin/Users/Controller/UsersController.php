@@ -13,7 +13,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2012, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha� Project
+ * @link          http://zuha.com Zuha? Project
  * @package       zuha
  * @subpackage    zuha.app.models
  * @since         Zuha(tm) v 0.0.1
@@ -313,13 +313,27 @@ class UsersController extends UsersAppController {
 
 
 	protected function _login($user = null) {
+		//check user first time after install
+		$username = $this->data['User']['username'];
+		$data =	$this->User->find('first',array('conditions'=> array('username' => $username )));
+		$fistTime = false;
+		if(empty($data['User']['last_login'])) {
+			$fistTime = true;
+		} 
 		if ($this->Auth->login($user)) {
 			try {
 				// make sure you don't need to verify your email first
 				$this->User->checkEmailVerification($this->request->data);
 				// save the login meta data
 				$this->User->loginMeta($this->request->data);
-		        $this->redirect($this->_loginRedirect());
+				//check if user logded in first time
+				if($fistTime == true) {
+					$redirect = array('plugin' => 'privileges','controller' => 'sections','action' => 'aco_sync');
+					$this->redirect($redirect);
+				} else {
+					$this->redirect($this->_loginRedirect());
+				}
+
 			} catch (Exception $e) {
 				$this->Auth->logout();
 				$this->Session->setFlash($e->getMessage());
@@ -349,7 +363,6 @@ class UsersController extends UsersAppController {
 	private function _loginRedirect() {
 		// this handles redirects where a url was called that redirected you to the login page
 		$redirect = $this->Auth->redirect();
-
 		if ($redirect == '/') {
 			// default login location
 			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
