@@ -256,8 +256,6 @@ class InstallController extends AppController {
 
 
 			if (!empty($this->request->data)) {
-				//$this->request->data['User']['last_login'] = date('Y-m-d h:i:s');// commented by Akhileshs-Clarion on 8th Oct 2012
-				$this->request->data['User']['last_login'] = '';
 				if ($User->add($this->request->data)) {
 					$this->Session->write('Auth.redirect', null);
 					$this->Session->setFlash(__('Install completed! Please test the admin login you just created.'));

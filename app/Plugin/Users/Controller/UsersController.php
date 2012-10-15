@@ -313,15 +313,13 @@ class UsersController extends UsersAppController {
 
 
 	protected function _login($user = null) {
-		/*Code added by akhileshs-clarion on 8th Oct 2012.*/
+		//check user first time after install
 		$username = $this->data['User']['username'];
 		$data =	$this->User->find('first',array('conditions'=> array('username' => $username )));
 		$fistTime = false;
-		//check user first time after install
 		if(empty($data['User']['last_login'])) {
 			$fistTime = true;
 		} 
-		/*end here*/
 		if ($this->Auth->login($user)) {
 			try {
 				// make sure you don't need to verify your email first
@@ -331,7 +329,6 @@ class UsersController extends UsersAppController {
 				//check if user logded in first time
 				if($fistTime == true) {
 					$redirect = array('plugin' => 'privileges','controller' => 'sections','action' => 'aco_sync');
-					//redirect to /privileges/sections/aco_sync
 					$this->redirect($redirect);
 				} else {
 					$this->redirect($this->_loginRedirect());
@@ -366,7 +363,6 @@ class UsersController extends UsersAppController {
 	private function _loginRedirect() {
 		// this handles redirects where a url was called that redirected you to the login page
 		$redirect = $this->Auth->redirect();
-
 		if ($redirect == '/') {
 			// default login location
 			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
