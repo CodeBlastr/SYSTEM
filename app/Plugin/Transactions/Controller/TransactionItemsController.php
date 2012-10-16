@@ -42,39 +42,28 @@ class TransactionItemsController extends TransactionsAppController {
  */
 	public function add() {
 		if ($this->request->is('post')) {
-			// an item was added, check for a shopping cart.
-			$myCart = $this->TransactionItem->Transaction->find('first', array(
-			    'customer_id' => $this->Session->read('Auth.User.id')
-			));
-			if(!$myCart) {
-			    // no cart found. give them a new shopping cart.
-			    $this->TransactionItem->Transaction->create(array(
-				'customer_id' => $this->Session->read('Auth.User.id')
-			    ));
-			    $this->TransactionItem->Transaction->save();
-			} else {
-			    // cart found. put this new item into their shopping cart.
-			    $this->TransactionItem->Transaction->id = $myCart['Transaction']['id'];
-			}
+		    
+			// set a transaction id (cart id) for this user
+			$this->TransactionItem->Transaction->id = $this->TransactionItem->setCartId();
 			
-			$this->TransactionItem->create(array(
-			    'transaction_id' => $this->TransactionItem->Transaction->id,
-			    'customer_id' => $this->Session->read('Auth.User.id')
-			));
+			/** @todo check stock and cart max **/
+			$isAddable = $this->TransactionItem->verifyItemRequest($this->request->data);
+			
+			// create the item internally
+			$itemData = $this->TransactionItem->mapItemData($this->request->data);
+			$this->TransactionItem->create($itemData);
+			
+			// It puts the item in the cart.
 			if ($this->TransactionItem->save($this->request->data)) {
 				$this->Session->setFlash(__('The transaction item has been saved'));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('plugin'=>'transactions', 'controller'=>'transactions', 'action'=>'myCart'));
 			} else {
 				$this->Session->setFlash(__('The transaction item could not be saved. Please, try again.'));
+				$this->redirect($this->referer());
 			}
+		} else {
+		    throw new NotFoundException(__('Invalid transaction request'));
 		}
-		$transactionPayments = $this->TransactionItem->TransactionPayment->find('list');
-		$transactionShipments = $this->TransactionItem->TransactionShipment->find('list');
-		$transactions = $this->TransactionItem->Transaction->find('list');
-		$customers = $this->TransactionItem->Customer->find('list');
-		$contacts = $this->TransactionItem->Contact->find('list');
-		$assignees = $this->TransactionItem->Assignee->find('list');
-		$this->set(compact('catalogItems', 'transactionPayments', 'transactionShipments', 'transactions', 'customers', 'contacts', 'assignees'));
 	}
 
 /**

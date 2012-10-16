@@ -13,7 +13,7 @@ class TransactionsController extends TransactionsAppController {
 	
 /**
  * checkout method
- * processes the order
+ * processes the order and payment
  *
  * @return void
  */
@@ -67,14 +67,16 @@ class TransactionsController extends TransactionsAppController {
 		$myCart = $this->Transaction->find('first', array(
 		    'conditions' => array('customer_id' => $this->Session->read('Auth.User.id')),
 		    'contain' => array(
-			'TransactionItem'
+			'TransactionItem',
+			'TransactionShipment',// saved shipping addresses
+			'TransactionPayment'// saved billing addresses
 			)
 		    ));
 		if (!$myCart) {
 			throw new NotFoundException(__('Invalid transaction'));
-		}
+		}	
 		// display their cart
-		$this->set('transaction', $myCart);
+		$this->set(compact('myCart'));
 	}
 
 /**
