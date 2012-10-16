@@ -16,7 +16,19 @@
         padding-bottom: 40px;
       }
 </style>
+<!--link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" /-->
+<style type="text/css">
+	  .ui-mobile [data-role="page"] {
+		  width: auto;
+		  /*padding: inherit;*/
+		  position: relative;
+	  }      
+</style>
 <?php echo $this->Html->css('twitter-bootstrap/bootstrap.min'); ?> 
+
+<?php echo $this->Html->script('http://code.jquery.com/jquery-latest.js'); ?>
+<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+
 <?php echo $this->Html->meta('icon'); ?>
 <?php /* change to this some time soon 10/15/2012
     <link rel="shortcut icon" href="../assets/ico/favicon.ico">
@@ -40,7 +52,7 @@
         	<h1><?php echo $this->Element('twitter-bootstrap/page_title'); ?></h1>
 
             <!-- Main hero unit for a primary marketing message or call to action -->
-            <div class="hero-unit">
+            <div class="hero-unit" data-role="content">
             <?php echo $content_for_layout; ?> 
             
         
@@ -112,7 +124,6 @@
 			
 			<?php echo $this->Element('sql_dump');  ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> 
         </div> <!-- /container -->
-<?php echo $this->Html->script('http://code.jquery.com/jquery-latest.js'); ?>
 <?php echo $this->Html->script('twitter-bootstrap/bootstrap.min'); ?>
 </body>
 </html>
