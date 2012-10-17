@@ -116,4 +116,27 @@ class Transaction extends TransactionsAppModel {
 		)
 	);
 
+	
+	public function gatherCheckoutOptions() {
+	    $options['ssl'] = defined('__ORDERS_SSL') ? unserialize(__ORDERS_SSL) : null;
+	    $options['trustLogos'] = !empty($ssl['trustLogos']) ? $ssl['trustLogos'] : null;
+	    $options['enableShipping'] = defined('__ORDERS_ENABLE_SHIPPING') ? __ORDERS_ENABLE_SHIPPING : false;
+	    $options['fedexSettings'] = defined('__ORDERS_FEDEX') ? unserialize(__ORDERS_FEDEX) : null;
+	    $options['paymentMode'] = defined('__ORDERS_DEFAULT_PAYMENT') ? __ORDERS_DEFAULT_PAYMENT : null;
+	    $options['paymentOptions'] = defined('__ORDERS_ENABLE_PAYMENT_OPTIONS') ? unserialize(__ORDERS_ENABLE_PAYMENT_OPTIONS) : null;
+
+	    if (defined('__ORDERS_ENABLE_SINGLE_PAYMENT_TYPE')) :
+		$options['singlePaymentKeys'] = $this->Session->read('OrderPaymentType');
+		if (!empty($options['singlePaymentKeys'])) :
+		    $options['singlePaymentKeys'] = array_flip($options['singlePaymentKeys']);
+		    $options['paymentOptions'] = array_intersect_key($options['paymentOptions'], $options['singlePaymentKeys']);
+		endif;
+	    endif;
+
+	    $options['defaultShippingCharge'] = defined('__ORDERS_FLAT_SHIPPING_RATE') ? __ORDERS_FLAT_SHIPPING_RATE : 0;
+	    
+	    return $options;
+	}
+	
+	
 }
