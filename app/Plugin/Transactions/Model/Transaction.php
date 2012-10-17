@@ -139,4 +139,31 @@ class Transaction extends TransactionsAppModel {
 	}
 	
 	
+	public function processCart($userId) {
+	    
+	    $theCart = $this->find('first', array(
+		'conditions' => array('customer_id' => $userId),
+		'contain' => array(
+		    'TransactionItem',
+		    'TransactionShipment',  // saved shipping addresses
+		    'TransactionPayment',   // saved billing addresses
+		    'Customer'		    // customer's user data
+		    )
+		));
+	    
+	    if(!$theCart) {
+		return FALSE;
+	    }
+	    
+	    // figure out the subTotal
+	    $subTotal = 0;
+	    foreach($theCart['TransactionItem'] as $txnItem) {
+		$subTotal += $txnItem['price'] * $txnItem['quantity'];
+	    }
+	    
+	    $theCart['Transaction']['order_charge'] = $subTotal;
+	    
+	    return $theCart;
+	}
+	
 }
