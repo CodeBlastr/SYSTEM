@@ -68,15 +68,20 @@ class TransactionsController extends TransactionsAppController {
 		    'conditions' => array('customer_id' => $this->Session->read('Auth.User.id')),
 		    'contain' => array(
 			'TransactionItem',
-			'TransactionShipment',// saved shipping addresses
-			'TransactionPayment'// saved billing addresses
+			'TransactionShipment',	// saved shipping addresses
+			'TransactionPayment',	// saved billing addresses
+			'Customer'		// customer's user data
 			)
 		    ));
 		if (!$myCart) {
 			throw new NotFoundException(__('Invalid transaction'));
-		}	
+		}
+		
+		// gather checkout options like shipping, payments, etc
+		$options = $this->Transaction->gatherCheckoutOptions();
+		
 		// display their cart
-		$this->set(compact('myCart'));
+		$this->set(compact('myCart', 'options'));
 	}
 
 /**
