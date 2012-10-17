@@ -63,16 +63,10 @@ class TransactionsController extends TransactionsAppController {
 	public function myCart() {
 	    	// ensure that SSL is on if it's supposed to be
 		if (defined('__ORDERS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
-		// get their cart
-		$myCart = $this->Transaction->find('first', array(
-		    'conditions' => array('customer_id' => $this->Session->read('Auth.User.id')),
-		    'contain' => array(
-			'TransactionItem',
-			'TransactionShipment',	// saved shipping addresses
-			'TransactionPayment',	// saved billing addresses
-			'Customer'		// customer's user data
-			)
-		    ));
+		
+		// get their cart and process it
+		$myCart = $this->Transaction->processCart($this->Session->read('Auth.User.id'));
+		
 		if (!$myCart) {
 			throw new NotFoundException(__('Invalid transaction'));
 		}

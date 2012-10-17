@@ -119,7 +119,19 @@ input[type=radio], input[type=checkbox] {
 	min-width: 0;
 }
 
-/* Transactions Plugin stuff */
+/* Transactions Plugin stuff 
+ * the checkout page is two column by default */
+#transactionCartLeft {
+	float: left;
+	width: 48%;
+}
+#transactionCartRight {
+	float: right;
+	width: 48%;
+}
+
+.myCart fieldset {margin: 15px 0; background: rgba(255, 255, 255, 0.1); padding: 5px;}
+.myCart legend {font-weight: bold; font-size: 120%; font-variant: small-caps; letter-spacing: 1px;}
 
 .transactionItemInCart {
   clear:both; margin: 15px 20px;
@@ -142,7 +154,7 @@ input:-moz-placeholder, textarea:-moz-placeholder {
     color: #555555;
     display: inline-block;
     font-size: 14px;
-    height: 20px;
+    height: 30px;
     line-height: 20px;
     margin-bottom: 9px;
     padding: 4px 6px;
@@ -151,7 +163,7 @@ input:-moz-placeholder, textarea:-moz-placeholder {
 .myCart form select {
     background-color: #FFFFFF;
     border: 1px solid #CCCCCC;
-    width: 220px;
+    width: 115px;
 }
 .myCart form select, .myCart form input[type="file"] {
     height: 30px;
@@ -162,7 +174,7 @@ input:-moz-placeholder, textarea:-moz-placeholder {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(228, 129, 52, 0.6);
     outline: 0 none;
 }
-
+#orderTransactionItems {background: rgba(255, 255, 255, 0.1); padding: 5px;}
 #shippingAddress {display: none;}
 
 /* Specific for invoices /invoices/invoices/add */
@@ -211,20 +223,6 @@ input[type=radio], input[type=checkbox] {
 	float: left;
 	clear: left;
 }
-
-
-
-/* the checkout page is two column by default */
-#orderTransactionAddress {
-	float: left;
-	width: 48%;
-}
-#paymentInformation {
-	float: right;
-	width: 48%;
-}
-
-
 
 
 /* editor */
