@@ -55,7 +55,7 @@ class TransactionItemsController extends TransactionsAppController {
 			
 			// It puts the item in the cart.
 			if ($this->TransactionItem->save($this->request->data)) {
-				$this->Session->setFlash(__('The transaction item has been saved'));
+				$this->Session->setFlash(__('The item has been added to your cart.'));
 				$this->redirect(array('plugin'=>'transactions', 'controller'=>'transactions', 'action'=>'myCart'));
 			} else {
 				$this->Session->setFlash(__('The transaction item could not be saved. Please, try again.'));

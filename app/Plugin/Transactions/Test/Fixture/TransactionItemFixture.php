@@ -54,7 +54,7 @@ class TransactionItemFixture extends CakeTestFixture {
 		array(
 			'id' => '50773d75-cab4-40dd-b34c-187800000000',
 			'name' => 'Lorem ipsum dolor sit amet',
-			'catalog_item_id' => 'Lorem ipsum dolor sit amet',
+			//'catalog_item_id' => 'Lorem ipsum dolor sit amet',
 			'transaction_payment_id' => 'Lorem ipsum dolor sit amet',
 			'transaction_shipment_id' => 'Lorem ipsum dolor sit amet',
 			'transaction_id' => 'Lorem ipsum dolor sit amet',

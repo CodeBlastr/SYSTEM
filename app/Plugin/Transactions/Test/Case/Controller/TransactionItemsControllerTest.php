@@ -35,7 +35,20 @@ class TransactionItemsControllerTestCase extends ControllerTestCase  {
  *
  * @var array
  */
-	public $fixtures = array('transactions.transaction_item', 'catalogs.catalog_item', 'transactions.transaction_payment', 'transactions.transaction', 'transactions.transaction_shipment', 'users.user', 'transactions.transaction_coupon', 'users.customer', 'contacts.contact', 'users.assignee', 'app.cim_profile', 'app.cim_payment_profile', 'users.creator', 'users.modifier', 'conditions.condition');
+	public $fixtures = array(
+	    'plugin.transactions.transaction_item',
+	    'plugin.catalogs.catalog_item',
+	    'plugin.transactions.transaction_payment',
+	    'plugin.transactions.transaction',
+	    'plugin.transactions.transaction_shipment',
+	    'plugin.users.user',
+	    'plugin.transactions.transaction_coupon',
+	    'plugin.users.customer',
+	    'plugin.contacts.contact',
+	    'plugin.users.assignee',
+	    'plugin.users.creator',
+	    'plugin.users.modifier',
+	    );
 
 /**
  * setUp method
@@ -106,17 +119,20 @@ class TransactionItemsControllerTestCase extends ControllerTestCase  {
 		'price' => 'asdf'
 	    );
 	    $result = $this->testAction('/transactions/transaction_items/add', array('data' => $data, 'method' => 'post'));
-	    debug($result);
+	    //debug($result);
+	    $this->assertNoErrors();
 	}
 	
 	public function testGoodAdd() {
 	    $data = array(
+		'model' => 'CatalogItem',
 		'name' => 'Test Product',
 		'quantity' => 1,
 		'price' => 100.25
 	    );
 	    $result = $this->testAction('/transactions/transaction_items/add', array('data' => $data, 'method' => 'post'));
-	    debug($result);
+	    //debug($result);
+	    $this->assertNoErrors();
 	}
 /**
  * testEdit method

@@ -18,23 +18,20 @@ class TransactionsController extends TransactionsAppController {
  * @return void
  */
 	public function checkout() {
-	    // get their transaction
-	    $myTransaction = $this->Transaction->find('first', array(
-		'conditions' => array('customer_id' => $this->Session->read('Auth.User.id')),
-		'contain' => array(
-		    'TransactionItem'
-		    )
-		));
-	    // compare it to their possibly updated transaction
-	    
-	    // update their transaction if necessary
-	    
-	    // process the payment
-	    
-	    // if error with payment, return them to /myCart
-	    
-	    // else redirect them to success page
-	    
+	    if($this->request->data) {
+		// get their official Transaction
+		$officalTransaction = $this->Transaction->finalizeTransaction($this->Session->read('Auth.User.id'));
+
+		// process the payment
+
+		// if error with payment, return them to /myCart
+
+		// else redirect them to success page
+
+	    } else {
+		$this->Session->setFlash('Invalid transaction.');
+		$this->redirect($this->referer());
+	    }
 	}
 	
 /**
