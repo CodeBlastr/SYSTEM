@@ -16,7 +16,7 @@ if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html
 		
 		# load in css files from settings
 		echo $this->Html->css('system', 'stylesheet', array('media' => 'all')); 
-		echo $this->Html->css('admin/jquery-ui-1.8.13.custom');
+		echo $this->Html->css('jquery-ui/jquery-ui-1.8.13.custom', 'stylesheet', array('media' => 'all'));
 		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
 		//$defaultTemplate['Webpage']['content']=str_replace('{helper: content_for_layout}','',$defaultTemplate['Webpage']['content']);
 	//	print_r($defaultTemplate['Webpage']['content']);
@@ -44,8 +44,8 @@ if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <?php
                 # load in js files from settings
-		echo $this->Html->script('admin/jquery-ui-1.8.13.custom.min');
-		echo $this->Html->script('system/system');
+		echo $this->Html->script('jquery-ui/jquery-ui-1.8.13.custom.min');
+		echo $this->Html->script('system');
 		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
 			$i = 0;
 			foreach (unserialize(__WEBPAGES_DEFAULT_JS_FILENAMES) as $media => $files) { 
