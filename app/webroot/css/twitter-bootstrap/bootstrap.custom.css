@@ -1,0 +1,30 @@
+.hero-unit [class*="span"] {
+	margin-left: 28px;
+}
+.hero-unit .row div {
+	background: #FFF;
+}
+.hero-unit {
+	clear: both;
+}
+.first {
+	margin-left: 0;
+}
+/* tablet */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.hero-unit {
+		padding: 20px;
+	}
+}
+/* mobile tall */
+@media only screen and (max-width: 767px) {
+	.hero-unit {
+		padding: 10px;
+	}
+}
+/* mobile wide */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+	.hero-unit {
+		padding: 10px;
+	}
+}

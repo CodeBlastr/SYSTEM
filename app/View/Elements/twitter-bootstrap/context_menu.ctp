@@ -1,16 +1,18 @@
 <?php
 $menus = !empty($context_menu['menus']) ? $context_menu['menus'] : null;
 if (!empty($menus)) {
-	$menu = '<li class="dropdown">';
+	$menu = '<div class="btn-toolbar pull-right clearfix">';
 	foreach ($menus as $menugroup) {
-		$menu .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown">' . $menugroup['heading'] . '<b class="caret"></b></a><ul class="dropdown-menu">';
 		if (!empty($menugroup['items'])) {
+			$menu .= '<div class="btn-group">';
 			foreach ($menugroup['items'] as $item) {
-				$menu .= '<li>' . $item . '</li>';
+				$menu .= str_replace('<a', '<a class="btn"', $item);
+				//$menu .= '<button class="btn">' . $item . '</button>';
 			}
+			$menu .= '</div>';
 		}
-		$menu .= '</ul>';
 	}
-	$menu .= '</li>';
+	$menu .= '</div>';
 }
 echo !empty($menu) ? $menu : null;
+echo '<div class="clearfix"></div><hr />';

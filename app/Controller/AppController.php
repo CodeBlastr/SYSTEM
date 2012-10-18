@@ -31,7 +31,6 @@ class AppController extends Controller {
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
-	public $paginate = array('page' => 1, 'limit' => 500, 'maxLimit' => 1000, 'paramType' => 'named');
 
 /**
  * @todo update this so that it uses the full list of actual user roles
