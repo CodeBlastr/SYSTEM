@@ -107,8 +107,18 @@ class TransactionItem extends TransactionsAppModel {
     }
     
     
+    /**
+     * This function ensures that a TransactionItem has it's fields filled out correctly
+     * by calling upon the Model that the Item belongs to.
+     * @param array $data
+     * @return array
+     */
     public function mapItemData($data) {
 
+	if(empty($data['TransactionItem']['model'])) {
+	    throw new InternalErrorException(__('Invalid transaction item'));
+	}
+	
 	App::uses($data['TransactionItem']['model'], ZuhaInflector::pluginize($data['TransactionItem']['model']) . '.Model');
 	$Model = new $data['TransactionItem']['model'];
 

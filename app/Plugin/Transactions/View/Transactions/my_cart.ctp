@@ -18,18 +18,17 @@
  * @subpackage    zuha.app.plugins.orders.views
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
- * @todo		  Definitely need to do something about the redirect urls
  */
 ?>
 
 <div id="transactionsCheckout" class="transactions checkout form">
     <?php
     echo $this->Html->script('system/jquery.validate.min');
-    echo $this->Form->create('Transaction');
+    echo $this->Form->create('Transaction', array('action' => 'checkout'));
     ?>
 
     <h2>
-	<?php echo __('My Cart'); ?>
+	<?php echo __('You are 30 seconds away from ordering...'); ?>
     </h2>
 
     <div id="orderTransactionForm" class="orderTransactionForm text-inputs">
@@ -47,12 +46,10 @@
 		    echo $this->Form->input('TransactionPayment.last_name', array('class' => 'required', 'div' => array('style' => 'display:inline-block; margin-left: 5px;')));
 		    echo $this->Form->input('TransactionPayment.street_address_1', array('label' => 'Street', 'class' => 'required', 'size' => '49'));
 		    echo $this->Form->input('TransactionPayment.street_address_2', array('label' => 'Street 2', 'size' => '49'));
-		    echo $this->Form->input('TransactionPayment.city', array('label' => 'City ', 'class' => 'required', 'size' => '30', 'div' => array('style' => 'display:inline-block')));
+		    echo $this->Form->input('TransactionPayment.city', array('label' => 'City ', 'class' => 'required', 'size' => '29', 'div' => array('style' => 'display:inline-block')));
 		    echo $this->Form->input('TransactionPayment.state', array('label' => 'State ', 'class' => 'required', 'type' => 'select', 'options' => array_merge(array('' => '--Select--'), states()), 'div' => array('style' => 'display:inline-block')));
 		    echo $this->Form->input('TransactionPayment.zip', array('label' => 'Zip ', 'class' => 'required', 'size' => '10'));
 		    echo $this->Form->hidden('TransactionPayment.country', array('label' => 'Country', 'value' => 'US'));
-		    echo $this->Form->hidden('TransactionPayment.user_id', array('value' => $this->Session->read('Auth.User.id')));
-		    echo $this->Form->hidden('customer_id', array('value' => $this->Session->read('Auth.User.id')));
 		    echo $this->Form->input('shipping', array('type' => 'checkbox', 'label' => 'Click here if your shipping address is different than your contact information.', 'checked' => $myCart['TransactionPayment'] != $myCart['TransactionShipment'] ? '' : 'checked'));
 		    ?>
 		</fieldset>
@@ -64,11 +61,10 @@
 		    echo $this->Form->input('TransactionShipment.last_name', array('label' => 'Last Name ', 'div' => array('style' => 'display:inline-block; margin-left: 5px;')));
 		    echo $this->Form->input('TransactionShipment.street_address_1', array('label' => 'Street', 'size' => '49'));
 		    echo $this->Form->input('TransactionShipment.street_address_2', array('label' => 'Street 2', 'size' => '49'));
-		    echo $this->Form->input('TransactionShipment.city', array('label' => 'City', 'size' => '30', 'div' => array('style' => 'display:inline-block')));
+		    echo $this->Form->input('TransactionShipment.city', array('label' => 'City', 'size' => '29', 'div' => array('style' => 'display:inline-block')));
 		    echo $this->Form->input('TransactionShipment.state', array('label' => 'State ', 'options' => array_merge(array('' => '--Select--'), states()), 'div' => array('style' => 'display:inline-block')));
 		    echo $this->Form->input('TransactionShipment.zip', array('label' => 'Zip', 'size' => '10'));
 		    echo $this->Form->hidden('TransactionShipment.country', array('label' => 'Country ', 'value' => 'US'));
-		    echo $this->Form->hidden('TransactionShipment.user_id', array('value' => $this->Session->read('Auth.User.id')));
 		    ?>
 		</fieldset>
 	    </div><!-- #orderTransactionAddress -->
@@ -77,29 +73,19 @@
 	    <fieldset id="paymentInformation">
 		<legend><?php echo __('Payment Information'); ?></legend>
 		<?php
-		echo $this->Form->input('mode', array('label' => 'Payment Type', 'options' => $options['paymentOptions'], 'default' => $options['paymentMode']));
-		echo $this->Element(strtolower($options['paymentMode']));
+		    echo $this->Element(strtolower($options['paymentMode']));
 		?>
-		<fieldset id="creditCardInfo">
-		    <?php echo $this->Form->input('card_number', array('label' => 'Card Number', 'class' => 'required')); ?>
-		    <div class="input select">
-			<label>Expiration Date</label>
-			<?php
-			echo $this->Form->input('card_exp_month', array('label' => false, 'type' => 'select', 'options' => array_combine(range(1, 12, 1), range(1, 12, 1)), 'div' => false));
-			echo $this->Form->input('card_exp_year', array('label' => false, 'type' => 'select', 'options' => array_combine(range(date('Y'), date('Y', strtotime('+ 10 years')), 1), range(date('Y'), date('Y', strtotime('+ 10 years')), 1)), 'dateFormat' => 'Y', 'div' => false));
-			?>
-		    </div>
-		    <?php echo $this->Form->input('card_sec', array('label' => 'CCV Code ' . $this->Html->link('?', '#ccvHelp', array('class' => 'helpBox', 'title' => 'You can find this 3 or 4 digit code on the back of your card, typically in the signature area.')), 'maxLength' => 4, 'size' => 4)); ?>
-		</fieldset><!-- #creditCardInfo -->
-		
 	    </fieldset><!-- #PaymentInformation -->
 
 	</div>
+	
+	
 	<div id="transactionCartRight">
 	    <?php
 		echo $this->Element('trust_logos', array('plugin' => 'orders'));
 	    ?>
-	    <div id="orderTransactionItems" class="orderTransactionItems">
+	    <fieldset id="orderTransactionItems" class="orderTransactionItems">
+		<legend>Shopping Cart</legend>
 
 		<?php
 		//debug($myCart);
@@ -107,126 +93,57 @@
 		    ?>
     		<div class="transactionItemInCart">
 			<?php
-			echo $this->element(
-				'Transactions/cart_item', array('transactionItem' => $transactionItem), array('plugin' => ZuhaInflector::pluginize($transactionItem['model']))
+			echo $this->element('Transactions/cart_item', array(
+			    'transactionItem' => $transactionItem,
+			    'i' => $i
+			    ),
+				array('plugin' => ZuhaInflector::pluginize($transactionItem['model']))
 			);
 			?>
     		</div>
 
-    <?php
-    if ($options['enableShipping']) {
-	$weight[$i] = $transactionItem['weight'];
-	$length[$i] = $transactionItem['length'];
-	$height[$i] = $transactionItem['height'];
-	$width[$i] = $transactionItem['width'];
+		<?php
+		    echo $this->Form->hidden("TransactionItem.{$i}.id", array('value' => $transactionItem['id']));
+		    echo $this->Form->hidden("TransactionItem.{$i}.name", array('value' => $transactionItem['quantity']));
 
-	// Hardcoded display none, because this shipping thing should never have been here.  You cannot choose different shipping type for each individual item.  That would just be a nightmare, and we've never gotten a request to make it this way.  So because of the time crunch I made it display none, but this needs to be removed all together, and the shipping needs to be calculator for the entire order --- there can be shipping difference for each item, but they would only be shown as part of the whole shipping cost. 
-	?>
-			<div id="shipping" class="hide">
-			    <div id="dimmensions"> <?php echo $this->Form->hidden("length", array('value' => $length[$i])); ?> <?php echo $this->Form->hidden("width", array('value' => $width[$i])); ?> <?php echo $this->Form->hidden("height", array('value' => $height[$i])); ?> <?php echo $this->Form->hidden("weight", array('value' => $weight[$i])); ?> <?php echo $this->Form->hidden("shipping_ammount", array('value' => '')); ?> </div>
-			    <div id="selector"> <?php echo $this->Form->select("shippingType", $fedexSettings, array('value' => $orderItem['CatalogItem']['shipping_type'], 'empty' => false, 'class' => 'shipping_type')); ?> </div>
-			</div>
-
-
-	<?php
-	if (isset($transactionItem['shipping_charge'])) {
-	    $defaultShippingCharge += $transactionItem['shipping_charge'];
-	    ?>
-	    		<script type="text/javascript">
-	    		    var shippingamnt = parseFloat(<?php echo $transactionItem['shipping_charge']; ?>) ;
-	    		    if(isNaN(shippingamnt))
-	    			shippingamnt = 0;
-	    		    var shippingCharge = parseFloat($('#TransactionShippingCharge').val());
-	    		    if(isNaN(shippingCharge))
-	    			shippingCharge = 0;
-
-	    		    shippingCharge += shippingamnt;
-	    		    var orderCharge = parseFloat(<?php echo $this->request->data['Transaction']['order_charge']; ?>);
-	    		    if(isNaN(orderCharge))
-	    			orderCharge = 0;
-	    		    orderCharge += shippingCharge;
-	    		    $('#TransactionShippingAmmount').val(shippingamnt);
-	    		    $('#TransactionShippingCharge').val(shippingCharge);
-	    		    $('#TransactionTotal').val(orderCharge);
-	    		</script>
-	    <?php
-	} else {
-	    $param = null;
-	    # if dimensions are not set
-	    if (!empty($weight[$i]) && !empty($length[$i]) && !empty($height[$i]) && !empty($width[$i])) {
-		$param = 'weight:' . $weight[$i] . '/length:' . $length[$i] . '/height:' . $height[$i]
-			. '/width:' . $width[$i];
-	    }
-	    ?>
-	    		<script type="text/javascript">
-	    		    $(document).ready(function(){
-	    			$.ajax({
-	    			    type: "POST",
-	    			    data: $('#TransactionCheckoutForm').serialize(),
-	    			    url: "/shipping/shippings/getShippingCharge/" ,
-	    			    dataType: "text",
-	    			    success:function(data){
-	    				if (data.length > 0) {
-	    				    var response = JSON.parse(data);
-	    				    if(response['amount']) {
-	    					var amt = parseFloat(response['amount']);
-	    					var shipcharge = parseFloat($('#TransactionShippingCharge').val());
-	    					if(isNaN(shipcharge))
-	    					    shipcharge = 0;
-	    					shipcharge += amt;
-	    					var ocharge = parseFloat($('#TransactionOrderCharge').val());
-
-	    					ocharge += shipcharge;
-	    					$('#TransactionShippingAmmount').val(amt);
-	    					$('#TransactionShippingCharge').val(shipcharge);
-	    					$('#TransactionTotal').val(ocharge);
-	    				    }
-	    				}
-	    			    }
-	    			});
-	    		    });
-	    		</script>
-	    <?php
-	} //isset($orderItem['CatalogItem']['shipping_charge'])
-    } // $enableShipping
-
-    echo $this->Form->hidden("TransactionItem.{$i}.name", array('value' => $transactionItem['name']));
-    echo $this->Form->hidden("TransactionItem.{$i}.id", array('value' => $transactionItem['id']));
-    echo $this->Form->hidden("TransactionItem.{$i}.CatalogItem.id", array('value' => $transactionItem['id']));
-    echo $this->Form->hidden("TransactionItem.{$i}.CatalogItem.model", array('value' => $transactionItem['model']));
-    echo $this->Form->hidden("TransactionItem.{$i}.CatalogItem.foreign_key", array('value' => $transactionItem['foreign_key']));
-    ?>
-		    <?php
 		} // foreach($transactionItem)
 		?>
-	    </div><!-- end orderTransactionItems -->
-
+	    </fieldset><!-- end orderTransactionItems -->
+	    
+	    <fieldset>
+		<legend>Order Summary</legend>
 	    <?php
-		echo!empty($enableShipping) ? $this->Form->input('Transaction.shipping_charge', array('readonly' => true, 'value' => ZuhaInflector::pricify($options['defaultShippingCharge']))) : $this->Form->hidden('OrderTransaction.shipping_charge', array('readonly' => true, 'value' => ''));
-		echo $this->Form->input('Transaction.order_charge', array('label'=>'Sub-Total', 'readonly' => true, 'value' => ZuhaInflector::pricify($myCart['Transaction']['order_charge'])));
+		#echo !empty($enableShipping) ? $this->Form->input('Transaction.shipping_charge', array('readonly' => true, 'value' => ZuhaInflector::pricify($options['defaultShippingCharge']))) : $this->Form->hidden('OrderTransaction.shipping_charge', array('readonly' => true, 'value' => ''));
+		#echo $this->Form->input('Transaction.order_charge', array('label'=>'Sub-Total', 'readonly' => true, 'value' => ZuhaInflector::pricify($myCart['Transaction']['order_charge'])));
 		$orderTotal = floatval($options['defaultShippingCharge']) + floatval($myCart['Transaction']['order_charge']);
 		$pricifiedOrderTotal = number_format($orderTotal, 2, null, ''); // field is FLOAT, no commas allowed
 		echo $this->Form->input('Transaction.discount', array('label' => 'Discount', 'readonly' => true));
-		echo $this->Form->input('Transaction.total', array('label' => 'Total <small><a id="enterPromo" href="#">Enter Promo Code</a></small>', 'readonly' => true, 'value' => $pricifiedOrderTotal, 'class' =>'uneditable-input'/* 'after' => defined('__USERS_CREDITS_PER_PRICE_UNIT') ? " Or Credits : " . __USERS_CREDITS_PER_PRICE_UNIT * $orderTotal : "Or Credits : " .  $orderTotal */));
+		?>
+		<div>Subtotal: <span id="TransactionSubtotal" class="total" style="float:right; font-weight: bold; font-size: 110%">$<?php echo ZuhaInflector::pricify($myCart['Transaction']['order_charge']) ?></span></div>
+		<div>Shipping: <span id="TransactionShipping" class="total" style="float:right; font-weight: bold; font-size: 110%">+ $<?php echo ZuhaInflector::pricify($options['defaultShippingCharge']) ?></span></div>
+		<hr/>
+		<div style="margin: 10px 0; font-weight: bold;">Total: <span id="TransactionTotal" class="total" style="float:right; font-weight: bold; font-size: 110%">$<?php echo $pricifiedOrderTotal ?></span></div>
+		<div><small><a id="enterPromo" href="#">Enter Promo Code</a></small></div>
+		<?php
+		#echo $this->Form->input('Transaction.total', array('label' => 'Total <small><a id="enterPromo" href="#">Enter Promo Code</a></small>', 'readonly' => true, 'value' => $pricifiedOrderTotal, 'class' =>'uneditable-input',/* 'after' => defined('__USERS_CREDITS_PER_PRICE_UNIT') ? " Or Credits : " . __USERS_CREDITS_PER_PRICE_UNIT * $orderTotal : "Or Credits : " .  $orderTotal */));
 		echo $this->Form->input('TransactionCoupon.code', array('label' => 'Code <small><a id="applyCode" href="#">Apply Code</a></small>'));
 		echo $this->Form->hidden('Transaction.quantity');
 		
 	        echo $this->Form->end('Checkout');
 	    ?>
+	    </fieldset>
 	</div>
 
     </div><!--  id="orderTransactionForm" class="orderTransactionForm text-inputs" -->
 </div>
 <script type="text/javascript">
 
-	    
-    changePaymentInputs();
     // hide / show the coupon code input dependent on value
     if (!$("#TransactionCouponCode").val()) {
 	$("#TransactionCouponCode").parent().hide();
 	$("#enterPromo").click(function(e){
 	    e.preventDefault();
-	    $("#TransactionCouponCode").parent().toggle();
+	    $("#TransactionCouponCode").parent().toggle('slow');
 	});
     }
     // hide the discount input if empty
@@ -281,11 +198,6 @@
 	}
     });
 
-    $('#TransactionMode').change(function(e){
-	changePaymentInputs();
-    });
-
-
     $('.shipping_type').change(function(e){
 	shipTypeValue = $(this).val();
 	var dimmensions = new Array();
@@ -296,20 +208,9 @@
 	getShipRate(shipTypeValue, dimmensions);
     });
 
-    function changePaymentInputs() {
-	if ($('#TransactionMode').val() == 'CREDIT') {
-	    if ($('#creditCardInfo').is(":visible"))
-		$('#TransactionCardNumber').removeClass('required');
-	    $('#creditCardInfo').hide();
-	} else {
-	    $('#TransactionCardNumber').addClass('required');
-	    $('#creditCardInfo').show();
-	}
-    }
 
     function getShipRate(shipTypeValue, dimmensions) {
 	if (shipTypeValue == ' ') {
-	    //$('#step3').hide();
 	    $('#TransactionShippingCharge').val(0);
 	    $('#TransactionTotal').val(parseFloat(<?php echo $this->request->data['Transaction']['order_charge']; ?>));
 	    return;
@@ -367,9 +268,13 @@
     var $scrollingDiv = $("#orderTransactionItems");
 
     $(window).scroll(function(){
-	    $scrollingDiv
-		    .stop()
-		    .animate({"marginTop": ($(window).scrollTop() + 30) + "px"}, "slow" );			
+	if($(window).scrollTop() + $("#orderTransactionItems").innerHeight() >= $("#transactionCartLeft")[0].scrollHeight) {
+	    $scrollingDiv.stop();
+	} else {
+	$scrollingDiv
+	    .stop()
+	    .animate({"marginTop": ($(window).scrollTop() + 30) + "px"}, "slow" );
+	}
     });
     
 </script>

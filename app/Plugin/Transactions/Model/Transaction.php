@@ -117,6 +117,11 @@ class Transaction extends TransactionsAppModel {
 	);
 
 	
+	/**
+	 * The checkout page has options.
+	 * This function's job is to get those options.
+	 * @return array
+	 */
 	public function gatherCheckoutOptions() {
 	    $options['ssl'] = defined('__ORDERS_SSL') ? unserialize(__ORDERS_SSL) : null;
 	    $options['trustLogos'] = !empty($ssl['trustLogos']) ? $ssl['trustLogos'] : null;
@@ -139,6 +144,11 @@ class Transaction extends TransactionsAppModel {
 	}
 	
 	
+	/**
+	 * We could do all sorts of processing in here
+	 * @param integer $userId
+	 * @return boolean|array
+	 */
 	public function processCart($userId) {
 	    
 	    $theCart = $this->find('first', array(
@@ -165,5 +175,24 @@ class Transaction extends TransactionsAppModel {
 	    
 	    return $theCart;
 	}
+	
+	
+	public function finalizeTransaction($userId) {
+		// get their transaction
+		$currentTransaction = $this->find('first', array(
+		    'conditions' => array('customer_id' => $userId),
+		    'contain' => array(
+			'TransactionItem'
+			)
+		    ));
+		// compare it to their possibly updated transaction
+		$submittedTransaction = $this->request->data;
+
+		// update their transaction if necessary
+		
+		// return the official transaction
+		return $officialTransaction;
+	}
+	
 	
 }
