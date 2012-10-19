@@ -91,22 +91,20 @@
           transition-property: left, right, top;
 }
 .masonryBox {
-	margin: 0 10px 10px 0;
-	max-width: 370px;
+	margin: 30px 10px 20px 0;
+	max-width: 340px;
+	padding: 20px 15px 5px;
+	white-space-collapse: collapse;
+	border: 1px solid #EEE;
+	position: relative;
 }
 .masonryBox h3 {
 	padding: 0 10px;
 	margin: 0;
 	background: #FFF;
-	position: relative;
-	top: 16px;
+	position: absolute;
+	top: -24px;
 	left: 10px;
-	display: inline;
-}
-.masonryBox p {
-	padding: 10px;
-	white-space-collapse: collapse;
-	border: 1px solid #EEE;
 }
 
 /* tablet wide */
