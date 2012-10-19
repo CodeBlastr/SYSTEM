@@ -17,7 +17,7 @@ class Transaction extends TransactionsAppModel {
  public $name = 'Transaction';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
-/**
+	/**
  * hasOne associations
  *
  * @var array
@@ -188,7 +188,10 @@ class Transaction extends TransactionsAppModel {
 		$currentTransaction = $this->find('first', array(
 		    'conditions' => array('customer_id' => $userId),
 		    'contain' => array(
-			'TransactionItem'
+			'TransactionItem',
+			'TransactionShipment',  // saved shipping addresses
+			'TransactionPayment',   // saved billing addresses
+			'Customer'		    // customer's user data
 			)
 		    ));
 
@@ -202,13 +205,13 @@ class Transaction extends TransactionsAppModel {
 			    }
 			}
 		    }
-		}	
-		
+		}
+			
 		// unset the submitted TransactionItem's. They will be replaced after the merge.
 		unset($submittedTransaction['TransactionItem']);
 		
 		// combine the two Transactions
-		$officialTransaction = array_merge_recursive($currentTransaction, $submittedTransaction);
+		$officialTransaction = Set::merge($currentTransaction, $submittedTransaction);
 		$officialTransaction['TransactionItem'] = $finalTxnItems;
 		
 		// figure out the subTotal

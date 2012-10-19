@@ -11,6 +11,8 @@ class TransactionsController extends TransactionsAppController {
 	
 	public $uses = array('Transactions.Transaction');
 	
+	public $components = array('Ssl', 'Transactions.Payments');
+	
 /**
  * checkout method
  * processes the order and payment
@@ -23,6 +25,15 @@ class TransactionsController extends TransactionsAppController {
 		$officalTransaction = $this->Transaction->finalizeTransaction($this->Session->read('Auth.User.id'), $this->request->data);
 
 		// process the payment
+		$response = $this->Payments->pay($officalTransaction);
+		if ($response['response_code'] != 1) {
+		    // Transaction failed
+		    // save the billing and shipping details anyway
+		    $this->Transaction->TransactionPayment->save($officalTransaction);
+		    $this->Transaction->TransactionShipment->save($officalTransaction);
+		    $this->Session->setFlash($response['reason_text'] . ' ' . $response['description']);
+		    $this->redirect(array('plugin' => 'transactions', 'controller' => 'transactions', 'action' => 'myCart'));
+		}
 
 		// if error with payment, return them to /myCart
 
