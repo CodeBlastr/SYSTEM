@@ -19,6 +19,10 @@ class TransactionItem extends TransactionsAppModel {
 
     public $name = 'TransactionItem';
 
+    public $validate = array(
+	'price' => 'notEmpty'
+    );
+    
     /**
      * Display field
      *
@@ -124,7 +128,7 @@ class TransactionItem extends TransactionsAppModel {
 
 	$itemData = $Model->mapTransactionItem($data['TransactionItem']['foreign_key']);
 
-	$itemData = array_merge_recursive(
+	$itemData = Set::merge(
 		$itemData,
 		$data,
 		array(

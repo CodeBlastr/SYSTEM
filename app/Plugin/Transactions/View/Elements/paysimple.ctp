@@ -28,12 +28,14 @@ echo $this->Form->input('mode', array(
 
 <script type="text/javascript">
     function changePaymentInputs() {
-	if ($('#TransactionMode').val() == 'PAYSIMPLECHECK') {
+	if ($('#TransactionMode').val() == 'PAYSIMPLE.CHECK') {
 	    $('#TransactionCardNumber').removeClass('required');
+	    $('#creditCardInfo input').each(function(){	$(this).val(''); });
 	    $('#creditCardInfo').hide('fast');
 	    $('#echeckInfo').show('slow');
 	} else {
 	    $('#TransactionCardNumber').addClass('required');
+	    $('#echeckInfo input').each(function(){ $(this).val(''); });
 	    $('#echeckInfo').hide('fast');
 	    $('#creditCardInfo').show('slow');
 	}
