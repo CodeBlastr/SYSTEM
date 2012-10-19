@@ -177,18 +177,45 @@ class Transaction extends TransactionsAppModel {
 	}
 	
 	
-	public function finalizeTransaction($userId) {
-		// get their transaction
+	/**
+	 * Combine the pre-checkout and post-checkout Transactions.
+	 * @param integer $userId
+	 * @param array $data
+	 * @return type
+	 */
+	public function finalizeTransaction($userId, $submittedTransaction) {
+		// get their current transaction (pre checkout page)
 		$currentTransaction = $this->find('first', array(
 		    'conditions' => array('customer_id' => $userId),
 		    'contain' => array(
 			'TransactionItem'
 			)
 		    ));
-		// compare it to their possibly updated transaction
-		$submittedTransaction = $this->request->data;
 
-		// update their transaction if necessary
+	    	// update quantities
+		foreach($submittedTransaction['TransactionItem'] as $submittedTxnItem) {
+		    if($submittedTxnItem['quantity'] > 0) {
+			foreach($currentTransaction['TransactionItem'] as $currentTxnItem) {
+			    if($currentTxnItem['id'] == $submittedTxnItem['id']) {
+				$currentTxnItem['quantity'] = $submittedTxnItem['quantity'];
+				$finalTxnItems[] = $currentTxnItem;
+			    }
+			}
+		    }
+		}	
+		
+		// unset the submitted TransactionItem's. They will be replaced after the merge.
+		unset($submittedTransaction['TransactionItem']);
+		
+		// combine the two Transactions
+		$officialTransaction = array_merge_recursive($currentTransaction, $submittedTransaction);
+		$officialTransaction['TransactionItem'] = $finalTxnItems;
+		
+		// figure out the subTotal
+		$officialTransaction['Transaction']['order_charge'] = 0;
+		foreach($officialTransaction['TransactionItem'] as $txnItem) {
+		    $officialTransaction['Transaction']['order_charge'] += $txnItem['price'] * $txnItem['quantity'];
+		}
 		
 		// return the official transaction
 		return $officialTransaction;
