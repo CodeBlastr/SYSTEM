@@ -43,7 +43,7 @@ class AdminController extends AppController {
  * @param void
  * @return void
  */
-    public function index () {
+    public function index() {
 		// $this->Session->delete('Updates');
 		// upgrade functionality...
 		if (!empty($this->request->data['Upgrade']['all'])) {
@@ -55,6 +55,7 @@ class AdminController extends AppController {
 			$this->Session->delete('Updates'); 
 			$this->Session->setFlash(__('Update check complete!!!'));
 		}
+		$this->set('page_title_for_layout', 'Admin Dashboard');
 	}
 	
 /**
