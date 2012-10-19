@@ -31,15 +31,6 @@ class FormHelper extends CakeFormHelper {
 		return parent::select($fieldName, $options, $attributes);
 	}
 	
-	
-	public function end($options = null) {
-		if (!is_array($options)) {
-			$label = !empty($options) ? $options : 'Submit';
-			$options = array('label' => $options, 'before' => '<div data-role="fieldcontain"><label class="ui-input-text"></label>', 'after' => '</div>', 'data-theme' => 'b'); // Zuha for submit button formatting
-		}
-		return parent::end($options);
-	}
-	
 /**
  * Overwrite the default input() function to make date fields use javascript date pickers by default
  */
