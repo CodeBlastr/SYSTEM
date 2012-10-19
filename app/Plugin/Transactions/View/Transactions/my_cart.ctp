@@ -90,7 +90,8 @@
 		<?php
 		//debug($myCart);
 		foreach ($myCart['TransactionItem'] as $i => $transactionItem) {
-		    ?>
+		    echo $this->Form->hidden("TransactionItem.{$i}.id", array('value' => $transactionItem['id']));
+		?>
     		<div class="transactionItemInCart">
 			<?php
 			echo $this->element('Transactions/cart_item', array(
@@ -103,9 +104,6 @@
     		</div>
 
 		<?php
-		    echo $this->Form->hidden("TransactionItem.{$i}.id", array('value' => $transactionItem['id']));
-		    echo $this->Form->hidden("TransactionItem.{$i}.name", array('value' => $transactionItem['quantity']));
-
 		} // foreach($transactionItem)
 		?>
 	    </fieldset><!-- end orderTransactionItems -->

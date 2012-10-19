@@ -20,7 +20,7 @@ class TransactionsController extends TransactionsAppController {
 	public function checkout() {
 	    if($this->request->data) {
 		// get their official Transaction
-		$officalTransaction = $this->Transaction->finalizeTransaction($this->Session->read('Auth.User.id'));
+		$officalTransaction = $this->Transaction->finalizeTransaction($this->Session->read('Auth.User.id'), $this->request->data);
 
 		// process the payment
 
