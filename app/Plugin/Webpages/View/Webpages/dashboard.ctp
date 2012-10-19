@@ -1,7 +1,7 @@
-<a href="#" class="filterClick" data-filter=".masonryBox" data-base=".masonryBox">All</a>
-<a href="#" class="filterClick" data-filter=".tagText" data-base=".masonryBox">Text</a>
-<a href="#" class="filterClick" data-filter=".tagImages" data-base=".masonryBox">Images</a>
-<a href="#" class="filterClick" data-filter=".tagFiles" data-base=".masonryBox">Files</a>
+<a href="#masonryBox" class="filterClick">All</a>
+<a href="#tagText" class="filterClick">Text</a>
+<a href="#tagImages" class="filterClick">Images</a>
+<a href="#tagFiles" class="filterClick">Files</a>
 
 
 <div class="masonry">
@@ -54,22 +54,6 @@
 
 <script type="text/javascript">
 $(function () { 
-	var $keepers;
-	var $losers;
-	
-	$(".filterClick").click(function() { 
-		if ( $keepers ) {
-        	$keepers.appendTo(".masonry");
-        	$keepers = null;
-		} 
-		
-		$losers = $(this).attr("data-base");
-		$keepers = $(this).attr("data-filter");
-		
-		$keepers = $($losers + ":not(" + $keepers + ")").detach();
-		
-		$(".masonry").masonry("reload");
-	});
 		
 });
 </script>
