@@ -64,6 +64,51 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+/* masonry for dashboards */
+.masonry,
+.masonry .masonryBox {
+  -webkit-transition-duration: 0.7s;
+     -moz-transition-duration: 0.7s;
+      -ms-transition-duration: 0.7s;
+       -o-transition-duration: 0.7s;
+          transition-duration: 0.7s;
+}
+
+.masonry {
+  -webkit-transition-property: height, width;
+     -moz-transition-property: height, width;
+      -ms-transition-property: height, width;
+       -o-transition-property: height, width;
+          transition-property: height, width;
+}
+
+.masonry .masonryBox {
+  -webkit-transition-property: left, right, top;
+     -moz-transition-property: left, right, top;
+      -ms-transition-property: left, right, top;
+       -o-transition-property: left, right, top;
+          transition-property: left, right, top;
+}
+.masonryBox {
+	margin: 0 10px 10px 0;
+	max-width: 370px;
+}
+.masonryBox h3 {
+	padding: 0 10px;
+	margin: 0;
+	background: #FFF;
+	position: relative;
+	top: 16px;
+	left: 10px;
+	display: inline;
+}
+.masonryBox p {
+	padding: 10px;
+	white-space-collapse: collapse;
+	border: 1px solid #EEE;
+}
+
 /* tablet wide */
 @media (max-width:1200px){
 	.indexData {

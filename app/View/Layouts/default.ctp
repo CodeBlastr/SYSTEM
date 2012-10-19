@@ -27,6 +27,7 @@ echo $this->Html->meta('icon');
 echo $this->Html->css('twitter-bootstrap/bootstrap.min');
 echo $this->Html->css('twitter-bootstrap/bootstrap.custom');
 echo $this->Html->script('http://code.jquery.com/jquery-latest.js');
+echo $this->Html->script('plugins/jquery.masonry.min');
 echo $this->Html->script('plugins/modernizr-2.6.1-respond-1.1.0.min');
 echo $scripts_for_layout;
 echo defined('__REPORTS_ANALYTICS') ? $this->Element('analytics', array(), array('plugin' => 'reports')) : null; ?>
