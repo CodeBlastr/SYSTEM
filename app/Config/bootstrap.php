@@ -259,6 +259,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Favorite' => 'Favorites',
 				'FormFieldset' => 'Forms',
 				'FormInput' => 'Forms',
+				'FormKey' => 'Forms',		
 				'Form' => 'Forms',			
 				'Gallery' => 'Galleries',
 				'GalleryImage' => 'Galleries',
