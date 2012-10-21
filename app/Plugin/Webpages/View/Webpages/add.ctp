@@ -1,6 +1,5 @@
 <div class="webpages form">
 	<?php echo $this->Form->create('Webpage');?>
-	<h2><?php echo __('Webpage Builder');?><?php if($parentId) { echo ' <small>Creating child of Page #'.$parentId.'</small>'; }?></h2>
 	<fieldset>
 	<legend class="toggleClick"><?php echo __('Search Engine Optimization');?></legend>
     <?php 
