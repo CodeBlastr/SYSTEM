@@ -55,6 +55,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', Inflector::pluralize(Inflector::humanize($type)));		
+		$this->render('index_' . $type);
 	}
 
 /**
@@ -107,7 +108,7 @@ class WebpagesController extends WebpagesAppController {
 			try {
 				$this->Webpage->add($this->request->data);
 				$this->Session->setFlash(__('Saved successfully', true));
-				$this->redirect(array('action'=>'index'));
+				$this->redirect(array('action'=>'index', $this->request->data['Webpage']['type']));
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}
