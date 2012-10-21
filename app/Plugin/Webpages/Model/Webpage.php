@@ -114,7 +114,7 @@ class Webpage extends WebpagesAppModel {
  * After Delete
  */
 	public function afterDelete() {
-		# delete template settings
+		// delete template settings
 		$this->_saveTemplateSettings($this->id, null, true);
 	}
 
@@ -171,13 +171,13 @@ class Webpage extends WebpagesAppModel {
  */
 	public function update($data = array()) {
 		$data = $this->cleanInputData($data);
-		# save webpage first
+		// save webpage first
 		if ($this->saveAll($data)) {
 			$pageId = $this->id;
-			# template settings are special
+			// template settings are special
 			if ($data['Webpage']['type'] == 'template' && $this->_saveTemplateSettings($pageId, $data)) {
-				# do nothing we may want to attach behaviors still
-				# the return true happens outside of these ifs
+				// do nothing we may want to attach behaviors still
+				// the return true happens outside of these ifs
 			}
 			return true;
 		} else {
@@ -185,7 +185,7 @@ class Webpage extends WebpagesAppModel {
 		}
 		/* Revisit this because I could not find where the function is, and it could be made better 
 		with having it possible to restrict user roles or available to only certain user roles
-		# if permissions are set, restrict them
+		// if permissions are set, restrict them
 		if (!empty($this->request->data['ArosAco']['aro_id'])) {
 			$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->request->data['ArosAco']['aro_id'], true);
 		}
@@ -193,7 +193,7 @@ class Webpage extends WebpagesAppModel {
 	}
 	
 /**
- * When a page is a template we have to save the settings for that template, so that Zuha knows when to show it.
+ * When a page is a template we have to save the settings for that template, so that we know when to show it.
  *
  * @param int			The id of the page we're making settings for
  * @param array			An array of data to get the template, and template settings from
@@ -207,21 +207,21 @@ class Webpage extends WebpagesAppModel {
 				'userRoles' => $data['Webpage']['user_roles'],
 				);
 		}
-			
+		
 		extract(unserialize(__APP_TEMPLATES));
 		$template[$pageId] = base64_encode(gzcompress(serialize($settingsArray)));
 			
 		$data['Setting']['value'] = '';
 		$data['Setting']['type'] = 'App';
 		$data['Setting']['name'] = 'TEMPLATES';
-		foreach ($template as $key => $value) :
-			# merge existing values here
+		foreach ($template as $key => $value) {
+			// merge existing values here
 			if ($delete && $key == $pageId) {
-				# doing nothing should removee the value from the settings
+				// doing nothing should remove the value from the settings
 			} else {
 				$data['Setting']['value'] .= 'template['.$key.'] = "'.$value.'"'.PHP_EOL;
 			}
-		endforeach;
+		}
 		
 		$this->Setting = ClassRegistry::init('Setting');
 		if ($this->Setting->add($data)) {
@@ -245,32 +245,32 @@ class Webpage extends WebpagesAppModel {
 	public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
 	    $requestUrl = $request->url;
 	    if(isset($request->params['alias'])) {
-		$aliasName = $request->params['alias'];
+			$aliasName = $request->params['alias'];
 	    } else {
-		$aliasName = '';
+			$aliasName = '';
 	    }
 
 	    if(isset($webpage['Alias'])) {
-		if(!empty($webpage['Alias']['name']) && empty($aliasName)) {
-		    $aliasName = $webpage['Alias']['name'];
-		}
+			if(!empty($webpage['Alias']['name']) && empty($aliasName)) {
+			    $aliasName = $webpage['Alias']['name'];
+			}
 	    }
 	    
 	    $matches = array();
 	    $parents[] = $webpage['Webpage']['id'];
 	    preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
 	    for ($i = 0; $i < sizeof($matches[2]); $i++) {
-		if (in_array($matches[2][$i], $parents)) {
-		    $webpage["Webpage"]["content"] = str_replace($matches[0][$i], "", $webpage['Webpage']['content']);
-		    continue;
-		}
-		switch ($action) {
-		    case 'site_edit':
-			$include_container = array('start' => '<div contenteditable="false" id="edit_webpage_include' . $matches[2][$i] . '" pageid="' . trim($matches[2][$i]) . '" class="global_edit_area">', 'end' => '</div>');
-			break;
-		    default:
-			$include_container = array('start' => '<div id="edit_webpage_include' . trim($matches[2][$i]) . '" pageid="' . trim($matches[2][$i]) . '" class="global_edit_area">', 'end' => '</div>');
-		}
+			if (in_array($matches[2][$i], $parents)) {
+		   		$webpage["Webpage"]["content"] = str_replace($matches[0][$i], "", $webpage['Webpage']['content']);
+		    	continue;
+			}
+			switch ($action) {
+				case 'site_edit':
+				$include_container = array('start' => '<div contenteditable="false" id="edit_webpage_include' . $matches[2][$i] . '" pageid="' . trim($matches[2][$i]) . '" class="global_edit_area">', 'end' => '</div>');
+				break;
+				default:
+				$include_container = array('start' => '<div id="edit_webpage_include' . trim($matches[2][$i]) . '" pageid="' . trim($matches[2][$i]) . '" class="global_edit_area">', 'end' => '</div>');
+			}
 
 		// remove the div.global_edit_area's if this user is not userRoleId = 1
 		if ($userRoleId !== '1')
