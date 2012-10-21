@@ -56,5 +56,6 @@ echo defined('__REPORTS_ANALYTICS') ? $this->Element('analytics', array(), array
 			<?php echo $this->Element('sql_dump');  ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> 
         </div> <!-- /container -->
 <?php echo $this->Html->script('twitter-bootstrap/bootstrap.min'); ?>
+<?php echo $this->Html->script('system'); ?>
 </body>
 </html>

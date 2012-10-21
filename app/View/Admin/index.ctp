@@ -38,7 +38,7 @@ if (empty($runUpdates)) { ?>
             <p>View, edit, delete, and create static content pages with text, graphics, video and/or audio. </p>
         </div>
         
-        <div class="masonryBox tagThemes">
+        <div class="masonryBox tagThemes tagElements">
             <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('Widget Elements', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'element')); ?></h3>
             <p>Edit, delete, and create pages and multi-page elements. </p>
             <ul>
