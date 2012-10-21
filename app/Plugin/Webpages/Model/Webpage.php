@@ -7,15 +7,41 @@
  */
 class Webpage extends WebpagesAppModel {
 	
+/**
+ * Name
+ */
 	public $name = 'Webpage';
+
+/**
+ * Full Name
+ */
+	public $fullName = "Webpages.Webpage";
+	
+/**
+ * Displayfield
+ */
 	public $displayField = 'name';
+	
+/** 
+ * Validate
+ */
 	public $validate = array(
 		'name' => array('notempty'),
-	);
-
-	public $fullName = "Webpages.Webpage";
-
-	public $hasOne = array(
+		);
+	
+/**
+ * Types
+ */
+	public $types = array(
+		'template' => 'Template',
+		'element' => 'Element',
+		'content' => 'Content'
+		);
+	
+/**
+ * Has One
+ */
+ 	public $hasOne = array(
 		'Alias' => array(
 			'className' => 'Alias',
 			'foreignKey' => 'value',
@@ -25,15 +51,21 @@ class Webpage extends WebpagesAppModel {
 			'order' => ''
 		    ),
 	    );
-
+	
+/**
+ * Has Many
+ */
 	public $hasMany = array(
-	       	'Child' => array(
+		'Child' => array(
 			'className' => 'Webpages.Webpage',
 			'foreignKey' => 'parent_id',
 		        'conditions' => '',
 		    ),
 	    );
 	
+/**
+ * Belongs To
+ */
 	public $belongsTo = array(
 		'Creator' => array(
 			'className' => 'Users.User',
@@ -49,19 +81,24 @@ class Webpage extends WebpagesAppModel {
 			'fields' => '',
 			'order' => ''
 		    ),
-	    	'Parent' => array(
+	    'Parent' => array(
 			'className' => 'Webpages.Webpage',
 			'foreignKey' => 'parent_id',
 			'conditions' => ''
 		    ),
 	    );
 	
-	
+/** 
+ * Filter Args
+ */
     public $filterArgs = array(
         array('name' => 'name', 'type' => 'like'),
         array('name' => 'filter', 'type' => 'query', 'method' => 'orConditions'),
-    );
+   		);
 	
+/**
+ * Constructor
+ */
 	public function __construct($id = false, $table = null, $ds = null) {
 		if (in_array('Search', CakePlugin::loaded())) { 
 			$this->actsAs[] = 'Search.Searchable';
@@ -72,11 +109,18 @@ class Webpage extends WebpagesAppModel {
 		parent::__construct($id, $table, $ds);
 	}
 
+	
+/**
+ * After Delete
+ */
 	public function afterDelete() {
 		# delete template settings
 		$this->_saveTemplateSettings($this->id, null, true);
 	}
 
+	
+/**
+ * Delete this if commenting it out doesn't cause a problem 10/21/2012 RK
     public function orConditions($data = array()) {
         $filter = $data['filter'];
 		debug($filter);
@@ -88,8 +132,14 @@ class Webpage extends WebpagesAppModel {
             ));
         return $cond;
     }
+ */
 	
-	
+/**
+ * Add function
+ *
+ * @param array
+ * @return bool
+ */
 	public function add($data = array()) {
 		$data = $this->cleanInputData($data);
 		# save webpage first
@@ -113,6 +163,12 @@ class Webpage extends WebpagesAppModel {
 		*/
 	}	
 	
+/**
+ * Update function
+ * 
+ * @param array
+ * @return bool
+ */
 	public function update($data = array()) {
 		$data = $this->cleanInputData($data);
 		# save webpage first
@@ -139,8 +195,8 @@ class Webpage extends WebpagesAppModel {
 /**
  * When a page is a template we have to save the settings for that template, so that Zuha knows when to show it.
  *
- *@param {int}			The id of the page we're making settings for
- *@param {array}		An array of data to get the template, and template settings from
+ * @param int			The id of the page we're making settings for
+ * @param array			An array of data to get the template, and template settings from
  */
 	private function _saveTemplateSettings($pageId, $data = null, $delete = false) {
 		if(!empty($data)) {
@@ -175,7 +231,17 @@ class Webpage extends WebpagesAppModel {
 		}
 	}
 		
-	
+/**
+ * Parse Included Pages 
+ * Used to combine multiple pages into a single page using standardized template tags
+ * 
+ * @param object
+ * @param array
+ * @param string
+ * @param string
+ * @param object
+ * @return string
+ */
 	public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
 	    $requestUrl = $request->url;
 	    if(isset($request->params['alias'])) {
@@ -259,58 +325,78 @@ class Webpage extends WebpagesAppModel {
 	    }
 	}
 	
+/**
+ * Types function
+ * 
+ * @return array
+ */
 	public function types() {
-		return array('template' => 'Template', 'element' => 'Element', 'content' => 'Page');
+		return $this->types;
 	}
 	
 /**
- * @todo		 Clean out alias data for templates and elements.
+ * Clean Input Data
+ * Before saving we need to check the data for consistency.
+ *
+ * @param array
+ * @return array
+ * @todo Clean out alias data for templates and elements.
  */
 	public function cleanInputData($data) {
-		if (!empty($data['Webpage']['user_roles']) && is_array($data['Webpage']['user_roles'])) :
+		if (!empty($data['Webpage']['user_roles']) && is_array($data['Webpage']['user_roles'])) {
 			# serialize user roles
 			$data['Webpage']['user_roles'] = serialize($data['Webpage']['user_roles']);
-		endif;
+		}
 		
-		if (!empty($data['Webpage']['template_urls'])) :
+		if (!empty($data['Webpage']['template_urls'])) {
 			# cleaning the string for common user entry differences
 			$urls = str_replace(PHP_EOL, ',', $data['Webpage']['template_urls']);
 			$urls = str_replace(' ', '', $urls);
 			$urls = explode(',', $urls);
-			foreach ($urls as $url) : 
+			foreach ($urls as $url) {
 				$url = str_replace('/*', '*', $url);
 				$url = str_replace(' ', '', $url);
 				$url = str_replace(',/', ',', $url);
 				$out[] = strpos($url, '/') == 0 ? substr($url, 1) : $url;
-			endforeach;
+			} // end url loop
 			$data['Webpage']['template_urls'] = base64_encode(gzcompress(serialize($urls)));
-		endif;		
+		}		
 		
-		if (empty($data['Alias']['name'])) :
+		if (empty($data['Alias']['name'])) {
 			# remove the alias if the name is blank
 			unset($data['Alias']);
-		endif;	
+		}	
 		
 		return $data;
 	}
 	
 	
 /**
- * @todo		 Clean out alias data for templates and elements.
+ * Clean Output Data
+ *
+ * @param array
+ * @return array
+ * @todo Clean out alias data for templates and elements.
  */
 	public function cleanOutputData($data) {
-		if (!empty($data['Webpage']['user_roles'])) :
+		if (!empty($data['Webpage']['user_roles'])) {
 			$data['Webpage']['user_roles'] = unserialize($data['Webpage']['user_roles']);
-		endif;
+		}
 		
-		if (!empty($data['Webpage']['template_urls'])) :
+		if (!empty($data['Webpage']['template_urls'])) {
 			$data['Webpage']['template_urls'] = implode(PHP_EOL, unserialize(gzuncompress(base64_decode($data['Webpage']['template_urls']))));
-		endif;		
+		}		
 		
 		return $data;
 	}
 	
-	
+/**
+ * Handle Error
+ * 
+ * @param array
+ * @param object
+ * @return array
+ */
 	public function handleError($webpage, $request) {
 		$userRole = CakeSession::read('Auth.User.user_role_id');
 		$addLink = $userRole == 1 ? '<p class="message">Page Not Found : <a href="/webpages/webpages/add/alias:' . $_GET['referer'] . '"> Click here to add a page at http://' . $_SERVER['HTTP_HOST'] . '/' . $_GET['referer'] . '</a>. <br /><br /><small>Because you are the admin you can add the page you requested.  After you add the page, you can visit http://' . $_SERVER['HTTP_HOST'] . '/' . $_GET['referer'] . ' again and it will be a working page.</small></p><br />' : '';
@@ -318,9 +404,4 @@ class Webpage extends WebpagesAppModel {
 		return $webpage;
 	}
 	
-	private function _addPage() {
-		return 'addition';
-	}
-	
 }
-?>

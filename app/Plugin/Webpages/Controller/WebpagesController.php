@@ -29,7 +29,7 @@ class WebpagesController extends WebpagesAppController {
 
 	/* This is part of the search plugin */
     public $presetVars = array(array('field' => 'name', 'type' => 'value'));
-	
+		
 	
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -48,9 +48,12 @@ class WebpagesController extends WebpagesAppController {
  */
 	public function index($type = 'content') {
 		$this->paginate['conditions']['Webpage.type'] = $type;
+		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
  
 		$this->Webpage->recursive = 0;
 		$this->set('webpages', $this->paginate());
+		$this->set('displayName', 'title');
+		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', Inflector::pluralize(Inflector::humanize($type)));		
 	}
 
@@ -90,6 +93,7 @@ class WebpagesController extends WebpagesAppController {
 			$webpage = $this->Webpage->handleError($webpage, $this->request);
 		}
 		$this->set(compact('webpage'));
+		$this->set('page_title_for_layout', '&nbsp;');		
 	}
 	
 /**
@@ -98,7 +102,7 @@ class WebpagesController extends WebpagesAppController {
  * @param string
  * @return void
  */
-	public function add($parentId = NULL) {
+	public function add($type = 'content', $parentId = NULL) {
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->add($this->request->data);
@@ -109,12 +113,16 @@ class WebpagesController extends WebpagesAppController {
 			}
 		}
 		
+		if (empty($this->Webpage->types[$type])) {
+			throw new NotFoundException(__('Invalid content type'));
+		}
 		// reuquired to have per page permissions
 		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? $this->request->params['named']['alias'] : null;
-		$this->UserRole = ClassRegistry::init('Users.UserRole');
-		$userRoles = $this->UserRole->find('list');
-		$types = $this->Webpage->types();
-		$this->set(compact('userRoles', 'types', 'parentId'));
+		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('parentId', $parentId);
+		$this->set('page_title_for_layout', 'Page Builder');	
+		//<h2><?php echo __('Webpage Builder'); if($parentId) { echo ' <small>Creating child of Page #'.$parentId.'</small>'; } </h2>
+		$this->render('add_' . $type);
 	}
 	
 /**
