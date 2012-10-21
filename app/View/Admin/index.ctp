@@ -33,25 +33,41 @@ if (empty($runUpdates)) { ?>
     
     
     <div class="masonry">
-        <div class="masonryBox tagPages tagMedia tagThemes">
+        <div class="masonryBox tagPages">
             <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'page_content')); ?></h3>
-            <p>Edit, delete, and create pages and multi-page widgets. </p>
-            <ul>
-            	<li><?php echo $this->Html->link('Content Pages', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'page_content')); ?></li>
-                <li><?php echo $this->Html->link('Menus', array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'index')); ?></li>
-                <li><?php echo $this->Html->link('Multi-Page Widgets', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'element')); ?></li>
-                <li><?php echo $this->Html->link('Image Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
-                <li><?php echo $this->Html->link('Document Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
-            </ul>
+            <p>View, edit, delete, and create static content pages with text, graphics, video and/or audio. </p>
         </div>
         
         <div class="masonryBox tagThemes">
-            <h3><i class="icon-file"></i> <?php echo $this->Html->link('Theme', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'template')); ?></h3>
+            <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('Widget Elements', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'element')); ?></h3>
+            <p>Edit, delete, and create pages and multi-page elements. </p>
+            <ul>
+                <li><?php echo $this->Html->link('Widget Elements', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'element')); ?></li>
+                <li><?php echo $this->Html->link('Menus', array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'index')); ?></li>
+            </ul>
+        </div>
+        
+        <div class="masonryBox tagMedia tagThemes">
+            <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'page_content')); ?></h3>
+            <p>Edit, delete, and create images, documents, audio and video. </p>
+            <ul>
+                <?php if (in_array('Media', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Media Plugin', array('plugin' => 'media', 'controller' => 'media', 'action' => 'index')); ?></li><?php } ?>
+                <li><?php echo $this->Html->link('Image Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
+                <li><?php echo $this->Html->link('Document Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
+            </ul>
+        </div>        
+        
+        <div class="masonryBox tagThemes">
+            <h3><i class="icon-file"></i> <?php echo $this->Html->link('Appearance', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'template')); ?></h3>
             <p>Manage the look and feel of your site.</p>
             <ul>
-                <li><?php echo $this->Html->link('Template Html', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'template')); ?></li>
+                <li><?php echo $this->Html->link('Templates\' Html', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'template')); ?></li>
+                <li><?php echo $this->Html->link('Menus', array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link('Widget Elements', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'element')); ?></li>
                 <li><?php echo $this->Html->link('Css Styles', array('plugin' => 'webpages', 'controller' => 'webpage_csses', 'action' => 'index')); ?></li>
                 <li><?php echo $this->Html->link('Javascript', array('plugin' => 'webpages', 'controller' => 'webpage_jses', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link('Image Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
+                <li><?php echo $this->Html->link('Document Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
             </ul>
         </div>
 		
