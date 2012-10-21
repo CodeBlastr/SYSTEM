@@ -74,6 +74,11 @@ class AppModel extends Model {
 			header('Location: ' . $_SERVER['REQUEST_URI']); // refresh the page to establish new table name
 			break;
 		}
+		
+		$pageContent = $db->query("SELECT `type` FROM `webpages` WHERE `type` = 'page_content'");
+		if (!empty($pageContent)) {
+			$db->execute("UPDATE `webpages` SET `webpages`.`type` = 'content' WHERE `webpages`.`type` = 'page_content';");
+		}
 			
 		parent::__construct($id, $table, $ds);
 	}
@@ -81,6 +86,7 @@ class AppModel extends Model {
 
 /**
  * Manipulate data before it is saved.
+ *
  * @todo    Move this record level access stuff to a behavior
  */
 	public function beforeSave($model) {

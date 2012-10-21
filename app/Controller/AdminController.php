@@ -378,7 +378,7 @@ class AdminController extends AppController {
 				$db->query('ALTER TABLE `webpage_css` CHANGE `type` `type` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT \'all\' COMMENT \'was enum with \'\'all\'\',\'\'screen\'\',\'\'print\'\',\'\'handheld\'\',\'\'braille\'\',\'\'embossed\'\',\'\'projection\'\',\'\'speech\'\',\'\'tty\'\',\'\'tv\'\' as values\';');
 			}
 			if (array_search('webpages', $tables)) {
-				$db->query('ALTER TABLE `webpages` CHANGE `type` `type` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT \'page_content\' COMMENT \'\'\'template\'\',\'\'element\'\',\'\'page_content\'\'\';');
+				$db->query('ALTER TABLE `webpages` CHANGE `type` `type` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT \'content\' COMMENT \'\'\'template\'\',\'\'element\'\',\'\'content\'\'\';');
 			}
 		}
 		

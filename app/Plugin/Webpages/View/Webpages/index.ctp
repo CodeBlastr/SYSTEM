@@ -1,5 +1,4 @@
 <div class="webapges index">
-	<h2><?php echo __('Webpages');?></h2>
 	<table cellpadding="0" cellspacing="0">
 	<tr>
 		<th><?php echo $this->Paginator->sort('id');?></th>
@@ -48,9 +47,8 @@
 	<?php endforeach; ?>
 	</table>
 </div>
-<?php echo $this->Element('paging'); ?>
+<?php echo $this->Element('paging'); 
 
-<?php
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(

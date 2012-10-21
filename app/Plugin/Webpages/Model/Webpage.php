@@ -67,7 +67,7 @@ class Webpage extends WebpagesAppModel {
 			$this->actsAs[] = 'Search.Searchable';
 		}
 		if (in_array('Drafts', CakePlugin::loaded())) {
-			$this->actsAs['Drafts.Draftable'] = array('conditions' => array('type' => 'page_content'));
+			$this->actsAs['Drafts.Draftable'] = array('conditions' => array('type' => 'content'));
 		}
 		parent::__construct($id, $table, $ds);
 	}
@@ -260,7 +260,7 @@ class Webpage extends WebpagesAppModel {
 	}
 	
 	public function types() {
-		return array('template' => 'Template', 'element' => 'Element', 'page_content' => 'Page');
+		return array('template' => 'Template', 'element' => 'Element', 'content' => 'Page');
 	}
 	
 /**

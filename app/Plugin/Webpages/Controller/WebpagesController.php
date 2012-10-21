@@ -40,15 +40,26 @@ class WebpagesController extends WebpagesAppController {
 		}
 	}
 
-	public function index() {
-		if (!empty($this->request->params['named']['type'])) :
-			$this->paginate['conditions']['Webpage.type'] = $this->request->params['named']['type'];
-		endif;
+/**
+ * Index method
+ *
+ * @param string
+ * @return void
+ */
+	public function index($type = 'content') {
+		$this->paginate['conditions']['Webpage.type'] = $type;
  
 		$this->Webpage->recursive = 0;
 		$this->set('webpages', $this->paginate());
+		$this->set('page_title_for_layout', Inflector::pluralize(Inflector::humanize($type)));		
 	}
 
+/**
+ * View method
+ *
+ * @param string
+ * @return void
+ */
 	public function view($id = null) {
 		if (!$id) {
 			$this->flash(__('Invalid Webpage', true), array('action'=>'index'));
@@ -81,6 +92,12 @@ class WebpagesController extends WebpagesAppController {
 		$this->set(compact('webpage'));
 	}
 	
+/**
+ * Add method
+ *
+ * @param string
+ * @return void
+ */
 	public function add($parentId = NULL) {
 		if (!empty($this->request->data)) {
 			try {
@@ -100,6 +117,12 @@ class WebpagesController extends WebpagesAppController {
 		$this->set(compact('userRoles', 'types', 'parentId'));
 	}
 	
+/**
+ * Edit method
+ * 
+ * @param string
+ * @return void
+ */
 	public function edit($id = null) {		
 	
 		if (empty($id) && empty($this->request->data)) {
@@ -150,7 +173,13 @@ class WebpagesController extends WebpagesAppController {
 		$templateUrls = !empty($template['urls']) && $template['urls'] != '""' ? implode(PHP_EOL, unserialize(gzuncompress(base64_decode($template['urls'])))) : null;
 		$this->set(compact('templateUrls'));
 	}
-
+	
+/**
+ * Delete method
+ * 
+ * @param string
+ * @return void
+ */
 	public function delete($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid Webpage', true));
@@ -165,8 +194,12 @@ class WebpagesController extends WebpagesAppController {
 		}
 	}
 	
-	
-
+/**
+ * Save page method
+ * 
+ * @param string
+ * @return void
+ */
 	public function savePage ($id = null) {
 		$this->render(false);
 		$msg   = "";
@@ -196,6 +229,12 @@ class WebpagesController extends WebpagesAppController {
 		//TODO Add response without ajax
 	}
 
+/**
+ * Raw page method
+ * 
+ * @param string
+ * @return void
+ */
 	public function getRawPage ($id = null) {
 		Inflector::variable("Webpage");
 		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
@@ -206,7 +245,13 @@ class WebpagesController extends WebpagesAppController {
 		}
 		//TODO Add response without ajax
 	}
-	
+
+/**
+ * Get render page method
+ * 
+ * @param string
+ * @return void
+ */	
 	public function getRenderPage ($id = null) {
 		Inflector::variable("Webpage");
 		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
@@ -222,6 +267,12 @@ class WebpagesController extends WebpagesAppController {
 	}
 	
 
+/**
+ * Parse included elements method
+ * 
+ * @param string
+ * @return void
+ */
     public function __parseIncludedElements($content_str) {
         $this->autoRender = $this->layout = false;
         $this->set('content_str', $content_str);

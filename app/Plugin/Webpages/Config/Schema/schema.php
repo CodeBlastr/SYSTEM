@@ -84,7 +84,7 @@ class WebpagesSchema extends CakeSchema {
 		'published' => array('type' => 'boolean', 'null' => true, 'default' => NULL),
 		'keywords' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'description' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'type' => array('type' => 'string', 'null' => false, 'default' => 'page_content', 'length' => 50, 'collate' => 'utf8_general_ci', 'comment' => '\'template\',\'element\',\'page_content\'', 'charset' => 'utf8'),
+		'type' => array('type' => 'string', 'null' => false, 'default' => 'content', 'length' => 50, 'collate' => 'utf8_general_ci', 'comment' => '\'template\',\'element\',\'content\'', 'charset' => 'utf8'),
 		'is_default' => array('type' => 'boolean', 'null' => true, 'default' => NULL, 'comment' => 'convenience field for template type webpages'),
 		'template_urls' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'convenience field for template type webpages', 'charset' => 'utf8'),
 		'user_roles' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'convenience field for template type webpages', 'charset' => 'utf8'),
