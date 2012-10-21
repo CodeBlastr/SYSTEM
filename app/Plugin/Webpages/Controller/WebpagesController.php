@@ -120,7 +120,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? $this->request->params['named']['alias'] : null;
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('parentId', $parentId);
-		$this->set('page_title_for_layout', 'Page Builder');	
+		$this->set('page_title_for_layout', __('%s Builder', Inflector::humanize($this->Webpage->types[$type])));
 		//<h2><?php echo __('Webpage Builder'); if($parentId) { echo ' <small>Creating child of Page #'.$parentId.'</small>'; } </h2>
 		$this->render('add_' . $type);
 	}
@@ -133,9 +133,9 @@ class WebpagesController extends WebpagesAppController {
  */
 	public function edit($id = null) {		
 	
-		if (empty($id) && empty($this->request->data)) {
-			$this->Session->setFlash(__('Invalid Webpage', true));
-			$this->redirect(array('action'=>'index'));
+		$this->Webpage->id = $id;
+		if (!$this->Webpage->exists()) {
+			throw new NotFoundException(__('Page not found'));
 		}
 
 		if (!empty($this->request->data)) {
@@ -146,15 +146,12 @@ class WebpagesController extends WebpagesAppController {
 			}
 		}
 		
-		if (empty($this->request->data)) {
-			$this->Webpage->contain('Alias');
-			$this->request->data = $this->Webpage->read(null, $id);
-			$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
-		}
+		$this->Webpage->contain('Alias');
+		$this->request->data = $this->Webpage->read(null, $id);
+		$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
 		
 		// required to have per page permissions
-		$this->UserRole = ClassRegistry::init('Users.UserRole');
-		$userRoles = $this->UserRole->find('list');
+		$userRoles = $this->Webpage->Creator->UserRole->find('list');
 		$types = $this->Webpage->types();
 		
 		$this->set(compact('userRoles', 'types'));
@@ -180,6 +177,8 @@ class WebpagesController extends WebpagesAppController {
 		endif;
 		$templateUrls = !empty($template['urls']) && $template['urls'] != '""' ? implode(PHP_EOL, unserialize(gzuncompress(base64_decode($template['urls'])))) : null;
 		$this->set(compact('templateUrls'));
+		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
+		$this->render('edit_' . $this->request->data['Webpage']['type']);
 	}
 	
 /**
