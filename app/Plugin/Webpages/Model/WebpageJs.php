@@ -11,10 +11,10 @@
  */
 class WebpageJs extends WebpagesAppModel {
 	
-	var $name = 'WebpageJs';
-	var $useTable = 'webpage_js';
-	var $displayField = 'name';
-	var $validate = array(
+	public $name = 'WebpageJs';
+	public $useTable = 'webpage_js';
+	public $displayField = 'name';
+	public $validate = array(
 		'name' => array(
 			'notempty' => array(
 				'rule' => array('custom', '/^[a-z0-9\._-]*$/i'),
@@ -38,7 +38,7 @@ class WebpageJs extends WebpagesAppModel {
 	);
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'Webpage' => array(
 			'className' => 'Webpages.Webpage',
 			'foreignKey' => 'webpage_id',
@@ -61,33 +61,37 @@ class WebpageJs extends WebpagesAppModel {
 			'order' => ''
 		)
 	);
+
+/**
+ * After Find
+ * 
+ */
+ 	public function afterFind($results, $primary) {
+		return $this->_jsContentResults($results);
+	}
 	
-	function add($data, $theme=null) {
+	public function add($data, $theme=null) {
 		$data = $this->_cleanData($data);
 		
 		if ($this->save($data)) {
 			$webpageJsId = $this->id;
-			# then write the js file here.
+			// then write the js file here.
 			if ($this->_jsFile($data['WebpageJs']['name'], $data['WebpageJs']['content'], $theme)) {
-				# then write it to settings for easy retrieval by the default layout
+				// then write it to settings for easy retrieval by the default layout
 				if ($this->_updateSettings()) {
 					return true;
-				} else {
-					# roll back, there was a problem
-					$this->delete($webpageJsId);
-					throw new Exception(__d('webpages', 'Js settings update failed', true));
+				} else {;
+					throw new Exception(__('webpages', 'Javascript settings update failed'));
 				}
 			} else {
-				# roll back, there was a problem
-				$this->delete($webpageJsId);
-				throw new Exception(__d('webpages', 'Js file write failed', true));
+				throw new Exception(__('webpages', 'Javascript file write failed'));
 			}			
 		} else {
-			throw new Exception(__d('webpages', 'Js add failed', true));
+			throw new Exception(__('webpages', 'Javascript add failed'));
 		}
 	}
 	
-	function update($data, $theme=null) {
+	public function update($data, $theme=null) {
 		if ($this->add($data, $theme)) {
 			return true;		
 		} else {
@@ -96,7 +100,7 @@ class WebpageJs extends WebpagesAppModel {
 	}
 	
 	
-	function _jsFile($fileName = 'all.js', $content, $theme=null) {
+	public function _jsFile($fileName = 'all.js', $content, $theme=null) {
 
 		$filePath = $this->_getJsFilePath($theme) . $fileName;
 		# file helper
@@ -110,7 +114,7 @@ class WebpageJs extends WebpagesAppModel {
 		}
 	}
 		
-	function _getJsFilePath($theme=null)	{
+	public function _getJsFilePath($theme=null)	{
 		$themePath = null;
 		if($theme)	{
 			$themePath = App::themePath($theme);
@@ -123,30 +127,15 @@ class WebpageJs extends WebpagesAppModel {
 		}
 	}	
 	
-	function getJsFileContents($filename, $theme=null)	{
+	public function getJsFileContents($filename, $theme=null)	{
 		$filePath = $this->_getJsFilePath($theme);			
 		if(file_exists($filePath.DS.$filename))	{
 			return file_get_contents($filePath.DS.$filename);
 		}
 	}
 	
-	function types() {
-		return array(
-			'all' => 'all',
-			'screen' => 'screen',
-			'print' => 'print',
-			'handheld' => 'handheld',
-			'braile' => 'braille',
-			'embossed' => 'embossed',
-			'projection' => 'projection',
-			'speech' => 'speech',
-			'tty' => 'tty',
-			'tv' => 'tv'
-			);
-	}
 	
-	
-	function remove($id, $theme=null) {
+	public function remove($id, $theme=null) {
 		# find the js file being deleted
 		$webpageJs = $this->find('first', array('conditions' => array('WebpageJs.id' => $id)));
 		# Get file path
@@ -173,12 +162,12 @@ class WebpageJs extends WebpagesAppModel {
 	}
 	
 	
-	/**
-	 * Removes the setting for webpage js
-	 * 
-	 * @todo		Need to write some regex (system wide though) that will remove settings within settings, so that this will support multiple js files.  Adding multiple js files works.  Deleting one, deletes all. 
-	 */
-	function deleteSetting() {
+/**
+ * Removes the setting for webpage js
+ * 
+ * @todo		Need to write some regex (system wide though) that will remove settings within settings, so that this will support multiple js files.  Adding multiple js files works.  Deleting one, deletes all. 
+ */
+	public function deleteSetting() {
 		App::import('Model', 'Setting');
 		$this->Setting = new Setting;
 		$setting = $this->Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_JS_FILENAMES')));
@@ -193,7 +182,7 @@ class WebpageJs extends WebpagesAppModel {
 		}
 	}
 	
-	function _updateSettings() {
+	protected function _updateSettings() {
 		App::import('Model', 'Setting');
 		$this->Setting = new Setting;
 		
@@ -231,7 +220,7 @@ class WebpageJs extends WebpagesAppModel {
 		}
 	}
 	
-	function _cleanData($data) {
+	protected function _cleanData($data) {
 		if(!strpos($data['WebpageJs']['name'], '.js')) :
 			$data['WebpageJs']['name'] = $data['WebpageJs']['name'].'.js';
 		endif;
@@ -240,4 +229,3 @@ class WebpageJs extends WebpagesAppModel {
 	}
 	
 }
-?>

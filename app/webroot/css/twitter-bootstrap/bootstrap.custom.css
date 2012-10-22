@@ -25,6 +25,7 @@
 /* indexes */ 
 .indexCell {
 	float: left;
+	overflow: hidden;
 }
 .indexData {
 	width: 1000px;
@@ -58,12 +59,26 @@
 	padding-top: 0;
 	padding-bottom: 0;
 }
+.titleCell h3 {
+	white-space: nowrap;
+	width: auto;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.descriptionCell {
+	clear: left;
+	padding: 0 0 10px 0;
+}
 .truncate {
 	clear: left;
 	max-height: 20px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+.pagination {
+	height: auto;
+}
+	
 
 /* masonry for dashboards */
 .masonry,
@@ -91,28 +106,30 @@
           transition-property: left, right, top;
 }
 .masonryBox {
-	margin: 0 10px 10px 0;
-	max-width: 370px;
+	margin: 30px 10px 20px 0;
+	max-width: 340px;
+	padding: 20px 15px 5px;
+	white-space-collapse: collapse;
+	border: 1px solid #EEE;
+	position: relative;
 }
 .masonryBox h3 {
 	padding: 0 10px;
 	margin: 0;
 	background: #FFF;
-	position: relative;
-	top: 16px;
+	position: absolute;
+	top: -24px;
 	left: 10px;
-	display: inline;
 }
-.masonryBox p {
-	padding: 10px;
-	white-space-collapse: collapse;
-	border: 1px solid #EEE;
-}
+
 
 /* tablet wide */
 @media (max-width:1200px){
 	.indexData {
 		width: 780px;
+	}
+	.titleCell h3 {
+		width: auto;
 	}
 }
 /* tablet tall */
@@ -120,7 +137,7 @@
 	.hero-unit {
 		padding: 20px;
 	}
-	.indexData {
+	.indexData, .titleCell h3 {
 		width: 500px;
 	}
 	.imageCell {
@@ -132,7 +149,7 @@
 	.hero-unit {
 		padding: 10px;
 	}
-	.indexData {
+	.indexData, .titleCell h3 {
 		width: 330px;
 	}
 	.imageCell {
@@ -144,7 +161,7 @@
 	.hero-unit {
 		padding: 10px;
 	}
-	.indexData {
+	.indexData, .titleCell h3 {
 		width: 220px;
 	}
 	.imageCell {

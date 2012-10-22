@@ -1,9 +1,42 @@
+<!DOCTYPE html>
+<?php        
+if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html>'; } ?>
+<head>
+<?php echo $this->Html->charset(); ?>
+<title><?php echo $title_for_layout; ?></title>
+<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+<meta name="robots" content="index, follow" />
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
 <?php
+		echo $this->Html->meta('icon');
+		
+		# load in css files from settings
+		echo $this->Html->css('system', 'stylesheet', array('media' => 'all')); 
+		echo $this->Html->css('jquery-ui/jquery-ui-1.8.13.custom', 'stylesheet', array('media' => 'all'));
+		echo $this->Element('css');	?>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<?php
+                # load in js files from settings
+		echo $this->Html->script('jquery-ui/jquery-ui-1.8.13.custom.min');
+		echo $this->Html->script('system');
+		echo $this->Element('javascript');
+		echo $this->Element('analytics', array(), array('plugin' => 'webpages'));
+	?>
+</head>
+<body <?php echo $this->element('body_attributes'); ?>>
+<div id="corewrap">
+  <?php 
+echo $this->Element('modal_editor', array(), array('plugin' => 'webpages'));
+
 $flash_for_layout = $this->Session->flash();
 $flash_auth_for_layout = $this->Session->flash('auth');
 if (!empty($defaultTemplate)) {
 	
-	// matches helper template tags like {helper: content_for_layout}
+	# matches helper template tags like {helper: content_for_layout}
 	preg_match_all ("/(\{helper: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
 	foreach ($matches[0] as $helperMatch) {
@@ -87,6 +120,11 @@ if (!empty($defaultTemplate)) {
 	echo $this->Session->flash(); 
     echo $this->Session->flash('auth');
 	echo $content_for_layout;
-}
-
-echo $this->Element('modal_editor', array(), array('plugin' => 'webpages')); ?>
+} ?> 
+</div> 
+<?php echo $this->element('sql_dump');  ?> 
+<?php echo !empty($dbSyncError) ? $dbSyncError : null; ?>
+<div class="ajaxLoader"><img src="/img/ajax-loader.gif" /></div>
+</body>
+<?php  if(!empty($this->Facebook)) {echo $this->Facebook->init(); } ?>
+</html>
