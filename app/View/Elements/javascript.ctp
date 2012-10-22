@@ -14,4 +14,5 @@ if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) {
 		}
 		$i++;
 	} 
-}  ?>
+} 
+echo $scripts_for_layout; ?>

@@ -61,6 +61,14 @@ class WebpageJs extends WebpagesAppModel {
 			'order' => ''
 		)
 	);
+
+/**
+ * After Find
+ * 
+ */
+ 	public function afterFind($results, $primary) {
+		return $this->_jsContentResults($results);
+	}
 	
 	public function add($data, $theme=null) {
 		$data = $this->_cleanData($data);

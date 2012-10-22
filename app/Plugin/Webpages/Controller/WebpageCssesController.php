@@ -57,8 +57,9 @@ class WebpageCssesController extends WebpagesAppController {
 			throw new NotFoundException(__('Page not found'));
 		}
 		$this->WebpageCss->syncFiles('css');
-		$this->set('webpageCss', $this->WebpageCss->read(null, $id));
-		$this->set('page_title_for_layout', $webpageJs['WebpageCss']['name']);	
+		$webpageCss = $this->WebpageCss->read(null, $id);
+		$this->set('webpageCss', $webpageCss);
+		$this->set('page_title_for_layout', $webpageCss['WebpageCss']['name']);	
 	}
 
 /**

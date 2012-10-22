@@ -75,6 +75,14 @@ class WebpageCss extends WebpagesAppModel {
 			'order' => ''
 		)
 	);
+
+/**
+ * After Find
+ * 
+ */
+ 	public function afterFind($results, $primary) {
+		return $this->_cssContentResults($results);
+	}
 	
 	public function add($data, $theme=null) {
 		$data = $this->_cleanData($data);
@@ -250,6 +258,28 @@ class WebpageCss extends WebpagesAppModel {
 		endif;
 			
 		return $data;
+	}
+	
+/**
+ * Template Content Results
+ * If there is a file, return the file contents instead of the db contents
+ * 
+ * @return array
+ */
+ 	protected function _cssContentResults($results) { 
+		App::uses('Folder', 'Utility');
+		App::uses('File', 'Utility');
+		if (!empty($results[0]['WebpageCss']['name'])) {
+			$dir = new Folder( $this->cssDirectory);
+			$file = $dir->find($results[0]['WebpageCss']['name']);
+			
+			if (!empty($file[0])) {
+				$file = new File($dir->path . $file[0]);
+				$results[0]['WebpageCss']['content'] = $file->read();				
+				$file->close(); // Be sure to close the file when you're done
+			}
+		}
+		return $results;
 	}
 	
 }
