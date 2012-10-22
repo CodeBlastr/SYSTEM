@@ -208,8 +208,8 @@ class Webpage extends WebpagesAppModel {
 				);
 		}
 		
-		if (defined('__APP_TEMPLATES') && is_array(__APP_TEMPLATES)) {
-			extract(unserialize(__APP_TEMPLATES));
+		if (defined('__APP_TEMPLATES')) {
+			@extract(unserialize(__APP_TEMPLATES));
 		}
 		
 		$template[$pageId] = !empty($settings) ? base64_encode(gzcompress(serialize($settings))) : null;
@@ -405,6 +405,97 @@ class Webpage extends WebpagesAppModel {
 		$addLink = $userRole == 1 ? '<p class="message">Page Not Found : <a href="/webpages/webpages/add/alias:' . $_GET['referer'] . '"> Click here to add a page at http://' . $_SERVER['HTTP_HOST'] . '/' . $_GET['referer'] . '</a>. <br /><br /><small>Because you are the admin you can add the page you requested.  After you add the page, you can visit http://' . $_SERVER['HTTP_HOST'] . '/' . $_GET['referer'] . ' again and it will be a working page.</small></p><br />' : '';
 		$webpage['Webpage']['content'] = $addLink . $webpage['Webpage']['content'];
 		return $webpage;
+	}
+	
+/**
+ * Sync Files
+ * Check for templates, css, and js files and sync the database content fields
+ *
+ * @param string
+ * @return bool
+ */
+	public function syncFiles($type = 'template') {
+		
+		App::uses('Folder', 'Utility');
+		App::uses('File', 'Utility');
+		
+		if ($type == 'template') {
+			
+			$templateDirectories = array(
+				ROOT.DS.SITE_DIR.DS.'Config'.DS.'Templates'.DS,
+				ROOT.DS.APP_DIR.DS.'Config'.DS.'Templates'.DS
+				);
+			
+			foreach($templateDirectories as $directory) {
+				$dir = new Folder( $directory);
+				$files = $dir->find('.*\.ctp');
+				if (!empty($files)) {
+					$dbTemplates = $this->_getDbFileRecords($files, 'template');
+					break;
+				}
+			}
+			
+			foreach ($files as $file) {
+				$file = new File($dir->pwd() . DS . $file);
+				$templates[] = array('name' => $file->name, 'modified' => date('Y-m-d h:i:s', $file->lastChange()), 'content' => $file->read(), 'type' => 'template');
+				// $file->write('I am overwriting the contents of this file');
+				// $file->append('I am adding to the bottom of this file.');
+				// $file->delete(); // I am deleting this file
+				$file->close(); // Be sure to close the file when you're done
+			}
+			
+			foreach ($templates as $template) {
+				$id = $this->find('first', array('conditions' => array('name' => $template['name']), 'fields' => 'id'));
+				if (!empty($id)) {
+					$this->id = $id['Webpage']['id'];
+					try {
+						$this->saveField('content', $template['content']);
+					} catch (Exception $e) {
+						debug($e->getMessage());
+						break;
+					}
+				} else {
+					try {
+						$this->create();
+						$this->save($template);
+					} catch (Exception $e) {
+						debug($e->getMessage());
+						break;
+					}
+				}
+			}
+		}
+	}
+
+/**
+ * Get templates from the database with matching names
+ *
+ * @param array
+ * @param string
+ * @return array
+ */
+ 	protected function _getDbFileRecords($files = null, $type = 'template') {			
+		if ($type == 'css') {
+			$dbTemplates = $this->WebpageCss->find('all', array(
+				'conditions' => array(
+					'WebpageCss.name' => $files
+					)
+				));
+		} else if ($type == 'js') {
+			$dbTemplates = $this->WebpageJs->find('all', array(
+				'conditions' => array(
+					'WebpageJs.name' => $files
+					)
+				));
+		} else {
+			$dbTemplates = $this->find('all', array(
+				'conditions' => array(
+					'Webpage.name' => $files
+					)
+				));
+		} 
+			
+		return $dbTemplates;
 	}
 	
 }

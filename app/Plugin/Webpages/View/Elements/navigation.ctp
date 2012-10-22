@@ -3,7 +3,7 @@
 <div id="slidedock">
   <div id="slidedock_content">
     <ul>
-      <li><a href="http://www.razorit.com/"><img src="/img/admin/navicon.png" width="12" height="12" /></span></a>
+      <li><a href="http://www.razorit.com/"><img src="/img/navicon.png" width="12" height="12" /></span></a>
       	<ul>
         	<li><a href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix').$requestUrl; ?>"><span><?php echo $this->Session->read('Auth.User.view_prefix'); ?> This Page</span></a></li>
 	    	<li><?php echo $this->Html->link('<span>Dashboard</span>', array('plugin' => null, 'controller' => 'admin', 'action' => 'index'), array('escape' => false, 'title' => 'Privileges, Settings, Workflows, Conditions, Custom Forms', 'id' => 'navAdmin')); ?></li>

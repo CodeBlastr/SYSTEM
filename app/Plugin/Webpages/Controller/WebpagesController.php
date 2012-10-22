@@ -47,11 +47,13 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function index($type = 'content') {
+		$templates = $this->Webpage->syncFiles($type);
 		$this->paginate['conditions']['Webpage.type'] = $type;
 		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
  
 		$this->Webpage->recursive = 0;
 		$this->set('webpages', $this->paginate());
+		
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', Inflector::pluralize(Inflector::humanize($type)));		
@@ -65,10 +67,12 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function view($id = null) {
-		if (!$id) {
-			$this->flash(__('Invalid Webpage', true), array('action'=>'index'));
+		$this->Webpage->id = $id;
+		if (!$this->Webpage->exists()) {
+			throw new NotFoundException(__('Page not found'));
 		}
 		
+		$update = $this->Webpage->syncFiles('template');
 		$webpage = $this->Webpage->find("first", array(
 		    "conditions" => array( "Webpage.id" => $id),
 		    'contain' => array('Alias')
@@ -78,23 +82,21 @@ class WebpagesController extends WebpagesAppController {
 		    return $webpage;
 		}
 		
-		if(!empty($webpage) && is_array($webpage)) {
-			if ($webpage['Webpage']['type'] == 'template') $webpage['Webpage']['content'] = '';
+		if ($webpage['Webpage']['type'] == 'template') {
+				
+		} else {
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
 			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
 			$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
-		} else {
-			$this->Session->setFlash(__('Invalid Webpage', true));
-			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($webpage['Webpage']['title'])) {
-			$this->set('title',  $webpage['Webpage']['title']);
-		}
+		
+		
 		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error/') {
 			$webpage = $this->Webpage->handleError($webpage, $this->request);
 		}
 		$this->set(compact('webpage'));
-		$this->set('page_title_for_layout', '&nbsp;');		
+		$this->set('page_title_for_layout', '&nbsp;');
+		$this->render('view_' . $webpage['Webpage']['type']);	
 	}
 	
 /**

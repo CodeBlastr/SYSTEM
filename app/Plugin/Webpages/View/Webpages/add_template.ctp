@@ -4,7 +4,7 @@
     	<?php
         echo $this->Form->input('Webpage.type', array('type' => 'hidden', 'default' => 'template'));
 		echo $this->Form->input('Webpage.name', array('label' => 'Internal Template Name'));
-		echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'ckeSettings' => array('buttons' => array('Source')))); ?>
+		echo $this->Form->input('Webpage.content'); ?>
 	</fieldset>
     
     <fieldset>
