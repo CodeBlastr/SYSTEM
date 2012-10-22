@@ -17,58 +17,17 @@ if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html
 		# load in css files from settings
 		echo $this->Html->css('system', 'stylesheet', array('media' => 'all')); 
 		echo $this->Html->css('jquery-ui/jquery-ui-1.8.13.custom', 'stylesheet', array('media' => 'all'));
-		if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
-		//$defaultTemplate['Webpage']['content']=str_replace('{helper: content_for_layout}','',$defaultTemplate['Webpage']['content']);
-	//	print_r($defaultTemplate['Webpage']['content']);
-//	echo '{helper: content_for_layout}';
-  //  die;
-			$i = 0;
-			foreach (unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES) as $media => $files) { 
-				foreach ($files as $file) {
-					if (strpos($file, ',')) {
-						if (strpos($file, $defaultTemplate['Webpage']['id'].',') === 0) {
-							$file = str_replace($defaultTemplate['Webpage']['id'].',', '', $file);
-							echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
-						}
-					} else {
-						echo $this->Html->css($file, 'stylesheet', array('media' => $media)); 
-					}
-				}
-				$i++;
-			} 
-		} else {
-			echo $this->Html->css('screen'); 
-		}
-		
-		?>
+		echo $this->Element('css');	?>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <?php
                 # load in js files from settings
 		echo $this->Html->script('jquery-ui/jquery-ui-1.8.13.custom.min');
 		echo $this->Html->script('system');
-		if (defined('__WEBPAGES_DEFAULT_JS_FILENAMES')) { 
-			$i = 0;
-			foreach (unserialize(__WEBPAGES_DEFAULT_JS_FILENAMES) as $media => $files) { 
-				foreach ($files as $file) {
-					if (strpos($file, ',')) {
-						if (strpos($file, $defaultTemplate['Webpage']['id'].',') === 0) {
-							$file = str_replace($defaultTemplate['Webpage']['id'].',', '', $file);
-							echo $this->Html->script($file);
-						}
-					} else {
-						echo $this->Html->script($file);
-					}
-				}
-				$i++;
-			} 
-		} 
-		echo $scripts_for_layout;
-		if (defined('__REPORTS_ANALYTICS')) :
-			echo $this->Element('analytics', array(), array('plugin' => 'webpages'));
-		endif;
+		echo $this->Element('javascript');
+		echo $this->Element('analytics', array(), array('plugin' => 'webpages'));
 	?>
 </head>
-<body class="<?php echo $this->request->params['controller']; echo ($this->Session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?> <?php echo $this->request->params['action']; ?> <?php echo __('userRole%s', $userRoleId); ?>" id="<?php echo !empty($this->request->params['pass'][0]) ? strtolower($this->request->params['controller'].'_'.$this->request->params['action'].'_'.$this->request->params['pass'][0]) : strtolower($this->request->params['controller'].'_'.$this->request->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
+<body <?php echo $this->element('body_attributes'); ?>>
 <div id="corewrap">
   <?php 
 echo $this->Element('modal_editor', array(), array('plugin' => 'webpages'));
@@ -161,12 +120,8 @@ if (!empty($defaultTemplate)) {
 	echo $this->Session->flash(); 
     echo $this->Session->flash('auth');
 	echo $content_for_layout;
-} 
-
-echo(base64_decode('PGEgc3R5bGU9ImRpc3BsYXk6IG5vbmU7IiB0aXRsZT0iV2ViIERlc2lnbiAmIFdlYiBEZXZlbG9wbWVudCBDb21wYW55IiBocmVmPSJodHRwOi8vd3d3LnJhem9yaXQuY29tLyI+V2ViIERlc2lnbiAmIFdlYiBEZXZlbG9wbWVudCBDb21wYW55PC9hPg0KPGEgc3R5bGU9ImRpc3BsYXk6IG5vbmU7IiB0aXRsZT0iSW52b2ljaW5nLCBQcm9qZWN0IE1hbmFnZW1lbnQsIENSTSwgQ29udGVudCBNYW5hZ2VtZW50IFN5c3RlbSIgaHJlZj0iaHR0cDovL3p1aGEuY29tIj5JbnZvaWNpbmcsIFByb2plY3QgTWFuYWdlbWVudCwgQ1JNLCBDb250ZW50IE1hbmFnZW1lbnQgU3lzdGVtPC9hPg==')); ?>
-  <?php #echo round((getMicroTime() - $_SERVER['REQUEST_TIME']) * 1000) ?>
-</div>
-<?php # echo $this->element("ajax-login"); ?> 
+} ?> 
+</div> 
 <?php echo $this->element('sql_dump');  ?> 
 <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?>
 <div class="ajaxLoader"><img src="/img/ajax-loader.gif" /></div>

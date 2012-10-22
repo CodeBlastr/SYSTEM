@@ -32,8 +32,8 @@
 
 <?php
 $menuItems = array(
-	$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index')),
-	$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add'), array('title' => 'Add Webpage')),
+	$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index', 'content')),
+	$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add', 'content'), array('title' => 'Add Webpage')),
 	$this->Html->link(__('View'), array('controller' => 'webpages', 'action' => 'view', $this->request->data['Webpage']['id'])),
 	$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete %s?'), $this->Form->value('Webpage.name'))),
 	);
