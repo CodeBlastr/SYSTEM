@@ -115,10 +115,11 @@
 		#echo $this->Form->input('Transaction.order_charge', array('label'=>'Sub-Total', 'readonly' => true, 'value' => ZuhaInflector::pricify($myCart['Transaction']['order_charge'])));
 		$orderTotal = floatval($options['defaultShippingCharge']) + floatval($myCart['Transaction']['order_charge']);
 		$pricifiedOrderTotal = number_format($orderTotal, 2, null, ''); // field is FLOAT, no commas allowed
-		echo $this->Form->input('Transaction.discount', array('label' => 'Discount', 'readonly' => true));
+		//echo $this->Form->input('Transaction.discount', array('label' => 'Discount', 'readonly' => true));
 		?>
 		<div>Subtotal: <span id="TransactionSubtotal" class="total" style="float:right; font-weight: bold; font-size: 110%">$<?php echo ZuhaInflector::pricify($myCart['Transaction']['order_charge']) ?></span></div>
 		<div>Shipping: <span id="TransactionShipping" class="total" style="float:right; font-weight: bold; font-size: 110%">+ $<?php echo ZuhaInflector::pricify($options['defaultShippingCharge']) ?></span></div>
+		<div>Discount: <span id="TransactionDiscount" class="total" style="float:right; font-weight: bold; font-size: 110%">- $<?php echo ZuhaInflector::pricify($options['defaultShippingCharge']) ?></span></div>
 		<hr/>
 		<div style="margin: 10px 0; font-weight: bold;">Total: <span id="TransactionTotal" class="total" style="float:right; font-weight: bold; font-size: 110%">$<?php echo $pricifiedOrderTotal ?></span></div>
 		<div><small><a id="enterPromo" href="#">Enter Promo Code</a></small></div>
