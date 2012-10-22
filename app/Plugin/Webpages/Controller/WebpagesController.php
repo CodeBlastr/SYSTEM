@@ -149,6 +149,7 @@ class WebpagesController extends WebpagesAppController {
 			}
 		}
 		
+		$templates = $this->Webpage->syncFiles('template');
 		$this->Webpage->contain('Alias');
 		$this->request->data = $this->Webpage->read(null, $id);
 		$this->request->data = $this->Webpage->cleanOutputData($this->request->data);

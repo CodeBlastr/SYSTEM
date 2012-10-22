@@ -106,7 +106,28 @@ class Webpage extends WebpagesAppModel {
 		if (in_array('Drafts', CakePlugin::loaded())) {
 			$this->actsAs['Drafts.Draftable'] = array('conditions' => array('type' => 'content'));
 		}
+				
 		parent::__construct($id, $table, $ds);
+	}
+
+/**
+ * Before Save
+ *
+ * @param boolean $created
+ * @return boolean
+ * @access public
+ */
+	public function beforeSave($created) {
+		$this->_saveTemplateFiles();		
+		return true;
+	}
+
+/**
+ * After Find
+ * 
+ */
+ 	public function afterFind($results, $primary) {
+		return $this->_templateContentResults($results);
 	}
 
 	
@@ -142,13 +163,13 @@ class Webpage extends WebpagesAppModel {
  */
 	public function add($data = array()) {
 		$data = $this->cleanInputData($data);
-		# save webpage first
+		// save webpage first
 		if ($this->saveAll($data)) {
 			$pageId = $this->id;
-			# template settings are special
+			// template settings are special
 			if ($data['Webpage']['type'] == 'template' && $this->_saveTemplateSettings($pageId, $data)) {
-				# do nothing we may want to attach behaviors still
-				# the return true happens outside of these ifs
+				// do nothing we may want to attach behaviors still
+				// the return true happens outside of these ifs
 			} 
 			return true;
 		} else {
@@ -156,7 +177,7 @@ class Webpage extends WebpagesAppModel {
 		}
 		/* Revisit this because I could not find where the function is, and it could be made better 
 		with having it possible to restrict user roles or available to only certain user roles
-		# if permissions are set, restrict them
+		// if permissions are set, restrict them
 		if (!empty($this->request->data['ArosAco']['aro_id'])) {
 			$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->request->data['ArosAco']['aro_id'], true);
 		}
@@ -406,96 +427,55 @@ class Webpage extends WebpagesAppModel {
 		$webpage['Webpage']['content'] = $addLink . $webpage['Webpage']['content'];
 		return $webpage;
 	}
-	
+
 /**
- * Sync Files
- * Check for templates, css, and js files and sync the database content fields
+ * Save Template Files
+ * Note : If the name is empty that should mean that its coming from the file sync method and should not use this function
  *
- * @param string
  * @return bool
+ * @todo put in unit testing for thie name thing
  */
-	public function syncFiles($type = 'template') {
-		
-		App::uses('Folder', 'Utility');
-		App::uses('File', 'Utility');
-		
-		if ($type == 'template') {
-			
-			$templateDirectories = array(
-				ROOT.DS.SITE_DIR.DS.'Config'.DS.'Templates'.DS,
-				ROOT.DS.APP_DIR.DS.'Config'.DS.'Templates'.DS
-				);
-			
-			foreach($templateDirectories as $directory) {
-				$dir = new Folder( $directory);
-				$files = $dir->find('.*\.ctp');
-				if (!empty($files)) {
-					$dbTemplates = $this->_getDbFileRecords($files, 'template');
-					break;
-				}
-			}
-			
-			foreach ($files as $file) {
-				$file = new File($dir->pwd() . DS . $file);
-				$templates[] = array('name' => $file->name, 'modified' => date('Y-m-d h:i:s', $file->lastChange()), 'content' => $file->read(), 'type' => 'template');
-				// $file->write('I am overwriting the contents of this file');
-				// $file->append('I am adding to the bottom of this file.');
-				// $file->delete(); // I am deleting this file
+ 	protected function _saveTemplateFiles() {
+		if (!empty($this->data['Webpage']['name'])) {
+			// if the name is empty that should mean that its coming from the file sync method and should not use this function
+			App::uses('Folder', 'Utility');
+			App::uses('File', 'Utility');
+			$dir = new Folder($this->templateDirectories[0], true, 0755);
+			$file = new File($this->templateDirectories[0] . $this->data['Webpage']['name'], true, 0644);
+			try {
+				$file->write($this->data['Webpage']['content'], 'w', true);
 				$file->close(); // Be sure to close the file when you're done
-			}
-			
-			foreach ($templates as $template) {
-				$id = $this->find('first', array('conditions' => array('name' => $template['name']), 'fields' => 'id'));
-				if (!empty($id)) {
-					$this->id = $id['Webpage']['id'];
-					try {
-						$this->saveField('content', $template['content']);
-					} catch (Exception $e) {
-						debug($e->getMessage());
-						break;
-					}
-				} else {
-					try {
-						$this->create();
-						$this->save($template);
-					} catch (Exception $e) {
-						debug($e->getMessage());
-						break;
-					}
-				}
+				return true;
+			} catch (Exception $e) {
+				throw new Exception($e->getMessage());
 			}
 		}
 	}
-
+	
 /**
- * Get templates from the database with matching names
- *
- * @param array
- * @param string
+ * Template Content Results
+ * If there is a file, return the file contents instead of the db contents
+ * 
  * @return array
  */
- 	protected function _getDbFileRecords($files = null, $type = 'template') {			
-		if ($type == 'css') {
-			$dbTemplates = $this->WebpageCss->find('all', array(
-				'conditions' => array(
-					'WebpageCss.name' => $files
-					)
-				));
-		} else if ($type == 'js') {
-			$dbTemplates = $this->WebpageJs->find('all', array(
-				'conditions' => array(
-					'WebpageJs.name' => $files
-					)
-				));
-		} else {
-			$dbTemplates = $this->find('all', array(
-				'conditions' => array(
-					'Webpage.name' => $files
-					)
-				));
-		} 
+ 	protected function _templateContentResults($results) { 
+		if (!empty($results[0]['Webpage']['type']) && $results[0]['Webpage']['type'] == 'template') {
+			App::uses('Folder', 'Utility');
+			App::uses('File', 'Utility');
 			
-		return $dbTemplates;
+			foreach($this->templateDirectories as $directory) {
+				$dir = new Folder( $directory);
+				$file = $dir->find($results[0]['Webpage']['name']);
+				break;
+			}
+			
+			if (!empty($file[0])) {
+				$file = new File($dir->path . $file[0]);
+				$results[0]['Webpage']['content'] = $file->read();				
+				$file->close(); // Be sure to close the file when you're done
+			}
+		}
+		return $results;
 	}
 	
 }

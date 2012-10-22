@@ -1,4 +1,5 @@
 <?php
+App::uses('WebpagesAppModel', 'Webpages.Model');
 /**
  * WebpageCss Model
  * 
@@ -11,10 +12,13 @@
  */
 class WebpageCss extends WebpagesAppModel {
 	
-	var $name = 'WebpageCss';
-	var $useTable = 'webpage_css';
-	var $displayField = 'name';
-	var $validate = array(
+	public $name = 'WebpageCss';
+	
+	public $useTable = 'webpage_css';
+	
+	public $displayField = 'name';
+	
+	public $validate = array(
 		'type' => array(
 			'alphanumeric' => array(
 				'rule' => array('alphanumeric'),
@@ -48,7 +52,7 @@ class WebpageCss extends WebpagesAppModel {
 	);
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'Webpage' => array(
 			'className' => 'Webpages.Webpage',
 			'foreignKey' => 'webpage_id',
@@ -72,32 +76,29 @@ class WebpageCss extends WebpagesAppModel {
 		)
 	);
 	
-	function add($data, $theme=null) {
+	public function add($data, $theme=null) {
 		$data = $this->_cleanData($data);
 		
 		if ($this->save($data)) {
 			$webpageCssId = $this->id;
-			# then write the css file here.
+			// then write the css file here.
 			if ($this->_cssFile($data['WebpageCss']['name'], $data['WebpageCss']['content'], $theme)) {
-				# then write it to settings for easy retrieval by the default layout
+				// then write it to settings for easy retrieval by the default layout
 				if ($this->_updateSettings()) {
 					return true;
 				} else {
-					# roll back, there was a problem
-					$this->delete($webpageCssId);
-					return false;
+					throw new Exception(__('Css file save failed'));
 				}
 			} else {
-				# roll back, there was a problem
-				$this->delete($webpageCssId);
-				return false;
+				// roll back, there was a problem
+				throw new Exception(__('Css file write failed.'));
 			}			
 		} else {
 			return false;
 		}
 	}
 	
-	function update($data, $theme=null) {
+	public function update($data, $theme=null) {
 		if ($this->add($data, $theme)) {
 			return true;		
 		} else {
@@ -106,7 +107,7 @@ class WebpageCss extends WebpagesAppModel {
 	}
 	
 	
-	function _cssFile($fileName = 'all.css', $content, $theme=null) {
+	protected function _cssFile($fileName = 'all.css', $content, $theme=null) {
 		$filePath = $this->_getCssFilePath($theme) . $fileName;
 		# file helper
 		App::uses('File', 'Utility');
@@ -116,11 +117,11 @@ class WebpageCss extends WebpagesAppModel {
 		if($file->write($file->prepare($content))) {
 			return true;
 		} else {
-			return false;
+			throw new Exception('Css File Not Saved');
 		}
 	}
 	
-	function _getCssFilePath($theme=null)	{
+	protected function _getCssFilePath($theme=null)	{
 		$themePath = null;
 		if($theme)	{
 			$themePath = App::themePath($theme);
@@ -134,14 +135,14 @@ class WebpageCss extends WebpagesAppModel {
 	}
 	
 	
-	function getCssFileContents($filename, $theme=null)	{
+	public function getCssFileContents($filename, $theme = null)	{
 		$filePath = $this->_getCssFilePath($theme);			
 		if(file_exists($filePath.DS.$filename))	{
 			return file_get_contents($filePath.DS.$filename);
 		}
 	}
 	
-	function types() {
+	public function types() {
 		return array(
 			'all' => 'all',
 			'screen' => 'screen',
@@ -157,7 +158,7 @@ class WebpageCss extends WebpagesAppModel {
 	}
 	
 	
-	function remove($id, $theme=null) {
+	public function remove($id, $theme=null) {
 		# find the css file being deleted
 		$webpageCss = $this->find('first', array('conditions' => array('WebpageCss.id' => $id)));
 		# Get file path
@@ -184,13 +185,13 @@ class WebpageCss extends WebpagesAppModel {
 		}
 	}
 	
-	
-	/**
-	 * Removes the setting for webpage css
-	 * 
-	 * @todo		Need to write some regex (system wide though) that will remove settings within settings, so that this will support multiple css files.  Adding multiple css files works.  Deleting one, deletes all. 
-	 */
-	function deleteSetting() {
+
+/**
+ * Removes the setting for webpage css
+ * 
+ * @todo		Need to write some regex (system wide though) that will remove settings within settings, so that this will support multiple css files.  Adding multiple css files works.  Deleting one, deletes all. 
+ */
+	public function deleteSetting() {
 		App::import('Model', 'Setting');
 		$this->Setting = new Setting;
 		$setting = $this->Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_CSS_FILENAMES')));
@@ -205,7 +206,7 @@ class WebpageCss extends WebpagesAppModel {
 		}
 	}
 	
-	function _updateSettings() {
+	protected function _updateSettings() {
 		App::import('Model', 'Setting');
 		$this->Setting = new Setting;
 		
@@ -243,7 +244,7 @@ class WebpageCss extends WebpagesAppModel {
 		}
 	}
 	
-	function _cleanData($data) {
+	protected function _cleanData($data) {
 		if(!strpos($data['WebpageCss']['name'], '.css')) :
 			$data['WebpageCss']['name'] = $data['WebpageCss']['name'].'.css';
 		endif;
@@ -252,4 +253,3 @@ class WebpageCss extends WebpagesAppModel {
 	}
 	
 }
-?>
