@@ -21,23 +21,34 @@
  */
 class WebpageJsesController extends WebpagesAppController {
 
-	var $name = 'WebpageJses';
-	var $uses = array('Webpages.WebpageJs');
+	public $name = 'WebpageJses';
+	public $uses = array('Webpages.WebpageJs');
 
-	function index() {
+	public function index() {
+		$this->WebpageJs->syncFiles('js');
 		$this->WebpageJs->recursive = 0;
+		$this->paginate['fields'] = array('id', 'name', 'content', 'webpage_id', 'modified');
+		
 		$this->set('webpageJses', $this->paginate());
+		
+		$this->set('displayName', 'name');
+		$this->set('displayDescription', 'content'); 
+		$this->set('page_title_for_layout', 'Javascript Files');	
 	}
 
-	function view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid webpage js', true));
-			$this->redirect(array('action' => 'index'));
+	public function view($id = null) {
+		$this->WebpageJs->id = $id;
+		if (!$this->WebpageJs->exists()) {
+			throw new NotFoundException(__('Js not found'));
 		}
-		$this->set('webpageJs', $this->WebpageJs->read(null, $id));
+		
+		$this->WebpageJs->syncFiles('js');
+		$webpageJs = $this->WebpageJs->read(null, $id);
+		$this->set('webpageJs', $webpageJs);
+		$this->set('page_title_for_layout', $webpageJs['WebpageJs']['name']);	
 	}
 
-	function add() {
+	public function add() {
 		if (!empty($this->request->data)) {
 			try {
 				$this->WebpageJs->add($this->request->data, $this->theme);
@@ -50,37 +61,41 @@ class WebpageJsesController extends WebpagesAppController {
 		$this->set(compact('webpages'));
 	}
 
-	function edit($id = null) {
-		if (!$id && empty($this->request->data)) {
-			$this->Session->setFlash(__('Invalid webpage js', true));
-			$this->redirect(array('action' => 'index'));
+	public function edit($id = null) {
+		$this->WebpageJs->id = $id;
+		if (!$this->WebpageJs->exists()) {
+			throw new NotFoundException(__('Js not found'));
 		}
+		
 		if (!empty($this->request->data)) {
 			if ($this->WebpageJs->update($this->request->data, $this->theme)) {
 				$this->Session->setFlash(__('The webpage js has been saved', true));
 				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The webpage js could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The javascript could not be saved. Please, try again.'));
 			}
 		}
-		if (empty($this->request->data)) {
-			$this->request->data = $this->WebpageJs->read(null, $id);
-			$jsFileContents = $this->WebpageJs->getJsFileContents($this->request->data['WebpageJs']['name'], $this->theme);
-			if($jsFileContents)	{
-				$this->request->data['WebpageJs']['content'] = $jsFileContents; 
-			}
+		
+		$this->WebpageJs->syncFiles('js');
+		$this->request->data = $this->WebpageJs->read(null, $id);
+		$jsFileContents = $this->WebpageJs->getJsFileContents($this->request->data['WebpageJs']['name'], $this->theme);
+		if($jsFileContents)	{
+			$this->request->data['WebpageJs']['content'] = $jsFileContents; 
 		}
 		$webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
 		$this->set(compact('webpages'));
+		
+		$this->set('page_title_for_layout', $this->request->data['WebpageJs']['name']);	
 	}
 
-	function delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for webpage js', true));
-			$this->redirect(array('action'=>'index'));
+	public function delete($id = null) {
+		$this->WebpageJs->id = $id;
+		if (!$this->WebpageJs->exists()) {
+			throw new NotFoundException(__('Javascript not found'));
 		}
+		
 		if ($this->WebpageJs->remove($id, $this->theme)) {
-			$this->Session->setFlash(__('Webpage js deleted', true));
+			$this->Session->setFlash(__('Javascript file deleted'));
 			$this->redirect(array('action'=>'index'));
 		} else {
 			$this->Session->setFlash(__('Error!', true));
@@ -90,4 +105,3 @@ class WebpageJsesController extends WebpagesAppController {
 	}
 
 }
-?>
