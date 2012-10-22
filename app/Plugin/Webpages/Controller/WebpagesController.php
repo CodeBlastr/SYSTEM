@@ -189,10 +189,12 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid Webpage', true));
-			$this->redirect(array('action'=>'index'));
+	
+		$this->Webpage->id = $id;
+		if (!$this->Webpage->exists()) {
+			throw new NotFoundException(__('Page not found'));
 		}
+		
 		if ($this->Webpage->delete($id, true)) {
 			$this->Session->setFlash(__('Webpage deleted', true));
 			$this->redirect(array('action'=>'index'));

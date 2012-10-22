@@ -200,7 +200,7 @@ class Webpage extends WebpagesAppModel {
  */
 	private function _saveTemplateSettings($pageId, $data = null, $delete = false) {
 		if(!empty($data)) {
-			$settingsArray = array(
+			$settings = array(
 				'templateId' => $pageId,
 				'isDefault' => $data['Webpage']['is_default'],
 				'urls' => '"'.$data['Webpage']['template_urls'].'"',
@@ -208,8 +208,11 @@ class Webpage extends WebpagesAppModel {
 				);
 		}
 		
-		extract(unserialize(__APP_TEMPLATES));
-		$template[$pageId] = base64_encode(gzcompress(serialize($settingsArray)));
+		if (defined('__APP_TEMPLATES') && is_array(__APP_TEMPLATES)) {
+			extract(unserialize(__APP_TEMPLATES));
+		}
+		
+		$template[$pageId] = !empty($settings) ? base64_encode(gzcompress(serialize($settings))) : null;
 			
 		$data['Setting']['value'] = '';
 		$data['Setting']['type'] = 'App';

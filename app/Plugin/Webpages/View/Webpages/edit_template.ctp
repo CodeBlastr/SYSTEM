@@ -1,43 +1,21 @@
 <div class="webpages form">
 <?php echo $this->Form->create('Webpage'); ?>
-    <h2><?php echo __('Webpage Editor');?></h2>
-  <fieldset>
-    <legend class="toggleClick"> <?php echo __('Search Engine Optimization');?> </legend>
+  
+  	<fieldset>
     <?php
-		echo $this->Form->input('Webpage.id');
-		echo $this->Form->input('Alias.id');
-		echo $this->Form->hidden('Alias.value', array('value' => $this->Form->value('Webpage.id')));
-		echo $this->Form->hidden('Alias.plugin', array('value' => 'webpages'));
-		echo $this->Form->hidden('Alias.controller', array('value' => 'webpages'));
-		echo $this->Form->hidden('Alias.action', array('value' => 'view'));
-		echo $this->Form->input('Alias.name', array('label' => false, 'placeholder' => 'Unique Permanent SEO Url Address'));
-		echo $this->Form->input('Webpage.title', array('label' => false, 'placeholder' => 'SEO Title'));
-		echo $this->Form->input('Webpage.keywords', array('label' => false, 'placeholder' => 'SEO Keywords'));
-		echo $this->Form->input('Webpage.description', array('label' => false, 'placeholder' => 'SEO Description'));
-	?>
-  </fieldset>
-  <fieldset>
-    <legend class="toggleClick"> <?php echo __('Access Rights');?> </legend>
-    <?php
-		echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => '', 'type' => 'select', 'multiple' => true, 'options' => $userRoles, 'between' => 'Customize page access. (Note : Uses global settings by default)'));
-	?>
-  </fieldset>
-  <fieldset>
-    <legend> <?php echo __('Edit Webpage');?> </legend>
-    <?php
-		echo $this->Form->input('type', array('default' => 'page_content')); ?>
-    <fieldset>
-      <legend> <?php echo __('Template Settings'); ?> </legend>
-      <?php
-	  echo $this->Form->input('is_default', array('type' => 'checkbox'));
-	  echo $this->Form->input('template_urls', array('type' => 'textarea', 'value' => $templateUrls, 'after' => ' <br>One url per line. (ex. /tickets/tickets/view/*)'));
-	  echo $this->Form->input('user_roles', array('type' => 'select', 'options' => $userRoles, 'multiple' => 'checkbox'));
-	  ?>
-    </fieldset>
-    <?php
+	echo $this->Form->input('Webpage.type', array('type' => 'hidden', 'default' => 'element'));
 	echo $this->Form->input('Webpage.name');
 	echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'ckeSettings' => $ckeSettings));	?>
-  </fieldset>
+  	</fieldset>
+  
+	<fieldset>
+    	<legend> <?php echo __('Template Settings'); ?> </legend>
+      	<?php
+		echo $this->Form->input('is_default', array('type' => 'checkbox'));
+		echo $this->Form->input('template_urls', array('type' => 'textarea', 'value' => $templateUrls, 'after' => ' <br>One url per line. (ex. /tickets/tickets/view/*)'));
+		echo $this->Form->input('user_roles', array('type' => 'select', 'options' => $userRoles, 'multiple' => 'checkbox')); ?>
+    </fieldset>
+    
 <?php
 if (in_array('Drafts', CakePlugin::loaded())) {
 	echo $this->Form->input('Webpage.draft', array('type' => 'checkbox', 'value' => 0, 'checked' => 'checked'));
@@ -47,14 +25,10 @@ echo $this->Form->end('Publish Update'); ?>
 
 <?php
 $menuItems = array(
-			$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index')),
-			$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add'), array('title' => 'Add Webpage')),
-			$this->Html->link(__('View'), array('controller' => 'webpages', 'action' => 'view', $this->request->data['Webpage']['id'])),
-			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?'), $this->Form->value('Webpage.id'))),
-				 );
-
-if($this->data['Webpage']['type'] == 'page_content')
-    $menuItems[] = $this->Html->link(__('Add Child'), array('controller' => 'webpages', 'action' => 'add', $this->request->data['Webpage']['id']), array('title' => 'Add Child'));
+	$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index', 'template')),
+	$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add', 'template'), array('title' => 'Add Webpage')),
+	$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?'), $this->Form->value('Webpage.id'))),
+	);
 
 $this->set('context_menu', array('menus' => array(
 	  array('heading' => 'Webpages',
@@ -105,7 +79,7 @@ $(function() {
 	});
 
 
-<?php if (in_array('Drafts', CakePlugin::loaded())) {  ?>
+<?php /* if (in_array('Drafts', CakePlugin::loaded())) {  ?>
 	updateSubmitButton();
 	var tid = setInterval(timedDraftSubmit, 30000);
 
@@ -122,11 +96,6 @@ $(function() {
 		}
 	});
 <?php } ?>
-	<?php if($this->data['Webpage']['parent_id']) { ?>
-	$("#WebpageTemplateUrls").parent().parent().children().hide();
-	$("#WebpageTemplateUrls").parent().show();
-	$("#WebpageTemplateUrls").parent().parent().show();
-	<?php } ?>
 });
 
 
@@ -158,7 +127,7 @@ function ajaxDraftSubmit(openwindow) {
 			}
 			$(".ajaxLoader").hide("slow");
 		}
-	});
+	}); */ ?>
 }
 
 
