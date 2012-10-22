@@ -1,4 +1,4 @@
-#headerNavFloManagr { display: none !important; }/*!
+#headerNavFloManagr { display: none; }/*!
 /*!
  * Bootstrap v2.1.1
  *
@@ -9,11 +9,11 @@
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  */
 #adminNavFloManagr.navbar {
-  overflow: visible !important;
-  margin-bottom: 20px !important;
-  color: #777777 !important;
-  *position: relative !important;
-  *z-index: 2 !important;
+  overflow: visible;
+  margin-bottom: 20px;
+  color: #777777;
+  *position: relative;
+  *z-index: 2;
 }
 #adminNavFloManagr.navbar-fixed-top {
 	position: fixed;
@@ -44,65 +44,65 @@
 
 /* editor */
 #background_layer {
-	position: fixed !important;
-	background-color: #666 !important;
-	opacity: 0.8 !important;
-	filter: alpha(opacity=70) !important;
-	top: 0px !important;
-	width: 100% !important;
-	height: 100% !important;
-	z-index: 99 !important;
+	position: fixed;
+	background-color: #666;
+	opacity: 0.8;
+	filter: alpha(opacity=70);
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 99;
 }
 .hover_div  {
-	min-height: 2em !important;
+	min-height: 2em;
 }
 .hover_include {
-	background-color: #FF9 !important;
-	border: 1px dashed #F00 !important;
-	filter: alpha(opacity=70) !important;
-	z-index: 99999 !important;
-	opacity: 0.7 !important;
-	position: absolute !important;/*border: 1px solid black !important;*/
+	background-color: #FF9;
+	border: 1px dashed #F00;
+	filter: alpha(opacity=70);
+	z-index: 99999;
+	opacity: 0.7;
+	position: absolute;/*border: 1px solid black;*/
     }
 .hover_include:before {
-	content: "Click to edit content." !important;
+	content: "Click to edit content.";
 }
 .global_edit_area .hover_include:before {
-	content: "Click to edit global box." !important;
+	content: "Click to edit global box.";
 }
 #modalEditorWrap {
-	position: fixed !important;
-	top: -5000px !important;
-	left: -5000px !important;
-	z-index: 100 !important;
-	width: 80% !important;
-	height: 60% !important;
+	position: fixed;
+	top: -5000px;
+	left: -5000px;
+	z-index: 100;
+	width: 80%;
+	height: 60%;
 }
 #modalEditorWrap #cke_modalEditor {
-	-webkit-box-shadow: 2px 2px 3px 0px #000000 !important;
-	-moz-box-shadow: 2px 2px 3px 0px #000000 !important;
-	box-shadow: 2px 2px 3px 0px #000000 !important;  
+	-webkit-box-shadow: 2px 2px 3px 0px #000000;
+	-moz-box-shadow: 2px 2px 3px 0px #000000;
+	box-shadow: 2px 2px 3px 0px #000000;  
 }
 #modalEditorWrap .closeEditor {
-	color: #000 !important;
-	font-size: 14px !important;
-	text-shadow: 1px 1px #fff !important;
-	cursor: pointer !important;
-	padding: 0em 0.2em 0 0em !important;
-	float: left !important;
-	margin: 0 0 0 -1em !important;
-	font-family: Verdana, Geneva, sans-serif !important;
+	color: #000;
+	font-size: 14px;
+	text-shadow: 1px 1px #fff;
+	cursor: pointer;
+	padding: 0em 0.2em 0 0em;
+	float: left;
+	margin: 0 0 0 -1em;
+	font-family: Verdana, Geneva, sans-serif;
 }
 #modalEditorWrap .handle {
-	font-size: 20px !important;
-	color: #999 !important;
-	text-shadow: 1px 1px #fff !important;
-	cursor:move !important;
-	padding: 0em 0.2em 0.2em 0.2em !important;
-	float: left !important;
-	clear: left !important;
-	margin: 0 0 0 -1em !important;
+	font-size: 20px;
+	color: #999;
+	text-shadow: 1px 1px #fff;
+	cursor:move;
+	padding: 0em 0.2em 0.2em 0.2em;
+	float: left;
+	clear: left;
+	margin: 0 0 0 -1em;
 }
 #modalEditorWrap .closeEditor:hover, #modalEditorWrap .handle:hover {
-	color: #C00 !important;
+	color: #C00;
 }
