@@ -1,7 +1,7 @@
 <?php
-if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php')) :
+if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php')) {
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php');
-else :
+} else {
 
 /**
  * Routes configuration
@@ -51,7 +51,7 @@ else :
 	Router::connect('/robots/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'robot'));	
 	require CAKE . 'Config' . DS . 'routes.php';
 
-endif;
+}
 	
 	
 	

@@ -74,6 +74,21 @@ class AppModel extends Model {
 			header('Location: ' . $_SERVER['REQUEST_URI']); // refresh the page to establish new table name
 			break;
 		}
+		
+		// renamed type 10/20/2012
+		$pageContent = $db->query("SELECT `type` FROM `webpages` WHERE `type` = 'page_content'");
+		if (!empty($pageContent)) {
+			$db->execute("UPDATE `webpages` SET `webpages`.`type` = 'content' WHERE `webpages`.`type` = 'page_content';");
+		}
+		
+		// updated templates 10/22/2012
+		$templates = $db->query("SELECT * FROM `webpages` WHERE `type` = 'template' AND `modified` < '2012-10-22 00:00:00'");
+		if (!empty($templates)) {
+			foreach ($templates as $template) {
+				$content = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title><!--[if lt IE 9]>		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>	<![endif]--><meta name="robots" content="index, follow" /><meta http-equiv="X-UA-Compatible" content="IE=8" /><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="apple-mobile-web-app-capable" content="yes"/>{element: favicon}<link rel="stylesheet" type="text/css" href="/css/system.css" media="all" /><link rel="stylesheet" type="text/css" href="/css/jquery-ui/jquery-ui-1.8.13.custom.css" media="all" />{element: css}<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>{element: javascript}{element: webpages.analytics}</head><body {element: body_attributes}><div id="corewrap">' . $template['webpages']['content'] . '</div>{element: sql_dump}<div class="ajaxLoader"><img src="/img/ajax-loader.gif" /></div></body></html>';
+				$db->execute("UPDATE `webpages` SET `webpages`.`content` = '".$content."', `webpages`.`modified` = '".date('Y-m-d h:i:s')."' WHERE `webpages`.`id` = '".$template['webpages']['id']."';");
+			}
+		}
 			
 		parent::__construct($id, $table, $ds);
 	}
@@ -81,6 +96,7 @@ class AppModel extends Model {
 
 /**
  * Manipulate data before it is saved.
+ *
  * @todo    Move this record level access stuff to a behavior
  */
 	public function beforeSave($model) {

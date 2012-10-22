@@ -71,6 +71,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	));
 	
 	
+    Inflector::rules('singular', array('irregular' => array('webpage_jses' => 'webpage_js')));
+    Inflector::rules('plural', array('irregular' => array('webpage_js' => 'webpage_jses')));
+
+	
 	/**
 	 * reads settings.ini (or defaults.ini if non-existent)
 	 * and sets configurable constants that are set in the settings db table
@@ -113,12 +117,13 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 */
         //debug(SITE_DIR);break;
 	if (defined('__SYSTEM_LOAD_PLUGINS')) {
-            extract(unserialize(__SYSTEM_LOAD_PLUGINS));
-            CakePlugin::load($plugins);
+		//CakePlugin::loadAll();
+		extract(unserialize(__SYSTEM_LOAD_PLUGINS));
+		CakePlugin::load($plugins);
 	} elseif (SITE_DIR === NULL){
-            CakePlugin::loadAll(); // Loads all plugins at once
-        } else {
-            CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages')); // required plugins    
+    	CakePlugin::loadAll(); // Loads all plugins at once
+    } else {
+    	CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages')); // required plugins    
 	}
 	
 	
@@ -259,6 +264,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Favorite' => 'Favorites',
 				'FormFieldset' => 'Forms',
 				'FormInput' => 'Forms',
+				'FormKey' => 'Forms',		
 				'Form' => 'Forms',			
 				'Gallery' => 'Galleries',
 				'GalleryImage' => 'Galleries',
@@ -295,6 +301,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'TimesheetTime' => 'Timesheets',
 				'Timesheet' => 'Timesheets',
 				'TimesheetsTimesheetTime' => 'Timesheets',
+				'Transaction' => 'Transactions',
+				'TransactionItem' => 'Transactions',
+				'TransactionPayment' => 'Transactions',
+				'TransactionShipment' => 'Transactions',
 				'Used' => 'Users',
 				'UserConnect' => 'Users',
 				'UserFollower' => 'Users',
@@ -308,6 +318,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'WebpageCss' => 'Webpages',
 				'WebpageMenu' => 'Webpages',
 				'WebpageJ' => 'Webpages',
+				'WebpageJse' => 'Webpages',
 				'Webpage' => 'Webpages',
 				'WikiContentVersion' => 'Wikis',
 				'WikiContent' => 'Wikis',
