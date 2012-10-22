@@ -35,8 +35,7 @@ body {
 {element: twitter-bootstrap/header}
 <div class="container">
   <h1 class="first pull-left"> {element: twitter-bootstrap/page_title} </h1>
-  <div class="clearfix"></div>
-  <hr />
+  {element: twitter-bootstrap/context_menu}
   {helper: flash_for_layout}
   {helper: flash_auth_for_layout} 
   {helper: content_for_layout}
