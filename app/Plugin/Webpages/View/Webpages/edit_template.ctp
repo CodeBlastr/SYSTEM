@@ -3,9 +3,10 @@
   
   	<fieldset>
     <?php
+	echo $this->Form->input('Webpage.id');
 	echo $this->Form->input('Webpage.type', array('type' => 'hidden', 'default' => 'element'));
 	echo $this->Form->input('Webpage.name');
-	echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'ckeSettings' => $ckeSettings));	?>
+	echo $this->Form->input('Webpage.content');	?>
   	</fieldset>
   
 	<fieldset>
@@ -17,10 +18,7 @@
     </fieldset>
     
 <?php
-if (in_array('Drafts', CakePlugin::loaded())) {
-	echo $this->Form->input('Webpage.draft', array('type' => 'checkbox', 'value' => 0, 'checked' => 'checked'));
-}
-echo $this->Form->end('Publish Update'); ?>
+echo $this->Form->end('Save Template'); ?>
 </div>
 
 <?php
@@ -36,8 +34,9 @@ $this->set('context_menu', array('menus' => array(
 			)
 	  ))); ?>
 <script type="text/javascript">
-$(function() {
-
+$(function() {	
+	
+	// probably can delete some of this (a hold over from unified edit ctp files)
 	var webpageType = $("#WebpageType").val();
 	$("#WebpageIsDefault").parent().parent().hide();
 	if (webpageType == 'template' || webpageType == 'element') {
@@ -77,6 +76,8 @@ $(function() {
 			$("#WebpageTemplateUrls").parent().show();
 		}
 	});
+});
+</script>
 
 
 <?php /* if (in_array('Drafts', CakePlugin::loaded())) {  ?>
@@ -128,7 +129,3 @@ function ajaxDraftSubmit(openwindow) {
 			$(".ajaxLoader").hide("slow");
 		}
 	}); */ ?>
-}
-
-
-</script>

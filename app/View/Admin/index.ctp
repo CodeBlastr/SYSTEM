@@ -61,7 +61,7 @@ if (empty($runUpdates)) { ?>
             <h3><i class="icon-file"></i> <?php echo $this->Html->link('Appearance', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'template')); ?></h3>
             <p>Manage the look and feel of your site.</p>
             <ul>
-                <li><?php echo $this->Html->link('Templates\' Html', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'template')); ?></li>
+                <li><?php echo $this->Html->link('Templates', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'template')); ?></li>
                 <li><?php echo $this->Html->link('Menus', array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'index')); ?></li>
                 <li><?php echo $this->Html->link('Widget Elements', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'element')); ?></li>
                 <li><?php echo $this->Html->link('Css Styles', array('plugin' => 'webpages', 'controller' => 'webpage_csses', 'action' => 'index')); ?></li>
