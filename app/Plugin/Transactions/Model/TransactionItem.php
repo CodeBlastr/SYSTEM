@@ -156,4 +156,14 @@ class TransactionItem extends TransactionsAppModel {
 	return true;
     }
 
+    
+    public function statuses() {
+        $statuses = array();
+        foreach (Zuha::enum('ORDER_ITEM_STATUS') as $status) {
+            $statuses[Inflector::underscore($status)] = $status;
+        }
+        return Set::merge(array('incart' => 'In Cart', 'paid' => 'Paid', 'shipped' => 'Shipped'), $statuses);
+    }
+    
+    
 }

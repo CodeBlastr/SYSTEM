@@ -225,4 +225,17 @@ class Transaction extends TransactionsAppModel {
 	}
 	
 	
+	/**
+	 * An array of options for select inputs
+	 *
+	 */
+	public function statuses() {
+	    $statuses = array();
+	    foreach (Zuha::enum('ORDER_TRANSACTION_STATUS') as $status) {
+		$statuses[Inflector::underscore($status)] = $status;
+	    }
+	    return Set::merge(array('failed' => 'Failed', 'paid' => 'Paid', 'shipped' => 'Shipped'), $statuses);
+	}
+	
+	
 }
