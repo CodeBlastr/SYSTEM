@@ -13,16 +13,17 @@ $showContext = !empty($showContext) ? true : false; ?>
             </a>
             <ul class="nav">
             	<li class="dropdown">
-            		<a class="brand dropdown-toggle" data-toggle="dropdown" href="<?php echo '/'.$this->Session->read('Auth.User.view_prefix'); ?>"><span>flo</span>Managr</a>
-            		<?php echo !empty($showContext) ? $this->Element('context_menu') : null; ?>   
+            		<a class="brand dropdown-toggle" data-toggle="dropdown" href="#"><span>flo</span>Managr <b class="caret"></b></a>
+            		<?php echo !empty($showContext) ? $this->Element('context_menu', array('before' => '<li>' . $this->Html->link('View Site', '/') . '</li><li class="divider"></li>')) : null; ?>   
             	</li>
             </ul>
             
             <div class="nav-collapse collapse">
                 <ul class="nav">
+               		<li><?php echo $this->Html->link('Dashboard', '/admin/', array('title' => 'Admin Dashboard')); ?></li>
                		<?php if (!empty($showEditMode)) { ?><li><a class="dock_btn edit_button" id="edit_button" title="On edit mode"><span>Edit : Off</span></a></li><?php } ?>
                     <li><?php echo $this->Html->link('Content', '/admin/#tagPages+tagMedia+tagDiscussion+tagElements', array('escape' => false, 'title' => 'Pages, Modules, Media, Categories, Tags, Enumerations', 'onclick' => 'window.location.replace(this.href);window.location.reload(true)')); // takes extra js, because of the hash tags ?></li>
-                    <li><?php echo $this->Html->link('Contacts', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Leads, Opportunities', 'id' => 'navContacts')); ?></li>
+                    <li><?php echo $this->Html->link('Contacts', array('admin' => true, 'plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Leads, Opportunities')); ?></li>
     				<?php if (in_array('Transactions', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Ecommerce', array('plugin' => 'catalogs', 'controller' => 'catalogs', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Catalogs, Orders', 'id' => 'navProducts')); ?></li><?php } ?>
    					<?php if (in_array('Invoices', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Billing', array('plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Estimates, Invoices', 'id' => 'navBilling')); ?></li><?php } ?>
     				<?php if (in_array('Projects', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Todos', array('plugin' => 'projects', 'controller' => 'projects', 'action' => 'dashboard'), array('escape' => false, 'title' => 'Projects, Tickets, Timesheets', 'id' => 'navSupport')); ?></li><?php } ?>
