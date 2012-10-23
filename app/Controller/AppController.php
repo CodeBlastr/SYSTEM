@@ -943,14 +943,14 @@ class AppController extends Controller {
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
-				#debug($this->Acl->Aco->node($this->_getAcoPath()));
-				#debug($this->Acl->Aro->node($this->_userAro($user['id'])));
-				#debug($this->Acl->check($aro, $aco));
-				#debug($user);
-				#debug($this->Session->read());
-				#debug($aro);
-				#debug($aco);
-				#break;
+//				debug($this->Acl->Aco->node($this->_getAcoPath()));
+//				debug($this->Acl->Aro->node($this->_userAro($user['id'])));
+//				debug($this->Acl->check($aro, $aco));
+//				debug($user);
+//				debug($this->Session->read());
+//				debug($aro);
+//				debug($aco);
+//				break;
 				$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
 				$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
 				$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';
