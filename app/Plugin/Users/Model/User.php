@@ -181,9 +181,10 @@ class User extends UsersAppModel {
 
 
 	public function beforeSave($options = array()) {
-		if (!empty($this->data['User']['password'])) :
+		if (!empty($this->data['User']['password'])) {
+			App::uses('AuthComponent', 'Controller/Component');
 	        $this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
-		endif;
+		}
         return true;
     }
 
