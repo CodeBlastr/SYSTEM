@@ -1,24 +1,81 @@
-#headerNavFloManagr { display: none; }/*!
-/*!
- * Bootstrap v2.1.1
- *
- * Copyright 2012 Twitter, Inc
- * Licensed under the Apache License v2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Designed and built with all the love in the world @twitter by @mdo and @fat.
- */
+#headerNavFloManagr { display: none; }
+
+/* navbar */
+body {
+	position: relative !important;
+	top: 38px !important;
+}
+#adminNavFloManagr a, #adminNavFloManagr {
+	color: #FFF;
+	text-decoration: none;
+}
+#adminNavFloManagr a:hover {
+	color: #CCC;
+}
 #adminNavFloManagr.navbar {
   overflow: visible;
-  margin-bottom: 20px;
   color: #777777;
   *position: relative;
-  *z-index: 2;
+  z-index: 100;
+  width: 100%;
+  background: #000;
 }
 #adminNavFloManagr.navbar-fixed-top {
 	position: fixed;
 	top: 0;
 }
+#adminNavFloManagr .btn-navbar {
+	display: none;
+}
+#adminNavFloManagr .navbar-inner, #adminNavFloManagr .navbar-inner .container {
+	margin: 0 auto;
+    width: 1170px;
+    font-size: 15px;
+    line-height: 20px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+} 
+#adminNavFloManagr .navbar-inner div {
+	display: inline-block;
+}
+#adminNavFloManagr .navbar-inner .nav-collapse {
+	float: right;
+	width: 880px;
+}
+#adminNavFloManagr ul {
+	display: inline-block;
+	position: relative;
+}
+#adminNavFloManagr ul li {
+	display: inline-block;
+	margin-right: 15px;
+}
+#adminNavFloManagr ul.pull-right {
+	float: right;
+}
+#adminNavFloManagr ul li.dropdown ul.dropdown-menu {
+	display: none;
+}
+/* context menu */
+#adminNavFloManagr ul li ul.context_menu {
+	position: absolute;
+	display: block;
+	background: #CCC;
+	display: none;
+}
+#adminNavFloManagr ul li:hover ul.context_menu {
+	display: block;
+}
+#adminNavFloManagr ul li ul.context_menu li {
+	padding: 0 10px;
+}
+#adminNavFloManagr ul li ul.context_menu a {
+	color: #000;
+}
+#adminNavFloManagr ul li ul.context_menu a:hover {
+	color: #888;
+}
+
+
 
 @media (max-width: 767px) {
 }
