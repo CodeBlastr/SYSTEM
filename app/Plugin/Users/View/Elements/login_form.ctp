@@ -32,10 +32,10 @@
 	$divClass = !empty($divClass) ? $divClass : 'loginElement';
 	$columnClass = !empty($columnClass) ? $columnClass : 'column';
 	$holderClass = !empty($holderClass) ? $holderClass : 'holder';
-	$rowClass = !empty($rowClass) ? $rowClass : 'row';	
+	$rowClass = !empty($rowClass) ? $rowClass : 'rowClass';	
 	$usernameLabel = !empty($usernameLabel) ? $usernameLabel : 'Email';	
 	$passwordLabel = !empty($passwordLabel) ? $passwordLabel : 'Password';	
-	$submitLabel = !empty($submitLabel) ? $submitLabel : 'Login';	
+	$submitLabel = !empty($submitLabel) ? $submitLabel : 'Login';
 	$submitClass = !empty($submitClass) ? $submitClass : 'submit';
 	$inputClass = !empty($inputClass) ? $inputClass : 'text';
 	//$submitDiv = !empty($submitDiv) ? $submitDiv : false; // don't think it will work with the standard end() function

@@ -393,13 +393,13 @@ class Setting extends AppModel {
 	public function add($data, $append = false) {
 		$data = $this->_cleanSettingData($data, $append);
 		if ($this->saveAll($data)) {
-			# call all settings and write the ini file
+			// call all settings and write the ini file
 			if($this->writeSettingsIniData()) {
 				return true;
 			} else {
-				# roll back
+				// roll back
 				$this->delete($this->id);
-				return false;
+				throw Exception('Config directory and/or defaults.ini directory is not writeable');
 			}
 		}
 	}

@@ -11,14 +11,15 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
-<?php 
+<?php
+echo $this->Element('scaffolds/index', array('data' => $webpageCsses));
+
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
-		'heading' => 'Webpage Csses',
+		'heading' => 'Webpage Css',
 		'items' => array(
-			$this->Html->link(__('List Webpage Csses', true), array('action' => 'index')),
+			$this->Html->link(__('List'), array('controller' => 'webpage_csses', 'action' => 'index')),
 			)
 		),
 	)));
-?>
