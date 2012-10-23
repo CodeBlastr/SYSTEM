@@ -31,7 +31,7 @@ body {
 	margin: 0 auto;
     width: 1170px;
     font-size: 15px;
-    line-height: 20px;
+    line-height: 40px;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 } 
 #adminNavFloManagr .navbar-inner div {
@@ -39,7 +39,7 @@ body {
 }
 #adminNavFloManagr .navbar-inner .nav-collapse {
 	float: right;
-	width: 880px;
+	width: 1040px;
 }
 #adminNavFloManagr ul {
 	display: inline-block;
@@ -58,21 +58,48 @@ body {
 /* context menu */
 #adminNavFloManagr ul li ul.context_menu {
 	position: absolute;
-	display: block;
+	top: 40px;
+	left: 0;
+	margin: 0;
+	width: 200px;
 	background: #CCC;
+	z-index: 100;
 	display: none;
 }
 #adminNavFloManagr ul li:hover ul.context_menu {
 	display: block;
 }
 #adminNavFloManagr ul li ul.context_menu li {
+	padding: 0;
+	display: block;
+	margin-right: 0;
+}
+#adminNavFloManagr ul li ul.context_menu li.divider {
+	background: white;
+	height: 1px;
+}
+#adminNavFloManagr ul li ul.context_menu li.nav-header {
+	background: #000;
+	color: #FFF;
 	padding: 0 10px;
 }
-#adminNavFloManagr ul li ul.context_menu a {
+#adminNavFloManagr ul li ul.context_menu li a {
 	color: #000;
+	display: block;
+	width: 180px;
+	height: 100%;
+	padding: 0 10px;
+}
+#adminNavFloManagr ul li ul.context_menu li.nav-item a {
+	color: #000;
+	display: block;
+	width: 160px;
+	height: 100%;
+	padding: 0 10px 0 30px;
 }
 #adminNavFloManagr ul li ul.context_menu a:hover {
 	color: #888;
+	background: white;
 }
 
 
