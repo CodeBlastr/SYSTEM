@@ -13,7 +13,6 @@
 </div> */ ?>
 
 <?php 
-
 // set the contextual menu items      
 $this->set('context_menu', array('menus' => array(
 	array(
@@ -25,6 +24,4 @@ $this->set('context_menu', array('menus' => array(
 			$this->Html->link(__('Delete', true), array('controller' => 'webpages', 'action' => 'delete', $webpage['Webpage']['id']), array(), 'Are you sure you want to delete "'.strip_tags($webpage['Webpage']['title']).'"'),
 			)
 		),
-	)));
-	
-?>
+	))); ?>
