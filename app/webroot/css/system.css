@@ -253,38 +253,6 @@ input[type=radio], input[type=checkbox] {
 .global_edit_area .hover_include:before {
 	content: "Click to edit global box.";
 }
-#modalEditorWrap {
-	position: fixed;
-	top: -5000px;
-	left: -5000px;
-	z-index: 100;
-	width: 80%;
-	height: 60%;
-}
-#modalEditorWrap .closeEditor {
-	color: #000;
-	font-size: 14px;
-	text-shadow: 1px 1px #fff;
-	cursor: pointer;
-	padding: 0em 0.2em 0 0em;
-	float: left;
-	margin: 0 0 0 -1em;
-	font-family: Verdana, Geneva, sans-serif;
-}
-#modalEditorWrap .handle {
-	font-size: 20px;
-	color: #999;
-	text-shadow: 1px 1px #fff;
-	cursor:move;
-	padding: 0em 0.2em 0.2em 0.2em;
-	float: left;
-	clear: left;
-	margin: 0 0 0 -1em;
-}
-#modalEditorWrap .closeEditor:hover, #modalEditorWrap .handle:hover {
-	color: #C00;
-}
-
 
 
 .catalogItemOptions {

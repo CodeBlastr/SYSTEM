@@ -3,7 +3,7 @@
 	<fieldset>
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('webpage_id', array('label' => 'Template to Use With <small>(empty means use with all)</small>.', 'empty' => true));
+		echo $this->Form->input('webpage_id', array('label' => 'Template <small>(if empty, used with all templates)</small>.', 'empty' => true));
 		echo $this->Form->input('name');
 		echo $this->Form->input('content');
 	?>
