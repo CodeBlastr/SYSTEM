@@ -73,7 +73,7 @@ class WebpagesAppModel extends AppModel {
 				if (!empty($id)) {
 					$this->id = $id['Webpage']['id'];
 					try {
-						$this->saveField('content', $template['content']);
+						$this->save($template);
 					} catch (Exception $e) {
 						debug($e->getMessage());
 						break;
