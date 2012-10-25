@@ -18,29 +18,22 @@ class EventSchedule extends EventsAppModel {
  *
  * @var array
  */
-	public $belongsTo = array(
-		'Type' => array(
-			'className' => 'Type',
-			'foreignKey' => 'type_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
-		'Creator' => array(
-			'className' => 'Creator',
-			'foreignKey' => 'creator_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
-		'Modifier' => array(
-			'className' => 'Modifier',
-			'foreignKey' => 'modifier_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		)
-	);
+//	public $belongsTo = array(
+//		'Creator' => array(
+//			'className' => 'Users.Creator',
+//			'foreignKey' => 'creator_id',
+//			'conditions' => '',
+//			'fields' => '',
+//			'order' => ''
+//		),
+//		'Modifier' => array(
+//			'className' => 'Users.Modifier',
+//			'foreignKey' => 'modifier_id',
+//			'conditions' => '',
+//			'fields' => '',
+//			'order' => ''
+//		)
+//	);
 
 /**
  * hasMany associations
@@ -49,7 +42,7 @@ class EventSchedule extends EventsAppModel {
  */
 	public $hasMany = array(
 		'Event' => array(
-			'className' => 'Event',
+			'className' => 'Events.Event',
 			'foreignKey' => 'event_schedule_id',
 			'dependent' => false,
 			'conditions' => '',

@@ -99,46 +99,46 @@ class EventsGuest extends EventsAppModel {
  */
 	public $belongsTo = array(
 		'Event' => array(
-			'className' => 'Event',
+			'className' => 'Events.Event',
 			'foreignKey' => 'event_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
 		),
 		'User' => array(
-			'className' => 'User',
+			'className' => 'Users.User',
 			'foreignKey' => 'user_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
 		),
 		'EventVenue' => array(
-			'className' => 'EventVenue',
+			'className' => 'Events.EventVenue',
 			'foreignKey' => 'event_venue_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
 		),
 		'EventSeat' => array(
-			'className' => 'EventSeat',
+			'className' => 'Events.EventSeat',
 			'foreignKey' => 'event_seat_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
 		),
-		'Creator' => array(
-			'className' => 'Creator',
-			'foreignKey' => 'creator_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
-		'Modifier' => array(
-			'className' => 'Modifier',
-			'foreignKey' => 'modifier_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		)
+//		'Creator' => array(
+//			'className' => 'Users.Creator',
+//			'foreignKey' => 'creator_id',
+//			'conditions' => '',
+//			'fields' => '',
+//			'order' => ''
+//		),
+//		'Modifier' => array(
+//			'className' => 'Users.Modifier',
+//			'foreignKey' => 'modifier_id',
+//			'conditions' => '',
+//			'fields' => '',
+//			'order' => ''
+//		)
 	);
 }

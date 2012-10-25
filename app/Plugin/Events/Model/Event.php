@@ -58,26 +58,26 @@ class Event extends EventsAppModel {
  */
 	public $belongsTo = array(
 		'EventSchedule' => array(
-			'className' => 'EventSchedule',
+			'className' => 'Events.EventSchedule',
 			'foreignKey' => 'event_schedule_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
 		),
-		'Creator' => array(
-			'className' => 'Creator',
-			'foreignKey' => 'creator_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
-		'Modifier' => array(
-			'className' => 'Modifier',
-			'foreignKey' => 'modifier_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		)
+//		'Creator' => array(
+//			'className' => 'Users.Creator',
+//			'foreignKey' => 'creator_id',
+//			'conditions' => '',
+//			'fields' => '',
+//			'order' => ''
+//		),
+//		'Modifier' => array(
+//			'className' => 'Users.Modifier',
+//			'foreignKey' => 'modifier_id',
+//			'conditions' => '',
+//			'fields' => '',
+//			'order' => ''
+//		)
 	);
 
 /**
@@ -87,7 +87,7 @@ class Event extends EventsAppModel {
  */
 	public $hasMany = array(
 		'EventVenue' => array(
-			'className' => 'EventVenue',
+			'className' => 'Events.EventVenue',
 			'foreignKey' => 'event_id',
 			'dependent' => false,
 			'conditions' => '',
@@ -109,10 +109,10 @@ class Event extends EventsAppModel {
  */
 	public $hasAndBelongsToMany = array(
 		'Guest' => array(
-			'className' => 'Guest',
+			'className' => 'Events.EventsGuests',
 			'joinTable' => 'events_guests',
 			'foreignKey' => 'event_id',
-			'associationForeignKey' => 'guest_id',
+			'associationForeignKey' => 'user_id',
 			'unique' => 'keepExisting',
 			'conditions' => '',
 			'fields' => '',
