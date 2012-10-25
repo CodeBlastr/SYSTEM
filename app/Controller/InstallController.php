@@ -1,7 +1,12 @@
 <?php
 App::uses('CakeSchema', 'Model');
 
-class InstallController extends AppController {
+/**
+ * Install Controller
+ * 
+ * Note: that we extend controller and NOT AppController
+ */
+class InstallController extends Controller {
 
 	public $name = 'Install';
     public $uses = array();
@@ -10,6 +15,7 @@ class InstallController extends AppController {
 	public $options;
 	public $config;
 	public $allowedActions = array('index', 'site', 'login', 'plugin');
+	//public $components = array('Auth', 'Session');
 
 /**
  * Schema class being used.
@@ -19,7 +25,7 @@ class InstallController extends AppController {
 	public $Schema;
 
 	public function __construct($request = null, $response = null) {
-
+		
 		parent::__construct($request, $response);
 
 		$this->_handleSitesDirectory();
@@ -80,23 +86,25 @@ class InstallController extends AppController {
  */
 	protected function _handleInputVars($data) {
 		$this->options['siteName'] = $this->request->data['Install']['site_name'];
-		if (strpos($this->request->data['Install']['site_domain'], ',')) :
+		if (strpos($this->request->data['Install']['site_domain'], ',')) {
 			# comma separated domain handler
 			$this->siteDomains = array_map('trim', explode(',', $this->request->data['Install']['site_domain']));
 			$this->options['siteDomain'] = $this->siteDomains[0];
-		else :
+		} else {
 			$this->options['siteDomain'] = $this->request->data['Install']['site_domain'] == 'mydomain.com' ? '' : $this->request->data['Install']['site_domain'];
-		endif;
+		}
+		
 		$this->config['datasource'] = 'Database/Mysql';
 		$this->config['host'] = $data['Database']['host'];
 		$this->config['login'] = $data['Database']['username'];
 		$this->config['password'] = $data['Database']['password'];
 		$this->config['database'] = $data['Database']['name'];
 		$this->newDir = ROOT.DS.'sites'.DS.$this->options['siteDomain'];
-		if (is_dir($this->newDir)) :
+		
+		if (is_dir($this->newDir)) {
 			$this->Session->setFlash(__('That domain already exists, please try again.'));
 			$this->redirect($this->referer());
-		endif;
+		}
 	}
 
 	public function index() {
@@ -107,7 +115,7 @@ class InstallController extends AppController {
 		$unloadedPlugins = array_diff(CakePlugin::loaded(), $currentlyLoadedPlugins);
 
 		foreach ($unloadedPlugins as $unloadedPlugin) {
-			# unload the plugins just loaded
+			// unload the plugins just loaded
 			CakePlugin::unload($unloadedPlugin);
 		}
 
@@ -166,7 +174,7 @@ class InstallController extends AppController {
 	public function site() {
 		$this->_handleSecurity();
 		if (!empty($this->request->data)) {
-			# move everything here down to its own function
+			// move everything here down to its own function
 			$this->_handleInputVars($this->request->data);
 
 			try {
@@ -236,10 +244,22 @@ class InstallController extends AppController {
 		App::uses('Setting', 'Model');
 		$Setting = new Setting;
 		if ($Setting->writeSettingsIniData()) {
-
+			
 			// get the user from the install data
 			App::uses('User', 'Users.Model');
 			$User = new User;
+
+			if (!empty($this->request->data)) {
+				$this->request->data['User']['last_login'] = date('Y-m-d h:i:s');
+				if ($User->add($this->request->data)) {
+					$this->Session->write('Auth.redirect', null);
+					$this->Session->setFlash(__('Install completed! Please test the admin login you just created.'));
+					$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+				} else {
+					$this->Session->setFlash(__('User update failure.'));
+				}
+			}
+
 			$user = $User->find('first', array(
 				'conditions' => array(
 					'User.username' => 'admin',
@@ -256,18 +276,6 @@ class InstallController extends AppController {
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'my'));
 			}
 
-
-			if (!empty($this->request->data)) {
-				$this->request->data['User']['last_login'] = date('Y-m-d h:i:s');
-				if ($User->add($this->request->data)) {
-					$this->Session->write('Auth.redirect', null);
-					$this->Session->setFlash(__('Install completed! Please test the admin login you just created.'));
-					$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
-				} else {
-					$this->Session->setFlash(__('User update failure.'));
-					$this->redirect($this->referer());
-				}
-			}
 		} else {
 			$this->Session->setFlash(__('Required settings, update failed.'));
 			$this->redirect($this->referer());

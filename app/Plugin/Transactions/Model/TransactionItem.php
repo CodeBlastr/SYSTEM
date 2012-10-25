@@ -165,5 +165,4 @@ class TransactionItem extends TransactionsAppModel {
         return Set::merge(array('incart' => 'In Cart', 'paid' => 'Paid', 'shipped' => 'Shipped'), $statuses);
     }
     
-    
 }
