@@ -36,7 +36,7 @@ if (empty($runUpdates)) { ?>
     
     <div class="masonry">
         <div class="masonryBox tagPages">
-            <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'page_content')); ?></h3>
+            <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>View, edit, delete, and create static content pages with text, graphics, video and/or audio. </p>
         </div>
         
@@ -51,7 +51,7 @@ if (empty($runUpdates)) { ?>
         
         <?php if (in_array('Media', CakePlugin::loaded())) { ?>
         <div class="masonryBox tagMedia tagThemes">
-            <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'page_content')); ?></h3>
+            <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>Edit, delete, and create images, documents, audio and video. </p>
             <ul>
                 <li><?php echo $this->Html->link('Media Plugin', array('plugin' => 'media', 'controller' => 'media', 'action' => 'index')); ?></li>

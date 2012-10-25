@@ -32,7 +32,6 @@ body {
     width: 1170px;
     font-size: 15px;
     line-height: 40px;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 } 
 #adminNavFloManagr .navbar-inner div {
 	display: inline-block;
@@ -48,6 +47,9 @@ body {
 #adminNavFloManagr ul li {
 	display: inline-block;
 	margin-right: 15px;
+}
+#adminNavFloManagr ul li a {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 #adminNavFloManagr ul.pull-right {
 	float: right;
