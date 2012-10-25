@@ -1,5 +1,5 @@
 <?php 
-# setup defaults
+// setup defaults
 $indexCount = empty($indexCount) ? 1 : $indexCount;
 $modelName = !empty($modelName) ? $modelName : Inflector::classify($this->request->params['controller']); // ContactPerson
 $pluginName = !empty($pluginName) ? $pluginName : ZuhaInflector::pluginize($modelName); // contacts
@@ -25,7 +25,7 @@ if (!empty($data)) {
     <?php
 $i = 0;
 foreach ($data as $dat) {
-	# individual record defaults
+	// individual record defaults
 	if (!empty($showGallery)) { 
 		$galleryForeignKey = !empty($showGallery) ? $dat[$galleryModelAlias][$galleryForeignKeyField] : null;
 		$galleryModelName = !empty($galleryModelField) ? $dat[$galleryModelAlias][$galleryModelField] : $galleryModelName;
@@ -34,13 +34,13 @@ foreach ($data as $dat) {
 	$id = !empty($dat[$modelName][$displayId]) ? $dat[$modelName][$displayId] : null;
 	unset($dat[$modelName][$displayId]);
 	
-	# name can be a field_name or a Model.field_name format
+	// name can be a field_name or a Model.field_name format
 	$nameModel = strpos($displayName, '.') ? substr($displayName, 0, strpos($displayName, '.')) : $modelName;
 	$displayNameField = strpos($displayName, '.') ? substr($displayName, strpos($displayName, '.') + 1) : $displayName;
 	$name = !empty($dat[$nameModel][$displayNameField]) ? $dat[$nameModel][$displayNameField] : null;
 	unset($dat[$nameModel][$displayNameField]);
 	
-	# description can be a field_name or a Model.field_name format
+	// description can be a field_name or a Model.field_name format
 	$descriptionModel = strpos($displayDescription, '.') ? substr($displayDescription, 0, strpos($displayDescription, '.')) : $modelName;
 	$displayDescriptionField = strpos($displayDescription, '.') ? substr($displayDescription, strpos($displayDescription, '.') + 1) : $displayDescription;
 	$description = !empty($dat[$descriptionModel][$displayDescriptionField]) ? $dat[$descriptionModel][$displayDescriptionField] : null;
@@ -60,22 +60,21 @@ foreach ($data as $dat) {
 	$class = null;
 	if ($i++ % 2 == 0) {
 		$class = ' altrow';
-	}
-?>
+	} ?>
     <div class="indexRow <?php echo $class;?>" id="row<?php echo $id; ?>">
       <div class="indexCell imageCell"> <span><?php echo !empty($showGallery) ? $this->Element('thumb', array('model' => $galleryModelName, 'foreignKey' => $galleryForeignKey, 'showDefault' => 'false', 'thumbSize' => $galleryThumbSize, 'thumbLink' => $galleryViewUrl, 'thumbLinkOptions' => $galleryViewUrlOptions), array('plugin' => 'galleries')) : null; ?> </span> </div>
       <div class="indexCell metaCell">
         <ul class="metaData">
           <?php 
 		  foreach($dat[$modelName] as $keyName => $keyValue) {
-			# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
+			// this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
 			$_keyName = $keyName;
 			$humanKeyName = Inflector::humanize(str_replace('_id', '', $keyName)); 
 			$keyName = str_replace(' ', '', Inflector::humanize(str_replace('_id', '', $keyName))); 
        		if(strpos($_keyName, '_') && !empty($dat[$modelName][str_replace(' ', '', $keyName)]) && is_array($dat[$modelName][str_replace(' ', '', $keyName)])) { 
 				
 			} else {
-				# over write the keyValue if its belongsTo associated record to display (ie. assignee_id = full_name)
+				// over write the keyValue if its belongsTo associated record to display (ie. assignee_id = full_name)
 				if (!empty($associations) && array_key_exists($keyName, $associations)) {
 					$displayField = $associations[Inflector::humanize(str_replace('_id', '', $keyName))]['displayField'];
 					# this is for support of a third level deep of contain (anything beyond this is just too much for a scaffold!!!)
@@ -83,7 +82,7 @@ foreach ($data as $dat) {
 						$dat[$modelName][$keyName][$displayField] : 
 						(!empty($dat[$keyName][$displayField]) ? $dat[$keyName][$displayField] : null); 
 				}
-				# if its a date parse it into words
+				// if its a date parse it into words
 				$keyDate = strtotime($keyValue);
 				if (!empty($keyDate)) {
 					$keyValue = $this->Time->timeAgoInWords($keyValue); 
@@ -108,7 +107,7 @@ foreach ($data as $dat) {
         </div>
         <?php } 
 	  	if (isset($actions) && $actions === false) {
-		  # show nothing 
+		  // show nothing 
 		} else { ?>
         <div class="indexCell actionCell">
           <div class="drop-holder indexDrop actions">
@@ -132,33 +131,10 @@ foreach ($data as $dat) {
 		} // end actions false check ?>
       </div>
     </div>
-    <?php
-	/* used for ajax editing
-	# needs to be here because it has to be before the forech ends
-	$editFields[] =  array(
-		'name' => $displayDescription,
-		'tagId' => $id,
-		'plugin' => $pluginName,
-		'controller' => $controller,
-		'fieldId' => 'data['.$modelName.'][id]',
-		'fieldName' => 'data['.$modelName.']['.$displayDescription.']',
-		'type' => 'text'
-		);
-	foreach($dat[$modelName] as $keyName => $keyValue) {
-		$editFields[] =  array(
-			'name' => $keyName,
-			'tagId' => $id,
-			'plugin' => $pluginName,
-			'controller' => $controller,
-			'fieldId' => 'data['.$modelName.'][id]',
-			'fieldName' => 'data['.$modelName.']['.$keyName.']',
-			'type' => 'text'  
-			);
-	}*/
+<?php
 } // end individual data items loop ?>
   </div>
-  <?php 
-  echo $this->Element('paging'); ?>
+  <?php echo $this->Element('paging'); ?>
 </div>
 
 
@@ -167,17 +143,6 @@ foreach ($data as $dat) {
 
 
 <?php 
-/* these are pagination sorting links and should not be compbined with action links (make a drop down or something) 
-<div id="<?php echo $modelName; ?>Actions" class="index actions">
-  <ul class="drop">
-    <li class="actionHeading"><?php echo __('Sort by');?></li>
-    <?php foreach ($data[0][$modelName] as $keyName => $keyValue) :  
-	   if ($keyName != 'id' && $keyName != 'displayName' && $keyName != 'displayDescription') : ?>
-    <li class="actionItem"><?php echo $this->Paginator->sort($keyName, array(), array('class' => 'sort'));?></li>
-    <?php endif; endforeach; ?>
-  </ul>
-</div> */ 
-
 	if (!empty($pageActions)) {
 		foreach ($pageActions as $pageAction) { 
 			$pageActionLinks[] = $this->Html->link($pageAction['linkText'], $pageAction['linkUrl']);
@@ -185,7 +150,7 @@ foreach ($data as $dat) {
 	}  // end pageActions 
 
 
-# echo $this->Element('ajax_edit',  array('editFields' => $editFields)); 
+// echo $this->Element('ajax_edit',  array('editFields' => $editFields)); 
 } else {
 # Don't show anything rom the index, show a default message  
 # pulled as an element called start, from the plugin folder you're in. ?>

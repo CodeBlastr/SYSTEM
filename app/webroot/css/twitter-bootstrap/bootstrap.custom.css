@@ -122,6 +122,14 @@
 	left: 10px;
 }
 
+/* top nav */
+.navbar ul {
+	margin: 0;
+}
+.navbar li {
+	list-style-type: none;
+}
+
 
 /* tablet wide */
 @media (max-width:1200px){
