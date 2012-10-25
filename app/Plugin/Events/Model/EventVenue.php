@@ -83,20 +83,20 @@ class EventVenue extends EventsAppModel {
 			'fields' => '',
 			'order' => ''
 		),
-		'Creator' => array(
-			'className' => 'Creator',
-			'foreignKey' => 'creator_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
-		'Modifier' => array(
-			'className' => 'Modifier',
-			'foreignKey' => 'modifier_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		)
+//		'Creator' => array(
+//			'className' => 'Creator',
+//			'foreignKey' => 'creator_id',
+//			'conditions' => '',
+//			'fields' => '',
+//			'order' => ''
+//		),
+//		'Modifier' => array(
+//			'className' => 'Modifier',
+//			'foreignKey' => 'modifier_id',
+//			'conditions' => '',
+//			'fields' => '',
+//			'order' => ''
+//		)
 	);
 
 /**
