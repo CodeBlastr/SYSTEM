@@ -1,2 +1,0 @@
-Transactions-Zuha-Cakephp-Plugin
-================================
