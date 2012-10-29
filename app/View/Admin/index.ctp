@@ -30,6 +30,7 @@ if (empty($runUpdates)) { ?>
         <a href="#tagMedia" class="filterClick btn">Media</a>
         <?php if (in_array('Comments', CakePlugin::loaded())) { ?><a href="#tagDiscussion" class="filterClick btn">Discussion</a><?php } ?>
         <a href="#tagThemes" class="filterClick btn">Themes</a>
+        <a href="#tagContacts" class="filterClick btn">Contacts</a>
         <a href="#tagProjects" class="filterClick btn">Projects</a>
         <a href="#tagAdmin" class="filterClick btn">Settings</a>
     </div>
@@ -152,6 +153,11 @@ if (empty($runUpdates)) { ?>
             <p>Check for updates, install plugins, and  generally improve your site system.
             <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index')); ?></p>
 			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Upgrade.all', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
+        </div>
+        
+        <div class="masonryBox tagContacts tagAdmin">
+            <h3><i class="icon-globe"></i> <?php echo $this->Html->link('Contacts', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'index')); ?> </h3>
+            <p>A customer relationship management tool.  Manage your leads, clients, track activities, create opportunities, and get more sales.</p>
         </div>
         
         <?php if (in_array('Projects', CakePlugin::loaded())) { ?>

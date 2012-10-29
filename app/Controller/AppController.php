@@ -492,7 +492,7 @@ class AppController extends Controller {
 			// this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
 		} else if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
-			break;if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
+			if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
 				// this elseif checks to see if the user role has a specific view file
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
 				unset($this->request->params['prefix']);
@@ -506,7 +506,6 @@ class AppController extends Controller {
 				$this->redirect($this->referer());
 			}
 		} else if (!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) {
-			break;
 			foreach (App::path('views') as $path) {
 				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'View', DS.'Plugin'.DS.ucfirst($this->request->params['plugin']).DS.'View', $path) : $path;
 			} // end app::path loop

@@ -165,11 +165,11 @@ class ContactsController extends ContactsAppController {
 		$employers = $this->Contact->Employer->findCompanies('list');
 		$people = $this->Contact->Employer->findPeople('list');
 		$this->request->data['Employer']['Employer'] = !empty($contactId) ? $contactId : null;
-		$contacts = Zuha::enum('CONTACTTYPE');
-		$contactTypes = Zuha::enum('CONTACTTYPE');
-		$contactSources = Zuha::enum('CONTACTSOURCE');
-		$contactIndustries = Zuha::enum('CONTACTINDUSTRY');
-		$contactRatings = Zuha::enum('CONTACTRATING');
+		
+		$contactTypes = $this->Contact->types();
+		$contactSources = $this->Contact->sources();
+		$contactIndustries = $this->Contact->industries();
+		$contactRatings = $this->Contact->ratings();
 		$contactDetailTypes = $this->Contact->ContactDetail->types();
 			
 		$this->set(compact('employers', 'people', 'contactDetailTypes', 'contactTypes', 'contactSources', 'contactIndustries', 'contactRatings'));
