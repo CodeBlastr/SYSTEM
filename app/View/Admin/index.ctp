@@ -30,6 +30,7 @@ if (empty($runUpdates)) { ?>
         <a href="#tagMedia" class="filterClick btn">Media</a>
         <?php if (in_array('Comments', CakePlugin::loaded())) { ?><a href="#tagDiscussion" class="filterClick btn">Discussion</a><?php } ?>
         <a href="#tagThemes" class="filterClick btn">Themes</a>
+        <a href="#tagProjects" class="filterClick btn">Projects</a>
         <a href="#tagAdmin" class="filterClick btn">Settings</a>
     </div>
     
@@ -152,6 +153,23 @@ if (empty($runUpdates)) { ?>
             <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index')); ?></p>
 			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Upgrade.all', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
         </div>
+        
+        <?php if (in_array('Projects', CakePlugin::loaded())) { ?>
+        <div class="masonryBox tagProjects tagTimesheets tagAdmin">
+            <h3><i class="icon-globe"></i> <?php echo $this->Html->link('Projects', array('plugin' => 'projects', 'controller' => 'projects', 'action' => 'index')); ?> </h3>
+            <p>Setup projects, with messages, tasks, people and track time.</p>
+            <ul>
+                <li><?php echo $this->Html->link('Timesheets', array('plugin' => 'timesheets', 'controller' => 'timesheets', 'action' => 'index')); ?></li>
+            </ul>
+        </div>
+        <?php } ?>
+        
+        <?php if (in_array('Tasks', CakePlugin::loaded())) { ?>
+        <div class="masonryBox tagProjects tagTasks tagAdmin">
+            <h3><i class="icon-globe"></i> <?php echo $this->Html->link('Tasks', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'my')); ?> </h3>
+            <p>See and manage all to-do tasks whether they're for a project a contact or anything else.</p>
+        </div>
+        <?php } ?>
         
     </div>
 

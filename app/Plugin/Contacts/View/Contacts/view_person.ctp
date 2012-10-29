@@ -1,6 +1,5 @@
 <div class="contacts view">
 	
-	<h1><?php echo $contact['Contact']['name']; ?></h1>
 	<ul data-role="listview" data-inset="true">
 		<?php
 		if (!empty($contact['Employer'][0])) { ?>
