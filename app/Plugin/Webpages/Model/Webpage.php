@@ -26,7 +26,12 @@ class Webpage extends WebpagesAppModel {
  * Validate
  */
 	public $validate = array(
-		'name' => array('notempty'),
+		'name' => array(
+			'notempty' => array(
+				'rule' => 'notempty',
+				'message' => 'Name field is required.',
+				)
+			)
 		);
 	
 /**
@@ -173,7 +178,7 @@ class Webpage extends WebpagesAppModel {
 			} 
 			return true;
 		} else {
-			throw new Exception(__d('webpages', 'Save failed.', true));
+			throw new Exception(__('Save failed.'));
 		}
 		/* Revisit this because I could not find where the function is, and it could be made better 
 		with having it possible to restrict user roles or available to only certain user roles
@@ -297,8 +302,9 @@ class Webpage extends WebpagesAppModel {
 			}
 
 		// remove the div.global_edit_area's if this user is not userRoleId = 1
-		if ($userRoleId !== '1')
+		if ($userRoleId !== '1') {
 		    $include_container = array('start' => '', 'end' => '');
+		}
 
 		$webpage2 = $this->find("first", array(
 		    "conditions" => array("Webpage.id" => trim($matches[2][$i])),
@@ -312,40 +318,43 @@ class Webpage extends WebpagesAppModel {
 
 		if(!empty($webpage2['Child'])) {
 		    foreach($webpage2['Child'] as $child) {
-			$urls = unserialize(gzuncompress(base64_decode($child['template_urls'])));
-			if(!empty($urls)) {
-			    foreach($urls as $url) {
-				$urlString = str_replace('/', '\/', trim($url));
-				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
-				$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
-				$urlCompare = strpos($requestUrl, '/') === 0 ? substr($requestUrl, 1) : $requestUrl;
-
-				if (preg_match($urlRegEx, $urlCompare)) {
-				    $webpage2['Webpage'] = $child;
-				    break;
+				$urls = unserialize(gzuncompress(base64_decode($child['template_urls'])));
+				if(!empty($urls)) {
+					foreach($urls as $url) {
+						$urlString = str_replace('/', '\/', trim($url));
+						$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
+						$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
+						$urlCompare = strpos($requestUrl, '/') === 0 ? substr($requestUrl, 1) : $requestUrl;
+		
+						if (preg_match($urlRegEx, $urlCompare)) {
+							$webpage2['Webpage'] = $child;
+							break;
+						}
+	
+						if(!empty($aliasName)) {
+							if($aliasName[strlen($aliasName)-1] !== '/') {
+								$aliasName .= '/';
+							}
+							
+							$urlCompare = strpos($aliasName, '/') === 0 ? substr($aliasName, 1) : $aliasName;
+							
+							if (preg_match($urlRegEx, $urlCompare)) {
+								$webpage2['Webpage'] = $child;
+								break;
+							}
+						}
+					}
 				}
-
-				if(!empty($aliasName)) {
-				    if($aliasName[strlen($aliasName)-1] !== '/') $aliasName .= '/';
-				    $urlCompare = strpos($aliasName, '/') === 0 ? substr($aliasName, 1) : $aliasName;
-				    if (preg_match($urlRegEx, $urlCompare)) {
-					$webpage2['Webpage'] = $child;
-					break;
-				    }
-				}
-			    }
-			}
 		    }
 		}
 			
 		$this->parseIncludedPages($webpage2, $parents, $action, $userRoleId, $request);
-		if ($webpage['Webpage']['type'] == 'template') {
-		    $webpage["Webpage"]["content"] = str_replace($matches[0][$i], $include_container['start'] . $webpage2["Webpage"]["content"] . $include_container['end'], $webpage["Webpage"]["content"]);
-		} else {
-		    $webpage["Webpage"]["content"] = str_replace($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
-		    #debug($webpage2["Webpage"]["content"]);
-		}
-		#$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
+		
+			if ($webpage['Webpage']['type'] == 'template') {
+				$webpage["Webpage"]["content"] = str_replace($matches[0][$i], $include_container['start'] . $webpage2["Webpage"]["content"] . $include_container['end'], $webpage["Webpage"]["content"]);
+			} else {
+				$webpage["Webpage"]["content"] = str_replace($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
+			}
 	    }
 	}
 	
@@ -387,9 +396,18 @@ class Webpage extends WebpagesAppModel {
 		}		
 		
 		if (empty($data['Alias']['name'])) {
-			# remove the alias if the name is blank
+			// remove the alias if the name is blank
 			unset($data['Alias']);
-		}	
+		}
+		
+		if ($data['Webpage']['type'] == 'template') {
+			// correct the fiLEName to filename.ctp for templates
+			$data['Webpage']['name'] = strtolower(trim(preg_replace('/[^a-zA-Z0-9.]+/', '-', $data['Webpage']['name']), '-'));
+			if (!strpos($data['Webpage']['name'], '.ctp', strlen($data['Webpage']['name']) - 4)) {
+				$data['Webpage']['name'] = $data['Webpage']['name'] . '.ctp';
+			}
+			
+		}
 		
 		return $data;
 	}
