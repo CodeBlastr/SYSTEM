@@ -24,6 +24,11 @@ $(function() {
  * example:  <div class="toggleClick" data-target="#someId + .someClass">click to toggle</div>
  */
 	$(".toggleClick, .toggleHover, .showClick").css('cursor', 'pointer');
+	$(".toggleClick, .toggleHover, .showClick").each( function(index) {
+		var currentName = $(this).attr("data-target");
+		$(currentName).hide();
+	});
+	
 	$(".toggleClick").click(function (e) {
 		var currentName = $(this).attr('data-target');
 		$(currentName).toggle();
