@@ -11,7 +11,7 @@ class EventTestCase extends CakeTestCase {
  *
  * @var array
  */
-	public $fixtures = array('plugin.events.event', 'app.event_schedule', 'app.creator', 'app.modifier', 'app.event_venue', 'app.guest', 'app.events_guest');
+	public $fixtures = array('plugin.events.event', 'app.event_schedule', 'app.event_venue', 'app.guest', 'app.events_guest');
 
 /**
  * setUp method
