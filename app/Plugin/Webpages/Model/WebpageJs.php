@@ -1,4 +1,5 @@
 <?php
+App::uses('WebpagesAppModel', 'Webpages.Model');
 /**
  * WebpageJs Model
  * 
@@ -226,6 +227,28 @@ class WebpageJs extends WebpagesAppModel {
 		endif;
 			
 		return $data;
+	}
+	
+/**
+ * Template Content Results
+ * If there is a file, return the file contents instead of the db contents
+ * 
+ * @return array
+ */
+ 	protected function _jsContentResults($results) { 
+		App::uses('Folder', 'Utility');
+		App::uses('File', 'Utility');
+		if (!empty($results[0]['WebpageJs']['name'])) {
+			$dir = new Folder( $this->jsDirectory);
+			$file = $dir->find($results[0]['WebpageJs']['name']);
+			
+			if (!empty($file[0])) {
+				$file = new File($dir->path . $file[0]);
+				$results[0]['WebpageJs']['content'] = $file->read();				
+				$file->close(); // Be sure to close the file when you're done
+			}
+		}
+		return $results;
 	}
 	
 }

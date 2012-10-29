@@ -208,6 +208,9 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 		$('.closeEditor').click( function() {
 			offEditMode(true);
 		});
+		
+		$floManagrNav = $('.floManagrNav').detach();
+		$("body").prepend($floManagrNav);
 	});
 
 

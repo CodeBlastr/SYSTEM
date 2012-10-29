@@ -33,7 +33,7 @@ class WebpageJsesController extends WebpagesAppController {
 		
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', 'content'); 
-		$this->set('page_title_for_layout', 'Javascript Files');	
+		$this->set('page_title_for_layout', 'Javascript Files');
 	}
 
 	public function view($id = null) {
@@ -59,6 +59,7 @@ class WebpageJsesController extends WebpagesAppController {
 		}
 		$webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
 		$this->set(compact('webpages'));
+		$this->set('page_title_for_layout', 'Create Javascript File');
 	}
 
 	public function edit($id = null) {
@@ -85,7 +86,7 @@ class WebpageJsesController extends WebpagesAppController {
 		$webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
 		$this->set(compact('webpages'));
 		
-		$this->set('page_title_for_layout', $this->request->data['WebpageJs']['name']);	
+		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['WebpageJs']['name']));	
 	}
 
 	public function delete($id = null) {

@@ -30,13 +30,14 @@ if (empty($runUpdates)) { ?>
         <a href="#tagMedia" class="filterClick btn">Media</a>
         <?php if (in_array('Comments', CakePlugin::loaded())) { ?><a href="#tagDiscussion" class="filterClick btn">Discussion</a><?php } ?>
         <a href="#tagThemes" class="filterClick btn">Themes</a>
+        <a href="#tagProjects" class="filterClick btn">Projects</a>
         <a href="#tagAdmin" class="filterClick btn">Settings</a>
     </div>
     
     
     <div class="masonry">
         <div class="masonryBox tagPages">
-            <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'page_content')); ?></h3>
+            <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>View, edit, delete, and create static content pages with text, graphics, video and/or audio. </p>
         </div>
         
@@ -49,15 +50,17 @@ if (empty($runUpdates)) { ?>
             </ul>
         </div>
         
+        <?php if (in_array('Media', CakePlugin::loaded())) { ?>
         <div class="masonryBox tagMedia tagThemes">
-            <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'type' => 'page_content')); ?></h3>
+            <h3><i class="icon-th-large"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>Edit, delete, and create images, documents, audio and video. </p>
             <ul>
-                <?php if (in_array('Media', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Media Plugin', array('plugin' => 'media', 'controller' => 'media', 'action' => 'index')); ?></li><?php } ?>
+                <li><?php echo $this->Html->link('Media Plugin', array('plugin' => 'media', 'controller' => 'media', 'action' => 'index')); ?></li>
                 <li><?php echo $this->Html->link('Image Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
                 <li><?php echo $this->Html->link('Document Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
             </ul>
-        </div>        
+        </div>
+        <?php } ?> 
         
         <div class="masonryBox tagThemes">
             <h3><i class="icon-file"></i> <?php echo $this->Html->link('Appearance', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'template')); ?></h3>
@@ -68,8 +71,10 @@ if (empty($runUpdates)) { ?>
                 <li><?php echo $this->Html->link('Widget Elements', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'element')); ?></li>
                 <li><?php echo $this->Html->link('Css Styles', array('plugin' => 'webpages', 'controller' => 'webpage_csses', 'action' => 'index')); ?></li>
                 <li><?php echo $this->Html->link('Javascript', array('plugin' => 'webpages', 'controller' => 'webpage_jses', 'action' => 'index')); ?></li>
+                <?php if (in_array('Media', CakePlugin::loaded())) { ?>
                 <li><?php echo $this->Html->link('Image Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
                 <li><?php echo $this->Html->link('Document Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
+                <?php } ?>
             </ul>
         </div>
 		
@@ -148,6 +153,23 @@ if (empty($runUpdates)) { ?>
             <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index')); ?></p>
 			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Upgrade.all', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
         </div>
+        
+        <?php if (in_array('Projects', CakePlugin::loaded())) { ?>
+        <div class="masonryBox tagProjects tagTimesheets tagAdmin">
+            <h3><i class="icon-globe"></i> <?php echo $this->Html->link('Projects', array('plugin' => 'projects', 'controller' => 'projects', 'action' => 'index')); ?> </h3>
+            <p>Setup projects, with messages, tasks, people and track time.</p>
+            <ul>
+                <li><?php echo $this->Html->link('Timesheets', array('plugin' => 'timesheets', 'controller' => 'timesheets', 'action' => 'index')); ?></li>
+            </ul>
+        </div>
+        <?php } ?>
+        
+        <?php if (in_array('Tasks', CakePlugin::loaded())) { ?>
+        <div class="masonryBox tagProjects tagTasks tagAdmin">
+            <h3><i class="icon-globe"></i> <?php echo $this->Html->link('Tasks', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'my')); ?> </h3>
+            <p>See and manage all to-do tasks whether they're for a project a contact or anything else.</p>
+        </div>
+        <?php } ?>
         
     </div>
 

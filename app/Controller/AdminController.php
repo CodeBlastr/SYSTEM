@@ -56,6 +56,7 @@ class AdminController extends AppController {
 			$this->Session->setFlash(__('Update check complete!!!'));
 		}
 		$this->set('page_title_for_layout', 'Admin Dashboard');
+		$this->layout = 'default';
 	}
 	
 /**

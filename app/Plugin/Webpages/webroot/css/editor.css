@@ -1,24 +1,110 @@
-#headerNavFloManagr { display: none !important; }/*!
-/*!
- * Bootstrap v2.1.1
- *
- * Copyright 2012 Twitter, Inc
- * Licensed under the Apache License v2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Designed and built with all the love in the world @twitter by @mdo and @fat.
- */
+#headerNavFloManagr { display: none; }
+
+/* navbar */
+body {
+	position: relative !important;
+	top: 38px !important;
+}
+#adminNavFloManagr a, #adminNavFloManagr {
+	color: #FFF;
+	text-decoration: none;
+}
+#adminNavFloManagr a:hover {
+	color: #CCC;
+}
 #adminNavFloManagr.navbar {
-  overflow: visible !important;
-  margin-bottom: 20px !important;
-  color: #777777 !important;
-  *position: relative !important;
-  *z-index: 2 !important;
+  overflow: visible;
+  color: #777777;
+  *position: relative;
+  z-index: 100;
+  width: 100%;
+  background: #000;
 }
 #adminNavFloManagr.navbar-fixed-top {
 	position: fixed;
 	top: 0;
 }
+#adminNavFloManagr .btn-navbar {
+	display: none;
+}
+#adminNavFloManagr .navbar-inner, #adminNavFloManagr .navbar-inner .container {
+	margin: 0 auto;
+    width: 1170px;
+    font-size: 15px;
+    line-height: 40px;
+} 
+#adminNavFloManagr .navbar-inner div {
+	display: inline-block;
+}
+#adminNavFloManagr .navbar-inner .nav-collapse {
+	float: right;
+	width: 1020px;
+}
+#adminNavFloManagr ul {
+	display: inline-block;
+	position: relative;
+}
+#adminNavFloManagr ul li {
+	display: inline-block;
+	margin-right: 15px;
+}
+#adminNavFloManagr ul li a {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+#adminNavFloManagr ul.pull-right {
+	float: right;
+}
+#adminNavFloManagr ul li.dropdown ul.dropdown-menu {
+	display: none;
+}
+/* context menu */
+#adminNavFloManagr ul li ul.context_menu {
+	position: absolute;
+	top: 40px;
+	left: 0;
+	margin: 0;
+	width: 200px;
+	background: #CCC;
+	z-index: 100;
+	display: none;
+}
+#adminNavFloManagr ul li:hover ul.context_menu {
+	display: block;
+}
+#adminNavFloManagr ul li ul.context_menu li {
+	padding: 0;
+	display: block;
+	margin-right: 0;
+}
+#adminNavFloManagr ul li ul.context_menu li.divider {
+	background: white;
+	height: 1px;
+}
+#adminNavFloManagr ul li ul.context_menu li.nav-header {
+	background: #000;
+	color: #FFF;
+	padding: 0 10px;
+}
+#adminNavFloManagr ul li ul.context_menu li a {
+	color: #000;
+	display: block;
+	width: 180px;
+	height: 100%;
+	padding: 0 10px;
+}
+#adminNavFloManagr ul li ul.context_menu li.nav-item a {
+	color: #000;
+	display: block;
+	width: 160px;
+	height: 100%;
+	padding: 0 10px 0 30px;
+}
+#adminNavFloManagr ul li ul.context_menu a:hover {
+	color: #888;
+	background: white;
+}
+
+
 
 @media (max-width: 767px) {
 }
@@ -44,65 +130,65 @@
 
 /* editor */
 #background_layer {
-	position: fixed !important;
-	background-color: #666 !important;
-	opacity: 0.8 !important;
-	filter: alpha(opacity=70) !important;
-	top: 0px !important;
-	width: 100% !important;
-	height: 100% !important;
-	z-index: 99 !important;
+	position: fixed;
+	background-color: #666;
+	opacity: 0.8;
+	filter: alpha(opacity=70);
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 99;
 }
 .hover_div  {
-	min-height: 2em !important;
+	min-height: 2em;
 }
 .hover_include {
-	background-color: #FF9 !important;
-	border: 1px dashed #F00 !important;
-	filter: alpha(opacity=70) !important;
-	z-index: 99999 !important;
-	opacity: 0.7 !important;
-	position: absolute !important;/*border: 1px solid black !important;*/
+	background-color: #FF9;
+	border: 1px dashed #F00;
+	filter: alpha(opacity=70);
+	z-index: 99999;
+	opacity: 0.7;
+	position: absolute;/*border: 1px solid black;*/
     }
 .hover_include:before {
-	content: "Click to edit content." !important;
+	content: "Click to edit content.";
 }
 .global_edit_area .hover_include:before {
-	content: "Click to edit global box." !important;
+	content: "Click to edit global box.";
 }
 #modalEditorWrap {
-	position: fixed !important;
-	top: -5000px !important;
-	left: -5000px !important;
-	z-index: 100 !important;
-	width: 80% !important;
-	height: 60% !important;
+	position: fixed;
+	top: -5000px;
+	left: -5000px;
+	z-index: 100;
+	width: 80%;
+	height: 60%;
 }
 #modalEditorWrap #cke_modalEditor {
-	-webkit-box-shadow: 2px 2px 3px 0px #000000 !important;
-	-moz-box-shadow: 2px 2px 3px 0px #000000 !important;
-	box-shadow: 2px 2px 3px 0px #000000 !important;  
+	-webkit-box-shadow: 2px 2px 3px 0px #000000;
+	-moz-box-shadow: 2px 2px 3px 0px #000000;
+	box-shadow: 2px 2px 3px 0px #000000;  
 }
 #modalEditorWrap .closeEditor {
-	color: #000 !important;
-	font-size: 14px !important;
-	text-shadow: 1px 1px #fff !important;
-	cursor: pointer !important;
-	padding: 0em 0.2em 0 0em !important;
-	float: left !important;
-	margin: 0 0 0 -1em !important;
-	font-family: Verdana, Geneva, sans-serif !important;
+	color: #000;
+	font-size: 14px;
+	text-shadow: 1px 1px #fff;
+	cursor: pointer;
+	padding: 0em 0.2em 0 0em;
+	float: left;
+	margin: 0 0 0 -1em;
+	font-family: Verdana, Geneva, sans-serif;
 }
 #modalEditorWrap .handle {
-	font-size: 20px !important;
-	color: #999 !important;
-	text-shadow: 1px 1px #fff !important;
-	cursor:move !important;
-	padding: 0em 0.2em 0.2em 0.2em !important;
-	float: left !important;
-	clear: left !important;
-	margin: 0 0 0 -1em !important;
+	font-size: 20px;
+	color: #999;
+	text-shadow: 1px 1px #fff;
+	cursor:move;
+	padding: 0em 0.2em 0.2em 0.2em;
+	float: left;
+	clear: left;
+	margin: 0 0 0 -1em;
 }
 #modalEditorWrap .closeEditor:hover, #modalEditorWrap .handle:hover {
-	color: #C00 !important;
+	color: #C00;
 }
