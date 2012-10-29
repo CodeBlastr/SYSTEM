@@ -37,7 +37,7 @@
 	display: inline-block;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	max-width: 100px;
+	/*max-width: 100px; projects index looks better with this gone */
 	max-height: 20px;
 	margin-right: 10px;
 }
@@ -120,6 +120,22 @@
 	position: absolute;
 	top: -24px;
 	left: 10px;
+}
+
+/* buttons */
+.btn-group + .btn-group {
+	margin-left: 0;
+}
+.btn-group {
+	margin: 0 5px 1px 0;
+}
+
+/* top nav */
+.navbar ul {
+	margin: 0;
+}
+.navbar li {
+	list-style-type: none;
 }
 
 

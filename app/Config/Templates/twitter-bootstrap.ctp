@@ -21,7 +21,6 @@ body {
 <link rel="stylesheet" type="text/css" href="/css/twitter-bootstrap/bootstrap.custom.css" />
 {element: css}
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-<script type="text/javascript" src="/js/plugins/jquery.masonry.min.js"></script>
 <script type="text/javascript" src="/js/plugins/modernizr-2.6.1-respond-1.1.0.min.js"></script>
 {element: javascript}
 {element: webpages.analytics}

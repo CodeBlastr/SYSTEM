@@ -436,7 +436,7 @@ class Webpage extends WebpagesAppModel {
  * @todo put in unit testing for thie name thing
  */
  	protected function _saveTemplateFiles() {
-		if (!empty($this->data['Webpage']['name'])) {
+		if (!empty($this->data['Webpage']['name']) && $this->data['Webpage']['type'] == 'template') {
 			// if the name is empty that should mean that its coming from the file sync method and should not use this function
 			App::uses('Folder', 'Utility');
 			App::uses('File', 'Utility');
