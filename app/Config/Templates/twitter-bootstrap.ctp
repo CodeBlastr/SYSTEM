@@ -16,8 +16,7 @@ body {
 	padding-bottom: 40px;
 }
 </style>
-<link href="favicon.ico" type="image/x-icon" rel="icon" />
-<link href="favicon.ico" type="image/x-icon" rel="shortcut icon" />
+{element: favicon}
 <link rel="stylesheet" type="text/css" href="/css/twitter-bootstrap/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="/css/twitter-bootstrap/bootstrap.custom.css" />
 {element: css}
