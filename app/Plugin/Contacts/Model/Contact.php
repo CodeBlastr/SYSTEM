@@ -42,13 +42,6 @@ class Contact extends ContactsAppModel {
  * @var array
  */
 	public $belongsTo = array(
-		'ContactType' => array(
-			'className' => 'Enumeration',
-			'foreignKey' => 'contact_type',
-			'conditions' => array('ContactType.type' => 'CONTACT_TYPE'),
-			'fields' => '',
-			'order' => ''
-		),
 		'ContactSource' => array(
 			'className' => 'Enumeration',
 			'foreignKey' => 'contact_source',
@@ -331,12 +324,59 @@ class Contact extends ContactsAppModel {
 		return $data;
 	}
 
+/**
+ * Types of contacts
+ *
+ * @return array
+ */
     public function types() {
         $types = array();
         foreach (Zuha::enum('CONTACT_TYPE') as $type) {
             $types[Inflector::underscore($type)] = $type;
         }
         return array_merge(array('lead' => 'Lead'), $types);
+    }
+
+
+/**
+ * Sources for contacts
+ *
+ * @return array
+ */
+    public function sources() {
+        $sources = array();
+        foreach (Zuha::enum('CONTACT_SOURCE') as $source) {
+            $sources[Inflector::underscore($source)] = $source;
+        }
+        return $sources;
+    }
+
+
+/**
+ * Industries for contacts
+ *
+ * @return array
+ */
+    public function industries() {
+        $industries = array();
+        foreach (Zuha::enum('CONTACT_INDUSTRY') as $industry) {
+            $industries[Inflector::underscore($industry)] = $industry;
+        }
+        return $industries;
+    }
+
+
+/**
+ * Ratings for contacts
+ *
+ * @return array
+ */
+    public function ratings() {
+        $ratings = array();
+        foreach (Zuha::enum('CONTACT_RATING') as $rating) {
+            $ratings[Inflector::underscore($rating)] = $rating;
+        }
+        return array_merge(array('hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold'), $ratings);
     }
 
 }
