@@ -195,12 +195,14 @@ class ContactsController extends ContactsAppController {
 			$this->request->data = $this->Contact->read(null, $id);
 		}
 		$contactTypes = $this->Contact->types();
-		$contactSources = $this->Contact->ContactSource->find('list');
-		$contactIndustries = $this->Contact->ContactIndustry->find('list');
-		$contactRatings = $this->Contact->ContactRating->find('list');
+		$contactSources = $this->Contact->sources();
+		$contactIndustries = $this->Contact->industries();
+		$contactRatings = $this->Contact->ratings();
 		$users = $this->Contact->User->find('list');
+		$assignees = $users; // save a db call
 		
-		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users'));
+		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['Contact']['name']));
+		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users', 'assignees'));
 	}
 
 	public function delete($id = null) {
@@ -325,6 +327,14 @@ class ContactsController extends ContactsAppController {
 	}
 	
 	public function dashboard() {
+		$this->Contact->fixTypes(); // a temporary fix for updating some database values;
+		
+		// the needs attention, new leads box
+		$this->set('leads', $this->Contact->leads());
+		
+		// leads over time
+		$this->set('leadGroups', $this->Contact->leadGroups());
+		
+		$this->set('page_title_for_layout', 'CRM Dashboard');
 	}
 }
-?>
