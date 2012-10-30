@@ -12,19 +12,19 @@
     <?php echo __('Label this contact, for sorting?');?>
     </legend>
     <?php
-	 echo $this->Form->input('Contact.contact_type_id', array('empty'=>true, 'label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_TYPE'), array('class' => 'dialog', 'title' => 'Edit Type List'))));
-	 echo $this->Form->input('Contact.contact_source_id', array('empty'=>true, 'label' => $this->Html->link(__('Source', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_SOURCE'), array('class' => 'dialog', 'title' => 'Edit Source List'))));
-	 echo $this->Form->input('Contact.contact_industry_id',array('empty'=>true, 'label' => $this->Html->link(__('Industry', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_INDUSTRY'), array('class' => 'dialog', 'title' => 'Edit Industry List'))));
-	 echo $this->Form->input('Contact.contact_rating_id', array('empty'=>true, 'label' => $this->Html->link(__('Rating', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_RATING'), array('class' => 'dialog', 'title' => 'Edit Rating List')))); ?>
+	 echo $this->Form->input('Contact.contact_type', array('default' => 'lead', 'label' => $this->Html->link(__('Type'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_TYPE'), array('class' => 'dialog', 'title' => 'Edit Type List'))));
+	 echo $this->Form->input('Contact.contact_rating', array('default' => 'hot', 'label' => $this->Html->link(__('Rating'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_RATING'), array('class' => 'dialog', 'title' => 'Edit Rating List'))));
+	 echo $this->Form->input('Contact.contact_source', array('empty'=>true, 'label' => $this->Html->link(__('Source'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_SOURCE'), array('class' => 'dialog', 'title' => 'Edit Source List'))));
+	 echo $this->Form->input('Contact.contact_industry',array('empty'=>true, 'label' => $this->Html->link(__('Industry'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_INDUSTRY'), array('class' => 'dialog', 'title' => 'Edit Industry List')))); ?>
   </fieldset>
   <fieldset>
     <legend class="toggleClick">
     <?php echo __('Log an activity for this contact?');?>
     </legend>
     <?php 
-	 echo $this->Form->input('ContactActivity.0.contact_activity_type_id', array('label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_ACTIVITY'), array('class' => 'dialog', 'title' => 'Edit Activity Types')))); 
-	 echo $this->Form->input('ContactActivity.0.name', array('label' => 'Subject')); 
-	 echo $this->Form->input('ContactActivity.0.description'); ?>
+	 echo $this->Form->input('Activity.0.model', array('type' => 'hidden', 'value' => 'Contact')); 
+	 echo $this->Form->input('Activity.0.name', array('label' => 'Subject')); 
+	 echo $this->Form->input('Activity.0.description', array('type' => 'richtext')); ?>
   </fieldset>
   
   <fieldset>

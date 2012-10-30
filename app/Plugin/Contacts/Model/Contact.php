@@ -171,6 +171,21 @@ class Contact extends ContactsAppModel {
 				'counterQuery' => ''
 			);
 		}
+		if (in_array('Activities', CakePlugin::loaded())) {
+			$this->hasMany['Activity'] = array(
+				'className' => 'Activities.Activity',
+				'foreignKey' => 'foreign_key',
+				'dependent' => true,
+				'conditions' => array('Activity.model' => 'Contact'),
+				'fields' => '',
+				'order' => '',
+				'limit' => '',
+				'offset' => '',
+				'exclusive' => '',
+				'finderQuery' => '',
+				'counterQuery' => ''
+			);
+		}
     }
 
 /**
@@ -242,8 +257,8 @@ class Contact extends ContactsAppModel {
 				'Contact.is_company' => 0,
 				),
 			));
-		# I could contain Relator here, but I want to preserve the $type attributes
-		# so we do an extra query to get the companies.
+		// I could contain Relator here, but I want to preserve the $type attributes
+		// so we do an extra query to get the companies.
 		$companies = $this->ContactsContact->find('all', array(
 			'conditions' => array(
 				'ContactsContact.child_contact_id' => array_flip($people),
@@ -263,7 +278,7 @@ class Contact extends ContactsAppModel {
  * @return array
  */
 	protected function _cleanContactData($data) {
-		# if id is here, then merge the data with the existing data (new data over writes old)
+		// if id is here, then merge the data with the existing data (new data over writes old)
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->find('first', array(
 				'conditions' => array(
@@ -278,7 +293,7 @@ class Contact extends ContactsAppModel {
 			unset($data['Contact']['modified']);
 		}
 
-		# if employer is not empty merge all employers so that we don't lose any existing employers in the Habtm update
+		// if employer is not empty merge all employers so that we don't lose any existing employers in the Habtm update
 		if (!empty($data['Employer'])) {
 			$mergedEmployers = Set::merge(Set::extract('/id', $data['Employer']), $data['Employer']['Employer']);
 			unset($data['Employer']);
@@ -311,16 +326,6 @@ class Contact extends ContactsAppModel {
 			}
 		}
 		
-		// remove empty contact activity values, because the form sets the array which makes a save attempt
-		if (!empty($data['ContactActivity'][0])) {
-			$i = 0;
-			foreach ($data['ContactActivity'] as $detail) {
-				if (empty($detail['name'])) {
-					unset($data['ContactActivity'][$i]);
-				}
-				$i++;
-			}
-		}
 		return $data;
 	}
 
@@ -376,7 +381,7 @@ class Contact extends ContactsAppModel {
         foreach (Zuha::enum('CONTACT_RATING') as $rating) {
             $ratings[Inflector::underscore($rating)] = $rating;
         }
-        return array_merge(array('hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold'), $ratings);
+        return array_merge(array('active' => 'Active', 'hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold'), $ratings);
     }
 
 }
