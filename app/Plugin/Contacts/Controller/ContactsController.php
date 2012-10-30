@@ -199,8 +199,9 @@ class ContactsController extends ContactsAppController {
 		$contactIndustries = $this->Contact->industries();
 		$contactRatings = $this->Contact->ratings();
 		$users = $this->Contact->User->find('list');
+		$assignees = $users; // save a db call
 		
-		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users'));
+		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users', 'assignees'));
 	}
 
 	public function delete($id = null) {
