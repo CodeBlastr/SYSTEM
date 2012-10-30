@@ -1,8 +1,6 @@
 <div class="contacts form">
 <?php echo $this->Form->create('Contact');?>
-	<h2><?php echo __('Edit %s', $this->request->data['Contact']['name']); ?></h2>
 	<fieldset>
- 		<legend></legend>
 		<?php
 		echo $this->Form->input('Contact.id');
 		echo $this->Form->input('Contact.name');
@@ -15,11 +13,12 @@
 			}
 			echo '</ul>';
 		}
+		echo $this->Form->input('Contact.assignee_id', array('empty' => '-- Select --', 'label' => 'Assigned to'));
 		echo $this->Form->input('Contact.contact_type', array('empty' => '-- Select --', 'label' => 'Type'));
 		echo $this->Form->input('Contact.contact_source_id', array('empty' => '-- Select --', 'label' => 'Source'));
 		echo $this->Form->input('Contact.contact_industry_id', array('empty' => '-- Select --', 'label' => 'Industry'));
 		echo $this->Form->input('Contact.contact_rating_id', array('empty' => '-- Select --', 'label' => 'Rating'));
-		echo !empty($this->request->data['Contact']['user_id']) ? $this->Form->input('Contact.user_id', array('empty' => '-- Select User --')) : null;
+		echo $this->Form->input('Contact.user_id', array('empty' => '-- Select User --'));
 		echo $this->Form->input('Contact.is_company'); ?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
