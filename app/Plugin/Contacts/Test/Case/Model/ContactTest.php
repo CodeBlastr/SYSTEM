@@ -13,6 +13,8 @@ class ContactTestCase extends CakeTestCase {
  */
 	public $fixtures = array(
         'plugin.activities.activity',
+        'plugin.tasks.task',
+        'plugin.estimates.estimate',
         );
 
 /**
@@ -43,10 +45,18 @@ class ContactTestCase extends CakeTestCase {
  */
 	public function testAdd() {
 		$data['Contact']['name'] = 'Fake Name';
+		$data['Contact']['contact_type'] = 'lead';
+		$data['Contact']['contact_rating'] = 'hot';
+		$data['Contact']['contact_source'] = 'form';
+		$data['Contact']['contact_industry'] = 'construction';
 		$this->Contact->add($data);
 		$result = $this->Contact->find('first', array('conditions' => array('Contact.id' => $this->Contact->id)));
 		
         $this->assertEqual($result['Contact']['name'], $data['Contact']['name']); // test that save occured
+        $this->assertEqual($result['Contact']['contact_type'], $data['Contact']['contact_type']); // test that meta fields work
+        $this->assertEqual($result['Contact']['contact_rating'], $data['Contact']['contact_rating']); // test that meta fields work
+        $this->assertEqual($result['Contact']['contact_source'], $data['Contact']['contact_source']); // test that meta fields work
+        $this->assertEqual($result['Contact']['contact_industry'], $data['Contact']['contact_industry']); // test that meta fields work
 	}
 
 /**
@@ -64,6 +74,55 @@ class ContactTestCase extends CakeTestCase {
 		
         $this->assertEqual($result['Contact']['name'], $data['Contact']['name']); // test that save occured
         $this->assertEqual($result['Activity'][0]['name'], $data['Activity'][0]['name']); // test that activity is included
+	}
+
+/**
+ * test Add With Task method
+ *
+ * @return void
+ */
+	public function testAddWithTask() {
+		$data['Contact']['name'] = 'Fake Name';
+		$data['Task'][0]['model'] = 'Contact';
+		$data['Task'][0]['name'] = 'Call back';
+		$data['Task'][0]['description'] = 'Loreum ipsume dolo imar.';
+		$data['Task'][0]['assignee_id'] = 33;
+		$data['Task'][0]['due_date'] = '2012-10-30';
+		$this->Contact->add($data);
+		$result = $this->Contact->find('first', array('conditions' => array('Contact.id' => $this->Contact->id), 'contain' => 'Task'));
+		
+        $this->assertEqual($result['Contact']['name'], $data['Contact']['name']); // test that save occured
+        $this->assertEqual($result['Task'][0]['name'], $data['Task'][0]['name']); // test that activity is included
+	}
+
+/**
+ * test Add With Estimate method
+ *
+ * @return void
+ */
+	public function testAddWithEstimate() {
+		$data['Contact']['name'] = 'Fake Name';
+		$data['Estimate'][0]['model'] = 'Contact';
+		$data['Estimate'][0]['total'] = '5000.00';
+		$this->Contact->add($data);
+		$result = $this->Contact->find('first', array('conditions' => array('Contact.id' => $this->Contact->id), 'contain' => 'Estimate'));
+		
+        $this->assertEqual($result['Contact']['name'], $data['Contact']['name']); // test that save occured
+        $this->assertEqual($result['Estimate'][0]['total'], $data['Estimate'][0]['total']); // test that activity is included
+	}
+
+/**
+ * test Add With Estimate method
+ *
+ * @return void
+ */
+	public function testAddWithLoggableLead() {
+		$data['Contact']['name'] = 'Fake Name';
+		$data['Contact']['contact_type'] = 'lead';
+		$this->Contact->add($data);
+		$result = $this->Contact->find('first', array('conditions' => array('Contact.id' => $this->Contact->id), 'contain' => 'Activity'));
+		
+        $this->assertEqual($result['Activity'][0]['foreign_key'], $this->Contact->id); // test that lead adding is logged
 	}
 	
 }
