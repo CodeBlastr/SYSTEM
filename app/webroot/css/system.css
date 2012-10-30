@@ -119,63 +119,6 @@ input[type=radio], input[type=checkbox] {
 	min-width: 0;
 }
 
-/* Transactions Plugin stuff 
- * the checkout page is two column by default */
-#transactionCartLeft {
-	float: left;
-	width: 48%;
-}
-#transactionCartRight {
-	float: right;
-	width: 48%;
-}
-
-.myCart fieldset {margin: 15px 0; background: rgba(255, 255, 255, 0.1); padding: 5px;}
-.myCart legend {font-weight: bold; font-size: 120%; font-variant: small-caps; letter-spacing: 1px;}
-
-.transactionItemInCart {
-  clear:both; margin: 15px 20px;
-}
-.transactionItemInCart .gallery-thumb {
-  display: inline-block;  margin-right: 10px;
-}
-
-input:-moz-placeholder, textarea:-moz-placeholder {
-    color: #999999;
-}
-.myCart form textarea, .myCart form input[type="text"], .myCart form input[type="password"], .myCart form input[type="datetime"], .myCart form input[type="datetime-local"], .myCart form input[type="date"], .myCart form input[type="month"], .myCart form input[type="time"], .myCart form input[type="week"], .myCart form input[type="number"], .myCart form input[type="email"], .myCart form input[type="url"], .myCart form input[type="search"], .myCart form input[type="tel"], .myCart form input[type="color"], .myCart form .uneditable-input {
-    background-color: #FFFFFF;
-    border: 1px solid #CCCCCC;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
-}
-.myCart form select, .myCart form textarea, .myCart form input[type="text"], .myCart form input[type="password"], .myCart form input[type="datetime"], .myCart form input[type="datetime-local"], .myCart form input[type="date"], .myCart form input[type="month"], .myCart form input[type="time"], .myCart form input[type="week"], .myCart form input[type="number"], .myCart form input[type="email"], .myCart form input[type="url"], .myCart form input[type="search"], .myCart form input[type="tel"], .myCart form input[type="color"], .myCart form .uneditable-input {
-    border-radius: 3px 3px 3px 3px;
-    color: #555555;
-    display: inline-block;
-    font-size: 14px;
-    height: 30px;
-    line-height: 20px;
-    margin-bottom: 9px;
-    padding: 4px 6px;
-}
-
-.myCart form select {
-    background-color: #FFFFFF;
-    border: 1px solid #CCCCCC;
-    width: 115px;
-}
-.myCart form select, .myCart form input[type="file"] {
-    height: 30px;
-    line-height: 30px;
-}
-.myCart form textarea:focus, .myCart form input[type="text"]:focus, .myCart form input[type="password"]:focus, .myCart form input[type="datetime"]:focus, .myCart form input[type="datetime-local"]:focus, .myCart form input[type="date"]:focus, .myCart form input[type="month"]:focus, .myCart form input[type="time"]:focus, .myCart form input[type="week"]:focus, .myCart form input[type="number"]:focus, .myCart form input[type="email"]:focus, .myCart form input[type="url"]:focus, .myCart form input[type="search"]:focus, .myCart form input[type="tel"]:focus, .myCart form input[type="color"]:focus, .myCart form .uneditable-input:focus {
-    border-color: rgba(228, 129, 52, 0.8);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(228, 129, 52, 0.6);
-    outline: 0 none;
-}
-#orderTransactionItems {background: rgba(255, 255, 255, 0.1); padding: 5px;}
-#shippingAddress {display: none;}
 
 /* Specific for invoices /invoices/invoices/add */
 .lineTotal {
