@@ -61,6 +61,7 @@ class ContactsSchema extends CakeSchema {
 		'contact_industry' => array('type' => 'string', 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'null' => true, 'default' => NULL),
 		'contact_rating' => array('type' => 'string', 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'null' => true, 'default' => NULL),
 		'user_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'key' => 'unique', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'assignee_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'key' => 'unique', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'is_company' => array('type' => 'boolean', 'null' => true, 'default' => '0'),
 		'creator_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'modifier_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),

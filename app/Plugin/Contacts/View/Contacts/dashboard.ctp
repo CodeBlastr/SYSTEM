@@ -1,15 +1,16 @@
-<div class="accordion">
-  <ul>
-    <li> <a href="#"><span>Contacts</span></a></li>
-  </ul>
-  <ul>
-    <li><?php echo $this->Html->link('Contacts', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'index')); ?></li>
-    <li>
-      <!--a href="/contacts/contacts/tasks"-->
-      Leads (coming soon)</li>
-    <li>
-      <!--a href="/contacts/contacts/messages/"-->
-      Activities (coming soon)</li>
-  </ul>
-
-</div>
+<?php echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false)); ?>
+  
+  
+  <div class="masonry contacts dashboard">
+        <div class="masonryBox tagLeads">
+            <h3><i class="icon-th-large"></i> Needs Your Attention Fast </h3>
+            <?php 
+			if (!empty($leads)) {
+				echo '<p>The latest incoming contacts, that have not been claimed yet.<ul>';
+				foreach ($leads as $lead) {
+					echo '<li>' . $this->Html->link('Assign', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'edit', $lead['Contact']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($lead['Contact']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $lead['Contact']['id'])) . ' ' . date('M d, Y', strtotime($lead['Contact']['created'])) . '</li>';
+				}
+				echo '</ul>';
+			} ?>
+        </div>
+  </div>

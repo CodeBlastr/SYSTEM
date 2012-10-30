@@ -195,9 +195,9 @@ class ContactsController extends ContactsAppController {
 			$this->request->data = $this->Contact->read(null, $id);
 		}
 		$contactTypes = $this->Contact->types();
-		$contactSources = $this->Contact->ContactSource->find('list');
-		$contactIndustries = $this->Contact->ContactIndustry->find('list');
-		$contactRatings = $this->Contact->ContactRating->find('list');
+		$contactSources = $this->Contact->sources();
+		$contactIndustries = $this->Contact->industries();
+		$contactRatings = $this->Contact->ratings();
 		$users = $this->Contact->User->find('list');
 		
 		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users'));
@@ -325,6 +325,21 @@ class ContactsController extends ContactsAppController {
 	}
 	
 	public function dashboard() {
+		$this->Contact->fixTypes(); // a temporary fix for updating some database values;
+		// the needs attention, new leads box
+		$leads = $this->Contact->find('all', array(
+			'conditions' => array(
+				'Contact.contact_type' => 'lead',
+				'Contact.assignee_id' => null, 
+				),
+			'limit' => 5,
+			'order' => array(
+				'Contact.created' => 'DESC',
+				),
+			));
+		$this->set('leads', $leads);
+		
+		
+		$this->set('page_title_for_layout', 'CRM Dashboard');
 	}
 }
-?>
