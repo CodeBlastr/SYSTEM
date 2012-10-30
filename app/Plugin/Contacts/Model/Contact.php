@@ -49,6 +49,13 @@ class Contact extends ContactsAppModel {
 			'fields' => '',
 			'order' => ''
 		),
+		'Assignee' => array(
+			'className' => 'Users.User',
+			'foreignKey' => 'assignee_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
 	);
 
 
