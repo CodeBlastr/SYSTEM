@@ -201,6 +201,7 @@ class ContactsController extends ContactsAppController {
 		$users = $this->Contact->User->find('list');
 		$assignees = $users; // save a db call
 		
+		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['Contact']['name']));
 		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users', 'assignees'));
 	}
 
@@ -327,19 +328,12 @@ class ContactsController extends ContactsAppController {
 	
 	public function dashboard() {
 		$this->Contact->fixTypes(); // a temporary fix for updating some database values;
-		// the needs attention, new leads box
-		$leads = $this->Contact->find('all', array(
-			'conditions' => array(
-				'Contact.contact_type' => 'lead',
-				'Contact.assignee_id' => null, 
-				),
-			'limit' => 5,
-			'order' => array(
-				'Contact.created' => 'DESC',
-				),
-			));
-		$this->set('leads', $leads);
 		
+		// the needs attention, new leads box
+		$this->set('leads', $this->Contact->leads());
+		
+		// leads over time
+		$this->set('leadGroups', $this->Contact->leadGroups());
 		
 		$this->set('page_title_for_layout', 'CRM Dashboard');
 	}

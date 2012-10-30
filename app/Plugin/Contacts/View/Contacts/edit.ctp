@@ -1,8 +1,6 @@
 <div class="contacts form">
 <?php echo $this->Form->create('Contact');?>
-	<h2><?php echo __('Edit %s', $this->request->data['Contact']['name']); ?></h2>
 	<fieldset>
- 		<legend></legend>
 		<?php
 		echo $this->Form->input('Contact.id');
 		echo $this->Form->input('Contact.name');

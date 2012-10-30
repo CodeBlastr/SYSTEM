@@ -415,6 +415,52 @@ class Contact extends ContactsAppModel {
 			$this->query("UPDATE `contacts` SET `contacts`.`contact_rating` = 'cold' WHERE `contacts`.`contact_rating` = 'Cold';");
 		}
 	}
+	
+/**
+ * Get leads
+ *
+ * @return array
+ */
+ 	public function leads() {
+		return $this->find('all', array(
+			'conditions' => array(
+				'Contact.contact_type' => 'lead',
+				'Contact.assignee_id' => null, 
+				),
+			'limit' => 5,
+			'order' => array(
+				'Contact.created' => 'DESC',
+				),
+			));
+	}
+	
+/**
+ * Get leads logged over time
+ *
+ * @return array
+ */
+ 	public function leadGroups() {
+		$return = null;
+		if (in_array('Activities', CakePlugin::loaded())) {
+			$return = $this->Activity->find('all', array(
+				'conditions' => array(
+					'Activity.action_description' => 'lead created',
+					'Activity.model' => 'Contact',
+					),
+				'fields' => array(
+					'COUNT(Activity.created)',
+					'Activity.created',
+					),
+				'group' =>  array(
+					'DATE(Activity.created)',
+					),
+				'order' => array(
+					'Activity.created' => 'ASC',
+					)
+				));
+		}
+		return $return;
+	}
 
 
 }
