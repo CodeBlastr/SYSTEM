@@ -4,7 +4,7 @@
   
 <div class="masonry contacts dashboard">
 	<div class="masonryBox tagLeads">
-    	<h3><i class="icon-th-large"></i> Newest Leads </h3>
+    	<h3><span class="label label-important">Attention!</span> New Leads </h3>
         <?php 
 		if (!empty($leads)) {
 			echo '<p>The latest incoming contacts, that have not been claimed yet.<p>';
@@ -49,18 +49,6 @@
 	</div>
     
     
-	<div class="masonryBox tagTasks">
-    	<h3><i class="icon-th-large"></i> Upcoming Tasks </h3>
-        <?php 
-		if (!empty($tasks)) {
-			echo '<p>A list of scheduled follow ups.</p>';
-			foreach ($tasks as $task) {
-				echo '<p>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'completed', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($task['Task']['name'], array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'view', $task['Task']['id'])) . ', due ' . date('M d, Y', strtotime($task['Task']['due_date'])) . '</p>';
-			}
-		} ?>
-	</div>
-    
-    
 	<div class="masonryBox tagOpportunities">
     	<h3><i class="icon-th-large"></i> Open Opportunities </h3>
         <?php 
@@ -72,6 +60,18 @@
 			unset($estimates['_total']);
 			foreach ($estimates as $estimate) {
 				echo '<p>' . $this->Html->link('Close', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'edit', $estimate['Estimate']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'view', $estimate['Estimate']['id'])) . '</p>';
+			}
+		} ?>
+	</div>
+    
+    
+	<div class="masonryBox tagTasks">
+    	<h3><i class="icon-th-large"></i> Upcoming Tasks </h3>
+        <?php 
+		if (!empty($tasks)) {
+			echo '<p>A list of scheduled follow ups.</p>';
+			foreach ($tasks as $task) {
+				echo '<p>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'completed', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($task['Task']['name'], array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'view', $task['Task']['id'])) . ', due ' . date('M d, Y', strtotime($task['Task']['due_date'])) . '</p>';
 			}
 		} ?>
 	</div>
