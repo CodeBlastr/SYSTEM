@@ -42,30 +42,16 @@ class Contact extends ContactsAppModel {
  * @var array
  */
 	public $belongsTo = array(
-		'ContactSource' => array(
-			'className' => 'Enumeration',
-			'foreignKey' => 'contact_source',
-			'conditions' => array('ContactSource.type' => 'CONTACT_SOURCE'),
-			'fields' => '',
-			'order' => ''
-		),
-		'ContactIndustry' => array(
-			'className' => 'Enumeration',
-			'foreignKey' => 'contact_industry',
-			'conditions' => array('ContactIndustry.type' => 'CONTACT_INDUSTRY'),
-			'fields' => '',
-			'order' => ''
-		),
-		'ContactRating' => array(
-			'className' => 'Enumeration',
-			'foreignKey' => 'contact_rating',
-			'conditions' => array('ContactRating.type' => 'CONTACT_RATING'),
-			'fields' => '',
-			'order' => ''
-		),
 		'User' => array(
 			'className' => 'Users.User',
 			'foreignKey' => 'user_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'Assignee' => array(
+			'className' => 'Users.User',
+			'foreignKey' => 'assignee_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
@@ -186,7 +172,37 @@ class Contact extends ContactsAppModel {
 				'counterQuery' => ''
 			);
 		}
+		if (in_array('Estimates', CakePlugin::loaded())) {
+			$this->hasMany['Estimate'] = array(
+				'className' => 'Estimates.Estimate',
+				'foreignKey' => 'foreign_key',
+				'dependent' => true,
+				'conditions' => array('Estimate.model' => 'Contact'),
+				'fields' => '',
+				'order' => '',
+				'limit' => '',
+				'offset' => '',
+				'exclusive' => '',
+				'finderQuery' => '',
+				'counterQuery' => ''
+			);
+		}
     }
+	
+	
+	function beforeSave() {
+		if (in_array('Activities', CakePlugin::loaded()) && !empty($this->data['Contact']['contact_type']) && $this->data['Contact']['contact_type'] == 'lead') {
+			// log when leads are created
+			$this->Behaviors->attach('Activities.Loggable', array(
+				'nameField' => 'name', 
+				'descriptionField' => '',
+				'actionDescription' => 'lead created', 
+				'userField' => '', 
+				'parentForeignKey' => ''
+				));
+		}
+		return true;
+	}
 
 /**
  * Add method
@@ -278,6 +294,7 @@ class Contact extends ContactsAppModel {
  * @return array
  */
 	protected function _cleanContactData($data) {
+		
 		// if id is here, then merge the data with the existing data (new data over writes old)
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->find('first', array(
@@ -325,6 +342,42 @@ class Contact extends ContactsAppModel {
 				$i++;
 			}
 		}
+
+		// remove empty related models
+		if (!empty($data['Estimate'])) {
+			$i = 0;
+			$data['Estimate'] = array_values($data['Estimate']);			
+			foreach ($data['Estimate'] as $estimate) {
+				if (empty($estimate['total'])) {
+					unset($data['Estimate'][$i]);
+				}
+				$i++;
+			}
+		}
+
+		// remove empty related models
+		if (!empty($data['Activity'])) {
+			$i = 0;
+			$data['Activity'] = array_values($data['Activity']);			
+			foreach ($data['Activity'] as $activity) {
+				if (empty($activity['name'])) {
+					unset($data['Activity'][$i]);
+				}
+				$i++;
+			}
+		}
+
+		// remove empty related models
+		if (!empty($data['Task'])) {
+			$i = 0;
+			$data['Task'] = array_values($data['Task']);			
+			foreach ($data['Task'] as $task) {
+				if (empty($task['name'])) {
+					unset($data['Task'][$i]);
+				}
+				$i++;
+			}
+		}
 		
 		return $data;
 	}
@@ -339,7 +392,7 @@ class Contact extends ContactsAppModel {
         foreach (Zuha::enum('CONTACT_TYPE') as $type) {
             $types[Inflector::underscore($type)] = $type;
         }
-        return array_merge(array('lead' => 'Lead'), $types);
+        return array_merge(array('lead' => 'Lead', 'customer' => 'Customer'), $types);
     }
 
 
@@ -381,7 +434,181 @@ class Contact extends ContactsAppModel {
         foreach (Zuha::enum('CONTACT_RATING') as $rating) {
             $ratings[Inflector::underscore($rating)] = $rating;
         }
-        return array_merge(array('active' => 'Active', 'hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold'), $ratings);
+        return array_merge(array('hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold'), $ratings);
     }
+
+/**
+ * A temporary function to fix db values
+ * 10/30/2012 Rk
+ */
+ 	public function fixTypes() { 
+		$result = $this->query("SELECT COUNT(*) AS `count` FROM `contacts` AS `Contact` WHERE `Contact`.`contact_type` LIKE BINARY 'Lead';");
+		if ($result[0][0]['count']) {
+			$this->query("UPDATE `contacts` SET `contacts`.`contact_type` = 'lead' WHERE `contacts`.`contact_type` = 'Lead';");
+			$this->query("UPDATE `contacts` SET `contacts`.`contact_type` = 'customer' WHERE `contacts`.`contact_type` = 'Customer';");
+			$this->query("UPDATE `contacts` SET `contacts`.`contact_rating` = 'active' WHERE `contacts`.`contact_rating` = 'Active';");
+			$this->query("UPDATE `contacts` SET `contacts`.`contact_rating` = 'hot' WHERE `contacts`.`contact_rating` = 'Hot';");
+			$this->query("UPDATE `contacts` SET `contacts`.`contact_rating` = 'warm' WHERE `contacts`.`contact_rating` = 'Warm';");
+			$this->query("UPDATE `contacts` SET `contacts`.`contact_rating` = 'cold' WHERE `contacts`.`contact_rating` = 'Cold';");
+		}
+	}
+	
+/**
+ * Get leads
+ *
+ * @return array
+ */
+ 	public function leads() {
+		return $this->find('all', array(
+			'conditions' => array(
+				'Contact.contact_type' => 'lead',
+				'Contact.assignee_id' => null, 
+				),
+			'limit' => 5,
+			'order' => array(
+				'Contact.created' => 'DESC',
+				),
+			));
+	}
+	
+/**
+ * Get leads logged over time
+ *
+ * @return array
+ */
+ 	public function leadActivities() {
+		$return = null;
+		if (in_array('Activities', CakePlugin::loaded())) {
+			$return = $this->Activity->find('all', array(
+				'conditions' => array(
+					'Activity.action_description' => 'lead created',
+					'Activity.model' => 'Contact',
+					),
+				'fields' => array(
+					'COUNT(Activity.created)',
+					'Activity.created',
+					),
+				'group' =>  array(
+					'DATE(Activity.created)',
+					),
+				'order' => array(
+					'Activity.created' => 'ASC',
+					)
+				));
+		}
+		return $return;
+	}
+	
+/**
+ * Get tasks assigned to the current user, and are related to contacts
+ *
+ * @return array
+ */
+ 	public function myTasks() {
+		$return = null;
+		if (in_array('Tasks', CakePlugin::loaded())) {
+			$return = $this->Task->find('all', array(
+				'conditions' => array(
+					'Task.assignee_id' => CakeSession::read('Auth.User.id'),
+					'Task.model' => 'Contact',
+					'Task.is_completed' => false,
+					),
+				'order' => array(
+					'Task.due_date' => 'ASC',
+					)
+				));
+		}
+		return $return;
+	}
+	
+/**
+ * Estimates method
+ *
+ * @return array
+ */
+	public function estimates() {
+		$return = null;
+		if (in_array('Estimates', CakePlugin::loaded())) {
+			$return = $this->Estimate->find('all', array(
+				'conditions' => array(
+					'Estimate.model' => 'Contact',
+					'Estimate.is_accepted' => false,
+					),
+				'contain' => array(
+					'Contact'
+					)
+				));
+			$ratings['hot'] = 85;
+			$ratings['warm'] = 30;
+			$ratings['cold'] = 10;
+			$values = Set::combine($return, '{n}.Estimate.id', '{n}.Contact.contact_rating');
+			foreach ($values as $value) {
+				$average[] = $ratings[$value];
+			}
+			$return['_subTotal'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)));
+			$return['_multiplier'] = array_sum($average) / count($values);
+			$return['_total'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)) * ('.' . $return['_multiplier']));
+		}
+		
+		return $return;
+	}
+	
+/**
+ * Estimate Groups method
+ *
+ * @return array
+ */
+	public function estimateActivities() {
+		$return = null;
+		if (in_array('Activities', CakePlugin::loaded())) {
+			$return = $this->Activity->find('all', array(
+				'conditions' => array(
+					'Activity.action_description' => 'estimate created',
+					'Activity.model' => 'Estimate',
+					),
+				'fields' => array(
+					'COUNT(Activity.created)',
+					'Activity.created',
+					),
+				'group' =>  array(
+					'DATE(Activity.created)',
+					),
+				'order' => array(
+					'Activity.created' => 'ASC',
+					)
+				));
+		}
+		
+		return $return;
+	}
+	
+/**
+ * Activities method
+ *
+ * @return array
+ */
+	public function activities() {
+		$return = null;
+		if (in_array('Activities', CakePlugin::loaded())) {
+			$return = $this->Activity->find('all', array(
+				'conditions' => array(
+					'Activity.action_description' => 'contact activity',
+					'Activity.model' => 'Contact',
+					),
+				'fields' => array(
+					'COUNT(Activity.created)',
+					'Activity.created',
+					),
+				'group' =>  array(
+					'DATE(Activity.created)',
+					),
+				'order' => array(
+					'Activity.created' => 'ASC',
+					)
+				));
+		}
+		
+		return $return;
+	}
 
 }
