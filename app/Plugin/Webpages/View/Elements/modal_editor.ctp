@@ -209,6 +209,9 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 		$('.closeEditor').click( function() {
 			offEditMode(true);
 		});
+		
+		$floManagrNav = $('.floManagrNav').detach();
+		$("body").prepend($floManagrNav);
 	});
 
 
@@ -239,5 +242,5 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 		<div id="modalEditor"></div>
 	</div>
 	<?php 
-	echo $this->Element('navigation', array(), array('plugin' => 'webpages')); 
+	echo $defaultTemplate['Webpage']['name'] == 'twitter-bootstrap.ctp' ? null : $this->Element('navigation', array(), array('plugin' => 'webpages')); // special case 
 } ?>

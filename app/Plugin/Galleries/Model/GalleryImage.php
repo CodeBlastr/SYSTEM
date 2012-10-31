@@ -90,7 +90,6 @@ class GalleryImage extends GalleriesAppModel {
 			$image = $data;
 			foreach ($data['GalleryImage']['filename'] as $fileName) {
 				$image['GalleryImage']['filename'] = $this->_fileName($fileName);
-				//debug($gallery);
 				$this->_add($image, $uploadFieldName);
 			}
 			return true;
@@ -299,4 +298,3 @@ class GalleryImage extends GalleriesAppModel {
 	}
 		
 }
-?>

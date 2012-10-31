@@ -119,12 +119,6 @@ input[type=radio], input[type=checkbox] {
 	min-width: 0;
 }
 
-/* /orders/order_transactions/checkout */
-#creditCardInfo .input.select { float: left; }
-#creditCardInfo .input.text { clear: left; }
-#OrderTransactionCardExpMonth { width: 45px !important; float: left !important; }
-#OrderTransactionCardExpYear { width: 75px !important; float: left !important; clear: none !important; }
-
 
 /* Specific for invoices /invoices/invoices/add */
 .lineTotal {
@@ -174,20 +168,6 @@ input[type=radio], input[type=checkbox] {
 }
 
 
-
-/* the checkout page is two column by default */
-#orderTransactionAddress {
-	float: left;
-	width: 48%;
-}
-#paymentInformation {
-	float: right;
-	width: 48%;
-}
-
-
-
-
 /* editor */
 #background_layer {
 	position: fixed;
@@ -216,38 +196,6 @@ input[type=radio], input[type=checkbox] {
 .global_edit_area .hover_include:before {
 	content: "Click to edit global box.";
 }
-#modalEditorWrap {
-	position: fixed;
-	top: -5000px;
-	left: -5000px;
-	z-index: 100;
-	width: 80%;
-	height: 60%;
-}
-#modalEditorWrap .closeEditor {
-	color: #000;
-	font-size: 14px;
-	text-shadow: 1px 1px #fff;
-	cursor: pointer;
-	padding: 0em 0.2em 0 0em;
-	float: left;
-	margin: 0 0 0 -1em;
-	font-family: Verdana, Geneva, sans-serif;
-}
-#modalEditorWrap .handle {
-	font-size: 20px;
-	color: #999;
-	text-shadow: 1px 1px #fff;
-	cursor:move;
-	padding: 0em 0.2em 0.2em 0.2em;
-	float: left;
-	clear: left;
-	margin: 0 0 0 -1em;
-}
-#modalEditorWrap .closeEditor:hover, #modalEditorWrap .handle:hover {
-	color: #C00;
-}
-
 
 
 .catalogItemOptions {

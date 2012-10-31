@@ -49,7 +49,7 @@ class SettingsController extends AppController {
 	
 	public function index() {		
 		$this->paginate['fields'] = array('id', 'displayName', 'description');
-		$this->paginate['order'] = array('Setting.type', 'Setting.name');
+		$this->paginate['order'] = array('Setting.type' => 'asc', 'Setting.name' => 'asc');
 		$this->set('settings', $this->paginate());
 		$this->set('displayName', 'displayName');
 		$this->set('displayDescription', 'description'); 

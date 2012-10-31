@@ -1,65 +1,65 @@
-<div class="contact form"> <?php echo $this->Form->create('Contact');?>
+<div class="contact form">
+<?php echo $this->Form->create('Contact');?>
   <fieldset>
-    <legend>   <?php echo __('Add a New Company');?>    </legend>
-    <p>Only a name is required, you can add anything else later if you like.</p>
     <?php
 	 echo $this->Form->hidden('Contact.is_company', array('value' => 1));
-	 echo $this->Form->input('Contact.name', array('label' => 'Name'));
-	?>
-  </fieldset>
-  <fieldset>
-    <legend class="toggleClick">
-    <?php echo __('Would you like to add communication details?');?>
-    </legend>
-    <p>Add one contact detail for now, you can add all of the additional details you want after you save.</p>
-    <?php
-	 echo $this->Form->input('ContactDetail.0.contact_detail_type', array('label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACT_DETAIL'), array('class' => 'dialog', 'title' => 'Edit Detail List')))); 
-	 echo $this->Form->input('ContactDetail.0.value');
-	?>
-  <fieldset>
-    <legend class="toggleClick">
-    <?php echo __('Would you like to create some labels for this contact, to easily find them later?');?>
-    </legend>
-    <?php
-	 echo $this->Form->input('Contact.contact_type_id', array('empty'=>true, 'label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTTYPE'), array('class' => 'dialog', 'title' => 'Edit Type List'))));
-	 echo $this->Form->input('Contact.contact_source_id', array('empty'=>true, 'label' => $this->Html->link(__('Source', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTSOURCE'), array('class' => 'dialog', 'title' => 'Edit Source List'))));
-	 echo $this->Form->input('Contact.contact_industry_id',array('empty'=>true, 'label' => $this->Html->link(__('Industry', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTINDUSTRY'), array('class' => 'dialog', 'title' => 'Edit Industry List'))));
-	 echo $this->Form->input('Contact.contact_rating_id', array('empty'=>true, 'label' => $this->Html->link(__('Rating', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTRATING'), array('class' => 'dialog', 'title' => 'Edit Rating List'))));	
-		# this would be used for an affiliate app, so that you can identify the lead source
-		# echo $this->Form->input('Contact.ownedby_id');
-		# echo $this->Form->input('Contact.assignee_id', array('label'=>'Assignee','empty'=>true));
-	?>
-  </fieldset>
-  <fieldset>
-    <legend class="toggleClick">
-    <?php echo __('Would you like to log an activity performed so you can refer to it later?');?>
-    </legend>
-    <?php 
-	 echo $this->Form->input('ContactActivity.0.contact_activity_type_id', array('label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'CONTACTACTIVITY'), array('class' => 'dialog', 'title' => 'Edit Activity List')))); 
-	 echo $this->Form->input('ContactActivity.0.name', array('label' => 'Subject')); 
-	 echo $this->Form->input('ContactActivity.0.description');
-	?>
+	 echo $this->Form->input('Contact.name', array('label' => 'Name, <small><i>(Only a company name is required.)</i></small>'));
+	 echo $this->Form->input('ContactDetail.0.contact_detail_type', array('label' => false, 'class' => 'span1', 'after' => ' ' . $this->Form->input('ContactDetail.0.value', array('label' => false, 'class' => 'span2', 'div' => false, 'after' => ' ' . $this->Html->link(__('Edit Detail Types'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_DETAIL'), array('class' => 'dialog', 'title' => 'Edit Detail Types')))))); ?>
   </fieldset>
   
-  
-  <?php /*  This is saved for later, when we add tasks table for contacts
   <fieldset>
     <legend class="toggleClick">
-    <?php echo __('Any future opportunities or tasks you want to remind someone of?');?>
+    <?php echo __('Label this contact, for sorting?');?>
+    </legend>
+    <?php
+	 echo $this->Form->input('Contact.contact_type', array('default' => 'lead', 'label' => $this->Html->link(__('Type'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_TYPE'), array('class' => 'dialog', 'title' => 'Edit Type List'))));
+	 echo $this->Form->input('Contact.contact_rating', array('default' => 'hot', 'label' => $this->Html->link(__('Rating'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_RATING'), array('class' => 'dialog', 'title' => 'Edit Rating List'))));
+	 echo $this->Form->input('Contact.contact_source', array('empty'=>true, 'label' => $this->Html->link(__('Source'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_SOURCE'), array('class' => 'dialog', 'title' => 'Edit Source List'))));
+	 echo $this->Form->input('Contact.contact_industry',array('empty'=>true, 'label' => $this->Html->link(__('Industry'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_INDUSTRY'), array('class' => 'dialog', 'title' => 'Edit Industry List')))); ?>
+  </fieldset>
+  
+  <?php if (in_array('Estimates', CakePlugin::loaded())) { ?>
+  <fieldset>
+    <legend class="toggleClick">
+    <?php echo __('Create an opportunity?');?>
     </legend>
  	<?php 
-	 echo $this->Form->input('Task.enumeration_id', array('label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'TASKTYPE', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Task List')))); 
-	 echo $this->Form->input('Task.name', array('label' => 'Subject')); 
-	 echo $this->Form->input('Task.description');
-	 echo $this->Form->input('Task.assignee_id', array('label' => 'Assign To'));
-	 echo $this->Form->input('Task.due_date', array('minYear' => date('Y'), 'maxYear' => date('Y') + 10, 'interval' =>  15));
- 	?>
+	 echo $this->Form->input('Estimate.0.model', array('type' => 'hidden', 'value' => 'Contact')); 
+	 echo $this->Form->input('Estimate.0.total', array('label' => 'Value')); 
+	 echo $this->Form->input('Estimate.0.description', array('type' => 'richtext')); ?>
   </fieldset>
-  */ ?>
+  <?php } ?>
+  
+  <?php if (in_array('Activities', CakePlugin::loaded())) { ?>
+  <fieldset>
+    <legend class="toggleClick">
+    <?php echo __('Log an activity for this contact?');?>
+    </legend>
+    <?php 
+	 echo $this->Form->input('Activity.0.model', array('type' => 'hidden', 'value' => 'Contact')); 
+	 echo $this->Form->input('Activity.0.action_description', array('type' => 'hidden', 'value' => 'contact activity')); 
+	 echo $this->Form->input('Activity.0.name', array('label' => 'Subject')); 
+	 echo $this->Form->input('Activity.0.description', array('type' => 'richtext')); ?>
+  </fieldset>
+  <?php } ?>
+  
+  <?php if (in_array('Tasks', CakePlugin::loaded())) { ?>
+  <fieldset>
+    <legend class="toggleClick">
+    <?php echo __('Create a follow up task for this contact?');?>
+    </legend>
+ 	<?php 
+	 echo $this->Form->input('Task.0.model', array('type' => 'hidden', 'value' => 'Contact')); 
+	 echo $this->Form->input('Task.0.assignee_id', array('label' => 'Assign To'));
+	 echo $this->Form->input('Task.0.due_date', array('minYear' => date('Y'), 'maxYear' => date('Y') + 10, 'interval' =>  15));
+	 echo $this->Form->input('Task.0.name', array('label' => 'Subject')); 
+	 echo $this->Form->input('Task.0.description', array('type' => 'richtext')); ?>
+  </fieldset>
+  <?php } ?>
   
   
-  </fieldset>
-  <?php echo $this->Form->end('Submit');?> </div>
+  <?php echo $this->Form->end('Submit');?>
+</div>
 
 <?php
 // set the contextual menu items

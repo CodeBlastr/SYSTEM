@@ -29,7 +29,10 @@ class WebpagesSchema extends CakeSchema {
 		'modifier_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'name' => array('column' => 'name', 'unique' => 1)),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1), 
+			'name' => array('column' => 'name', 'unique' => 1)
+			),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 	public $webpage_js = array(
@@ -41,7 +44,10 @@ class WebpagesSchema extends CakeSchema {
 		'modifier_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'name' => array('column' => 'name', 'unique' => 1)),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1), 
+			'name' => array('column' => 'name', 'unique' => 1)
+			),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 	public $webpage_menus = array(
@@ -70,7 +76,10 @@ class WebpagesSchema extends CakeSchema {
 		'modifier_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'name' => array('column' => 'name', 'unique' => 1)
+			),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 	public $webpages = array(
@@ -84,7 +93,7 @@ class WebpagesSchema extends CakeSchema {
 		'published' => array('type' => 'boolean', 'null' => true, 'default' => NULL),
 		'keywords' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'description' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'type' => array('type' => 'string', 'null' => false, 'default' => 'page_content', 'length' => 50, 'collate' => 'utf8_general_ci', 'comment' => '\'template\',\'element\',\'page_content\'', 'charset' => 'utf8'),
+		'type' => array('type' => 'string', 'null' => false, 'default' => 'content', 'length' => 50, 'collate' => 'utf8_general_ci', 'comment' => '\'template\',\'element\',\'content\'', 'charset' => 'utf8'),
 		'is_default' => array('type' => 'boolean', 'null' => true, 'default' => NULL, 'comment' => 'convenience field for template type webpages'),
 		'template_urls' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'convenience field for template type webpages', 'charset' => 'utf8'),
 		'user_roles' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'convenience field for template type webpages', 'charset' => 'utf8'),
@@ -92,7 +101,10 @@ class WebpagesSchema extends CakeSchema {
 		'modifier_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'name' => array('column' => 'name', 'unique' => 1)
+			),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 }
