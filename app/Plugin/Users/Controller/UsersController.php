@@ -160,7 +160,7 @@ class UsersController extends UsersAppController {
 			),
 			'contain'=>array()
 		));
-
+		
 
 		$is_self = ($user['User']['id'] == $this->Auth->user('id') ? true : false);
 		$this->set('is_self', $is_self );

@@ -1,11 +1,6 @@
-<div class="users index">
-  <h2><?php echo __('Users');?></h2>
-  <?php echo $this->Element('scaffolds/index', array('data' => $users)); ?> 
-</div>
-
-
-<?php echo $this->Element('paging'); ?>
 <?php 
+echo $this->Element('scaffolds/index', array('data' => $users)); 
+
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(

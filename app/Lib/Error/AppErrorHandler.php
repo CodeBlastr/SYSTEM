@@ -9,6 +9,11 @@ class AppErrorHandler extends ErrorHandler {
  * for changes to the writing of error messages to the log file. 
  */
 	public static function handleException(Exception $exception) {
+		
+		if ($exception instanceof MissingTableException) {
+            return self::MissingTableException($exception);
+        }
+		
 		$config = Configure::read('Exception');
 		if (!empty($config['log'])) {
 			$message = sprintf("[%s] %s\n%s",
@@ -37,6 +42,18 @@ class AppErrorHandler extends ErrorHandler {
 			);
 			trigger_error($message, E_USER_ERROR);
 		}
+	}
+	
+	
+/** 
+ * Handle mssing table exception in order to create the table if the plugin is loaded (typically triggered like this during upgrades)
+ */
+ 	public function MissingTableException ($exception) {
+		echo '<h1>We need to write a function for creating tables when they are not already there, if the plugin is loaded.</h1>';
+		echo 'Use the getMessage() function to get the plugin name, and the table with some regex or something.<br />';
+		echo 'CREATE TABLE `table_name` (`id` INT NOT NULL) ENGINE = MYISAM ; is the sql to run and then refresh the page to keep the upgrade running.';
+		debug($exception->getMessage());
+		break;
 	}
 
 

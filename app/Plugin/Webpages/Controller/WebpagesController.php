@@ -29,7 +29,7 @@ class WebpagesController extends WebpagesAppController {
 
 	/* This is part of the search plugin */
     public $presetVars = array(array('field' => 'name', 'type' => 'value'));
-	
+		
 	
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -40,20 +40,39 @@ class WebpagesController extends WebpagesAppController {
 		}
 	}
 
-	public function index() {
-		if (!empty($this->request->params['named']['type'])) :
-			$this->paginate['conditions']['Webpage.type'] = $this->request->params['named']['type'];
-		endif;
+/**
+ * Index method
+ *
+ * @param string
+ * @return void
+ */
+	public function index($type = 'content') {
+		$templates = $this->Webpage->syncFiles($type);
+		$this->paginate['conditions']['Webpage.type'] = $type;
+		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
  
 		$this->Webpage->recursive = 0;
 		$this->set('webpages', $this->paginate());
+		
+		$this->set('displayName', 'title');
+		$this->set('displayDescription', 'content'); 
+		$this->set('page_title_for_layout', Inflector::pluralize(Inflector::humanize($type)));		
+		$this->render('index_' . $type);
 	}
 
+/**
+ * View method
+ *
+ * @param string
+ * @return void
+ */
 	public function view($id = null) {
-		if (!$id) {
-			$this->flash(__('Invalid Webpage', true), array('action'=>'index'));
+		$this->Webpage->id = $id;
+		if (!$this->Webpage->exists()) {
+			throw new NotFoundException(__('Page not found'));
 		}
 		
+		$update = $this->Webpage->syncFiles('template');
 		$webpage = $this->Webpage->find("first", array(
 		    "conditions" => array( "Webpage.id" => $id),
 		    'contain' => array('Alias')
@@ -63,48 +82,63 @@ class WebpagesController extends WebpagesAppController {
 		    return $webpage;
 		}
 		
-		if(!empty($webpage) && is_array($webpage)) {
-			if ($webpage['Webpage']['type'] == 'template') $webpage['Webpage']['content'] = '';
+		if ($webpage['Webpage']['type'] == 'template') {
+				
+		} else {
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
 			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
 			$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
-		} else {
-			$this->Session->setFlash(__('Invalid Webpage', true));
-			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($webpage['Webpage']['title'])) {
-			$this->set('title',  $webpage['Webpage']['title']);
-		}
+		
+		
 		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error/') {
 			$webpage = $this->Webpage->handleError($webpage, $this->request);
 		}
 		$this->set(compact('webpage'));
+		$this->set('page_title_for_layout', '&nbsp;');
+		$this->render('view_' . $webpage['Webpage']['type']);	
 	}
 	
-	public function add($parentId = NULL) {
+/**
+ * Add method
+ *
+ * @param string
+ * @return void
+ */
+	public function add($type = 'content', $parentId = NULL) {
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->add($this->request->data);
 				$this->Session->setFlash(__('Saved successfully', true));
-				$this->redirect(array('action'=>'index'));
+				$this->redirect(array('action'=>'index', $this->request->data['Webpage']['type']));
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}
 		}
 		
+		if (empty($this->Webpage->types[$type])) {
+			throw new NotFoundException(__('Invalid content type'));
+		}
 		// reuquired to have per page permissions
 		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? $this->request->params['named']['alias'] : null;
-		$this->UserRole = ClassRegistry::init('Users.UserRole');
-		$userRoles = $this->UserRole->find('list');
-		$types = $this->Webpage->types();
-		$this->set(compact('userRoles', 'types', 'parentId'));
+		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('parentId', $parentId);
+		$this->set('page_title_for_layout', __('%s Builder', Inflector::humanize($this->Webpage->types[$type])));
+		//<h2><?php echo __('Webpage Builder'); if($parentId) { echo ' <small>Creating child of Page #'.$parentId.'</small>'; } </h2>
+		$this->render('add_' . $type);
 	}
 	
+/**
+ * Edit method
+ * 
+ * @param string
+ * @return void
+ */
 	public function edit($id = null) {		
 	
-		if (empty($id) && empty($this->request->data)) {
-			$this->Session->setFlash(__('Invalid Webpage', true));
-			$this->redirect(array('action'=>'index'));
+		$this->Webpage->id = $id;
+		if (!$this->Webpage->exists()) {
+			throw new NotFoundException(__('Page not found'));
 		}
 
 		if (!empty($this->request->data)) {
@@ -115,15 +149,13 @@ class WebpagesController extends WebpagesAppController {
 			}
 		}
 		
-		if (empty($this->request->data)) {
-			$this->Webpage->contain('Alias');
-			$this->request->data = $this->Webpage->read(null, $id);
-			$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
-		}
+		$templates = $this->Webpage->syncFiles('template');
+		$this->Webpage->contain('Alias');
+		$this->request->data = $this->Webpage->read(null, $id);
+		$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
 		
 		// required to have per page permissions
-		$this->UserRole = ClassRegistry::init('Users.UserRole');
-		$userRoles = $this->UserRole->find('list');
+		$userRoles = $this->Webpage->Creator->UserRole->find('list');
 		$types = $this->Webpage->types();
 		
 		$this->set(compact('userRoles', 'types'));
@@ -149,13 +181,23 @@ class WebpagesController extends WebpagesAppController {
 		endif;
 		$templateUrls = !empty($template['urls']) && $template['urls'] != '""' ? implode(PHP_EOL, unserialize(gzuncompress(base64_decode($template['urls'])))) : null;
 		$this->set(compact('templateUrls'));
+		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
+		$this->render('edit_' . $this->request->data['Webpage']['type']);
 	}
-
+	
+/**
+ * Delete method
+ * 
+ * @param string
+ * @return void
+ */
 	public function delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid Webpage', true));
-			$this->redirect(array('action'=>'index'));
+	
+		$this->Webpage->id = $id;
+		if (!$this->Webpage->exists()) {
+			throw new NotFoundException(__('Page not found'));
 		}
+		
 		if ($this->Webpage->delete($id, true)) {
 			$this->Session->setFlash(__('Webpage deleted', true));
 			$this->redirect(array('action'=>'index'));
@@ -165,8 +207,12 @@ class WebpagesController extends WebpagesAppController {
 		}
 	}
 	
-	
-
+/**
+ * Save page method
+ * 
+ * @param string
+ * @return void
+ */
 	public function savePage ($id = null) {
 		$this->render(false);
 		$msg   = "";
@@ -196,6 +242,12 @@ class WebpagesController extends WebpagesAppController {
 		//TODO Add response without ajax
 	}
 
+/**
+ * Raw page method
+ * 
+ * @param string
+ * @return void
+ */
 	public function getRawPage ($id = null) {
 		Inflector::variable("Webpage");
 		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
@@ -206,7 +258,13 @@ class WebpagesController extends WebpagesAppController {
 		}
 		//TODO Add response without ajax
 	}
-	
+
+/**
+ * Get render page method
+ * 
+ * @param string
+ * @return void
+ */	
 	public function getRenderPage ($id = null) {
 		Inflector::variable("Webpage");
 		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
@@ -222,19 +280,17 @@ class WebpagesController extends WebpagesAppController {
 	}
 	
 
+/**
+ * Parse included elements method
+ * 
+ * @param string
+ * @return void
+ */
     public function __parseIncludedElements($content_str) {
         $this->autoRender = $this->layout = false;
         $this->set('content_str', $content_str);
         $content_str = $this->render('webpages/render_content');
         return $content_str;
     }
-	
-	public function theme() {
-	}
-	
-	public function dashboard() {
-		$this->set('page_title_for_layout', __('Content Dashboard'));
-	}
 
 }
-?>

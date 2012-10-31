@@ -92,9 +92,9 @@ class ContactsController extends ContactsAppController {
 	}
 
 	public function view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid Contact.', true));
-			$this->redirect(array('action'=>'index'));
+		$this->Contact->id = $id;
+		if (!$this->Contact->exists()) {
+			throw new NotFoundException(__('Contact not found'));
 		}
 		
 		$contact = $this->Contact->find('first', array(
@@ -165,24 +165,26 @@ class ContactsController extends ContactsAppController {
 		$employers = $this->Contact->Employer->findCompanies('list');
 		$people = $this->Contact->Employer->findPeople('list');
 		$this->request->data['Employer']['Employer'] = !empty($contactId) ? $contactId : null;
-		$contacts = Zuha::enum('CONTACTTYPE');
-		$contactTypes = Zuha::enum('CONTACTTYPE');
-		$contactSources = Zuha::enum('CONTACTSOURCE');
-		$contactIndustries = Zuha::enum('CONTACTINDUSTRY');
-		$contactRatings = Zuha::enum('CONTACTRATING');
+		
+		$contactTypes = $this->Contact->types();
+		$contactSources = $this->Contact->sources();
+		$contactIndustries = $this->Contact->industries();
+		$contactRatings = $this->Contact->ratings();
 		$contactDetailTypes = $this->Contact->ContactDetail->types();
+		$assignees = $this->Contact->Assignee->find('list');
 			
-		$this->set(compact('employers', 'people', 'contactDetailTypes', 'contactTypes', 'contactSources', 'contactIndustries', 'contactRatings'));
+		$this->set(compact('employers', 'people', 'contactDetailTypes', 'contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'assignees'));
 		$this->set('page_title_for_layout', 'Add a '.$contactType);
 		$this->set('title_for_layout',  'Add a '.$contactType);
 		$this->render('add_'.$contactType);
 	}
 
 	public function edit($id = null) {
-		if (!$id && empty($this->request->data)) {
-			$this->Session->setFlash(__('Invalid contact', true));
-			$this->redirect(array('action' => 'index'));
+		$this->Contact->id = $id;
+		if (!$this->Contact->exists()) {
+			throw new NotFoundException(__('Contact not found'));
 		}
+		
 		if (!empty($this->request->data)) {
 			if ($this->Contact->saveAll($this->request->data)) {
 				$this->Session->setFlash(__('The contact has been saved'));
@@ -190,24 +192,27 @@ class ContactsController extends ContactsAppController {
 				$this->Session->setFlash(__('The contact could not be saved. Please, try again.'));
 			}
 		}
-		if (empty($this->request->data)) {
-			$this->Contact->contain('ContactDetail');
-			$this->request->data = $this->Contact->read(null, $id);
-		}
-		$contactTypes = $this->Contact->types();
-		$contactSources = $this->Contact->ContactSource->find('list');
-		$contactIndustries = $this->Contact->ContactIndustry->find('list');
-		$contactRatings = $this->Contact->ContactRating->find('list');
-		$users = $this->Contact->User->find('list');
 		
-		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users'));
+		$this->Contact->contain('ContactDetail');
+		$this->request->data = $this->Contact->read(null, $id);
+		
+		$contactTypes = $this->Contact->types();
+		$contactSources = $this->Contact->sources();
+		$contactIndustries = $this->Contact->industries();
+		$contactRatings = $this->Contact->ratings();
+		$users = $this->Contact->User->find('list');
+		$assignees = $users; // save a db call
+		
+		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['Contact']['name']));
+		$this->set(compact('contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'users', 'assignees'));
 	}
 
 	public function delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for contact', true));
-			$this->redirect(array('action'=>'index'));
+		$this->Contact->id = $id;
+		if (!$this->Contact->exists()) {
+			throw new NotFoundException(__('Contact not found'));
 		}
+		
 		if ($this->Contact->delete($id)) {
 			$this->Session->setFlash(__('Contact deleted', true));
 			$this->redirect(array('action'=>'index'));
@@ -216,15 +221,16 @@ class ContactsController extends ContactsAppController {
 		$this->redirect(array('action' => 'index'));
 	}
 	
-	public function ajax_edit(){
-		$this->__ajax_edit();
-	} 
-	
 /**
  * Show the tasks related to this contact
  * @todo 	Make this so that it renders using an element from the tasks plugin
  */
 	public function tasks($contactId = null) {
+		$this->Contact->id = $contactId;
+		if (!$this->Contact->exists()) {
+			throw new NotFoundException(__('Contact not found'));
+		}
+		
 		$this->paginate = array(
 			'conditions' => array(
 				'Task.model' => 'Contact',
@@ -325,6 +331,26 @@ class ContactsController extends ContactsAppController {
 	}
 	
 	public function dashboard() {
+		$this->Contact->fixTypes(); // a temporary fix for updating some database values;
+		
+		// the needs attention, new leads box
+		$this->set('leads', $this->Contact->leads());
+		
+		// leads over time
+		$this->set('leadActivities', $this->Contact->leadActivities());
+		
+		// upcoming follow ups
+		$this->set('tasks', $this->Contact->myTasks());
+		
+		// list of pending opportunities
+		$this->set('estimates', $this->Contact->estimates());
+		
+		// list of pending opportunities
+		$this->set('estimateActivities', $this->Contact->estimateActivities());
+		
+		// list of activities
+		$this->set('activities', $this->Contact->activities());
+		
+		$this->set('page_title_for_layout', 'CRM Dashboard');
 	}
 }
-?>

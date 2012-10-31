@@ -85,3 +85,12 @@
 [submodule "app/Plugin/Connections"]
 	path = app/Plugin/Connections
 	url = git@github.com:zuha/Connections-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Events"]
+	path = app/Plugin/Events
+	url = git@github.com:zuha/Events-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Transactions"]
+	path = app/Plugin/Transactions
+	url = git@github.com:zuha/Transactions-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Estimates"]
+	path = app/Plugin/Estimates
+	url = git@github.com:zuha/Estimates-Zuha-Cakephp-Plugin.git
