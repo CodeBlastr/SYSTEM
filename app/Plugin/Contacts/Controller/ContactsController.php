@@ -171,8 +171,9 @@ class ContactsController extends ContactsAppController {
 		$contactIndustries = $this->Contact->industries();
 		$contactRatings = $this->Contact->ratings();
 		$contactDetailTypes = $this->Contact->ContactDetail->types();
+		$assignees = $this->Contact->Assignee->find('list');
 			
-		$this->set(compact('employers', 'people', 'contactDetailTypes', 'contactTypes', 'contactSources', 'contactIndustries', 'contactRatings'));
+		$this->set(compact('employers', 'people', 'contactDetailTypes', 'contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'assignees'));
 		$this->set('page_title_for_layout', 'Add a '.$contactType);
 		$this->set('title_for_layout',  'Add a '.$contactType);
 		$this->render('add_'.$contactType);
@@ -336,13 +337,19 @@ class ContactsController extends ContactsAppController {
 		$this->set('leads', $this->Contact->leads());
 		
 		// leads over time
-		$this->set('leadGroups', $this->Contact->leadGroups());
+		$this->set('leadActivities', $this->Contact->leadActivities());
 		
 		// upcoming follow ups
 		$this->set('tasks', $this->Contact->myTasks());
 		
 		// list of pending opportunities
 		$this->set('estimates', $this->Contact->estimates());
+		
+		// list of pending opportunities
+		$this->set('estimateActivities', $this->Contact->estimateActivities());
+		
+		// list of activities
+		$this->set('activities', $this->Contact->activities());
 		
 		$this->set('page_title_for_layout', 'CRM Dashboard');
 	}

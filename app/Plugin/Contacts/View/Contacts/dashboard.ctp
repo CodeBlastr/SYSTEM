@@ -13,7 +13,7 @@
 			}
 		} 
 		
-		if (!empty($leadGroups)) { 
+		if (!empty($leadActivities)) { 
         	echo '<h4>Leads over time</h4>'; ?>
             
 			<script type="text/javascript">
@@ -25,7 +25,7 @@
 				var data = google.visualization.arrayToDataTable([
 				['x', 'Date'],
 				<?php 
-				foreach ($leadGroups as $leadGroup) { ?>
+				foreach ($leadActivities as $leadGroup) { ?>
 					['<?php echo date('M d, Y', strtotime($leadGroup['Activity']['created'])); ?>',   <?php echo $leadGroup['Activity']['COUNT(`Activity`.`created`)']; ?>],
 				<?php } ?>
 				]);
@@ -61,7 +61,41 @@
 			foreach ($estimates as $estimate) {
 				echo '<p>' . $this->Html->link('Close', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'edit', $estimate['Estimate']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'view', $estimate['Estimate']['id'])) . '</p>';
 			}
-		} ?>
+		} 
+		
+		if (!empty($estimateActivities)) { 
+        	echo '<h4>Opportunities over time</h4>'; ?>
+            
+			<script type="text/javascript">
+			google.load("visualization", "1", {packages:["corechart"]});
+			google.setOnLoadCallback(drawLeadsChart);
+				 
+			function drawLeadsChart() {
+				// Create and populate the data table.
+				var data = google.visualization.arrayToDataTable([
+				['x', 'Date'],
+				<?php 
+				foreach ($estimateActivities as $estimateGroup) { ?>
+					['<?php echo date('M d, Y', strtotime($estimateGroup['Activity']['created'])); ?>',   <?php echo $estimateGroup['Activity']['COUNT(`Activity`.`created`)']; ?>],
+				<?php } ?>
+				]);
+						
+				// Create and draw the visualization.
+				new google.visualization.LineChart(document.getElementById('estimates_over_time')).
+					draw(data, {
+						curveType: "function",
+						width: 310, height: 200,
+						legend: {position: 'none'},
+						chartArea: {width: '80%', height: '80%'}
+						}
+					);
+				$(".masonry").masonry("reload"); // reload the layout
+			}
+			</script>
+            
+ 			<div id="estimates_over_time"></div>
+		<?php
+        } ?>
 	</div>
     
     
@@ -74,6 +108,45 @@
 				echo '<p>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'completed', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($task['Task']['name'], array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'view', $task['Task']['id'])) . ', due ' . date('M d, Y', strtotime($task['Task']['due_date'])) . '</p>';
 			}
 		} ?>
+	</div>
+    
+    
+	<div class="masonryBox tagActivities">
+    	<h3><i class="icon-th-large"></i> Logged Activities </h3>
+        <?php 		
+		if (!empty($activities)) { 
+        	echo '<h4>Activities over time</h4>'; ?>
+            
+			<script type="text/javascript">
+			google.load("visualization", "1", {packages:["corechart"]});
+			google.setOnLoadCallback(drawLeadsChart);
+				 
+			function drawLeadsChart() {
+				// Create and populate the data table.
+				var data = google.visualization.arrayToDataTable([
+				['x', 'Date'],
+				<?php 
+				foreach ($activities as $activity) { ?>
+					['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity['Activity']['COUNT(`Activity`.`created`)']; ?>],
+				<?php } ?>
+				]);
+						
+				// Create and draw the visualization.
+				new google.visualization.LineChart(document.getElementById('activities_over_time')).
+					draw(data, {
+						curveType: "function",
+						width: 310, height: 200,
+						legend: {position: 'none'},
+						chartArea: {width: '80%', height: '80%'}
+						}
+					);
+				$(".masonry").masonry("reload"); // reload the layout
+			}
+			</script>
+            
+ 			<div id="activities_over_time"></div>
+		<?php
+        } ?>
 	</div>
     
     
