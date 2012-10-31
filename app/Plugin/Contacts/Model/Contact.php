@@ -397,7 +397,7 @@ class Contact extends ContactsAppModel {
         foreach (Zuha::enum('CONTACT_RATING') as $rating) {
             $ratings[Inflector::underscore($rating)] = $rating;
         }
-        return array_merge(array('active' => 'Active', 'hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold'), $ratings);
+        return array_merge(array('hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold'), $ratings);
     }
 
 /**
@@ -459,6 +459,60 @@ class Contact extends ContactsAppModel {
 					)
 				));
 		}
+		return $return;
+	}
+	
+/**
+ * Get tasks assigned to the current user, and are related to contacts
+ *
+ * @return array
+ */
+ 	public function myTasks() {
+		$return = null;
+		if (in_array('Tasks', CakePlugin::loaded())) {
+			$return = $this->Task->find('all', array(
+				'conditions' => array(
+					'Task.assignee_id' => CakeSession::read('Auth.User.id'),
+					'Task.model' => 'Contact',
+					'Task.is_completed' => false,
+					),
+				'order' => array(
+					'Task.due_date' => 'ASC',
+					)
+				));
+		}
+		return $return;
+	}
+	
+/**
+ * Estimates method
+ *
+ * @return bool
+ */
+	public function estimates() {
+		$return = null;
+		if (in_array('Estimates', CakePlugin::loaded())) {
+			$return = $this->Estimate->find('all', array(
+				'conditions' => array(
+					'Estimate.model' => 'Contact',
+					'Estimate.is_accepted' => false,
+					),
+				'contain' => array(
+					'Contact'
+					)
+				));
+			$ratings['hot'] = 85;
+			$ratings['warm'] = 30;
+			$ratings['cold'] = 10;
+			$values = Set::combine($return, '{n}.Estimate.id', '{n}.Contact.contact_rating');
+			foreach ($values as $value) {
+				$average[] = $ratings[$value];
+			}
+			$return['_subTotal'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)));
+			$return['_multiplier'] = array_sum($average) / count($values);
+			$return['_total'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)) * ('.' . $return['_multiplier']));
+		}
+		
 		return $return;
 	}
 

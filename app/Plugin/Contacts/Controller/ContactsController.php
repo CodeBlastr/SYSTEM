@@ -92,9 +92,9 @@ class ContactsController extends ContactsAppController {
 	}
 
 	public function view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid Contact.', true));
-			$this->redirect(array('action'=>'index'));
+		$this->Contact->id = $id;
+		if (!$this->Contact->exists()) {
+			throw new NotFoundException(__('Contact not found'));
 		}
 		
 		$contact = $this->Contact->find('first', array(
@@ -179,10 +179,11 @@ class ContactsController extends ContactsAppController {
 	}
 
 	public function edit($id = null) {
-		if (!$id && empty($this->request->data)) {
-			$this->Session->setFlash(__('Invalid contact', true));
-			$this->redirect(array('action' => 'index'));
+		$this->Contact->id = $id;
+		if (!$this->Contact->exists()) {
+			throw new NotFoundException(__('Contact not found'));
 		}
+		
 		if (!empty($this->request->data)) {
 			if ($this->Contact->saveAll($this->request->data)) {
 				$this->Session->setFlash(__('The contact has been saved'));
@@ -190,10 +191,10 @@ class ContactsController extends ContactsAppController {
 				$this->Session->setFlash(__('The contact could not be saved. Please, try again.'));
 			}
 		}
-		if (empty($this->request->data)) {
-			$this->Contact->contain('ContactDetail');
-			$this->request->data = $this->Contact->read(null, $id);
-		}
+		
+		$this->Contact->contain('ContactDetail');
+		$this->request->data = $this->Contact->read(null, $id);
+		
 		$contactTypes = $this->Contact->types();
 		$contactSources = $this->Contact->sources();
 		$contactIndustries = $this->Contact->industries();
@@ -206,10 +207,11 @@ class ContactsController extends ContactsAppController {
 	}
 
 	public function delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for contact', true));
-			$this->redirect(array('action'=>'index'));
+		$this->Contact->id = $id;
+		if (!$this->Contact->exists()) {
+			throw new NotFoundException(__('Contact not found'));
 		}
+		
 		if ($this->Contact->delete($id)) {
 			$this->Session->setFlash(__('Contact deleted', true));
 			$this->redirect(array('action'=>'index'));
@@ -218,15 +220,16 @@ class ContactsController extends ContactsAppController {
 		$this->redirect(array('action' => 'index'));
 	}
 	
-	public function ajax_edit(){
-		$this->__ajax_edit();
-	} 
-	
 /**
  * Show the tasks related to this contact
  * @todo 	Make this so that it renders using an element from the tasks plugin
  */
 	public function tasks($contactId = null) {
+		$this->Contact->id = $contactId;
+		if (!$this->Contact->exists()) {
+			throw new NotFoundException(__('Contact not found'));
+		}
+		
 		$this->paginate = array(
 			'conditions' => array(
 				'Task.model' => 'Contact',
@@ -334,6 +337,12 @@ class ContactsController extends ContactsAppController {
 		
 		// leads over time
 		$this->set('leadGroups', $this->Contact->leadGroups());
+		
+		// upcoming follow ups
+		$this->set('tasks', $this->Contact->myTasks());
+		
+		// list of pending opportunities
+		$this->set('estimates', $this->Contact->estimates());
 		
 		$this->set('page_title_for_layout', 'CRM Dashboard');
 	}
