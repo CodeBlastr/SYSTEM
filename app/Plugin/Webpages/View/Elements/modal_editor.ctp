@@ -195,6 +195,7 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 
     $(document).ready( function () {
 		$('#edit_button').click( function() {
+			console.log('test');
 			onEditMode();
 		});
 		
