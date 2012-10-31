@@ -37,6 +37,7 @@
     </legend>
     <?php 
 	 echo $this->Form->input('Activity.0.model', array('type' => 'hidden', 'value' => 'Contact')); 
+	 echo $this->Form->input('Activity.0.action_description', array('type' => 'hidden', 'value' => 'contact activity')); 
 	 echo $this->Form->input('Activity.0.name', array('label' => 'Subject')); 
 	 echo $this->Form->input('Activity.0.description', array('type' => 'richtext')); ?>
   </fieldset>

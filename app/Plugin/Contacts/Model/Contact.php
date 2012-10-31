@@ -294,6 +294,7 @@ class Contact extends ContactsAppModel {
  * @return array
  */
 	protected function _cleanContactData($data) {
+		
 		// if id is here, then merge the data with the existing data (new data over writes old)
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->find('first', array(
@@ -337,6 +338,42 @@ class Contact extends ContactsAppModel {
 			foreach ($data['ContactDetail'] as $detail) {
 				if (empty($detail['value'])) {
 					unset($data['ContactDetail'][$i]);
+				}
+				$i++;
+			}
+		}
+
+		// remove empty related models
+		if (!empty($data['Estimate'])) {
+			$i = 0;
+			$data['Estimate'] = array_values($data['Estimate']);			
+			foreach ($data['Estimate'] as $estimate) {
+				if (empty($estimate['total'])) {
+					unset($data['Estimate'][$i]);
+				}
+				$i++;
+			}
+		}
+
+		// remove empty related models
+		if (!empty($data['Activity'])) {
+			$i = 0;
+			$data['Activity'] = array_values($data['Activity']);			
+			foreach ($data['Activity'] as $activity) {
+				if (empty($activity['name'])) {
+					unset($data['Activity'][$i]);
+				}
+				$i++;
+			}
+		}
+
+		// remove empty related models
+		if (!empty($data['Task'])) {
+			$i = 0;
+			$data['Task'] = array_values($data['Task']);			
+			foreach ($data['Task'] as $task) {
+				if (empty($task['name'])) {
+					unset($data['Task'][$i]);
 				}
 				$i++;
 			}
@@ -439,7 +476,7 @@ class Contact extends ContactsAppModel {
  *
  * @return array
  */
- 	public function leadGroups() {
+ 	public function leadActivities() {
 		$return = null;
 		if (in_array('Activities', CakePlugin::loaded())) {
 			$return = $this->Activity->find('all', array(
@@ -487,7 +524,7 @@ class Contact extends ContactsAppModel {
 /**
  * Estimates method
  *
- * @return bool
+ * @return array
  */
 	public function estimates() {
 		$return = null;
@@ -515,6 +552,63 @@ class Contact extends ContactsAppModel {
 		
 		return $return;
 	}
-
+	
+/**
+ * Estimate Groups method
+ *
+ * @return array
+ */
+	public function estimateActivities() {
+		$return = null;
+		if (in_array('Activities', CakePlugin::loaded())) {
+			$return = $this->Activity->find('all', array(
+				'conditions' => array(
+					'Activity.action_description' => 'estimate created',
+					'Activity.model' => 'Estimate',
+					),
+				'fields' => array(
+					'COUNT(Activity.created)',
+					'Activity.created',
+					),
+				'group' =>  array(
+					'DATE(Activity.created)',
+					),
+				'order' => array(
+					'Activity.created' => 'ASC',
+					)
+				));
+		}
+		
+		return $return;
+	}
+	
+/**
+ * Activities method
+ *
+ * @return array
+ */
+	public function activities() {
+		$return = null;
+		if (in_array('Activities', CakePlugin::loaded())) {
+			$return = $this->Activity->find('all', array(
+				'conditions' => array(
+					'Activity.action_description' => 'contact activity',
+					'Activity.model' => 'Contact',
+					),
+				'fields' => array(
+					'COUNT(Activity.created)',
+					'Activity.created',
+					),
+				'group' =>  array(
+					'DATE(Activity.created)',
+					),
+				'order' => array(
+					'Activity.created' => 'ASC',
+					)
+				));
+		}
+		
+		return $return;
+	}
 
 }
