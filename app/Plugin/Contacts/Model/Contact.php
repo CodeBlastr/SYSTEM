@@ -19,6 +19,14 @@ class Contact extends ContactsAppModel {
 	public $displayField = 'name';
 
 /**
+ * Notify Assign
+ *
+ * @var bool
+ */
+	public $notifyAssignee = false;
+	
+
+/**
  * Validate
  *
  * @var array
@@ -201,8 +209,14 @@ class Contact extends ContactsAppModel {
 				'parentForeignKey' => ''
 				));
 		}
+		$this->checkAssigneeChange();
 		return true;
 	}
+	
+	function afterSave($created) {
+		$this->notifyAssignee();
+	}
+ 
 
 /**
  * Add method
@@ -610,5 +624,53 @@ class Contact extends ContactsAppModel {
 		
 		return $return;
 	}
+
+/**
+ * Check Assignee Change Method
+ * 
+ * @param
+ * @return void
+ */
+ 	public function checkAssigneeChange() {
+		if (!empty($this->data['Contact']['assignee_id'])) {
+			if (!empty($this->data['Contact']['id'])) {
+				// check to see if assignee has been updated
+				$result = $this->find('count', array(
+					'conditions' => array(
+						'Contact.id' => $this->data['Contact']['id'],
+						'Contact.assignee_id' => $this->data['Contact']['assignee_id']
+						)
+					));
+				if (empty($result)) {
+					// assignee has changed
+					$this->notifyAssignee = true;
+				}
+			} else {
+				// if the contact id is empty this is a new record
+				$this->notifyAssignee = true;
+			}
+		}
+ 	}
+ 
+/**
+ * Notify Assignee Method
+ * sends an email to the assignee
+ * 
+ * @return void
+ */
+ 	public function notifyAssignee() {
+		if (!empty($this->data['Contact']['assignee_id']) && !empty($this->notifyAssignee)) {
+			$this->Assignee->id = $this->data['Contact']['assignee_id'];
+			$assignee = $this->Assignee->read();
+			$recipient = $assignee['Assignee']['email'];
+			$subject = 'New Assignment : ' . $this->data['Contact']['name'];
+			$message = 'Congratulations, you have received a new business opportunity.  <br /><br /> View ' . $this->data['Contact']['contact_type'] . ' <a href="http://' . $_SERVER['HTTP_HOST'] . '/contacts/contacts/view/' . $this->data['Contact']['id'] .'">' . $this->data['Contact']['name'] .'</a> here.  Where you can track activity, change the status, create an estimate, or set a reminder to follow up.'; 
+			if ($this->__sendMail($recipient, $subject, $message)) {
+				return true;
+			} else {
+				throw Exception(__('Assignee could not be notified.'));
+			}
+		}
+ 	}
 
 }
