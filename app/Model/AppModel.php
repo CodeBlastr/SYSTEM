@@ -311,4 +311,3 @@ class AppModel extends Model {
 	}
 
 }
-?>
