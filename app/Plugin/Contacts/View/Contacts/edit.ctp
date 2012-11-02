@@ -27,7 +27,7 @@
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
-		'heading' => 'Projects',
+		'heading' => 'Contacts',
 		'items' => array(
 			$this->Html->link(__('View'), array('action' => 'view', $this->Form->value('Contact.id'))),
 			$this->Html->link(__('List'), array('action' => 'index')),
