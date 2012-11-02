@@ -128,7 +128,6 @@ class FormHelper extends CakeFormHelper {
 
 		if (!empty($div)) {
 			$divOptions['class'] = 'input';
-			$divOptions['data-role'] = 'fieldcontain'; // Zuha added for jquery mobile form elements
 			$divOptions = $this->addClass($divOptions, $options['type']);
 			if (is_string($div)) {
 				$divOptions['class'] = $div;

@@ -4,7 +4,7 @@
     <?php
 	 echo $this->Form->hidden('Contact.is_company', array('value' => 1));
 	 echo $this->Form->input('Contact.name', array('label' => 'Name, <small><i>(Only a company name is required.)</i></small>'));
-	 echo $this->Form->input('ContactDetail.0.contact_detail_type', array('label' => false, 'class' => 'span1', 'after' => ' ' . $this->Form->input('ContactDetail.0.value', array('label' => false, 'class' => 'span2', 'div' => false, 'after' => ' ' . $this->Html->link(__('Edit Detail Types'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_DETAIL'), array('class' => 'dialog', 'title' => 'Edit Detail Types')))))); ?>
+	 echo $this->Form->input('ContactDetail.0.contact_detail_type', array('label' => false, 'class' => 'span1', 'after' => ' ' . $this->Form->input('ContactDetail.0.value', array('label' => false, 'type' => 'text', 'class' => 'span2', 'div' => false, 'after' => ' ' . $this->Html->link(__('Edit Detail Types'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_DETAIL'), array('class' => 'dialog', 'title' => 'Edit Detail Types')))))); ?>
   </fieldset>
   
   <fieldset>

@@ -1,9 +1,20 @@
 <?php
+echo $this->Form->create('', array('type' => 'get')); 
+echo $this->Form->input('start:name', array('label' => 'Name'));
+echo $this->Form->end('Search');
+
+
 echo $this->Element('scaffolds/index', array('data' => $contacts));
 
 
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => '',
+		'items' => array(
+			$this->Html->link(__('Dashboard'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'dashboard')),
+			),
+		),
 	array(
 		'heading' => '',
 		'items' => array(
@@ -19,3 +30,9 @@ $this->set('context_menu', array('menus' => array(
 			),
 		),
 	))); ?>
+	
+<script type="text/javascript">
+$(function() {
+	//alert('red');
+});
+</script>
