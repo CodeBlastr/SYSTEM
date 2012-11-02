@@ -56,7 +56,8 @@ class WebpagesController extends WebpagesAppController {
 		
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
-		$this->set('page_title_for_layout', Inflector::pluralize(Inflector::humanize($type)));		
+		$this->set('page_title_for_layout', Inflector::pluralize(Inflector::humanize($type)));	
+		$this->layout = 'default';	
 		$this->render('index_' . $type);
 	}
 
@@ -125,6 +126,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('parentId', $parentId);
 		$this->set('page_title_for_layout', __('%s Builder', Inflector::humanize($this->Webpage->types[$type])));
 		//<h2><?php echo __('Webpage Builder'); if($parentId) { echo ' <small>Creating child of Page #'.$parentId.'</small>'; } </h2>
+		$this->layout = 'default';	
 		$this->render('add_' . $type);
 	}
 	

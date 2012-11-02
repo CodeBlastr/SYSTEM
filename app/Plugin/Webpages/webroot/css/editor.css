@@ -48,7 +48,7 @@ body {
   overflow: visible;
   color: #777777;
   *position: relative;
-  z-index: 100;
+  z-index: 1000;
   width: 100%;
   background: #000;
 }
@@ -225,7 +225,7 @@ body {
 	top: 0px;
 	width: 100%;
 	height: 100%;
-	z-index: 99;
+	z-index: 999;
 }
 .hover_div  {
 	min-height: 2em;
@@ -248,7 +248,7 @@ body {
 	position: fixed;
 	top: -5000px;
 	left: -5000px;
-	z-index: 100;
+	z-index: 1000;
 	width: 80%;
 	height: 60%;
 }
