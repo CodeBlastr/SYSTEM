@@ -15,9 +15,9 @@
 		}
 		echo $this->Form->input('Contact.assignee_id', array('empty' => '-- Select --', 'label' => 'Assigned to'));
 		echo $this->Form->input('Contact.contact_type', array('empty' => '-- Select --', 'label' => 'Type'));
-		echo $this->Form->input('Contact.contact_source_id', array('empty' => '-- Select --', 'label' => 'Source'));
-		echo $this->Form->input('Contact.contact_industry_id', array('empty' => '-- Select --', 'label' => 'Industry'));
-		echo $this->Form->input('Contact.contact_rating_id', array('empty' => '-- Select --', 'label' => 'Rating'));
+		echo $this->Form->input('Contact.contact_rating', array('empty' => '-- Select --', 'label' => 'Rating'));
+		echo $this->Form->input('Contact.contact_source', array('empty' => '-- Select --', 'label' => 'Source'));
+		echo $this->Form->input('Contact.contact_industry', array('empty' => '-- Select --', 'label' => 'Industry'));
 		echo $this->Form->input('Contact.user_id', array('empty' => '-- Select User --'));
 		echo $this->Form->input('Contact.is_company'); ?>
 	</fieldset>
@@ -29,8 +29,9 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Projects',
 		'items' => array(
-			$this->Html->link(__('List Contacts'), array('action' => 'index'), array('class' => 'index')),
-			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Contact.id')), array('class' => 'delete'), sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Contact.id'))),
+			$this->Html->link(__('View'), array('action' => 'view', $this->Form->value('Contact.id'))),
+			$this->Html->link(__('List'), array('action' => 'index')),
+			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Contact.id')), array(), sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Contact.id'))),
 			)
 		),
 	))); ?>
