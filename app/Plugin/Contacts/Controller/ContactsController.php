@@ -91,6 +91,9 @@ class ContactsController extends ContactsAppController {
 		$this->set('displayDescription', ''); 
 	}
 
+/**
+ * View method
+ */
 	public function view($id = null) {
 		$this->Contact->id = $id;
 		if (!$this->Contact->exists()) {
@@ -110,8 +113,7 @@ class ContactsController extends ContactsAppController {
 				),
 			));
 		$contactDetailTypes = $this->Contact->ContactDetail->types();
-		$contactAddressTypes = Zuha::enum('CONTACTADDRESS');
-		$this->set(compact('contact', 'contactDetailTypes', 'contactAddressTypes', 'contactActivityTypes'));
+		$this->set(compact('contact', 'contactDetailTypes', 'contactActivityTypes'));
 		
 		// get paginated related contacts
 		$this->paginate = array('Contact' => array(
@@ -129,14 +131,21 @@ class ContactsController extends ContactsAppController {
 				'name',
 				),
 			));
+
 		$employees = !empty($contact['Contact']['is_company']) ? $this->paginate('Contact', array('Contact.id')) : null;
 		$this->set('employees', $employees);
+		$this->set('estimates', in_array('Estimates', CakePlugin::loaded()) ? $this->paginate('Contact.Estimate', array('Estimate.foreign_key' => $id, 'Estimate.model' => 'Contact')) : null);
+		$this->set('activities', in_array('Activities', CakePlugin::loaded()) ? $this->paginate('Contact.Activity', array('Activity.foreign_key' => $id, 'Activity.model' => 'Contact', 'Activity.action_description !=' => 'lead created')) : null);
+		$this->set('tasks', in_array('Tasks', CakePlugin::loaded()) ? $this->paginate('Contact.Task', array('Task.foreign_key' => $id, 'Task.model' => 'Contact')) : null);
 		$this->set('modelName', 'Contact');
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', '');
 		$this->set('tabsElement', '/contacts');
 		$this->set('page_title_for_layout', $contact['Contact']['name']);
 		$this->set('title_for_layout',  $contact['Contact']['name']);
+		$this->set('loggedActivities', $this->Contact->activities($id));
+		$this->set('loggedEstimates', $this->Contact->estimates($id));
+		
 		if (!empty($contact['Contact']['is_company'])) {
 			$this->render('view_company');
 		} else {
@@ -179,6 +188,9 @@ class ContactsController extends ContactsAppController {
 		$this->render('add_'.$contactType);
 	}
 
+/**
+ *  Edit method
+ */
 	public function edit($id = null) {
 		$this->Contact->id = $id;
 		if (!$this->Contact->exists()) {
@@ -222,114 +234,79 @@ class ContactsController extends ContactsAppController {
 	}
 	
 /**
- * Show the tasks related to this contact
- * @todo 	Make this so that it renders using an element from the tasks plugin
+ * Add an opportunity / estimate for a contact
  */
-	public function tasks($contactId = null) {
+	public function estimate($contactId = null) {
 		$this->Contact->id = $contactId;
 		if (!$this->Contact->exists()) {
 			throw new NotFoundException(__('Contact not found'));
 		}
-		
-		$this->paginate = array(
-			'conditions' => array(
-				'Task.model' => 'Contact',
-				'Task.foreign_key' => $contactId,
-				'Task.parent_id' => null,
-				),
-			'fields' => array(
-				'id',
-				'name',
-				'is_completed',
-				'created',
-				'description',
-				),
-			'contain' => array(
-				'Assignee' => array(
-					'fields' => array(
-						'full_name',
-						),
-					),
-				),
-			'order' => array(
-				'Task.created DESC'
-				),
-			);
-		$contact = $this->Contact->find('first', array(
-			'conditions' => array('Contact.id' =>  $contactId)));
-		$this->set('contact', $contact); 
-		$this->set('foreignKey', $contactId);
-		$this->set('tasks', $this->paginate('Contact.Task'));
-		$this->set('modelName', 'Task');
-		$this->set('pluginName', 'tasks');
-		$this->set('link', array('pluginName' => 'contacts', 'controllerName' => 'contacts', 'actionName' => 'task'));
-		$this->set('displayName', 'name');
-		$this->set('displayDescription', 'description'); 
-		$this->set('page_title_for_layout', $contact['Contact']['name']);
-		$this->set('tabsElement', '/contacts');
+		if (!empty($this->request->data)) {
+			try {
+				$this->Contact->Estimate->save($this->request->data);
+				$this->Session->setFlash('Opportunity Added');
+				$this->redirect(array('action' => 'view', $contactId));
+			} catch (Exception $e) {
+				$this->Session->setFlash($e->getMessage());			
+			}
+		}
+		$contact = $this->Contact->read(null, $contactId);
+		$this->set(compact('contact')); 
+		$this->set('page_title_for_layout', __('Create an opportunity for %s', $contact['Contact']['name']));
+	}
+	
+/**
+ * Add an activity for a contact
+ */
+	public function activity($contactId = null) {
+		$this->Contact->id = $contactId;
+		if (!$this->Contact->exists()) {
+			throw new NotFoundException(__('Contact not found'));
+		}
+		if (!empty($this->request->data)) {
+			try {
+				$this->Contact->Activity->save($this->request->data);
+				$this->Session->setFlash('Activity Logged');
+				$this->redirect(array('action' => 'view', $contactId));
+			} catch (Exception $e) {
+				$this->Session->setFlash($e->getMessage());			
+			}
+		}
+		$contact = $this->Contact->read(null, $contactId);
+		$this->set(compact('contact')); 
+		$this->set('page_title_for_layout', __('Log an Activity for %s', $contact['Contact']['name']));
 	}
 	
 	
 /**
- * Show the tasks related to this contact.
- * @todo 	Make this so that it renders using an element from the tasks plugin
+ * Add a reminder
+ * 
  */
-	public function task($taskId = null) {				
-		$task = $this->Contact->Task->find('first', array(
-			'conditions' => array(
-				'Task.id' => $taskId,
-				),
-			));
-		
-		$this->set('task', $task);
-		$this->paginate = array(
-			'conditions' => array(
-				'Task.parent_id' => $task['Task']['id'],
-				'Task.is_completed' => 0,
-				),
-			'contain' => array(
-				'Assignee' => array(
-					'fields' => array(
-						'id',
-						'full_name',
-						),
-					),
-				),
-			'fields' => array(
-				'id',
-				'due_date',
-				'assignee_id',
-				'name',
-				),
-			'order' => array(
-				'Task.order',
-				'Task.due_date',
-				),
-			);
-		$contact = $this->Contact->find('first', array(
-			'conditions' => array('Contact.id' => $task['Task']['foreign_key'])));
-		$this->set('contact', $contact); 
-		$associations =  array('Assignee' => array('displayField' => $this->Contact->Task->Assignee->displayField), 'Creator' => array('displayField' => 'full_name'));
-		$this->set('associations', $associations);
-		$this->set('childTasks', $this->paginate('Task'));
-		$this->paginate['conditions']['Task.is_completed'] = 1;
-		$this->paginate['fields'] = array('id', 'due_date', 'completed_date', 'assignee_id', 'name');
-		$this->set('finishedChildTasks', $this->paginate('Task'));
-		$this->set('parentId', $task['Task']['id']);
-		$this->set('model', $task['Task']['model']);
-		$this->set('foreignKey', $task['Task']['foreign_key']);
-		$this->set('assignees', $this->Contact->User->find('list'));
-		$this->set('modelName', 'Task');
-		$this->set('pluginName', 'tasks');
-		$this->set('displayName', 'name');
-		$this->set('displayDescription', ''); 
-		$this->set('showGallery', true);
-		$this->set('galleryModel', array('name' => 'User', 'alias' => 'Assignee'));
-		$this->set('galleryForeignKey', 'id');
-		$this->set('page_title_for_layout', $contact['Contact']['name']);
-		$this->set('tabsElement', '/contacts');
+	public function task($contactId = null) {		
+		$this->Contact->id = $contactId;
+		if (!$this->Contact->exists()) {
+			throw new NotFoundException(__('Contact not found'));
+		}
+		if (!empty($this->request->data)) {
+			try {
+				$this->Contact->Task->save($this->request->data);
+				$this->Session->setFlash('Activity Logged');
+				$this->redirect(array('action' => 'view', $contactId));
+			} catch (Exception $e) {
+				$this->Session->setFlash($e->getMessage());			
+			}
+		}
+		$contact = $this->Contact->read(null, $contactId);
+		$this->set(compact('contact')); 
+		$this->set('assignees', $this->Contact->Assignee->find('list'));
+		$this->set('page_title_for_layout', __('Create a Reminder for %s', $contact['Contact']['name']));
 	}
 	
+	
+/**
+ *  Dashboard method
+ * 
+ */
 	public function dashboard() {
 		$this->Contact->fixTypes(); // a temporary fix for updating some database values;
 		
