@@ -198,49 +198,33 @@ class User extends UsersAppModel {
 	public function add($data) {
 		$data = $this->_cleanAddData($data);
 		if ($data = $this->_userContact($data)) {
-			# setup a verification key
+			// setup a verification key
 			$data['User']['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null;
 			$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
 
-			$data['User']['parent_id'] = !empty($data['User']['referal_code']) ?
-						$this->getParentId($data['User']['referal_code']) : '';
+			$data['User']['parent_id'] = !empty($data['User']['referal_code']) ? $this->getParentId($data['User']['referal_code']) : '';
 			$data['User']['reference_code'] = $this->generateRandomCode();
-			# the contact model calls back to the User model when using save all
-			# and saves the recursive data of contact person / contact company this way.
+			// the contact model calls back to the User model when using save all
+			// and saves the recursive data of contact person / contact company this way.
 			if ($this->Contact->add($data)) {
 
-				# update referral user credits on a new registration
-				if (defined('__USERS_NEW_REGISTRATION_CREDITS') && !empty($data['User']['parent_id'])) {
-					$this->updateUserCredits(__USERS_NEW_REGISTRATION_CREDITS, $data['User']['parent_id']);
-				}
-
-				# add the user to a group if the data for the group exists
+				// add the user to a group if the data for the group exists
 				if (!empty($data['UserGroup']['UserGroup']['id'])) {
 					$this->UserGroup->UsersUserGroup->add($data);
 				}
 
-				if (in_array('Orders', CakePlugin::loaded())) :
-					# setup and save data for a related order shipment record for prefilled checkout
-					$data['OrderShipment']['first_name'] = !empty($data['User']['first_name']) ? $data['User']['first_name'] : '';
-					$data['OrderShipment']['last_name'] =  !empty($data['User']['last_name']) ? $data['User']['last_name'] : '';
-					$data['OrderPayment']['user_id'] = $this->id;
-					$data['OrderShipment']['user_id'] = $this->id;
-					$this->OrderPayment->save($data);
-					$this->OrderShipment->save($data);
-				endif;
-
-				# create a gallery for this user.
+				// create a gallery for this user.
 				if (!empty($data['User']['avatar']['name'])) {
 					$data['Gallery']['model'] = 'User';
 					$data['Gallery']['foreign_key'] = $this->id;
 					$data['GalleryImage']['filename'] = $data['User']['avatar'];
 					if ($this->Gallery->GalleryImage->add($data, 'filename')) {
-						#return true;
+						//return true;
 					} else if (!empty($data['GalleryImage']['filename'])) {
-						#return true;
-						# gallery image wasn't saved but I'll leave this error message as a todo,
-						# because I don't have a decision on whether we should roll back the user
-						# if that happens, or just create the user anyway.
+						//return true;
+						// gallery image wasn't saved but I'll leave this error message as a todo,
+						// because I don't have a decision on whether we should roll back the user
+						// if that happens, or just create the user anyway.
 					}
 				}
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
@@ -297,12 +281,17 @@ class User extends UsersAppModel {
 			$data['Contact'] = $contact['Contact'];
 		} else if (!empty($data['User']['id'])) {
 			$contact = $this->Contact->findByUserId($data['User']['id']);
-			if (!empty($contact)) :
+			if (!empty($contact)) {
 				$data['Contact'] = $contact['Contact'];
 				$data['User']['full_name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : $contact['Contact']['name'];
-			else :
+			} else {
 				$data['User']['full_name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : 'N/A';
-			endif;
+//				// create a Contact
+//				$contact = $this->Contact->create(array(
+//					'name' => $data['User']['full_name']
+//				));
+//				$data['Contact'] = set::merge($data['Contact'], $contact['Contact']);
+			}
 		} else if (!empty($data['Contact']['user_id'])) {
 			debug($this->Contact->findByUserId($data['Contact']['user_id']));
 			break;
