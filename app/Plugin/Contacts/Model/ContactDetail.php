@@ -26,7 +26,6 @@ class ContactDetail extends ContactsAppModel {
 		)
 	);
 
-
 	public function types() {
 		$types = array();
 		foreach(Zuha::enum('CONTACT_DETAIL') as $type) {

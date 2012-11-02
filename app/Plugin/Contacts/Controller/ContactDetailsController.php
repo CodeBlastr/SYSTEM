@@ -18,19 +18,19 @@ class ContactDetailsController extends ContactsAppController {
 		$this->set('contactDetail', $this->ContactDetail->read(null, $id));
 	}
 
-	function add() {
+	function add($contactId = null) {
 		if (!empty($this->request->data)) {
 			$this->ContactDetail->create();
 			if ($this->ContactDetail->save($this->request->data)) {
 				$this->Session->setFlash(__('The contact detail has been saved', true));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $this->request->data['ContactDetail']['contact_id']));
 			} else {
 				$this->Session->setFlash(__('The contact detail could not be saved. Please, try again.', true));
 			}
 		}
 		$contactDetailTypes = $this->ContactDetail->types();
 		$contacts = $this->ContactDetail->Contact->find('list');
-		$this->set(compact('contactDetailTypes', 'contacts'));
+		$this->set(compact('contactDetailTypes', 'contacts', 'contactId'));
 	}
 
 	function edit($id = null) {

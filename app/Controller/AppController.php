@@ -193,10 +193,10 @@ class AppController extends Controller {
 			$this->__handlePaginatorArchivable($object);
 		}
 
-		#filter by database field full value
+		// filter by database field full value
 		$filter = !empty($this->request->params['named']['filter']) ? $this->request->params['named']['filter'] : null;
 		if (!empty($filter) && is_array($filter)) {
-			# use an OR filter if we do multiple filters
+			// use an OR filter if we do multiple filters
 			foreach ($filter as $name) {
 				$this->__handlePaginatorFiltering(urldecode($name), $object);
 			}
@@ -204,10 +204,10 @@ class AppController extends Controller {
 			$this->__handlePaginatorFiltering(urldecode($filter), $object);
 		}
 
-		#filter by starting letter of database field
+		// filter by starting letter of database field
 		$starter = !empty($this->request->params['named']['start']) ? $this->request->params['named']['start'] : null;
 		if (!empty($starter) && is_array($starter)) {
-			# use an OR filter if we do multiple filters
+			// use an OR filter if we do multiple filters
 			foreach ($starter as $start) {
 				$this->__handlePaginatorStarter(urldecode($start), $object);
 			}
