@@ -147,8 +147,6 @@ class Contact extends ContactsAppModel {
  * @return null
  */
 	public function __construct($id = false, $table = null, $ds = null) {
-    	parent::__construct($id, $table, $ds);
-		$this->order = array("{$this->alias}.name");
 
 		if (in_array('Tasks', CakePlugin::loaded())) {
 			$this->hasMany['Task'] = array(
@@ -195,6 +193,8 @@ class Contact extends ContactsAppModel {
 				'counterQuery' => ''
 			);
 		}
+    	parent::__construct($id, $table, $ds);
+		$this->order = array("{$this->alias}.name");
     }
 	
 	
@@ -540,14 +540,14 @@ class Contact extends ContactsAppModel {
  *
  * @return array
  */
-	public function estimates() {
+	public function estimates($foreignKey = null) {
 		$return = null;
 		if (in_array('Estimates', CakePlugin::loaded())) {
+			$conditions['Estimate.is_accepted'] = false;
+			$conditions['Estimate.model'] = 'Contact';
+			!empty($foreignKey) ? $conditions['Estimate.foreign_key'] = $foreignKey : null; 
 			$return = $this->Estimate->find('all', array(
-				'conditions' => array(
-					'Estimate.model' => 'Contact',
-					'Estimate.is_accepted' => false,
-					),
+				'conditions' => $conditions,
 				'contain' => array(
 					'Contact'
 					)
@@ -572,7 +572,7 @@ class Contact extends ContactsAppModel {
  *
  * @return array
  */
-	public function estimateActivities() {
+	public function estimateActivities($foreignKey = null) {
 		$return = null;
 		if (in_array('Activities', CakePlugin::loaded())) {
 			$return = $this->Activity->find('all', array(
@@ -601,14 +601,14 @@ class Contact extends ContactsAppModel {
  *
  * @return array
  */
-	public function activities() {
+	public function activities($foreignKey = null) {
 		$return = null;
 		if (in_array('Activities', CakePlugin::loaded())) {
+			$conditions['Activity.action_description'] = 'contact activity';
+			$conditions['Activity.model'] = 'Contact';
+			!empty($foreignKey) ? $conditions['Activity.foreign_key'] = $foreignKey : null; 
 			$return = $this->Activity->find('all', array(
-				'conditions' => array(
-					'Activity.action_description' => 'contact activity',
-					'Activity.model' => 'Contact',
-					),
+				'conditions' => $conditions,
 				'fields' => array(
 					'COUNT(Activity.created)',
 					'Activity.created',
