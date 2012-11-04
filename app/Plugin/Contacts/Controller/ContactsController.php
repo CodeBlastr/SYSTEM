@@ -328,7 +328,7 @@ class ContactsController extends ContactsAppController {
 		
 		// list of activities
 		$this->set('activities', $this->Contact->activities());
-		
+
 		$this->set('page_title_for_layout', 'CRM Dashboard');
 	}
 }

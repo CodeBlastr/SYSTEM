@@ -560,7 +560,7 @@ class Contact extends ContactsAppModel {
 				$average[] = $ratings[$value];
 			}
 			$return['_subTotal'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)));
-			$return['_multiplier'] = array_sum($average) / count($values);
+			$return['_multiplier'] = !empty($average) ? array_sum($average) / count($values) : 0;
 			$return['_total'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)) * ('.' . $return['_multiplier']));
 		}
 		
@@ -610,8 +610,8 @@ class Contact extends ContactsAppModel {
 			$return = $this->Activity->find('all', array(
 				'conditions' => $conditions,
 				'fields' => array(
+					'*',
 					'COUNT(Activity.created)',
-					'Activity.created',
 					),
 				'group' =>  array(
 					'DATE(Activity.created)',
@@ -621,7 +621,6 @@ class Contact extends ContactsAppModel {
 					)
 				));
 		}
-		
 		return $return;
 	}
 

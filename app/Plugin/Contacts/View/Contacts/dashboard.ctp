@@ -134,39 +134,44 @@
     <?php 		
 	if (!empty($activities)) { ?>
 	<div class="masonryBox tagActivities">
-    	<h3><i class="icon-th-large"></i> Logged Activities </h3>
-    		<h4>Activities over time</h4>
-            
-			<script type="text/javascript">
-			google.load("visualization", "1", {packages:["corechart"]});
-			google.setOnLoadCallback(drawLeadsChart);
-				 
-			function drawLeadsChart() {
-				// Create and populate the data table.
-				var data = google.visualization.arrayToDataTable([
-				['x', 'Date'],
-				<?php 
-				foreach ($activities as $activity) { ?>
-					['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity['Activity']['COUNT(`Activity`.`created`)']; ?>],
-				<?php } ?>
-				]);
-						
-				// Create and draw the visualization.
-				new google.visualization.LineChart(document.getElementById('activities_over_time')).
-					draw(data, {
-						curveType: "function",
-						width: 310, height: 200,
-						legend: {position: 'none'},
-						chartArea: {width: '80%', height: '80%'}
-						}
-					);
-				$(".masonry").masonry("reload"); // reload the layout
-			}
-			</script>
-            
- 			<div id="activities_over_time"></div>
-		<?php
-        } ?>
+    	<h3><i class="icon-th-large"></i> Activity </h3>
+    	<?php
+    	$rActivities = array_reverse($activities);
+    	for ($i = 0; $i <= 4; $i++) {
+    		echo '<p>' . $this->Html->link($rActivities[$i]['Activity']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $rActivities[$i]['Activity']['foreign_key'])) . '</p>';
+    	} ?> 
+		<h4>Activities over time</h4>
+        
+		<script type="text/javascript">
+		google.load("visualization", "1", {packages:["corechart"]});
+		google.setOnLoadCallback(drawLeadsChart);
+			 
+		function drawLeadsChart() {
+			// Create and populate the data table.
+			var data = google.visualization.arrayToDataTable([
+			['x', 'Date'],
+			<?php 
+			foreach ($activities as $activity) { ?>
+				['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity['Activity']['COUNT(Activity.created)']; ?>],
+			<?php } ?>
+			]);
+					
+			// Create and draw the visualization.
+			new google.visualization.LineChart(document.getElementById('activities_over_time')).
+				draw(data, {
+					curveType: "function",
+					width: 310, height: 200,
+					legend: {position: 'none'},
+					chartArea: {width: '80%', height: '80%'}
+					}
+				);
+			$(".masonry").masonry("reload"); // reload the layout
+		}
+		</script>
+        
+		<div id="activities_over_time"></div>
+	<?php
+    } ?>
 	</div>
     
 </div>
