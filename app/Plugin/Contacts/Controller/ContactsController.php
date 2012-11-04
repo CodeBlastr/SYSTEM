@@ -62,7 +62,8 @@ class ContactsController extends ContactsAppController {
 			);
 		$this->set('contacts', $this->paginate());
 		$this->set('displayName', 'name');
-		$this->set('displayDescription', ''); 
+		$this->set('displayDescription', '');
+		$this->set('contactTypes', $this->Contact->types());
 		$associations =  array('ContactType' => array('displayField' => 'name'), 'ContactSource' => array('displayField' => 'name'), 'ContactIndustry' => array('displayField' => 'name'), 'ContactRating' => array('displayField' => 'name'));
 		$this->set('associations', $associations);
 		$this->allowedActions[] = 'list';
