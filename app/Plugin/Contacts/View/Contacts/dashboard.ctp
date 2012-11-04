@@ -99,23 +99,43 @@
 	</div>
     
     
-	<div class="masonryBox tagTasks">
-    	<h3><i class="icon-th-large"></i> Upcoming Tasks </h3>
-        <?php 
-		if (!empty($tasks)) {
-			echo '<p>A list of scheduled follow ups.</p>';
-			foreach ($tasks as $task) {
-				echo '<p>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'completed', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($task['Task']['name'], array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'view', $task['Task']['id'])) . ', due ' . date('M d, Y', strtotime($task['Task']['due_date'])) . '</p>';
-			}
-		} ?>
+	<div class="masonryBox tagActivities">
+    	<h3><i class="icon-th-large"></i> Search Contacts </h3>
+		<?php 	
+		echo $this->Element('forms/search', array(
+		'url' => '/contacts/contacts/index/', 
+		'inputs' => array(
+			array(
+				'name' => 'contains:name', 
+				'options' => array(
+					'label' => '', 
+					'placeholder' => 'Type Your Search and Hit Enter'
+					)
+				),
+			)
+		)); ?>
 	</div>
     
     
+    <?php 
+	if (!empty($tasks)) { ?>
+	<div class="masonryBox tagTasks">
+    	<h3><i class="icon-th-large"></i> Upcoming Tasks </h3>
+    		<?php
+			echo '<p>A list of scheduled follow ups.</p>';
+			foreach ($tasks as $task) {
+				echo '<p>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'completed', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($task['Task']['name'], array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'view', $task['Task']['id'])) . ', due ' . date('M d, Y', strtotime($task['Task']['due_date'])) . '</p>';
+			} ?>
+	</div>
+	<?php
+	} ?>
+    
+    
+    <?php 		
+	if (!empty($activities)) { ?>
 	<div class="masonryBox tagActivities">
     	<h3><i class="icon-th-large"></i> Logged Activities </h3>
-        <?php 		
-		if (!empty($activities)) { 
-        	echo '<h4>Activities over time</h4>'; ?>
+    		<h4>Activities over time</h4>
             
 			<script type="text/javascript">
 			google.load("visualization", "1", {packages:["corechart"]});
@@ -148,7 +168,6 @@
 		<?php
         } ?>
 	</div>
-    
     
 </div>
 

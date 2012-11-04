@@ -214,6 +214,17 @@ class AppController extends Controller {
 		} else if (!empty($starter)) {
 			$this->__handlePaginatorStarter(urldecode($starter), $object);
 		}
+
+		// filter by any match of a string in a particular field
+		$container = !empty($this->request->params['named']['contains']) ? $this->request->params['named']['contains'] : null;
+		if (!empty($container) && is_array($container)) {
+			// use an OR filter if we do multiple filters
+			foreach ($container as $contain) {
+				$this->__handlePaginatorContainer(urldecode($contain), $object);
+			}
+		} else if (!empty($container)) {
+			$this->__handlePaginatorContainer(urldecode($container), $object);
+		}
 	}
 
 /**
@@ -276,7 +287,7 @@ class AppController extends Controller {
 			}
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
-			# no matching field don't filter anything
+			// no matching field don't filter anything
 			if (Configure::read('debug') > 0) {
 				$this->Session->setFlash(__('Invalid field filter attempted on ' . $options['alias']));
 			}
@@ -297,7 +308,27 @@ class AppController extends Controller {
 			$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' LIKE'] = $options['fieldValue'] . '%';
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
-			# no matching field don't filter anything
+			// no matching field don't filter anything
+			if (Configure::read('debug') > 0) {
+				$this->Session->setFlash(__('Invalid starter filter attempted.'));
+			}
+		}
+	}
+
+/**
+ * The actual handling of filtering for paginated pages
+ * Adds additional conditions to the paginate variable (one at time)
+ *
+ * @param mixed
+ * @return void
+ */
+	private function __handlePaginatorContainer($containField, $object) {
+		$options = $this->_getPaginatorVars($object, $containField);
+		if (!empty($options['fieldName'])) {
+			$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' LIKE'] = '%' . $options['fieldValue'] . '%';
+			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
+		} else {
+			// no matching field don't filter anything
 			if (Configure::read('debug') > 0) {
 				$this->Session->setFlash(__('Invalid starter filter attempted.'));
 			}

@@ -137,6 +137,12 @@
 .navbar li {
 	list-style-type: none;
 }
+.form-inline div {
+	display: inline-block;
+	margin-right: 8px;
+}
+
+
 
 
 /* tablet wide */
