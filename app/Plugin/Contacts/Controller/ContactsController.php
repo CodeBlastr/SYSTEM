@@ -328,6 +328,9 @@ class ContactsController extends ContactsAppController {
 		
 		// list of activities
 		$this->set('activities', $this->Contact->activities());
+		
+		// list of activities
+		$this->set('myContacts', $this->Contact->find('all', array('conditions' => array('Contact.assignee_id' => $this->Session->read('Auth.User.id')), 'limit' => 5, 'order' => 'Contact.created DESC')));
 
 		$this->set('page_title_for_layout', 'CRM Dashboard');
 	}

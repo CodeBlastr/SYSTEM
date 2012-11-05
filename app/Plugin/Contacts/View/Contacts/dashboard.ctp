@@ -1,7 +1,6 @@
 
 <?php echo $this->Html->script('https://www.google.com/jsapi', array('inline' => false)); ?>
 <?php echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false)); ?>
-  
 <div class="masonry contacts dashboard">
 	<div class="masonryBox tagLeads">
     	<h3><span class="label label-important">Attention!</span> New Leads </h3>
@@ -126,6 +125,22 @@
 			foreach ($tasks as $task) {
 				echo '<p>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'completed', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($task['Task']['name'], array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'view', $task['Task']['id'])) . ', due ' . date('M d, Y', strtotime($task['Task']['due_date'])) . '</p>';
 			} ?>
+	</div>
+	
+	<?php
+	} ?>
+    
+    
+    <?php 
+	if (!empty($myContacts)) { ?>
+	<div class="masonryBox tagMyContacts">
+    	<h3><i class="icon-th-large"></i> My Contacts </h3>
+    	<p>The last five contacts assigned to you.</p>
+		<?php
+		foreach ($myContacts as $contact) {
+			echo '<p>' . $this->Html->link($contact['Contact']['name'], array('action' => 'view', $contact['Contact']['id'])) . '</p>';
+		} ?>
+		<p class="pull-right"><?php echo $this->Html->link('View all of your contacts here', array('action' => 'index', 'filter' => 'assignee_id:' . $this->Session->read('Auth.User.id'))); ?></p>
 	</div>
 	<?php
 	} ?>
