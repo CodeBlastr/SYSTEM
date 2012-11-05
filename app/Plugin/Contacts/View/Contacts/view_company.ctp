@@ -101,7 +101,7 @@ $this->set('context_menu', array('menus' => array(
 		'items' => array(
 			$this->Html->link(__('List'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'index')),
 			$this->Html->link(__('Edit'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'edit', $contact['Contact']['id'])),
-			$this->Html->link(__('<i class="icon-plus"></i> Employee'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'add', 'person', $contact['Contact']['id']), array('escape' => false)),
+			$this->Html->link(__('<i class="icon-plus"></i> Employee'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'add', 'employee', $contact['Contact']['id']), array('escape' => false)),
 			),
 		),
 	))); ?>
