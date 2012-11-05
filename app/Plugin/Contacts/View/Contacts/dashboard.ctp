@@ -2,7 +2,7 @@
 <?php echo $this->Html->script('https://www.google.com/jsapi', array('inline' => false)); ?>
 <?php echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false)); ?>
 <div class="masonry contacts dashboard">
-	<div class="masonryBox tagLeads">
+	<div class="masonryBox dashboardBox tagLeads">
     	<h3><span class="label label-important">Attention!</span> New Leads </h3>
         <?php 
 		if (!empty($leads)) {
@@ -33,7 +33,7 @@
 				new google.visualization.LineChart(document.getElementById('leads_over_time')).
 					draw(data, {
 						curveType: "function",
-						width: 310, height: 200,
+						width: 290, height: 200,
 						legend: {position: 'none'},
 						chartArea: {width: '80%', height: '80%'}
 						}
@@ -48,7 +48,7 @@
 	</div>
     
     
-	<div class="masonryBox tagOpportunities">
+	<div class="masonryBox dashboardBox tagOpportunities">
     	<h3><i class="icon-th-large"></i> Open Opportunities </h3>
         <?php 
 		if (!empty($estimates)) {
@@ -83,7 +83,7 @@
 				new google.visualization.LineChart(document.getElementById('estimates_over_time')).
 					draw(data, {
 						curveType: "function",
-						width: 310, height: 200,
+						width: 290, height: 200,
 						legend: {position: 'none'},
 						chartArea: {width: '80%', height: '80%'}
 						}
@@ -98,7 +98,7 @@
 	</div>
     
     
-	<div class="masonryBox tagActivities">
+	<div class="masonryBox dashboardBox tagActivities">
     	<h3><i class="icon-th-large"></i> Search Contacts </h3>
 		<?php 	
 		echo $this->Element('forms/search', array(
@@ -118,7 +118,7 @@
     
     <?php 
 	if (!empty($tasks)) { ?>
-	<div class="masonryBox tagTasks">
+	<div class="masonryBox dashboardBox tagTasks">
     	<h3><i class="icon-th-large"></i> Upcoming Tasks </h3>
     		<?php
 			echo '<p>A list of scheduled follow ups.</p>';
@@ -133,7 +133,7 @@
     
     <?php 
 	if (!empty($myContacts)) { ?>
-	<div class="masonryBox tagMyContacts">
+	<div class="masonryBox dashboardBox tagMyContacts">
     	<h3><i class="icon-th-large"></i> My Contacts </h3>
     	<p>The last five contacts assigned to you.</p>
 		<?php
@@ -148,7 +148,7 @@
     
     <?php 		
 	if (!empty($activities)) { ?>
-	<div class="masonryBox tagActivities">
+	<div class="masonryBox dashboardBox tagActivities">
     	<h3><i class="icon-th-large"></i> Activity </h3>
     	<?php
     	$rActivities = array_reverse($activities);
@@ -175,7 +175,7 @@
 			new google.visualization.LineChart(document.getElementById('activities_over_time')).
 				draw(data, {
 					curveType: "function",
-					width: 310, height: 200,
+					width: 290, height: 200,
 					legend: {position: 'none'},
 					chartArea: {width: '80%', height: '80%'}
 					}
