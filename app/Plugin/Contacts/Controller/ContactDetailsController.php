@@ -4,12 +4,12 @@ class ContactDetailsController extends ContactsAppController {
 	public $name = 'ContactDetails';
 	public $uses = 'Contacts.ContactDetail';
 
-	function index() {
+	public function index() {
 		$this->ContactDetail->recursive = 0;
 		$this->set('contactDetails', $this->paginate());
 	}
 
-	function view($id = null) {
+	public function view($id = null) {
 		$this->ContactDetail->id = $id;
 		if (!$this->ContactDetail->exists()) {
 			throw new NotFoundException(__('Invalid contact detail.'));
@@ -18,7 +18,7 @@ class ContactDetailsController extends ContactsAppController {
 		$this->set('contactDetail', $this->ContactDetail->read(null, $id));
 	}
 
-	function add($contactId = null) {
+	public function add($contactId = null) {
 		if (!empty($this->request->data)) {
 			$this->ContactDetail->create();
 			if ($this->ContactDetail->save($this->request->data)) {
@@ -33,27 +33,29 @@ class ContactDetailsController extends ContactsAppController {
 		$this->set(compact('contactDetailTypes', 'contacts', 'contactId'));
 	}
 
-	function edit($id = null) {
+	public function edit($id = null) {
 		$this->ContactDetail->id = $id;
 		if (!$this->ContactDetail->exists()) {
 			throw new NotFoundException(__('Invalid contact detail.'));
 		}
 
 		if (!empty($this->request->data)) {
-			if ($this->ContactDetail->save($this->request->data)) {
+			try {
+				$this->ContactDetail->save($this->request->data);
 				$this->Session->setFlash(__('The contact detail has been saved'));
-			} else {
-				$this->Session->setFlash(__('The contact detail could not be saved. Please, try again.'));
+				$this->redirect(array('controller' => 'contacts', 'action' => 'view', $this->request->data['ContactDetail']['contact_id']));
+			} catch(Exception $e) {
+				$this->Session->setFlash($e->getMessage);
 			}
 		}
 		
 		$this->ContactDetail->contain('Contact');
 		$this->request->data = $this->ContactDetail->read(null, $id);
-		$contactDetailTypes = $this->ContactDetail->types();
-		$this->set(compact('contactDetailTypes'));
+		$this->set('contactDetailTypes', $this->ContactDetail->types());
+		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['Contact']['name']));
 	}
 
-	function delete($id = null) {
+	public function delete($id = null) {
 		$this->ContactDetail->id = $id;
 		if (!$this->ContactDetail->exists()) {
 			throw new NotFoundException(__('Invalid contact detail.'));
@@ -67,4 +69,3 @@ class ContactDetailsController extends ContactsAppController {
 		$this->redirect(array('action' => 'index'));
 	}
 }
-?>

@@ -1,15 +1,13 @@
 <div class="contactDetails form">
 	<?php echo $this->Form->create('ContactDetail');?>
 	<fieldset>
-		<h1><?php echo __('Edit %s', $this->request->data['Contact']['name']); ?></h1>
-		<h3><?php echo __('Contact Detail'); ?></h3>
- 		<legend></legend>
 		<?php
-		echo $this->Form->input('id');
-		echo $this->Form->input('contact_detail_type', array('label' => 'Label', 'empty' => 'Choose one...'));
-		echo $this->Form->input('value'); ?>
+		echo $this->Form->input('ContactDetail.id');
+		echo $this->Form->hidden('ContactDetail.contact_id');
+		echo $this->Form->input('ContactDetail.contact_detail_type', array('label' => 'Label', 'empty' => 'Choose one...'));
+		echo $this->Form->input('ContactDetail.value'); ?>
 	</fieldset>
-	<?php echo $this->Form->end(); ?>
+	<?php echo $this->Form->end('Save'); ?>
 </div>
 <?php 
 // set the contextual menu items

@@ -199,6 +199,7 @@ class Contact extends ContactsAppModel {
 	
 	
 	function beforeSave() {
+		!empty($this->data['Contact']['contact_type']) ? $this->data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']) : null; 
 		if (in_array('Activities', CakePlugin::loaded()) && !empty($this->data['Contact']['contact_type']) && $this->data['Contact']['contact_type'] == 'lead') {
 			// log when leads are created
 			$this->Behaviors->attach('Activities.Loggable', array(
@@ -560,7 +561,7 @@ class Contact extends ContactsAppModel {
 				$average[] = $ratings[$value];
 			}
 			$return['_subTotal'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)));
-			$return['_multiplier'] = array_sum($average) / count($values);
+			$return['_multiplier'] = !empty($average) ? array_sum($average) / count($values) : 0;
 			$return['_total'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)) * ('.' . $return['_multiplier']));
 		}
 		
@@ -610,8 +611,8 @@ class Contact extends ContactsAppModel {
 			$return = $this->Activity->find('all', array(
 				'conditions' => $conditions,
 				'fields' => array(
+					'*',
 					'COUNT(Activity.created)',
-					'Activity.created',
 					),
 				'group' =>  array(
 					'DATE(Activity.created)',
@@ -621,9 +622,9 @@ class Contact extends ContactsAppModel {
 					)
 				));
 		}
-		
 		return $return;
 	}
+	
 
 /**
  * Check Assignee Change Method
