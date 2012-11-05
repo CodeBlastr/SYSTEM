@@ -160,6 +160,13 @@ class ContactsController extends ContactsAppController {
  * @todo			Most of the list variables below need to have a find function put into those models, which finds the right enumeration type by default.  Its really ugly to have multiple instances of the "type" spelled out all over the place.
  */	 
 	public function add($contactType = 'company', $contactId = null) {
+		if (!empty($contactId)) {
+			$this->Contact->id = $contactId;
+			if (!$this->Contact->exists()) {
+				throw new NotFoundException(__('Contact not found'));
+			}
+		}
+
 		if (!empty($this->request->data)) {
 			try {
 				$message = $this->Contact->add($this->request->data);
@@ -184,8 +191,8 @@ class ContactsController extends ContactsAppController {
 		$assignees = $this->Contact->Assignee->find('list');
 			
 		$this->set(compact('employers', 'people', 'contactDetailTypes', 'contactTypes', 'contactSources', 'contactIndustries', 'contactRatings', 'assignees'));
-		$this->set('page_title_for_layout', 'Add a '.$contactType);
-		$this->set('title_for_layout',  'Add a '.$contactType);
+		$this->set('page_title_for_layout', 'Add '.$contactType);
+		$this->set('title_for_layout',  'Add '.$contactType);
 		$this->render('add_'.$contactType);
 	}
 
