@@ -199,6 +199,7 @@ class Contact extends ContactsAppModel {
 	
 	
 	function beforeSave() {
+		!empty($this->data['Contact']['contact_type']) ? $this->data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']) : null; 
 		if (in_array('Activities', CakePlugin::loaded()) && !empty($this->data['Contact']['contact_type']) && $this->data['Contact']['contact_type'] == 'lead') {
 			// log when leads are created
 			$this->Behaviors->attach('Activities.Loggable', array(
@@ -623,6 +624,7 @@ class Contact extends ContactsAppModel {
 		}
 		return $return;
 	}
+	
 
 /**
  * Check Assignee Change Method
