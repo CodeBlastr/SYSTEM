@@ -81,8 +81,8 @@
 	
 
 /* masonry for dashboards */
-.masonry,
-.masonry .masonryBox {
+.dashboard,
+.dashboard .dashboardBox {
   -webkit-transition-duration: 0.7s;
      -moz-transition-duration: 0.7s;
       -ms-transition-duration: 0.7s;
@@ -90,7 +90,7 @@
           transition-duration: 0.7s;
 }
 
-.masonry {
+.dashboard {
   -webkit-transition-property: height, width;
      -moz-transition-property: height, width;
       -ms-transition-property: height, width;
@@ -98,22 +98,21 @@
           transition-property: height, width;
 }
 
-.masonry .masonryBox {
+.dashboard .dashboardBox {
   -webkit-transition-property: left, right, top;
      -moz-transition-property: left, right, top;
       -ms-transition-property: left, right, top;
        -o-transition-property: left, right, top;
           transition-property: left, right, top;
 }
-.masonryBox {
+.dashboardBox {
 	margin: 30px 10px 20px 0;
-	max-width: 340px;
 	padding: 20px 15px 5px;
 	white-space-collapse: collapse;
 	border: 1px solid #EEE;
 	position: relative;
 }
-.masonryBox h3 {
+.dashboardBox h3 {
 	padding: 0 10px;
 	margin: 0;
 	background: #FFF;
@@ -121,6 +120,7 @@
 	top: -24px;
 	left: 10px;
 }
+
 
 /* buttons */
 .btn-group + .btn-group {
