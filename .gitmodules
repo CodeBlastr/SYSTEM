@@ -10,12 +10,9 @@
 [submodule "app/Plugin/Forms"]
 	path = app/Plugin/Forms
 	url = git@github.com:zuha/Custom-Forms-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Catalogs"]
-	path = app/Plugin/Catalogs
+[submodule "app/Plugin/Products"]
+	path = app/Plugin/Products
 	url = git@github.com:zuha/Catalogs-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Orders"]
-	path = app/Plugin/Orders
-	url = git@github.com:zuha/Ecommerce-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Drafts"]
 	path = app/Plugin/Drafts
 	url = git@github.com:zuha/Drafts-Zuha-Cakephp-Plugin.git
