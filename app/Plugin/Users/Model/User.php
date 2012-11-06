@@ -119,8 +119,8 @@ class User extends UsersAppModel {
 				'className' => 'Transactions.TransactionShipment',
 				'foreign_key' => 'user_id'
 				);
-			$this->hasMany['CatalogItemBrand'] = array(
-				'className' => 'Catalogs.CatalogItemBrand',
+			$this->hasMany['ProductBrand'] = array(
+				'className' => 'Products.ProductBrand',
 				'foreignKey' => 'owner_id',
 				'dependent' => false,
 				);
@@ -128,14 +128,6 @@ class User extends UsersAppModel {
 				'className' => 'Connections.Connection',
 				'foreignKey' => 'user_id',
 				'dependent' => true,
-				);
-		}
-
-		if (in_array('Catalogs', CakePlugin::loaded())) {
-			$this->hasMany['CatalogItemBrand'] = array(
-				'className' => 'Catalogs.CatalogItemBrand',
-				'foreignKey' => 'owner_id',
-				'dependent' => false,
 				);
 		}
 		
