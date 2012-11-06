@@ -8,7 +8,7 @@ $showContext = !empty($showContext) ? true : false; ?>
         <div class="container">
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+                <span class="iscon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
             <ul class="nav">
@@ -24,7 +24,7 @@ $showContext = !empty($showContext) ? true : false; ?>
                		<?php if (!empty($showEditMode)) { ?><li><a class="dock_btn edit_button" id="edit_button" title="On edit mode"><span>Edit : Off</span></a></li><?php } ?>
                     <li><?php echo $this->Html->link('Content', '/admin/#tagPages+tagMedia+tagDiscussion+tagElements', array('title' => 'Pages, Modules, Media, Categories, Tags, Enumerations', 'onclick' => 'window.location.replace(this.href);window.location.reload(true)')); // takes extra js, because of the hash tags ?></li>
                     <li><?php echo $this->Html->link('Contacts', '/admin/contacts/contacts/dashboard', array('title' => 'Leads, Opportunities')); ?></li>
-    				<?php if (in_array('Transactions', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Ecommerce', array('plugin' => 'catalogs', 'controller' => 'catalogs', 'action' => 'dashboard'), array('title' => 'Catalogs, Orders', 'id' => 'navProducts')); ?></li><?php } ?>
+    				<?php if (in_array('Transactions', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Ecommerce', array('plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('title' => 'Catalogs, Orders', 'id' => 'navProducts')); ?></li><?php } ?>
    					<?php if (in_array('Invoices', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Billing', array('plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'dashboard'), array('title' => 'Estimates, Invoices', 'id' => 'navBilling')); ?></li><?php } ?>
     				<?php if (in_array('Projects', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Todos', '/admin/#tagProjects', array('title' => 'Projects, Tasks & Timesheets', 'onclick' => 'window.location.replace(this.href);window.location.reload(true)')); ?></li><?php } ?>
     				<li><?php echo $this->Html->link('Users', array('plugin' => 'users', 'controller' => 'users', 'action' => 'dashboard'), array('title' => 'Social, Groups, Members, Messages', 'id' => 'navUsers')); ?></li>   
