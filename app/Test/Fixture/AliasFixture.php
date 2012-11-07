@@ -1,9 +1,9 @@
 <?php
 /**
- * ConditionFixture
+ * AliasFixture
  *
  */
-class ConditionFixture extends CakeTestFixture {
+class AliasFixture extends CakeTestFixture {
 
 /**
  * name property
@@ -17,7 +17,7 @@ class ConditionFixture extends CakeTestFixture {
  *
  * @var array
  */
-	public $import = array('config' => 'Condition');
+	public $import = array('config' => 'Alias');
 	
 
 /**

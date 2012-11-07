@@ -255,11 +255,6 @@ class User extends UsersAppModel {
 
 		if ($this->saveAll($data)) {
 			return true;
-			/** Hopefully saveAll will handle this now (if the data is coming in formatted right it should be)...
-			if (in_array('Orders', CakePlugin::loaded())) :
-				$this->User->OrderPayment->save($this->request->data);
-				$this->User->OrderShipment->save($this->request->data);
-			endif; */
 		} else {
 			throw new Exception(__d('users', 'Invalid user data.' . implode(', ', $this->invalidFields)));
 		}
