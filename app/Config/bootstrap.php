@@ -309,6 +309,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Timesheet' => 'Timesheets',
 				'TimesheetsTimesheetTime' => 'Timesheets',
 				'Transaction' => 'Transactions',
+				'TransactionAddress' => 'Transactions',
 				'TransactionCoupon' => 'Transactions',
 				'TransactionItem' => 'Transactions',
 				'TransactionPayment' => 'Transactions',
