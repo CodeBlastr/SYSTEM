@@ -55,7 +55,7 @@ class Setting extends AppModel {
 							'description' => 'Defines the plugins that should be loaded. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'plugins[] = Webpages'.PHP_EOL.'plugins[] = Contacts'.PHP_EOL.'plugins[] = Search',
 							),
 						),
-				  'Orders' => array(
+				  'Transactions' => array(
 						array(
 							'name' => 'DEFAULT_PAYMENT',
 							'description' => 'Defines default payment option for the site. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AUTHORIZE',
@@ -65,43 +65,43 @@ class Setting extends AppModel {
 							'description' => 'Defines the options which should be shown	in the dropdown of payment mode for the app. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AUTHORIZE = Authorize'.PHP_EOL.'AUTHORIZEONLY = "Authorize Only"'.PHP_EOL.'PAYPAL = Paypal'.PHP_EOL.'CREDIT= Credit',
 							),
 						array(
-							'name' => 'TRANSACTIONS_AUTHORIZENET_LOGIN_ID',
+							'name' => 'AUTHORIZENET_LOGIN_ID',
 							'description' => 'Defines the login to access payment api of Authorize.net. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'463h3f98f4u89',
 							),
 						array(
-							'name' => 'TRANSACTIONS_AUTHORIZENET_TRANSACTION_KEY',
+							'name' => 'AUTHORIZENET_TRANSACTION_KEY',
 							'description' => 'Defines the transaction key to access payment api of Authorize.net. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'48fj0j2389ur02983ur',
 							),
 						array(
-							'name' => 'TRANSACTIONS_AUTHORIZENET_MODE',
+							'name' => 'AUTHORIZENET_MODE',
 							'description' => 'Defines whether authorize.net is in test mode.  Any value at all, means its in test mode, otherwise it is live. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'1',
 							),
                         array(
-                            'name' => 'TRANSACTIONS_SAGEPAY_VENDOR',
+                            'name' => 'SAGEPAY_VENDOR',
                             'description' => 'The Vendor Name that you registered at SagePay.  Default is razorit which is a simulation account.'.'Default value : razorit',
                         ),
                         array(
-                            'name' => 'TRANSACTIONS_SAGEPAY_CURRENCY',
+                            'name' => 'SAGEPAY_CURRENCY',
                             'description' => 'The currency to use for SagePay. gbp/usd'.PHP_EOL.PHP_EOL.'Default value : usd',
                         ),
                         array(
-                            'name' => 'TRANSACTIONS_SAGEPAY_MODE',
+                            'name' => 'SAGEPAY_MODE',
                             'description' => 'The mode to run SagePay in. SIMULATOR/DEVELOPMENT/LIVE'.PHP_EOL.PHP_EOL.'Default value : SIMULATOR',
                         ),
                         array(
-                            'name' => 'TRANSACTIONS_SAGEPAYMENTS_MERCHANT_ID',
+                            'name' => 'SAGEPAYMENTS_MERCHANT_ID',
                             'description' => 'The Merchant ID for SagePayments'.PHP_EOL.PHP_EOL.'Default value : empty',
                         ),
                         array(
-                            'name' => 'TRANSACTIONS_SAGEPAYMENTS_MERCHANT_KEY',
+                            'name' => 'SAGEPAYMENTS_MERCHANT_KEY',
                             'description' => 'The Merchant Key for SagePayments'.PHP_EOL.PHP_EOL.'Default value : empty',
                         ),
                         array(
-                            'name' => 'TRANSACTIONS_PAYSIMPLE',
+                            'name' => 'PAYSIMPLE',
                             'description' => 
-				'environment = sandbox'.PHP_EOL.
-				'apiUsername = APIUserXXXXX'.PHP_EOL.
-				'sharedSecret = FdNcOBCgngMkvJ...'
+								'environment = sandbox'.PHP_EOL.
+								'apiUsername = APIUserXXXXX'.PHP_EOL.
+								'sharedSecret = FdNcOBCgngMkvJ...'
                         ),
 						array(
 							'name' => 'PAYPAL',
