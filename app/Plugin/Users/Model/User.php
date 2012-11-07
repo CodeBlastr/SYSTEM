@@ -196,11 +196,11 @@ class User extends UsersAppModel {
 		$data = $this->_cleanAddData($data);
 		if ($data = $this->_userContact($data)) {
 			// setup a verification key
-			$data['User']['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null;
-			$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+			$data[$this->alias]['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null;
+			$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
 
-			$data['User']['parent_id'] = !empty($data['User']['referal_code']) ? $this->getParentId($data['User']['referal_code']) : '';
-			$data['User']['reference_code'] = $this->generateRandomCode();
+			$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
+			$data[$this->alias]['reference_code'] = $this->generateRandomCode();
 			// the contact model calls back to the User model when using save all
 			// and saves the recursive data of contact person / contact company this way.
 			if ($this->Contact->add($data)) {
@@ -211,10 +211,10 @@ class User extends UsersAppModel {
 				}
 
 				// create a gallery for this user.
-				if (!empty($data['User']['avatar']['name'])) {
+				if (!empty($data[$this->alias]['avatar']['name'])) {
 					$data['Gallery']['model'] = 'User';
 					$data['Gallery']['foreign_key'] = $this->id;
-					$data['GalleryImage']['filename'] = $data['User']['avatar'];
+					$data['GalleryImage']['filename'] = $data[$this->alias]['avatar'];
 					if ($this->Gallery->GalleryImage->add($data, 'filename')) {
 						//return true;
 					} else if (!empty($data['GalleryImage']['filename'])) {
@@ -225,7 +225,7 @@ class User extends UsersAppModel {
 					}
 				}
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-					if ($this->welcome($data['User']['username'])) {
+					if ($this->welcome($data[$this->alias]['username'])) {
 						throw new Exception(__d('users', 'Thank you, please check your email to verify your account.'), 834726476);
 					} else {
 					}
@@ -271,13 +271,13 @@ class User extends UsersAppModel {
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->Contact->findById($data['Contact']['id']);
 			$data['Contact'] = $contact['Contact'];
-		} else if (!empty($data['User']['id'])) {
-			$contact = $this->Contact->findByUserId($data['User']['id']);
+		} else if (!empty($data[$this->alias]['id'])) {
+			$contact = $this->Contact->findByUserId($data[$this->alias]['id']);
 			if (!empty($contact)) {
 				$data['Contact'] = $contact['Contact'];
-				$data['User']['full_name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : $contact['Contact']['name'];
+				$data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : $contact['Contact']['name'];
 			} else {
-				$data['User']['full_name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : 'N/A';
+				$data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'N/A';
 //				// create a Contact
 //				$contact = $this->Contact->create(array(
 //					'name' => $data['User']['full_name']
@@ -288,7 +288,7 @@ class User extends UsersAppModel {
 			debug($this->Contact->findByUserId($data['Contact']['user_id']));
 			break;
 		} else {
-			$data['Contact']['name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : 'Not Provided';
+			$data['Contact']['name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'Not Provided';
 		}
 		return $data;
 	}
@@ -494,27 +494,27 @@ class User extends UsersAppModel {
  * @return {array}		Parsed form input data.
  */
 	protected function _cleanAddData($data) {
-		if (isset($data['User']['username']) && strpos($data['User']['username'], '@')) :
-			$data['User']['email'] = $data['User']['username'];
+		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@')) :
+			$data[$this->alias]['email'] = $data[$this->alias]['username'];
 		endif;
 
-		if(!isset($data['User']['user_role_id'])) {
-			$data['User']['user_role_id'] = (defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : 3 ;
+		if(!isset($data[$this->alias]['user_role_id'])) {
+			$data[$this->alias]['user_role_id'] = (defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : 3 ;
 		}
 
-		if(!isset($data['User']['contact_type'])) {
-			$data['User']['contact_type'] = (defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) ? __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE : 'person' ;
+		if(!isset($data[$this->alias]['contact_type'])) {
+			$data[$this->alias]['contact_type'] = (defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) ? __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE : 'person' ;
 		}
 
 		# update name into first and last name
-		if (!empty($data['User']['full_name']) && empty($data['User']['first_name'])) {
-			$data['User']['first_name'] = trim(preg_replace('/[ ](.*)/i', '', $data['User']['full_name']));
-			$data['User']['last_name'] = trim(preg_replace('/(.*)[ ]/i', '', $data['User']['full_name']));
+		if (!empty($data[$this->alias]['full_name']) && empty($data[$this->alias]['first_name'])) {
+			$data[$this->alias]['first_name'] = trim(preg_replace('/[ ](.*)/i', '', $data[$this->alias]['full_name']));
+			$data[$this->alias]['last_name'] = trim(preg_replace('/(.*)[ ]/i', '', $data[$this->alias]['full_name']));
 		}
 
 		# update first name and last name into full_name
-		if (!empty($data['User']['first_name']) && !empty($data['User']['last_name']) && empty($data['User']['full_name'])) {
-			$data['User']['full_name'] = $data['User']['first_name'] . ' ' . $data['User']['last_name'];
+		if (!empty($data[$this->alias]['first_name']) && !empty($data[$this->alias]['last_name']) && empty($data[$this->alias]['full_name'])) {
+			$data[$this->alias]['full_name'] = $data[$this->alias]['first_name'] . ' ' . $data[$this->alias]['last_name'];
 		}
 
 		return $data;
