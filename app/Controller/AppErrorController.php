@@ -40,7 +40,7 @@ class AppErrorController extends AppController {
 		if ($request->here == '/') {
 			$request->here = 'home';
 		} else {
-			# seems it was getting over sanitized because dashes were being replaced.  Just converting them back.
+			// seems it was getting over sanitized because dashes were being replaced.  Just converting them back.
 			$request->here = str_replace('&#45;', '-', $request->here);
 		}
 		if (strpos($request->here, '/') === 0) {
@@ -62,7 +62,7 @@ class AppErrorController extends AppController {
 			$request->query['url'] = substr($request->url, 1, -1);
 			$request->here = substr($request->url, 1, -1);
 			$dispatcher = new Dispatcher();
-			$result = $dispatcher->dispatch($request, new CakeResponse());
+			$dispatcher->dispatch($request, new CakeResponse());
 		} else {
 			throw new NotFoundException('Page not found.');
 		}

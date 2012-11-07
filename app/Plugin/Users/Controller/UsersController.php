@@ -188,14 +188,14 @@ class UsersController extends UsersAppController {
 				'conditions' => $conditions,
 				));
 
-			if (in_array('Orders', CakePlugin::loaded())) :
-				$userShippingAddress = $this->User->OrderShipment->find('first',array(
+			if (in_array('Transactions', CakePlugin::loaded())) :
+				$userShippingAddress = $this->User->TransactionShipment->find('first',array(
 					'conditions' => array(
-						'OrderShipment.user_id' => $id,
-						'OrderShipment.order_transaction_id is null'
+						'TransactionShipment.user_id' => $id,
+						'TransactionShipment.transaction_id is null'
 						)
 					));
-				$user['OrderShipment'] = $userShippingAddress['OrderShipment'];
+				$user['TransactionShipment'] = $userShippingAddress['TransactionShipment'];
 				$userBillingAddress = $this->User->OrderPayment->find('first',array(
 					'conditions' => array(
 						'OrderPayment.user_id' => $id,
@@ -240,7 +240,7 @@ class UsersController extends UsersAppController {
  */
 	public function register() {
 		# force ssl for PCI compliance during regristration and login
-		if (defined('__ORDERS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
+		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
 
 		if (!empty($this->request->data)) {
 			try {
@@ -297,7 +297,7 @@ class UsersController extends UsersAppController {
  */
 	public function login() {
 		// force ssl for PCI compliance during regristration and login
-		if (defined('__ORDERS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
+		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
 
 		if (!empty($this->request->data)) {
 			$this->_login();

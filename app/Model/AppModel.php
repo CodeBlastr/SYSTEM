@@ -198,9 +198,9 @@ class AppModel extends Model {
 
 
 	public function listModels($pluginPath = null, $remove = array(), $merge = true) {
-	    # defaultRemove originally done for this page : /admin/categories/categories/add/
-	    # if you add items for removal from this list make sure that they should also be removed from there
-	    # or customize the categories_controller so that listModels() function to not merge
+	    // defaultRemove originally done for this page : /admin/categories/categories/add/
+	    // if you add items for removal from this list make sure that they should also be removed from there
+	    // or customize the categories_controller so that listModels() function to not merge
 	    $defaultRemove = array('Affiliated', 'Affiliates App Model', 'Alias', 'App Model', 'Authorize', 'Blogs App Model', 'Catalog Items Catalog Category', 'Catalogs App Model', 'Categories App Model', 'Categorized Option', 'Category', 'Categorized', 'Category Option', 'Catalog Item Price', 'Comments App Model', 'Condition', 'Contacts App Model', 'Contacts Contact', 'Coupons App Model', 'Credits App Model', 'Enumeration', 'Estimates App Model', 'Events App Model', 'Estimated', 'Form', 'Form Fieldset', 'Form Input', 'Forms App Model', 'Forum', 'Forum Category', 'Galleries App Model', 'Poll', 'Poll Option', 'Poll Vote', 'Post', 'Setting', 'Topic', 'Invite', 'Invite App Model', 'Invoices Catalog Item', 'Invoices App Model', 'Invoices Timesheet', 'Maps App Model', 'Media App Model', 'Members App Model', 'Menus App Model', 'Messages App Model', 'News App Model', 'Notifications App Model', 'Notification', 'Notification Template', 'Orders App Model', 'Favorite', 'Privilege', 'Privileges App Model', 'Project Issue', 'Projects.watcher', 'Projects App Model', 'Projects Member', 'Ratings App Model', 'Records App Model', 'Reports App Model', 'Requestor', 'Section', 'Search Index', 'Searchable App Model', 'Sitemaps App Model', 'Tags App Model', 'Tasks App Model', 'Tickets App Model', 'Ticket Departments Assignee', 'Timesheets Timesheet Time', 'Timesheets App Model', 'Used', 'User Role', 'Users App Model', 'Users User Group', 'Utils App Model', 'Webpages App Model', 'Wiki Content Version', 'Wikis App Model', 'Workflows App Model', 'Workflow', 'Workflow Item', 'Workflow Event', 'Workflow Item Event', 'Zencoder');
     	$remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
 
