@@ -111,12 +111,8 @@ class User extends UsersAppModel {
 	public function __construct($id = false, $table = null, $ds = null) {
 
 		if (in_array('Transactions', CakePlugin::loaded())) {
-			$this->hasMany['TransactionPayment'] = array(
-				'className' => 'Transactions.TransactionPayment',
-				'foreign_key' => 'user_id'
-				);
-			$this->hasMany['TransactionShipment'] = array(
-				'className' => 'Transactions.TransactionShipment',
+			$this->hasMany['TransactionAddress'] = array(
+				'className' => 'Transactions.TransactionAddress',
 				'foreign_key' => 'user_id'
 				);
 			$this->hasMany['ProductBrand'] = array(
@@ -163,14 +159,14 @@ class User extends UsersAppModel {
 	        return null;
 	    }
 	    $data = $this->data;
-	    if (empty($this->data['User']['user_role_id'])) {
+	    if (empty($this->data[$this->alias]['user_role_id'])) {
 	        $user = $this->read();
-			$data['User']['user_role_id'] = $user['User']['user_role_id'];
+			$data[$this->alias]['user_role_id'] = $user['User']['user_role_id'];
 	    }
-	    if (empty($data['User']['user_role_id'])) {
+	    if (empty($data[$this->alias]['user_role_id'])) {
 	        return null;
 	    } else {
-	        $this->UserRole->id = $data['User']['user_role_id'];
+	        $this->UserRole->id = $data[$this->alias]['user_role_id'];
 	        $roleNode = $this->UserRole->node();
 	        return array('UserRole' => array('id' => $roleNode[0]['Aro']['foreign_key']));
 	    }
@@ -178,9 +174,9 @@ class User extends UsersAppModel {
 
 
 	public function beforeSave($options = array()) {
-		if (!empty($this->data['User']['password'])) {
+		if (!empty($this->data[$this->alias]['password'])) {
 			App::uses('AuthComponent', 'Controller/Component');
-	        $this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
+	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
 		}
         return true;
     }
