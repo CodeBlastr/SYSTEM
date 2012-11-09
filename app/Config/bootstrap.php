@@ -207,6 +207,19 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		}
 	
 	/**
+	 * Function for formatting the pricing of an item.
+	 *
+	 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
+	 */
+		public function datify($date) {
+			if($date === NULL) {
+				return NULL;
+			} else {
+				return date('M j, Y', strtotime($date));
+			}
+		}
+	
+	/**
 	 * Function for formatting dates (yes I know about the Time helper, and I don't like it.
 	 * But mainly this will alos allow a default time format on a per site need (using a setting).
 	 *

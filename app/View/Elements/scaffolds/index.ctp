@@ -85,7 +85,7 @@ foreach ($data as $dat) {
 				// if its a date parse it into words
 				$keyDate = strtotime($keyValue);
 				if (!empty($keyDate)) {
-					$keyValue = $this->Time->timeAgoInWords($keyValue); 
+					$keyValue = ZuhaInflector::datify($keyValue); 
 				} // human readable dates ?>
          	<li class="metaDataLi <?php echo $keyName; ?>"><span class="metaDataLabel <?php echo $keyName; ?>"> <?php echo Inflector::humanize(Inflector::underscore($keyName)).' : '; ?></span><span class="metaDataDetail" name="<?php echo $keyName; ?>" id="<?php echo $id; ?>"><?php echo $keyValue; ?></span></li>
           <?php 
