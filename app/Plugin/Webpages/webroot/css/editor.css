@@ -45,12 +45,13 @@ body {
 	color: #CCC;
 }
 #adminNavFloManagr.navbar {
-  overflow: visible;
-  color: #777777;
   *position: relative;
-  z-index: 1000;
-  width: 100%;
   background: #000;
+  color: #777777;
+  height: auto;
+  overflow: visible;
+  width: 100%;
+  z-index: 1000;
 }
 #adminNavFlomanagr.navbar-inverse .nav li.dropdown > .dropdown-toggle .caret {
 	border-bottom-color: #999999;
@@ -90,12 +91,12 @@ body {
 	display: inline-block;
 }
 #adminNavFloManagr .navbar-inner .nav-collapse {
-	float: right;
+	float: left;
 	width: 1020px;
 }
 #adminNavFloManagr ul {
-	display: inline-block;
 	position: relative;
+    float: left;
 }
 #adminNavFloManagr ul li {
 	display: inline-block;
