@@ -190,3 +190,19 @@
 		display: none;
 	}
 }
+
+
+/* custom - to be removed */
+.contextSorter {float : right;}
+.contextSorter select { margin :0; }
+
+.index-form {
+    margin-bottom: 0;
+}
+.index-form:after, .clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
