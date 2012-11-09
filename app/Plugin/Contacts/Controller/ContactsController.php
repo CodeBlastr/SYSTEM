@@ -55,7 +55,8 @@ class ContactsController extends ContactsAppController {
 			'contact_source',
 			'contact_industry',
 			'contact_rating',
-			'is_company'
+			'is_company',
+            'created'
 			);
 		$this->paginate['order'] = array(
 			'Contact.name'
