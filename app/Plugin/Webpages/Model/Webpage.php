@@ -441,7 +441,7 @@ class Webpage extends WebpagesAppModel {
  */
 	public function handleError($webpage, $request) {
 		$userRole = CakeSession::read('Auth.User.user_role_id');
-		$addLink = $userRole == 1 ? '<p class="message">Page Not Found : <a href="/webpages/webpages/add/alias:' . $_GET['referer'] . '"> Click here to add a page at http://' . $_SERVER['HTTP_HOST'] . '/' . $_GET['referer'] . '</a>. <br /><br /><small>Because you are the admin you can add the page you requested.  After you add the page, you can visit http://' . $_SERVER['HTTP_HOST'] . '/' . $_GET['referer'] . ' again and it will be a working page.</small></p><br />' : '';
+		$addLink = $userRole == 1 ? '<p class="message">Page Not Found : <a href="/webpages/webpages/add/content/alias:' . str_replace('/', '+', $_GET['referer']) . '"> Click here to add a page at http://' . $_SERVER['HTTP_HOST'] . '/' . $_GET['referer'] . '</a>. <br /><br /><small>Because you are the admin you can add the page you requested.  After you add the page, you can visit http://' . $_SERVER['HTTP_HOST'] . '/' . $_GET['referer'] . ' again and it will be a working page.</small></p><br />' : '';
 		$webpage['Webpage']['content'] = $addLink . $webpage['Webpage']['content'];
 		return $webpage;
 	}

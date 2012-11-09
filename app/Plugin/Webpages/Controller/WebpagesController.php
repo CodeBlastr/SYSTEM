@@ -91,8 +91,7 @@ class WebpagesController extends WebpagesAppController {
 			$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
 		}
 		
-		
-		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error/') {
+		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error') {
 			$webpage = $this->Webpage->handleError($webpage, $this->request);
 		}
 		$this->set(compact('webpage'));
@@ -121,7 +120,7 @@ class WebpagesController extends WebpagesAppController {
 			throw new NotFoundException(__('Invalid content type'));
 		}
 		// reuquired to have per page permissions
-		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? $this->request->params['named']['alias'] : null;
+		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? str_replace('+', '/', $this->request->params['named']['alias']) : null;
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('parentId', $parentId);
 		$this->set('page_title_for_layout', __('%s Builder', Inflector::humanize($this->Webpage->types[$type])));

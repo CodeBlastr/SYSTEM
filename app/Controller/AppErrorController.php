@@ -85,7 +85,7 @@ class AppErrorController extends AppController {
 			$alias = $Alias->find('first', array('conditions' => array('name' => 'error')));
 			if (!empty($alias['Alias']['name'])) {
 				$Controller = new AppController($request, $response);
-				$Controller->redirect('/error/?referer=' . $request->url);
+				$Controller->redirect('/error?referer=' . $request->url);
 			}
 		}
 	}
