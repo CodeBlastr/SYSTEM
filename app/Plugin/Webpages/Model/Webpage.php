@@ -51,7 +51,7 @@ class Webpage extends WebpagesAppModel {
 			'className' => 'Alias',
 			'foreignKey' => 'value',
 			'dependent' => true,
-			'conditions' => array('controller' => 'webpages'),
+			'conditions' => '',
 			'fields' => '',
 			'order' => ''
 		    ),
