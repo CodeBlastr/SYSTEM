@@ -242,6 +242,9 @@ class ConnectionManager {
 		if (!empty(self::$config->{$name})) {
 			self::$_connectionsEnum[$name] = self::_connectionData(self::$config->{$name});
 		} else {
+           // debug($name);
+           // debug(debug_backtrace());
+           // break;
 			throw new MissingDatasourceConfigException(array('config' => $name));
 		}
 	}

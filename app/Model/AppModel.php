@@ -39,60 +39,6 @@ class AppModel extends Model {
  */
   	public $recursive = -1;
 
-/**
- * Construct
- *
- */
-	public function __construct($id = false, $table = null, $ds = null) {
-		// automatic upgrade the categories table 5/2/2012
-		// temporary, will be removed soon
-		if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0191) {
-			$db = ConnectionManager::getDataSource(!empty($id['ds']) ? $id['ds'] : 'default');
-			$tables = $db->listSources();
-			if (array_search('categorizeds', $tables)) {
-				$db->query('RENAME TABLE `categorizeds` TO `categorized`');
-				header('Location: ' . $_SERVER['REQUEST_URI']); // refresh the page to establish new table name
-				break;
-			}
-		}
-		// automatic upgrade the contacts and enumerations tables 7/11/2012
-		// temporary, will be removed soon
-		if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0191) {
-			$db = ConnectionManager::getDataSource(!empty($id['ds']) ? $id['ds'] : 'default');
-			$columns = $db->query('SHOW COLUMNS FROM `contacts`; ');
-			if ($columns[2]['COLUMNS']['Field'] == 'contact_type_id') {
-				$db->execute('ALTER TABLE `contacts` CHANGE `contact_type_id` `contact_type` VARCHAR( 100 ) NULL DEFAULT NULL; ALTER TABLE `contacts` CHANGE `contact_source_id` `contact_source` VARCHAR( 100 ) NULL DEFAULT NULL; ALTER TABLE `contacts` CHANGE `contact_industry_id` `contact_industry` VARCHAR( 100 ) NULL DEFAULT NULL ; ALTER TABLE `contacts` CHANGE `contact_rating_id` `contact_rating` VARCHAR( 100 ) NULL DEFAULT NULL ; UPDATE `contacts` SET `contact_type` = (SELECT `name` FROM `enumerations` WHERE `enumerations`.`id` = `contacts`.`contact_type`); DELETE FROM `enumerations` WHERE `enumerations`.`type` = \'CONTACTTYPE\'; UPDATE `contacts` SET `contact_source` = (SELECT `name` FROM `enumerations` WHERE `enumerations`.`id` = `contacts`.`contact_source`); DELETE FROM `enumerations` WHERE `enumerations`.`type` = \'CONTACTSOURCE\'; UPDATE `contacts` SET `contact_industry` = (SELECT `name` FROM `enumerations` WHERE `enumerations`.`id` = `contacts`.`contact_industry`); DELETE FROM `enumerations` WHERE `enumerations`.`type` = \'CONTACTINDUSTRY\'; UPDATE `contacts` SET `contact_rating` = (SELECT `name` FROM `enumerations` WHERE `enumerations`.`id` = `contacts`.`contact_rating`); DELETE FROM `enumerations` WHERE `enumerations`.`type` = \'CONTACTRATING\';');
-				header('Location: ' . $_SERVER['REQUEST_URI']); // refresh the page to establish new table name
-				break;
-			}
-		}
-
-		$db = ConnectionManager::getDataSource(!empty($id['ds']) ? $id['ds'] : 'default');
-		$columns = $db->query('SHOW COLUMNS FROM `webpages`; ');
-		if ($columns[1]['COLUMNS']['Field'] == 'name') {
-			$db->execute('ALTER TABLE `webpages` ADD `parent_id` INT( 11 ) NULL AFTER `id` ;');
-			header('Location: ' . $_SERVER['REQUEST_URI']); // refresh the page to establish new table name
-			break;
-		}
-		
-		// renamed type 10/20/2012
-		$pageContent = $db->query("SELECT `type` FROM `webpages` WHERE `type` = 'page_content'");
-		if (!empty($pageContent)) {
-			$db->execute("UPDATE `webpages` SET `webpages`.`type` = 'content' WHERE `webpages`.`type` = 'page_content';");
-		}
-		
-		// updated templates 10/22/2012
-		$templates = $db->query("SELECT * FROM `webpages` WHERE `type` = 'template' AND `modified` < '2012-10-22 00:00:00'");
-		if (!empty($templates)) {
-			foreach ($templates as $template) {
-				$content = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title><!--[if lt IE 9]>		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>	<![endif]--><meta name="robots" content="index, follow" /><meta http-equiv="X-UA-Compatible" content="IE=8" /><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="apple-mobile-web-app-capable" content="yes"/>{element: favicon}<link rel="stylesheet" type="text/css" href="/css/system.css" media="all" /><link rel="stylesheet" type="text/css" href="/css/jquery-ui/jquery-ui-1.8.13.custom.css" media="all" />{element: css}<script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>{element: javascript}{element: webpages.analytics}</head><body {element: body_attributes}><div id="corewrap">' . $template['webpages']['content'] . '</div>{element: sql_dump}<div class="ajaxLoader"><img src="/img/ajax-loader.gif" /></div></body></html>';
-				$db->execute("UPDATE `webpages` SET `webpages`.`content` = '".addslashes($content)."', `webpages`.`modified` = '".date('Y-m-d h:i:s')."' WHERE `webpages`.`id` = '".$template['webpages']['id']."';");
-			}
-		}
-			
-		parent::__construct($id, $table, $ds);
-	}
-
 
 /**
  * Manipulate data before it is saved.
