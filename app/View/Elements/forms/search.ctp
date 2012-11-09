@@ -6,7 +6,7 @@
  */
 $url = !empty($url) ? $url : '/webpages/webpages/index/';
 $inputs = !empty($inputs) ? $inputs : array(array('name' => 'contains:name', 'options' => array('label' => '', 'placeholder' => 'Type Your Search and Hit Enter')));
-$action = strpos($_SERVER['SCRIPT_URL'], 'index') ? $_SERVER['SCRIPT_URL'] : $url;
+$action = strpos($_SERVER['REQUEST_URI'], 'index') ? $_SERVER['REQUEST_URI'] : $url;
 echo $this->Form->create('', array('type' => 'get', 'class' => 'form-inline index-form', 'url' => Router::normalize($action) . '/')); 
 foreach ($inputs as $input) {
 	echo $this->Form->input($input['name'], $input['options']);

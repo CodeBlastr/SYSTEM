@@ -1,4 +1,18 @@
-<?php
+<?php 
+// set the contextual sorting items
+echo $this->Element('context_sort', array(
+    'context_sort' => array(
+        'type' => 'select',
+        'sorter' => array(array(
+            'heading' => '',
+            'items' => array(
+                $this->Paginator->sort('name'),
+                $this->Paginator->sort('created'),
+                )
+            )), 
+        )
+	)); 
+
 echo $this->Element('forms/search', array(
 	'url' => '/contacts/contacts/index/', 
 	'inputs' => array(
