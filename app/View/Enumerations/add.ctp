@@ -13,7 +13,7 @@ echo $this->Form->end('Done');
 
 <script type='text/javascript'>
 $(document).ready(function() {
-	$('select<#EnumerationType').change(function() {
+	$('select#EnumerationType').change(function() {
 		if($(this).val() == '+') {
 			$(this).replaceWith('<input name="data[Enumeration][type]" id="EnumerationType" type="text" />')
 		}

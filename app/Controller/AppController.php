@@ -365,40 +365,41 @@ class AppController extends Controller {
  *
  * @param {int} 	We can have multiple calls to this on a single page.  Instance makes each one unique.
  * @return array
+ * @todo    commented out on 11/11/12 rk, delete if we don't need it in three months
  */
-	public function itemize($instance = null) {
-		if(!empty($instance) && defined('__ELEMENT_LIST_'.$instance)) {
-			extract(unserialize(constant('__ELEMENT_LIST_'.$instance)));
-		} else if (defined('__ELEMENT_LIST')) {
-			extract(unserialize(__ELEMENT_LIST));
-		}
-		$options = array();
-		$options['controller'] =  !empty($this->request->controller) ? strtolower($this->request->controller) :  null;
-		$options['plugin'] =  !empty($this->request->plugin) ? strtolower($this->request->plugin) : strtolower(ZuhaInflector::pluginize($options['controller']));
-		$options['model'] = !empty($model) ? $model : Inflector::classify($options['controller']);
-		$options['sortField'] = !empty($sortField) ? strtolower($sortField) : 'id';
-		$options['sortOrder'] = !empty($sortOrder) ? strtolower($sortOrder) : 'ASC';
-		$options['resultsCount'] = !empty($resultsCount) ? strtolower($resultsCount) : 10;
-		$options['viewPlugin'] = !empty($viewPlugin) ? $viewPlugin : $options['plugin'];
-		$options['viewController'] = !empty($viewController) ? $viewController : $options['controller'];
-		$options['viewAction'] = !empty($viewAction) ? strtolower($viewAction) : 'view';
-		$options['displayField'] = !empty($displayField) ? strtolower($displayField) : 'name';
-		$options['displayDescription'] = !empty($displayDescription) ? strtolower($displayDescription) : null;
-		$options['idField'] = !empty($idField) ? strtolower($idField) : 'id';
-		$options['showGallery'] = !empty($showGallery) ? $showGallery : false;
-		$options['galleryModelName'] = !empty($galleryModelName) ? $galleryModelName : $options['model'];
-		$options['galleryForeignKey'] = !empty($galleryForeignKey) ? $galleryForeignKey : $options['idField'];
-		$options['galleryThumbSize'] = !empty($galleryThumbSize) ? $galleryThumbSize : 'small';;
-		App::uses($options['model'], Inflector::camelize($options['plugin']).'.Model');
-		$Model = new $options['model']();
-		$results = $Model->find('all', array(
-			'order' => array(
-				$options['model'].'.'.$options['sortField'] => $options['sortOrder'],
-				),
-			'limit' => $options['resultsCount'],
-			));
-		return array('results' => $results, 'options' => $options);
-	}
+//	public function itemize($instance = null) {
+//		if(!empty($instance) && defined('__ELEMENT_LIST_'.$instance)) {
+//			extract(unserialize(constant('__ELEMENT_LIST_'.$instance)));
+//		} else if (defined('__ELEMENT_LIST')) {
+//			extract(unserialize(__ELEMENT_LIST));
+//		}
+//		$options = array();
+//		$options['controller'] =  !empty($this->request->controller) ? strtolower($this->request->controller) :  null;
+//		$options['plugin'] =  !empty($this->request->plugin) ? strtolower($this->request->plugin) : strtolower(ZuhaInflector::pluginize($options['controller']));
+//		$options['model'] = !empty($model) ? $model : Inflector::classify($options['controller']);
+//		$options['sortField'] = !empty($sortField) ? strtolower($sortField) : 'id';
+//		$options['sortOrder'] = !empty($sortOrder) ? strtolower($sortOrder) : 'ASC';
+//		$options['resultsCount'] = !empty($resultsCount) ? strtolower($resultsCount) : 10;
+//		$options['viewPlugin'] = !empty($viewPlugin) ? $viewPlugin : $options['plugin'];
+//		$options['viewController'] = !empty($viewController) ? $viewController : $options['controller'];
+//		$options['viewAction'] = !empty($viewAction) ? strtolower($viewAction) : 'view';
+//		$options['displayField'] = !empty($displayField) ? strtolower($displayField) : 'name';
+//		$options['displayDescription'] = !empty($displayDescription) ? strtolower($displayDescription) : null;
+//		$options['idField'] = !empty($idField) ? strtolower($idField) : 'id';
+//		$options['showGallery'] = !empty($showGallery) ? $showGallery : false;
+//		$options['galleryModelName'] = !empty($galleryModelName) ? $galleryModelName : $options['model'];
+//		$options['galleryForeignKey'] = !empty($galleryForeignKey) ? $galleryForeignKey : $options['idField'];
+//		$options['galleryThumbSize'] = !empty($galleryThumbSize) ? $galleryThumbSize : 'small';;
+//		App::uses($options['model'], Inflector::camelize($options['plugin']).'.Model');
+//		$Model = new $options['model']();
+//		$results = $Model->find('all', array(
+//			'order' => array(
+//				$options['model'].'.'.$options['sortField'] => $options['sortOrder'],
+//				),
+//			'limit' => $options['resultsCount'],
+//			));
+//		return array('results' => $results, 'options' => $options);
+//	}
 
 
 /**
