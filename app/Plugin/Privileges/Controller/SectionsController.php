@@ -15,7 +15,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2012, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.plugins.privileges
  * @since         Zuha(tm) v 0.0.1
@@ -28,46 +28,17 @@ class SectionsController extends PrivilegesAppController {
 
 	public $name = 'Sections';
 	public $uses = 'Privileges.Section';
-
-	function index() {
-		$data = $this->Section->prepare();
-		$this->set('data' , $data);
-	}
 	
-	/*
-	 * Retrieves actions of a controller 
-	 * @param {int} $cid -> aco_id of the controller
-	 * @return void
-	 */
-	
-	function view_controller($controllerId){
-		$section = $this->Section->find('first', array(
+/**
+ * Retrieves actions and controllers of a plugin
+ * @param {int} $pid -> aco_id of the plugin
+ * @return void
+ */
+	function index($pluginId = null){
+		$sections = $this->Section->find('threaded', array(
 			'conditions' => array(
-				'Section.id' => $controllerId
-				),
-			));
-		$data = $this->Section->find('threaded', array(
-			'conditions' => array(
-				'Section.lft >=' => $section['Section']['lft'],
-				'Section.lft <=' => $section['Section']['rght'],
-				),
-			));
-		$this->set('data' , $data);
-	}
-	
-	/*
-	 * Retrieves actions and controllers of a plugin
-	 * @param {int} $pid -> aco_id of the plugin
-	 * @return void
-	 */
-	
-	function view_plugin($pluginId){
-		$data = $this->Section->find('all' , array(
-			'conditions' => array(
-				'OR' => array(
-					'id' => $pluginId,
-					'parent_id' => $pluginId,
-					),
+				'parent_id NOT' => null,
+                'alias NOT' => array('Install'), // admin user role only
 				), 
 			'contain' => array(
 				'Requestor' => array(
@@ -78,13 +49,14 @@ class SectionsController extends PrivilegesAppController {
 				),
 			'order' => array('Section.lft ASC')	
 		));
-		$parent = $this->Section->getParentNode($pluginId);
-		$this->set('userFields', $this->_userFields($parent, $data));
-		$this->set('userFieldSettings', $this->_userFieldSettings($data));
-		$this->set('parent', $this->Section->getParentNode($pluginId));
-		$this->set('section', $data[0]['Section']['alias']);
-		unset($data[0]);
-		$this->set('data', $data);
+        
+		//$parent = $this->Section->getParentNode($pluginId);
+		//$this->set('userFields', $this->_userFields($parent, $sections));
+		//$this->set('userFieldSettings', $this->_userFieldSettings($sections));
+		//$this->set('parent', $this->Section->getParentNode($pluginId));
+		$this->set('section', $sections[0]['Section']['alias']);
+		unset($sections[0]);
+		$this->set('sections', $sections);
 		
 		
 		$this->Section->Requestor->bindModel(array(
@@ -108,14 +80,17 @@ class SectionsController extends PrivilegesAppController {
 			));
 		
 		$this->set('groups' , $groups);
+        $this->set('page_title_for_layout', __('Manage Privileges'));
 	}
 	
-	
-	/*
-	 * The form for adding an Section Manually. 
-	 * Added for not running users_controller/build_acl everytime.
-	 */
-	function add(){		
+
+/*
+ * The form for adding an Section Manually. 
+ * Added for not running users_controller/build_acl everytime.
+ * 
+ * @todo Can probably delete this now, as aco_sync should take care of it. 
+ */
+	public function add(){		
 		App::import('Component', 'AclExtras.AclExtras');
 		$AclExtras = new AclExtrasComponent;
 		set_time_limit(1200);
@@ -142,7 +117,7 @@ class SectionsController extends PrivilegesAppController {
 	}
 	
 	
-	function _userFields($parent, $data) {
+	protected function _userFields($parent, $data) {
 		$plugin = $parent['Section']['alias'];
 		$model = Inflector::classify($data[0]['Section']['alias']);
 		$this->$model = ClassRegistry::init($plugin.'.'.$model);
@@ -160,7 +135,7 @@ class SectionsController extends PrivilegesAppController {
 		}
 	}
 	
-	function _userFieldSettings($data) {
+	protected function _userFieldSettings($data) {
 		if(defined('__APP_RECORD_LEVEL_ACCESS_ENTITIES')) {
 			$recordEntities = explode(',', __APP_RECORD_LEVEL_ACCESS_ENTITIES);
 			$model = Inflector::classify($data[0]['Section']['alias']);
@@ -176,4 +151,3 @@ class SectionsController extends PrivilegesAppController {
 		
 
 }
-?>

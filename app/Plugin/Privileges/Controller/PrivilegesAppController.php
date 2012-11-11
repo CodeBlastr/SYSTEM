@@ -101,6 +101,7 @@ class PrivilegesAppController extends AppController {
 		$this->_useSession = $session;
 		$this->_clean = true;
 		$this->aco_update();
+        $this->set('page_title_for_layout', 'Sections & Actions Update');
 	}
 	
 /**
@@ -148,6 +149,7 @@ class PrivilegesAppController extends AppController {
  */
 	function clear_session() {
 		CakeSession::write('Privileges.lastPlugin', null);
+        $this->set('page_title_for_layout', 'Update All Sections & Actions');
 	}
 
 /**

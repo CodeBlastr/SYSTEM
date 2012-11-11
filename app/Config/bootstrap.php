@@ -65,9 +65,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			ROOT.DS.SITE_DIR.DS.'views'.DS.'helpers'.DS,
 			ROOT.DS.APP_DIR.DS.'View'.DS.'Helper'.DS
 			),
-	#   'vendors' => array('/full/path/to/vendors/', '/next/full/path/to/vendors/'),
-	#   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),
-	#   'locales' => array('/full/path/to/locale/', '/next/full/path/to/locale/')
+	//   'vendors' => array('/full/path/to/vendors/', '/next/full/path/to/vendors/'),
+	//   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),
+	//   'locales' => array('/full/path/to/locale/', '/next/full/path/to/locale/')
 	));
 	
 	
@@ -130,7 +130,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	/**
 	 * temporary convenience function for states options
 	 *
-	 * @todo 	delete this all together after making it db based
+	 * @todo 	delete this all together after making it db based in enumerations (but give default values)
 	 */
 	function states() {
 		return array(
@@ -301,6 +301,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'OrderPayment' => 'Orders',
 				'OrderShipment' => 'Orders',
 				'OrderTransaction' => 'Orders',
+                'Privilege' => 'Privilege',
                 'ProductBrand' => 'Products',
                 'ProductPrice' => 'Products',
                 'ProductStore' => 'Products',
