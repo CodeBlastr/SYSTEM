@@ -51,4 +51,4 @@ echo $this->Form->create('Privilege' , array('url'=> array('plugin'=> 'privilege
 
 <?php
 echo $this->Form->end(array('label' => __('Update %s Privileges', Inflector::humanize(Inflector::underscore($name))), 'class' => 'btn-primary'));
-echo $this->Html->link(__('Back to Top'), '#sections_view', array('class' => 'pull-right')); ?>
+echo $this->Html->link(__('Back to Top'), '#sections_index', array('class' => 'pull-right')); ?>

@@ -15,7 +15,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2012, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.controllers
  * @since         Zuha(tm) v 0.0.1
@@ -25,15 +25,15 @@
 class UserRolesController extends AppController {
 
 	public $name = 'UserRoles';
+    
 	public $uses = 'Users.UserRole';
-	public $allowedActions = array('build_acl', 'admin_add', 'admin_index', 'admin_delete');
 
-	function index() {		
+	public function index() {		
 		$this->UserRole->recursive = 0;
 		$this->set('userRoles', $this->paginate());
 	}
 
-	function view($id = null) {
+	public function view($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid UserRole.', true));
 			$this->redirect(array('action'=>'index'));
@@ -41,7 +41,7 @@ class UserRolesController extends AppController {
 		$this->set('userRole', $this->UserRole->read(null, $id));
 	}
 
-	function add() {	
+	public function add() {	
 		if (!empty($this->request->data)) {
 			$this->UserRole->create();
 			if ($this->UserRole->save($this->request->data)) {
@@ -54,7 +54,7 @@ class UserRolesController extends AppController {
 		$this->set('viewPrefixes', $this->UserRole->viewPrefixes);
 	}
 
-	function edit($id = null) {
+	public function edit($id = null) {
 		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid UserRole', true));
 			$this->redirect(array('action'=>'index'));
@@ -73,7 +73,7 @@ class UserRolesController extends AppController {
 		$this->set('viewPrefixes', $this->UserRole->viewPrefixes);
 	}
 
-	function delete($id = null) {
+	public function delete($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for UserRole', true));
 			$this->redirect(array('action'=>'index'));
@@ -83,21 +83,5 @@ class UserRolesController extends AppController {
 			$this->redirect(array('action'=>'index'));
 		}
 	}
-	
-	function build_acl(){
-		$this->__build_acl();
-	}
-	
-	
-	/** 
-	* Sets a session variable for template display purposes only.
-	*/
-	function display_role($roleName) {
-		$userRole = $this->UserRole->findbyName($roleName);
-		$this->Session->write('viewingRole', $userRole['UserRole']['id']);
-		$this->Session->setFlash(__('Now viewing as '.$roleName, true));
-		$this->redirect($this->referer());
-	}
 
 }
-?>
