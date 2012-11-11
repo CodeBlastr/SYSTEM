@@ -1,10 +1,5 @@
-<style type="text/css">
-    hr {
-        margin: 60px 0 40px 0;
-    }
-</style>
 <?php
-echo __('<hr id="%s" /><h2> %s Access Privileges </h2><p>Set privileges by checking the box under the user role in the row of the action you want to allow access to.</p>', Inflector::underscore($name), Inflector::humanize(Inflector::underscore($name)));
+echo __('<span id="%s"></span><hr /><h2> %s Access Privileges </h2><p>Set privileges by checking the box under the user role in the row of the action you want to allow access to.</p>', Inflector::underscore($name), Inflector::humanize(Inflector::underscore($name)));
 
 $groupCount = count($groups);
 echo $this->Form->create('Privilege' , array('url'=> array('plugin'=> 'privileges', 'controller'=> 'privileges', 'action'=> 'add'))); ?>
@@ -12,12 +7,12 @@ echo $this->Form->create('Privilege' , array('url'=> array('plugin'=> 'privilege
     <thead>
          <tr>
             <th>Action</th>
-            <?php foreach($groups as $g):?>
-                <?php if($g["UserRole"]["id"] != 1):?>
-                    <th><?php echo $g["UserRole"]["name"]?></th>
-                <?php endif;?>
-            <?php endforeach;?> 
-            <!--th>Record Level Access (DOES NOT WORK!! -- needs new array piece added to settings (ie. Ticket.view.creator_id;))</th-->
+            <?php 
+            foreach($groups as $g) { 
+                if($g["UserRole"]["id"] != 1) { 
+                    echo __('<th>%s</th>', $g["UserRole"]["name"]);
+                }
+            } ?>
         </tr>
     </thead>
     <tbody>
