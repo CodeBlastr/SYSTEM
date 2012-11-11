@@ -14,28 +14,28 @@ class Zuha {
 		$Enum = ClassRegistry::init('Enumeration');
 		if (!empty($type)) {
 			if (is_numeric($type)) {
-				# find a single enum because we have an id number
+				// find a single enum because we have an id number
 				return $Enum->find('list', array(
 					'conditions' => array(
 						'Enumeration.id' => $type,
 						),
 					));
 			} else if (empty($name)) {
-				# find a list of enumerations of this type
+				// find a list of enumerations of this type
 				return $Enum->find('list', array(
 					'conditions' => array(
 						'Enumeration.type' => $type,
 						),
 					));
 			} else if (is_string($name)) {
-				# find the single enum which matches the type and the name
+				// find the single enum which matches the type and the name
 				return $Enum->field('id', array(
 					'Enumeration.type' => $type,
 					'Enumeration.name' => $name,
 					));
 			} else {
-				# find all of an array of names by type
-				# note name could be an array or a string
+                // find all of an array of names by type
+				// note name could be an array or a string
 				return $Enum->find('list', array(
 					'conditions' => array(
 						'Enumeration.type' => $type,
@@ -44,13 +44,13 @@ class Zuha {
 					));
 			} 
 		} else if (!empty($name)) {
-			# find all of an array of names by type
-			# note name could be an array or a string
+			// find all of an array of names by type
+			// note name could be an array or a string
 			return $Enum->field('id', array(
 				'Enumeration.name' => $name,
 				));
 		} else {
-			# find all enumerations
+			// find all enumerations
 			return $Enum->find('list');
 		}
 	}
