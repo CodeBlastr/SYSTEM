@@ -12,6 +12,7 @@ class WebpageTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
+		'app.Condition',
         'app.Alias',
         'plugin.Webpages.Webpage'
         );
