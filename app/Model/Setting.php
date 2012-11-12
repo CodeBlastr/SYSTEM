@@ -399,7 +399,7 @@ class Setting extends AppModel {
 			} else {
 				// roll back
 				$this->delete($this->id);
-				throw Exception('Config directory and/or defaults.ini directory is not writeable');
+				throw new Exception('Config directory and/or defaults.ini directory is not writeable');
 			}
 		}
 	}

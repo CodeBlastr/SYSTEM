@@ -9,7 +9,16 @@ else {
 	echo $this->Form->input('Enumeration.type');
 }
 echo $this->Form->end('Done');
-?>
+
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Enumerations',
+		'items' => array(
+			$this->Html->link('List', array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index')), 
+			)
+		),
+	))); ?>
 
 <script type='text/javascript'>
 $(document).ready(function() {

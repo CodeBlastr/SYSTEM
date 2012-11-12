@@ -22,18 +22,22 @@
 class WebpagesController extends WebpagesAppController {
 
 	public $name = 'Webpages';
-	public $uses = 'Webpages.Webpage';
+	
+    public $uses = 'Webpages.Webpage';
+    
 	public $paginate = array('limit' => 10, 'order' => array('Webpage.created' => 'desc'));
-	#var $components = array('Comments.Comments' => array('userModelClass' => 'User'));
+	
+    // public $components = array('Comments.Comments' => array('userModelClass' => 'User'));
+
     public $helpers = array('Cke'); 
 
-	/* This is part of the search plugin */
-    public $presetVars = array(array('field' => 'name', 'type' => 'value'));
+	// This is part of the search plugin : Removed 11/11/12 RK
+    // public $presetVars = array(array('field' => 'name', 'type' => 'value'));
 		
 	
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->passedArgs['comment_view_type'] = 'flat';
+		// $this->passedArgs['comment_view_type'] = 'flat';  11/11/RK 
 		
 		if (in_array('Drafts', CakePlugin::loaded()) && !empty($this->request->params['named']['draft'])) { 
 			$this->Webpage->Behaviors->attach('Drafts.Draftable', array('returnVersion' => $this->request->params['named']['draft']));
@@ -51,12 +55,11 @@ class WebpagesController extends WebpagesAppController {
 		$this->paginate['conditions']['Webpage.type'] = $type;
 		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
  
-		$this->Webpage->recursive = 0;
 		$this->set('webpages', $this->paginate());
-		
+		//debug($this->Webpage->find('threaded'));
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
-		$this->set('page_title_for_layout', Inflector::pluralize(Inflector::humanize($type)));	
+		$this->set('page_title_for_layout', $type == 'content' ? 'Pages' : Inflector::pluralize(Inflector::humanize($type)));
 		$this->layout = 'default';	
 		$this->render('index_' . $type);
 	}
@@ -109,8 +112,8 @@ class WebpagesController extends WebpagesAppController {
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->add($this->request->data);
-				$this->Session->setFlash(__('Saved successfully', true));
-				$this->redirect(array('action'=>'index', $this->request->data['Webpage']['type']));
+				$this->Session->setFlash(__('Saved'));
+				$this->redirect(array('action' => 'index', $this->request->data['Webpage']['type']));
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}
@@ -119,6 +122,7 @@ class WebpagesController extends WebpagesAppController {
 		if (empty($this->Webpage->types[$type])) {
 			throw new NotFoundException(__('Invalid content type'));
 		}
+        
 		// reuquired to have per page permissions
 		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? str_replace('+', '/', $this->request->params['named']['alias']) : null;
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
@@ -135,8 +139,7 @@ class WebpagesController extends WebpagesAppController {
  * @param string
  * @return void
  */
-	public function edit($id = null) {		
-	
+	public function edit($id = null) {
 		$this->Webpage->id = $id;
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
@@ -144,7 +147,9 @@ class WebpagesController extends WebpagesAppController {
 
 		if (!empty($this->request->data)) {
 			try {
-				$this->Webpage->update($this->request->data);
+				$this->Webpage->add($this->request->data);
+				$this->Session->setFlash(__('Saved'));
+				$this->redirect(array('action' => 'view', $this->Webpage->id));
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}

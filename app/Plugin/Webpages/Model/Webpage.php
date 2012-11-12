@@ -122,9 +122,24 @@ class Webpage extends WebpagesAppModel {
  * @return boolean
  * @access public
  */
-	public function beforeSave($created) {
+	public function beforeSave($options) {
+		$this->data = $this->cleanInputData($this->data);
 		$this->_saveTemplateFiles();		
 		return true;
+	}
+
+/**
+ * After Save
+ *
+ * @param boolean $created
+ * @return boolean
+ * @access public
+ */
+	public function afterSave($created) {
+        if ($this->data['Webpage']['type'] == 'template') {
+            // template settings are special
+            $this->_saveTemplateSettings($this->id, $this->data);
+        }
 	}
 
 /**
@@ -164,60 +179,25 @@ class Webpage extends WebpagesAppModel {
  * Add function
  *
  * @param array
- * @return bool
+ * @return bool	
  */
 	public function add($data = array()) {
 		$data = $this->cleanInputData($data);
-		// save webpage first
+        
 		if ($this->saveAll($data)) {
-			$pageId = $this->id;
-			// template settings are special
-			if ($data['Webpage']['type'] == 'template' && $this->_saveTemplateSettings($pageId, $data)) {
-				// do nothing we may want to attach behaviors still
-				// the return true happens outside of these ifs
-			} 
 			return true;
 		} else {
-			throw new Exception(__('Save failed.'));
+			throw new Exception(ZuhaInflector::invalidate($this->invalidFields()));
 		}
-		/* Revisit this because I could not find where the function is, and it could be made better 
-		with having it possible to restrict user roles or available to only certain user roles
+		//Revisit this because I could not find where the function is, and it could be made better 
+		//with having it possible to restrict user roles or available to only certain user roles
 		// if permissions are set, restrict them
-		if (!empty($this->request->data['ArosAco']['aro_id'])) {
-			$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->request->data['ArosAco']['aro_id'], true);
-		}
-		*/
-	}	
-	
-/**
- * Update function
- * 
- * @param array
- * @return bool
- */
-	public function update($data = array()) {
-		$data = $this->cleanInputData($data);
-		// save webpage first
-		if ($this->saveAll($data)) {
-			$pageId = $this->id;
-			// template settings are special
-			if ($data['Webpage']['type'] == 'template' && $this->_saveTemplateSettings($pageId, $data)) {
-				// do nothing we may want to attach behaviors still
-				// the return true happens outside of these ifs
-			}
-			return true;
-		} else {
-			throw new Exception(__d('webpages', 'Save failed.', true));
-		}
-		/* Revisit this because I could not find where the function is, and it could be made better 
-		with having it possible to restrict user roles or available to only certain user roles
-		// if permissions are set, restrict them
-		if (!empty($this->request->data['ArosAco']['aro_id'])) {
-			$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->request->data['ArosAco']['aro_id'], true);
-		}
-		*/
+		//if (!empty($this->request->data['ArosAco']['aro_id'])) {
+		//	$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->request->data['ArosAco']['aro_id'], true);
+		//}
 	}
-	
+    
+    
 /**
  * When a page is a template we have to save the settings for that template, so that we know when to show it.
  *
@@ -225,38 +205,38 @@ class Webpage extends WebpagesAppModel {
  * @param array			An array of data to get the template, and template settings from
  */
 	private function _saveTemplateSettings($pageId, $data = null, $delete = false) {
-		if(!empty($data)) {
+		if(!empty($data['Webpage']['is_default']) || !empty($data['Webpage']['template_urls'])) {
 			$settings = array(
 				'templateId' => $pageId,
 				'isDefault' => $data['Webpage']['is_default'],
 				'urls' => '"'.$data['Webpage']['template_urls'].'"',
 				'userRoles' => $data['Webpage']['user_roles'],
 				);
-		}
 		
-		if (defined('__APP_TEMPLATES')) {
-			@extract(unserialize(__APP_TEMPLATES));
-		}
-		
-		$template[$pageId] = !empty($settings) ? base64_encode(gzcompress(serialize($settings))) : null;
-			
-		$data['Setting']['value'] = '';
-		$data['Setting']['type'] = 'App';
-		$data['Setting']['name'] = 'TEMPLATES';
-		foreach ($template as $key => $value) {
-			// merge existing values here
-			if ($delete && $key == $pageId) {
-				// doing nothing should remove the value from the settings
-			} else {
-				$data['Setting']['value'] .= 'template['.$key.'] = "'.$value.'"'.PHP_EOL;
-			}
-		}
-		
-		$this->Setting = ClassRegistry::init('Setting');
-		if ($this->Setting->add($data)) {
-			return true;
-		} else {
-			return false;
+            if (defined('__APP_TEMPLATES')) {
+                @extract(unserialize(__APP_TEMPLATES));
+            }
+
+            $template[$pageId] = !empty($settings) ? base64_encode(gzcompress(serialize($settings))) : null;
+
+            $data['Setting']['value'] = '';
+            $data['Setting']['type'] = 'App';
+            $data['Setting']['name'] = 'TEMPLATES';
+            foreach ($template as $key => $value) {
+                // merge existing values here
+                if ($delete && $key == $pageId) {
+                    // doing nothing should remove the value from the settings
+                } else {
+                    $data['Setting']['value'] .= 'template['.$key.'] = "'.$value.'"'.PHP_EOL;
+                }
+            }
+
+            $this->Setting = ClassRegistry::init('Setting');
+            if ($this->Setting->add($data)) {
+                return true;
+            } else {
+                return false;
+            }
 		}
 	}
 		

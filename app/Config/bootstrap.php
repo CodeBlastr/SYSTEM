@@ -365,6 +365,22 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				return Inflector::tableize($name);
 			}
 		}
+        
+        /**
+         * invalidate method
+         * 
+         * parse the function $Model->invalidFields() into a string
+         * 
+         * @param type $invalidFields
+         */
+        public function invalidate($invalidFields = array()) {
+            $one = key($invalidFields);
+            $two = key($invalidFields[$one]);
+            $three = $invalidFields[$one][$two][0];
+            
+            return __('%s %s %s', $one, $two, $three);
+        }
+        
 	} // end ZuhaInflector class
 
 } // end bootstrap overwrite check
