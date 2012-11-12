@@ -126,6 +126,7 @@ class InstallController extends Controller {
 		} else {
 			$this->redirect(array('action' => 'site'));
 		}
+        $this->set('page_title_for_layout', 'Install');
 	}
 
 /**
