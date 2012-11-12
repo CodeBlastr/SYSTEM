@@ -285,6 +285,7 @@ class ContactsController extends ContactsAppController {
 				$this->Session->setFlash($e->getMessage());			
 			}
 		}
+        $this->Contact->contain('ContactDetail');
 		$contact = $this->Contact->read(null, $contactId);
 		$this->set(compact('contact')); 
 		$this->set('page_title_for_layout', __('Log an Activity for %s', $contact['Contact']['name']));
