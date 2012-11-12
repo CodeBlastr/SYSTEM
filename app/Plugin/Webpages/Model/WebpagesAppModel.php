@@ -75,16 +75,14 @@ class WebpagesAppModel extends AppModel {
 					try {
 						$this->save($template);
 					} catch (Exception $e) {
-						debug($e->getMessage());
-						break;
+						throw new Exception ($e->getMessage());
 					}
 				} else {
 					try {
 						$this->create();
 						$this->save($template);
 					} catch (Exception $e) {
-						debug($e->getMessage());
-						break;
+						throw new Exception ($e->getMessage());
 					}
 				}
 			}
