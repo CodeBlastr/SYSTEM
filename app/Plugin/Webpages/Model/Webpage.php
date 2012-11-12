@@ -9,21 +9,29 @@ class Webpage extends WebpagesAppModel {
 	
 /**
  * Name
+ * 
+ * @var string 
  */
 	public $name = 'Webpage';
 
 /**
- * Full Name
+ * Full name
+ * 
+ * @var string 
  */
 	public $fullName = "Webpages.Webpage";
 	
 /**
- * Displayfield
+ * Display Field
+ * 
+ * @var string 
  */
 	public $displayField = 'name';
 	
-/** 
+/**
  * Validate
+ * 
+ * @var array
  */
 	public $validate = array(
 		'name' => array(
@@ -33,18 +41,22 @@ class Webpage extends WebpagesAppModel {
 				)
 			)
 		);
-	
+
 /**
  * Types
+ * 
+ * @var array 
  */
 	public $types = array(
 		'template' => 'Template',
 		'element' => 'Element',
 		'content' => 'Content'
 		);
-	
+
 /**
- * Has One
+ * Has one
+ * 
+ * @var array 
  */
  	public $hasOne = array(
 		'Alias' => array(
@@ -59,6 +71,8 @@ class Webpage extends WebpagesAppModel {
 	
 /**
  * Has Many
+ * 
+ * @var array
  */
 	public $hasMany = array(
 		'Child' => array(
@@ -70,6 +84,8 @@ class Webpage extends WebpagesAppModel {
 	
 /**
  * Belongs To
+ * 
+ * @var array
  */
 	public $belongsTo = array(
 		'Creator' => array(
@@ -105,6 +121,8 @@ class Webpage extends WebpagesAppModel {
  * Constructor
  */
 	public function __construct($id = false, $table = null, $ds = null) {
+        $this->actsAs[] = 'Tree';
+        
 		if (in_array('Search', CakePlugin::loaded())) { 
 			$this->actsAs[] = 'Search.Searchable';
 		}
