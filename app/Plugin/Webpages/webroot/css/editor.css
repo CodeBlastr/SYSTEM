@@ -83,7 +83,7 @@ body {
 	margin: 0 auto;
     width: 1170px;
     font-size: 15px;
-    line-height: 40px;
+    line-height: inherit;
     background-image: none;
     height: auto;
 } 
@@ -93,6 +93,9 @@ body {
 #adminNavFloManagr .navbar-inner .nav-collapse {
 	float: left;
 	width: 1020px;
+}
+#adminNavFloManagr .navbar-inner {
+	border: 0;
 }
 #adminNavFloManagr ul {
 	position: relative;
