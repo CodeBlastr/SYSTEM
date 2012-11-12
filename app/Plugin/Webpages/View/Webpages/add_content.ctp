@@ -3,8 +3,8 @@
     
 	<fieldset>
     	<?php
-		echo $this->Form->input('type', array('type' => 'hidden', 'value' => 'content'));
-		echo $this->Form->input('name', array('label' => 'Internal Page Name'));
+		echo $this->Form->input('Webpage.type', array('type' => 'hidden', 'value' => 'content'));
+		echo $this->Form->input('Webpage.name', array('label' => 'Internal Page Name'));
 		echo $this->Form->input('Webpage.content', array('type' => 'richtext')); ?>
 	</fieldset>
     

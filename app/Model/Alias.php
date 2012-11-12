@@ -16,7 +16,7 @@ class Alias extends AppModel {
 			   'message' => 'must be unique'
 			),
 			'alphaNumericDashUnderscore' => array(
-			   'rule' => '|^[0-9a-zA-Z_-]*$|',
+			   'rule' => '|^[0-9a-zA-Z_/-]*$|',
 			   'message' => 'can only be letters, numbers, and underscore'
 			)
 		),

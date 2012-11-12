@@ -3,9 +3,8 @@
     
 	<fieldset>
     	<?php
-		echo $this->Form->input('Webpage.id');
-		echo $this->Form->input('Webpage.parent_id', array('type' => 'hidden'));
 		echo $this->Form->input('Webpage.type', array('type' => 'hidden', 'value' => 'content'));
+		echo $this->Form->input('Webpage.parent_id', array('type' => 'hidden', 'value' => $parent['Webpage']['id']));
 		echo $this->Form->input('Webpage.name', array('label' => 'Internal Page Name'));
 		echo $this->Form->input('Webpage.content', array('type' => 'richtext')); ?>
 	</fieldset>
@@ -13,11 +12,10 @@
 	<fieldset>
 		<legend class="toggleClick"><?php echo __('Search Engine Optimization');?></legend>
     	<?php 
-		echo $this->Form->input('Alias.id');
+		echo $this->Form->input('Alias.name', array('label' => 'SEO Url (unique)'));
 		echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => 'webpages'));
 		echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => 'webpages'));
 		echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => 'view'));
-		echo $this->Form->input('Alias.name', array('label' => 'SEO Url (unique)'));
 		echo $this->Form->input('Webpage.title', array('label' => 'SEO Title'));
 		echo $this->Form->input('Webpage.keywords', array('label' => 'SEO Keywords'));
 		echo $this->Form->input('Webpage.description', array('label' => 'SEO Description')); ?>
@@ -33,15 +31,11 @@
 </div>
 
 <?php
-$menuItems = array(
-	$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index', 'content')),
-	$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add', 'content'), array('title' => 'Add Webpage')),
-	$this->Html->link(__('View'), array('controller' => 'webpages', 'action' => 'view', $this->request->data['Webpage']['id'])),
-	$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete %s?'), $this->Form->value('Webpage.name'))),
-	);
-	
 $this->set('context_menu', array('menus' => array(
-	  array('heading' => 'Webpages',
-		'items' => $menuItems
-			)
-	  ))); ?>
+	array(
+		'heading' => 'Webpages',
+		'items' => array(
+			 $this->Html->link(__('List', true), array('action' => 'index')),									 
+			 )
+		)
+	))); ?>

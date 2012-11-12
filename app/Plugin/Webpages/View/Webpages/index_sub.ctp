@@ -50,14 +50,12 @@ echo $this->Element('scaffolds/index', array(
     ));
 
 // set the contextual menu items
-foreach ($sections as $section) {
-    $items[] = $this->Html->link($section['Parent']['Alias']['name'], array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'sub', 'filter' => 'parent_id:' . $section['Parent']['id']));
-}
-$items[] = $this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add'));
-
 $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Webpages',
-		'items' => $items,
+		'items' => array(
+            $this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index')),
+            $this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add')),
+            )
 		),
 	)));
