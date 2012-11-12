@@ -19,11 +19,11 @@ class UsableBehavior extends ModelBehavior {
 
 
 	public function beforeSave(&$Model) {
-		#remove habtm user data and give it to the afterSave() function
-		if (!empty($Model->data['User']['User'])) :
+		// remove habtm user data and give it to the afterSave() function
+		if (!empty($Model->data['User']['User'])) {
 			$this->userData = $Model->data;
 			unset($Model->data['User']['User']);
-		endif;
+        }
 		
 		$Model->data = $this->getChildContacts($Model);
 		

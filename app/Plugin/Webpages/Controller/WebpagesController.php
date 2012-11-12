@@ -150,7 +150,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
 		$this->set('webpages', $this->paginate());
         
-		$templates = $this->Webpage->syncFiles($type);
+		$templates = $this->Webpage->syncFiles('template');
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Templates');
