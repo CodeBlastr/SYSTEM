@@ -36,10 +36,21 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 			$suite->addTestFile($pluginsPath . 'Activities' . $controllerPath . DS .  'ActivitiesTest.php');
 		}
 
+		// Categories Plugin
+		if (in_array('Categories', CakePlugin::loaded())) {
+	        //$suite->addTestFile($pluginsPath . 'Categories' . $modelPath . DS . 'CategorizedTest.php');
+			//$suite->addTestFile($pluginsPath . 'Categories' . $behaviorPath  . DS . 'CategorizableBehaviorTest.php');
+		}
+
 		// Drafts Plugin
 		if (in_array('Drafts', CakePlugin::loaded())) {
 			$suite->addTestFile($pluginsPath . 'Drafts' . $modelPath . DS . 'DraftTest.php');
 			$suite->addTestFile($pluginsPath . 'Drafts' . $behaviorPath  . DS . 'DraftableBehaviorTest.php');
+		}
+
+		// Estimates Plugin
+		if (in_array('Estimates', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Estimates' . $modelPath . DS . 'EstimateTest.php');
 		}
 
 		// Forms Plugin
@@ -50,16 +61,27 @@ class AllTests extends PHPUnit_Framework_TestSuite {
         // Galleries Plugin
 		if (in_array('Galleries', CakePlugin::loaded())) {
 	        $suite->addTestFile($pluginsPath . 'Galleries' . $modelPath . DS . 'GalleryTest.php');
+	        $suite->addTestFile($pluginsPath . 'Galleries' . $modelPath . DS . 'GalleryImageTest.php');
 		}
 
 		// Orders Plugin
 		if (in_array('Orders', CakePlugin::loaded())) {
 			$suite->addTestFile($pluginsPath . 'Orders' . $modelPath . DS . 'OrderItemTest.php');
 		}
+
+		// Products Plugin
+		if (in_array('Products', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Products' . $modelPath . DS . 'ProductStoreTest.php');
+		}
 		
 		// Users Plugin
 		if (in_array('Users', CakePlugin::loaded())) {
 			$suite->addTestFile($pluginsPath . 'Users' . $behaviorPath . DS . 'UsableBehaviorTest.php');
+		}
+
+		// Webpages Plugin
+		if (in_array('Webpages', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Webpages' . $modelPath . DS . 'WebpageTest.php');
 		}
 
 		// Workflows Plugin

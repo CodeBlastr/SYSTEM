@@ -182,10 +182,10 @@ class UsableBehavior extends ModelBehavior {
  * Callback used to save related users, into the used table, with the proper relationship.
  */
 	public function afterSave(&$Model, $created) {
-		# get current users using, so that we can merge and keep duplicates out later
+		// get current users using, so that we can merge and keep duplicates out later
 		$currentUsers = $this->findUsedUsers($Model, $Model->data[$Model->alias]['id'], 'all');
 		
-		# this is if we have a hasMany list of users coming in.
+		// this is if we have a hasMany list of users coming in.
 		if (!empty($Model->data['User'][0])) {
 			foreach ($Model->data['User'] as $user) {
 				#$users[]['id'] = $user['user_id']; // before cakephp 2.0 upgrade
@@ -193,14 +193,14 @@ class UsableBehavior extends ModelBehavior {
 			}
 		}
 		
-		# this is if we have a habtm list of users coming in.
+		// this is if we have a habtm list of users coming in.
 		if (!empty($this->userData['User']['User'][0])) {
 			foreach ($this->userData['User']['User'] as $userId) {
 				$users[]['id'] = $userId;
 			}
 		}
 		
-		# this is if its a user group we need to look up.
+		// this is if its a user group we need to look up.
 		if (!empty($Model->data[$Model->alias]['user_group_id'])) {
 			# add all of the team members to the used table 
 			$userGroups = $Model->UserGroup->find('all', array(
@@ -221,7 +221,7 @@ class UsableBehavior extends ModelBehavior {
 		}
 		
 		
-		#gets rid of duplicate users from two arrays... @todo: maybe move this to its own function if its needed again
+		// gets rid of duplicate users from two arrays... @todo: maybe move this to its own function if its needed again
 		if (!empty($users)) {
 			$users = Set::extract('/id', $users);
 			$currentUsers = Set::extract('/User/id', $currentUsers);
@@ -298,7 +298,6 @@ class UsableBehavior extends ModelBehavior {
 					),
 				),
 			));
-		
 		$results = $Model->Used->User->find($type, $params);
 		if (!empty($results)) { 
 			return $results;

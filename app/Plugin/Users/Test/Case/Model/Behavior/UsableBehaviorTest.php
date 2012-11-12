@@ -48,7 +48,9 @@ class UsableBehaviorTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'plugin.Users.used',
+		'app.Condition',
+		'plugin.Users.Used',
+        'plugin.Users.User',
 		'core.article',
 		);
 
@@ -71,7 +73,8 @@ class UsableBehaviorTestCase extends CakeTestCase {
  */
 	public function tearDown() {
 		unset($this->Usable);
-
+		unset($this->Model);
+		unset($this->Used);
 		parent::tearDown();
 	}
 
