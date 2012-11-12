@@ -558,7 +558,7 @@ class Contact extends ContactsAppModel {
 			$ratings['cold'] = 10;
 			$values = Set::combine($return, '{n}.Estimate.id', '{n}.Contact.contact_rating');
 			foreach ($values as $value) {
-				$average[] = $ratings[$value];
+				$average[] = !empty($ratings[$value]) ? $ratings[$value] : 0;
 			}
 			$return['_subTotal'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)));
 			$return['_multiplier'] = !empty($average) ? array_sum($average) / count($values) : 0;
