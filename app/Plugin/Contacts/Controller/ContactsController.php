@@ -93,8 +93,12 @@ class ContactsController extends ContactsAppController {
 		$this->set('displayDescription', ''); 
 	}
 
+
 /**
  * View method
+ * 
+ * @param type $id
+ * @throws NotFoundException
  */
 	public function view($id = null) {
 		$this->Contact->id = $id;

@@ -5,6 +5,8 @@ $modelName = !empty($modelName) ? $modelName : Inflector::classify($this->reques
 $pluginName = !empty($pluginName) ? $pluginName : ZuhaInflector::pluginize($modelName); // contacts
 $controller = !empty($controller) ? $controller : Inflector::tableize($modelName); // contact_people, projects
 $indexClass = !empty($indexClass) ? $indexClass : null; // collapsed value will reduce it to headlines only by default
+$displayName = !empty($displayName) ? $displayName : 'name';
+$displayDescription = !empty($displayDescription) ? $displayDescription : 'description';
 if (!empty($data)) { 
 	# setup defaults
 	$indexVar = Inflector::variable($controller); // contactPeople, projects
