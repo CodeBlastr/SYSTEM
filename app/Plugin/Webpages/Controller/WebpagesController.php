@@ -172,13 +172,16 @@ class WebpagesController extends WebpagesAppController {
 			throw new NotFoundException(__('Page not found'));
 		}
 		
-		$update = $this->Webpage->syncFiles('template');
+		$update = $this->Webpage->syncFiles('template'); // template 
 		$webpage = $this->Webpage->find("first", array(
 		    "conditions" => array( "Webpage.id" => $id),
-		    'contain' => array('Alias')
+		    'contain' => array(
+		    	'Alias',
+				'Child'
+				)
 		    ));
         
-		// this is here because an element uses this view function
+		// this is here because an element uses this view function ? What element ? 
 		if (!empty($webpage) && isset($this->request->params['requested'])) {
 		    return $webpage;
 		}
