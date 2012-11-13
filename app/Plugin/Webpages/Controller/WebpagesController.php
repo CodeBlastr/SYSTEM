@@ -88,7 +88,8 @@ class WebpagesController extends WebpagesAppController {
  */
     protected function _indexContent() {
 		$this->paginate['conditions']['Webpage.type'] = 'content';
-		$this->paginate['conditions']['Webpage.parent_id'] = 0;
+		$this->paginate['conditions']['OR']['Webpage.parent_id'] = 0;
+		$this->paginate['conditions']['OR']['Webpage.parent_id'] = null;
 		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
 		$this->set('webpages', $this->paginate());
         
