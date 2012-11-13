@@ -55,8 +55,7 @@ class UsableBehavior extends ModelBehavior {
 			*/ // left because I don't know where nocheck was used
 			
 			
-			/*
-			# output the new query
+			/* output the new query // left for reference as its a pretty cool query
 			$queryData['joins'] = array(array(
 				'table' => 'used',
 				'alias' => 'Used',
@@ -66,7 +65,7 @@ class UsableBehavior extends ModelBehavior {
 					"Used.model = '{$Model->alias}'",
 					$userQuery,
 				),
-			));*/ // left for reference as its a pretty cool query
+			));*/ 
 			
 			$Dbo = $Model->getDataSource();
 			
