@@ -65,7 +65,7 @@ class ContactsController extends ContactsAppController {
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', '');
 		$this->set('contactTypes', $this->Contact->types());
-		$associations =  array('ContactType' => array('displayField' => 'name'), 'ContactSource' => array('displayField' => 'name'), 'ContactIndustry' => array('displayField' => 'name'), 'ContactRating' => array('displayField' => 'name'));
+		//$associations =  array('ContactType' => array('displayField' => 'name'), 'ContactSource' => array('displayField' => 'name'), 'ContactIndustry' => array('displayField' => 'name'), 'ContactRating' => array('displayField' => 'name'));
 		$this->set('associations', $associations);
 		$this->allowedActions[] = 'list';
 	}
@@ -137,26 +137,35 @@ class ContactsController extends ContactsAppController {
 				'name',
 				),
 			));
-
+			
+		// vars for employees
 		$employees = !empty($contact['Contact']['is_company']) ? $this->paginate('Contact', array('Contact.id')) : null;
 		$this->set('employees', $employees);
+		
+		// vars for opportunities
 		$this->set('estimates', in_array('Estimates', CakePlugin::loaded()) ? $this->paginate('Contact.Estimate', array('Estimate.foreign_key' => $id, 'Estimate.model' => 'Contact')) : null);
+		
+		// vars for activities
+		unset($this->paginate);
+		$this->paginate = array('fields' => array('id', 'name', 'created'));
 		$this->set('activities', in_array('Activities', CakePlugin::loaded()) ? $this->paginate('Contact.Activity', array('Activity.foreign_key' => $id, 'Activity.model' => 'Contact', 'Activity.action_description !=' => 'lead created')) : null);
+		
+		// vars for reminders
+		unset($this->paginate);
+		$this->paginate = array('fields' => array('id', 'name', 'due_date'));
 		$this->set('tasks', in_array('Tasks', CakePlugin::loaded()) ? $this->paginate('Contact.Task', array('Task.foreign_key' => $id, 'Task.model' => 'Contact')) : null);
+		
+		// view vars
 		$this->set('modelName', 'Contact');
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', '');
-		$this->set('tabsElement', '/contacts');
 		$this->set('page_title_for_layout', $contact['Contact']['name']);
 		$this->set('title_for_layout',  $contact['Contact']['name']);
 		$this->set('loggedActivities', $this->Contact->activities($id));
 		$this->set('loggedEstimates', $this->Contact->estimates($id));
 		
-		if (!empty($contact['Contact']['is_company'])) {
-			$this->render('view_company');
-		} else {
-			$this->render('view_person');
-		}
+		// which view file to use
+		!empty($contact['Contact']['is_company']) ? $this->render('view_company') : $this->render('view_person');
 	}
 
 /**
