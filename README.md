@@ -1,4 +1,4 @@
-# Welcome to Zuha (Test Change)
+# Welcome to Zuha
 
 A collection of ever expanding functionality to rapidly build new sites.
 
