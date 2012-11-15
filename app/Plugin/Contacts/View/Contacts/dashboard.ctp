@@ -185,6 +185,7 @@
 		</script>
         
 		<div id="activities_over_time"></div>
+		<p class="pull-right"><?php echo $this->Html->link(__('All of Today\'s Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activities', 'contains' => 'created:' . date('Y-m-d'))); ?></p>
 	<?php
     } ?>
 	</div>
@@ -194,6 +195,12 @@
 <?php
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Contacts',
+		'items' => array(
+			$this->Html->link(__('Dashboard'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'dashboard'), array('class' => 'active')),
+			),
+		),
 	array(
 		'heading' => '',
 		'items' => array(

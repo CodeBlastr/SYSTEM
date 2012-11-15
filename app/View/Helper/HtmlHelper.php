@@ -370,9 +370,16 @@ class HtmlHelper extends AppHelper {
  * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/html.html#HtmlHelper::link
  */
 	public function link($title, $url = null, $options = array(), $confirmMessage = false) {
-		if (is_array($url) && !empty($url['plugin']) && $url['plugin'] != '/' && !in_array(Inflector::camelize($url['plugin']), CakePlugin::loaded())) { // zuha added
+		// zuha added
+		if (is_array($url) && !empty($url['plugin']) && $url['plugin'] != '/' && !in_array(Inflector::camelize($url['plugin']), CakePlugin::loaded())) { 
 			return null;
+			// end zuha added
 		} else {
+			// zuha added
+			if (!empty($url['action'])) {
+				$options['class'] = !empty($options['class']) ? $options['class'] . ' ' . $url['action'] : $url['action'];
+			}
+			// end zuha added
 			$escapeTitle = true;
 			if ($url !== null) {
 				$url = $this->url($url);

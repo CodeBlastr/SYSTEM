@@ -276,9 +276,43 @@ class ContactsController extends ContactsAppController {
 		$this->set(compact('contact')); 
 		$this->set('page_title_for_layout', __('Create an opportunity for %s', $contact['Contact']['name']));
 	}
+
+/**
+ * Activities method
+ * 
+ * @return array
+ */
+	public function activities() {
+		$this->paginate['fields'] = array('Activity.id', 'Activity.name', 'Activity.description', 'Activity.creator_id', 'Activity.created', 'Creator.id', 'Creator.full_name', 'Contact.name');
+		$this->paginate['contain'] = array('Contact', 'Creator');
+		
+		$this->Contact->Activity->bindModel(array(
+			'belongsTo' => array(
+    	       	'Contact' => array(
+        	       	'className' => 'Contacts.Contact',
+					'foreignKey' => 'foreign_key',
+					'conditions' => array('Activity.model' => 'Contact')
+	        	    )
+            	)));
+					
+		$activities = $this->paginate('Activity');
+		for($i = 0, $size = count($activities); $i < $size; ++$i) {
+			$activities[$i]['Activity']['name'] = __('%s <small>for %s</small>', $activities[$i]['Activity']['name'], $activities[$i]['Contact']['name']);
+		}
+		
+		$associations =  array('Creator' => array('displayField' => 'full_name'));
+		$this->set(compact('activities', 'associations'));
+		$this->set('modelName', 'Activity');
+		$this->set('displayName', 'displayName');
+		$this->set('displayDescription', '');
+		$this->set('page_title_for_layout', __('Contact Activities'));
+		return $activities;
+	}
 	
 /**
  * Add an activity for a contact
+ * 
+ * @param string
  */
 	public function activity($contactId = null) {
 		$this->Contact->id = $contactId;
@@ -304,6 +338,7 @@ class ContactsController extends ContactsAppController {
 /**
  * Add a reminder
  * 
+ * @param string
  */
 	public function task($contactId = null) {		
 		$this->Contact->id = $contactId;
