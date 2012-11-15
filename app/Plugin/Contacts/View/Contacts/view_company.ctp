@@ -92,9 +92,10 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Contacts',
 		'items' => array(
-			$this->Html->link(__('<i class="icon-plus"></i> Opportunity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'estimate', $contact['Contact']['id']), array('escape' => false)),
-			$this->Html->link(__('<i class="icon-plus"></i> Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activity', $contact['Contact']['id']), array('escape' => false)),
-			$this->Html->link(__('<i class="icon-plus"></i> Reminder'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'task', $contact['Contact']['id']), array('escape' => false)),
+			$this->Html->link(__('Opportunity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'estimate', $contact['Contact']['id']), array('escape' => false)),
+			$this->Html->link(__('Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activity', $contact['Contact']['id']), array('escape' => false)),
+			$this->Html->link(__('Reminder'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'task', $contact['Contact']['id']), array('escape' => false)),
+			$this->Html->link(__('Employee'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'add', 'employee', $contact['Contact']['id']), array('escape' => false)),
 			),
 		),
 	array(
@@ -102,7 +103,6 @@ $this->set('context_menu', array('menus' => array(
 		'items' => array(
 			$this->Html->link(__('List'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'index')),
 			$this->Html->link(__('Edit'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'edit', $contact['Contact']['id'])),
-			$this->Html->link(__('<i class="icon-plus"></i> Employee'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'add', 'employee', $contact['Contact']['id']), array('escape' => false)),
 			),
 		),
 	))); ?>
