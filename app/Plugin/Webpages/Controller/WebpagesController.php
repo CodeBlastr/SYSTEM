@@ -88,8 +88,8 @@ class WebpagesController extends WebpagesAppController {
  */
     protected function _indexContent() {
 		$this->paginate['conditions']['Webpage.type'] = 'content';
-		$this->paginate['conditions']['OR']['Webpage.parent_id'] = 0;
-		$this->paginate['conditions']['OR']['Webpage.parent_id'] = null;
+		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
+		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
 		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
 		$this->set('webpages', $this->paginate());
         
@@ -134,7 +134,7 @@ class WebpagesController extends WebpagesAppController {
         
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
-		$this->set('page_title_for_layout', 'Sub Pages');
+		$this->set('page_title_for_layout', 'Widgets / Elements');
 		$this->layout = 'default';	
 		$this->render('index_element');
     }
@@ -318,9 +318,9 @@ class WebpagesController extends WebpagesAppController {
 		// parse this constant for output back into the form field for editing.
 		if (defined('__APP_TEMPLATES')) {
 			$templates = unserialize(__APP_TEMPLATES);
-			$template = !empty($templates['template'][$id]) ? unserialize(gzuncompress(base64_decode($templates['template'][$id]))): null;			
+			$template = !empty($templates['template'][$id]) ? unserialize(gzuncompress(base64_decode($templates['template'][$id]))): null;
         }
-        
+		
 		$templateUrls = !empty($template['urls']) && $template['urls'] != '""' ? implode(PHP_EOL, unserialize(gzuncompress(base64_decode($template['urls'])))) : null;
 		$this->set(compact('templateUrls'));
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));

@@ -222,8 +222,14 @@ class Webpage extends WebpagesAppModel {
  * @param int			The id of the page we're making settings for
  * @param array			An array of data to get the template, and template settings from
  */
-	private function _saveTemplateSettings($pageId, $data = null, $delete = false) {
+	private function _saveTemplateSettings($pageId, $data = null, $delete = false) {		
 		if(!empty($data['Webpage']['is_default']) || !empty($data['Webpage']['template_urls'])) {
+			// resave the template with the correct compression
+			if (!empty($data['Webpage']['template_urls'])){
+            	$data = $this->_templateUrls($data);
+            	$this->save(array('id' => $this->id, 'template_urls' => $data['Webpage']['template_urls']), array('validate' => false, 'callbacks' => false, 'fieldlist' => array('id', 'template_urls')));
+			}
+			// now move on to saving the actual settings
 			$settings = array(
 				'templateId' => $pageId,
 				'isDefault' => $data['Webpage']['is_default'],
@@ -248,14 +254,37 @@ class Webpage extends WebpagesAppModel {
                     $data['Setting']['value'] .= 'template['.$key.'] = "'.$value.'"'.PHP_EOL;
                 }
             }
-
             $this->Setting = ClassRegistry::init('Setting');
             if ($this->Setting->add($data)) {
-                return true;
+            	return true;
             } else {
                 return false;
             }
 		}
+	}
+
+/**
+ * Template Urls
+ * Returns an compressed version of the template urls field
+ * 
+ * @params array
+ * @return array
+ */
+	protected function _templateUrls($data = null) {
+		if (!empty($data['Webpage']['template_urls'])) {
+			// cleaning the string for common user entry differences
+			$urls = str_replace(PHP_EOL, ',', $data['Webpage']['template_urls']);
+			$urls = str_replace(' ', '', $urls);
+			$urls = explode(',', $urls);
+			foreach ($urls as $url) {
+				$url = str_replace('/*', '*', $url);
+				$url = str_replace(' ', '', $url);
+				$url = str_replace(',/', ',', $url);
+				$out[] = strpos($url, '/') == 0 ? substr($url, 1) : $url;
+			} // end url loop
+			$data['Webpage']['template_urls'] = base64_encode(gzcompress(serialize($out)));
+		}
+		return $data;		
 	}
 		
 /**
@@ -375,23 +404,9 @@ class Webpage extends WebpagesAppModel {
  */
 	public function cleanInputData($data) {
 		if (!empty($data['Webpage']['user_roles']) && is_array($data['Webpage']['user_roles'])) {
-			# serialize user roles
+			// serialize user roles
 			$data['Webpage']['user_roles'] = serialize($data['Webpage']['user_roles']);
-		}
-		
-		if (!empty($data['Webpage']['template_urls'])) {
-			# cleaning the string for common user entry differences
-			$urls = str_replace(PHP_EOL, ',', $data['Webpage']['template_urls']);
-			$urls = str_replace(' ', '', $urls);
-			$urls = explode(',', $urls);
-			foreach ($urls as $url) {
-				$url = str_replace('/*', '*', $url);
-				$url = str_replace(' ', '', $url);
-				$url = str_replace(',/', ',', $url);
-				$out[] = strpos($url, '/') == 0 ? substr($url, 1) : $url;
-			} // end url loop
-			$data['Webpage']['template_urls'] = base64_encode(gzcompress(serialize($urls)));
-		}		
+		}	
 		
 		if (empty($data['Alias']['name'])) {
 			// remove the alias if the name is blank
@@ -405,6 +420,10 @@ class Webpage extends WebpagesAppModel {
 				$data['Webpage']['name'] = $data['Webpage']['name'] . '.ctp';
 			}
 			
+		}
+		
+		if (empty($data['RecordLevelAccess']['UserRole'])) {
+			unset($data['RecordLevelAccess']);
 		}
 		
 		return $data;
