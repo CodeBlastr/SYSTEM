@@ -21,5 +21,27 @@ class Alias extends AppModel {
 			)
 		),
 	);
+	
+	public function beforeValidate($options = array()) {
+		$this->data = $this->cleanInputData($this->data);
+		return parent::beforeValidate($options);
+	}
+	
+/**
+ * Clean Input Data
+ * Before saving we need to check the data for consistency.
+ *
+ * @param array
+ * @return array
+ * @todo Clean out alias data for templates and elements.
+ */
+	public function cleanInputData($data) {
+		if (empty($data['Alias']['name'])) {
+			// remove the alias if the name is blank
+			unset($data['Alias']);
+		}
+		
+		return $data;
+	}
 
 }

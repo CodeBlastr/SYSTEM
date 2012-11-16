@@ -31,26 +31,14 @@ class AclExtraBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function setup(&$model, $data = array()) {
-		if (!empty($data['RecordLevelAccess']['User'])) {
-			$aroModel = 'User';
-			$aroUsers = $data['RecordLevelAccess']['User'];
-		} else if (!empty($data['RecordLevelAccess']['UserRole'])) {
-			$aroModel = 'UserRole';
-			$aroUsers = $data['RecordLevelAccess']['UserRole'];
-		} else {
-			return false;
-		}
-		$model->Aro = ClassRegistry::init('Aro');
-		$model->Aco = ClassRegistry::init('Aco');
-		$model->ArosAco = ClassRegistry::init('ArosAco');
+    public function setup($Model, $config = array()) {
+		$this->Aro = ClassRegistry::init('Aro');
+		$this->Aco = ClassRegistry::init('Aco');
+		$this->ArosAco = ClassRegistry::init('ArosAco');
 		
-		$this->model = $aroModel;
-		$this->users = $aroUsers;
-		
-		if (!method_exists($model, 'parentNode')) {
-			trigger_error(sprintf(__('Callback parentNode() not defined in %s', true), $model->alias), E_USER_WARNING);
-		}
+//		if (!method_exists($model, 'parentNode')) {
+//			trigger_error(sprintf(__('Callback parentNode() not defined in %s', true), $model->alias), E_USER_WARNING);
+//		}
 	}
 
 /**
@@ -60,7 +48,22 @@ class AclExtraBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function afterSave(&$model, $created) {
+	public function afterSave($Model, $created) {
+		debug($Model->data);
+		break;
+		
+		if (!empty($Model->data['RecordLevelAccess']['User'])) {
+			$aroModel = 'User';
+			$aroUsers = $data['RecordLevelAccess']['User'];
+		} else if (!empty($data['RecordLevelAccess']['UserRole'])) {
+			$aroModel = 'UserRole';
+			$aroUsers = $data['RecordLevelAccess']['UserRole'];
+		} else {
+			return false;
+		}
+		$this->Model = $aroModel;
+		$this->Users = $aroUsers;
+		
 		$acoId = $model->Aco->id;
 		foreach ($this->users as $user) {
 			$aro = $model->Aro->node(array('model' => $this->model, 'foreign_key' => $user));
@@ -76,7 +79,7 @@ class AclExtraBehavior extends ModelBehavior {
 			if($model->ArosAco->save($data));
 		}			
 			
-			# not sure if this is needed or working for saves of the non-creation type
+			// not sure if this is needed or working for saves of the non-creation type
 			/*if (!$created) {
 				$node = $this->node($model);
 				$data['id'] = isset($node[0][$type]['id']) ? $node[0][$type]['id'] : null;
