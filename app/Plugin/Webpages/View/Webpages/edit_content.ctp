@@ -14,9 +14,6 @@
 		<legend class="toggleClick"><?php echo __('Search Engine Optimization');?></legend>
     	<?php 
 		echo $this->Form->input('Alias.id');
-		echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => 'webpages'));
-		echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => 'webpages'));
-		echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => 'view'));
 		echo $this->Form->input('Alias.name', array('label' => 'SEO Url (unique)'));
 		echo $this->Form->input('Webpage.title', array('label' => 'SEO Title'));
 		echo $this->Form->input('Webpage.keywords', array('label' => 'SEO Keywords'));
