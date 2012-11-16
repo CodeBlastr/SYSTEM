@@ -61,23 +61,33 @@ class AclExtraBehavior extends ModelBehavior {
 		} else {
 			return false;
 		}
-		$this->Model = $aroModel;
-		$this->Users = $aroUsers;
 		
-		$acoId = $model->Aco->id;
-		foreach ($this->users as $user) {
-			$aro = $model->Aro->node(array('model' => $this->model, 'foreign_key' => $user));
+		// create from Model data the Aco record
+		$aco['Aco']['parent_id'] =  null;
+		$aco['Aco']['model'] = $Model->name;
+		$aco['Aco']['foreign_key'] = $Model->id;
+		
+		// save Aco here
+		
+		
+	
+		foreach ($aroUsers as $user) {
+			$aro = $Model->Aro->node(array('model' => $this->model, 'foreign_key' => $user));
 			$data = array(
 				'aro_id' => $aro[0]['Aro']['id'],
-				'aco_id' => $model->Aco->id,
+				'aco_id' => $this->Aco->id,
 				'_create' => 1,
 				'_read' => 1,
 				'_update' => 1,
 				'_delete' => 1,
 			);
-			$model->ArosAco->create();
-			if($model->ArosAco->save($data));
-		}			
+			try {
+				$this->ArosAco->create();
+				$this->ArosAco->save($data);
+			} catch (Exception $e) {
+				// do0 something hhere 
+			}
+		}
 			
 			// not sure if this is needed or working for saves of the non-creation type
 			/*if (!$created) {
