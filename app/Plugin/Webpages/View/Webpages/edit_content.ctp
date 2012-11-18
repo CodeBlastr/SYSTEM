@@ -30,8 +30,6 @@
 </div>
 
 <?php 
-$this->set('page_title_for_layout', __('%s <br /><small>%s/<span id="permaLink" title="Edit">%s</span> <a class="btn btn-mini" id="permaLinkEdit">Edit</a></small>', $page_title_for_layout, $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name'])); 
-
 $menuItems = array(
 	$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index', 'content')),
 	$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add', 'content'), array('title' => 'Add Webpage')),
@@ -55,9 +53,12 @@ $this->set('context_menu', array('menus' => array(
 <script type="text/javascript">
 
 $(function() {
+    
     var formId = '#WebpageEditForm';
     var permaLink = $('#permaLink').html();
     var aliasId = $("#AliasId");
+   
+    $('h1.pageTitle').append('<?php echo __(' <br /><small>%s/<span id="permaLink" title="Edit">%s</span> <a class="btn btn-mini" id="permaLinkEdit">Edit</a></small>', $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name']); ?>')
     
     $('#permaLink, #permaLinkEdit').live('click', function() {
        permaLink = $('#permaLink').html();
