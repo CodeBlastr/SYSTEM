@@ -22,12 +22,31 @@ App::uses('AppController', 'Controller');
  */
 class AliasesController extends AppController {
 
+/**
+ *
+ * @var string
+ */
 	public $name = 'Aliases';
-    
+
+/**
+ *
+ * @var string
+ */
 	public $uses = 'Alias';
 
-	public function count($name = null) {        
-		$this->set('alias', $this->Alias->find('count', array('conditions' => array('Alias.name' => $name), 'fields' => 'Alias.id')));
+/**
+ * Count method
+ * 
+ * Look for an alias to see if it already exists, plus 10 variations
+ * 
+ * @param string $name
+ */
+	public function count($name = null) {
+        $names[] = $name;
+        for($i = 0; $i < 10; $i++){
+            $names[] = $name . $i;
+        }
+		$this->set('alias', $this->Alias->find('count', array('conditions' => array('Alias.name' => $names), 'fields' => 'Alias.id')));
 	}
 
 }
