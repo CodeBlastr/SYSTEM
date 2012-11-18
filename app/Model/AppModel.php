@@ -46,15 +46,15 @@ class AppModel extends Model {
  * @todo    Move this record level access stuff to a behavior
  */
 	public function beforeSave($model) {
-	    # Start Record Level Access Save #
+	    // Start Record Level Access Save #
 	    // If the model needs Record Level Access add an Aco
 	    if (!empty($this->data['RecordLevelAccess']['UserRole'])) {
-	    	# There may be a potential problem with this.
-			# It saves an ArosAco record for every record being created.
-	      	# For example, when creating a webpage, it also creates an Aco for the Alias
-	      	# Left it in as is, because we may want this.  (ie. when a contact is record level,
-	      	# we probably want the user to have access to the Contact and Contact Person
-	      	# if a project issue is created, we probably want the user to have access to the project too.
+	    	// There may be a potential problem with this.
+			// It saves an ArosAco record for every record being created.
+	      	// For example, when creating a webpage, it also creates an Aco for the Alias
+	      	// Left it in as is, because we may want this.  (ie. when a contact is record level,
+	      	// we probably want the user to have access to the Contact and Contact Person
+	      	// if a project issue is created, we probably want the user to have access to the project too.
       		$this->Behaviors->attach('Acl', array('type' => 'controlled'));
       		$this->Behaviors->attach('AclExtra', $this->data);
     	} else if (defined('__APP_RECORD_LEVEL_ACCESS_ENTITIES')){
@@ -64,7 +64,7 @@ class AppModel extends Model {
       		}
     	}
 
-    	# Start Auto Creator & Modifier Id Saving #
+    	// Start Auto Creator & Modifier Id Saving #
     	$exists = $this->exists();
     	$user = class_exists('CakeSession') ? CakeSession::read('Auth.User') : null;
     	if ( !$exists && $this->hasField('creator_id') && empty($this->data[$this->alias]['creator_id']) ) {
@@ -73,8 +73,11 @@ class AppModel extends Model {
     	if ( $this->hasField('modifier_id') && empty($this->data[$this->alias]['modifier_id']) ) {
       		$this->data[$this->alias]['modifier_id'] = $user['id'];
     	}
-    	# End Auto Creator & Modifier Id Saving #
-    	# you have to return true to make the save continue.
+    	// End Auto Creator & Modifier Id Saving #
+		
+		parent::beforeSave($model);
+		
+    	// you have to return true to make the save continue.
     	return true;
   	}
 
@@ -83,9 +86,9 @@ class AppModel extends Model {
  * Condition Check, checks to see if any conditions from the conditions table were met.
  */
 	public function afterSave($created) {
-	    # Start Condition Check #
+	    // Start Condition Check #
     	$this->Condition = ClassRegistry::init('Condition');
-	    #get the id that was just inserted so you can call back on it.
+	    //get the id that was just inserted so you can call back on it.
 	    $this->data[$this->name]['id'] = $this->id;
 
 	    if ($created === true) {
@@ -94,7 +97,9 @@ class AppModel extends Model {
 	    	$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
 			#$this->conditionCheck('is_read'); // this needs to be put into the beforeFilter or beforeRender (beforeRender, would allow error pages to work too) of the
 	    }
-    	# End Condition Check #
+    	// End Condition Check #
+		
+		parent::afterSave($created);
 	}
 
 
@@ -102,13 +107,15 @@ class AppModel extends Model {
  * Condition Check, checks to see if any conditions from the conditions table were met.
  */
 	public function afterDelete() {
-    	# Start Condition Check #
+    	// Start Condition Check #
 	    App::Import('Model', 'Condition');
 	    $this->Condition = new Condition;
-	    #get the id that was just inserted so you can call back on it.
+	    //get the id that was just inserted so you can call back on it.
 	    $this->data[$this->name]['id'] = $this->id;
 	    $this->Condition->checkAndFire('is_delete', array('model' => $this->name), $this->data);
-	    # End Condition Check #
+	    // End Condition Check #
+		
+		parent::afterDelete();
 	}
 
 
@@ -127,6 +134,9 @@ class AppModel extends Model {
 	             }
 			}
 		}
+		
+		parent::afterFind($results, $primary);
+		
 		return $results;
 	}
 
@@ -199,7 +209,7 @@ class AppModel extends Model {
 	    }
 
 	    if (!empty($userIds)) {
-	      #
+
 	      return array('User' => $userIds);
 	    } else {
 	      return false;

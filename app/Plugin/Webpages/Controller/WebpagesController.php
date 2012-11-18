@@ -213,7 +213,7 @@ class WebpagesController extends WebpagesAppController {
 	public function add($type = 'content', $parentId = NULL) {
 		if (!empty($this->request->data)) {
 			try {
-				$this->Webpage->add($this->request->data);
+				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'));
 				$this->redirect(array('action' => 'view', $this->Webpage->id));
 			} catch(Exception $e) {
@@ -249,7 +249,7 @@ class WebpagesController extends WebpagesAppController {
         
 		if (!empty($this->request->data)) {
 			try {
-				$this->Webpage->add($this->request->data);
+				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'));
 				$this->redirect(array('action' => 'view', $this->Webpage->id));
 			} catch(Exception $e) {
@@ -282,8 +282,9 @@ class WebpagesController extends WebpagesAppController {
 
 		if (!empty($this->request->data)) {
 			try {
-				$this->Webpage->add($this->request->data);
+				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'));
+				break;
 				$this->redirect(array('action' => 'view', $this->Webpage->id));
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
