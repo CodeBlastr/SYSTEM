@@ -30,7 +30,7 @@
 </div>
 
 <?php 
-$this->set('page_title_for_layout', __('%s <br /><small>%s/<span id="permaLink">%s</span></small>', $page_title_for_layout, $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name'])); 
+$this->set('page_title_for_layout', __('%s <br /><small>%s/<span id="permaLink" title="Edit">%s</span> <a class="btn btn-mini" id="permaLinkEdit">Edit</a></small>', $page_title_for_layout, $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name'])); 
 
 $menuItems = array(
 	$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index', 'content')),
@@ -44,6 +44,14 @@ $this->set('context_menu', array('menus' => array(
 		'items' => $menuItems
 			)
 	  ))); ?>
+
+
+
+<style type="text/css">
+    #permaLink {
+        background: #fff7c9;
+    }
+</style>
 <script type="text/javascript">
 
 $(function() {
@@ -51,31 +59,54 @@ $(function() {
     var permaLink = $('#permaLink').html();
     var aliasId = $("#AliasId");
     
-    $("#permaLink").live('click', function() {
-       permaLink = $(this).html();
-       $(this).replaceWith('<div class="form-inline" id="aliasForm"><input type="text" value="' + permaLink + '" id="slugInput"> <a class="btn" id="saveSlug">Done</a> <a class="btn" id="cancelSlug">Cancel</a> <span id="saveOld"></span></div>'); 
+    $('#permaLink, #permaLinkEdit').live('click', function() {
+       permaLink = $('#permaLink').html();
+       $('#permaLink').replaceWith('<div class="form-inline" id="aliasForm"><input type="text" value="' + permaLink + '" id="slugInput"> <a class="btn" id="saveSlug">Done</a> <a class="btn" id="cancelSlug">Cancel</a> <span id="saveOld"></span></div>');
+       $('#permaLinkEdit').hide();
     });
-    $("#slugInput").live('keyup', function () {
+    $('#slugInput').live('keyup', function () {
         $("#AliasName").val($(this).val());
         $("#saveOld").replaceWith('<a id="saveOldLink" class="btn btn-danger" rel="tooltip" title="Click here to keep the old url working, so that links pointing to the old page will not break.">Keep old url live?</a></small>');
         $("a[rel=tooltip]").tooltip();
     });
-    $("#saveOldLink").live('click', function () {
+    $('#saveOldLink').live('click', function () {
         $(".tooltip").remove();
         $("#AliasId").remove();
         $("#saveOldLink").replaceWith('<a id="oldLinkSaved" class="btn btn-success" rel="tooltip" title="This means that old links pointing to the old url will still work. If this was a mistake, you will need to refresh the page before saving any changes.">Old url has been preserved! &nbsp;&nbsp; <button type="button" class="close" data-dismiss="alert">×</button></a></small>');
         $("a[rel=tooltip]").tooltip();
     });
-    $(".close").live('click', function() {
+    $('.close').live('click', function() {
         $(".tooltip").remove();
     });
-    $("#saveSlug").live('click', function () {
+    $('#saveSlug').live('click', function () {
         // check alias availability, append a number at the end if not available
-        $("#aliasForm").replaceWith('<span id="permaLink">' + $('#slugInput').val() + '</span>');
+        var newPermaLink = $('#slugInput').val();
+        if (newPermaLink != permaLink) {
+            $.getJSON('/aliases/count/' + newPermaLink + '.json', 
+                function(data) {
+                    // if there is a conflict append a number at the end of the alias
+                    var conflict = false;
+                    if (data.alias) {
+                        conflict = true;
+                    }
+                    if (conflict) {
+                        newPermaLink = newPermaLink + data.alias;
+                    }
+                    $("#aliasForm").replaceWith('<span id="permaLink">' + newPermaLink + '</span>'); // needed here instead of just the bottom because the update doesn't get past here for some reason
+                    $("#AliasName").val(newPermaLink);
+                    $('#permaLinkEdit').show();
+                }
+            );
+        } else {
+            $("#aliasForm").replaceWith('<span id="permaLink">' + newPermaLink + '</span>');
+            $("#AliasName").val(newPermaLink);
+            $('#permaLinkEdit').show();
+        }
     });
     $('#cancelSlug').live('click', function () {
         $(formId).prepend(aliasId); // bring back the alias id in case it was removed with the #saveOldLink button
         $('#aliasForm').replaceWith('<span id="permaLink">' + permaLink + '</span>');
+        $('#permaLinkEdit').show();
     });
 });
 </script>

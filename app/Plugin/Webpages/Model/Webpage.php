@@ -65,7 +65,7 @@ class Webpage extends WebpagesAppModel {
 			'dependent' => true,
 			'conditions' => '',
 			'fields' => '',
-			'order' => ''
+			'order' => 'Alias.modified DESC'
 		    ),
 	    );
 	
@@ -135,16 +135,6 @@ class Webpage extends WebpagesAppModel {
 	}
 
 /**
- * Before validate
- * 
- * @param array $options
- */
-	public function beforeValidate($options = array()) {
-		$this->data = $this->cleanInputData($this->data);
-		return parent::beforeValidate($options);
-	}
-
-/**
  * Before Save
  *
  * @param boolean $created
@@ -152,8 +142,7 @@ class Webpage extends WebpagesAppModel {
  * @access public
  */
 	public function beforeSave($options) {
-		$this->data = $this->cleanInputData($this->data);
-		$this->_saveTemplateFiles();
+		$this->_saveTemplateFiles(); // does not save to the database, so doesn't come back to this beforeSave()
 		return parent::beforeSave($options);
 	}
 
@@ -191,6 +180,18 @@ class Webpage extends WebpagesAppModel {
 		$this->_saveTemplateSettings($this->id, null, true);
 		return parent::afterDelete();
 	}
+
+/**
+ * Save All
+ * 
+ * @param array $data
+ * @param array $options
+ * @return array
+ */
+    public function saveAll($data = null, $options = array()) {
+        $data = $this->cleanInputData($data); // this has to be here (don't try putting it in beforeValidate() and beforeSave() again)
+        return parent::saveAll($data, $options);
+    }
     
     
 /**

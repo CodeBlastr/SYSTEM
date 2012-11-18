@@ -48,10 +48,7 @@ class AclExtraBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	public function afterSave($Model, $created) {
-		debug($Model->data);
-		break;
-		
+	public function afterSave($Model, $created) {		
 		if (!empty($Model->data['RecordLevelAccess']['User'])) {
 			$aroModel = 'User';
 			$aroUsers = $data['RecordLevelAccess']['User'];

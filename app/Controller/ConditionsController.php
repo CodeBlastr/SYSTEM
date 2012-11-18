@@ -19,7 +19,7 @@ App::uses('AppController', 'Controller');
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2012, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.controllers
  * @since         Zuha(tm) v 0.0.1
@@ -27,47 +27,34 @@ App::uses('AppController', 'Controller');
  */
 class ConditionsController extends AppController {
 
-	var $name = 'Conditions';
+	public $name = 'Conditions';
 
 	function index() {
 		$this->Condition->recursive = 0;
 		$this->set('conditions', $this->paginate());
 	}
 
-	function view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid Condition.', true));
-			$this->redirect(array('action'=>'index'));
+	public function view($id = null) {
+		$this->Condition->id = $id;
+		if (!$this->Condition->exists()) {
+			throw new NotFoundException(__('Condition not found'));
 		}
 		$this->set('condition', $this->Condition->read(null, $id));
 	}
 
-	function edit($id = null) {
+	public function edit() {
 		$this->redirect(array('plugin' => 'workflows', 'controller' => 'workflows', 'action' => 'add'));
-		/*
-		if (!empty($this->request->data)) {
-			if ($this->Condition->save($this->request->data)) {
-				$this->Session->setFlash(__('The Condition has been saved', true));
-				$this->redirect(array('plugin' => null, 'controller' => 'conditions', 'action'=>'view', $this->Condition->id));
-			} else {
-				$this->Session->setFlash(__('The Condition could not be saved. Please, try again.', true));
-			}
-		}
-		if (empty($this->request->data)) {
-			$this->request->data = $this->Condition->read(null, $id);
-		}*/
 	}
 
-	function delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for Condition', true));
-			$this->redirect(array('action'=>'index'));
+	public function delete($id = null) {
+		$this->Condition->id = $id;
+		if (!$this->Condition->exists()) {
+			throw new NotFoundException(__('Condition not found'));
 		}
 		if ($this->Condition->delete($id)) {
 			$this->Session->setFlash(__('Condition deleted', true));
-			$this->redirect(array('action'=>'index'));
+			$this->redirect(array('action' => 'index'));
 		}
 	}
 
 }
-?>
