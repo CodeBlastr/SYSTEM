@@ -27,6 +27,9 @@ class Webpage extends WebpagesAppModel {
  * @var string 
  */
 	public $displayField = 'name';
+        
+    
+    public $actsAs = array('Tree', 'AclExtra', 'Sluggable');
 	
 /**
  * Validate
@@ -37,8 +40,12 @@ class Webpage extends WebpagesAppModel {
 		'name' => array(
 			'notempty' => array(
 				'rule' => 'notempty',
-				'message' => 'Name field is required.',
-				)
+				'message' => 'Page name is required.',
+				),
+			'uniqueRule' => array(
+			   'rule' =>'isUnique',
+			   'message' => 'Page name must be unique.'
+                )
 			)
 		);
 
@@ -52,22 +59,6 @@ class Webpage extends WebpagesAppModel {
 		'element' => 'Element',
 		'content' => 'Content'
 		);
-
-/**
- * Has one
- * 
- * @var array 
- */
- 	public $hasOne = array(
-		'Alias' => array(
-			'className' => 'Alias',
-			'foreignKey' => 'value',
-			'dependent' => true,
-			'conditions' => '',
-			'fields' => '',
-			'order' => 'Alias.modified DESC'
-		    ),
-	    );
 	
 /**
  * Has Many
@@ -121,9 +112,7 @@ class Webpage extends WebpagesAppModel {
  * Constructor
  */
 	public function __construct($id = false, $table = null, $ds = null) {
-        $this->actsAs[] = 'Tree';
-		$this->actsAs[] = 'AclExtra';
-		
+        
 		if (in_array('Search', CakePlugin::loaded())) { 
 			$this->actsAs[] = 'Search.Searchable';
 		}
@@ -190,7 +179,11 @@ class Webpage extends WebpagesAppModel {
  */
     public function saveAll($data = null, $options = array()) {
         $data = $this->cleanInputData($data); // this has to be here (don't try putting it in beforeValidate() and beforeSave() again)
-        return parent::saveAll($data, $options);
+        if (parent::saveAll($data, $options)) {
+            return true;
+        } else {
+            throw new Exception(ZuhaInflector::invalidate($this->invalidFields()));
+        }
     }
     
     
@@ -381,22 +374,13 @@ class Webpage extends WebpagesAppModel {
  * @todo Clean out alias data for templates and elements.
  */
 	public function cleanInputData($data) {
-		
-		if (!empty($data['Alias']['name'])) {
-			$data['Alias']['plugin'] = 'webpages';
-			$data['Alias']['controller'] = 'webpages';
-			$data['Alias']['action'] = 'view';
-		} else {
-			// remove the alias if the name is blank
-			unset($data['Alias']);
-		}
-		
+        
 		if (!empty($data['Webpage']['user_roles']) && is_array($data['Webpage']['user_roles'])) {
 			// serialize user roles
 			$data['Webpage']['user_roles'] = serialize($data['Webpage']['user_roles']);
 		}
 		
-		if ($data['Webpage']['type'] == 'template') {
+		if (!empty($data['Webpage']['type']) && $data['Webpage']['type'] == 'template') {
 			// correct the fiLEName to filename.ctp for templates
 			$data['Webpage']['name'] = strtolower(trim(preg_replace('/[^a-zA-Z0-9.]+/', '-', $data['Webpage']['name']), '-'));
 			if (!strpos($data['Webpage']['name'], '.ctp', strlen($data['Webpage']['name']) - 4)) {

@@ -45,8 +45,8 @@ class AppModel extends Model {
  *
  * @todo    Move this record level access stuff to a behavior
  */
-	public function beforeSave($model) {
-	    // Start Record Level Access Save #
+	public function beforeSave($options) {
+	    // Start Record Level Access Save
 	    // If the model needs Record Level Access add an Aco
 	    if (!empty($this->data['RecordLevelAccess']['UserRole'])) {
 	    	// There may be a potential problem with this.
@@ -73,12 +73,10 @@ class AppModel extends Model {
     	if ( $this->hasField('modifier_id') && empty($this->data[$this->alias]['modifier_id']) ) {
       		$this->data[$this->alias]['modifier_id'] = $user['id'];
     	}
-    	// End Auto Creator & Modifier Id Saving #
-		
-		parent::beforeSave($model);
-		
+    	// End Auto Creator & Modifier Id Saving 
+
     	// you have to return true to make the save continue.
-    	return true;
+    	return parent::beforeSave($options);;
   	}
 
 
@@ -86,7 +84,7 @@ class AppModel extends Model {
  * Condition Check, checks to see if any conditions from the conditions table were met.
  */
 	public function afterSave($created) {
-	    // Start Condition Check #
+	    // Start Condition Check
     	$this->Condition = ClassRegistry::init('Condition');
 	    //get the id that was just inserted so you can call back on it.
 	    $this->data[$this->name]['id'] = $this->id;
@@ -97,7 +95,7 @@ class AppModel extends Model {
 	    	$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
 			#$this->conditionCheck('is_read'); // this needs to be put into the beforeFilter or beforeRender (beforeRender, would allow error pages to work too) of the
 	    }
-    	// End Condition Check #
+    	// End Condition Check
 		
 		parent::afterSave($created);
 	}
