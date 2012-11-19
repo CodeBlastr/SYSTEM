@@ -33,7 +33,13 @@ class Webpage extends WebpagesAppModel {
   * 
   * @var array
   */
-    public $actsAs = array('Tree', 'AclExtra', 'Sluggable');
+    public $actsAs = array(
+        'Tree', 
+        'AclExtra', 
+        'Sluggable' => array(
+            'priority' => 1,
+            )
+        );
 	
 /**
  * Validate

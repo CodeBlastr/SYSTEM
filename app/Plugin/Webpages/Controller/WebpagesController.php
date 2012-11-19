@@ -99,7 +99,6 @@ class WebpagesController extends WebpagesAppController {
 		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
 		$this->set('webpages', $this->paginate());
         
-        
 		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
