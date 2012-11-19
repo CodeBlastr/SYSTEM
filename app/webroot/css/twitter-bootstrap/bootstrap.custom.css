@@ -156,6 +156,9 @@ legend {
 .navbar li {
 	list-style-type: none;
 }
+.form-inline {
+    display: inline;
+}
 .form-inline div {
 	display: inline-block;
 	margin-right: 8px;

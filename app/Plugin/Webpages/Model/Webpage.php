@@ -27,6 +27,19 @@ class Webpage extends WebpagesAppModel {
  * @var string 
  */
 	public $displayField = 'name';
+        
+ /**
+  * Acts as
+  * 
+  * @var array
+  */
+    public $actsAs = array(
+        'Tree', 
+        'AclExtra', 
+        'Sluggable' => array(
+            'priority' => 1,
+            )
+        );
 	
 /**
  * Validate
@@ -37,8 +50,12 @@ class Webpage extends WebpagesAppModel {
 		'name' => array(
 			'notempty' => array(
 				'rule' => 'notempty',
-				'message' => 'Name field is required.',
-				)
+				'message' => 'Page name is required.',
+				),
+			'uniqueRule' => array(
+			   'rule' =>'isUnique',
+			   'message' => 'Page name must be unique.'
+                )
 			)
 		);
 
@@ -50,24 +67,9 @@ class Webpage extends WebpagesAppModel {
 	public $types = array(
 		'template' => 'Template',
 		'element' => 'Element',
+		'sub' => 'Sub',
 		'content' => 'Content'
 		);
-
-/**
- * Has one
- * 
- * @var array 
- */
- 	public $hasOne = array(
-		'Alias' => array(
-			'className' => 'Alias',
-			'foreignKey' => 'value',
-			'dependent' => true,
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		    ),
-	    );
 	
 /**
  * Has Many
@@ -121,7 +123,6 @@ class Webpage extends WebpagesAppModel {
  * Constructor
  */
 	public function __construct($id = false, $table = null, $ds = null) {
-        $this->actsAs[] = 'Tree';
         
 		if (in_array('Search', CakePlugin::loaded())) { 
 			$this->actsAs[] = 'Search.Searchable';
@@ -141,9 +142,8 @@ class Webpage extends WebpagesAppModel {
  * @access public
  */
 	public function beforeSave($options) {
-		$this->data = $this->cleanInputData($this->data);
-		$this->_saveTemplateFiles();		
-		return true;
+		$this->_saveTemplateFiles(); // does not save to the database, so doesn't come back to this beforeSave()
+		return parent::beforeSave($options);
 	}
 
 /**
@@ -158,6 +158,7 @@ class Webpage extends WebpagesAppModel {
             // template settings are special
             $this->_saveTemplateSettings($this->id, $this->data);
         }
+		return parent::afterSave($created);
 	}
 
 /**
@@ -165,7 +166,9 @@ class Webpage extends WebpagesAppModel {
  * 
  */
  	public function afterFind($results, $primary) {
-		return $this->_templateContentResults($results);
+		$results = $this->_templateContentResults($results);
+		$results = parent::afterFind($results, $primary);
+		return $results;
 	}
 
 	
@@ -175,45 +178,24 @@ class Webpage extends WebpagesAppModel {
 	public function afterDelete() {
 		// delete template settings
 		$this->_saveTemplateSettings($this->id, null, true);
+		return parent::afterDelete();
 	}
 
-	
 /**
- * Delete this if commenting it out doesn't cause a problem 10/21/2012 RK
-    public function orConditions($data = array()) {
-        $filter = $data['filter'];
-		debug($filter);
-        $cond = array(
-            'OR' => array(
-                $this->alias . '.name LIKE' => '%' . $filter . '%',
-                $this->alias . '.content LIKE' => '%' . $filter . '%',
-				$this->alias . '.type' => $filter,
-            ));
-        return $cond;
+ * Save All
+ * 
+ * @param array $data
+ * @param array $options
+ * @return array
+ */
+    public function saveAll($data = null, $options = array()) {
+        $data = $this->cleanInputData($data); // this has to be here (don't try putting it in beforeValidate() and beforeSave() again)
+        if (parent::saveAll($data, $options)) {
+            return true;
+        } else {
+            throw new Exception(ZuhaInflector::invalidate($this->invalidFields()));
+        }
     }
- */
-	
-/**
- * Add function
- *
- * @param array
- * @return bool	
- */
-	public function add($data = array()) {
-		$data = $this->cleanInputData($data);
-        
-		if ($this->saveAll($data)) {
-			return true;
-		} else {
-			throw new Exception(ZuhaInflector::invalidate($this->invalidFields()));
-		}
-		//Revisit this because I could not find where the function is, and it could be made better 
-		//with having it possible to restrict user roles or available to only certain user roles
-		// if permissions are set, restrict them
-		//if (!empty($this->request->data['ArosAco']['aro_id'])) {
-		//	$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->request->data['ArosAco']['aro_id'], true);
-		//}
-	}
     
     
 /**
@@ -227,7 +209,7 @@ class Webpage extends WebpagesAppModel {
 			// resave the template with the correct compression
 			if (!empty($data['Webpage']['template_urls'])){
             	$data = $this->_templateUrls($data);
-            	$this->save(array('id' => $this->id, 'template_urls' => $data['Webpage']['template_urls']), array('validate' => false, 'callbacks' => false, 'fieldlist' => array('id', 'template_urls')));
+				$this->save(array('id' => $this->id, 'template_urls' => $data['Webpage']['template_urls']), array('validate' => false, 'callbacks' => false, 'fieldlist' => array('id', 'template_urls')));
 			}
 			// now move on to saving the actual settings
 			$settings = array(
@@ -403,17 +385,13 @@ class Webpage extends WebpagesAppModel {
  * @todo Clean out alias data for templates and elements.
  */
 	public function cleanInputData($data) {
+        
 		if (!empty($data['Webpage']['user_roles']) && is_array($data['Webpage']['user_roles'])) {
 			// serialize user roles
 			$data['Webpage']['user_roles'] = serialize($data['Webpage']['user_roles']);
-		}	
-		
-		if (empty($data['Alias']['name'])) {
-			// remove the alias if the name is blank
-			unset($data['Alias']);
 		}
 		
-		if ($data['Webpage']['type'] == 'template') {
+		if (!empty($data['Webpage']['type']) && $data['Webpage']['type'] == 'template') {
 			// correct the fiLEName to filename.ctp for templates
 			$data['Webpage']['name'] = strtolower(trim(preg_replace('/[^a-zA-Z0-9.]+/', '-', $data['Webpage']['name']), '-'));
 			if (!strpos($data['Webpage']['name'], '.ctp', strlen($data['Webpage']['name']) - 4)) {
@@ -421,7 +399,6 @@ class Webpage extends WebpagesAppModel {
 			}
 			
 		}
-		
 		if (empty($data['RecordLevelAccess']['UserRole'])) {
 			unset($data['RecordLevelAccess']);
 		}
