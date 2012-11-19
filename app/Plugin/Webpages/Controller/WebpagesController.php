@@ -175,9 +175,10 @@ class WebpagesController extends WebpagesAppController {
 		
 		$update = $this->Webpage->syncFiles('template'); // template 
 		$webpage = $this->Webpage->find("first", array(
-		    "conditions" => array( "Webpage.id" => $id),
+		    "conditions" => array(
+                'Webpage.id' => $id
+                ),
 		    'contain' => array(
-		    	'Alias',
 				'Child'
 				)
 		    ));
@@ -257,9 +258,7 @@ class WebpagesController extends WebpagesAppController {
 			}
 		}
         
-        
-		$this->Webpage->contain('Alias');
-		$parent = $this->Webpage->read(null, $parentId);        
+		$parent = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $parentId), 'contain' => array('Child')));
 		$this->request->data['Alias']['name'] = !empty($parent['Alias']['name']) ? $parent['Alias']['name'] : null;
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('parent', $parent);
@@ -291,8 +290,7 @@ class WebpagesController extends WebpagesAppController {
 		}
 		
 		$templates = $this->Webpage->syncFiles('template');
-		$this->Webpage->contain('Alias');
-		$this->request->data = $this->Webpage->read(null, $id);
+		$this->request->data = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id), 'contain' => array('Child')));
 		$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
 		
 		// required to have per page permissions
