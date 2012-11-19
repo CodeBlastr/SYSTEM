@@ -68,6 +68,7 @@ class WebpagesAppModel extends AppModel {
 				}
 			}
 			
+			/** @todo This should only happen when there has been a change to the template */
 			foreach ($templates as $template) {
 				$id = $this->find('first', array('conditions' => array('name' => $template['name']), 'fields' => 'id'));
 				if (!empty($id)) {

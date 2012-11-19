@@ -378,12 +378,20 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
          * 
          * @param type $invalidFields
          */
-        public function invalidate($invalidFields = array()) {
-            $one = key($invalidFields);
-            $two = key($invalidFields[$one]);
-            $three = $invalidFields[$one][$two][0];
+        public function invalidate($invalidField = array()) {
+            $one = key($invalidField);
+            $two = key($invalidField[$one]);
+            $return = '';
+            $three = is_array($invalidField[$one][$two]) ? $invalidField[$one][$two][0] : null;
+            if ($three) {
+                $four = Configure::read('debug') > 0 ? __('(Debugger field : %s.%s)', $one, $two) : '';
+                $return .= __('%s', $three);
+            } else {
+                $four = Configure::read('debug') > 0 ? __('(Debugger field : CurrentModel.%s)', $one) : '';
+                $return .= __('%s', $invalidField[$one][0]);
+            }
             
-            return __('%s %s %s', $one, $two, $three);
+            return __('%s %s', $return, $four);
         }
         
 	} // end ZuhaInflector class
