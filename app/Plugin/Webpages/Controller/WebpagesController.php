@@ -300,8 +300,8 @@ class WebpagesController extends WebpagesAppController {
 		// required to have per page permissions
 		$userRoles = $this->Webpage->Creator->UserRole->find('list');
 		$types = $this->Webpage->types();
-		
 		$this->set(compact('userRoles', 'types'));
+
 		if ($this->request->data['Webpage']['type'] == 'template') {
 			if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
 				$cssFiles = unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES);
