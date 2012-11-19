@@ -48,28 +48,34 @@ class AclExtraBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	public function afterSave($Model, $created) {		
+	public function afterSave($Model, $created) {
+
 		if (!empty($Model->data['RecordLevelAccess']['User'])) {
 			$aroModel = 'User';
-			$aroUsers = $data['RecordLevelAccess']['User'];
-		} else if (!empty($data['RecordLevelAccess']['UserRole'])) {
+			$aroUsers = $Model->data['RecordLevelAccess']['User'];
+		} else if (!empty($Model->data['RecordLevelAccess']['UserRole'])) {
 			$aroModel = 'UserRole';
-			$aroUsers = $data['RecordLevelAccess']['UserRole'];
+			$aroUsers = $Model->data['RecordLevelAccess']['UserRole'];
 		} else {
 			return false;
 		}
 		
-		// create from Model data the Aco record
+		// create the Aco record from Model data
+		if (!$created) {
+			$node = $this->Aco->node($Model);
+			$aco['Aco']['id'] = isset($node[0]['Aco']['id']) ? $node[0]['Aco']['id'] : null;
+		}
 		$aco['Aco']['parent_id'] =  null;
 		$aco['Aco']['model'] = $Model->name;
 		$aco['Aco']['foreign_key'] = $Model->id;
 		
-		// save Aco here
-		
-		
-	
+		// save Aco record
+		$this->Aco->create();
+		$this->Aco->save($aco);
+
+		// create an ArosAco record foreach desired User or UserRole
 		foreach ($aroUsers as $user) {
-			$aro = $Model->Aro->node(array('model' => $this->model, 'foreign_key' => $user));
+			$aro = $this->Aro->node(array('model' => $aroModel, 'foreign_key' => $user));
 			$data = array(
 				'aro_id' => $aro[0]['Aro']['id'],
 				'aco_id' => $this->Aco->id,
@@ -82,18 +88,29 @@ class AclExtraBehavior extends ModelBehavior {
 				$this->ArosAco->create();
 				$this->ArosAco->save($data);
 			} catch (Exception $e) {
-				// do0 something hhere 
+				// do something here, but saves don't throw Exceptions?
+				return false;
 			}
 		}
-			
-			// not sure if this is needed or working for saves of the non-creation type
-			/*if (!$created) {
-				$node = $this->node($model);
-				$data['id'] = isset($node[0][$type]['id']) ? $node[0][$type]['id'] : null;
-			}*/
+
 	}
 
-/**
+	
+	/**
+	 * 
+	 * @param \Model $model
+	 * @param type $results
+	 * @param type $primary
+	 */
+	public function afterFind(\Model $model, $results, $primary) {
+		if(!empty($results[0][$model->name]['user_roles'])) {
+			$results[0]['RecordLevelAccess']['UserRole'] = unserialize($results[0][$model->name]['user_roles']);
+		}
+		parent::afterFind($model, $results, $primary);
+		return $results;
+	}
+
+	/**
  * NOT USED YET
  * Destroys the ARO/ACO node bound to the deleted record
  *
