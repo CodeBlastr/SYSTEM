@@ -49,6 +49,7 @@ class AclExtraBehavior extends ModelBehavior {
  * @access public
  */
 	public function afterSave($Model, $created) {
+		parent::afterSave($Model, $created);
 
 		if (!empty($Model->data['RecordLevelAccess']['User'])) {
 			$aroModel = 'User';
@@ -103,17 +104,19 @@ class AclExtraBehavior extends ModelBehavior {
 	}
 
 	
-	/**
-	 * 
-	 * @param \Model $model
-	 * @param type $results
-	 * @param type $primary
-	 */
-	public function afterFind(\Model $model, $results, $primary) {
-		if(!empty($results[0][$model->name]['user_roles'])) {
-			$results[0]['RecordLevelAccess']['UserRole'] = unserialize($results[0][$model->name]['user_roles']);
+/**
+ * 
+ * @param \Model $model
+ * @param type $results
+ * @param type $primary
+ */
+	public function afterFind(Model $Model, $results, $primary) {
+		parent::afterFind($Model, $results, $primary);
+		
+		if(!empty($results[0][$Model->name]['user_roles'])) {
+			$results[0]['RecordLevelAccess']['UserRole'] = unserialize($results[0][$Model->name]['user_roles']);
 		}
-		parent::afterFind($model, $results, $primary);
+
 		return $results;
 	}
 
