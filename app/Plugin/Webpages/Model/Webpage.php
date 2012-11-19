@@ -28,7 +28,11 @@ class Webpage extends WebpagesAppModel {
  */
 	public $displayField = 'name';
         
-    
+ /**
+  * Acts as
+  * 
+  * @var array
+  */
     public $actsAs = array('Tree', 'AclExtra', 'Sluggable');
 	
 /**
@@ -57,6 +61,7 @@ class Webpage extends WebpagesAppModel {
 	public $types = array(
 		'template' => 'Template',
 		'element' => 'Element',
+		'sub' => 'Sub',
 		'content' => 'Content'
 		);
 	

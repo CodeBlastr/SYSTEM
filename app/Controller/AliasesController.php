@@ -42,6 +42,7 @@ class AliasesController extends AppController {
  * @param string $name
  */
 	public function count($name = null) {
+        $name = str_replace('+', '/', $name);
         $names[] = $name;
         for($i = 0; $i < 10; $i++){
             $names[] = $name . $i;
