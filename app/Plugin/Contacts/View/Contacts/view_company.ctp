@@ -43,6 +43,31 @@
 		<div id="activities_over_time"></div>
 		
 	<?php } ?>
+	<div class="contact form">
+		<?php echo $this->Form->create('Contact', array('url' => array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'add')));?>
+		<fieldset>
+			<legend class="btn btn-block toggleClick"><?php echo __('Add Employee'); ?></legend>
+		    <?php
+			 echo $this->Form->hidden('Contact.is_company', array('value' => 0));
+			 echo $this->Form->hidden('Employer', array('value' => $contact['Contact']['id']));
+			 echo $this->Form->input('Contact.id', array('type' => 'select', 'options' => $people, 'label' => __('Employee <small>%s</small>', $this->Html->link('(create new person)', '#', array('id' => 'newEmployeeLink')))));
+			 echo $this->Form->input('Contact.name', array('label' => 'Employee Name', 'after' => __(' %s', $this->Html->link('Cancel', '#', array('id' => 'cancelEmployeeLink')))));
+			 echo $this->Form->end('Submit');?>
+		</fieldset>
+	</div>
+	<script type="text/javascript">		
+		$(function() {
+			$("#ContactName").parent().hide();
+			$("#newEmployeeLink").click(function () {
+				$(this).parent().hide();
+				$("#ContactName").parent().show();
+			});
+			$("#cancelEmployeeLink").click(function () {
+				$(this).parent().hide();
+				$("#ContactId").parent().show();
+			});
+		});
+	</script>
 </div>
 
 <div class="contacts view">
@@ -74,8 +99,7 @@
 	if (!empty($employees)) {
 		echo '<h4> Employees </h4>';
 		echo $this->Element('scaffolds/index', array('data' => $employees));
-	}  ?>
-
+	} ?>	
 </div>
 
 
@@ -95,7 +119,6 @@ $this->set('context_menu', array('menus' => array(
 			$this->Html->link(__('Opportunity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'estimate', $contact['Contact']['id']), array('escape' => false)),
 			$this->Html->link(__('Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activity', $contact['Contact']['id']), array('escape' => false)),
 			$this->Html->link(__('Reminder'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'task', $contact['Contact']['id']), array('escape' => false)),
-			$this->Html->link(__('Employee'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'add', 'employee', $contact['Contact']['id']), array('escape' => false)),
 			),
 		),
 	array(

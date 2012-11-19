@@ -90,6 +90,13 @@
 .pagination {
 	height: auto;
 }
+
+/* forms */
+legend {
+	background: #D9EDF7;
+	padding: 0 10px;
+	border-radius: 0.5em;
+}
 	
 
 /* masonry for dashboards */

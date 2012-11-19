@@ -156,6 +156,7 @@ class ContactsController extends ContactsAppController {
 		$this->set('tasks', in_array('Tasks', CakePlugin::loaded()) ? $this->paginate('Contact.Task', array('Task.foreign_key' => $id, 'Task.model' => 'Contact')) : null);
 		
 		// view vars
+		$this->set('people', $this->Contact->Employer->findPeople('list'));
 		$this->set('modelName', 'Contact');
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', '');
