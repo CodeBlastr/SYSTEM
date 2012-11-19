@@ -26,7 +26,6 @@
     
 	<?php echo $this->Form->end('Save Webpage');?>
 </div>
-
 <?php
 $this->set('context_menu', array('menus' => array(
 	array(
