@@ -62,13 +62,20 @@ class AclExtraBehavior extends ModelBehavior {
 		
 		// create the Aco record from Model data
 		if (!$created) {
-			$node = $this->Aco->node($Model);
-			$aco['Aco']['id'] = isset($node[0]['Aco']['id']) ? $node[0]['Aco']['id'] : null;
+			try {
+				$node = $this->Aco->node($Model);
+				$aco['Aco']['id'] = isset($node[0]['Aco']['id']) ? $node[0]['Aco']['id'] : null;
+			} catch (Exception $e) {
+				// node does not exist.
+				// set Aco.id to null.
+				$aco['Aco']['id'] = null;
+			}
+
 		}
 		$aco['Aco']['parent_id'] =  null;
 		$aco['Aco']['model'] = $Model->name;
 		$aco['Aco']['foreign_key'] = $Model->id;
-		
+
 		// save Aco record
 		$this->Aco->create();
 		$this->Aco->save($aco);
