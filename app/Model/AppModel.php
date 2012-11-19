@@ -76,7 +76,7 @@ class AppModel extends Model {
     	// End Auto Creator & Modifier Id Saving 
 
     	// you have to return true to make the save continue.
-    	return parent::beforeSave($options);;
+    	return parent::beforeSave($options);
   	}
 
 
