@@ -124,10 +124,10 @@ class Webpage extends WebpagesAppModel {
  */
 	public function __construct($id = false, $table = null, $ds = null) {
         
-		if (in_array('Search', CakePlugin::loaded())) { 
+		if (CakePlugin::loaded('Search')) { 
 			$this->actsAs[] = 'Search.Searchable';
 		}
-		if (in_array('Drafts', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Drafts')) {
 			$this->actsAs['Drafts.Draftable'] = array('conditions' => array('type' => 'content'));
 		}
 				
@@ -385,7 +385,7 @@ class Webpage extends WebpagesAppModel {
  * @todo Clean out alias data for templates and elements.
  */
 	public function cleanInputData($data) {
-        
+
 		if (!empty($data['Webpage']['user_roles']) && is_array($data['Webpage']['user_roles'])) {
 			// serialize user roles
 			$data['Webpage']['user_roles'] = serialize($data['Webpage']['user_roles']);
@@ -401,6 +401,8 @@ class Webpage extends WebpagesAppModel {
 		}
 		if (empty($data['RecordLevelAccess']['UserRole'])) {
 			unset($data['RecordLevelAccess']);
+		} else {
+			$data['Webpage']['user_roles'] = serialize($data['RecordLevelAccess']['UserRole']);
 		}
 		
 		return $data;
