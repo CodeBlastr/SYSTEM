@@ -1,0 +1,6 @@
+# robots.txt for http://www.example.com/
+# test sample by slktechlabs
+User-agent: *
+Disallow: /cyberworld/map/ # This is an infinite virtual URL space
+Disallow: /tmp/ # these will soon disappear
+Disallow: /foo.html
