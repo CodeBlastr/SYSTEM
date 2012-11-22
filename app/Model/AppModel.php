@@ -30,7 +30,7 @@ class AppModel extends Model {
  *
  * @var array
  */
-	public $actsAs = array('Containable');
+	public $actsAs = array('Containable' => array('priority' => 10));
 
 /**
  * Recursive
@@ -39,6 +39,13 @@ class AppModel extends Model {
  */
   	public $recursive = -1;
 
+/**
+ * When finding with the Meta model, the conditions are removed beforeFind, and applied afterFind.
+ * They are stored in this varialbe during that window.
+ * 
+ * @var boolean|array 
+ */
+	public $metaConditions = array();
 
 /**
  * Manipulate data before it is saved.
@@ -115,6 +122,34 @@ class AppModel extends Model {
 		
 		parent::afterDelete();
 	}
+	
+/**
+ * 
+ * @param string $type
+ * @param array $query
+ */
+	public function find($type = 'first', $query = array()) {
+		$type = $this->_metaType($type);
+		return parent::find($type, $query);
+	}
+
+/**
+ * Meta Type
+ * Unfortunately, we cannot get the find() type from a behavior.
+ * So we have to change the type here if it is a type of first.
+ * That is because for the MetableBehavior to work we need more 
+ * results (not less) in order to filter further as needed.
+ * 
+ * @param string $type
+ * @return type
+ */
+	protected function _metaType($type) {
+		$this->metaType = $type; // we'll need this to reformat an all into a first data array format
+		if(is_a($this->Behaviors->Metable, 'MetableBehavior')) {
+			$type = $type == 'first' ? 'all' : $type;
+		}
+		return $type;
+	}
 
 
 
@@ -122,7 +157,8 @@ class AppModel extends Model {
  * With this function our total_count now appears with the rest of the fields in the resulting data array.
  * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
  */
-	public function afterFind($results, $primary = false) {
+	public function afterFind($results, $primary = false) {	
+		//
     	if($primary == true) {
         	if(Set::check($results, '0.0')) {
             	$fieldName = key($results[0][0]);
@@ -133,9 +169,7 @@ class AppModel extends Model {
 			}
 		}
 		
-		parent::afterFind($results, $primary);
-		
-		return $results;
+		return parent::afterFind($results, $primary);
 	}
 
 
