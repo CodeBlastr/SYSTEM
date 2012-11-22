@@ -1,28 +1,27 @@
 <?php 
 class SslComponent extends Component {
     
-    var $components = array('RequestHandler');
+    public $components = array('RequestHandler');
     
-    var $Controller = null;
+    public $Controller = null;
     
-    function initialize(&$Controller) {
+    public function initialize(&$Controller) {
         $this->Controller = $Controller;
     }
 	
-	function startup() { }
-	function beforeRender() { }
-	function shutdown() { }
+	public function startup() { }
+	public function beforeRender() { }
+	public function shutdown() { }
     
-    function force() {
+    public function force() {
         if(!$this->RequestHandler->isSSL()) {
             $this->Controller->redirect('https://'.$this->__url());
         }
     }
     
-    function __url() {
+    protected function __url() {
         $port = env('SERVER_PORT') == 80 ? '' : ':'.env('SERVER_PORT');
 
         return env('SERVER_NAME').$port.env('REQUEST_URI');
     }
 }
-?>

@@ -1,9 +1,8 @@
-
 <?php echo $this->Html->script('https://www.google.com/jsapi', array('inline' => false)); ?>
 <?php echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false)); ?>
 <div class="masonry contacts dashboard">
 	<div class="masonryBox dashboardBox tagLeads">
-    	<h3><span class="label label-important">Attention!</span> New Leads </h3>
+    	<h3 class="title"><span class="label label-important">Attention!</span> New Leads </h3>
         <?php 
 		if (!empty($leads)) {
 			echo '<p>The latest incoming contacts, that have not been claimed yet.<p>';
@@ -49,7 +48,7 @@
     
     
 	<div class="masonryBox dashboardBox tagOpportunities">
-    	<h3><i class="icon-th-large"></i> Open Opportunities </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> Open Opportunities </h3>
         <?php 
 		if (!empty($estimates)) {
 			echo '<div class="alert alert-success"><h1> $'. $estimates['_total'] . '</h1></div>';
@@ -99,7 +98,7 @@
     
     
 	<div class="masonryBox dashboardBox tagActivities">
-    	<h3><i class="icon-th-large"></i> Search Contacts </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> Search Contacts </h3>
 		<?php 	
 		echo $this->Element('forms/search', array(
 		'url' => '/contacts/contacts/index/', 
@@ -119,7 +118,7 @@
     <?php 
 	if (!empty($tasks)) { ?>
 	<div class="masonryBox dashboardBox tagTasks">
-    	<h3><i class="icon-th-large"></i> Upcoming Tasks </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> Upcoming Tasks </h3>
     		<?php
 			echo '<p>A list of scheduled follow ups.</p>';
 			foreach ($tasks as $task) {
@@ -134,7 +133,7 @@
     <?php 
 	if (!empty($myContacts)) { ?>
 	<div class="masonryBox dashboardBox tagMyContacts">
-    	<h3><i class="icon-th-large"></i> My Contacts </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> My Contacts </h3>
     	<p>The last five contacts assigned to you.</p>
 		<?php
 		foreach ($myContacts as $contact) {
@@ -149,7 +148,7 @@
     <?php 		
 	if (!empty($activities)) { ?>
 	<div class="masonryBox dashboardBox tagActivities">
-    	<h3><i class="icon-th-large"></i> Activity </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> Activity </h3>
     	<?php
     	$rActivities = array_reverse($activities);
     	for ($i = 0; $i <= 4; $i++) {
