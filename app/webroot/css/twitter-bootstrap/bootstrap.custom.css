@@ -21,7 +21,22 @@
 }
 
 /* zuha specific */ 
-
+.right-caret {
+    border-bottom: 4px solid transparent;
+    border-top: 4px solid transparent;
+    border-left: 4px solid #000000;
+    display: inline-block;
+    height: 0;
+    opacity: 0.3;
+    vertical-align: top;
+    width: 0;
+}
+*[data-toggle=collapse] .right-caret {
+	margin: 16px 0 0 7px;
+}
+*[data-toggle=collapse] .caret {
+	margin: 18px 0 0 7px;
+}
 /* indexes */
 .indexContainer .navbar-inner {
 	padding: 0 20px 10px;
@@ -91,13 +106,6 @@
 	height: auto;
 }
 
-/* forms */
-legend {
-	background: #D9EDF7;
-	padding: 0 10px;
-	border-radius: 0.5em;
-}
-	
 
 /* masonry for dashboards */
 .dashboard,
@@ -131,7 +139,7 @@ legend {
 	border: 1px solid #EEE;
 	position: relative;
 }
-.dashboardBox h3 {
+.dashboardBox h3.title {
 	padding: 0 10px;
 	margin: 0;
 	background: #FFF;
@@ -147,6 +155,9 @@ legend {
 }
 .btn-group {
 	margin: 0 5px 1px 0;
+}
+span.btn {
+	margin-top: -10px;
 }
 
 /* top nav */
@@ -215,11 +226,16 @@ legend {
 
 
 /* custom - to be removed */
-.contextSorter {float : right;}
-.contextSorter select { margin :0; }
-
+.contextSorter {
+	float : right;
+	overflow: auto;
+}
+.contextSorter select { 
+	margin :0; 
+}
 .index-form {
-    margin-bottom: 0;
+	margin-bottom: 0;
+	display: block;
 }
 .index-form:after, .clearfix:after {
     content: ".";
