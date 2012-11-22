@@ -225,6 +225,17 @@ class AppController extends Controller {
 		} else if (!empty($container)) {
 			$this->__handlePaginatorContainer(urldecode($container), $object);
 		}
+
+		// filter by range of a particular field
+		$range = !empty($this->request->params['named']['range']) ? $this->request->params['named']['range'] : null;
+		if (!empty($range) && is_array($range)) {
+			// use an OR filter if we do multiple filters
+			foreach ($range as $singleRange) {
+				$this->__handlePaginatorRange(urldecode($singleRange), $object);
+			}
+		} else if (!empty($range)) {
+			$this->__handlePaginatorRange(urldecode($range), $object);
+		}
 	}
 
 /**
@@ -252,6 +263,7 @@ class AppController extends Controller {
 			$options['fieldValue'] = $options['fieldValue'] == 'null' ? null : $options['fieldValue'];  // handle null as a value
 
 			return $options;
+			
 		} else {
 			return null;
 		}
@@ -330,7 +342,30 @@ class AppController extends Controller {
 		} else {
 			// no matching field don't filter anything
 			if (Configure::read('debug') > 0) {
-				$this->Session->setFlash(__('Invalid starter filter attempted.'));
+				$this->Session->setFlash(__('Invalid container filter attempted.'));
+			}
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param type $rangeField
+	 * @param type $object
+	 */
+	private function __handlePaginatorRange($rangeField, $object) {
+		$options = $this->_getPaginatorVars($object, $rangeField);
+		$range = explode(';', $options['fieldValue']);
+		if (!empty($options['fieldName'])) {
+			$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' >='] = $range[0];
+			if($range[1]) {
+				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' <='] = $range[1];
+			}
+			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
+		} else {
+			// no matching field don't filter anything
+			if (Configure::read('debug') > 0) {
+				$this->Session->setFlash(__('Invalid range filter attempted.'));
 			}
 		}
 	}
