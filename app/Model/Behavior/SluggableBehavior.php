@@ -15,6 +15,13 @@ class SluggableBehavior extends ModelBehavior {
 	public $settings = array();
 
 /**
+ * Trigger
+ * 
+ * @var bool
+ */
+	public $trigger = false;
+
+/**
  * Default settings
  *
  * foreignKey	- The relationship field
@@ -27,6 +34,7 @@ class SluggableBehavior extends ModelBehavior {
 		'action' => 'view',
         'foreignKey' => 'id' // field to put in the Alias.value column
         );
+	
 
 /**
  * Initiate behaviour
@@ -39,7 +47,13 @@ class SluggableBehavior extends ModelBehavior {
         $this->_defaults['controller'] = Inflector::tableize($Model->name);
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
 	}
-    
+
+/**
+ * beforeFind callback
+ * 
+ * @param object $Model
+ * @param array $query
+ */
     public function beforeFind(Model $Model, $query) {
         $Model->bindModel(array(
             'hasOne' => array(
@@ -52,7 +66,7 @@ class SluggableBehavior extends ModelBehavior {
                     'order' => 'Alias.modified DESC'
                     )
                 )
-            ));
+            ), false);
         $query['contain'][] = 'Alias';
         
         return parent::beforeFind($Model, $query);
@@ -65,6 +79,7 @@ class SluggableBehavior extends ModelBehavior {
  */
 	public function beforeValidate(Model $Model) {
 		if (!empty($Model->data['Alias']['name'])) {
+            $this->data['Alias'] = $Model->data['Alias'];
             $this->makeUniqueSlug($Model);
             unset($Model->data['Alias']);
         }
@@ -77,22 +92,26 @@ class SluggableBehavior extends ModelBehavior {
  * @param object $Model
  * @todo bind the model here if not bound already
  */
-	public function beforeSave(Model $Model, $options) {
+	public function beforeSave(Model $Model, $params) {
 		if (!empty($Model->data['Alias']['name'])) {
             $this->data['Alias'] = $Model->data['Alias'];
         }
         unset($Model->data['Alias']);
-		return parent::beforeSave($Model, $options);
+		$this->trigger = isset($params['atomic']) ? false : true; // test for whether this is a saveAll() or save()
+		return parent::beforeSave($Model, $params);
 	}
 
 /**
  * afterSave callback
  * 
+ * Only fires an alias save if the save function was save() ... not saveAll() 
+ * Because saveAll() would mean that the alias was already saved. 
+ * 
  * @param Model $Model
  * @param bool $created
  */
     public function afterSave(Model $Model, $created) {
-        if (!empty($this->data['Alias']['name'])) {
+        if (!empty($this->data['Alias']['name']) && $this->trigger) {
             $settings = $this->settings[$Model->alias];
             $this->Alias = ClassRegistry::init('Alias');
             $this->data['Alias']['value'] = $Model->data[$Model->alias][$settings['foreignKey']];

@@ -47,7 +47,7 @@ class MetableBehavior extends ModelBehavior {
 					'foreignKey' => 'foreign_key',
 					)
 				)
-			));
+			), false);
 		$Model->contain(array('Meta'));
 
 		foreach ($Model->data[$Model->alias] as $field => $value) {
@@ -84,7 +84,7 @@ class MetableBehavior extends ModelBehavior {
 					'foreignKey' => 'foreign_key',
 					)
 				)
-			));
+			), false);
 		$Model->contain(array('Meta'));
 		// remove the !metafields from the conditions that are passed to the Model
 		/** @todo optimize by flattening and searching for Alias.! **/

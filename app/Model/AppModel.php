@@ -30,7 +30,7 @@ class AppModel extends Model {
  *
  * @var array
  */
-	public $actsAs = array('Containable' => array('priority' => 10));
+	//public $actsAs = array('Containable' => array('priority' => 10));
 
 /**
  * Recursive
@@ -46,6 +46,14 @@ class AppModel extends Model {
  * @var boolean|array 
  */
 	public $metaConditions = array();
+	
+/**
+ * Constructor
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		$this->actsAs[] = 'Containable';
+		parent::__construct($id, $table, $ds);
+	}
 
 /**
  * Manipulate data before it is saved.
