@@ -71,6 +71,7 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 
 		// Products Plugin
 		if (in_array('Products', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Products' . $modelPath . DS . 'ProductTest.php');
 			$suite->addTestFile($pluginsPath . 'Products' . $modelPath . DS . 'ProductStoreTest.php');
 		}
 		

@@ -97,7 +97,11 @@ class AppModel extends Model {
 
 /**
  * Condition Check, checks to see if any conditions from the conditions table were met.
- */
+ * 
+ * This has been removed, because it should be in a behavior.  We won't use it until it has
+ * been moved.  (Not every model should be "Conditionable" is the point.)
+ * Same for afterDelete() 2/23/2012 RK
+ 
 	public function afterSave($created) {
 	    // Start Condition Check
     	$this->Condition = ClassRegistry::init('Condition');
@@ -114,11 +118,15 @@ class AppModel extends Model {
 		
 		parent::afterSave($created);
 	}
+ */
 
 
 /**
  * Condition Check, checks to see if any conditions from the conditions table were met.
- */
+ * 
+ * This has been removed, because it should be in a behavior.  We won't use it until it has
+ * been moved.  (Not every model should be "Conditionable" is the point.)
+ * Same for afterSave() 2/23/2012 RK
 	public function afterDelete() {
     	// Start Condition Check #
 	    App::Import('Model', 'Condition');
@@ -130,6 +138,7 @@ class AppModel extends Model {
 		
 		parent::afterDelete();
 	}
+ */
 	
 /**
  * 
@@ -137,7 +146,7 @@ class AppModel extends Model {
  * @param array $query
  */
 	public function find($type = 'first', $query = array()) {
-		$type = $this->_metaType($type);
+		$type = $this->_metaType($type, $query);
 		return parent::find($type, $query);
 	}
 
@@ -151,9 +160,9 @@ class AppModel extends Model {
  * @param string $type
  * @return type
  */
-	protected function _metaType($type) {
+	protected function _metaType($type, $query) {
 		$this->metaType = $type; // we'll need this to reformat an all into a first data array format
-		if(is_a($this->Behaviors->Metable, 'MetableBehavior')) {
+		if((!isset($query['callbacks']) || (isset($query['callbacks']) && $query['callbacks'] !== false)) && is_a($this->Behaviors->Metable, 'MetableBehavior')) {
 			$type = $type == 'first' ? 'all' : $type;
 		}
 		return $type;
@@ -166,7 +175,6 @@ class AppModel extends Model {
  * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
  */
 	public function afterFind($results, $primary = false) {	
-		//
     	if($primary == true) {
         	if(Set::check($results, '0.0')) {
             	$fieldName = key($results[0][0]);

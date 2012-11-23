@@ -56,13 +56,14 @@ class MetableBehavior extends ModelBehavior {
 				unset($Model->data[$Model->alias][$field]);
 			}
 		}
-
-		$metadata = serialize($metadata);
-		$Model->Meta->query("
-			INSERT INTO `metas` (model, foreign_key, value)
-			VALUES ('{$Model->name}', '{$Model->id}', '{$metadata}')
-				ON DUPLICATE KEY UPDATE	value = '{$metadata}';
-			");
+		if (!empty($metadata)) {
+			$metadata = serialize($metadata);
+			$Model->Meta->query("
+				INSERT INTO `metas` (model, foreign_key, value)
+				VALUES ('{$Model->name}', '{$Model->id}', '{$metadata}')
+					ON DUPLICATE KEY UPDATE	value = '{$metadata}';
+				");
+		}
 
 		parent::afterSave($Model, $created);
 	}
@@ -88,7 +89,7 @@ class MetableBehavior extends ModelBehavior {
 		$Model->contain(array('Meta'));
 		// remove the !metafields from the conditions that are passed to the Model
 		/** @todo optimize by flattening and searching for Alias.! **/
-		if(!empty($query['conditions'])) {
+		if(!empty($query['conditions']) && is_array($query['conditions'])) {
 			foreach($query['conditions'] as $condition => $value) {
 				if(strstr($condition, $Model->alias.'.!')) {
 					$Model->metaConditions[$condition] = $value;
