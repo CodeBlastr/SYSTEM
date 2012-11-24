@@ -2,25 +2,22 @@
     <h3><?php echo $menu['WebpageMenu']['name']; ?></h3>
   <div class="related">
     <?php 
-echo $this->Tree->generate($menuItems, array(
+    echo $this->Tree->generate($menuItems, array(
 			'model' => 'WebpageMenuItem', 
 			'alias' => 'item_text', 
 			'class' => 'menu '.$menu['WebpageMenu']['type'], 
 			'id' => 'menu'.$menu['WebpageMenu']['id'], 
 			'element' => 'item', 
 			'elementPlugin' => 'menus'));
-?>
-	<?php 
-		echo $this->Form->create('WebpageMenuItem', array('action' => 'edit', 'class' => 'hide MenuItemForm'));
-		echo $this->Form->input('id', array('type' => 'hidden'));
-		echo $this->Form->input('item_text', array('label' => 'Link Text'));
-		echo $this->Form->input('item_url', array('label' => 'Url'));
-		echo $this->Form->end(__('Save', true));
-		
-		echo $this->Form->create('WebpageMenuItem', array('action' => 'delete', 'class' => 'hide MenuItemForm'));
-		echo $this->Form->input('id', array('type' => 'hidden', 'id' => 'MenuItemDeleteId'));
-		echo $this->Form->end(__('Delete', true));
-	?>
+	echo $this->Form->create('WebpageMenuItem', array('action' => 'edit', 'class' => 'hide MenuItemForm'));
+	echo $this->Form->input('id', array('type' => 'hidden'));
+	echo $this->Form->input('item_text', array('label' => 'Link Text'));
+	echo $this->Form->input('item_url', array('label' => 'Url'));
+	echo $this->Form->end(__('Save', true));
+	
+	echo $this->Form->create('WebpageMenuItem', array('action' => 'delete', 'class' => 'hide MenuItemForm'));
+	echo $this->Form->input('id', array('type' => 'hidden', 'id' => 'MenuItemDeleteId'));
+	echo $this->Form->end(__('Delete')); ?>
 	</div>
     <div class="actions">
       <ul>
