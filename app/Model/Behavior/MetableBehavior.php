@@ -26,6 +26,7 @@ class MetableBehavior extends ModelBehavior {
  * @param type $settings
  */
 	public function setup(Model $Model, $settings = array()) {
+
 	}
 
 /**
@@ -40,16 +41,6 @@ class MetableBehavior extends ModelBehavior {
  * @param type $created
  */
 	public function afterSave(Model $Model, $created) {
-		$Model->bindModel(array(
-			'hasOne' => array(
-				'Meta' => array(
-					'className' => 'Meta',
-					'foreignKey' => 'foreign_key',
-					)
-				)
-			), false);
-		$Model->contain(array('Meta'));
-
 		foreach ($Model->data[$Model->alias] as $field => $value) {
 			if (strpos($field, '!') === 0) {
 				$metadata[$field] = $value;
@@ -58,45 +49,54 @@ class MetableBehavior extends ModelBehavior {
 		}
 		if (!empty($metadata)) {
 			$metadata = serialize($metadata);
-			$Model->Meta->query("
+            $Meta = ClassRegistry::init('Meta');
+			$Meta->query("
 				INSERT INTO `metas` (model, foreign_key, value)
 				VALUES ('{$Model->name}', '{$Model->id}', '{$metadata}')
 					ON DUPLICATE KEY UPDATE	value = '{$metadata}';
 				");
 		}
-
 		parent::afterSave($Model, $created);
 	}
 	
 /**
  * Before find callback
  * 
- * Remove and sour metaConditions for use in the afterFind
+ * Remove and save metaConditions for use in the afterFind
  * 
  * @param Model $Model
  * @param array $query
  * @return array
+ * @todo optimize by flattening and searching for Alias.
  */
 	public function beforeFind(Model $Model, array $query) {
-		$Model->bindModel(array(
-			'hasOne' => array(
+        $Model->bindModel(array(
+        	'hasOne' => array(
 				'Meta' => array(
 					'className' => 'Meta',
 					'foreignKey' => 'foreign_key',
+                    'conditions' => array('Meta.model' => $Model->name),
+                    //'dependent' => false, // we'll manually handle deletes in afterDelete()
+                    //'fields' => array('Meta.model', 'Meta.foreign_key', 'Meta.value')
 					)
 				)
 			), false);
-		$Model->contain(array('Meta'));
-		// remove the !metafields from the conditions that are passed to the Model
-		/** @todo optimize by flattening and searching for Alias.! **/
-		if(!empty($query['conditions']) && is_array($query['conditions'])) {
-			foreach($query['conditions'] as $condition => $value) {
-				if(strstr($condition, $Model->alias.'.!')) {
-					$Model->metaConditions[$condition] = $value;
-					unset($query['conditions'][$condition]);
-				}
-			}
-		}
+        $Model->contain('Meta');
+        
+#        // kept in case we need to manually join again
+#		$query['joins'][] = array(
+#			'table' => 'metas',
+#			'alias' => 'Meta',
+#			'type' => 'LEFT',
+#			'conditions' => array(
+#				"{$Model->alias}.id = Meta.foreign_key",
+#				"Meta.model = '{$Model->alias}'"
+#			)
+#		);
+
+		//$query = $this->_queryFields($Model, $query);  // read comment by function
+        
+		$query = $this->_queryConditions($Model, $query);
 		return $query;
 	}
 
@@ -108,9 +108,61 @@ class MetableBehavior extends ModelBehavior {
  * @param type $primary
  * @return type
  */
-	public function afterFind(Model $Model, $results, $primary) {
+    public function afterFind(Model $Model, $results, $primary) {
 		$results = $this->mergeSerializedMeta($Model, $results);
 		$results = $this->filterByMetaConditions($Model, $results);
+		return $results;
+	}
+    
+    public function beforeDelete(Model $Model, $cascade = true) {
+        unset($Model->Meta);
+        $Model->unbindModel(array('hasOne' => array('Meta')));
+        return true;
+    }
+    
+    public function afterDelete(Model $Model) {
+        $Meta = ClassRegistry::init('Meta');
+        if ($Meta->deleteAll(array('Meta.foreign_key' => $Model->id, 'Meta.model' => $Model->name), false, false)) {
+            return true;
+        } else {
+            throw new Exception(__('Meta After Delete Failed'));
+        }
+    }
+    
+    
+#    public function beforeDelete(Model $Model, $cascade = array()) {
+#        // manual join needed
+#    	$query['joins'][] = array(
+#			'table' => 'metas',
+#			'alias' => 'Meta',
+#			'type' => 'LEFT',
+#			'conditions' => array(
+#				"{$Model->alias}.id = Meta.foreign_key",
+#				"Meta.model = '{$Model->alias}'"
+#			)
+#		);
+#        return parent::beforeDelete($Model, $cascade);
+#    }
+
+
+/**
+ * Merge Serialized Meta
+ * 
+ * Take the meta data and merge it into the results as if 
+ * it were part of the data array to begin with.
+ * 
+ * @param object $Model
+ * @param array $results
+ * @return array
+ */
+    public function mergeSerializedMeta($Model, $results = array()) {
+		foreach($results as &$result) {
+			if(isset($result['Meta']['foreign_key'])) {
+				// merges the unserialized Meta values into the Model array
+				$result[$Model->alias] = Set::merge($result[$Model->alias], unserialize($result['Meta']['value']));
+			}
+			unset($result['Meta']);
+		}
 		return $results;
 	}
 
@@ -146,30 +198,50 @@ class MetableBehavior extends ModelBehavior {
 
 			$results = array_values($results);
 		}
-		
 		return $this->_checkOriginalSearchType($Model, $results);
 	}
-
-
+    
 /**
- * Merge Serialized Meta
+ * Query fields
  * 
- * Take the meta data and merge it into the results as if 
- * it were part of the data array to begin with.
+ * If fields is set, then we need to add Meta.fields as well.
  * 
- * @param object $Model
- * @param array $results
+ * @param Model $Model
+ * @param array $query
+ * @return array
+ * 
+ * @todo This might be able to be deleted.  Removing it seems to have no ill effects so far
+ * and if we need them, they might be better in the hasOne['fields'] area
+
+	protected function _queryFields(Model $Model, $query) {
+		if(!empty($query['fields']) && is_array($query['fields'])) {
+			$query['fields'][] = 'Meta.model';
+			$query['fields'][] = 'Meta.foreign_key';
+			$query['fields'][] = 'Meta.value';
+		}
+		return $query;
+	}
+ */
+	
+/**
+ * Query conditions
+ * 
+ * Remove and save metaConditions for use in the afterFind
+ * 
+ * @param Model $Model
+ * @param array $query
  * @return array
  */
-	public function mergeSerializedMeta($Model, $results = array()) {
-		foreach($results as &$result) {
-			if(isset($result['Meta']['foreign_key'])) {
-				// merges the unserialized Meta values into the Model array
-				$result[$Model->alias] = Set::merge($result[$Model->alias], unserialize($result['Meta']['value']));
+	protected function _queryConditions(Model $Model, $query) {
+		if(!empty($query['conditions']) && is_array($query['conditions'])) {
+			foreach($query['conditions'] as $condition => $value) {
+				if(strstr($condition, $Model->alias.'.!')) {
+					$Model->metaConditions[$condition] = $value;
+					unset($query['conditions'][$condition]);
+				}
 			}
-			unset($result['Meta']);
 		}
-		return $results;
+		return $query;
 	}
 	
 /**
