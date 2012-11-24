@@ -15,6 +15,7 @@ class UsableBehavior extends ModelBehavior {
 	public function setup(&$Model, $settings = array()) {
 		$this->defaultRole = !empty($settings['defaultRole']) ? $settings['defaultRole'] : null;
 		$this->superAdminRoleId = defined('__USERS_SUPER_ADMIN_ROLE_ID') ? __USERS_SUPER_ADMIN_ROLE_ID : $this->superAdminRoleId;
+        return true;
 	}
 
 

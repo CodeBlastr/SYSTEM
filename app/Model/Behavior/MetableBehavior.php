@@ -1,5 +1,5 @@
 <?php
-
+App::uses('ModelBehavior', 'Model');
 /**
  * MetableBehavior
  * 
@@ -25,8 +25,8 @@ class MetableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param type $settings
  */
-	public function setup(Model $Model, $settings = array()) {
-
+	public function setup($Model, $settings = array()) {
+        return true;
 	}
 
 /**

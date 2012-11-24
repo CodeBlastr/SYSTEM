@@ -17,15 +17,19 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 
 		$behaviorPath = $modelPath . DS . 'Behavior';
 /**
- * core test files to run
+ * app test files to run
  */
-		// core controller files to run
+        // core controller files to run
 		$suite->addTestFile($path . 'Controller' . DS . 'ConditionsControllerTest.php');
 		$suite->addTestFile($path . 'Controller' . DS . 'InstallControllerTest.php');
 
 		// core model files to run
 		$suite->addTestFile($path . 'Model' . DS . 'EnumerationTest.php');
 		$suite->addTestFile($path . 'Model' . DS . 'SettingTest.php');
+
+    	// core model behavior files to run
+		$suite->addTestFile($path . 'Model' . DS . 'Behavior' . DS. 'MetableBehaviorTest.php');
+
 
 
 /**
@@ -90,7 +94,9 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 			$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowEventTest.php');
 			$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowItemEventTest.php');
 		}
-
-		return $suite;
+        
+        
+        
+    	return $suite;
 	}
 }
