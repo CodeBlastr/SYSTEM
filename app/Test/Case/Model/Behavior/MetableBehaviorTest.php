@@ -14,7 +14,7 @@ if (!class_exists('Article')) {
 	/**
 	 *
 	 */
-		public $actsAs = array('Metable' => array('priority' => 1));
+		public $actsAs = array('Metable');
 	/**
 	 *
 	 */
@@ -28,8 +28,7 @@ if (!class_exists('Article')) {
 	 *
 	 */
 		public $alias = 'Article';
-		
-		
+        
 	}
 }
 
@@ -45,7 +44,6 @@ class MetableBehaviorTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'app.Condition',
 		'app.Meta',
 		'app.Article',
 		);
@@ -102,7 +100,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 			'!state' => 'NY',
 		));
 		$this->Article->saveAll($data);
-		$result = $this->Article->find('first', array('conditions' => array('Article.id' => $this->Article->id))); 
+		$result = $this->Article->find('first', array('conditions' => array('Article.id' => $this->Article->id)));
 		// tests that an article was saved, and that the meta info submitted was also saved (and of course returned in proper format)
 		$this->assertEqual(!empty($result['Article']['!location']), true);
 	}
@@ -233,7 +231,31 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		// we insert a few records, then run a search based on a meta field only
 		$this->assertEqual($result['Article']['!location'], $data[2]['Article']['!location']);
 	}
-	
-	
+    
+/**
+ * Test deleting records
+ */ 
+    public function testDelete() {
+		
+		$data = array('Article' => array(
+			'title' => 'Lorem 222',
+			'!location' => 'Syracuse',
+			'!food' => 'turkey',
+			'!fireproof' => 'no',
+			'!rent' => 535,
+			'!state' => 'NY',
+		));
+		$this->Article->saveAll($data);
+        $id = $this->Article->id;
+        $result = $this->Meta->find('first', array('conditions' => array('Meta.foreign_key' => $id)));
+        $metaLookup = array('Meta.foreign_key' => $result['Meta']['foreign_key'], 'Meta.model' => $result['Meta']['model']);
+        $this->assertTrue(!empty($result)); // make sure meta data was created
+        
+        $this->Article->delete($id);
+    	$article = $this->Article->findById($id);
+        $this->assertTrue(empty($article)); // make sure article is gone
+        $result = $this->Meta->find('first', array('conditions' => $metaLookup));
+        $this->assertTrue(empty($result));
+	}
 
 }

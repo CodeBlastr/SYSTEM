@@ -26,13 +26,6 @@ App::uses('Model', 'Model');
 class AppModel extends Model {
 
 /**
- * Acts As
- *
- * @var array
- */
-	//public $actsAs = array('Containable' => array('priority' => 10));
-
-/**
  * Recursive
  *
  * @var int
@@ -51,7 +44,7 @@ class AppModel extends Model {
  * Constructor
  */
 	public function __construct($id = false, $table = null, $ds = null) {
-		$this->actsAs[] = 'Containable';
+		$this->actsAs[] = 'Containable'; // moved here because it was being triggered too late	
 		parent::__construct($id, $table, $ds);
 	}
 
@@ -162,6 +155,7 @@ class AppModel extends Model {
  */
 	protected function _metaType($type, $query) {
 		$this->metaType = $type; // we'll need this to reformat an all into a first data array format
+		//$continue = isset($query['fields']) && strpos($query['fields'], '(') ? false : true; // don't do this if there is a function in the fields
 		if((!isset($query['callbacks']) || (isset($query['callbacks']) && $query['callbacks'] !== false)) && is_a($this->Behaviors->Metable, 'MetableBehavior')) {
 			$type = $type == 'first' ? 'all' : $type;
 		}
