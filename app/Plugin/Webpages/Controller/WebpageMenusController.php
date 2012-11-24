@@ -2,8 +2,12 @@
 class WebpageMenusController extends WebpagesAppController {
 
 	public $name = 'WebpageMenus';
+    
 	public $uses = 'Webpages.WebpageMenu';
+    
 	public $allowedActions = array('element');
+    
+    public $helpers = array('Utils.Tree');
 	
 	public function element($id = null) {
 		if (!empty($id)) {
@@ -29,11 +33,8 @@ class WebpageMenusController extends WebpagesAppController {
 		
 	public function index() {
 		$this->WebpageMenu->recursive = 0;
-		$this->paginate = array(
-			'conditions' => array(
-				'WebpageMenu.menu_id' => null,
-				),
-			);
+        $this->paginate['fields'] = array('WebpageMenu.id', 'WebpageMenu.name', 'WebpageMenu.order');
+		$this->paginate['conditions']['WebpageMenu.menu_id'] = null;
 		$this->set('menus', $this->paginate());
 	}
 	
@@ -64,12 +65,12 @@ class WebpageMenusController extends WebpagesAppController {
 			$this->WebpageMenu->create();
 			if ($this->WebpageMenu->save($this->request->data)) {
 				$this->Session->setFlash(__('The menu has been saved', true));
-				$this->redirect(array('controller' => 'webpage_menu_items', 'action' => 'add', $this->Menu->id));
+				$this->redirect(array('controller' => 'webpage_menu_items', 'action' => 'add', $this->WebpageMenu->id));
 			} else {
 				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true));
 			}
 		}
-		$types = $this->Menu->types();
+		$types = $this->WebpageMenu->types();
 		$this->set(compact('types'));
 	}
 

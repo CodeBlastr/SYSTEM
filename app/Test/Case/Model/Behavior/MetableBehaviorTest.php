@@ -3,9 +3,9 @@
 App::uses('MetableBehavior', 'Model/Behavior');
 
 
-if (!class_exists('Article')) {
+if (!class_exists('MetaArticle')) {
 	App::uses('AppModel', 'Model');
-	class Article extends AppModel {
+	class MetaArticle extends AppModel {
 	/**
 	 *
 	 */
@@ -56,7 +56,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->Metable = new MetableBehavior();
-		$this->Article = Classregistry::init('Article');
+		$this->Article = Classregistry::init('MetaArticle');
 		$this->Meta = Classregistry::init('Meta');
 	}
 	
