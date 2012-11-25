@@ -40,27 +40,23 @@ Note that the class names could be updated and change often.
     width:24px;
     height:24px;
   }
-.toggleClick.toggle:before {
-	content: '\25BC \ ';
-    border: 1px solid #AAAAAA;
-    border-radius: 0.2em 0.2em 0.2em 0.2em;
+.toggleClick.toggle:after {
+	content: '\25B8 \ ';
     color: #AAAAAA;
-    display: block;
-    float: left;
-    font-size: 0.8em;
-    margin: 0 0.5em 0 0;
-    padding: 0 0.18em 0 0.14em;
+    display: inline-block;
+    font-size: 0.6em;
+    margin: 0 0 0 5px;
+    position: relative;
+    vertical-align: middle;
 }
-.toggleClick.toggled:before {
-	content: '\25B2 \ ';
-    border: 1px solid #AAAAAA;
-    border-radius: 0.2em 0.2em 0.2em 0.2em;
+.toggleClick.toggled:after {
+	content: '\25BE \ ';
     color: #AAAAAA;
-    display: block;
-    float: left;
-    font-size: 0.8em;
-    margin: 0 0.5em 0 0;
-    padding: 0 0.18em 0 0.14em;
+    display: inline-block;
+    font-size: 0.6em;
+    margin: 0 0 0 5px;
+    position: relative;
+    vertical-align: middle;
 }
 .toggleClick, .toggleHover {
 	cursor: pointer;

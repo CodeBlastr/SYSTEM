@@ -1,9 +1,15 @@
 <?php
 class WebpageMenu extends WebpagesAppModel {
+    
 	public $name = 'WebpageMenu';
+    
 	public $displayField = 'name';
+    
 	public $actsAs = array('Tree');
+    
 	public $validate = array();
+    
+    public $order = 'lft';
 
 
 /**

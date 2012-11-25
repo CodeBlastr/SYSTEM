@@ -30,11 +30,12 @@ class WebpageMenusController extends WebpagesAppController {
 		}
 	}
 	
-		
+/**
+ * Index method
+ */
 	public function index() {
-		$this->WebpageMenu->recursive = 0;
-        $this->paginate['fields'] = array('WebpageMenu.id', 'WebpageMenu.name', 'WebpageMenu.order');
-		$this->paginate['conditions']['WebpageMenu.menu_id'] = null;
+        $this->paginate['fields'] = array('WebpageMenu.id', 'WebpageMenu.name');
+		$this->paginate['conditions']['OR']['WebpageMenu.menu_id'] = array(null, '');
 		$this->set('menus', $this->paginate());
 	}
 	
@@ -75,9 +76,9 @@ class WebpageMenusController extends WebpagesAppController {
 	}
 
 	public function edit($id = null) {
-		if (!$id && empty($this->request->data)) {
-			$this->Session->setFlash(__('Invalid menu', true));
-			$this->redirect(array('controller' => 'webpage_menus', 'action' => 'index'));
+        $this->WebpageMenu->id = $id;
+		if (!$this->WebpageMenu->exists()) {
+			throw new NotFoundException(__('Menu not found'));
 		}
 		if (!empty($this->request->data)) {
 			if ($this->WebpageMenu->save($this->request->data)) {
@@ -87,23 +88,25 @@ class WebpageMenusController extends WebpagesAppController {
 				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true));
 			}
 		}
-		if (empty($this->request->data)) {
-			$this->request->data = $this->WebpageMenu->read(null, $id);
-		}
+        
+		$menu = $this->WebpageMenu->read(null, $id);
+        $this->request->data = $this->WebpageMenu->find('threaded', array('conditions' => array('WebpageMenu.lft >=' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <=' => $menu['WebpageMenu']['rght'])));
+	    $this->request->data = $this->request->data[0]; // we can only edit one menu at a time.
+        $this->request->data['WebpageMenu']['children'] = $this->WebpageMenu->find('count', array('conditions' => array('WebpageMenu.lft >' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <' => $menu['WebpageMenu']['rght'])));
 		$types = $this->WebpageMenu->types();
 		$this->set(compact('types'));
 	}
 
 	public function delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for menu', true));
-			$this->redirect(array('controller' => 'webpage_menus', 'action'=>'index'));
+        $this->WebpageMenu->id = $id;
+    	if (!$this->WebpageMenu->exists()) {
+			throw new NotFoundException(__('Menu not found'));
 		}
 		if ($this->WebpageMenu->delete($id)) {
 			$this->Session->setFlash(__('Menu deleted', true));
 			$this->redirect(array('controller' => 'webpage_menus', 'action'=>'index'));
+		} else {
+		    $this->Session->setFlash(__('Menu not deleted', true));
 		}
-		$this->Session->setFlash(__('Menu was not deleted', true));
-		$this->redirect(array('controller' => 'webpage_menus', 'action' => 'index'));
 	}
 }
