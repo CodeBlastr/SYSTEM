@@ -8,8 +8,7 @@ if (empty($data['WebpageMenu']['type'])) {
     		'alias' => 'item_text', 
     		'class' => 'nav nav-tabs nav-edit '.$data['WebpageMenu']['type'], 
     		'id' => 'nav-' . $data['WebpageMenu']['code'], 
-    		'element' => 'link', 
-    		'elementPlugin' => 'webpages'));
+    		'element' => 'Webpages.link'));
 
 } else {
     echo $this->Element('menus/' . str_replace(' ', '-', $data['WebpageMenu']['type']), array('data' => $data), array('plugin' => 'webpages'));
