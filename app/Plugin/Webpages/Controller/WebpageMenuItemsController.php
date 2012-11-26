@@ -85,14 +85,10 @@ class WebpageMenuItemsController extends WebpagesAppController {
 	}
 
 	public function edit($id = null) {
-        $this->WebpageMenuItem->id = $id;
-		if (!$this->WebpageMenuItem->exists()) {
-			throw new NotFoundException(__('Link not found'));
-		}
 		if (!empty($this->request->data)) {
 			if ($this->WebpageMenuItem->save($this->request->data)) {
-				$this->Session->setFlash(__('The menu has been saved', true));
-				$this->redirect($this->referer());
+				$this->Session->setFlash(__('Link has been saved', true));
+				$this->redirect(array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'edit', $this->request->data['WebpageMenuItem']['menu_id']));
 			} else {
 				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true));
 			}

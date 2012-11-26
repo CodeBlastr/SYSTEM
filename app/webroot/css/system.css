@@ -130,7 +130,6 @@ input[type=radio], input[type=checkbox] {
 }
 .invoiceTotal input, .invoiceTotal label {
 	float: none;
-	float: none;
 	clear: none;
 	display: inline;
 	min-width: 5em;
@@ -161,36 +160,6 @@ label {
 input[type=radio], input[type=checkbox] {
 	float: left;
 	clear: left;
-}
-
-
-/* editor */
-#background_layer {
-	position: fixed;
-	background-color: #666;
-	opacity: 0.8;
-	filter: alpha(opacity=70);
-	top: 0px;
-	width: 100%;
-	height: 100%;
-	z-index: 99;
-}
-.hover_div  {
-	min-height: 2em;
-}
-.hover_include {
-	background-color: #FF9;
-	border: 1px dashed #F00;
-	filter: alpha(opacity=70);
-	z-index: 99999;
-	opacity: 0.7;
-	position: absolute;/*border: 1px solid black;*/
-    }
-.hover_include:before {
-	content: "Click to edit content.";
-}
-.global_edit_area .hover_include:before {
-	content: "Click to edit global box.";
 }
 
 
