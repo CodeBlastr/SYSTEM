@@ -118,11 +118,11 @@
     <?php 
 	if (!empty($tasks)) { ?>
 	<div class="masonryBox dashboardBox tagTasks">
-    	<h3 class="title"><i class="icon-th-large"></i> Upcoming Tasks </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> Reminders </h3>
     		<?php
 			echo '<p>A list of scheduled follow ups.</p>';
 			foreach ($tasks as $task) {
-				echo '<p>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'completed', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($task['Task']['name'], array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'view', $task['Task']['id'])) . ', due ' . date('M d, Y', strtotime($task['Task']['due_date'])) . '</p>';
+				echo '<p>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'complete', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($task['Task']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $task['Task']['foreign_key'])) . ', due ' . date('M d, Y', strtotime($task['Task']['due_date'])) . '</p>';
 			} ?>
 	</div>
 	
