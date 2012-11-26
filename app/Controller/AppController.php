@@ -380,9 +380,10 @@ class AppController extends Controller {
 		$range = explode(';', $options['fieldValue']);
 		if (!empty($options['fieldName'])) {
 			$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' >='] = $range[0];
-			if($range[1]) {
+			if(!empty($range[1])) {
 				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' <='] = $range[1];
 			}
+//			debug($this->paginate['conditions']);
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
 			// no matching field don't filter anything
