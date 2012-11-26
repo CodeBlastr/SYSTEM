@@ -192,6 +192,30 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 * To add to the core cake utility Inflector
 	 */
 	class ZuhaInflector {
+    
+    /**
+     * String to ASCII
+     * Converts the given string to a no spaces, no special characters, no cases string
+     * 
+     * Tänk efter nu – förr'n vi föser dig bort BECOMES tank-efter-nu-forrn-vi-foser-dig-bort
+     * 
+     * @param string $str
+     * @param array $replace
+     * @param string $delimiter
+     * @return string
+     */
+        public static function asciify($str, $replace = array(), $delimiter = '-') {
+            if(!empty($replace)) {
+            	$str = str_replace((array)$replace, ' ', $str);
+        	}
+        
+        	$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+        	$clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
+        	$clean = strtolower(trim($clean, '-'));
+        	$clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
+        
+        	return $clean;
+        }
 	
 	/**
 	 * Function for formatting the pricing of an item.
