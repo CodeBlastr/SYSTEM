@@ -9,22 +9,22 @@ class WebpageMenusController extends WebpagesAppController {
     
     public $helpers = array('Utils.Tree');
 	
+/**
+ * Element method
+ * Finds the menu by id or code field
+ * 
+ * @param mixed $id
+ * @return array $data
+ */
 	public function element($id = null) {
-		if (!empty($id)) {
-			$menu = $this->WebpageMenu->find('first', array(
-				'conditions' => array(
-					'WebpageMenu.id' => $id,
-					),
-				));
-			$menuItems = $this->WebpageMenu->WebpageMenuItem->find('threaded', array(
-				'conditions' => array(
-					'WebpageMenuItem.menu_id' => $id,
-					),
-				'order' => array(
-					'WebpageMenuItem.order',
-					),
-				));
-			return array('menu' => $menu, 'items' => $menuItems);
+        $field =  Zuha::is_uuid($id) || is_numeric($id) ? 'id' : 'code';
+        $read = $this->WebpageMenu->find('first', array('conditions' => array('WebpageMenu.' . $field => $id), 'fields' => array('WebpageMenu.lft', 'WebpageMenu.rght')));
+        $menu = $this->WebpageMenu->find('threaded', array('conditions' => array('WebpageMenu.lft >=' => $read['WebpageMenu']['lft'], 'WebpageMenu.rght <=' => $read['WebpageMenu']['rght'])));
+        $menu = $menu[0]; // we can only edit one menu at a time.
+        $menu['WebpageMenu']['children'] = $this->WebpageMenu->find('count', array('conditions' => array('WebpageMenu.lft >' => $read['WebpageMenu']['lft'], 'WebpageMenu.rght <' => $read['WebpageMenu']['rght'])));
+	
+		if (!empty($menu['WebpageMenu']['children'])) {
+			return $menu;
 		} else {
 			return null;
 		}
@@ -34,7 +34,7 @@ class WebpageMenusController extends WebpagesAppController {
  * Index method
  */
 	public function index() {
-        $this->paginate['fields'] = array('WebpageMenu.id', 'WebpageMenu.name');
+        $this->paginate['fields'] = array('WebpageMenu.id', 'WebpageMenu.name', 'WebpageMenu.code', 'WebpageMenu.type');
 		$this->paginate['conditions']['OR']['WebpageMenu.menu_id'] = array(null, '');
 		$this->set('menus', $this->paginate());
 	}
