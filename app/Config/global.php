@@ -8,6 +8,8 @@ class Zuha {
  * Is UUID
  * Checks whether a given string meets the uuid criteria (8-4-4-4-12, 36 characters).
  * 
+ * Usage Zuha::is_uuid('some string, which is or isn't a uuid)
+ * 
  * @param string $uuid
  * @return bool
  */
