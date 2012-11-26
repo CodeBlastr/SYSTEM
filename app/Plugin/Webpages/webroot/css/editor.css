@@ -235,18 +235,45 @@ body {
 	min-height: 2em;
 }
 .hover_include {
-	background-color: #FF9;
-	border: 1px dashed #F00;
-	filter: alpha(opacity=70);
-	z-index: 99999;
-	opacity: 0.7;
-	position: absolute;/*border: 1px solid black;*/
-    }
+	/*background-color: #FF9;
+	border: 1px dashed #F00;*/
+	filter: alpha(opacity=95);
+	z-index: 999;
+	opacity: 0.95;
+	position: absolute;
+}
 .hover_include:before {
-	content: "Click to edit content.";
+	background: none repeat scroll 0 0 red;
+    box-shadow: 2px 2px 3px #000000;
+    color: white;
+    content: "Click to edit content.";
+    display: block;
+    font-size: 9px;
+    font-weight: normal;
+    padding: 1px 10px;
+    width: 87px;
+}
+.nav-edit .hover_include:before {
+    background: none repeat scroll 0 0 red;
+    box-shadow: 2px 2px 3px #000000;
+    color: white;
+    content: "Click to edit menu.";
+    display: block;
+    font-size: 9px;
+    font-weight: normal;
+    padding: 1px 10px;
+    width: 78px;
 }
 .global_edit_area .hover_include:before {
-	content: "Click to edit global box.";
+	background: none repeat scroll 0 0 red;
+    box-shadow: 2px 2px 3px #000000;
+    color: white;
+    content: "Click to edit global box.";
+    display: block;
+    font-size: 9px;
+    font-weight: normal;
+    padding: 1px 10px;
+    width: 98px;
 }
 #modalEditorWrap {
 	position: fixed;
@@ -283,4 +310,21 @@ body {
 }
 #modalEditorWrap .closeEditor:hover, #modalEditorWrap .handle:hover {
 	color: #C00;
+}
+#modalMessage {
+  background: none repeat scroll 0 0 #9FD0FF;
+  border: 1px solid #838294;
+  box-shadow: 2px 2px 2px #202020;
+  color: #707070;
+  display: none;
+  font-size: 13px;
+  left: 0;
+  margin: 0;
+  opacity: 0.977;
+  padding: 4px 12px;
+  position: fixed;
+  text-shadow: 1px 1px 1px #FFFFFF;
+  top: 0;
+  width: 300px;
+  z-index: 99999;
 }
