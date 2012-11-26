@@ -3,6 +3,17 @@
  * Core functions for zuha 
  */
 class Zuha {
+    
+/**
+ * Is UUID
+ * Checks whether a given string meets the uuid criteria (8-4-4-4-12, 36 characters).
+ * 
+ * @param string $uuid
+ * @return bool
+ */
+    public static function is_uuid($uuid = '') {
+        return (boolean) preg_match('/^\{?[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}\}?$/i', trim((String) $uuid));
+    }
 	
 /**
  * Convenience function for finding enumerations
@@ -197,6 +208,5 @@ class ZuhaSet {
 		$path = str_replace('theme'.DS.'default'.DS, '', $path); // get webroot directory
 		return $path;
 	}
-
 
 }

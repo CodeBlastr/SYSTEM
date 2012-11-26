@@ -43,12 +43,9 @@
     </fieldset>
 </div>
 
-
-
-
-<?php echo $this->Html->css('/css/jquery-ui/jquery-ui-1.8.13.custom'); ?>
+<?php echo $this->Html->css('/css/jquery-ui/jquery-ui-1.9.2.custom.min'); ?>
 <?php echo $this->Html->css('/webpages/menus/css/nestedSortable'); ?>
-<?php echo $this->Html->script('/js/jquery-ui/jquery-ui-1.8.13.custom.min'); ?>
+<?php echo $this->Html->script('/js/jquery-ui/jquery-ui-1.9.2.custom.min'); ?>
 <?php echo $this->Html->script('/webpages/menus/js/jquery.ui.nestedSortable'); ?>
 
 <script type="text/javascript">
