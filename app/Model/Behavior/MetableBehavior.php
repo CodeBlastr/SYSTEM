@@ -179,13 +179,32 @@ class MetableBehavior extends ModelBehavior {
 	public function filterByMetaConditions($Model, $results = array()) {
 		if ($Model->metaConditions) {
 			foreach ($Model->metaConditions as $key => $value) {
-				$query = explode('.', $key);
 				$i = 0;
+				$query = explode('.', $key);
+				
+				// check for operators in the field query
+				if(strpos($query[1], ' ')) {
+					$operator = explode(' ', $query[1]);
+					// set $query[1] to the field without the operator (as it is expected to be, below)
+					$query[1] = $operator[0];
+					// set a variable to the operator
+					$operator = $operator[1];
+				}
+				
 				foreach ($results as $result) {
-					if (isset($result[$query[0]][$query[1]])) {
-						if ($result[$query[0]][$query[1]] == $value) {
-							// do nothing
+					if (isset($result[$query[0]][$query[1]])) {						
+						if ($operator === false && $result[$query[0]][$query[1]] == $value) {
+							// leave this result in the $results
+						} elseif ($operator == '>=' && $result[$query[0]][$query[1]] >= $value) {
+							// leave this result in the $results
+						} elseif ($operator == '>' && $result[$query[0]][$query[1]] > $value) {
+							// leave this result in the $results
+						} elseif ($operator == '<=' && $result[$query[0]][$query[1]] <= $value) {
+							// leave this result in the $results
+						} elseif ($operator == '<' && $result[$query[0]][$query[1]] < $value) {
+							// leave this result in the $results
 						} else {
+							// does not compute, remove this result from the $results
 							unset($results[$i]);
 						}
 					} else {
