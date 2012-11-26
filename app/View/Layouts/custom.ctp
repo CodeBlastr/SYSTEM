@@ -72,7 +72,7 @@ if (!empty($defaultTemplate)) {
 		# removed cache temporarily
 		# $menuCfg['cache'] = array('key' => 'menu-'.$menuCfg['id'], 'time' => '+999 days');
 		$menuCfg['plugin'] = 'menus';
-		$defaultTemplate['Webpage']['content'] = str_replace($menuMatch, $this->element('menus', $menuCfg), $defaultTemplate['Webpage']['content']);
+		$defaultTemplate['Webpage']['content'] = str_replace($menuMatch, $this->element('Webpages.menus', $menuCfg), $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
 	
