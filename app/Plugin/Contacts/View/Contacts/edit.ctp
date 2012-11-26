@@ -23,15 +23,30 @@
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>
 </div>
-<?php 
+
+<?php
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Contacts',
+		'items' => array(
+			$this->Html->link(__('Dashboard'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'dashboard')),
+			),
+		),
+	array(
+		'heading' => 'Contacts',
+		'items' => array(
+			$this->Html->link(__('Opportunity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'estimate', $this->Form->value('Contact.id')), array('escape' => false)),
+			$this->Html->link(__('Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activity', $this->Form->value('Contact.id')), array('escape' => false)),
+			$this->Html->link(__('Reminder'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'task', $this->Form->value('Contact.id')), array('escape' => false)),
+			),
+		),
 	array(
 		'heading' => 'Contacts',
 		'items' => array(
 			$this->Html->link(__('View'), array('action' => 'view', $this->Form->value('Contact.id'))),
 			$this->Html->link(__('List'), array('action' => 'index')),
 			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Contact.id')), array(), sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Contact.id'))),
-			)
+			),
 		),
 	))); ?>

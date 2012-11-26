@@ -88,12 +88,12 @@
 	
 	if (!empty($tasks)) {
 		echo '<h4> Reminders </h4>';
-		echo $this->Element('scaffolds/index', array('data' => $tasks, 'modelName' => 'Task'));
+		echo $this->Element('scaffolds/index', array('data' => $tasks, 'modelName' => 'Task', 'actions' => array($this->Html->link('Mark as Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'complete', '{id}')))));
 	}
 	
 	if (!empty($activities)) {
 		echo '<h4> Activities </h4>';
-		echo $this->Element('scaffolds/index', array('data' => $activities, 'modelName' => 'Activity'));
+		echo $this->Element('scaffolds/index', array('data' => $activities, 'modelName' => 'Activity', 'associations' => array('Creator' => array('displayField' => 'full_name'))));
 	}
 	
 	if (!empty($employees)) {
