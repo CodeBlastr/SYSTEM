@@ -281,7 +281,7 @@ class ContactsController extends ContactsAppController {
 /**
  * Activities method
  * 
- * @return array
+ * @return array $activities
  */
 	public function activities() {
 		$this->paginate['fields'] = array('Activity.id', 'Activity.name', 'Activity.description', 'Activity.creator_id', 'Activity.created', 'Creator.id', 'Creator.full_name', 'Contact.name');
@@ -333,6 +333,38 @@ class ContactsController extends ContactsAppController {
 		$contact = $this->Contact->read(null, $contactId);
 		$this->set(compact('contact')); 
 		$this->set('page_title_for_layout', __('Log an Activity for %s', $contact['Contact']['name']));
+	}
+
+/**
+ * Tasks method
+ * 
+ * @return array $tasks
+ */
+	public function tasks() {
+		$this->paginate['fields'] = array('Task.id', 'Task.name', 'Task.description', 'Task.assignee_id', 'Task.due_date', 'Assignee.id', 'Assignee.full_name', 'Contact.name');
+		$this->paginate['contain'] = array('Contact', 'Assignee');
+		
+		$this->Contact->Task->bindModel(array(
+			'belongsTo' => array(
+    	       	'Contact' => array(
+        	       	'className' => 'Tasks.Task',
+					'foreignKey' => 'foreign_key',
+					'conditions' => array('Task.model' => 'Contact')
+	        	    )
+            	)));
+					
+		$tasks = $this->paginate('Task');
+		for($i = 0, $size = count($tasks); $i < $size; ++$i) {
+			$tasks[$i]['Task']['name'] = __('%s <small>for %s</small>', $tasks[$i]['Task']['name'], $tasks[$i]['Contact']['name']);
+		}
+		
+		$associations =  array('Assignee' => array('displayField' => 'full_name'));
+		$this->set(compact('tasks', 'associations'));
+		$this->set('modelName', 'Task');
+		$this->set('displayName', 'displayName');
+		$this->set('displayDescription', 'description');
+		$this->set('page_title_for_layout', __('Contact Reminders'));
+		return $tasks;
 	}
 	
 	
