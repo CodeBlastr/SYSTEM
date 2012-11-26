@@ -147,13 +147,13 @@ class ContactsController extends ContactsAppController {
 		
 		// vars for activities
 		unset($this->paginate);
-		$this->paginate = array('fields' => array('id', 'name', 'created'));
+		$this->paginate = array('fields' => array('Activity.id', 'Activity.name', 'Activity.creator_id', 'Activity.created', 'Creator.id', 'Creator.full_name'), 'contain' => array('Creator'));
 		$this->set('activities', in_array('Activities', CakePlugin::loaded()) ? $this->paginate('Contact.Activity', array('Activity.foreign_key' => $id, 'Activity.model' => 'Contact', 'Activity.action_description !=' => 'lead created')) : null);
 		
 		// vars for reminders
 		unset($this->paginate);
 		$this->paginate = array('fields' => array('id', 'name', 'due_date'));
-		$this->set('tasks', in_array('Tasks', CakePlugin::loaded()) ? $this->paginate('Contact.Task', array('Task.foreign_key' => $id, 'Task.model' => 'Contact')) : null);
+		$this->set('tasks', in_array('Tasks', CakePlugin::loaded()) ? $this->paginate('Contact.Task', array('Task.foreign_key' => $id, 'Task.model' => 'Contact', 'Task.is_completed' => 0)) : null);
 		
 		// view vars
 		$this->set('people', $this->Contact->Employer->findPeople('list'));
