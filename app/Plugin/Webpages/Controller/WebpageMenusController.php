@@ -82,10 +82,9 @@ class WebpageMenusController extends WebpagesAppController {
 		}
 		if (!empty($this->request->data)) {
 			if ($this->WebpageMenu->save($this->request->data)) {
-				$this->Session->setFlash(__('The menu has been saved', true));
-				$this->redirect(array('controller' => 'webpage_menus', 'action' => 'index'));
+				$this->Session->setFlash(__('Menu saved.'));
 			} else {
-				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('Menu could not be saved.'));
 			}
 		}
         

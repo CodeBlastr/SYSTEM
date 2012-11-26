@@ -1,5 +1,6 @@
 <div class="menus edit">
     <h3><?php echo $this->request->data['WebpageMenu']['name']; ?></h3>
+    <p>Drag and drop the menu items, and the position is saved each time you drop.</p>
 
     <div class="menus edit form">
         <?php
@@ -11,6 +12,10 @@
     			'id' => 'menu' . $this->request->data['WebpageMenu']['id'], 
     			'element' => 'item', 
     			'elementPlugin' => 'webpages')); ?>
+        <h5>
+        <?php echo $this->Html->link(__('Go Back'), '', array('class' => 'btn', 'onClick' => 'history.go(-1);return false;')); ?>
+        <?php echo $this->Html->link(__('Refresh Page'), '', array('class' => 'btn', 'onClick' => 'window.location.reload()')); ?>
+        </h5>
     </div>
 
     <?php echo $this->Form->create('WebpageMenuItem', array('action' => 'add'));?>
@@ -98,11 +103,5 @@ $this->set('context_menu', array('menus' => array(
             $this->Html->link(__('Add'), array('action' => 'add')),
 			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('WebpageMenu.id')), null, __('Are you sure you want to delete # %s?', true), $this->Form->value('WebpageMenu.name')),
 			)
-		),
-    array(
-    	'heading' => 'Menus',
-		'items' => array(
-    		$this->Html->link(__('Add Menu Item', true), array('controller' => 'webpage_menu_items', 'action' => 'add', $this->Form->value('WebpageMenu.id'))),
-    		)
 		),
 	))); ?>
