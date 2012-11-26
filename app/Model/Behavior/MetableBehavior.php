@@ -108,7 +108,8 @@ class MetableBehavior extends ModelBehavior {
  * @return type
  */
     public function afterFind(Model $Model, $results, $primary) {
-		$results = $this->mergeSerializedMeta($Model, $results);
+		//debug($results);
+		$results = $this->mergeSerializedMeta($Model, $results);//debug($results);
 		$results = $this->filterByMetaConditions($Model, $results);
 		return $results;
 	}
@@ -189,10 +190,12 @@ class MetableBehavior extends ModelBehavior {
 					$query[1] = $operator[0];
 					// set a variable to the operator
 					$operator = $operator[1];
+				} else {
+					$operator = false;
 				}
 				
 				foreach ($results as $result) {
-					if (isset($result[$query[0]][$query[1]])) {						
+					if (isset($result[$query[0]][$query[1]])) {
 						if ($operator === false && $result[$query[0]][$query[1]] == $value) {
 							// leave this result in the $results
 						} elseif ($operator == '>=' && $result[$query[0]][$query[1]] >= $value) {
