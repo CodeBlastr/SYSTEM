@@ -182,7 +182,9 @@ class MetableBehavior extends ModelBehavior {
 			foreach ($Model->metaConditions as $key => $value) {
 				$i = 0;
 				$query = explode('.', $key);
-				
+//				debug($query);
+//				debug($value);
+//				debug($results);
 				// check for operators in the field query
 				if(strpos($query[1], ' ')) {
 					$operator = explode(' ', $query[1]);
@@ -193,7 +195,7 @@ class MetableBehavior extends ModelBehavior {
 				} else {
 					$operator = false;
 				}
-				
+//				debug($operator);
 				foreach ($results as $result) {
 					if (isset($result[$query[0]][$query[1]])) {
 						if ($operator === false && $result[$query[0]][$query[1]] == $value) {
@@ -205,6 +207,8 @@ class MetableBehavior extends ModelBehavior {
 						} elseif ($operator == '<=' && $result[$query[0]][$query[1]] <= $value) {
 							// leave this result in the $results
 						} elseif ($operator == '<' && $result[$query[0]][$query[1]] < $value) {
+							// leave this result in the $results
+						} elseif ($operator == 'LIKE' && strpos($result[$query[0]][$query[1]], str_replace ('%', '', $value)) !== false) {
 							// leave this result in the $results
 						} else {
 							// does not compute, remove this result from the $results
