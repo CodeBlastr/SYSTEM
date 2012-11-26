@@ -94,8 +94,7 @@ class MetableBehavior extends ModelBehavior {
 #			)
 #		);
 
-		//$query = $this->_queryFields($Model, $query);  // read comment by function
-        
+		$query = $this->_queryFields($Model, $query);  // read comment by function
 		$query = $this->_queryConditions($Model, $query);
 		return $query;
 	}
@@ -212,7 +211,7 @@ class MetableBehavior extends ModelBehavior {
  * 
  * @todo This might be able to be deleted.  Removing it seems to have no ill effects so far
  * and if we need them, they might be better in the hasOne['fields'] area
-
+ */
 	protected function _queryFields(Model $Model, $query) {
 		if(!empty($query['fields']) && is_array($query['fields'])) {
 			$query['fields'][] = 'Meta.model';
@@ -221,7 +220,7 @@ class MetableBehavior extends ModelBehavior {
 		}
 		return $query;
 	}
- */
+ 
 	
 /**
  * Query conditions
