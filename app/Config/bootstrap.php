@@ -198,6 +198,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
      * Converts the given string to a no spaces, no special characters, no cases string
      * 
      * Tänk efter nu – förr'n vi föser dig bort BECOMES tank-efter-nu-forrn-vi-foser-dig-bort
+	 * 
+	 * Usage : ZuhaInflector::asciify('some string');
      * 
      * @param string $str
      * @param array $replace
