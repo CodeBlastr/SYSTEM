@@ -257,11 +257,10 @@ class AppController extends Controller {
 
 		if (@$Object->name) {
 			$options['alias'] = !empty($object) ? $object : $ModelName;
-			$options['schema'] = $Object->schema();
+			$options['schema'] = $this->__paginatorSchema($Object->schema(), $field);
 			$options['fieldName'] = $this->__paginatorFieldName($field, $options['schema']);
 			$options['fieldValue'] = substr($field, strpos($field, ':') + 1); // returns 'incart' from 'status:incart'
 			$options['fieldValue'] = $options['fieldValue'] == 'null' ? null : $options['fieldValue'];  // handle null as a value
-
 			return $options;
 			
 		} else {
@@ -304,6 +303,29 @@ class AppController extends Controller {
 				$this->Session->setFlash(__('Invalid field filter attempted on ' . $options['alias']));
 			}
 		}
+	}
+	
+/**
+ * Paginator Schema
+ * 
+ * Update the schema with the meta fields (refer to metable behavior)
+ * 
+ * @param object $schema
+ * @param string $field
+ */
+	protected function __paginatorSchema($schema, $field) {
+		$field = $this->__paginatorFieldName($field);
+		if (strpos($field, '!') === 0) {
+			$schema[$field] = array(
+				'type' => 'string',
+				'null' => true,
+				'default' => null,
+				'length' => 255,
+				'collate' => 'utf8_general_ci',
+				'charset' => 'utf8'
+			);
+		}
+		return $schema;
 	}
 
 /**
@@ -358,9 +380,10 @@ class AppController extends Controller {
 		$range = explode(';', $options['fieldValue']);
 		if (!empty($options['fieldName'])) {
 			$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' >='] = $range[0];
-			if($range[1]) {
+			if(!empty($range[1])) {
 				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' <='] = $range[1];
 			}
+//			debug($this->paginate['conditions']);
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
 			// no matching field don't filter anything
@@ -377,18 +400,21 @@ class AppController extends Controller {
  * @param string	A string which is close to a db field name.
  * @return string
  */
-	private function __paginatorFieldName($string, $modelFields) {
+	private function __paginatorFieldName($string, $modelFields = array()) {
 		$fieldName = Inflector::underscore(substr($string, 0, strpos($string, ':'))); // standardizes various name versions
 
 		if (!empty($modelFields[$fieldName])) {
-			# match exact field name (no change necessary)
+			// match exact field name (no change necessary)
 			return $fieldName;
 		} else if (!empty($modelFields[$fieldName.'_id'])) {
-			# match something_id naming convention
+			// match something_id naming convention
 			return $fieldName.'_id';
 		} else if (!empty($modelFields['is_'.$fieldName])) {
-			# match is_something naming convention
+			// match is_something naming convention
 			return 'is_'.$fieldName;
+		} else if (strpos($fieldName, '!') === 0) {
+			// match meta fields
+			return $fieldName;
 		} else {
 			return null;
 		}
@@ -814,8 +840,8 @@ class AppController extends Controller {
  * Loads helpers dynamically system wide, and per controller loading abilities.
  */
 	private function _getHelpers() {
-		if (in_array('Menus', CakePlugin::loaded())) {
-			$this->helpers[] = 'Menus.Tree';
+		if (in_array('Utils', CakePlugin::loaded())) {
+			$this->helpers[] = 'Utils.Tree';
 		}
 
 		if(defined('__APP_LOAD_APP_HELPERS')) {

@@ -33,6 +33,59 @@ class AliasesController extends AppController {
  * @var string
  */
 	public $uses = 'Alias';
+    
+/**
+ * Index method
+ * 
+ */
+    public function index() {
+        $this->paginate['fields'] = array(
+            'Alias.id',
+            'Alias.name',
+            'Alias.plugin',
+            'Alias.controller',
+            'Alias.value',
+            );
+        $this->set('aliases', $this->paginate());
+        $this->set('displayName', 'name');
+        $this->set('displayDescription', '');
+        $this->set('page_title_for_layout', 'Aliases');
+    }
+
+/**
+ * Edit method
+ * 
+ * @param string $id
+ */
+    public function edit($id = null) {
+        $this->Alias->id = $id;
+        if (!$this->Alias->exists()) {
+            throw new NotFoundException();
+        }
+        if (!empty($this->request->data)) {
+            if ($this->Alias->save($this->request->data)) {
+                $this->Session->setFlash(__('Alias saved'));
+                $this->redirect(array('controller' => 'aliases', 'action' => 'index'));
+            }
+        }
+        $this->request->data = $this->Alias->read(null, $id);
+    }
+
+/**
+ * Delete method
+ * 
+ * @param string $id
+ */
+    public function delete($id = null) {
+        $this->Alias->id = $id;
+        if (!$this->Alias->exists()) {
+            throw new NotFoundException();
+        }
+        if ($this->Alias->delete($id)) {
+            $this->Session->setFlash(__('Alias deleted'));
+            $this->redirect(array('controller' => 'aliases', 'action' => 'index'));
+        }
+    }
 
 /**
  * Count method

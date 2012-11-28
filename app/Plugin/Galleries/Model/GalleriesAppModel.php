@@ -13,10 +13,10 @@ class GalleriesAppModel extends AppModel {
 	public $indexImageHeight = null;
 	public $conversionType = 'resizeCrop';	
 		
-	public function __construct($request = null, $response = null) {
-		parent::__construct($request, $response);
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent:: __construct($id, $table, $ds);
 		
-		# deprecated gallery constants THESE WILL BE DELETED 12/30/2011 RK
+		// deprecated gallery constants THESE WILL BE DELETED 12/30/2011 RK
 		$galleryType = defined('__GALLERY_DEFAULT_TYPE') ? __GALLERY_DEFAULT_TYPE : null;
 		$smallImageWidth = defined('__GALLERY_IMAGE_DEFAULT_THUMB_WIDTH') ? __GALLERY_IMAGE_DEFAULT_THUMB_WIDTH : null;
 		$smallImageHeight = defined('__GALLERY_IMAGE_DEFAULT_THUMB_HEIGHT') ? __GALLERY_IMAGE_DEFAULT_THUMB_HEIGHT : null;
