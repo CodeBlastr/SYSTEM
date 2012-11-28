@@ -40,27 +40,23 @@ Note that the class names could be updated and change often.
     width:24px;
     height:24px;
   }
-.toggleClick.toggle:before {
-	content: '\25BC \ ';
-    border: 1px solid #AAAAAA;
-    border-radius: 0.2em 0.2em 0.2em 0.2em;
+.toggleClick.toggle:after {
+	content: '\25B8 \ ';
     color: #AAAAAA;
-    display: block;
-    float: left;
-    font-size: 0.8em;
-    margin: 0 0.5em 0 0;
-    padding: 0 0.18em 0 0.14em;
+    display: inline-block;
+    font-size: 0.6em;
+    margin: 0 0 0 5px;
+    position: relative;
+    vertical-align: middle;
 }
-.toggleClick.toggled:before {
-	content: '\25B2 \ ';
-    border: 1px solid #AAAAAA;
-    border-radius: 0.2em 0.2em 0.2em 0.2em;
+.toggleClick.toggled:after {
+	content: '\25BE \ ';
     color: #AAAAAA;
-    display: block;
-    float: left;
-    font-size: 0.8em;
-    margin: 0 0.5em 0 0;
-    padding: 0 0.18em 0 0.14em;
+    display: inline-block;
+    font-size: 0.6em;
+    margin: 0 0 0 5px;
+    position: relative;
+    vertical-align: middle;
 }
 .toggleClick, .toggleHover {
 	cursor: pointer;
@@ -134,7 +130,6 @@ input[type=radio], input[type=checkbox] {
 }
 .invoiceTotal input, .invoiceTotal label {
 	float: none;
-	float: none;
 	clear: none;
 	display: inline;
 	min-width: 5em;
@@ -165,36 +160,6 @@ label {
 input[type=radio], input[type=checkbox] {
 	float: left;
 	clear: left;
-}
-
-
-/* editor */
-#background_layer {
-	position: fixed;
-	background-color: #666;
-	opacity: 0.8;
-	filter: alpha(opacity=70);
-	top: 0px;
-	width: 100%;
-	height: 100%;
-	z-index: 99;
-}
-.hover_div  {
-	min-height: 2em;
-}
-.hover_include {
-	background-color: #FF9;
-	border: 1px dashed #F00;
-	filter: alpha(opacity=70);
-	z-index: 99999;
-	opacity: 0.7;
-	position: absolute;/*border: 1px solid black;*/
-    }
-.hover_include:before {
-	content: "Click to edit content.";
-}
-.global_edit_area .hover_include:before {
-	content: "Click to edit global box.";
 }
 
 
