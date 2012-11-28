@@ -9,11 +9,21 @@ App::uses('CakeSchema', 'Model');
 class InstallController extends Controller {
 
 	public $name = 'Install';
+    
     public $uses = array();
+    
+    public $message = array();
+    
+    public $noDb = array('Utils');
+    
 	public $params;
+    
 	public $progress;
+    
 	public $options;
+    
 	public $config;
+    
 	public $allowedActions = array('index', 'site', 'login', 'plugin');
 	//public $components = array('Auth', 'Session');
 
@@ -150,7 +160,7 @@ class InstallController extends Controller {
 				$data['Setting']['name'] = 'LOAD_PLUGINS';
 				$data['Setting']['value'] = $sqlData;
 				if ($Setting->add($data)) {
-					$this->Session->setFlash(__('Plugin successfully installed.'));
+					$this->Session->setFlash(__('Plugin successfully installed. %s', $this->_message()));
 					$this->redirect(array('action' => 'index'));
 				} else {
 					$this->Session->setFlash(__('Settings update failed.'));
@@ -181,25 +191,25 @@ class InstallController extends Controller {
 			try {
 				$db = ConnectionManager::create('default', $this->config);
 				try {
-					# test the table name
+					// test the table name
 					$sql = ' SHOW TABLES IN ' . $this->config['database'];
 					$db->execute($sql);
-					# run the core table queries
+					// run the core table queries
 					$this->_create($db);
 					if ($this->lastTableName == $this->progress) {
-						# run the required plugins
-						if ($this->_installPluginSchema('Users', 'Users')) :
+						// run the required plugins
+						if ($this->_installPluginSchema('Users', 'Users')) {
 							$users = true;
-						endif;
-						if ($this->_installPluginSchema('Webpages', 'Webpages')) :
+						}
+						if ($this->_installPluginSchema('Webpages', 'Webpages')) {
 							$webpages = true;
-						endif;
-						if ($this->_installPluginSchema('Contacts', 'Contacts')) :
+						}
+						if ($this->_installPluginSchema('Contacts', 'Contacts')) {
 							$contacts = true;
-						endif;
-						if ($this->_installPluginSchema('Galleries', 'Galleries')) :
+						}
+						if ($this->_installPluginSchema('Galleries', 'Galleries')) {
 							$galleries = true;
-						endif;
+						}
 						if ($users && $webpages && $contacts && $galleries) {
 							# run the required data
 							try {
@@ -292,31 +302,31 @@ class InstallController extends Controller {
  * @todo 		Probably should change this to catch throw syntax because there are a lot of errors with no feedback.
  */
 	protected function _installCoreFiles() {
-		if (!empty($this->options['siteDomain']) && !empty($this->config)) :
-			# copy example.com
+		if (!empty($this->options['siteDomain']) && !empty($this->config)) {
+			// copy example.com
 			$templateDir = ROOT.DS.'sites'.DS.'example.com';
 
-			if ($this->_copy_directory($templateDir, $this->newDir)) :
-				# create database.php
+			if ($this->_copy_directory($templateDir, $this->newDir)) {
+				// create database.php
 				$fileName = $this->newDir.DS.'Config'.DS.'database.php';
 				$contents = "<?php".PHP_EOL.PHP_EOL."class DATABASE_CONFIG {".PHP_EOL.PHP_EOL."\tpublic \$default = array(".PHP_EOL."\t\t'datasource' => 'Database/Mysql',".PHP_EOL."\t\t'persistent' => false,".PHP_EOL."\t\t'host' => '".$this->config['host']."',".PHP_EOL."\t\t'login' => '".$this->config['login']."',".PHP_EOL."\t\t'password' => '".$this->config['password']."',".PHP_EOL."\t\t'database' => '".$this->config['database']."',".PHP_EOL."\t\t'prefix' => '',".PHP_EOL."\t\t//'encoding' => 'utf8',".PHP_EOL."\t);".PHP_EOL."}";
-				if ($this->_createFile($fileName, $contents)) :
-					# update sites/bootstrap.php
-					if ($this->_updateBootstrapPhp()) :
-						# run settings
+				if ($this->_createFile($fileName, $contents)) {
+					// update sites/bootstrap.php
+					if ($this->_updateBootstrapPhp()) {
+						// run settings
 						return true;
-					else :
+					} else {
 						break; return false;
-					endif;
-				else :
+					}
+				} else {
 					break; return false;
-				endif;
-			else :
+				}
+			} else {
 				break; return false;
-			endif;
-		else:
+			}
+		} else {
 			break; return false;
-		endif;
+		}
 	}
 
 
@@ -327,32 +337,32 @@ class InstallController extends Controller {
 		$filecontents = fread($file, $filesize);
 		fclose($file);
 
-		if (!empty($this->siteDomains)) :
+		if (!empty($this->siteDomains)) {
 			$replace = '';
-			foreach($this->siteDomains as $site) :
+			foreach($this->siteDomains as $site) {
 				$replace .= "\$domains['".$site."'] = '".$this->options['siteDomain']."';".PHP_EOL;
-			endforeach;
-		else :
+			}
+		} else {
 			$replace = "\$domains['".$this->options['siteDomain']."'] = '".$this->options['siteDomain']."';".PHP_EOL;
-		endif;
+		}
 
-		# make a back up first
-		if (copy($filename, ROOT.DS.'sites'.DS.'bootstrap.'.date('Ymdhis').'.php')) :
+		// make a back up first
+		if (copy($filename, ROOT.DS.'sites'.DS.'bootstrap.'.date('Ymdhis').'.php')) {
 			$contents = str_replace('/** end **/', $replace.PHP_EOL.'/** end **/', $filecontents);
-			if(file_put_contents($filename, $contents)) :
+			if(file_put_contents($filename, $contents)) {
 				return true;
-			endif;
-		endif;
+		    }
+		}
 		return false;
 	}
 
 
 	protected function _createFile($fileName = null, $contents = null) {
 		$fh = fopen($fileName, 'w') or die("can't open file");
-		if (fwrite($fh, $contents)) :
+		if (fwrite($fh, $contents)) {
 			fclose($fh);
 			return true;
-		endif;
+		}
 
 		return false;
 
@@ -370,19 +380,23 @@ class InstallController extends Controller {
 
 
 	protected function _installPluginSchema($name = null, $plugin = null) {
-		if (!empty($name) && !empty($plugin)) :
-			$this->params['name'] = $name;
-			$this->params['plugin'] = $plugin;
-			$blank = '';
-			$this->_create($blank);
-			if ($this->lastTableName == $this->progress) :
-				return true;
-			else :
-				return false;
-			endif;
-		else :
+		if (!empty($name) && !empty($plugin)) {
+            if (in_array($plugin, $this->noDb)) {
+        	    $this->message[] = __(' ( no database tables modifications required ) ');
+                return true;                
+            } else {
+    			$this->params['name'] = $name;
+    			$this->params['plugin'] = $plugin;
+                $this->_create($blank = '');
+    			if ($this->lastTableName == $this->progress) {
+    				return true;
+    			} else {
+    				return false;
+    			}
+            }
+		} else {
 			return false;
-		endif;
+		}
 	}
 
 
@@ -413,7 +427,7 @@ class InstallController extends Controller {
 		$Schema = $this->Schema->load($options);	
 		
 		if (!$Schema) {
-			$this->Session->setFlash(__('No schema file found for this plugin.'));
+			$this->Session->setFlash(__(' ( could not load database schema ) '));
 			$this->redirect($this->referer());
 		}
 		$table = null;
@@ -429,27 +443,35 @@ class InstallController extends Controller {
  *
  * @param CakeSchema $Schema
  * @param string $table
- * @return void
+ * @return bool
  */
 	protected function _create($Schema, $table = null) {
-		list($Schema, $table) = $this->_loadSchema();
-		$db = ConnectionManager::getDataSource($this->Schema->connection);
-
-		$drop = $create = array();
-
-		if (!$table) {
-			foreach ($Schema->tables as $table => $fields) {
-				$drop[$table] = $db->dropSchema($Schema, $table);
-				$create[$table] = $db->createSchema($Schema, $table);
-			}
-		} elseif (isset($Schema->tables[$table])) {
-			$drop[$table] = $db->dropSchema($Schema, $table);
-			$create[$table] = $db->createSchema($Schema, $table);
-		}
-		$end = $create; end($end);
-		$this->lastTableName = key($end); // get the last key in the array
-		$this->_run($drop, 'drop', $Schema);
-		$this->_run($create, 'create', $Schema);
+    	list($Schema, $table) = $this->_loadSchema();
+        if (is_object($Schema)) {
+    		$db = ConnectionManager::getDataSource($this->Schema->connection);
+    
+    		$drop = $create = array();
+    
+    		if (!$table) {
+    			foreach ($Schema->tables as $table => $fields) {
+    				$drop[$table] = $db->dropSchema($Schema, $table);
+    				$create[$table] = $db->createSchema($Schema, $table);
+    			}
+    		} elseif (isset($Schema->tables[$table])) {
+    			$drop[$table] = $db->dropSchema($Schema, $table);
+    			$create[$table] = $db->createSchema($Schema, $table);
+    		}
+    		$end = $create; end($end);
+    		$this->lastTableName = key($end); // get the last key in the array
+    		$this->_run($drop, 'drop', $Schema);
+    		$this->_run($create, 'create', $Schema);
+        } else {
+            
+    		$this->message[] = __(' ( schema  ) ');
+            debug($this->message);
+            break;
+            return false;
+        }
 
 		/* These are some checks that aren't needed for the initial install
 		if (empty($drop) || empty($create)) {
@@ -586,36 +608,6 @@ class InstallController extends Controller {
 		return true;
 	}
 
-
-/**
- * The least amount of sql needed to successfully install zuha.
- */
-	private function _getInstallSqlData() {
-
-		$options['siteName'] = !empty($this->options['siteName']) ? $this->options['siteName'] : 'My Site';
-
-		$dataStrings[] = "INSERT INTO `aliases` (`id`, `plugin`, `controller`, `action`, `value`, `name`, `created`, `modified`) VALUES
-(1, 'webpages', 'webpages', 'view', 1, 'home', '2011-12-15 22:46:29', '2011-12-15 22:47:07');";
-
-		$dataStrings[] = "INSERT INTO `aros` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `rght`) VALUES (1, NULL, 'UserRole', 1, NULL, 1, 4), (2, NULL, 'UserRole', 2, NULL, 5, 6), (3, NULL, 'UserRole', 3, NULL, 7, 8), (6, 1, 'User', 1, NULL, 2, 3), (5, NULL, 'UserRole', 5, NULL, 9, 10);";
-
-		$dataStrings[] = "INSERT INTO `contacts` (`id`, `name`, `user_id`, `is_company`, `created`, `modified`) VALUES
-('1', 'Zuha Administrator', 1, 0, '".date('Y-m-d h:i:s')."', '".date('Y-m-d h:i:s')."');";
-
-		$dataStrings[] = "INSERT INTO `settings` (`id`, `type`, `name`, `value`) VALUES (1, 'System', 'ZUHA_DB_VERSION', '0.0176'), (2, 'System', 'GUESTS_USER_ROLE_ID', '5'), (3, 'System', 'LOAD_PLUGINS', 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges'), (4, 'System', 'SITE_NAME', '".$options['siteName']."');";
-
-		$dataStrings[] = "INSERT INTO `users` (`id`, `full_name`, `first_name`, `last_name`, `username`, `password`, `email`, `view_prefix`, `user_role_id`, `created`, `modified`) VALUES
-('1', 'Zuha Administrator', 'Zuha', 'Administrator', 'admin', '3eb13b1a6738103665003dea496460a1069ac78a', 'admin@example.com', 'admin', 1, '".date('Y-m-d h:i:s')."', '".date('Y-m-d h:i:s')."');";
-
-		$dataStrings[] = "INSERT INTO `user_roles` (`id`, `parent_id`, `name`, `lft`, `rght`, `view_prefix`, `is_system`, `created`, `modified`) VALUES (1, NULL, 'admin', 1, 2, 'admin', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:24'), (2, NULL, 'managers', 3, 4, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:41'), (3, NULL, 'users', 5, 6, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:50'), (5, NULL, 'guests', 7, 8, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:56:05');";
-
-		$dataStrings[] = "INSERT INTO `webpages` (`id`, `name`, `content`) VALUES
-(1, 'Homepage', '<p>This is the default homepage.  Complete with default html tags displayed for easy theme styling.  Have fun!!</p><hr /><h1>Heading One <small>small wrapper</small></h1><h2>Heading Two <small>small wrapper</small></h2><h3>Heading Three <small>small wrapper</small></h3><h4>Heading Four <small>small wrapper</small></h4><h5>Heading Five <small>small wrapper</small></h5><h6>Heading Six <small>small wrapper</small></h6><p class=\"muted\">Fusce dapibus, tellus ac cursus commodo, tortor mauris nibh.</p><p class=\"text-warning\">Etiam porta sem malesuada magna mollis euismod.</p><p class=\"text-error\">Donec ullamcorper nulla non metus auctor fringilla.</p><p class=\"text-info\">Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis.</p><p class=\"text-success\">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p><p>An abbreviation of the word attribute is <abbr title=\"attribute\">attr</abbr></p><address><strong>Acme, Inc.</strong><br>9210 Jetsam Ave, Suite 400<br>San Francisco, CA 90210<br><abbr title=\"Phone\">P:</abbr> (123) 456-7890</address><blockquote>  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>  <small>Someone famous <cite title=\"Source Title\">Source Title</cite></small> </blockquote><blockquote class=\"pull-right\">  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>  <small>Someone famous <cite title=\"Source Title\">Source Title</cite></small> </blockquote><div class=\"clearfix\"></div><dl class=\"dl-horizontal\">  <dt>Description lists</dt>  <dd>A description list is perfect for defining terms.</dd>  <dt>Euismod</dt>  <dd>Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.</dd>  <dd>Donec id elit non mi porta gravida at eget metus.</dd>  <dt>Malesuada porta</dt>  <dd>Etiam porta sem malesuada magna mollis euismod.</dd>  <dt>Felis euismod semper eget lacinia</dt>  <dd>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</dd></dl><h2>Various Default Table Classes</h2><table class=\"table\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td>Larry</td>      <td>the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-striped\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td>Larry</td>      <td>the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-bordered\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td rowspan=\"2\">1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>Mark</td>      <td>Otto</td>      <td>@TwBootstrap</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td colspan=\"2\">Larry the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-hover\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td colspan=\"2\">Larry the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-condensed\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td colspan=\"2\">Larry the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table\">  <thead>    <tr>      <th>#</th>      <th>Product</th>      <th>Payment Taken</th>      <th>Status</th>    </tr>  </thead>  <tbody>    <tr class=\"success\">      <td>1</td>      <td>TB - Monthly</td>      <td>01/04/2012</td>      <td>Approved</td>    </tr>    <tr class=\"error\">      <td>2</td>      <td>TB - Monthly</td>      <td>02/04/2012</td>      <td>Declined</td>    </tr>    <tr class=\"warning\">      <td>3</td>      <td>TB - Monthly</td>      <td>03/04/2012</td>      <td>Pending</td>    </tr>    <tr class=\"info\">      <td>4</td>      <td>TB - Monthly</td>      <td>04/04/2012</td>      <td>Call in to confirm</td>    </tr>  </tbody></table><h2>Form Styles</h2><form action=\"/webpages/webpages/view/1?url=webpages%2Fwebpages%2Fview%2F1\" id=\"WebpageViewForm\" method=\"post\" accept-charset=\"utf-8\">  <div style=\"display:none;\">    <input type=\"hidden\" name=\"_method\" value=\"POST\"/>  </div>  <fieldset>  <legend>Some Legend</legend>  <div class=\"input text\" data-role=\"fieldcontain\">    <label for=\"WebpageLabelName\">Label Name</label>    <input name=\"data[Webpage][labelName]\" placeholder=\"Type something...\" type=\"text\" id=\"WebpageLabelName\"/>    <span class=\"help-block\">Some text in the after index</span></div>  <div class=\"input checkbox\" data-role=\"fieldcontain\">    <input type=\"hidden\" name=\"data[Webpage][singleCheckBox]\" id=\"WebpageSingleCheckBox_\" value=\"0\"/>    <input type=\"checkbox\" name=\"data[Webpage][singleCheckBox]\"  value=\"1\" id=\"WebpageSingleCheckBox\"/>    <label for=\"WebpageSingleCheckBox\">Single Check Box</label>  </div>  <div class=\"input radio\" data-role=\"fieldcontain\">    <input type=\"hidden\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons_\" value=\"\"/>    <input type=\"radio\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons0\"  value=\"0\" />    <label for=\"WebpageRadio2Buttons0\">radio option one</label>    <input type=\"radio\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons1\"  value=\"1\" />    <label for=\"WebpageRadio2Buttons1\">radio option two</label>    <input type=\"radio\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons2\"  value=\"2\" />    <label for=\"WebpageRadio2Buttons2\">radio option three</label>  </div>  <div class=\"input radio\" data-role=\"fieldcontain\">    <fieldset>      <legend>radio set with legend</legend>      <input type=\"hidden\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons_\" value=\"\"/>      <input type=\"radio\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons0\"  value=\"0\" />      <label for=\"WebpageRadioButtons0\">option one</label>      <input type=\"radio\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons1\"  value=\"1\" />      <label for=\"WebpageRadioButtons1\">option two</label>      <input type=\"radio\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons2\"  value=\"2\" />      <label for=\"WebpageRadioButtons2\">option three</label>    </fieldset>  </div>  <div class=\"input select\" data-role=\"fieldcontain\">    <label for=\"WebpageSelectButtons\">Select One</label>    <select name=\"data[Webpage][selectButtons]\" id=\"WebpageSelectButtons\">      <option value=\"0\">option one</option>      <option value=\"1\">option two</option>      <option value=\"2\">option three</option>    </select>  </div>  <div class=\"input select\" data-role=\"fieldcontain\">    <label for=\"WebpageSelectButtons\">Select Multiple</label>    <input type=\"hidden\" name=\"data[Webpage][selectButtons]\" value=\"\" id=\"WebpageSelectButtons_\"/>    <select name=\"data[Webpage][selectButtons][]\" multiple=\"multiple\" id=\"WebpageSelectButtons\">      <option value=\"0\">option one</option>      <option value=\"1\">option two</option>      <option value=\"2\">option three</option>    </select>  </div>  <div class=\"input select\" data-role=\"fieldcontain\">    <label for=\"WebpageSelectButtons\">Select Multiple</label>    <input type=\"hidden\" name=\"data[Webpage][selectButtons]\" value=\"\" id=\"WebpageSelectButtons\"/>    <div class=\"checkbox\">      <input type=\"checkbox\" name=\"data[Webpage][selectButtons][]\" value=\"0\" id=\"WebpageSelectButtons0\" />      <label for=\"WebpageSelectButtons0\">option one</label>    </div>    <div class=\"checkbox\">      <input type=\"checkbox\" name=\"data[Webpage][selectButtons][]\" value=\"1\" id=\"WebpageSelectButtons1\" />      <label for=\"WebpageSelectButtons1\">option two</label>    </div>    <div class=\"checkbox\">      <input type=\"checkbox\" name=\"data[Webpage][selectButtons][]\" value=\"2\" id=\"WebpageSelectButtons2\" />      <label for=\"WebpageSelectButtons2\">option three</label>    </div>  </div>  <div class=\"input textarea\" data-role=\"fieldcontain\">    <label for=\"WebpageTextArea\">Text Area</label>    <textarea name=\"data[Webpage][textArea]\" cols=\"30\" rows=\"6\" id=\"WebpageTextArea\"></textarea>  </div>  <div class=\"submit\">    <input  type=\"submit\" value=\"Submit\"/>  </div></form></fieldset><h2>Unordered List Styles</h2><ul>  <li>List Item One</li>  <li>List Item Two    <ul>      <li>Sub Item One        <ul>          <li>Sub sub item one</li>        </ul>      </li>      <li>Sub Item Two</li>      <li>Sub Item Three</li>    </ul>  </li>  <li>List Item Three</li></ul><h2>Ordered List Styles</h2><ol>  <li>List Item One</li>  <li>List Item Two    <ol>      <li>Sub Item One        <ol>          <li>Sub sub item one</li>        </ol>      </li>      <li>Sub Item Two</li>      <li>Sub Item Three</li>    </ol>  </li>  <li>List Item Three</li></ol><!-- Example row of columns --><div class=\"row\">  <div class=\"span4\">    <h2>Heading</h2>    <p class=\"lead\">Make a paragraph stand out by adding class called .lead.</p>    <p>Donec id elit non mi porta <strong>strong bold <em>text</strong> at eget metus. Fusce</em> dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>  </div>  <div class=\"span4\">    <h2>Heading</h2>    <p class=\"lead\">Make a paragraph stand out by adding class called .lead.</p>    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>  </div>  <div class=\"span4\">    <h2>Heading</h2>    <p class=\"lead\">Make a paragraph stand out by adding class called .lead.</p>    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>  </div></div><hr /><h2>Live grid example</h2><p>The default grid system utilizes <strong>12 columns</strong>, responsive columns become fluid and stack vertically.</p><div class=\"row\">  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div></div><div class=\"row show-grid\">  <div class=\"span2\">.span2</div>  <div class=\"span3\">.span3</div>  <div class=\"span4\">.span4</div>  <div class=\"span2\">.span2</div>  <div class=\"span1\">.span1</div></div><div class=\"row show-grid\">  <div class=\"span9\">.span9</div>  <div class=\"span3\">.span3</div></div><hr /><h3>This is a pre tag with the class .prettyprint & .linenums</h3><pre class=\"prettyprint linenums\">&lt;div class=\"row\"&gt;  &lt;div class=\"span4\"&gt;...&lt;/div&gt;  &lt;div class=\"span8\"&gt;...&lt;/div&gt;&lt;/div&gt;</pre>');";
-
-		return $dataStrings;
-
-	}
-
 /**
  * Creates the sites folder if it doesn't exist as a copy of sites.default
  */
@@ -738,5 +730,50 @@ class InstallController extends Controller {
 			$this->redirect('/users/users/login');
 		}
 		return true;
+	}
+    
+/** 
+ * Message 
+ * 
+ * used to add additional messages for the output of the session message at the end
+ *
+ * @return string $output
+ */
+    protected function _message() {
+        $output = '';
+        foreach ($this->message as $message) {
+            $output .= __(' %s ', $message);
+        }
+        return $output;
+    }
+
+
+/**
+ * The least amount of sql needed to successfully install zuha.
+ */
+    protected function _getInstallSqlData() {
+
+		$options['siteName'] = !empty($this->options['siteName']) ? $this->options['siteName'] : 'My Site';
+
+		$dataStrings[] = "INSERT INTO `aliases` (`id`, `plugin`, `controller`, `action`, `value`, `name`, `created`, `modified`) VALUES
+(1, 'webpages', 'webpages', 'view', 1, 'home', '2011-12-15 22:46:29', '2011-12-15 22:47:07');";
+
+		$dataStrings[] = "INSERT INTO `aros` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `rght`) VALUES (1, NULL, 'UserRole', 1, NULL, 1, 4), (2, NULL, 'UserRole', 2, NULL, 5, 6), (3, NULL, 'UserRole', 3, NULL, 7, 8), (6, 1, 'User', 1, NULL, 2, 3), (5, NULL, 'UserRole', 5, NULL, 9, 10);";
+
+		$dataStrings[] = "INSERT INTO `contacts` (`id`, `name`, `user_id`, `is_company`, `created`, `modified`) VALUES
+('1', 'Zuha Administrator', 1, 0, '".date('Y-m-d h:i:s')."', '".date('Y-m-d h:i:s')."');";
+
+		$dataStrings[] = "INSERT INTO `settings` (`id`, `type`, `name`, `value`) VALUES (1, 'System', 'ZUHA_DB_VERSION', '0.0176'), (2, 'System', 'GUESTS_USER_ROLE_ID', '5'), (3, 'System', 'LOAD_PLUGINS', 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges'), (4, 'System', 'SITE_NAME', '".$options['siteName']."');";
+
+		$dataStrings[] = "INSERT INTO `users` (`id`, `full_name`, `first_name`, `last_name`, `username`, `password`, `email`, `view_prefix`, `user_role_id`, `created`, `modified`) VALUES
+('1', 'Zuha Administrator', 'Zuha', 'Administrator', 'admin', '3eb13b1a6738103665003dea496460a1069ac78a', 'admin@example.com', 'admin', 1, '".date('Y-m-d h:i:s')."', '".date('Y-m-d h:i:s')."');";
+
+		$dataStrings[] = "INSERT INTO `user_roles` (`id`, `parent_id`, `name`, `lft`, `rght`, `view_prefix`, `is_system`, `created`, `modified`) VALUES (1, NULL, 'admin', 1, 2, 'admin', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:24'), (2, NULL, 'managers', 3, 4, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:41'), (3, NULL, 'users', 5, 6, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:50'), (5, NULL, 'guests', 7, 8, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:56:05');";
+
+		$dataStrings[] = "INSERT INTO `webpages` (`id`, `name`, `content`) VALUES
+(1, 'Homepage', '<p>This is the default homepage.  Complete with default html tags displayed for easy theme styling.  Have fun!!</p><hr /><h1>Heading One <small>small wrapper</small></h1><h2>Heading Two <small>small wrapper</small></h2><h3>Heading Three <small>small wrapper</small></h3><h4>Heading Four <small>small wrapper</small></h4><h5>Heading Five <small>small wrapper</small></h5><h6>Heading Six <small>small wrapper</small></h6><p class=\"muted\">Fusce dapibus, tellus ac cursus commodo, tortor mauris nibh.</p><p class=\"text-warning\">Etiam porta sem malesuada magna mollis euismod.</p><p class=\"text-error\">Donec ullamcorper nulla non metus auctor fringilla.</p><p class=\"text-info\">Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis.</p><p class=\"text-success\">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p><p>An abbreviation of the word attribute is <abbr title=\"attribute\">attr</abbr></p><address><strong>Acme, Inc.</strong><br>9210 Jetsam Ave, Suite 400<br>San Francisco, CA 90210<br><abbr title=\"Phone\">P:</abbr> (123) 456-7890</address><blockquote>  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>  <small>Someone famous <cite title=\"Source Title\">Source Title</cite></small> </blockquote><blockquote class=\"pull-right\">  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>  <small>Someone famous <cite title=\"Source Title\">Source Title</cite></small> </blockquote><div class=\"clearfix\"></div><dl class=\"dl-horizontal\">  <dt>Description lists</dt>  <dd>A description list is perfect for defining terms.</dd>  <dt>Euismod</dt>  <dd>Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.</dd>  <dd>Donec id elit non mi porta gravida at eget metus.</dd>  <dt>Malesuada porta</dt>  <dd>Etiam porta sem malesuada magna mollis euismod.</dd>  <dt>Felis euismod semper eget lacinia</dt>  <dd>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</dd></dl><h2>Various Default Table Classes</h2><table class=\"table\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td>Larry</td>      <td>the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-striped\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td>Larry</td>      <td>the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-bordered\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td rowspan=\"2\">1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>Mark</td>      <td>Otto</td>      <td>@TwBootstrap</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td colspan=\"2\">Larry the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-hover\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td colspan=\"2\">Larry the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-condensed\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td colspan=\"2\">Larry the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table\">  <thead>    <tr>      <th>#</th>      <th>Product</th>      <th>Payment Taken</th>      <th>Status</th>    </tr>  </thead>  <tbody>    <tr class=\"success\">      <td>1</td>      <td>TB - Monthly</td>      <td>01/04/2012</td>      <td>Approved</td>    </tr>    <tr class=\"error\">      <td>2</td>      <td>TB - Monthly</td>      <td>02/04/2012</td>      <td>Declined</td>    </tr>    <tr class=\"warning\">      <td>3</td>      <td>TB - Monthly</td>      <td>03/04/2012</td>      <td>Pending</td>    </tr>    <tr class=\"info\">      <td>4</td>      <td>TB - Monthly</td>      <td>04/04/2012</td>      <td>Call in to confirm</td>    </tr>  </tbody></table><h2>Form Styles</h2><form action=\"/webpages/webpages/view/1?url=webpages%2Fwebpages%2Fview%2F1\" id=\"WebpageViewForm\" method=\"post\" accept-charset=\"utf-8\">  <div style=\"display:none;\">    <input type=\"hidden\" name=\"_method\" value=\"POST\"/>  </div>  <fieldset>  <legend>Some Legend</legend>  <div class=\"input text\" data-role=\"fieldcontain\">    <label for=\"WebpageLabelName\">Label Name</label>    <input name=\"data[Webpage][labelName]\" placeholder=\"Type something...\" type=\"text\" id=\"WebpageLabelName\"/>    <span class=\"help-block\">Some text in the after index</span></div>  <div class=\"input checkbox\" data-role=\"fieldcontain\">    <input type=\"hidden\" name=\"data[Webpage][singleCheckBox]\" id=\"WebpageSingleCheckBox_\" value=\"0\"/>    <input type=\"checkbox\" name=\"data[Webpage][singleCheckBox]\"  value=\"1\" id=\"WebpageSingleCheckBox\"/>    <label for=\"WebpageSingleCheckBox\">Single Check Box</label>  </div>  <div class=\"input radio\" data-role=\"fieldcontain\">    <input type=\"hidden\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons_\" value=\"\"/>    <input type=\"radio\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons0\"  value=\"0\" />    <label for=\"WebpageRadio2Buttons0\">radio option one</label>    <input type=\"radio\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons1\"  value=\"1\" />    <label for=\"WebpageRadio2Buttons1\">radio option two</label>    <input type=\"radio\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons2\"  value=\"2\" />    <label for=\"WebpageRadio2Buttons2\">radio option three</label>  </div>  <div class=\"input radio\" data-role=\"fieldcontain\">    <fieldset>      <legend>radio set with legend</legend>      <input type=\"hidden\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons_\" value=\"\"/>      <input type=\"radio\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons0\"  value=\"0\" />      <label for=\"WebpageRadioButtons0\">option one</label>      <input type=\"radio\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons1\"  value=\"1\" />      <label for=\"WebpageRadioButtons1\">option two</label>      <input type=\"radio\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons2\"  value=\"2\" />      <label for=\"WebpageRadioButtons2\">option three</label>    </fieldset>  </div>  <div class=\"input select\" data-role=\"fieldcontain\">    <label for=\"WebpageSelectButtons\">Select One</label>    <select name=\"data[Webpage][selectButtons]\" id=\"WebpageSelectButtons\">      <option value=\"0\">option one</option>      <option value=\"1\">option two</option>      <option value=\"2\">option three</option>    </select>  </div>  <div class=\"input select\" data-role=\"fieldcontain\">    <label for=\"WebpageSelectButtons\">Select Multiple</label>    <input type=\"hidden\" name=\"data[Webpage][selectButtons]\" value=\"\" id=\"WebpageSelectButtons_\"/>    <select name=\"data[Webpage][selectButtons][]\" multiple=\"multiple\" id=\"WebpageSelectButtons\">      <option value=\"0\">option one</option>      <option value=\"1\">option two</option>      <option value=\"2\">option three</option>    </select>  </div>  <div class=\"input select\" data-role=\"fieldcontain\">    <label for=\"WebpageSelectButtons\">Select Multiple</label>    <input type=\"hidden\" name=\"data[Webpage][selectButtons]\" value=\"\" id=\"WebpageSelectButtons\"/>    <div class=\"checkbox\">      <input type=\"checkbox\" name=\"data[Webpage][selectButtons][]\" value=\"0\" id=\"WebpageSelectButtons0\" />      <label for=\"WebpageSelectButtons0\">option one</label>    </div>    <div class=\"checkbox\">      <input type=\"checkbox\" name=\"data[Webpage][selectButtons][]\" value=\"1\" id=\"WebpageSelectButtons1\" />      <label for=\"WebpageSelectButtons1\">option two</label>    </div>    <div class=\"checkbox\">      <input type=\"checkbox\" name=\"data[Webpage][selectButtons][]\" value=\"2\" id=\"WebpageSelectButtons2\" />      <label for=\"WebpageSelectButtons2\">option three</label>    </div>  </div>  <div class=\"input textarea\" data-role=\"fieldcontain\">    <label for=\"WebpageTextArea\">Text Area</label>    <textarea name=\"data[Webpage][textArea]\" cols=\"30\" rows=\"6\" id=\"WebpageTextArea\"></textarea>  </div>  <div class=\"submit\">    <input  type=\"submit\" value=\"Submit\"/>  </div></form></fieldset><h2>Unordered List Styles</h2><ul>  <li>List Item One</li>  <li>List Item Two    <ul>      <li>Sub Item One        <ul>          <li>Sub sub item one</li>        </ul>      </li>      <li>Sub Item Two</li>      <li>Sub Item Three</li>    </ul>  </li>  <li>List Item Three</li></ul><h2>Ordered List Styles</h2><ol>  <li>List Item One</li>  <li>List Item Two    <ol>      <li>Sub Item One        <ol>          <li>Sub sub item one</li>        </ol>      </li>      <li>Sub Item Two</li>      <li>Sub Item Three</li>    </ol>  </li>  <li>List Item Three</li></ol><!-- Example row of columns --><div class=\"row\">  <div class=\"span4\">    <h2>Heading</h2>    <p class=\"lead\">Make a paragraph stand out by adding class called .lead.</p>    <p>Donec id elit non mi porta <strong>strong bold <em>text</strong> at eget metus. Fusce</em> dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>  </div>  <div class=\"span4\">    <h2>Heading</h2>    <p class=\"lead\">Make a paragraph stand out by adding class called .lead.</p>    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>  </div>  <div class=\"span4\">    <h2>Heading</h2>    <p class=\"lead\">Make a paragraph stand out by adding class called .lead.</p>    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>  </div></div><hr /><h2>Live grid example</h2><p>The default grid system utilizes <strong>12 columns</strong>, responsive columns become fluid and stack vertically.</p><div class=\"row\">  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div></div><div class=\"row show-grid\">  <div class=\"span2\">.span2</div>  <div class=\"span3\">.span3</div>  <div class=\"span4\">.span4</div>  <div class=\"span2\">.span2</div>  <div class=\"span1\">.span1</div></div><div class=\"row show-grid\">  <div class=\"span9\">.span9</div>  <div class=\"span3\">.span3</div></div><hr /><h3>This is a pre tag with the class .prettyprint & .linenums</h3><pre class=\"prettyprint linenums\">&lt;div class=\"row\"&gt;  &lt;div class=\"span4\"&gt;...&lt;/div&gt;  &lt;div class=\"span8\"&gt;...&lt;/div&gt;&lt;/div&gt;</pre>');";
+
+		return $dataStrings;
+
 	}
 }

@@ -280,27 +280,25 @@ class Webpage extends WebpagesAppModel {
  * @param object
  * @return string
  */
-	public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
-	    $requestUrl = $request->url;
-	    if(isset($request->params['alias'])) {
+    public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
+        $requestUrl = $request->url;
+        if(isset($request->params['alias'])) {
 			$aliasName = $request->params['alias'];
-	    } else {
+        } else {
 			$aliasName = '';
-	    }
-
-	    if(isset($webpage['Alias'])) {
+        }
+        if(isset($webpage['Alias'])) {
 			if(!empty($webpage['Alias']['name']) && empty($aliasName)) {
 			    $aliasName = $webpage['Alias']['name'];
 			}
-	    }
-	    
-	    $matches = array();
-	    $parents[] = $webpage['Webpage']['id'];
-	    preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
-	    for ($i = 0; $i < sizeof($matches[2]); $i++) {
+        }
+        $matches = array();
+        $parents[] = $webpage['Webpage']['id'];
+        preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
+        for ($i = 0; $i < sizeof($matches[2]); $i++) {
 			if (in_array($matches[2][$i], $parents)) {
-		   		$webpage["Webpage"]["content"] = str_replace($matches[0][$i], "", $webpage['Webpage']['content']);
-		    	continue;
+                $webpage["Webpage"]["content"] = str_replace($matches[0][$i], "", $webpage['Webpage']['content']);
+                continue;
 			}
 			switch ($action) {
 				case 'site_edit':
@@ -309,22 +307,18 @@ class Webpage extends WebpagesAppModel {
 				default:
 				$include_container = array('start' => '<div id="edit_webpage_include' . trim($matches[2][$i]) . '" pageid="' . trim($matches[2][$i]) . '" class="global_edit_area">', 'end' => '</div>');
 			}
-
 		// remove the div.global_edit_area's if this user is not userRoleId = 1
 		if ($userRoleId !== '1') {
 		    $include_container = array('start' => '', 'end' => '');
 		}
-
 		$webpage2 = $this->find("first", array(
 		    "conditions" => array("Webpage.id" => trim($matches[2][$i])),
 		    'contain' => array('Child'),
 		    ));
-
 		/** @todo Find out WTF this was for **/
 		if (empty($webpage2) || !is_array($webpage2)) {
 		    continue;
 		}
-
 		if(!empty($webpage2['Child'])) {
 		    foreach($webpage2['Child'] as $child) {
 				$urls = unserialize(gzuncompress(base64_decode($child['template_urls'])));
@@ -334,12 +328,10 @@ class Webpage extends WebpagesAppModel {
 						$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
 						$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
 						$urlCompare = strpos($requestUrl, '/') === 0 ? substr($requestUrl, 1) : $requestUrl;
-		
 						if (preg_match($urlRegEx, $urlCompare)) {
 							$webpage2['Webpage'] = $child;
 							break;
 						}
-	
 						if(!empty($aliasName)) {
 							if($aliasName[strlen($aliasName)-1] !== '/') {
 								$aliasName .= '/';
@@ -358,15 +350,14 @@ class Webpage extends WebpagesAppModel {
 		}
 			
 		$this->parseIncludedPages($webpage2, $parents, $action, $userRoleId, $request);
-		
 			if ($webpage['Webpage']['type'] == 'template') {
 				$webpage["Webpage"]["content"] = str_replace($matches[0][$i], $include_container['start'] . $webpage2["Webpage"]["content"] . $include_container['end'], $webpage["Webpage"]["content"]);
 			} else {
 				$webpage["Webpage"]["content"] = str_replace($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
 			}
-	    }
+		}
 	}
-	
+    
 /**
  * Types function
  * 
