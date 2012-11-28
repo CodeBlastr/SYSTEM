@@ -11,8 +11,16 @@ $aliasName['Alias.name'] = !empty($aliasId['Alias.name']) ? array_merge($aliasNa
 $formId = !empty($formId) ? $formId : null;
 $nameInput = !empty($nameInput) ? $nameInput : null;
 $aliasInput = !empty($aliasInput) ? $aliasInput : '#AliasName';
+!empty($foreignKey) ? $foreignKey = '' : $foreignKey = !empty($this->request->data['Alias']['value']) ? $this->request->data['Alias']['value'] : '';
+$aliasPlugin = !empty($aliasPlugin) ? $aliasPlugin : $this->request->params['plugin'];
+$aliasController = !empty($aliasController) ? $aliasController : $this->request->params['controller'];
+$aliasAction = !empty($aliasAction) ? $aliasAction : 'view';
 $parent = !empty($parent) ? $parent : null;
 echo !empty($this->request->data['Alias']['id']) ? $this->Form->input(key($aliasId)) : null;
+echo $this->Form->input('Alias.value', array('type' => 'hidden', 'value' => $foreignKey));
+echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => $aliasPlugin));
+echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => $aliasController));
+echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => $aliasAction));
 echo $this->Form->input(key($aliasName), array('label' => 'Permanent Url')); ?>
 
 <style type="text/css">
