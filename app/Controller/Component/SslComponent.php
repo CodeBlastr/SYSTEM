@@ -1,11 +1,11 @@
-<?php 
+<?php
 class SslComponent extends Component {
     
     public $components = array('RequestHandler');
     
     public $Controller = null;
     
-    public function initialize(&$Controller) {
+    public function initialize(Controller $Controller) {
         $this->Controller = $Controller;
     }
 	
