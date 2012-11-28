@@ -18,6 +18,51 @@ class Zuha {
     }
 	
 /**
+ * Date Slice 
+ * When given two dates, returns an array of slices between the two dates
+ * 
+ * @param date $fromDate
+ * @param date $toDate
+ * @param array $options array('type' => 'days OR months', 'format' => 'Y-m-d') 
+ */
+ 	public function date_slice($fromDate = '2007-07-07', $toDate = null, $options = array()) {
+		$toDate = !empty($toDate) ? $toDate : date('Y-m-d'); 
+		$options['type'] = !empty($options['type']) ? $options['type'] : 'days';
+		$options['format'] = !empty($options['format']) ? $options['format'] : 'Y-m-d';
+		
+		if ($options['type'] == 'days') {
+			$dateMonthYearArr = array();
+			$fromDateTs = strtotime($fromDate);
+			$toDateTs = strtotime($toDate);
+			
+			for ($currentDateTs = $fromDateTs; $currentDateTs <= $toDateTs; $currentDateTs += (60 * 60 * 24)) {
+				// use date() and $currentDateTS to format the dates in between
+				$currentDateStr = date($options['format'], $currentDateTs);
+				$dateMonthYearArr[] = $currentDateStr;
+				//print $currentDateStr.Ó<br />Ó;
+			}
+			
+			return $dateMonthYearArr;
+		} else {
+			$time1 = strtotime($date1);
+			$time2 = strtotime($date2);
+			$my = date('mY', $time2);
+			
+			$months = array(date('F Y', $time1));
+			
+			while($time1 < $time2) {
+			$time1 = strtotime(date('Y-m-d', $time1).' +1 month');
+			if(date('mY', $time1) != $my && ($time1 < $time2))
+			$months[] = date('F Y', $time1);
+			}
+			
+			$months[] = date('F Y', $time2);
+			return $months;
+		}
+ 	}
+ 
+	
+/**
  * Convenience function for finding enumerations
  *
  * @param {mixed} 		The type string (ie. PRICE_TYPE, SETTING_TYPE), if null we find all enumerations. If an integer then we return the single exact enum being called.

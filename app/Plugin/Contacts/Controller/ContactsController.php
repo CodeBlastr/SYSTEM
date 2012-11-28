@@ -49,24 +49,28 @@ class ContactsController extends ContactsAppController {
 	public function index() {
 		//$this->paginate['conditions'] = array('Contact.is_company' => 1, 'Contact.contact_type IS NOT NULL');
 		$this->paginate['fields'] = array(
-			'id',
-			'name',
-			'contact_type',
-			'contact_source',
-			'contact_industry',
-			'contact_rating',
-			'is_company',
-            'created'
+			'Contact.id',
+			'Contact.name',
+			'Contact.contact_type',
+			'Contact.contact_source',
+			'Contact.contact_rating',
+			'Contact.is_company',
+			'Contact.assignee_id',
+            'Contact.created',
+            'Assignee.id',
+            'Assignee.full_name'
 			);
 		$this->paginate['order'] = array(
 			'Contact.name'
+			);
+		$this->paginate['contain'] = array(
+			'Assignee'
 			);
 		$this->set('contacts', $this->paginate());
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', '');
 		$this->set('contactTypes', $this->Contact->types());
-		//$associations =  array('ContactType' => array('displayField' => 'name'), 'ContactSource' => array('displayField' => 'name'), 'ContactIndustry' => array('displayField' => 'name'), 'ContactRating' => array('displayField' => 'name'));
-		$this->set('associations', $associations);
+		$this->set('associations',  array('Assignee' => array('displayField' => 'full_name')));
 		$this->allowedActions[] = 'list';
 	}
 	
@@ -116,6 +120,7 @@ class ContactsController extends ContactsAppController {
 					'ContactAddressType',
 					),
 				'Employer',
+				'Assignee'
 				),
 			));
 		$contactDetailTypes = $this->Contact->ContactDetail->types();
@@ -143,16 +148,18 @@ class ContactsController extends ContactsAppController {
 		$this->set('employees', $employees);
 		
 		// vars for opportunities
+		unset($this->paginate);
+		$this->paginate = array('fields' => array('Estimate.id', 'Estimate.name', 'Estimate.created', 'Estimate.creator_id', 'Creator.id', 'Creator.full_name'), 'contain' => array('Creator'));
 		$this->set('estimates', in_array('Estimates', CakePlugin::loaded()) ? $this->paginate('Contact.Estimate', array('Estimate.foreign_key' => $id, 'Estimate.model' => 'Contact')) : null);
 		
 		// vars for activities
 		unset($this->paginate);
-		$this->paginate = array('fields' => array('Activity.id', 'Activity.name', 'Activity.creator_id', 'Activity.created', 'Creator.id', 'Creator.full_name'), 'contain' => array('Creator'));
+		$this->paginate = array('fields' => array('Activity.id', 'Activity.name', 'Activity.created', 'Activity.creator_id', 'Creator.id', 'Creator.full_name'), 'contain' => array('Creator'));
 		$this->set('activities', in_array('Activities', CakePlugin::loaded()) ? $this->paginate('Contact.Activity', array('Activity.foreign_key' => $id, 'Activity.model' => 'Contact', 'Activity.action_description !=' => 'lead created')) : null);
 		
 		// vars for reminders
 		unset($this->paginate);
-		$this->paginate = array('fields' => array('id', 'name', 'due_date'));
+		$this->paginate = array('fields' => array('Task.id', 'Task.name', 'Task.due_date', 'Task.assignee_id', 'Assignee.id', 'Assignee.full_name'), 'contain' => array('Assignee'));
 		$this->set('tasks', in_array('Tasks', CakePlugin::loaded()) ? $this->paginate('Contact.Task', array('Task.foreign_key' => $id, 'Task.model' => 'Contact', 'Task.is_completed' => 0)) : null);
 		
 		// view vars
@@ -160,9 +167,9 @@ class ContactsController extends ContactsAppController {
 		$this->set('modelName', 'Contact');
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', '');
-		$this->set('page_title_for_layout', $contact['Contact']['name']);
+		$this->set('page_title_for_layout', __('%s %s', $contact['Contact']['name'], !empty($contact['Assignee']['full_name']) ? __('<br /><small>%s is responsible for this %s %s.</small>', $contact['Assignee']['full_name'], $contact['Contact']['contact_rating'], $contact['Contact']['contact_type']) : __('<br /><small>No one is currently assigned to this %s %s</small>', $contact['Contact']['contact_rating'], $contact['Contact']['contact_type'])));
 		$this->set('title_for_layout',  $contact['Contact']['name']);
-		$this->set('loggedActivities', $this->Contact->activities($id));
+		$this->set('loggedActivities', $this->Contact->activities(array('foreign_key' => $id, 'start_date' => $contact['Contact']['created'])));
 		$this->set('loggedEstimates', $this->Contact->estimates($id));
 		
 		// which view file to use
@@ -249,10 +256,10 @@ class ContactsController extends ContactsAppController {
 		}
 		
 		if ($this->Contact->delete($id)) {
-			$this->Session->setFlash(__('Contact deleted', true));
+			$this->Session->setFlash(__('Contact deleted'));
 			$this->redirect(array('action'=>'index'));
 		}
-		$this->Session->setFlash(__('Contact was not deleted', true));
+		$this->Session->setFlash(__('Contact was not deleted'));
 		$this->redirect(array('action' => 'index'));
 	}
 	
@@ -286,6 +293,7 @@ class ContactsController extends ContactsAppController {
 	public function activities() {
 		$this->paginate['fields'] = array('Activity.id', 'Activity.name', 'Activity.description', 'Activity.creator_id', 'Activity.created', 'Creator.id', 'Creator.full_name', 'Contact.name');
 		$this->paginate['contain'] = array('Contact', 'Creator');
+        $this->paginate['conditions']['Activity.model'] = 'Contact';
 		
 		$this->Contact->Activity->bindModel(array(
 			'belongsTo' => array(
@@ -300,11 +308,10 @@ class ContactsController extends ContactsAppController {
 		for($i = 0, $size = count($activities); $i < $size; ++$i) {
 			$activities[$i]['Activity']['name'] = __('%s <small>for %s</small>', $activities[$i]['Activity']['name'], $activities[$i]['Contact']['name']);
 		}
-		
 		$associations =  array('Creator' => array('displayField' => 'full_name'));
 		$this->set(compact('activities', 'associations'));
 		$this->set('modelName', 'Activity');
-		$this->set('displayName', 'displayName');
+		$this->set('displayName', 'name');
 		$this->set('displayDescription', '');
 		$this->set('page_title_for_layout', __('Contact Activities'));
 		return $activities;
