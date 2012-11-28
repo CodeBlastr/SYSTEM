@@ -12,7 +12,6 @@
 		echo '<p> Calculated by taking the total, <strong> $'. $loggedEstimates['_subTotal'] . '</strong> and multiplying by the average likelihood of closing, <strong> ' . $loggedEstimates['_multiplier'] . '%</strong></p>';
 	}
 	if (!empty($loggedActivities)) { ?>
-        <h5>Activity over time</h5>
 		<script type="text/javascript">
 		google.load("visualization", "1", {packages:["corechart"]});
 		google.setOnLoadCallback(drawLeadsChart);
@@ -23,7 +22,7 @@
 			['x', 'Date'],
 			<?php 
 			foreach ($loggedActivities as $activity) { ?>
-				['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity['Activity']['COUNT(`Activity`.`created`)']; ?>],
+				['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity[0]['count']; ?>],
 			<?php } ?>
 			]);
 					
@@ -31,7 +30,7 @@
 			new google.visualization.LineChart(document.getElementById('activities_over_time')).
 				draw(data, {
 					curveType: "function",
-					width: 270, height: 200,
+					width: '100%', height: 200,
 					legend: {position: 'none'},
 					chartArea: {width: '80%', height: '80%'}
 					}
@@ -40,55 +39,45 @@
 		}
 		</script>
         
+        <h5>Activity since created</h5>
 		<div id="activities_over_time"></div>
 		
 	<?php } ?>
 	<div class="contact form">
+		<hr />
 		<?php echo $this->Form->create('Contact', array('url' => array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'add')));?>
-		<fieldset>
-			<legend class="btn btn-block toggleClick"><?php echo __('Add Employee'); ?></legend>
+		<?php echo $this->Html->link(__('Add Employee'), '', array('class' => 'btn btn-block toggleClick addEmployeeBtn', 'data-target' => '.employeeSelect, .employeeSubmit')); ?></legend>
 		    <?php
 			 echo $this->Form->hidden('Contact.is_company', array('value' => 0));
 			 echo $this->Form->hidden('Employer', array('value' => $contact['Contact']['id']));
-			 echo $this->Form->input('Contact.id', array('type' => 'select', 'options' => $people, 'label' => __('Employee <small>%s</small>', $this->Html->link('(create new person)', '#', array('id' => 'newEmployeeLink')))));
-			 echo $this->Form->input('Contact.name', array('label' => 'Employee Name', 'after' => __(' %s', $this->Html->link('Cancel', '#', array('id' => 'cancelEmployeeLink')))));
-			 echo $this->Form->end('Submit');?>
+			 echo $this->Form->input('Contact.id', array('div' => array('class' => 'employeeSelect'), 'empty' => '-- Select --', 'type' => 'select', 'options' => $people, 'label' => __('Choose Person <small>%s</small>', $this->Html->link('(create new person)', '', array('class' => 'toggleClick', 'data-target' => '.employeeSelect, .employeeInput')))));
+			 echo $this->Form->input('Contact.name', array('div' => array('class' => 'employeeInput'), 'label' => 'Employee\'s Name', 'after' => __(' %s', $this->Html->link('Cancel', '', array('class' => 'toggleClick', 'data-target' => '.employeeInput, .employeeSelect')))));
+			 echo $this->Form->end(array('label' => 'Submit', 'class' => 'employeeSubmit'));?>
 		</fieldset>
 	</div>
-	<script type="text/javascript">		
-		$(function() {
-			$("#ContactName").parent().hide();
-			$("#newEmployeeLink").click(function () {
-				$(this).parent().hide();
-				$("#ContactName").parent().show();
-			});
-			$("#cancelEmployeeLink").click(function () {
-				$(this).parent().hide();
-				$("#ContactId").parent().show();
-			});
-		});
-	</script>
 </div>
 
 <div class="contacts view">
 	<?php
 	echo '<h4>Contact Details ' . $this->Html->link('Add', array('plugin' => 'contacts', 'controller' => 'contact_details', 'action' => 'add', $contact['Contact']['id']), array('class' => 'btn btn-mini btn-primary')) . '</h4>';
-	if (!empty($contact['ContactDetail'])) { 
+	if (!empty($contact['ContactDetail'])) {
+		echo '<div class="span8 first pull-left"><table class="table table-hover"><tbody>';
 		for ($i = 0; $i < count($contact['ContactDetail']); ++$i) {
-			echo __('<p><span class="label label-info">%s</span> %s</p>', $contact['ContactDetail'][$i]['contact_detail_type'], $this->Html->link(__('%s', $contact['ContactDetail'][$i]['value']), array('plugin' => 'contacts', 'controller' => 'contact_details', 'action' => 'edit', $contact['ContactDetail'][$i]['id'])));
+			echo __('<tr><td class="span2">%s</td><td> %s %s </td></tr>', $contact['ContactDetail'][$i]['contact_detail_type'], $contact['ContactDetail'][$i]['value'],  $this->Html->link(__('Edit'), array('plugin' => 'contacts', 'controller' => 'contact_details', 'action' => 'edit', $contact['ContactDetail'][$i]['id']), array('class' => 'btn btn-mini btn-primary')));
 		}
+		echo "</tbody></table></div>";
 	} else {
 		echo __('<p>No contact details provided.</p>');
 	}
 	
 	if (!empty($estimates)) {
 		echo '<h4> Opportunities </h4>';
-		echo $this->Element('scaffolds/index', array('data' => $estimates, 'modelName' => 'Estimate'));
+		echo $this->Element('scaffolds/index', array('data' => $estimates, 'modelName' => 'Estimate', 'associations' => array('Creator' => array('displayField' => 'full_name'))));
 	}
 	
 	if (!empty($tasks)) {
 		echo '<h4> Reminders </h4>';
-		echo $this->Element('scaffolds/index', array('data' => $tasks, 'modelName' => 'Task', 'actions' => array($this->Html->link('Mark as Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'complete', '{id}')))));
+		echo $this->Element('scaffolds/index', array('data' => $tasks, 'modelName' => 'Task', 'associations' => array('Assignee' => array('displayField' => 'full_name')), 'actions' => array($this->Html->link('Mark as Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'complete', '{id}')))));
 	}
 	
 	if (!empty($activities)) {

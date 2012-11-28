@@ -336,3 +336,16 @@ span.btn {
     background: none;
     color: #333333;
 }
+
+footer {
+	clear: both;
+}
+.table-hover td:first-child {
+	color: #999;
+}
+.table-hover td a.edit {
+	display: none;
+}
+.table-hover td:hover a.edit {
+	display: inline;
+}
