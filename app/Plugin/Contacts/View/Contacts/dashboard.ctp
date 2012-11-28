@@ -1,16 +1,18 @@
-
 <?php echo $this->Html->script('https://www.google.com/jsapi', array('inline' => false)); ?>
 <?php echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false)); ?>
 <div class="masonry contacts dashboard">
 	<div class="masonryBox dashboardBox tagLeads">
-    	<h3><span class="label label-important">Attention!</span> New Leads </h3>
+    	<h3 class="title"><span class="label label-important">Attention!</span> New Leads </h3>
         <?php 
 		if (!empty($leads)) {
 			echo '<p>The latest incoming contacts, that have not been claimed yet.<p>';
 			foreach ($leads as $lead) {
 				echo '<p>' . $this->Html->link('Assign', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'edit', $lead['Contact']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($lead['Contact']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $lead['Contact']['id'])) . ' ' . date('M d, Y', strtotime($lead['Contact']['created'])) . '</p>';
 			}
-		} 
+            echo '<hr />';
+		} else {
+            echo '<p>No unassigned leads, check back soon.</p><hr />';
+        }
 		
 		if (!empty($leadActivities)) { 
         	echo '<h4>Leads over time</h4>'; ?>
@@ -49,7 +51,7 @@
     
     
 	<div class="masonryBox dashboardBox tagOpportunities">
-    	<h3><i class="icon-th-large"></i> Open Opportunities </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> Open Opportunities </h3>
         <?php 
 		if (!empty($estimates)) {
 			echo '<div class="alert alert-success"><h1> $'. $estimates['_total'] . '</h1></div>';
@@ -58,8 +60,9 @@
 			unset($estimates['_multiplier']);
 			unset($estimates['_total']);
 			foreach ($estimates as $estimate) {
-				echo '<p>' . $this->Html->link('Close', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'edit', $estimate['Estimate']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'view', $estimate['Estimate']['id'])) . '</p>';
+				echo '<p>' . $this->Html->link('Close', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'edit', $estimate['Estimate']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $estimate['Estimate']['foreign_key'])) . '</p>';
 			}
+            echo '<hr />';
 		} 
 		
 		if (!empty($estimateActivities)) { 
@@ -99,7 +102,7 @@
     
     
 	<div class="masonryBox dashboardBox tagActivities">
-    	<h3><i class="icon-th-large"></i> Search Contacts </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> Search Contacts </h3>
 		<?php 	
 		echo $this->Element('forms/search', array(
 		'url' => '/contacts/contacts/index/', 
@@ -119,11 +122,11 @@
     <?php 
 	if (!empty($tasks)) { ?>
 	<div class="masonryBox dashboardBox tagTasks">
-    	<h3><i class="icon-th-large"></i> Upcoming Tasks </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> Reminders </h3>
     		<?php
 			echo '<p>A list of scheduled follow ups.</p>';
 			foreach ($tasks as $task) {
-				echo '<p>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'completed', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($task['Task']['name'], array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'view', $task['Task']['id'])) . ', due ' . date('M d, Y', strtotime($task['Task']['due_date'])) . '</p>';
+				echo '<p>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'complete', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($task['Task']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $task['Task']['foreign_key'])) . ', due ' . date('M d, Y', strtotime($task['Task']['due_date'])) . '</p>';
 			} ?>
 	</div>
 	
@@ -134,7 +137,7 @@
     <?php 
 	if (!empty($myContacts)) { ?>
 	<div class="masonryBox dashboardBox tagMyContacts">
-    	<h3><i class="icon-th-large"></i> My Contacts </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> My Contacts </h3>
     	<p>The last five contacts assigned to you.</p>
 		<?php
 		foreach ($myContacts as $contact) {
@@ -149,13 +152,12 @@
     <?php 		
 	if (!empty($activities)) { ?>
 	<div class="masonryBox dashboardBox tagActivities">
-    	<h3><i class="icon-th-large"></i> Activity </h3>
+    	<h3 class="title"><i class="icon-th-large"></i> Activity </h3>
     	<?php
     	$rActivities = array_reverse($activities);
     	for ($i = 0; $i <= 4; $i++) {
-    		echo '<p>' . $this->Html->link($rActivities[$i]['Activity']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $rActivities[$i]['Activity']['foreign_key'])) . '</p>';
+    		echo !empty($rActivities[$i]['Activity']['name']) ? '<p>' . $this->Html->link($rActivities[$i]['Activity']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $rActivities[$i]['Activity']['foreign_key'])) . '</p>' : null;
     	} ?> 
-		<h4>Activities over time</h4>
         
 		<script type="text/javascript">
 		google.load("visualization", "1", {packages:["corechart"]});
@@ -167,7 +169,7 @@
 			['x', 'Date'],
 			<?php 
 			foreach ($activities as $activity) { ?>
-				['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity['Activity']['COUNT(Activity.created)']; ?>],
+				['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity[0]['count']; ?>],
 			<?php } ?>
 			]);
 					
@@ -184,7 +186,9 @@
 		}
 		</script>
         
+		<h4>Activities for last 60 days</h4>
 		<div id="activities_over_time"></div>
+		<p class="pull-right"><?php echo $this->Html->link(__('All of Today\'s Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activities', 'contains' => 'created:' . date('Y-m-d'))); ?></p>
 	<?php
     } ?>
 	</div>
@@ -194,6 +198,12 @@
 <?php
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Contacts',
+		'items' => array(
+			$this->Html->link(__('Dashboard'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'dashboard'), array('class' => 'active')),
+			),
+		),
 	array(
 		'heading' => '',
 		'items' => array(

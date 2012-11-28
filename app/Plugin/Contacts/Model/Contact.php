@@ -599,20 +599,23 @@ class Contact extends ContactsAppModel {
 	
 /**
  * Activities method
+ * 
+ * Returns the last 60 days of activity.
  *
  * @return array
  */
-	public function activities($foreignKey = null) {
+	public function activities($conditions = array()) {
 		$return = null;
 		if (in_array('Activities', CakePlugin::loaded())) {
-			$conditions['Activity.action_description'] = 'contact activity';
+			/*$conditions['Activity.action_description'] = 'contact activity';
 			$conditions['Activity.model'] = 'Contact';
-			!empty($foreignKey) ? $conditions['Activity.foreign_key'] = $foreignKey : null; 
+			!empty($foreignKey) ? $conditions['Activity.foreign_key'] = $foreignKey : null;
 			$return = $this->Activity->find('all', array(
 				'conditions' => $conditions,
 				'fields' => array(
 					'*',
-					'COUNT(Activity.created)',
+					"COUNT(Activity.created) AS count", // only one of these two will work
+					"DATE_FORMAT(Activity.created, '%Y-%m-%d') AS created", // only one of these two will work
 					),
 				'group' =>  array(
 					'DATE(Activity.created)',
@@ -620,7 +623,21 @@ class Contact extends ContactsAppModel {
 				'order' => array(
 					'Activity.created' => 'ASC',
 					)
-				));
+				));*/  // might try to fix the Model::_filterResults() function at some point and submit it back to CakePHP devs.
+				
+			!empty($conditions['foreign_key']) ? $foreignKeyQuery = "AND `Activity`.`foreign_key` = '". $conditions['foreign_key'] . "'" : $foreignKeyQuery = null;
+			$startDate = !empty($conditions['start_date']) ? $conditions['start_date'] : date('Y-m-d', strtotime('- 60 days'));
+			$result = $this->query("SELECT *, DATE_FORMAT(Activity.created, '%Y-%m-%d') AS formatted, COUNT(`Activity`.`created`) AS count FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'contact activity' AND `Activity`.`model` = 'Contact' ".$foreignKeyQuery." GROUP BY DATE(`Activity`.`created`) ORDER BY `Activity`.`created` ASC");
+			$emptyDates = Zuha::date_slice($startDate, null, array('format' => 'Y-m-d'));
+			foreach ($emptyDates as $emptyDate) {
+				$key = array_search($emptyDate, Set::extract('/0/formatted', $result));
+				if ($key === 0 || $key > 0) {
+					$return[] = $result[$key];
+				} else {
+					$return[] = array(0 => array('count' => 0), 'Activity' => array('created' => $emptyDate));
+				}
+			}
+		
 		}
 		return $return;
 	}

@@ -27,6 +27,19 @@ class Webpage extends WebpagesAppModel {
  * @var string 
  */
 	public $displayField = 'name';
+        
+ /**
+  * Acts as
+  * 
+  * @var array
+  */
+    public $actsAs = array(
+        'Tree', 
+        'AclExtra', 
+        'Sluggable' => array(
+            'priority' => 1,
+            )
+        );
 	
 /**
  * Validate
@@ -37,8 +50,12 @@ class Webpage extends WebpagesAppModel {
 		'name' => array(
 			'notempty' => array(
 				'rule' => 'notempty',
-				'message' => 'Name field is required.',
-				)
+				'message' => 'Page name is required.',
+				),
+			'uniqueRule' => array(
+			   'rule' =>'isUnique',
+			   'message' => 'Page name must be unique.'
+                )
 			)
 		);
 
@@ -50,24 +67,9 @@ class Webpage extends WebpagesAppModel {
 	public $types = array(
 		'template' => 'Template',
 		'element' => 'Element',
+		'sub' => 'Sub',
 		'content' => 'Content'
 		);
-
-/**
- * Has one
- * 
- * @var array 
- */
- 	public $hasOne = array(
-		'Alias' => array(
-			'className' => 'Alias',
-			'foreignKey' => 'value',
-			'dependent' => true,
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		    ),
-	    );
 	
 /**
  * Has Many
@@ -121,12 +123,11 @@ class Webpage extends WebpagesAppModel {
  * Constructor
  */
 	public function __construct($id = false, $table = null, $ds = null) {
-        $this->actsAs[] = 'Tree';
         
-		if (in_array('Search', CakePlugin::loaded())) { 
+		if (CakePlugin::loaded('Search')) { 
 			$this->actsAs[] = 'Search.Searchable';
 		}
-		if (in_array('Drafts', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Drafts')) {
 			$this->actsAs['Drafts.Draftable'] = array('conditions' => array('type' => 'content'));
 		}
 				
@@ -141,9 +142,8 @@ class Webpage extends WebpagesAppModel {
  * @access public
  */
 	public function beforeSave($options) {
-		$this->data = $this->cleanInputData($this->data);
-		$this->_saveTemplateFiles();		
-		return true;
+		$this->_saveTemplateFiles(); // does not save to the database, so doesn't come back to this beforeSave()
+		return parent::beforeSave($options);
 	}
 
 /**
@@ -158,6 +158,7 @@ class Webpage extends WebpagesAppModel {
             // template settings are special
             $this->_saveTemplateSettings($this->id, $this->data);
         }
+		return parent::afterSave($created);
 	}
 
 /**
@@ -165,7 +166,9 @@ class Webpage extends WebpagesAppModel {
  * 
  */
  	public function afterFind($results, $primary) {
-		return $this->_templateContentResults($results);
+		$results = $this->_templateContentResults($results);
+		$results = parent::afterFind($results, $primary);
+		return $results;
 	}
 
 	
@@ -175,45 +178,24 @@ class Webpage extends WebpagesAppModel {
 	public function afterDelete() {
 		// delete template settings
 		$this->_saveTemplateSettings($this->id, null, true);
+		return parent::afterDelete();
 	}
 
-	
 /**
- * Delete this if commenting it out doesn't cause a problem 10/21/2012 RK
-    public function orConditions($data = array()) {
-        $filter = $data['filter'];
-		debug($filter);
-        $cond = array(
-            'OR' => array(
-                $this->alias . '.name LIKE' => '%' . $filter . '%',
-                $this->alias . '.content LIKE' => '%' . $filter . '%',
-				$this->alias . '.type' => $filter,
-            ));
-        return $cond;
+ * Save All
+ * 
+ * @param array $data
+ * @param array $options
+ * @return array
+ */
+    public function saveAll($data = null, $options = array()) {
+        $data = $this->cleanInputData($data); // this has to be here (don't try putting it in beforeValidate() and beforeSave() again)
+        if (parent::saveAll($data, $options)) {
+            return true;
+        } else {
+            throw new Exception(ZuhaInflector::invalidate($this->invalidFields()));
+        }
     }
- */
-	
-/**
- * Add function
- *
- * @param array
- * @return bool	
- */
-	public function add($data = array()) {
-		$data = $this->cleanInputData($data);
-        
-		if ($this->saveAll($data)) {
-			return true;
-		} else {
-			throw new Exception(ZuhaInflector::invalidate($this->invalidFields()));
-		}
-		//Revisit this because I could not find where the function is, and it could be made better 
-		//with having it possible to restrict user roles or available to only certain user roles
-		// if permissions are set, restrict them
-		//if (!empty($this->request->data['ArosAco']['aro_id'])) {
-		//	$this->__restrictGroupPermissions($acoParent, $this->Webpage->id, $this->request->data['ArosAco']['aro_id'], true);
-		//}
-	}
     
     
 /**
@@ -222,8 +204,14 @@ class Webpage extends WebpagesAppModel {
  * @param int			The id of the page we're making settings for
  * @param array			An array of data to get the template, and template settings from
  */
-	private function _saveTemplateSettings($pageId, $data = null, $delete = false) {
+	private function _saveTemplateSettings($pageId, $data = null, $delete = false) {		
 		if(!empty($data['Webpage']['is_default']) || !empty($data['Webpage']['template_urls'])) {
+			// resave the template with the correct compression
+			if (!empty($data['Webpage']['template_urls'])){
+            	$data = $this->_templateUrls($data);
+				$this->save(array('id' => $this->id, 'template_urls' => $data['Webpage']['template_urls']), array('validate' => false, 'callbacks' => false, 'fieldlist' => array('id', 'template_urls')));
+			}
+			// now move on to saving the actual settings
 			$settings = array(
 				'templateId' => $pageId,
 				'isDefault' => $data['Webpage']['is_default'],
@@ -248,14 +236,37 @@ class Webpage extends WebpagesAppModel {
                     $data['Setting']['value'] .= 'template['.$key.'] = "'.$value.'"'.PHP_EOL;
                 }
             }
-
             $this->Setting = ClassRegistry::init('Setting');
             if ($this->Setting->add($data)) {
-                return true;
+            	return true;
             } else {
                 return false;
             }
 		}
+	}
+
+/**
+ * Template Urls
+ * Returns an compressed version of the template urls field
+ * 
+ * @params array
+ * @return array
+ */
+	protected function _templateUrls($data = null) {
+		if (!empty($data['Webpage']['template_urls'])) {
+			// cleaning the string for common user entry differences
+			$urls = str_replace(PHP_EOL, ',', $data['Webpage']['template_urls']);
+			$urls = str_replace(' ', '', $urls);
+			$urls = explode(',', $urls);
+			foreach ($urls as $url) {
+				$url = str_replace('/*', '*', $url);
+				$url = str_replace(' ', '', $url);
+				$url = str_replace(',/', ',', $url);
+				$out[] = strpos($url, '/') == 0 ? substr($url, 1) : $url;
+			} // end url loop
+			$data['Webpage']['template_urls'] = base64_encode(gzcompress(serialize($out)));
+		}
+		return $data;		
 	}
 		
 /**
@@ -269,27 +280,25 @@ class Webpage extends WebpagesAppModel {
  * @param object
  * @return string
  */
-	public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
-	    $requestUrl = $request->url;
-	    if(isset($request->params['alias'])) {
+    public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
+        $requestUrl = $request->url;
+        if(isset($request->params['alias'])) {
 			$aliasName = $request->params['alias'];
-	    } else {
+        } else {
 			$aliasName = '';
-	    }
-
-	    if(isset($webpage['Alias'])) {
+        }
+        if(isset($webpage['Alias'])) {
 			if(!empty($webpage['Alias']['name']) && empty($aliasName)) {
 			    $aliasName = $webpage['Alias']['name'];
 			}
-	    }
-	    
-	    $matches = array();
-	    $parents[] = $webpage['Webpage']['id'];
-	    preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
-	    for ($i = 0; $i < sizeof($matches[2]); $i++) {
+        }
+        $matches = array();
+        $parents[] = $webpage['Webpage']['id'];
+        preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage["Webpage"]["content"], $matches);
+        for ($i = 0; $i < sizeof($matches[2]); $i++) {
 			if (in_array($matches[2][$i], $parents)) {
-		   		$webpage["Webpage"]["content"] = str_replace($matches[0][$i], "", $webpage['Webpage']['content']);
-		    	continue;
+                $webpage["Webpage"]["content"] = str_replace($matches[0][$i], "", $webpage['Webpage']['content']);
+                continue;
 			}
 			switch ($action) {
 				case 'site_edit':
@@ -298,22 +307,18 @@ class Webpage extends WebpagesAppModel {
 				default:
 				$include_container = array('start' => '<div id="edit_webpage_include' . trim($matches[2][$i]) . '" pageid="' . trim($matches[2][$i]) . '" class="global_edit_area">', 'end' => '</div>');
 			}
-
 		// remove the div.global_edit_area's if this user is not userRoleId = 1
 		if ($userRoleId !== '1') {
 		    $include_container = array('start' => '', 'end' => '');
 		}
-
 		$webpage2 = $this->find("first", array(
 		    "conditions" => array("Webpage.id" => trim($matches[2][$i])),
 		    'contain' => array('Child'),
 		    ));
-
 		/** @todo Find out WTF this was for **/
 		if (empty($webpage2) || !is_array($webpage2)) {
 		    continue;
 		}
-
 		if(!empty($webpage2['Child'])) {
 		    foreach($webpage2['Child'] as $child) {
 				$urls = unserialize(gzuncompress(base64_decode($child['template_urls'])));
@@ -323,12 +328,10 @@ class Webpage extends WebpagesAppModel {
 						$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
 						$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
 						$urlCompare = strpos($requestUrl, '/') === 0 ? substr($requestUrl, 1) : $requestUrl;
-		
 						if (preg_match($urlRegEx, $urlCompare)) {
 							$webpage2['Webpage'] = $child;
 							break;
 						}
-	
 						if(!empty($aliasName)) {
 							if($aliasName[strlen($aliasName)-1] !== '/') {
 								$aliasName .= '/';
@@ -347,15 +350,14 @@ class Webpage extends WebpagesAppModel {
 		}
 			
 		$this->parseIncludedPages($webpage2, $parents, $action, $userRoleId, $request);
-		
 			if ($webpage['Webpage']['type'] == 'template') {
 				$webpage["Webpage"]["content"] = str_replace($matches[0][$i], $include_container['start'] . $webpage2["Webpage"]["content"] . $include_container['end'], $webpage["Webpage"]["content"]);
 			} else {
 				$webpage["Webpage"]["content"] = str_replace($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
 			}
-	    }
+		}
 	}
-	
+    
 /**
  * Types function
  * 
@@ -374,37 +376,24 @@ class Webpage extends WebpagesAppModel {
  * @todo Clean out alias data for templates and elements.
  */
 	public function cleanInputData($data) {
+
 		if (!empty($data['Webpage']['user_roles']) && is_array($data['Webpage']['user_roles'])) {
-			# serialize user roles
+			// serialize user roles
 			$data['Webpage']['user_roles'] = serialize($data['Webpage']['user_roles']);
 		}
 		
-		if (!empty($data['Webpage']['template_urls'])) {
-			# cleaning the string for common user entry differences
-			$urls = str_replace(PHP_EOL, ',', $data['Webpage']['template_urls']);
-			$urls = str_replace(' ', '', $urls);
-			$urls = explode(',', $urls);
-			foreach ($urls as $url) {
-				$url = str_replace('/*', '*', $url);
-				$url = str_replace(' ', '', $url);
-				$url = str_replace(',/', ',', $url);
-				$out[] = strpos($url, '/') == 0 ? substr($url, 1) : $url;
-			} // end url loop
-			$data['Webpage']['template_urls'] = base64_encode(gzcompress(serialize($urls)));
-		}		
-		
-		if (empty($data['Alias']['name'])) {
-			// remove the alias if the name is blank
-			unset($data['Alias']);
-		}
-		
-		if ($data['Webpage']['type'] == 'template') {
+		if (!empty($data['Webpage']['type']) && $data['Webpage']['type'] == 'template') {
 			// correct the fiLEName to filename.ctp for templates
 			$data['Webpage']['name'] = strtolower(trim(preg_replace('/[^a-zA-Z0-9.]+/', '-', $data['Webpage']['name']), '-'));
 			if (!strpos($data['Webpage']['name'], '.ctp', strlen($data['Webpage']['name']) - 4)) {
 				$data['Webpage']['name'] = $data['Webpage']['name'] . '.ctp';
 			}
 			
+		}
+		if (empty($data['RecordLevelAccess']['UserRole'])) {
+			unset($data['RecordLevelAccess']);
+		} else {
+			$data['Webpage']['user_roles'] = serialize($data['RecordLevelAccess']['UserRole']);
 		}
 		
 		return $data;

@@ -26,35 +26,43 @@ App::uses('Model', 'Model');
 class AppModel extends Model {
 
 /**
- * Acts As
- *
- * @var array
- */
-	public $actsAs = array('Containable');
-
-/**
  * Recursive
  *
  * @var int
  */
   	public $recursive = -1;
 
+/**
+ * When finding with the Meta model, the conditions are removed beforeFind, and applied afterFind.
+ * They are stored in this varialbe during that window.
+ * 
+ * @var boolean|array 
+ */
+	public $metaConditions = array();
+	
+/**
+ * Constructor
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		$this->actsAs[] = 'Containable'; // moved here because it was being triggered too late	
+		parent::__construct($id, $table, $ds);
+	}
 
 /**
  * Manipulate data before it is saved.
  *
  * @todo    Move this record level access stuff to a behavior
  */
-	public function beforeSave($model) {
-	    # Start Record Level Access Save #
+	public function beforeSave($options) {
+	    // Start Record Level Access Save
 	    // If the model needs Record Level Access add an Aco
 	    if (!empty($this->data['RecordLevelAccess']['UserRole'])) {
-	    	# There may be a potential problem with this.
-			# It saves an ArosAco record for every record being created.
-	      	# For example, when creating a webpage, it also creates an Aco for the Alias
-	      	# Left it in as is, because we may want this.  (ie. when a contact is record level,
-	      	# we probably want the user to have access to the Contact and Contact Person
-	      	# if a project issue is created, we probably want the user to have access to the project too.
+	    	// There may be a potential problem with this.
+			// It saves an ArosAco record for every record being created.
+	      	// For example, when creating a webpage, it also creates an Aco for the Alias
+	      	// Left it in as is, because we may want this.  (ie. when a contact is record level,
+	      	// we probably want the user to have access to the Contact and Contact Person
+	      	// if a project issue is created, we probably want the user to have access to the project too.
       		$this->Behaviors->attach('Acl', array('type' => 'controlled'));
       		$this->Behaviors->attach('AclExtra', $this->data);
     	} else if (defined('__APP_RECORD_LEVEL_ACCESS_ENTITIES')){
@@ -64,7 +72,7 @@ class AppModel extends Model {
       		}
     	}
 
-    	# Start Auto Creator & Modifier Id Saving #
+    	// Start Auto Creator & Modifier Id Saving #
     	$exists = $this->exists();
     	$user = class_exists('CakeSession') ? CakeSession::read('Auth.User') : null;
     	if ( !$exists && $this->hasField('creator_id') && empty($this->data[$this->alias]['creator_id']) ) {
@@ -73,19 +81,24 @@ class AppModel extends Model {
     	if ( $this->hasField('modifier_id') && empty($this->data[$this->alias]['modifier_id']) ) {
       		$this->data[$this->alias]['modifier_id'] = $user['id'];
     	}
-    	# End Auto Creator & Modifier Id Saving #
-    	# you have to return true to make the save continue.
-    	return true;
+    	// End Auto Creator & Modifier Id Saving 
+
+    	// you have to return true to make the save continue.
+    	return parent::beforeSave($options);
   	}
 
 
 /**
  * Condition Check, checks to see if any conditions from the conditions table were met.
- */
+ * 
+ * This has been removed, because it should be in a behavior.  We won't use it until it has
+ * been moved.  (Not every model should be "Conditionable" is the point.)
+ * Same for afterDelete() 2/23/2012 RK
+ 
 	public function afterSave($created) {
-	    # Start Condition Check #
+	    // Start Condition Check
     	$this->Condition = ClassRegistry::init('Condition');
-	    #get the id that was just inserted so you can call back on it.
+	    //get the id that was just inserted so you can call back on it.
 	    $this->data[$this->name]['id'] = $this->id;
 
 	    if ($created === true) {
@@ -94,21 +107,59 @@ class AppModel extends Model {
 	    	$this->Condition->checkAndFire('is_update', array('model' => $this->name), $this->data);
 			#$this->conditionCheck('is_read'); // this needs to be put into the beforeFilter or beforeRender (beforeRender, would allow error pages to work too) of the
 	    }
-    	# End Condition Check #
+    	// End Condition Check
+		
+		parent::afterSave($created);
 	}
+ */
 
 
 /**
  * Condition Check, checks to see if any conditions from the conditions table were met.
- */
+ * 
+ * This has been removed, because it should be in a behavior.  We won't use it until it has
+ * been moved.  (Not every model should be "Conditionable" is the point.)
+ * Same for afterSave() 2/23/2012 RK
 	public function afterDelete() {
-    	# Start Condition Check #
+    	// Start Condition Check #
 	    App::Import('Model', 'Condition');
 	    $this->Condition = new Condition;
-	    #get the id that was just inserted so you can call back on it.
+	    //get the id that was just inserted so you can call back on it.
 	    $this->data[$this->name]['id'] = $this->id;
 	    $this->Condition->checkAndFire('is_delete', array('model' => $this->name), $this->data);
-	    # End Condition Check #
+	    // End Condition Check #
+		
+		parent::afterDelete();
+	}
+ */
+	
+/**
+ * 
+ * @param string $type
+ * @param array $query
+ */
+	public function find($type = 'first', $query = array()) {
+		$type = $this->_metaType($type, $query);
+		return parent::find($type, $query);
+	}
+
+/**
+ * Meta Type
+ * Unfortunately, we cannot get the find() type from a behavior.
+ * So we have to change the type here if it is a type of first.
+ * That is because for the MetableBehavior to work we need more 
+ * results (not less) in order to filter further as needed.
+ * 
+ * @param string $type
+ * @return type
+ */
+	protected function _metaType($type, $query) {
+		$this->metaType = $type; // we'll need this to reformat an all into a first data array format
+		//$continue = isset($query['fields']) && strpos($query['fields'], '(') ? false : true; // don't do this if there is a function in the fields
+		if((!isset($query['callbacks']) || (isset($query['callbacks']) && $query['callbacks'] !== false)) && is_a($this->Behaviors->Metable, 'MetableBehavior')) {
+			$type = $type == 'first' ? 'all' : $type;
+		}
+		return $type;
 	}
 
 
@@ -117,7 +168,7 @@ class AppModel extends Model {
  * With this function our total_count now appears with the rest of the fields in the resulting data array.
  * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
  */
-	public function afterFind($results, $primary = false) {
+	public function afterFind($results, $primary = false) {	
     	if($primary == true) {
         	if(Set::check($results, '0.0')) {
             	$fieldName = key($results[0][0]);
@@ -127,7 +178,8 @@ class AppModel extends Model {
 	             }
 			}
 		}
-		return $results;
+		
+		return parent::afterFind($results, $primary);
 	}
 
 
@@ -199,7 +251,7 @@ class AppModel extends Model {
 	    }
 
 	    if (!empty($userIds)) {
-	      #
+
 	      return array('User' => $userIds);
 	    } else {
 	      return false;

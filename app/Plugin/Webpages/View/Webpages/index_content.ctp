@@ -45,14 +45,14 @@ echo $this->Element('scaffolds/index', array(
 	'actions' => array(
 		$this->Html->link('View', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'view', '{id}')),
 		$this->Html->link('Edit', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'edit', '{id}')),
-		$this->Html->link('Add Sub Page', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'sub', '{id}')),
+		$this->Html->link('Convert to Section', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'sub', '{id}')),
 		)
     ));
 
 
 $items = '';
 foreach ($sections as $section) {
-    $items[] = $this->Html->link($section['Parent']['Alias']['name'], array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'sub', 'filter' => 'parent_id:' . $section['Parent']['id']));
+    $items[] = $this->Html->link($section['Parent']['name'], array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'sub', 'filter' => 'parent_id:' . $section['Parent']['id']));
 }	
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(

@@ -48,7 +48,7 @@ class MediableBehavior extends ModelBehavior {
     	$this->settings = array_merge($this->defaults, $config);
 		$this->modelName = !empty($this->settings['modelAlias']) ? $this->settings['modelAlias'] : $Model->alias;
 		$this->foreignKey =  !empty($this->settings['foreignKeyName']) ? $this->settings['foreignKeyName'] : $Model->primaryKey;
-        $this->Gallery = new Gallery();		
+        $this->Gallery = ClassRegistry::init('Galleries.Gallery');		
     	return true;
 	}
         

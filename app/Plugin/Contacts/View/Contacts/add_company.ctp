@@ -8,8 +8,8 @@
   </fieldset>
   
   <fieldset>
-    <legend class="toggleClick">
-    <?php echo __('Label this contact, for sorting?');?>
+    <legend>
+    <?php echo __('Helpful identification labels');?>
     </legend>
     <?php
 	 echo $this->Form->input('Contact.contact_type', array('default' => 'lead', 'label' => $this->Html->link(__('Type'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_TYPE'), array('class' => 'dialog', 'title' => 'Edit Type List'))));
@@ -18,7 +18,9 @@
 	 echo $this->Form->input('Contact.contact_industry',array('empty'=>true, 'label' => $this->Html->link(__('Industry'), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'type:CONTACT_INDUSTRY'), array('class' => 'dialog', 'title' => 'Edit Industry List')))); ?>
   </fieldset>
   
-  <?php if (in_array('Estimates', CakePlugin::loaded())) { ?>
+  <?php /* These aren't being used at all, removed 11/26/2012
+   * 
+   * if (in_array('Estimates', CakePlugin::loaded())) { ?>
   <fieldset>
     <legend class="toggleClick">
     <?php echo __('Create an opportunity?');?>
@@ -55,7 +57,7 @@
 	 echo $this->Form->input('Task.0.name', array('label' => 'Subject')); 
 	 echo $this->Form->input('Task.0.description', array('type' => 'richtext')); ?>
   </fieldset>
-  <?php } ?>
+  <?php } */ ?>
   
   
   <?php echo $this->Form->end('Submit');?>
@@ -64,6 +66,12 @@
 <?php
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Contacts',
+		'items' => array(
+			$this->Html->link(__('Dashboard'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'dashboard')),
+			),
+		),
 	array(
 		'heading' => 'Contacts',
 		'items' => array(

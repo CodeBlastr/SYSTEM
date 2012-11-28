@@ -6,8 +6,7 @@ if (!empty($menus)) {
 		if (!empty($menugroup['items'])) {
 			$menu .= '<div class="btn-group">';
 			foreach ($menugroup['items'] as $item) {
-				$menu .= str_replace('<a', '<a class="btn"', $item);
-				//$menu .= '<button class="btn">' . $item . '</button>';
+				$menu .= $item;
 			}
 			$menu .= '</div>';
 		}

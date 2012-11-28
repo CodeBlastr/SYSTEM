@@ -87,13 +87,19 @@ class WebpagesController extends WebpagesAppController {
  * @throws NotFoundException
  */
     protected function _indexContent() {
+        if ($this->Webpage->find('first', array('conditions' => array('Webpage.parent_id' => 0, 'Webpage.lft' => 0, 'Webpage.rght' => 0)))) {
+            // takes care of a bad tree structure (Temporary 11/19/2012 RK)
+            $this->Webpage->recover('parent');
+        }
+        
 		$this->paginate['conditions']['Webpage.type'] = 'content';
-		$this->paginate['conditions']['OR']['Webpage.parent_id'] = 0;
-		$this->paginate['conditions']['OR']['Webpage.parent_id'] = null;
+		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
+		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
+		$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
 		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
 		$this->set('webpages', $this->paginate());
         
-		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'contain' => array('Parent' => array('Alias')))));
+		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Pages');
@@ -110,12 +116,13 @@ class WebpagesController extends WebpagesAppController {
  */
     protected function _indexSub() {
 		$this->paginate['conditions']['Webpage.type'] = 'content';
-		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
-		$this->set('webpages', $this->paginate());
-        
+		$this->paginate['fields'] = array('Webpage.id', 'Webpage.name', 'Webpage.content', 'Webpage.modified', 'Parent.id', 'Parent.name');
+		$this->paginate['contain'] = array('Parent');
+        $webpages = $this->paginate();
+		$this->set(compact('webpages'));
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
-		$this->set('page_title_for_layout', 'Sub Pages');
+		$this->set('page_title_for_layout', __('%s <small>Section</small>', $webpages[0]['Parent']['name']));
 		$this->layout = 'default';	
 		$this->render('index_sub');
     }
@@ -134,7 +141,7 @@ class WebpagesController extends WebpagesAppController {
         
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
-		$this->set('page_title_for_layout', 'Sub Pages');
+		$this->set('page_title_for_layout', 'Widgets / Elements');
 		$this->layout = 'default';	
 		$this->render('index_element');
     }
@@ -175,9 +182,10 @@ class WebpagesController extends WebpagesAppController {
 		
 		$update = $this->Webpage->syncFiles('template'); // template 
 		$webpage = $this->Webpage->find("first", array(
-		    "conditions" => array( "Webpage.id" => $id),
+		    "conditions" => array(
+                'Webpage.id' => $id
+                ),
 		    'contain' => array(
-		    	'Alias',
 				'Child'
 				)
 		    ));
@@ -213,7 +221,7 @@ class WebpagesController extends WebpagesAppController {
 	public function add($type = 'content', $parentId = NULL) {
 		if (!empty($this->request->data)) {
 			try {
-				$this->Webpage->add($this->request->data);
+				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'));
 				$this->redirect(array('action' => 'view', $this->Webpage->id));
 			} catch(Exception $e) {
@@ -225,48 +233,43 @@ class WebpagesController extends WebpagesAppController {
 			throw new NotFoundException(__('Invalid content type'));
 		}
         
-		// reuquired to have per page permissions
-		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? str_replace('+', '/', $this->request->params['named']['alias']) : null;
-		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
-		$this->set('page_title_for_layout', __('%s Builder', Inflector::humanize($this->Webpage->types[$type])));
-		$this->layout = 'default';	
-		$this->render('add_' . $type);
+        $add = '_add' . ucfirst($type);
+        $this->$add($parentId);
 	}
     
-/**
- * Sub method
- * Create a sub page of another page
- * 
- * @param type $type
- * @param type $parentId
- * @throws NotFoundException
- */
-    public function sub($parentId) {
-		$this->Webpage->id = $parentId;
-		if (!$this->Webpage->exists()) {
-			throw new NotFoundException(__('Parent page not found'));
-		}
-        
-		if (!empty($this->request->data)) {
-			try {
-				$this->Webpage->add($this->request->data);
-				$this->Session->setFlash(__('Saved'));
-				$this->redirect(array('action' => 'view', $this->Webpage->id));
-			} catch(Exception $e) {
-				$this->Session->setFlash($e->getMessage());
-			}
-		}
-        
-        
-		$this->Webpage->contain('Alias');
-		$parent = $this->Webpage->read(null, $parentId);        
-		$this->request->data['Alias']['name'] = !empty($parent['Alias']['name']) ? $parent['Alias']['name'] : null;
+    protected function _addContent() {
+		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? str_replace('+', '/', $this->request->params['named']['alias']) : null;
+		// reuquired to have per page permissions
+		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('page_title_for_layout', __('Page Builder'));
+		$this->layout = 'default';	
+		$this->render('add_content');        
+    }
+    
+    protected function _addSub($parentId) {
+		$parent = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $parentId), 'contain' => array('Child')));
+		$this->request->data['Alias']['name'] = !empty($parent['Alias']['name']) ? $parent['Alias']['name'] . '/' : null;
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('parent', $parent);
 		$this->set('page_title_for_layout', __('<small>Create a subpage of</small> %s', $parent['Webpage']['name']));
 		$this->layout = 'default';	
-		$this->render('add_sub');
-	}
+		$this->render('add_sub');      
+    }
+    
+    protected function _addElement() {
+		// reuquired to have per page permissions
+		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('page_title_for_layout', __('Widget/Element Builder'));
+		$this->layout = 'default';	
+		$this->render('add_element');        
+    }
+    
+    protected function _addTemplate() {
+        $this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('page_title_for_layout', __('Template Builder'));
+		$this->layout = 'default';	
+		$this->render('add_template');        
+    }
 	
 /**
  * Edit method
@@ -282,7 +285,7 @@ class WebpagesController extends WebpagesAppController {
 
 		if (!empty($this->request->data)) {
 			try {
-				$this->Webpage->add($this->request->data);
+				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'));
 				$this->redirect(array('action' => 'view', $this->Webpage->id));
 			} catch(Exception $e) {
@@ -291,15 +294,14 @@ class WebpagesController extends WebpagesAppController {
 		}
 		
 		$templates = $this->Webpage->syncFiles('template');
-		$this->Webpage->contain('Alias');
-		$this->request->data = $this->Webpage->read(null, $id);
+		$this->request->data = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id), 'contain' => array('Child')));
 		$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
 		
 		// required to have per page permissions
 		$userRoles = $this->Webpage->Creator->UserRole->find('list');
 		$types = $this->Webpage->types();
-		
 		$this->set(compact('userRoles', 'types'));
+
 		if ($this->request->data['Webpage']['type'] == 'template') {
 			if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
 				$cssFiles = unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES);
@@ -318,9 +320,9 @@ class WebpagesController extends WebpagesAppController {
 		// parse this constant for output back into the form field for editing.
 		if (defined('__APP_TEMPLATES')) {
 			$templates = unserialize(__APP_TEMPLATES);
-			$template = !empty($templates['template'][$id]) ? unserialize(gzuncompress(base64_decode($templates['template'][$id]))): null;			
+			$template = !empty($templates['template'][$id]) ? unserialize(gzuncompress(base64_decode($templates['template'][$id]))): null;
         }
-        
+		
 		$templateUrls = !empty($template['urls']) && $template['urls'] != '""' ? implode(PHP_EOL, unserialize(gzuncompress(base64_decode($template['urls'])))) : null;
 		$this->set(compact('templateUrls'));
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
