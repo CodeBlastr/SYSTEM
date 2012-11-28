@@ -61,6 +61,7 @@ class Condition extends AppModel {
 		if ($conditions = $this->checkConditions($type, $lookups)) {
 			# if those are matched traverse this data with the sub condtion to see if its a 100% match
 			$i = 0;
+			debug($conditions);
 			foreach ($conditions as $condition) {
 				if ($this->_checkSubConditions($condition, $data)) {
 					$triggers[$i]['id'] = $condition['Condition']['id'];
@@ -117,15 +118,16 @@ Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
  * @return {bool}		Returns true if all sub conditions were met or don't exist, and false if they were not met.
  */
 	protected function _checkSubConditions($condition, $data) {
+		$return = false;
 		if (!empty($condition['Condition']['condition'])) {
-			# check the sub condition code goes here.
+			// check the sub condition code goes here.
 			$conditionsArray = explode(',',$condition['Condition']['condition']);
 			foreach ($conditionsArray as $conditionsArr) {
 				$conditions[] = explode('.',$conditionsArr);
 			}
 
 			foreach ($conditions as $condition) {
-				# check for the operator
+				// check for the operator
 				if ($condition[3] == 'null' && $condition[2] == '=') {
 					if (empty($data[$condition[0]][$condition[1]])) {
 						$return = true;
@@ -187,9 +189,7 @@ Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
 					break;
 				}
 			}
-		} else {
-			$return = true;
-		}
+		} // THIS WAS RETURNING TRUE BY DEFAULT, CHANGED TO FALSE 11/21/2012 RK
 		return $return;
 	}
 

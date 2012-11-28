@@ -31,26 +31,14 @@ class AclExtraBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function setup(&$model, $data = array()) {
-		if (!empty($data['RecordLevelAccess']['User'])) {
-			$aroModel = 'User';
-			$aroUsers = $data['RecordLevelAccess']['User'];
-		} else if (!empty($data['RecordLevelAccess']['UserRole'])) {
-			$aroModel = 'UserRole';
-			$aroUsers = $data['RecordLevelAccess']['UserRole'];
-		} else {
-			return false;
-		}
-		$model->Aro = ClassRegistry::init('Aro');
-		$model->Aco = ClassRegistry::init('Aco');
-		$model->ArosAco = ClassRegistry::init('ArosAco');
+    public function setup($Model, $config = array()) {
+		$this->Aro = ClassRegistry::init('Aro');
+		$this->Aco = ClassRegistry::init('Aco');
+		$this->ArosAco = ClassRegistry::init('ArosAco');
 		
-		$this->model = $aroModel;
-		$this->users = $aroUsers;
-		
-		if (!method_exists($model, 'parentNode')) {
-			trigger_error(sprintf(__('Callback parentNode() not defined in %s', true), $model->alias), E_USER_WARNING);
-		}
+//		if (!method_exists($model, 'parentNode')) {
+//			trigger_error(sprintf(__('Callback parentNode() not defined in %s', true), $model->alias), E_USER_WARNING);
+//		}
 	}
 
 /**
@@ -60,30 +48,79 @@ class AclExtraBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function afterSave(&$model, $created) {
-		$acoId = $model->Aco->id;
-		foreach ($this->users as $user) {
-			$aro = $model->Aro->node(array('model' => $this->model, 'foreign_key' => $user));
+	public function afterSave($Model, $created) {
+		parent::afterSave($Model, $created);
+
+		if (!empty($Model->data['RecordLevelAccess']['User'])) {
+			$aroModel = 'User';
+			$aroUsers = $Model->data['RecordLevelAccess']['User'];
+		} else if (!empty($Model->data['RecordLevelAccess']['UserRole'])) {
+			$aroModel = 'UserRole';
+			$aroUsers = $Model->data['RecordLevelAccess']['UserRole'];
+		} else {
+			return false;
+		}
+		
+		// create the Aco record from Model data
+		if (!$created) {
+			try {
+				$node = $this->Aco->node($Model);
+				$aco['Aco']['id'] = isset($node[0]['Aco']['id']) ? $node[0]['Aco']['id'] : null;
+			} catch (Exception $e) {
+				// node does not exist.
+				// set Aco.id to null.
+				$aco['Aco']['id'] = null;
+			}
+
+		}
+		$aco['Aco']['parent_id'] =  null;
+		$aco['Aco']['model'] = $Model->name;
+		$aco['Aco']['foreign_key'] = $Model->id;
+
+		// save Aco record
+		$this->Aco->create();
+		$this->Aco->save($aco);
+
+		// create an ArosAco record foreach desired User or UserRole
+		foreach ($aroUsers as $user) {
+			$aro = $this->Aro->node(array('model' => $aroModel, 'foreign_key' => $user));
 			$data = array(
 				'aro_id' => $aro[0]['Aro']['id'],
-				'aco_id' => $model->Aco->id,
+				'aco_id' => $this->Aco->id,
 				'_create' => 1,
 				'_read' => 1,
 				'_update' => 1,
 				'_delete' => 1,
 			);
-			$model->ArosAco->create();
-			if($model->ArosAco->save($data));
-		}			
-			
-			# not sure if this is needed or working for saves of the non-creation type
-			/*if (!$created) {
-				$node = $this->node($model);
-				$data['id'] = isset($node[0][$type]['id']) ? $node[0][$type]['id'] : null;
-			}*/
+			try {
+				$this->ArosAco->create();
+				$this->ArosAco->save($data);
+			} catch (Exception $e) {
+				// do something here, but saves don't throw Exceptions?
+				return false;
+			}
+		}
+
 	}
 
+	
 /**
+ * 
+ * @param \Model $model
+ * @param type $results
+ * @param type $primary
+ */
+	public function afterFind(Model $Model, $results, $primary) {
+		parent::afterFind($Model, $results, $primary);
+		
+		if(!empty($results[0][$Model->name]['user_roles'])) {
+			$results[0]['RecordLevelAccess']['UserRole'] = unserialize($results[0][$Model->name]['user_roles']);
+		}
+
+		return $results;
+	}
+
+	/**
  * NOT USED YET
  * Destroys the ARO/ACO node bound to the deleted record
  *

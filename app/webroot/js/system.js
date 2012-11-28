@@ -27,11 +27,15 @@ $(function() {
 	$(".toggleClick, .toggleHover, .showClick").each( function(index) {
 		var currentName = $(this).attr("data-target");
 		$(currentName).hide();
+        $(this).removeClass('toggled');
+        $(this).addClass('toggle');
 	});
 	
 	$(".toggleClick").click(function (e) {
 		var currentName = $(this).attr('data-target');
 		$(currentName).toggle();
+        $(this).removeClass('toggle');
+        $(this).addClass('toggled');
 		return false;
 	});
 	

@@ -26,7 +26,7 @@ $showContext = !empty($showContext) ? true : false; ?>
                     <li><?php echo $this->Html->link('Contacts', '/admin/contacts/contacts/dashboard', array('title' => 'Leads, Opportunities')); ?></li>
     				<?php if (in_array('Transactions', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Ecommerce', array('plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('title' => 'Catalogs, Orders', 'id' => 'navProducts')); ?></li><?php } ?>
    					<?php if (in_array('Invoices', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Billing', array('plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'dashboard'), array('title' => 'Estimates, Invoices', 'id' => 'navBilling')); ?></li><?php } ?>
-    				<?php if (in_array('Projects', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Todos', '/admin/#tagProjects', array('title' => 'Projects, Tasks & Timesheets', 'onclick' => 'window.location.replace(this.href);window.location.reload(true)')); ?></li><?php } ?>
+    				<?php if (in_array('Projects', CakePlugin::loaded())) { ?><li><?php echo $this->Html->link('Projects', array('plugin' => 'projects', 'controller' => 'projects', 'action' => 'dashboard'), array('title' => 'Projects, Tasks & Timesheets', 'onclick' => 'window.location.replace(this.href);window.location.reload(true)')); ?></li><?php } ?>
     				<li><?php echo $this->Html->link('Users', array('plugin' => 'users', 'controller' => 'users', 'action' => 'dashboard'), array('title' => 'Social, Groups, Members, Messages', 'id' => 'navUsers')); ?></li>   
       			</ul>
                 

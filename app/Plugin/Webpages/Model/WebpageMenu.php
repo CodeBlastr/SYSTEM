@@ -1,9 +1,15 @@
 <?php
 class WebpageMenu extends WebpagesAppModel {
+    
 	public $name = 'WebpageMenu';
+    
 	public $displayField = 'name';
+    
 	public $actsAs = array('Tree');
+    
 	public $validate = array();
+    
+    public $order = 'lft';
 
 
 /**
@@ -33,5 +39,17 @@ class WebpageMenu extends WebpagesAppModel {
 			'superfish sf-vertical' => 'Superfish Verticial'
 			);
 	}
+    
+    public function beforeSave(array $options){
+        $this->data = $this->_cleanData($this->data);
+        return true;
+    }
+    
+    public function _cleanData($data = null) {
+        if (empty($data['WebpageMenu']['code']) && !empty($data['WebpageMenu']['name'])) {
+            $data['WebpageMenu']['code'] = ZuhaInflector::asciify($data['WebpageMenu']['name']);
+        }
+        return $data;
+    }
 
 }

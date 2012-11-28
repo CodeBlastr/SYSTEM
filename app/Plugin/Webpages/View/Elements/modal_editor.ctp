@@ -9,21 +9,31 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 		var slideDockHeight = $('#slidedock').height();
 		$('body').css('position', 'relative');
 		$('body').css('top', slideDockHeight + 'px');
+        $('body').append('<div id="modalMessage">test</div>');
    });
 	
 
 	var myStyles = new Array('tmp');
 	
 	function goEdit(id) {
+    
 	<?php 
 	// taken from ckehelper 
 	if (CakeSession::read('Auth.User') && defined('SITE_DIR')) {
 		CakeSession::write('KCFINDER.disabled', false);
 		CakeSession::write('KCFINDER.uploadURL', '/theme/default/upload/' . CakeSession::read('Auth.User.id'));
-		CakeSession::write('KCFINDER.uploadDir', '../../../../' . SITE_DIR . '/View/Themed/Default/webroot/upload/' . CakeSession::read('Auth.User.id')); ?>
+		CakeSession::write('KCFINDER.uploadDir', '../../../../' . SITE_DIR . '/View/Themed/Default/webroot/upload/' . CakeSession::read('Auth.User.id'));
+    ?>
 		if (!destroyCKE()) {
 			return false;
 		}
+        
+        if (id.indexOf('nav-') == 0) {
+            if ($('#' + id).attr('data-identifier').length > 0) {
+                window.location = "/webpages/webpage_menus/edit/" + $('#' + id).attr('data-identifier');
+            }
+        }
+
 		if ($('#' + id).length < 1) return 'О russian text!';
 		//edit_width    = $('#' + id).width();
         //edit_height   = $('#' + id).height() + 100;
@@ -58,21 +68,18 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
         editor.setData(page_data);
         // dirty hack for fix ckeditor focus
         if ($.inArray(id, myStyles)) {
-	        if (!CKEDITOR.env.ie) {$('<style type="text/css"> #cke_' + id + '{ position: fixed; z-index: 997} </style>').appendTo("head");}
-	        myStyles.push(id);
+            if (!CKEDITOR.env.ie) {$('<style type="text/css"> #cke_' + id + '{ position: fixed; z-index: 997} </style>').appendTo("head");}
+            myStyles.push(id);
         }
-
         editor.on('instanceReady', function (e) {
             $(editor.container.$).addClass('system_editor'); //Add mark for our editors
             $(editor.container.$).find('span [class=cke_toolbox]').addClass('my_cke_toolbox'); // Up toolbox
 			$("#modalEditorWrap").center();
 			$("#cke_modalEditor").attr("pageid", page_id);
         });
-
         editor.on( 'dataReady', function( e ) {
-
             $(document.body).css('padding-top', $('.cke_toolbox').height());
-	        if (CKEDITOR.env.ie) {$('#cke_' + id).css('position', 'relative'); $('#cke_' + id).css('z-index', '101');}
+            if (CKEDITOR.env.ie) {$('#cke_' + id).css('position', 'relative'); $('#cke_' + id).css('z-index', '101');}
 			$('.cke_button_save').removeClass('cke_disabled');
 			$('.cke_button_save').unbind('click'); // Fix double save
 			$('.cke_button_save').click(function () {
@@ -106,17 +113,20 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 	function editAreasOn () {
 		$('#webpage_content').append('<div class="hover_div"></div>');
 		$("div[id^='edit_webpage_include']").append('<div class="hover_div"></div>');
-		
+        $(".nav-edit").append('<div class="hover_div nav-edit-button"></div>');
+        
 		
 		$(".hover_div").addClass("hover_include");
 		$(".hover_div").parent().css({ position : "relative" });
-       
-	    $(".hover_div").css({
+        
+        $(".hover_div").css({
 			position : "absolute",
 			top : "0px",
 			left: "0px",
-			width:  "100%",
-			height: "100%"
+			//width:  "100%",
+			//height: "100%",
+            cursor: "pointer",
+            overflow: "visible"
         });
 	}
 	
@@ -183,7 +193,8 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 	                data: {pageData: editor.getData()},
 	                url: '/webpages/webpages/savePage/' + pageid,
 	                success: function (data, textStatus, XMLHttpRequest) {
-	    	            alert($.parseJSON(data).msg);
+	    	            $('#modalMessage').html($.parseJSON(data).msg);
+                        $('#modalMessage').fadeIn(200).delay(800).fadeOut(500);
 					}
 				});
 	        	editor.resetDirty();
@@ -195,7 +206,6 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 
     $(document).ready( function () {
 		$('#edit_button').click( function() {
-			console.log('test');
 			onEditMode();
 		});
 		
