@@ -9,7 +9,10 @@
 			foreach ($leads as $lead) {
 				echo '<p>' . $this->Html->link('Assign', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'edit', $lead['Contact']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($lead['Contact']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $lead['Contact']['id'])) . ' ' . date('M d, Y', strtotime($lead['Contact']['created'])) . '</p>';
 			}
-		} 
+            echo '<hr />';
+		} else {
+            echo '<p>No unassigned leads, check back soon.</p><hr />';
+        }
 		
 		if (!empty($leadActivities)) { 
         	echo '<h4>Leads over time</h4>'; ?>
@@ -57,8 +60,9 @@
 			unset($estimates['_multiplier']);
 			unset($estimates['_total']);
 			foreach ($estimates as $estimate) {
-				echo '<p>' . $this->Html->link('Close', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'edit', $estimate['Estimate']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'view', $estimate['Estimate']['id'])) . '</p>';
+				echo '<p>' . $this->Html->link('Close', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'edit', $estimate['Estimate']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $estimate['Estimate']['foreign_key'])) . '</p>';
 			}
+            echo '<hr />';
 		} 
 		
 		if (!empty($estimateActivities)) { 
@@ -152,9 +156,8 @@
     	<?php
     	$rActivities = array_reverse($activities);
     	for ($i = 0; $i <= 4; $i++) {
-    		echo '<p>' . $this->Html->link($rActivities[$i]['Activity']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $rActivities[$i]['Activity']['foreign_key'])) . '</p>';
+    		echo !empty($rActivities[$i]['Activity']['name']) ? '<p>' . $this->Html->link($rActivities[$i]['Activity']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $rActivities[$i]['Activity']['foreign_key'])) . '</p>' : null;
     	} ?> 
-		<h4>Activities over time</h4>
         
 		<script type="text/javascript">
 		google.load("visualization", "1", {packages:["corechart"]});
@@ -166,7 +169,7 @@
 			['x', 'Date'],
 			<?php 
 			foreach ($activities as $activity) { ?>
-				['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity['Activity']['COUNT(Activity.created)']; ?>],
+				['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity[0]['count']; ?>],
 			<?php } ?>
 			]);
 					
@@ -183,6 +186,7 @@
 		}
 		</script>
         
+		<h4>Activities for last 60 days</h4>
 		<div id="activities_over_time"></div>
 		<p class="pull-right"><?php echo $this->Html->link(__('All of Today\'s Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activities', 'contains' => 'created:' . date('Y-m-d'))); ?></p>
 	<?php

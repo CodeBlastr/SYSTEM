@@ -8,6 +8,7 @@ echo $this->Element('context_sort', array(
             'items' => array(
                 $this->Paginator->sort('name'),
                 $this->Paginator->sort('created'),
+                $this->Paginator->sort('creator_id'),
                 )
             )), 
         )
