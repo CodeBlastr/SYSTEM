@@ -56,7 +56,8 @@
 	           			
 	           		});
 
-					newElem.find('input, select, textarea, div, td, tr, span, a').each(function() {
+					//newElem.find('input, select, textarea, div, td, tr, span, a').each(function() {
+					newElem.find('input, select, textarea, tr, span').each(function() {
 	           			var id = $(this).attr('id');
 	           			var newId = id.replace(/\d+/, nodeCount);
 	
@@ -87,19 +88,18 @@
 		   if ((numElements > 1) || options.canDeleteLast) {
 			   if (options.isParent) {
 				   // We need to remove the parent of the element.
-				   element.closest(options.cloneElem).effect('highlight', {color:'#F3E6E6', mode:'hide'}, 2000,
-						   function() {
-							   $(this).remove();
-							   // Renumber the elements and the data.
-							   $(options.cloneElem).each(function(index) {
-								   $(this).find(options.labelDiv).html(options.labelPrefix+(index+1)+':');
-								   
-								   $(this).find('input, select, textarea, div, td, span, a').each(function() {
-					           			var name = $(this).attr('name');
-					           			var newName = name.replace(/\d+/, index);
-					
-					           			$(this).attr('name', newName);
-					           		});
+				   element.closest(options.cloneElem).hide('slow', function() {
+					   $(this).remove();
+					   // Renumber the elements and the data.
+					   $(options.cloneElem).each(function(index) {
+						   $(this).find(options.labelDiv).html(options.labelPrefix+(index+1)+':');
+						   
+						   $(this).find('input, select, textarea, div, td, span, a').each(function() {
+			           			var name = $(this).attr('name');
+			           			var newName = name.replace(/\d+/, index);
+			
+			           			$(this).attr('name', newName);
+			           		});
 						});
 					});
 			   }

@@ -45,17 +45,22 @@ echo $this->Element('scaffolds/index', array(
 	'actions' => array(
 		$this->Html->link('View', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'view', '{id}')),
 		$this->Html->link('Edit', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'edit', '{id}')),
-		$this->Html->link('Add Sub Page', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'sub', '{id}')),
 		)
     ));
 
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
+		'heading' => 'Parent',
+		'items' => array(
+            $this->Html->link(__('Edit %s Page', $webpages[0]['Parent']['name']), array('action' => 'edit', $webpages[0]['Parent']['id'])),
+            )
+		),
+	array(
 		'heading' => 'Webpages',
 		'items' => array(
-            $this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index')),
-            $this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add')),
+            $this->Html->link(__('All Pages'), array('controller' => 'webpages', 'action' => 'index')),
+            $this->Html->link(__('Add Page'), array('controller' => 'webpages', 'action' => 'add', 'sub', $webpages[0]['Parent']['id'])),
             )
 		),
 	)));

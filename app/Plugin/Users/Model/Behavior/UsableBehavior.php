@@ -15,6 +15,7 @@ class UsableBehavior extends ModelBehavior {
 	public function setup(&$Model, $settings = array()) {
 		$this->defaultRole = !empty($settings['defaultRole']) ? $settings['defaultRole'] : null;
 		$this->superAdminRoleId = defined('__USERS_SUPER_ADMIN_ROLE_ID') ? __USERS_SUPER_ADMIN_ROLE_ID : $this->superAdminRoleId;
+        return true;
 	}
 
 
@@ -44,9 +45,9 @@ class UsableBehavior extends ModelBehavior {
 		$userId = $authUser['id'];
 		
 		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/ && empty($queryData['nocheck'])) {
-			#this tells us whether the result would have returned something if UsableBehavior wasn't used
+			// this tells us whether the result would have returned something if UsableBehavior wasn't used
 			$queryData['nocheck'] = true;
-			#$originalSearchCount = $Model->find('count', $queryData);
+			// $originalSearchCount = $Model->find('count', $queryData);
 			$originalSearchCount = 0;
 			if ($originalSearchCount > 0) : $this->restrictRedirect = true; endif;
 			
@@ -69,7 +70,7 @@ class UsableBehavior extends ModelBehavior {
 			
 			$Dbo = $Model->getDataSource();
 			
-			# First find users with access
+			// First find users with access
 			$subQuery = $Dbo->buildStatement(array(
 				//'fields' => array('`User2`.`id`'),
 				'fields' => array('Used.foreign_key'),
@@ -89,7 +90,7 @@ class UsableBehavior extends ModelBehavior {
 			$subQueryExpression = $Dbo->expression($subQuery);
 			
 			
-			# First model records that aren't accessed controlled
+			// First model records that aren't accessed controlled
 			$subQuery2 = $Dbo->buildStatement(array(
 				//'fields' => array('`User2`.`id`'),
 				'fields' => array('Used.foreign_key'),

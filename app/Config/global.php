@@ -3,6 +3,64 @@
  * Core functions for zuha 
  */
 class Zuha {
+    
+/**
+ * Is UUID
+ * Checks whether a given string meets the uuid criteria (8-4-4-4-12, 36 characters).
+ * 
+ * Usage Zuha::is_uuid('some string, which is or isn't a uuid)
+ * 
+ * @param string $uuid
+ * @return bool
+ */
+    public static function is_uuid($uuid = '') {
+        return (boolean) preg_match('/^\{?[0-9a-f]{8}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{4}\-[0-9a-f]{12}\}?$/i', trim((String) $uuid));
+    }
+	
+/**
+ * Date Slice 
+ * When given two dates, returns an array of slices between the two dates
+ * 
+ * @param date $fromDate
+ * @param date $toDate
+ * @param array $options array('type' => 'days OR months', 'format' => 'Y-m-d') 
+ */
+ 	public function date_slice($fromDate = '2007-07-07', $toDate = null, $options = array()) {
+		$toDate = !empty($toDate) ? $toDate : date('Y-m-d'); 
+		$options['type'] = !empty($options['type']) ? $options['type'] : 'days';
+		$options['format'] = !empty($options['format']) ? $options['format'] : 'Y-m-d';
+		
+		if ($options['type'] == 'days') {
+			$dateMonthYearArr = array();
+			$fromDateTs = strtotime($fromDate);
+			$toDateTs = strtotime($toDate);
+			
+			for ($currentDateTs = $fromDateTs; $currentDateTs <= $toDateTs; $currentDateTs += (60 * 60 * 24)) {
+				// use date() and $currentDateTS to format the dates in between
+				$currentDateStr = date($options['format'], $currentDateTs);
+				$dateMonthYearArr[] = $currentDateStr;
+				//print $currentDateStr.Ó<br />Ó;
+			}
+			
+			return $dateMonthYearArr;
+		} else {
+			$time1 = strtotime($date1);
+			$time2 = strtotime($date2);
+			$my = date('mY', $time2);
+			
+			$months = array(date('F Y', $time1));
+			
+			while($time1 < $time2) {
+			$time1 = strtotime(date('Y-m-d', $time1).' +1 month');
+			if(date('mY', $time1) != $my && ($time1 < $time2))
+			$months[] = date('F Y', $time1);
+			}
+			
+			$months[] = date('F Y', $time2);
+			return $months;
+		}
+ 	}
+ 
 	
 /**
  * Convenience function for finding enumerations
@@ -197,6 +255,5 @@ class ZuhaSet {
 		$path = str_replace('theme'.DS.'default'.DS, '', $path); // get webroot directory
 		return $path;
 	}
-
 
 }

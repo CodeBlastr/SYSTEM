@@ -33,7 +33,6 @@ class WebpageTestCase extends CakeTestCase {
  */
 	public function tearDown() {
 		unset($this->Product);
-
 		parent::tearDown();
 	}
 
@@ -44,15 +43,14 @@ class WebpageTestCase extends CakeTestCase {
  * @todo this should not work, because validation should fail when there is no name
  */
 	public function testSave() {
-        
         $testData = array(
             'Webpage' => array(
+            	'name' => 'Lorem ipsum',
                 'type' => 'content'
                 )
             );
-        $result = $this->Webpage->add($testData);
-        $this->assertTrue(!empty($this->Webpage->id));
-        
+       $result = $this->Webpage->saveAll($testData);
+       $this->assertTrue(!empty($this->Webpage->id));
 	}
 
 /**
@@ -61,19 +59,38 @@ class WebpageTestCase extends CakeTestCase {
  * @return void
  */
 	public function testSaveWithAlias() {
-        
         $testData = array(
             'Webpage' => array(
+                'name' => 'Lorem ipsum',
                 'type' => 'content'
                 ),
             'Alias' => array(
                 'name' => 'lorem-ipsum'
                 )
             );
-        $this->Webpage->add($testData);
+        $this->Webpage->save($testData);
         $result = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $this->Webpage->id), 'contain' => array('Alias')));
         $this->assertEqual($testData['Alias']['name'], $result['Alias']['name']);
-        
+	}
+
+/**
+ * testAddWithAlias method
+ *
+ * @return void
+ */
+	public function testSaveAllWithAlias() {
+        $testData = array(
+            'Webpage' => array(
+                'name' => 'Lorem ipsum',
+                'type' => 'content'
+                ),
+            'Alias' => array(
+                'name' => 'lorem-ipsum'
+                )
+            );
+        $this->Webpage->saveAll($testData);
+        $result = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $this->Webpage->id), 'contain' => array('Alias')));
+        $this->assertEqual($testData['Alias']['name'], $result['Alias']['name']);
 	}
      
 }
