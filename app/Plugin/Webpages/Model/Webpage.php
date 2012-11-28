@@ -36,10 +36,8 @@ class Webpage extends WebpagesAppModel {
     public $actsAs = array(
         'Tree', 
         'AclExtra', 
-        'Sluggable' => array(
-            'priority' => 1,
-            )
-        );
+        'Sluggable'
+		);
 	
 /**
  * Validate

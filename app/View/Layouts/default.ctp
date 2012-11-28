@@ -29,7 +29,7 @@ echo $this->Html->css('twitter-bootstrap/bootstrap.custom');
 echo $this->Html->script('http://code.jquery.com/jquery-latest.js');
 echo $this->Html->script('plugins/modernizr-2.6.1-respond-1.1.0.min');
 echo $scripts_for_layout;
-echo defined('__REPORTS_ANALYTICS') ? $this->Element('analytics', array(), array('plugin' => 'reports')) : null; ?>
+echo defined('__REPORTS_ANALYTICS') ? $this->Element('analytics', array(), array('plugin' => 'webpages')) : null; ?>
 </head>
 <body class="<?php echo __('%s %s %s', $this->request->params['controller'], $this->request->params['action'], ($this->Session->read('Auth.User') ? __(' authorized') : __(' restricted'))); ?>" id="<?php echo !empty($this->request->params['pass'][0]) ? strtolower($this->request->params['controller'].'_'.$this->request->params['action'].'_'.$this->request->params['pass'][0]) : strtolower($this->request->params['controller'].'_'.$this->request->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
         <!--[if lt IE 7]>
