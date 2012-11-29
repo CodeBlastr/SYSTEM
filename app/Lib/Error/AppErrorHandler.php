@@ -52,8 +52,6 @@ class AppErrorHandler extends ErrorHandler {
 		
 		$exceptionMessage = $exception->getMessage();
 		if(preg_match('/Table\s(\w*)\sfor model /', $exceptionMessage, $matches)) {
-			
-			$exceptionWords = explode(' ', $exceptionMessage);
 			$missingTableName = $matches[1];
 			$missingTableSql = 'CREATE TABLE `' . $missingTableName . '` (`id` INT NOT NULL) ENGINE = MYISAM ;';
 			$db = ConnectionManager::getDataSource('default');
