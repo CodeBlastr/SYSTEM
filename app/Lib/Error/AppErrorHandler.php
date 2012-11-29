@@ -49,10 +49,6 @@ class AppErrorHandler extends ErrorHandler {
  * Handle mssing table exception in order to create the table if the plugin is loaded (typically triggered like this during upgrades)
  */
  	public function MissingTableException ($exception) {	
-//		echo '<h1>We need to write a function for creating tables when they are not already there, if the plugin is loaded.</h1>';
-//		echo 'Use the getMessage() function to get the plugin name, and the table with some regex or something.<br />';
-//		echo 'CREATE TABLE `table_name` (`id` INT NOT NULL) ENGINE = MYISAM ; is the sql to run and then refresh the page to keep the upgrade running.';
-//		debug($exception->getMessage());
 		
 		$exceptionMessage = $exception->getMessage();
 		if(preg_match('/Table\s(\w*)\sfor model /', $exceptionMessage, $matches)) {
@@ -65,6 +61,11 @@ class AppErrorHandler extends ErrorHandler {
 			SessionComponent::setFlash('Notice: The database table, `'.$missingTableName.'` was not found and has been recreated.');
 			header('Location: //'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
 		}
+		
+		echo '<h1>We need to write a function for creating tables when they are not already there, if the plugin is loaded.</h1>';
+		echo 'Use the getMessage() function to get the plugin name, and the table with some regex or something.<br />';
+		echo 'CREATE TABLE `table_name` (`id` INT NOT NULL) ENGINE = MYISAM ; is the sql to run and then refresh the page to keep the upgrade running.';
+		debug($exception->getMessage());
 		break;
 	}
 
