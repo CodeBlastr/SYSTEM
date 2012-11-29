@@ -319,6 +319,11 @@ class UsersController extends UsersAppController {
 				$this->User->checkEmailVerification($this->request->data);
 				// save the login meta data
 				$this->User->loginMeta($this->request->data);
+				
+				if (in_array('Connections', CakePlugin::loaded())) {
+					$this->Connection->afterLogin($user['User']['id']);
+				}
+				
 		        $this->redirect($this->_loginRedirect());
 			} catch (Exception $e) {
 				$this->Auth->logout();
