@@ -81,7 +81,7 @@ class SluggableBehavior extends ModelBehavior {
 		if (!empty($Model->data['Alias']['name'])) {
             $this->data['Alias'] = $Model->data['Alias'];
             $this->makeUniqueSlug($Model);
-            unset($Model->data['Alias']);
+            //unset($Model->data['Alias']); // commented out 11/28/2012 RK remove if webpage adding / editing still works
         }
 		return true;
 	}
@@ -96,7 +96,7 @@ class SluggableBehavior extends ModelBehavior {
 		if (!empty($Model->data['Alias']['name'])) {
             $this->data['Alias'] = $Model->data['Alias'];
         }
-        unset($Model->data['Alias']);
+        //unset($Model->data['Alias']); // commented out 11/28/2012 RK remove if webpage adding / editing still works
 		$this->trigger = isset($params['atomic']) ? false : true; // test for whether this is a saveAll() or save()
 		return parent::beforeSave($Model, $params);
 	}
