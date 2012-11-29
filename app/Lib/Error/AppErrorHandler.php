@@ -48,11 +48,23 @@ class AppErrorHandler extends ErrorHandler {
 /** 
  * Handle mssing table exception in order to create the table if the plugin is loaded (typically triggered like this during upgrades)
  */
- 	public function MissingTableException ($exception) {
-		echo '<h1>We need to write a function for creating tables when they are not already there, if the plugin is loaded.</h1>';
-		echo 'Use the getMessage() function to get the plugin name, and the table with some regex or something.<br />';
-		echo 'CREATE TABLE `table_name` (`id` INT NOT NULL) ENGINE = MYISAM ; is the sql to run and then refresh the page to keep the upgrade running.';
-		debug($exception->getMessage());
+ 	public function MissingTableException ($exception) {	
+//		echo '<h1>We need to write a function for creating tables when they are not already there, if the plugin is loaded.</h1>';
+//		echo 'Use the getMessage() function to get the plugin name, and the table with some regex or something.<br />';
+//		echo 'CREATE TABLE `table_name` (`id` INT NOT NULL) ENGINE = MYISAM ; is the sql to run and then refresh the page to keep the upgrade running.';
+//		debug($exception->getMessage());
+		
+		$exceptionMessage = $exception->getMessage();
+		if(preg_match('/Table\s(\w*)\sfor model /', $exceptionMessage, $matches)) {
+			
+			$exceptionWords = explode(' ', $exceptionMessage);
+			$missingTableName = $matches[1];
+			$missingTableSql = 'CREATE TABLE `' . $missingTableName . '` (`id` INT NOT NULL) ENGINE = MYISAM ;';
+			$db = ConnectionManager::getDataSource('default');
+			$db->execute($missingTableSql);
+			SessionComponent::setFlash('Notice: The database table, `'.$missingTableName.'` was not found and has been recreated.');
+			header('Location: //'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+		}
 		break;
 	}
 
