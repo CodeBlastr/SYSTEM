@@ -115,11 +115,15 @@ class User extends UsersAppModel {
 				'className' => 'Transactions.TransactionAddress',
 				'foreign_key' => 'user_id'
 				);
+		}
+		if (in_array('Products', CakePlugin::loaded())) {
 			$this->hasMany['ProductBrand'] = array(
 				'className' => 'Products.ProductBrand',
 				'foreignKey' => 'owner_id',
 				'dependent' => false,
 				);
+		}
+		if (in_array('Connections', CakePlugin::loaded())) {
 			$this->hasMany['Connection'] = array(
 				'className' => 'Connections.Connection',
 				'foreignKey' => 'user_id',
