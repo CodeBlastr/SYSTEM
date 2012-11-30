@@ -10,7 +10,7 @@
    
         <div class="progress progress-striped active">
             <?php $width = (count(CakeSession::read('Privileges.lastPlugin')) * 100) / count(CakePlugin::loaded()); ?>
-            &nbsp; <?php echo $width; ?>% <div class="bar" style="width: <?php echo $width; ?>%;"></div>
+            &nbsp; <?php echo number_format($width, 0); ?>% <div class="bar" style="width: <?php echo number_format($width, 0); ?>%;"></div>
         </div>
 
 		<script type="text/javascript">
