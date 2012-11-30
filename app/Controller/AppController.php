@@ -1028,11 +1028,11 @@ class AppController extends Controller {
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
 		if ($this->Acl->check($aro, $aco)) {
-			#echo 'guest access passed';
-			#return array('passed' => 1, 'message' => 'guest access passed');
+			//echo 'guest access passed';
+			//return array('passed' => 1, 'message' => 'guest access passed');
 			return true;
 		} else {
-			# check user access
+			//check user access
 			$aro = $this->_userAro($user['id']); // user aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get aco
 			if ($this->Acl->check($aro, $aco)) {

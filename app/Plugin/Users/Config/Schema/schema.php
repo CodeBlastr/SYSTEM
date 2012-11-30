@@ -118,6 +118,8 @@ class UsersSchema extends CakeSchema {
 		'user_role_id' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'credit_total' => array('type' => 'integer', 'null' => true, 'default' => NULL),
 		'slug' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'required for comments plugin', 'charset' => 'utf8'),
+		'creator_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
+		'modifier_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'status' => array('type' => 'integer', 'null' => true, 'default' => '0', 'length' => 6),
