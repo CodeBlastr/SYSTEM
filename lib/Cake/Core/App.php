@@ -222,6 +222,12 @@ class App {
 
 		if (!empty($plugin)) {
 			$path = array();
+			// zuha update, for use in overwriting a single file within a plugin, instead of the entire plugin
+			foreach (self::path($type) as $p) {
+				$path[] = sprintf($p, $plugin);
+			}
+			// zuha update end
+		
 			$pluginPath = self::pluginPath($plugin);
 			$packageFormat = self::_packageFormat();
 			if (!empty($packageFormat[$type])) {
@@ -229,6 +235,7 @@ class App {
 					$path[] = sprintf($f, $pluginPath);
 				}
 			}
+			
 			return $path;
 		}
 
@@ -539,8 +546,8 @@ class App {
 		if ($file = self::_mapped($className, $plugin)) {
 			return include $file;
 		}
-		$paths = self::path($package, $plugin);
 
+		$paths = self::path($package, $plugin);
 		if (empty($plugin)) {
 			$appLibs = empty(self::$_packages['Lib']) ? APPLIBS : current(self::$_packages['Lib']);
 			$paths[] = $appLibs . $package . DS;

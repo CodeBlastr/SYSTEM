@@ -21,48 +21,52 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	if (!defined('CONFIGS')) {
 		define('CONFIGS', null);
 	}
-	
 	App::build(array(
 		'plugins' => array(
 			ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
-			ROOT.DS.SITE_DIR.DS.'plugins'.DS,
 			ROOT.DS.APP_DIR.DS.'Plugin'.DS
 			),
 		'models' =>  array(
-			ROOT.DS.SITE_DIR.DS.'Model'.DS,
-			ROOT.DS.SITE_DIR.DS.'models'.DS,
+			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'Model'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'Model'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Model'.DS,
 			ROOT.DS.APP_DIR.DS.'Model'.DS
 			),
 		'views' => array(
-			ROOT.DS.SITE_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS,
-			ROOT.DS.SITE_DIR.DS.'views'.DS.'locale'.DS.Configure::read('Config.language').DS,
-			ROOT.DS.SITE_DIR.DS.'View'.DS,
-			ROOT.DS.SITE_DIR.DS.'views'.DS,
+			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'View'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'View'.DS,
+			ROOT.DS.SITE_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS, // to be deprecated soon, 2012-11-29 RK
+			ROOT.DS.SITE_DIR.DS.'View'.DS, // for the theme directory to work
 			ROOT.DS.APP_DIR.DS.'View'.DS,
 			),
 		'controllers' => array(
-			ROOT.DS.SITE_DIR.DS.'Controller'.DS,
-			ROOT.DS.SITE_DIR.DS.'controllers'.DS,
+			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'Controller'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'Controller'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Controller'.DS,
 			ROOT.DS.APP_DIR.DS.'Controller'.DS
 			),
 		'datasources' => array(
-			ROOT.DS.SITE_DIR.DS.'Model'.DS.'Datasource'.DS,
-			ROOT.DS.SITE_DIR.DS.'models'.DS.'datasources'.DS,
-			ROOT.DS.APP_DIR.DS.'models'.DS.'datasources'.DS
+			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'Datasource'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'Datasource'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Datasource'.DS,
+			ROOT.DS.APP_DIR.DS.'Model'.DS.'Datasource'.DS
 			),
 		'behaviors' => array(
-			ROOT.DS.SITE_DIR.DS.'Model'.DS.'Behavior'.DS,
-			ROOT.DS.SITE_DIR.DS.'models'.DS.'behaviors'.DS,
+			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'Model'.DS.'Behavior'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'Model'.DS.'Behavior'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Model'.DS.'Behavior',
 			ROOT.DS.APP_DIR.DS.'Model'.DS.'Behavior'.DS
 			),
 		'components' => array(
-			ROOT.DS.SITE_DIR.DS.'Controller'.DS.'Component'.DS,
-			ROOT.DS.SITE_DIR.DS.'controllers'.DS.'components'.DS,
+			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'Controller'.DS.'Component'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'Controller'.DS.'Component'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Controller'.DS.'Component',
 			ROOT.DS.APP_DIR.DS.'Controller'.DS.'Component'.DS
 			),
 		'helpers' => array(
-			ROOT.DS.SITE_DIR.DS.'View'.DS.'Helper'.DS,
-			ROOT.DS.SITE_DIR.DS.'views'.DS.'helpers'.DS,
+			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'View'.DS.'Helper'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'View'.DS.'Helper'.DS,
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Helper',
 			ROOT.DS.APP_DIR.DS.'View'.DS.'Helper'.DS
 			),
 	//   'vendors' => array('/full/path/to/vendors/', '/next/full/path/to/vendors/'),
@@ -70,10 +74,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	//   'locales' => array('/full/path/to/locale/', '/next/full/path/to/locale/')
 	));
 	
-	
     Inflector::rules('singular', array('irregular' => array('webpage_jses' => 'webpage_js')));
     Inflector::rules('plural', array('irregular' => array('webpage_js' => 'webpage_jses')));
-
 	
 	/**
 	 * reads settings.ini (or defaults.ini if non-existent)

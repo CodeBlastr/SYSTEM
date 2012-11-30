@@ -43,12 +43,12 @@ class UsersController extends UsersAppController {
 
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
-		if (in_array('Invite', CakePlugin::loaded())) :
+		if (in_array('Invite', CakePlugin::loaded())) {
 			$this->components[] = 'Invite.InviteHandler';
-		endif;
-		if (in_array('Recaptcha', CakePlugin::loaded())) :
+		}
+		if (in_array('Recaptcha', CakePlugin::loaded())) {
 			$this->helpers[] = 'Recaptcha.Recaptcha';
-		endif;
+		}
 	}
 
 
@@ -91,7 +91,7 @@ class UsersController extends UsersAppController {
 				),
 			));
 
-		# This is here, because we have an element doing a request action on it.
+		// This is here, because we have an element doing a request action on it.
 		if (isset($this->request->params['requested'])) {
         	if (!empty($user)) {
 				return $user;
@@ -100,8 +100,8 @@ class UsersController extends UsersAppController {
 
 		// check if user exists
 		if(!isset($user['User'])) {
-		#	$this->Session->setFlash('You do not have a user, please create one.');
-		#	$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'register', 'user' => $this->Auth->user('id')));
+			//	$this->Session->setFlash('You do not have a user, please create one.');
+			//	$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'register', 'user' => $this->Auth->user('id')));
 		}
 
 		$followedUsers = $this->User->UserFollower->find('all', array(
@@ -110,7 +110,7 @@ class UsersController extends UsersAppController {
 				),
 			));
 
-		# Setup the user ids which we'll find the statuses of
+		// Setup the user ids which we'll find the statuses of
 		foreach ($followedUsers as $followedUser) {
 			#$followedUserIds[] = $followedUser['User']['id'];
 			$statusUserIds[] = $followedUser['UserFollower']['user_id'];
