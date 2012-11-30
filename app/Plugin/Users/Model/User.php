@@ -115,11 +115,15 @@ class User extends UsersAppModel {
 				'className' => 'Transactions.TransactionAddress',
 				'foreign_key' => 'user_id'
 				);
+		}
+		if (in_array('Products', CakePlugin::loaded())) {
 			$this->hasMany['ProductBrand'] = array(
 				'className' => 'Products.ProductBrand',
 				'foreignKey' => 'owner_id',
 				'dependent' => false,
 				);
+		}
+		if (in_array('Connections', CakePlugin::loaded())) {
 			$this->hasMany['Connection'] = array(
 				'className' => 'Connections.Connection',
 				'foreignKey' => 'user_id',
@@ -365,7 +369,7 @@ class User extends UsersAppModel {
 					'UserRole',
 					),
 				));
-			if (!empty($user)) {
+			if (!empty($user)) {			
 				$data['User']['id'] = $user['User']['id'];
 				$data['User']['last_login'] = date('Y-m-d h:i:s');
 				$data['User']['view_prefix'] = $user['UserRole']['view_prefix'];
@@ -375,8 +379,8 @@ class User extends UsersAppModel {
 					if($this->save($data, array('validate' => false))) {
 						return $user;
 					} else {
-						# we should log errors like this
-						# an error which shouldn't stop functionality, but nevertheless is an error
+						// we should log errors like this
+						// an error which shouldn't stop functionality, but nevertheless is an error
 						return $user;
 					}
 				} else {
@@ -398,7 +402,7 @@ class User extends UsersAppModel {
  */
 	public function verify_key($key = null) {
 		$user = null;
-      	# lets see if the key exists and which user its for.
+      	// lets see if the key exists and which user its for.
 		if(!empty($key))	{
 			$user = $this->find('first', array(
 				'conditions' => array(
@@ -406,14 +410,14 @@ class User extends UsersAppModel {
 					'User.forgot_key_created <=' => date('Y:m:d h:i:s', strtotime("+3 days")),
 					),
 				));
-			# if the user does exist, then reset user record forgot info, login and redirect to users/edit
+			// if the user does exist, then reset user record forgot info, login and redirect to users/edit
 			if (!empty($user)) {
 				$this->id = $user['User']['id'];
 				$this->set('forgot_key', null);
 				$this->set('forgot_key_created', null);
 				$this->validate = null;
 				if ($this->save()) {
-					#$user = null;
+					//$user = null;
 				} else {
 					throw new Exception(__('Verfication key failed to update.'));
 				}
@@ -502,13 +506,13 @@ class User extends UsersAppModel {
 			$data[$this->alias]['contact_type'] = (defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) ? __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE : 'person' ;
 		}
 
-		# update name into first and last name
+		// update name into first and last name
 		if (!empty($data[$this->alias]['full_name']) && empty($data[$this->alias]['first_name'])) {
 			$data[$this->alias]['first_name'] = trim(preg_replace('/[ ](.*)/i', '', $data[$this->alias]['full_name']));
 			$data[$this->alias]['last_name'] = trim(preg_replace('/(.*)[ ]/i', '', $data[$this->alias]['full_name']));
 		}
 
-		# update first name and last name into full_name
+		// update first name and last name into full_name
 		if (!empty($data[$this->alias]['first_name']) && !empty($data[$this->alias]['last_name']) && empty($data[$this->alias]['full_name'])) {
 			$data[$this->alias]['full_name'] = $data[$this->alias]['first_name'] . ' ' . $data[$this->alias]['last_name'];
 		}
