@@ -20,10 +20,12 @@
 		});
        	</script>
 	<?php } else { ?>
-    	<p class="alert alert-success">Success! <?php
+    	<p class="alert alert-success"><b>Success!</b><br /><?php
         foreach (CakeSession::read('Privileges.lastPlugin') as $text) {
             echo $text . ' ';
-        } ?> updated.  <?php echo $this->Html->link(__('Manage Privileges Here'), array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index')); ?></p>
+        } ?> updated.
+		<br />
+		<?php echo $this->Html->link(__('Manage Privileges Here'), array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index')); ?></p>
 	<?php } ?>
 </div>
 
