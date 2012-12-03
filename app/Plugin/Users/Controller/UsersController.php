@@ -175,7 +175,7 @@ class UsersController extends UsersAppController {
 
 
 	public function edit($id = null) {
-		# looking for an existing user to edit
+		// looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
 			$conditions = array('User.user_id' => $this->request->params['named']['user_id']);
 		} else if (!empty($id)) {
@@ -188,7 +188,8 @@ class UsersController extends UsersAppController {
 				'conditions' => $conditions,
 				));
 
-			if (in_array('Transactions', CakePlugin::loaded())) :
+/* This should not be here RK Dec 1, 2012 (user is not related to transaction shipment in the model)
+			if (in_array('Transactions', CakePlugin::loaded())) {
 				$userShippingAddress = $this->User->TransactionShipment->find('first',array(
 					'conditions' => array(
 						'TransactionShipment.user_id' => $id,
@@ -203,7 +204,8 @@ class UsersController extends UsersAppController {
 						)
 					));
 				$user['OrderPayment'] = $userBillingAddress['OrderPayment'];
-			endif;
+			}
+*/
 
 			if(isset($user['User'])) {
 				$this->request->data = $user;

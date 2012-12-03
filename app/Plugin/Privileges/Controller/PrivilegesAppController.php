@@ -76,7 +76,7 @@ class PrivilegesAppController extends AppController {
  * @return void
  **/
 	public function beforeFilter() {
-		#parent::__construct();
+		// parent::__construct();
 		$collection = new ComponentCollection();
 		$this->Acl = new AclComponent($collection);
 		//$controller = null;
@@ -88,7 +88,7 @@ class PrivilegesAppController extends AppController {
 	}
 	
 	function out($out) {
-		#debug($out);
+		//debug($out);
 	}
 
 /**
@@ -101,6 +101,7 @@ class PrivilegesAppController extends AppController {
 		$this->_useSession = $session;
 		$this->_clean = true;
 		$this->aco_update();
+        // $this->Aco->recover(); // thought we might need this, but seems not, so removed for speed
         $this->set('page_title_for_layout', 'Sections & Actions Update');
 	}
 	
@@ -132,13 +133,13 @@ class PrivilegesAppController extends AppController {
 			$pluginRoot = $this->_checkNode(/*'plugin', */$path, $plugin, $root['Aco']['id']);
 			$this->_updateControllers($pluginRoot, $controllers, $plugin);
 			
-			if ($this->_useSession !== 0) : 
-				# zuha runs aco_update once and update the session so that plugin is ignored next go around
+			if ($this->_useSession !== 0) {
+				// zuha runs aco_update once and update the session so that plugin is ignored next go around
 				$lastPluginSession = CakeSession::read('Privileges.lastPlugin');
 				$lastPluginSession[] = $plugin;
 				CakeSession::write('Privileges.lastPlugin', $lastPluginSession);
 				break;
-			endif;
+			}
 		}
 		$this->out(__('<success>Aco Update Complete</success>'));
 		return true;

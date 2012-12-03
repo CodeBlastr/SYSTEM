@@ -1,11 +1,11 @@
 <?php
 /**
- * Sluggable Behavior
+ * Alias Behavior
  *
  * @package model
  * @subpackage model.behaviors
  */
-class SluggableBehavior extends ModelBehavior {
+class AliasBehavior extends ModelBehavior {
 
 /**
  * Settings to configure the behavior

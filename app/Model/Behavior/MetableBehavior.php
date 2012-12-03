@@ -81,7 +81,7 @@ class MetableBehavior extends ModelBehavior {
 					)
 				)
 			), false);
-        $Model->contain('Meta');
+        $query['contain'][] = 'Meta'; //$Model->contain('Meta');
         
 #        // kept in case we need to manually join again
 #		$query['joins'][] = array(

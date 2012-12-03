@@ -8,30 +8,6 @@ Note that the class names could be updated and change often.
 }
 
 /* Site Errors */
-#databaseUpgrades {
-	padding: 15px;
-}
-.siteUpgradeNeeded {
-	position: absolute;
-	top: 0;
-	left: 0; 
-	z-index: 999999999999999;
-	background: #FC9;
-	padding: 3px;
-	color: #C00;
-	font-weight: bold;
-}
-.message {
-    background: #FCEFE4;
-    border: 2px solid #F90;
-    padding: 1em;
-	margin: 1em;
-    color: #C60;
-    font-weight: bold;
-    -moz-border-radius:5px;
-    -webkit-border-radius:5px;
-    border-radius:5px;
-}
 .error-message, .error {
 	color: #C00;
 }
@@ -181,24 +157,6 @@ input[type=radio], input[type=checkbox] {
 	content: '\25BC \ ';
 }
 
-/* Some dashboard css */
-.dashboard, .masonry {
-	position: relative;
-}
-.dashboard .dashboardBox, .masonry .masonryBox {
-	float: left;
-	margin: 0.5em;
-	padding: 1em;
-	width: 26%;
-	width: 12em;
-	/* height is set with javascript */
-	border: 1px solid #CCC;
-}
-.dashboard .dashboardBox ul, .masonry .masonryBox ul {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-}
 
 .ajaxLoader {
 	position: fixed;
@@ -226,3 +184,21 @@ input[type=radio], input[type=checkbox] {
     clear: both;
     visibility: hidden;
 }
+
+/* user edit profile picture  */
+#userEditThumb {
+    display: inline-block;
+    position: relative;
+}
+#userEditThumbLink {
+    position: absolute; 
+    bottom: 0; 
+    right: 0; 
+    background: #000; 
+    margin: 0; 
+    padding: 1px 4px; 
+    opacity:0.6;
+    color: #EEE;
+    font-size: 10px;
+}
+    

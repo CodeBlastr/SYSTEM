@@ -191,7 +191,7 @@ class Gallery extends GalleriesAppModel {
  */
 	public function makeThumb($data) {
 		if (!empty($data['Gallery']['id']) && !empty($data['GalleryImage']['id'])) {
-			# if the image id is there just set it quick
+			// if the image id is there just set it quick
 			$data['Gallery']['gallery_thumb_id'] = $data['GalleryImage']['id'];
 			if ($this->save($data)) {
 				return true;
@@ -199,7 +199,7 @@ class Gallery extends GalleriesAppModel {
 				throw new Exception(__d('galleries', 'Gallery thumbnail update failed.', true));
 			}
 		} else if (!empty($data['Gallery']['id']) && !empty($data['GalleryImage'])) {
-			#if its a new image then upload and make the thumb
+			// if its a new image then upload and make the thumb
 			$data['GalleryImage']['gallery_id'] = $data['Gallery']['id'];
 			if ($this->GalleryImage->add($data, 'filename')) {
 				$galleryImageId = $this->GalleryImage->id;
