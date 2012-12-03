@@ -26,10 +26,10 @@ if (!empty($model) && !empty($foreignKey)) {
 // set up the config vars
 $thumbLink = !empty($thumbLink) ? $thumbLink : null;
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
-# get width from settings table
+// get width from settings table
 $indexWidth = !empty($galleryThumb['GallerySettings']['indexImageWidth']) ? $galleryThumb['GallerySettings']['indexImageWidth'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'];
 $indexHeight = !empty($galleryThumb['GallerySettings']['indexImageHeight']) ? $galleryThumb['GallerySettings']['indexImageHeight'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'];
-# if the width was defined in the element call
+// if the width was defined in the element call
 $thumbWidth = !empty($thumbWidth) ? array('width' => $thumbWidth) : array('width' => $indexWidth);
 $thumbHeight = !empty($thumbHeight) ? array('height' => $thumbHeight) : array('height' => $indexHeight);
 $thumbAlt = !empty($thumbAlt) ? array('alt' => $thumbAlt) : array('alt' => $galleryThumb['GalleryThumb']['filename']);

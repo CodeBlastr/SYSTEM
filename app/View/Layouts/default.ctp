@@ -24,6 +24,7 @@ echo $this->Html->meta('icon');
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png"> */
+echo $this->Html->css('system');
 echo $this->Html->css('twitter-bootstrap/bootstrap.min');
 echo $this->Html->css('twitter-bootstrap/bootstrap.custom');
 echo $this->Html->script('http://code.jquery.com/jquery-latest.js');

@@ -36,7 +36,7 @@ class Webpage extends WebpagesAppModel {
     public $actsAs = array(
         'Tree', 
         'AclExtra', 
-        'Sluggable'
+        'Alias'
 		);
 	
 /**

@@ -102,7 +102,7 @@ class GalleryImage extends GalleriesAppModel {
  * Protected add method
  *
  * If a gallery id is given, check the defaults, attach the upload behavior, and perform the upload.
- * If no gallery id is given, create a gallery first using site settings, and make the submitted image the thumb
+ * If no gallery id is given, create a gallery first using site settings, and make the submitted image the th
  * The gallery add() function calls back to this function to perform the upload.
  * 
  * This protected version of the add function was pushed down so that it could be called multiple times.

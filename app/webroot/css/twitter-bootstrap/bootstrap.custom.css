@@ -19,6 +19,9 @@
 .container .navbar .btn-navbar {
     margin: 16px 0 0;
 }
+small {
+    vertical-align: baseline;
+}
 
 /* zuha specific */ 
 .right-caret {
