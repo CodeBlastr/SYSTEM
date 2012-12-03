@@ -10,7 +10,7 @@
    
         <div class="progress progress-striped active">
             <?php $width = (count(CakeSession::read('Privileges.lastPlugin')) * 100) / count(CakePlugin::loaded()); ?>
-            &nbsp; <?php echo $width; ?>% <div class="bar" style="width: <?php echo $width; ?>%;"></div>
+            &nbsp; <?php echo number_format($width, 0); ?>% <div class="bar" style="width: <?php echo number_format($width, 0); ?>%;"></div>
         </div>
 
 		<script type="text/javascript">
@@ -20,10 +20,12 @@
 		});
        	</script>
 	<?php } else { ?>
-    	<p class="alert alert-success">Success! <?php
+    	<p class="alert alert-success"><b>Success!</b><br /><?php
         foreach (CakeSession::read('Privileges.lastPlugin') as $text) {
             echo $text . ' ';
-        } ?> updated.  <?php echo $this->Html->link(__('Manage Privileges Here'), array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index')); ?></p>
+        } ?> updated.
+		<br />
+		<?php echo $this->Html->link(__('Manage Privileges Here'), array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index')); ?></p>
 	<?php } ?>
 </div>
 
