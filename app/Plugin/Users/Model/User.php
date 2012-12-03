@@ -176,11 +176,18 @@ class User extends UsersAppModel {
 	    }
 	}
 
-
+/**
+ * before save callback
+ * 
+ * @todo move all of the items in beforeSave() into _cleanData() and put $this->data = $this->_cleanData($this->data) here. Then we can get rid of the add() function all together.
+ */
 	public function beforeSave($options = array()) {
 		if (!empty($this->data[$this->alias]['password'])) {
 			App::uses('AuthComponent', 'Controller/Component');
 	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
+		}
+        if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
+			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
 		}
         return true;
     }

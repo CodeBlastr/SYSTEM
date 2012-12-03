@@ -14,7 +14,7 @@ echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false))
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2012, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.views.admin
  * @since         Zuha(tm) v 0.0009
@@ -29,7 +29,6 @@ if (empty($runUpdates)) { ?>
         <a href="#tagMedia" class="filterClick btn">Media</a>
         <?php if (in_array('Comments', CakePlugin::loaded())) { ?><a href="#tagDiscussion" class="filterClick btn">Discussion</a><?php } ?>
         <a href="#tagThemes" class="filterClick btn">Themes</a>
-        <a href="#tagProjects" class="filterClick btn">Projects</a>
         <a href="#tagAdmin" class="filterClick btn">Settings</a>
     </div>
     
