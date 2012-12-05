@@ -294,7 +294,7 @@ class WebpagesController extends WebpagesAppController {
 		}
 		
 		$templates = $this->Webpage->syncFiles('template');
-		$this->request->data = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id), 'contain' => array('Child')));
+		$this->request->data = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id), 'contain' => array('Child', 'Alias')));
 		$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
 		
 		// required to have per page permissions
