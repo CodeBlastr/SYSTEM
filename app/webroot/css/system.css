@@ -44,13 +44,6 @@ Note that the class names could be updated and change often.
 .show {
 	display: block;
 }
-table {
-	width: 100%;
-}
-th, td {
-	border-collapse:collapse;
-	border: 1px solid #ccc;
-}
 td.show {
 	display: table-cell;
 }
