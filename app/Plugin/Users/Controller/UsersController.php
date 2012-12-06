@@ -323,7 +323,7 @@ class UsersController extends UsersAppController {
 				$this->User->loginMeta($this->request->data);
 				
 				if (in_array('Connections', CakePlugin::loaded())) {
-					$this->Connection->afterLogin($user['User']['id']);
+					$this->User->Connection->afterLogin($user['User']['id']);
 				}
 				
 		        $this->redirect($this->_loginRedirect());
