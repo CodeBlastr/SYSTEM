@@ -619,7 +619,7 @@ class AppController extends Controller {
  * Used to find the template and makes a call to parse all page views.  Sets the defaultTemplate variable for the layout.
  * This function parses the settings for templates, in order to decide which template to use, based on url, and user role.
  *
- * @todo 		Move this to the webpage model.
+ * @todo 		Move this to the webpage model and optimize it.. looks a bit overcomplicated
  */
 	public function _getTemplate() {
 		if (defined('__APP_TEMPLATES')) {
@@ -634,9 +634,10 @@ class AppController extends Controller {
 				}
 			}
 			
+			// check urls first
+			//  so that we don't accidentally use a default template before a template that was set for this url.
 			if (!empty($templates)) {
 				foreach ($templates as $key => $template) {
-					// check urls first so that we don't accidentally use a default template before a template set for this url.
 					if (!empty($template['urls'])) {
 						// note : this over rides isDefault, so if its truly a default template, don't set urls
 						$this->templateId = $this->_urlTemplate($template);
@@ -674,7 +675,7 @@ class AppController extends Controller {
 					}
 					$i = 0;
 					if (!empty($url)) { foreach($url as $u) {
-						# check each one against the current url
+						// check each one against the current url
 						$u = str_replace('/', '\/', $u);
 						$urlRegEx = '/'.str_replace('*', '(.*)', $u).'/';
 						if (preg_match($urlRegEx, $this->request->url)) {
@@ -686,7 +687,7 @@ class AppController extends Controller {
 					if (!empty($webpages)) { foreach ($webpages as $webpage) {
 						echo $webpage['Webpage']['content'];
 					}} else {
-						# echo 'do nothing, use default template';
+						// echo 'do nothing, use default template';
 					}
 	            }
 			}
@@ -716,7 +717,7 @@ class AppController extends Controller {
 	private function _userTemplate($data) {
 		// check if the url being requested matches any template settings for user roles
 
-		# set a new template id if the session is over writing it
+		// set a new template id if the session is over writing it
 		$currentUserRole = $this->Session->read('viewingRole') ? $this->Session->read('viewingRole') : $this->userRoleId;
 
 		if (!empty($data['userRoles'])) {
@@ -772,9 +773,9 @@ class AppController extends Controller {
  * @todo		Make slideDock menu available to anyone with permissions to $webpages->edit().  Not just admin
  */
 	private function _templateConditions() {
-		# contain the menus for output into the slideDock if its the admin user
+		// contain the menus for output into the slideDock if its the admin user
 		if ($this->userRoleId == 1 && in_array('Menus', CakePlugin::loaded())) :
-			# this allows the admin to edit menus
+			// this allows the admin to edit menus
 			$this->Webpage->bindModel(array(
 				'hasMany' => array(
 					'Menu' => array(
@@ -877,7 +878,7 @@ class AppController extends Controller {
 			if (is_array($this->uses)) {
 				$this->uses = array_merge($this->uses, array('Webpages.Webpage'));
 			} else {
-				# there is only one (non-array) in $this->uses
+				// there is only one (non-array) in $this->uses
 				$this->uses = array($this->uses, 'Webpages.Webpage');
 			}
 		}
@@ -895,7 +896,7 @@ class AppController extends Controller {
 		if ($this->userRoleId == 1) {
 			$fileSettings = new File(CONFIGS.'settings.ini');
 			$fileDefaults = new File(CONFIGS.'defaults.ini');
-			# the settings file doesn't exist sometimes, and thats fine
+			// the settings file doesn't exist sometimes, and thats fine
 			if ($settings = $fileSettings->read()) {
 				App::uses('File', 'Utility');
 
@@ -971,11 +972,11 @@ class AppController extends Controller {
 			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
 			if(parse_ini_string($smtp)) {
 
-                                                                if(isset($toEmail['to']) && is_array($toEmail)) $this->SwiftMailer->to = $toEmail['to'];
-                                                                else $this->SwiftMailer->to = $toEmail;
-                                                                if(isset($toEmail['cc']) && is_array($toEmail)) $this->SwiftMailer->cc = $toEmail['cc'];
-                                                                if(isset($toEmail['bcc']) && is_array($toEmail)) $this->SwiftMailer->bcc = $toEmail['bcc'];
-                                                                if(isset($toEmail['replyTo']) && is_array($toEmail)) $this->SwiftMailer->replyTo = $toEmail['replyTo'];
+				if(isset($toEmail['to']) && is_array($toEmail)) $this->SwiftMailer->to = $toEmail['to'];
+				else $this->SwiftMailer->to = $toEmail;
+				if(isset($toEmail['cc']) && is_array($toEmail)) $this->SwiftMailer->cc = $toEmail['cc'];
+				if(isset($toEmail['bcc']) && is_array($toEmail)) $this->SwiftMailer->bcc = $toEmail['bcc'];
+				if(isset($toEmail['replyTo']) && is_array($toEmail)) $this->SwiftMailer->replyTo = $toEmail['replyTo'];
 
 				$this->SwiftMailer->template = $template;
 
@@ -1004,14 +1005,14 @@ class AppController extends Controller {
    }
 
 
-##############################################################
+/**###########################################################
 ##############################################################
 #################  HERE DOWN IS PERMISSIONS ##################
 ##############################################################
 ##############################################################
 ##############################################################
 ##############################################################
-##############################################################
+##############################################################*/
 
 
 /**
@@ -1021,10 +1022,10 @@ class AppController extends Controller {
  * @todo		Optimize this somehow, someway.
  */
 	public function isAuthorized($user) {
-		# this allows all users in the administrators group access to everything
-		# using user_role_id is deprecated and will be removed in future versions
+		// this allows all users in the administrators group access to everything
+		// using user_role_id is deprecated and will be removed in future versions
 		if (!empty($user['view_prefix']) && ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1)) { return true; }
-		# check guest access
+		// check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
 		if ($this->Acl->check($aro, $aco)) {
@@ -1065,7 +1066,7 @@ class AppController extends Controller {
  */
 	private function _getAcoPath() {
 		if (!empty($this->request->params['pass'][0])) {
-			# check if the record level aco exists first
+			// check if the record level aco exists first
 			$aco = $this->Acl->Aco->find('first', array(
 				'conditions' => array(
 					'model' => $this->modelClass,
@@ -1078,7 +1079,7 @@ class AppController extends Controller {
 		} else {
 			$controller = Inflector::camelize($this->request->params['controller']);
 			$action = $this->request->params['action'];
-			# $aco = 'controllers/Webpages/Webpages/view'; // you could do the full path, but the shorter path is slightly faster. But it does not allow name collisions. (the full path would allow name collisions, and be slightly slower).
+			// $aco = 'controllers/Webpages/Webpages/view'; // you could do the full path, but the shorter path is slightly faster. But it does not allow name collisions. (the full path would allow name collisions, and be slightly slower).
 			return $controller.'/'.$action;
 		}
 	}
