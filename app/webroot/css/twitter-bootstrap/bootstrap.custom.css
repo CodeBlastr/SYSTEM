@@ -1,3 +1,6 @@
+* {
+    vertical-align: inherit;
+}
 .hero-unit [class*="span"] {
 	margin-left: 28px;
 }
@@ -160,7 +163,7 @@ small {
 	margin: 0 5px 1px 0;
 }
 span.btn {
-	margin-top: -10px;
+	/* margin-top: -10px; this caused a problem with file uploads ie. /products/products/add */
 }
 
 /* top nav */
@@ -351,4 +354,19 @@ footer {
 }
 .table-hover td:hover a.edit {
 	display: inline;
+}
+
+
+/* Forms */
+fieldset legend.toggleClick {
+    background: #F7F7F7;
+}
+fieldset legend.toggleClick small {
+    padding-left: 10px;
+}
+fieldset div.input:last-child {
+    padding-bottom: 20px;
+}
+fieldset div.input.richtext {
+    margin-bottom: 20px;
 }
