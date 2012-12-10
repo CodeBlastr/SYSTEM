@@ -26,7 +26,7 @@ class GalleriesAppModel extends AppModel {
 		$largeImageHeight = defined('__GALLERY_IMAGE_DEFAULT_FULL_HEIGHT') ? __GALLERY_IMAGE_DEFAULT_FULL_HEIGHT : null;
 		$conversionType = defined('__GALLERY_RESIZE_OR_CROP') ? __GALLERY_RESIZE_OR_CROP : null;
 		
-		# gallery default setting constants
+		// gallery default setting constants
 		if(!empty($instance) && defined('__GALLERIES_SETTINGS_'.$instance)) {
 			extract(unserialize(constant('__GALLERIES_SETTINGS_'.$instance)));
 		} else if (defined('__GALLERIES_SETTINGS')) {
