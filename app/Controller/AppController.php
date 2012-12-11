@@ -73,28 +73,23 @@ class AppController extends Controller {
 		$this->_writeStats();
 		$this->RequestHandler->ajaxLayout = 'default';
 	    
-		# DO NOT DELETE #
-		# commented out because for performance this should only be turned on if asked to be turned on
-		# Start Condition Check #
-		#App::Import('Model', 'Condition');
-		#$this->Condition = new Condition;
-		#get the id that was just inserted so you can call back on it.
-		#$conditions['plugin'] = $this->request->params['plugin'];
-		#$conditions['controller'] = $this->request->params['controller'];
-		#$conditions['action'] = $this->request->params['action'];
-		#$conditions['extra_values'] = $this->request->params['pass'];
-		#$this->Condition->checkAndFire('is_read', $conditions, $this->request->data); */
-		# End Condition Check #
-		# End DO NOT DELETE #
+		// DO NOT DELETE 
+		// commented out because for performance this should only be turned on if asked to be turned on
+        // 
+		// Start Condition Check
+		// App::Import('Model', 'Condition');
+		// $this->Condition = new Condition;
+		// get the id that was just inserted so you can call back on it.
+		// $conditions['plugin'] = $this->request->params['plugin'];
+		// $conditions['controller'] = $this->request->params['controller'];
+		// $conditions['action'] = $this->request->params['action'];
+		// $conditions['extra_values'] = $this->request->params['pass'];
+		// $this->Condition->checkAndFire('is_read', $conditions, $this->request->data);
+		// End Condition Check
+		// End DO NOT DELETE
 		$this->_configAuth();
-		/**
-		 * @todo 	create this function, so that conditions can fire on the view of records
-				$this->checkConditions($plugin, $controller, $action, $extraValues);
-		 */
-
-		/**
-		 * Implemented for allowing guests access through db acl control
-		 */ #$this->Auth->allow();
+        
+        // check permissions
 		$this->userId = $this->Session->read('Auth.User.id');
 		$allowed = array_search($this->request->params['action'], $this->Auth->allowedActions);
 		if ($allowed === 0 || $allowed > 0 ) {
@@ -109,10 +104,7 @@ class AppController extends Controller {
 			}
 		}
 
-
-		/*
-		 * Below here (in this function) are things that have to come after the final userRoleId is determined
-		 */
+        // order is important for these
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
 		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
@@ -120,19 +112,11 @@ class AppController extends Controller {
 
 		$this->_siteTemplate();
 
-		/**
-		 * Check whether the site is sync'd up
-		 */
-		#$this->_siteStatus();
-
-		/**
-		 * Automatic view vars available (this location is pretty important, so that other beforeFilter functions run first)
-		 */
+		// order is important for these automatic view vars
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
 		$this->set('title_for_layout', $this->_titleForLayout());
 		$this->set('userRoleId', $this->userRoleId);
 	}
-
 
     public function beforeRender() {
 		parent::beforeRender();
@@ -422,49 +406,7 @@ class AppController extends Controller {
 
 
 /**
- * Returns a list of items to the list element for any model
- *
- * @param {int} 	We can have multiple calls to this on a single page.  Instance makes each one unique.
- * @return array
- * @todo    commented out on 11/11/12 rk, delete if we don't need it in three months
- */
-//	public function itemize($instance = null) {
-//		if(!empty($instance) && defined('__ELEMENT_LIST_'.$instance)) {
-//			extract(unserialize(constant('__ELEMENT_LIST_'.$instance)));
-//		} else if (defined('__ELEMENT_LIST')) {
-//			extract(unserialize(__ELEMENT_LIST));
-//		}
-//		$options = array();
-//		$options['controller'] =  !empty($this->request->controller) ? strtolower($this->request->controller) :  null;
-//		$options['plugin'] =  !empty($this->request->plugin) ? strtolower($this->request->plugin) : strtolower(ZuhaInflector::pluginize($options['controller']));
-//		$options['model'] = !empty($model) ? $model : Inflector::classify($options['controller']);
-//		$options['sortField'] = !empty($sortField) ? strtolower($sortField) : 'id';
-//		$options['sortOrder'] = !empty($sortOrder) ? strtolower($sortOrder) : 'ASC';
-//		$options['resultsCount'] = !empty($resultsCount) ? strtolower($resultsCount) : 10;
-//		$options['viewPlugin'] = !empty($viewPlugin) ? $viewPlugin : $options['plugin'];
-//		$options['viewController'] = !empty($viewController) ? $viewController : $options['controller'];
-//		$options['viewAction'] = !empty($viewAction) ? strtolower($viewAction) : 'view';
-//		$options['displayField'] = !empty($displayField) ? strtolower($displayField) : 'name';
-//		$options['displayDescription'] = !empty($displayDescription) ? strtolower($displayDescription) : null;
-//		$options['idField'] = !empty($idField) ? strtolower($idField) : 'id';
-//		$options['showGallery'] = !empty($showGallery) ? $showGallery : false;
-//		$options['galleryModelName'] = !empty($galleryModelName) ? $galleryModelName : $options['model'];
-//		$options['galleryForeignKey'] = !empty($galleryForeignKey) ? $galleryForeignKey : $options['idField'];
-//		$options['galleryThumbSize'] = !empty($galleryThumbSize) ? $galleryThumbSize : 'small';;
-//		App::uses($options['model'], Inflector::camelize($options['plugin']).'.Model');
-//		$Model = new $options['model']();
-//		$results = $Model->find('all', array(
-//			'order' => array(
-//				$options['model'].'.'.$options['sortField'] => $options['sortOrder'],
-//				),
-//			'limit' => $options['resultsCount'],
-//			));
-//		return array('results' => $results, 'options' => $options);
-//	}
-
-
-/**
- * Convenience admin_delete
+ * Convenience delete method
  * The goal is to make less code necessary in individual controllers
  * and have more reusable code.
  *
@@ -472,7 +414,7 @@ class AppController extends Controller {
  * @param int 		$id
  * @param array 	use $options['redirect'] to override default redirect (referer
  * @return string
- * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
+ * @todo get rid of this, make the controllers handle it themselves
  */
 	public function __delete($model = null, $id = null, $options = null) {
 		// set default class & message for setFlash
@@ -516,67 +458,6 @@ class AppController extends Controller {
 
 
 /**
- * Convenience __ajax_edit
- * The goal is to make less code necessary in individual controllers
- * and have more reusable code.
- */
-	public function __ajax_edit($id = null) {
-        if ($this->request->data) {
-			# This will not work for multiple fields, and is meant for a form with a single value to update
-			# Create the model name from the controller requested in the url
-			$model = Inflector::camelize(Inflector::singularize($this->request->params['controller']));
-			# These apparently aren't necessary. Left for reference.
-			//App::import('Model', $model);
-			//$this->$model = new $model();
-			# Working to determine if there is a sub model needed, for proper display of updated info
-			# For example Project->ProjectStatusType, this is typically denoted by if the field name has _id in it, becuase that means it probably refers to another database table.
-			foreach ($this->request->data[$model] as $key => $value) {
-				# weeding out if the form data is id, because id is standard
-			    if($key != 'id') {
-					# we need to refer back to the actual field name ie. project_status_type_id
-					$fieldName = $key;
-					# if the data from the form has a field name with _id in it.  ie. project_status_type_id
-					if (strpos($key, '_id')) {
-						$submodel = Inflector::camelize(str_replace('_id', '', $key));
-						# These apparently aren't necessary. Left for reference.
-						//App::import('Model', $submodel);
-						//$this->$submodel = new $submodel();
-					}
-				}
-			}
-
-            $this->$model->id = $this->request->data[$model]['id'];
-			$fieldValue = $this->request->data[$model][$fieldName];
-
-			# save the data here
-        	if ($this->$model->saveField($fieldName, $fieldValue, true)) {
-				# if a submodel is needed this is where we use it
-				if (!empty($submodel)) {
-					# get the default display field otherwise leave as the standard 'name' field
-					if (!empty($this->$model->$submodel->displayField)){
-		                $displayField = $this->$model->$submodel->displayField;
-		            } else {
-		                $displayField = 'name';
-		            }
-					echo $this->$model->$submodel->field($displayField, array('id' => $fieldValue));
-					# we should have this echo statement sent to a view file for proper mvc structure. Left for reference
-					//$this->set('displayValue', $displayValue);
-				} else {
-					echo $fieldValue;
-					# we should have this echo statement sent to a view file for proper mvc structure. Left for reference
-					//$this->set('displayValue', $displayValue);
-				}
-			# not sure that this would spit anything out.
-			} else {
-				$this->set('error', true);
-				echo $error;
-			}
-		}
-		$this->render(false);
-	}
-
-
-/**
  * Used to show admin layout for admin pages & userRole views if they exist
  * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
  */
@@ -585,7 +466,7 @@ class AppController extends Controller {
 			// this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
 		} else if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
-			if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
+            if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
 				// this elseif checks to see if the user role has a specific view file
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
 				unset($this->request->params['prefix']);
@@ -595,7 +476,7 @@ class AppController extends Controller {
 				$Dispatcher->dispatch($this->request, new CakeResponse(array('charset' => Configure::read('App.encoding'))));
 				break;
 			} else {
-				$this->Session->setFlash(__('Section access restricted.', true));
+				$this->Session->setFlash(__('Section access restricted.'));
 				$this->redirect($this->referer());
 			}
 		} else if (!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) {
@@ -674,7 +555,7 @@ class AppController extends Controller {
 					}
 					$i = 0;
 					if (!empty($url)) { foreach($url as $u) {
-						# check each one against the current url
+						// check each one against the current url
 						$u = str_replace('/', '\/', $u);
 						$urlRegEx = '/'.str_replace('*', '(.*)', $u).'/';
 						if (preg_match($urlRegEx, $this->request->url)) {
@@ -686,19 +567,17 @@ class AppController extends Controller {
 					if (!empty($webpages)) { foreach ($webpages as $webpage) {
 						echo $webpage['Webpage']['content'];
 					}} else {
-						# echo 'do nothing, use default template';
+						//echo 'do nothing, use default template';
 					}
 	            }
 			}
 		}
 
-		$conditions = $this->_templateConditions();
 		// this is because the Webpage model is not loaded for the install site page.
-		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', $conditions);
+		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $this->templateId)));
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
         $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId, $this->request);
         $this->set('defaultTemplate', $templated);
-		
 		// the __APP_DEFAULT_TEMPLATE_ID is deprecated and will be removed
 		if (!empty($this->templateId) && !defined('__APP_DEFAULT_TEMPLATE_ID')) {
 			$this->layout = 'custom';
@@ -709,14 +588,13 @@ class AppController extends Controller {
 
 
 /**
- * check if the template selected is available to the current users role
- *
- * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
+ * Checks if the template selected is available to the current users role
+ * 
+ * @param array $data
+ * @return null
  */
 	private function _userTemplate($data) {
-		// check if the url being requested matches any template settings for user roles
-
-		# set a new template id if the session is over writing it
+		// set a new template id if the session is over writing it
 		$currentUserRole = $this->Session->read('viewingRole') ? $this->Session->read('viewingRole') : $this->userRoleId;
 
 		if (!empty($data['userRoles'])) {
@@ -762,41 +640,6 @@ class AppController extends Controller {
 		} else {
 			return null;
 		}
-	}
-
-
-
-/**
- * Add conditions based on user role for the template
- *
- * @todo		Make slideDock menu available to anyone with permissions to $webpages->edit().  Not just admin
- */
-	private function _templateConditions() {
-		# contain the menus for output into the slideDock if its the admin user
-		if ($this->userRoleId == 1 && in_array('Menus', CakePlugin::loaded())) :
-			# this allows the admin to edit menus
-			$this->Webpage->bindModel(array(
-				'hasMany' => array(
-					'Menu' => array(
-						'className' => 'Menus.Menu',
-						'foreignKey' => '',
-						'conditions' => 'Menu.menu_id is null',
-						),
-					),
-				));
-			return array('conditions' => array(
-				'Webpage.id' => $this->templateId,
-					),
-				'contain' => array(
-					'Menu' => array(
-						'conditions' => array(
-							'Menu.menu_id' => null,
-							),
-						),
-					));
-		else :
-			return array('conditions' => array('Webpage.id' => $this->templateId));
-		endif;
 	}
 
 
