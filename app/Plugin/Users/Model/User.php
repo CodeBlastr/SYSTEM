@@ -82,7 +82,7 @@ class User extends UsersAppModel {
 			'className' => 'Users.UserGroupWallPost',
 			'foreignKey' => 'creator_id',
 			'dependent' => false,
-			),
+			), 
 		);
 
 	public $hasOne = array(

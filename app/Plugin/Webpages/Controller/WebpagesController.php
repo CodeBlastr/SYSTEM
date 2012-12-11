@@ -208,7 +208,7 @@ class WebpagesController extends WebpagesAppController {
 		}
 		$this->set(compact('webpage'));
 		$this->set('page_title_for_layout', $webpage['Webpage']['name']);
-		$this->render('view_' . $webpage['Webpage']['type']);	
+       	$this->render('view_' . $webpage['Webpage']['type']);	
 	}
     
 	
