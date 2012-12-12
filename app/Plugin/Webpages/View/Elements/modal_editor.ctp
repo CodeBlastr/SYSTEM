@@ -51,7 +51,6 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 		});
         $(document.body).append('<div id="background_layer" onclick="offEditMode(true);"></div>');
 		var editor = CKEDITOR.replace('modalEditor', {
-			extraPlugins: 'media', 
 			filebrowserBrowseUrl: '/js/kcfinder/browse.php?type=files', 
 			filebrowserImageBrowseUrl: '/js/kcfinder/browse.php?type=img',
 			filebrowserFlashBrowseUrl: '/js/kcfinder/browse.php?type=flash',
@@ -60,8 +59,7 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 			filebrowserFlashUploadUrl: '/js/kcfinder/upload.php?type=flash', 
 			width: edit_width, 
 			height: edit_height,
-			// copied from config with the addition of save, and the subtraction of maximize
-			toolbar: [['Source','-','Save','ShowBlocks','Templates'], ['Copy','Paste'], ['Undo','Redo','-','Replace','-','RemoveFormat'], ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'],['Bold','Italic','Underline','Strike','-','Subscript','Superscript'], ['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'], ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], ['Link','Unlink','Anchor'], ['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'], ['Format','Font','FontSize'], ['TextColor','BGColor'], ['Media', 'Video_JS']],
+			toolbar: [['Source','-','Save'], ['Bold','Italic','-','JustifyLeft','JustifyCenter','JustifyRight','-','NumberedList','BulletedList'], ['Image','Link','Unlink','MediaEmbed'], ['TextColor', 'Underline','Strike','Subscript','Superscript'], ['Outdent','Indent','Blockquote'], ['Table','HorizontalRule','PageBreak'], ['Format','Font','FontSize']],
 			toolbarCanCollapse: true, 
 			startupFocus: true});
 		
