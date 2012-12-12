@@ -45,4 +45,3 @@ class ContactsContact extends ContactsAppModel {
 		)
 	);
 }
-?>

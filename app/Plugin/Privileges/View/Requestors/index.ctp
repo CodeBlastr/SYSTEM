@@ -48,10 +48,3 @@ foreach ($requestors as $requestor):
 </table>
 </div>
 <?php echo $this->element('paging'); ?>
-<div class="actions">
-	<ul>
-		<li><?php echo $this->Html->link(__('New Requestor', true), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Acos', true), array('controller' => 'sections', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Aco', true), array('controller' => 'sections', 'action' => 'add')); ?> </li>
-	</ul>
-</div>
