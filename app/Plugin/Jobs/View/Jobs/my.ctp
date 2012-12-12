@@ -19,7 +19,8 @@ function delete_job(job_id) {
   if($jobs_count > 0) {   
   foreach ($jobs as $jobs_details) { 
   //echo $this->Element('Category/lists', array('model' => 'Job', 'foreignKey' => $jobs_details['Job']['id'],'jobsId' => $jobs_details['Job']['id'])); 
-  ?>
+   if (strlen($jobs_details['Job']['description']) > 150)
+   $jobs_details['Job']['description'] = substr($jobs_details['Job']['description'], 0, 150) . '...';?>
   
 <div class="indexrow">
     <div class="rowcell pic-con">
@@ -56,3 +57,15 @@ function delete_job(job_id) {
  
  
 <?php }  ?> </div> 
+
+<?php
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+    array(
+        'items' => array(
+            $this->Html->link(__('Add'), array('controller' => 'jobs', 'action' => 'add')),
+            
+        )
+        ),
+    )));
+?>

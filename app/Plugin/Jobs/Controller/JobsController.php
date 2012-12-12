@@ -1,5 +1,6 @@
 <?php
 App::uses('JobsAppController', 'Jobs.Controller');
+
 /**
  * Jobs Controller
  *
@@ -33,26 +34,27 @@ class JobsController extends JobsAppController {
     
 
      /**
-     * This is a function to Lists the Jobs
+     * This is a function to Lists all the posted jobs
      * 
      * @version 1.0
      * @name index
      * @access public
      * @return void
      */
+     
 	public function index() {   
         
       $this->paginate = array('order' => array('id' => 'asc'),'limit' => 10);  
-      $jobs = $this->paginate('Job');  
+      $jobs = $this->paginate('Job');    // set Pagination
       $this->set(compact('jobs')); 
-      
-      
+      //Set Page Title 
       $this->set('page_title_for_layout', __('Lists Jobs')); 
+      //Set Title for Layout
       $this->set('title_for_layout', __('Lists Jobs Code'));   	
 	}
     
      /**
-     * This is a function to Lists the Jobs
+     * This is a function to Lists the Jobs posted by logged user.
      * 
      * @version 1.0
      * @name my
@@ -65,7 +67,7 @@ class JobsController extends JobsAppController {
         
       $conditions = array('Job.creator_id' => $creator_id);                                                                             
       $this->paginate = array('conditions' => $conditions,'order' => array('id' => 'asc'),'limit' => 10);  
-      $jobs = $this->paginate('Job');  
+      $jobs = $this->paginate('Job');  // set Pagination   
       $this->set(compact('jobs')); 
       $this->set('page_title_for_layout', __('Lists Jobs')); 
       $this->set('title_for_layout', __('Lists Jobs Code'));       
@@ -77,30 +79,29 @@ class JobsController extends JobsAppController {
      * @version 1.0
      * @name add
      * @access public
-     * @return redirect Jobs List Page   
+     * @return redirect my Page   
      */
     public function add() {
   
         if (!empty($this->request->data)) {
-            // debug($this->request->data);
-           try {
-                    $this->request->data['Job']['owner_id']=$this->Session->read('Auth.User.id');    // Set Login Session as customer id     
-                    $this->request->data['Job']['creator_id']=$this->Session->read('Auth.User.id'); 
-                    $this->request->data['Job']['modifier_id']=$this->Session->read('Auth.User.id');
-                    $this->Job->save($this->request->data); 
-                    $this->Session->setFlash(__('Job saved.', true));
-                    $this->redirect(array('action' => 'my'));
-               } catch (Exception $e) {
+            try {
+                $this->request->data['Job']['owner_id']=$this->Session->read('Auth.User.id');    // Set Login Session as customer id     
+                $this->request->data['Job']['creator_id']=$this->Session->read('Auth.User.id'); 
+                $this->request->data['Job']['modifier_id']=$this->Session->read('Auth.User.id');
+                $this->Job->save($this->request->data); 
+                $this->Session->setFlash(__('Job saved.', true));
+                $this->redirect(array('action' => 'my'));
+            } catch (Exception $e) {
                 $this->Session->setFlash(__('Job could not be saved.'));
-               }
+            }
         }
         
        if (in_array('Categories', CakePlugin::loaded())) {
             $this->set('categories', $this->Job->Category->generateTreeList());
         }  
         
-         $this->set('page_title_for_layout', __('Create a Job'));  
-         $this->set('title_for_layout', __('Add Job')); 
+       $this->set('page_title_for_layout', __('Create a Job'));  
+       $this->set('title_for_layout', __('Add Job')); 
     }
     
    /**
@@ -109,7 +110,7 @@ class JobsController extends JobsAppController {
      * @version 1.0
      * @name edit
      * @access public
-     * @return redirect Jobs List Page   
+     * @return redirect my Page   
      */
     public function edit($id=null) {
 
@@ -137,13 +138,13 @@ class JobsController extends JobsAppController {
         $this->set('title_for_layout', __('Update Job')); 
     } 
     
-    /**
+     /**
      * This is a function to Delete the Jobs Code
      * 
      * @version 1.0
      * @name jobsdelete
      * @access public
-     * @return redirect Jobs List Page   
+     * @return redirect my Page   
      */ 
     
      public function jobsdelete($id=null) { 
@@ -154,12 +155,12 @@ class JobsController extends JobsAppController {
          $this->redirect(array('action' => 'my'));
      }
                                                       
-/**
-* View method
-* 
-* @param type $id
-* @throws NotFoundException
-*/
+    /**
+    * View method
+    * 
+    * @param type $id
+    * @throws NotFoundException
+    */
     public function view($id = null) {
         $this->Job->id = $id;
         if (!$this->Job->exists()) {
@@ -175,12 +176,12 @@ class JobsController extends JobsAppController {
         $this->set('estimates', in_array('Estimates', CakePlugin::loaded()) ? $this->paginate('Job.Estimate', array('Estimate.foreign_key' => $id, 'Estimate.model' => 'Job')) : null);
     } 
     
-/**
-* estimates method
-* 
-* @param tyte $id
-* @throws NotFoundException
-*/
+    /**
+    * estimates method
+    * 
+    * @param tyte $id
+    * @throws NotFoundException
+    */
     public function estimates($id = null) {
         $this->Job->id = $id;
         if (!$this->Job->exists()) {
@@ -196,9 +197,9 @@ class JobsController extends JobsAppController {
         $this->set('estimates', in_array('Estimates', CakePlugin::loaded()) ? $this->paginate('Job.Estimate', array('Estimate.foreign_key' => $id, 'Estimate.model' => 'Job')) : null);
     }   
      
-     /**
- * Add an opportunity / estimate for a contact
- */
+    /**
+    * Add an opportunity / estimate for a contact
+    */
     public function estimate($jobId = null) {
         $this->Job->id = $jobId;
         if (!$this->Job->exists()) {
@@ -224,14 +225,35 @@ class JobsController extends JobsAppController {
         $this->set('page_title_for_layout', __('Create an bid for %s', $job['Job']['title']));
     }
     
-    function get_categories($job_id = null) {
-      
+     /**
+     * This is a function for get job categories
+     *                                 
+     * @version 1.0
+     * @name get_categories
+     * @access public
+     */ 
     
-      debug(App::Import('Model', 'Categorized'));
+    function get_categories($job_id = null) {
+      App::Import('Model', 'Categories.Categorized') ;
       $Categorized = new Categorized();
-      $categories = $Categorized->find('all', array('conditions'=> array('foreign_key' => $job_id)));  
-     
-  
+      $categories = $Categorized->find('all', array('conditions'=> array('foreign_key' => $job_id,'Model' => 'Job')));  
+      
+          
+      App::Import('Model', 'Categories.Category') ;
+      $Category = new Category();
+       
+      foreach($categories as $val) {
+         $categories_name = $Category->findAllById($val['Categorized']['category_id']);
+         
+         foreach($categories_name as $category_name) { 
+           $get_category_name = $category_name['Category']['name'].','.$get_category_name;
+         }
+      }
+      
+      
+      $get_category_name = substr($get_category_name,0,-1); 
+      
+      return $get_category_name;
       
     }
      
