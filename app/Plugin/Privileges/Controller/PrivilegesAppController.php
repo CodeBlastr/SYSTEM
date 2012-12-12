@@ -101,7 +101,6 @@ class PrivilegesAppController extends AppController {
 		$this->_useSession = $session;
 		$this->_clean = true;
 		$this->aco_update();
-        // $this->Aco->recover(); // thought we might need this, but seems not, so removed for speed
         $this->set('page_title_for_layout', 'Sections & Actions Update');
 	}
 	
@@ -121,26 +120,30 @@ class PrivilegesAppController extends AppController {
  * @return void
  **/
 	function aco_update() {
-		$root = $this->_checkNode(/*'controller', */$this->rootNode, $this->rootNode, null);
-		$controllers = $this->getControllerList();
-		$this->_updateControllers($root, $controllers);
+        $root = $this->_checkNode(/*'controller', */$this->rootNode, $this->rootNode, null);
 		$plugins = array_diff(CakePlugin::loaded(), $this->pluginExclusions);
 		
-		foreach ($plugins as $plugin) {
-			$controllers = $this->getControllerList($plugin);
+        if (!empty($plugins)) {
+            foreach ($plugins as $plugin) {
+                $controllers = $this->getControllerList($plugin);
 
-			$path = $this->rootNode . '/' . $plugin;
-			$pluginRoot = $this->_checkNode(/*'plugin', */$path, $plugin, $root['Aco']['id']);
-			$this->_updateControllers($pluginRoot, $controllers, $plugin);
-			
-			if ($this->_useSession !== 0) {
-				// zuha runs aco_update once and update the session so that plugin is ignored next go around
-				$lastPluginSession = CakeSession::read('Privileges.lastPlugin');
-				$lastPluginSession[] = $plugin;
-				CakeSession::write('Privileges.lastPlugin', $lastPluginSession);
-				break;
-			}
-		}
+                $path = $this->rootNode . '/' . $plugin;
+                $pluginRoot = $this->_checkNode(/*'plugin', */$path, $plugin, $root['Aco']['id']);
+                $this->_updateControllers($pluginRoot, $controllers, $plugin);
+
+                if ($this->_useSession !== 0) {
+                    // zuha runs aco_update once and update the session so that plugin is ignored next go around
+                    $lastPluginSession = CakeSession::read('Privileges.lastPlugin');
+                    $lastPluginSession[] = $plugin;
+                    CakeSession::write('Privileges.lastPlugin', $lastPluginSession);
+                    break;
+                }
+            }
+        } else {
+            $controllers = $this->getControllerList();
+            $this->_updateControllers($root, $controllers);
+        }
+        
 		$this->out(__('<success>Aco Update Complete</success>'));
 		return true;
 	}
@@ -149,6 +152,7 @@ class PrivilegesAppController extends AppController {
  * Kills the session vars so aco_sync can be restarted
  */
 	function clear_session() {
+        $this->Aco->recover('parent');
 		CakeSession::write('Privileges.lastPlugin', null);
         $this->set('page_title_for_layout', 'Update All Sections & Actions');
 	}
@@ -215,7 +219,7 @@ class PrivilegesAppController extends AppController {
 		if (!$plugin) {
 			$controllers = App::objects('Controller', null, false);
 		} else {
-			$controllers = App::objects($plugin . '.Controller', null, false);
+			$controllers = array_diff(App::objects($plugin . '.Controller', null, false), App::objects('Controller', null, false));
 		}
 		return array_diff($controllers, $this->controllerExclusions);
 	}
@@ -230,7 +234,7 @@ class PrivilegesAppController extends AppController {
  */
 	function _checkNode(/*$type = 'controller', */$path, $alias, $parentId = null) {
 		$node = $this->Aco->node($path);
-		if (!$node) {
+		if (empty($node)) {
 			$this->Aco->create(array('parent_id' => $parentId, 'model' => null, 'alias' => $alias, /*'type' => $type*/));
 			$node = $this->Aco->save();
 			$node['Aco']['id'] = $this->Aco->id;
@@ -254,12 +258,12 @@ class PrivilegesAppController extends AppController {
 		$actions = get_class_methods($className);
 		$methods = array_diff($actions, $baseMethods);
 		foreach ($methods as $action) {
-			# zuha functions to ignore --  || $action == 'isAuthorized'
+			// zuha functions to ignore --  || $action == 'isAuthorized'
 			if (strpos($action, '_', 0) === 0 || $action == 'isAuthorized' || $action == 'runcron' || $action == 'authentication') {
 				continue;
 			}
 			$path = $this->rootNode . '/' . $pluginPath . $controllerName . '/' . $action;
-			# zuha add for types
+			// zuha add for types
 			/*if (!empty($pluginPath)) {
 				$type = 'paction';
 			} else {
@@ -328,5 +332,3 @@ class PrivilegesAppController extends AppController {
 	}
 
 }
-
-?>
