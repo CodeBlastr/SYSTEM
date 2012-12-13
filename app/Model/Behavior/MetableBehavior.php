@@ -70,7 +70,7 @@ class MetableBehavior extends ModelBehavior {
  * @todo optimize by flattening and searching for Alias.
  */
 	public function beforeFind(Model $Model, array $query) {
-        $Model->bindModel(array(
+ $Model->bindModel(array(
         	'hasOne' => array(
 				'Meta' => array(
 					'className' => 'Meta',
@@ -95,8 +95,8 @@ class MetableBehavior extends ModelBehavior {
 //		);
 
 		//$query = $this->_queryFields($Model, $query);  // read comment by function
-		$query = $this->_queryConditions($Model, $query);
-		return $query;
+		$query = $this->_queryConditions($Model, $query);  
+       	return $query;
 	}
 
 /**
@@ -109,8 +109,8 @@ class MetableBehavior extends ModelBehavior {
  */
     public function afterFind(Model $Model, $results, $primary) {
 		//debug($results);
-		$results = $this->mergeSerializedMeta($Model, $results);//debug($results);
-		$results = $this->filterByMetaConditions($Model, $results);
+		$results = $this->mergeSerializedMeta($Model, $results); 
+		$results = $this->filterByMetaConditions($Model, $results);  
 		return $results;
 	}
     
@@ -162,7 +162,7 @@ class MetableBehavior extends ModelBehavior {
 				$result[$Model->alias] = Set::merge($result[$Model->alias], unserialize($result['Meta']['value']));
 			}
 			unset($result['Meta']);
-		}
+		} 
 		return $results;
 	}
 
@@ -258,6 +258,7 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  */
 	protected function _queryConditions(Model $Model, $query) {
+        
 		if(!empty($query['conditions']) && is_array($query['conditions'])) {
 			foreach($query['conditions'] as $condition => $value) {
 				if(strstr($condition, $Model->alias.'.!')) {

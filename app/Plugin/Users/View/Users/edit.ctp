@@ -41,7 +41,7 @@
 ?>
 </fieldset>
 
-<?php
+<?php 
 	//if user paid role id defined and user's role id is paid role id then show the link Cancel Subscription 
 	if(defined('__USERS_PAID_ROLE_ID') &&  __USERS_PAID_ROLE_ID == $this->request->data['User']['user_role_id'] ) {
 	
