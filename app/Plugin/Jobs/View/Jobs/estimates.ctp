@@ -8,9 +8,13 @@
 		echo '<div><table class="table table-hover"><tbody>';
 		echo __('<tr><td class="span2">Title</td><td>'.$job['Job']['title'].'</td></tr>');
 		echo __('<tr><td class="span2">Description</td><td>'.$job['Job']['description'].'</td></tr>'); 
-        echo __('<tr><td class="span2">Budget</td><td>$ '.$job['Job']['budget'].'</td></tr>'); 
-        echo __('<tr><td class="span2">Status</td><td>'.$job['Job']['status'].'</td></tr>'); 
-		echo "</tbody></table></div>";
+        echo __('<tr><td class="span2">Budget</td><td>$ '.$job['Job']['budget'].'</td></tr>');
+        echo __('<tr><td class="span2">Acreage</td><td> '.$job['Job']['!acreage'].'</td></tr>'); 
+        echo __('<tr><td class="span2">Address</td><td> '.$job['Job']['!address'].'</td></tr>');
+        echo __('<tr><td class="span2">City</td><td> '.$job['Job']['!city'].'</td></tr>');
+        echo __('<tr><td class="span2">State</td><td> '.$job['Job']['!state'].'</td></tr>');
+        echo __('<tr><td class="span2">Status</td><td>'.$job['Job']['status'].'</td></tr>');  
+      	echo "</tbody></table></div>";
 	} else {
 		echo __('<p>No job details provided.</p>');
 	}
