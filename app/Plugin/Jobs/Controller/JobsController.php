@@ -50,7 +50,7 @@ class JobsController extends JobsAppController {
       //Set Page Title 
       $this->set('page_title_for_layout', __('Lists Jobs')); 
       //Set Title for Layout
-      $this->set('title_for_layout', __('Lists Jobs Code'));   	
+      $this->set('title_for_layout', __('Lists Jobs'));   	
 	}
     
      /**
@@ -69,8 +69,8 @@ class JobsController extends JobsAppController {
       $this->paginate = array('conditions' => $conditions,'order' => array('id' => 'asc'),'limit' => 10);  
       $jobs = $this->paginate('Job');  // set Pagination   
       $this->set(compact('jobs')); 
-      $this->set('page_title_for_layout', __('Lists Jobs')); 
-      $this->set('title_for_layout', __('Lists Jobs Code'));       
+      $this->set('page_title_for_layout', __('Lists My Jobs')); 
+      $this->set('title_for_layout', __('Lists My Jobs'));       
     }
     
     /**
@@ -257,6 +257,15 @@ class JobsController extends JobsAppController {
       
     }
      
+     
+    function get_bids($job_id = null) {
+    
+      App::Import('Model', 'Estimates.Estimate');
+      $estimates = new Estimate();
+      $estimates_details = $estimates->find('all', array('conditions'=> array('foreign_key' => $job_id,'model' => 'Job'))); 
+      
+      return  count($estimates_details);
+    } 
         
     
 }
