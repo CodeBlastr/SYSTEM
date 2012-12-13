@@ -370,3 +370,8 @@ fieldset div.input:last-child {
 fieldset div.input.richtext {
     margin-bottom: 20px;
 }
+
+
+.clear {
+    clear: both;
+}
