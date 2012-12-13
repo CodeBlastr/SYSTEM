@@ -2,10 +2,11 @@
 <?php echo $this->Form->create('UserRole');?>
 	<fieldset>
  		<legend><?php echo __('Edit UserRole');?></legend>
-	<?php
+	<?php 
 		echo $this->Form->input('id');
 		echo $this->Form->input('name');
 		echo $this->Form->input('view_prefix', array('empty' => '-- Option View Access --'));
+      
 	?>
 	</fieldset>
 <?php echo $this->Form->end('Submit');?>
