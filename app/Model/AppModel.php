@@ -39,14 +39,10 @@ class AppModel extends Model {
  * @var boolean|array 
  */
 	public $metaConditions = array();
-	
-/**
- * Constructor
- */
-	public function __construct($id = false, $table = null, $ds = null) {
-		$this->actsAs[] = 'Containable'; // moved here because it was being triggered too late	
-		parent::__construct($id, $table, $ds);
-	}
+    
+    public $actsAs = array(
+        'Containable',
+        );
 
 /**
  * Manipulate data before it is saved.

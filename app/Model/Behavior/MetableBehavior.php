@@ -83,18 +83,18 @@ class MetableBehavior extends ModelBehavior {
 			), false);
         $query['contain'][] = 'Meta'; //$Model->contain('Meta');
         
-#        // kept in case we need to manually join again
-#		$query['joins'][] = array(
-#			'table' => 'metas',
-#			'alias' => 'Meta',
-#			'type' => 'LEFT',
-#			'conditions' => array(
-#				"{$Model->alias}.id = Meta.foreign_key",
-#				"Meta.model = '{$Model->alias}'"
-#			)
-#		);
+//        // kept in case we need to manually join again
+//		$query['joins'][] = array(
+//			'table' => 'metas',
+//			'alias' => 'Meta',
+//			'type' => 'LEFT',
+//			'conditions' => array(
+//				"{$Model->alias}.id = Meta.foreign_key",
+//				"Meta.model = '{$Model->alias}'"
+//			)
+//		);
 
-		$query = $this->_queryFields($Model, $query);  // read comment by function
+		//$query = $this->_queryFields($Model, $query);  // read comment by function
 		$query = $this->_queryConditions($Model, $query);
 		return $query;
 	}
