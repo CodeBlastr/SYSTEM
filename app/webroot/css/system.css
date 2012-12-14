@@ -47,10 +47,6 @@ Note that the class names could be updated and change often.
 td.show {
 	display: table-cell;
 }
-.hide form {
-	display: block;
-	background: #f0f0f0;
-}
 .edit input, .edit textarea, .edit select {
 	min-width: 0;
 }
