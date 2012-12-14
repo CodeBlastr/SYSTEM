@@ -264,6 +264,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 * @todo There must be a better way...
 	 */
 		public function pluginize($name) {
+           
+      
+          
 			# list of models and controllers to rename to the corresponding plugin
 			$name = Inflector::singularize(Inflector::camelize($name));
 			
@@ -343,6 +346,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
                 'ProductsProductOption' => 'Products',
                 'ProductStore' => 'Products',
                 'Product' => 'Products',
+                'Job' => 'Jobs', 
 				'ProjectIssue' => 'Projects',
 				'Project' => 'Projects',
 				'ProjectsMember' => 'Projects',
@@ -401,9 +405,12 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Question' => 'Questions',
 				'QuestionAnswer' => 'Questions',
 				);
+            
+           
 			if (!empty($name) && $allowed[$name] !== null) {
 				return $allowed[$name];
 			} else {
+              
 				return Inflector::tableize($name);
 			}
 		}
