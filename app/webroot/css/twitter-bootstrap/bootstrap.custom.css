@@ -355,6 +355,9 @@ footer {
 .table-hover td:hover a.edit {
 	display: inline;
 }
+td input {
+    margin-bottom: 0 !important;
+}
 
 
 /* Forms */
