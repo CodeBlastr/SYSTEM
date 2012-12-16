@@ -319,7 +319,7 @@ class FormHelper extends CakeFormHelper {
 			}
 			unset($options['value']);
 		}
-		return $this->Html->useTag('richtext', $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor').$this->Html->script('ckeditor/adapters/jquery'), $Cke->load($fieldId, $ckeSettings));
+		return $this->Html->useTag('richtext', $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)).$this->Html->script('ckeditor/adapters/jquery', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
 	}
 	
 	
