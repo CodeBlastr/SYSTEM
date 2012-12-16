@@ -118,6 +118,7 @@ class AppController extends Controller {
 		parent::beforeRender();
 		$this->set('referer', 'test'); // used for back button links, could be useful for breadcrumbs possibly
 		$this->set('_serialize', array_keys($this->viewVars));
+        $this->set('_view', $this->view);
 	}
 	
 /**
