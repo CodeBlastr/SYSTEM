@@ -193,14 +193,34 @@ span.btn {
 .form-responsive tr.text label, .form-responsive tr.select label, .form-responsive tr.textarea label {
     text-align: right;
 }
-.form-responsive tr.text label.error {
+.form-responsive td label {
+    color: #999999;
+}
+.form-responsive tr label.error {
     text-align: left;
+    color: #D14;
 }
 .form-responsive .checkbox input[type="checkbox"], .form-responsive .radio input[type="radio"] {
     float: right;
 }
-.form-responsive td label {
-    color: #999999;
+.form-responsive select, 
+.form-responsive textarea, 
+.form-responsive input[type="text"], 
+.form-responsive input[type="password"], 
+.form-responsive input[type="datetime"], 
+.form-responsive input[type="datetime-local"], 
+.form-responsive input[type="date"], 
+.form-responsive input[type="month"], 
+.form-responsive input[type="time"], 
+.form-responsive input[type="week"], 
+.form-responsive input[type="number"], 
+.form-responsive input[type="email"], 
+.form-responsive input[type="url"], 
+.form-responsive input[type="search"], 
+.form-responsive input[type="tel"], 
+.form-responsive input[type="color"], 
+.form-responsive .uneditable-input {
+    margin-bottom: 0;
 }
 
 
