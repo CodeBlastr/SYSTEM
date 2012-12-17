@@ -196,6 +196,9 @@ span.btn {
 .form-responsive .checkbox input[type="checkbox"], .form-responsive .radio input[type="radio"] {
     float: right;
 }
+.form-responsive td label {
+    color: #999999;
+}
 
 
 
