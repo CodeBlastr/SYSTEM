@@ -10,6 +10,9 @@
 .hero-unit {
 	clear: both;
 }
+i {
+    text-indent: -5000px;
+}
 .first {
 	margin-left: 0;
 }
@@ -183,6 +186,15 @@ span.btn {
 .form-inline label, .form-inline input[type=submit], .form-inline a {
     vertical-align: middle;
     margin: 0 8px;
+}
+.form-responsive td {
+    border: 0;
+}
+.form-responsive tr.text label, .form-responsive tr.select label, .form-responsive tr.textarea label {
+    text-align: right;
+}
+.form-responsive .checkbox input[type="checkbox"], .form-responsive .radio input[type="radio"] {
+    float: right;
 }
 
 

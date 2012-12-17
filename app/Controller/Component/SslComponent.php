@@ -14,7 +14,7 @@ class SslComponent extends Component {
 	public function shutdown() { }
     
     public function force() {
-        if(!$this->RequestHandler->isSSL()) {
+        if(!$this->RequestHandler->isSSL() && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
             $this->Controller->redirect('https://'.$this->__url());
         }
     }
