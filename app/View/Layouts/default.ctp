@@ -41,8 +41,6 @@ echo defined('__REPORTS_ANALYTICS') ? $this->Element('analytics', array(), array
         <?php echo $this->Session->flash(); echo $this->Session->flash('auth'); ?>
         
 		<?php echo $this->Element('twitter-bootstrap/page_title'); ?>
-    	
-		<?php echo $this->Element('twitter-bootstrap/context_menu'); ?>
         
         <?php echo $content_for_layout; ?> 
         
