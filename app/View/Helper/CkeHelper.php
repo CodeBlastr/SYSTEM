@@ -23,12 +23,12 @@ class CkeHelper extends Helper {
 
 		$configuration = $this->_config($settings);
         $code = "
+            
             function toggleExtras() {
     			$('.cke_toolbar_break').nextAll().toggle();
             }
-            
             function ExecuteCommand( commandName ) {
-	            var editor = CKEDITOR.instances.".$did.";
+                var editor = CKEDITOR.instances.$did;
                 if ( editor.mode == 'wysiwyg' ) {
 		            editor.execCommand( commandName );
                     $('#exec-source').html('<i class=\"icon-edit\"></i> DESIGN');
@@ -37,14 +37,19 @@ class CkeHelper extends Helper {
                     $('#exec-source').html('<i class=\"icon-wrench\"></i> HTML');
                 }
             }
-            
-  			$('#".$did."').ckeditor(function(){ 
-				$('.cke_toolbar_break').nextAll().hide();
-				//$('.cke_toolbox_collapser').addClass('cke_toolbox_collapser_min');
-				}, 
-				{".$configuration."});
+            $('#".$did."').ckeditor('instanceReady', function() { 
+    			toggleExtras();
+			}, {".$configuration."});
         "; 
         return $css . $this->Html->scriptBlock($code);  
+        
+        /* these will be useful in the future
+        http://docs.ckeditor.com/#!/api/CKEDITOR.config
+        
+        config.templates_files = [
+            '/editor_templates/site_default.js',
+            'http://www.example.com/user_templates.js
+        ]; */
     } 
 	
 	

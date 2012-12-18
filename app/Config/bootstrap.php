@@ -371,6 +371,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'TransactionItem' => 'Transactions',
 				'TransactionPayment' => 'Transactions',
 				'TransactionShipment' => 'Transactions',
+    			'TransactionTax' => 'Transactions',
 				'Twitter' => 'Twitter',
 				'Used' => 'Users',
 				'UserConnect' => 'Users',
