@@ -176,6 +176,9 @@ span.btn {
 .navbar li {
 	list-style-type: none;
 }
+.navbar-form {
+    margin: 12px 0 0 20px;
+}
 .form-inline {
     display: inline;
 }
@@ -273,10 +276,13 @@ span.btn {
 }
 
 
-/* custom - to be removed */
+/* custom  */
 .contextSorter {
 	float : right;
 	overflow: auto;
+}
+.contextSorterForm {
+    margin: 0;
 }
 .contextSorter select { 
 	margin :0; 
