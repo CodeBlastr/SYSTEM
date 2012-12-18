@@ -13,8 +13,8 @@
     			'element' => 'item', 
     			'elementPlugin' => 'webpages')); ?>
         <h5>
-        <?php echo $this->Html->link(__('Go Back'), '', array('class' => 'btn', 'onClick' => 'history.go(-1);return false;')); ?>
-        <?php echo $this->Html->link(__('Refresh Page'), '', array('class' => 'btn', 'onClick' => 'window.location.reload()')); ?>
+        <?php echo $this->Html->link(__('Save'), '', array('class' => 'btn', 'onClick' => 'history.go(-1);return false;')); ?>
+        <?php echo $this->Html->link(__('Save & Continue Editing'), '', array('class' => 'btn', 'onClick' => 'window.location.reload()')); ?>
         </h5>
     </div>
 
