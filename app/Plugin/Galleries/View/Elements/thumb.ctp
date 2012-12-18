@@ -36,7 +36,6 @@ $thumbAlt = !empty($thumbAlt) ? array('alt' => $thumbAlt) : array('alt' => $gall
 $thumbClass = !empty($thumbClass) ? array('class' => $thumbClass) : array('class' => 'gallery-thumb');
 $thumbId = !empty($thumbId) ? array('id' => $thumbId) : array('id' => 'gallery'.$galleryThumb['Gallery']['id']);
 $thumbImageOptions = array_merge($thumbWidth, $thumbHeight, $thumbAlt, $thumbClass, $thumbId);
-
 $thumbDiv = isset($thumbDiv) ? ($thumbDiv==true ? true : false) : true; // added to skip the display of div on demand (true/false)
 $thumbLinkOptions = !empty($thumbLinkOptions) ? array_merge($thumbClass, $thumbId, $thumbLinkOptions, array('escape' => false)) : array('escape' => false);
 $thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; // to append anything to the image within the link
@@ -50,11 +49,7 @@ if (!empty($galleryThumb)) {
 		));	
 } else {
 	$imagePath = '/img/noImage.jpg';
-    $image = $this->Html->image($imagePath,	array(
-		'width' => $thumbWidth, 
-		'height' => $thumbHeight,
-		'alt' => 'no image',
-		));	
+    $image = $this->Html->image($imagePath,	$thumbImageOptions);	
 }
 
 echo !empty($thumbLink) ? $this->Html->link($image . $thumbLinkAppend, $thumbLink, $thumbLinkOptions) :	$image;
