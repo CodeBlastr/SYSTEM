@@ -74,13 +74,13 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
             $(editor.container.$).find('span [class=cke_toolbox]').addClass('my_cke_toolbox'); // Up toolbox
 			$("#modalEditorWrap").center();
 			$("#cke_modalEditor").attr("pageid", page_id);
+			$('.cke_button__save').removeClass('cke_button_disabled');
         });
         editor.on( 'dataReady', function( e ) {
             $(document.body).css('padding-top', $('.cke_toolbox').height());
             if (CKEDITOR.env.ie) {$('#cke_' + id).css('position', 'relative'); $('#cke_' + id).css('z-index', '101');}
-			$('.cke_button_save').removeClass('cke_disabled');
-			$('.cke_button_save').unbind('click'); // Fix double save
-			$('.cke_button_save').click(function () {
+			$('.cke_button__save').unbind('click'); // Fix double save
+			$('.cke_button__save').click(function () {
                 saveCKEData();
 			});
             $('.cke_button_maximize').click(function () {
