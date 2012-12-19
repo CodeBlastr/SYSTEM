@@ -88,8 +88,8 @@ small {
 	overflow: hidden;
 }
 .imageCell img {
-	width: 94px;
-	height: 94px;
+	width: 84px;
+	height: 84px;
 }
 .titleCell.brand {
 	padding-top: 0;
@@ -273,19 +273,25 @@ span.btn {
 }
 
 
-/* custom - to be removed */
+/* custom  */
 .contextSorter {
 	float : right;
 	overflow: auto;
 }
+.contextSorterForm {
+    margin: 0;
+}
 .contextSorter select { 
 	margin :0; 
 }
-.index-form {
+.page-title .index-form {
 	margin-bottom: 0;
 	display: block;
 }
-.index-form:after, .clearfix:after {
+.page-title .index-form {
+    margin: 12px 0 0 20px;
+}
+.page-title .index-form:after, .clearfix:after {
     content: ".";
     display: block;
     height: 0;
@@ -399,10 +405,11 @@ td input {
 
 
 /* Forms */
-fieldset legend.toggleClick {
+fieldset legend.toggleClick, legend.sectionTitle {
     background: #F7F7F7;
+    border-radius: 0.7em;
 }
-fieldset legend.toggleClick small {
+fieldset legend.toggleClick small, legend.sectionTitle small {
     padding-left: 10px;
 }
 fieldset div.input:last-child {

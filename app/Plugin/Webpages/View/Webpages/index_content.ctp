@@ -1,20 +1,36 @@
 <?php
-// set the contextual sorting items
-echo $this->Element('context_sort', array(
-    'context_sort' => array(
-        'type' => 'select',
-        'sorter' => array(array(
-            'heading' => '',
-            'items' => array(
-                $this->Paginator->sort('name'),
-                $this->Paginator->sort('created'),
-                )
-            )), 
-        )
-	)); 
+echo $this->Element('scaffolds/index', array(
+    'data' => $webpages, 
+	'actions' => array(
+		$this->Html->link('View', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'view', '{id}')),
+		$this->Html->link('Edit', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'edit', '{id}')),
+		$this->Html->link('Convert to Section', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'sub', '{id}')),
+		)
+    ));
 
-echo $this->Element('forms/search', array(
-	'url' => '/webpages/webpages/index/', 
+
+$items = '';
+foreach ($sections as $section) {
+    $items[] = $this->Html->link($section['Parent']['name'], array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'sub', 'filter' => 'parent_id:' . $section['Parent']['id']));
+}
+
+// set the contextual sorting items
+//echo $this->Element('context_sort', array(
+//    'context_sort' => array(
+//        'type' => 'select',
+//        'sorter' => array(array(
+//            'heading' => '',
+//            'items' => array(
+//                $this->Paginator->sort('name'),
+//                $this->Paginator->sort('created'),
+//                )
+//            )), 
+//        )
+//    )); 
+  
+// set contextual search options
+$this->set('forms_search', array(
+    'url' => '/webpages/webpages/index/', 
 	'inputs' => array(
 		array(
 			'name' => 'contains:name', 
@@ -39,21 +55,7 @@ echo $this->Element('forms/search', array(
 			)*/
 		)
 	));
-
-echo $this->Element('scaffolds/index', array(
-    'data' => $webpages, 
-	'actions' => array(
-		$this->Html->link('View', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'view', '{id}')),
-		$this->Html->link('Edit', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'edit', '{id}')),
-		$this->Html->link('Convert to Section', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'sub', '{id}')),
-		)
-    ));
-
-
-$items = '';
-foreach ($sections as $section) {
-    $items[] = $this->Html->link($section['Parent']['name'], array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'sub', 'filter' => 'parent_id:' . $section['Parent']['id']));
-}	
+    
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
