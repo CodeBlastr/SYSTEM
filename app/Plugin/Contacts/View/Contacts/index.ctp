@@ -1,20 +1,25 @@
 <?php 
-// set the contextual sorting items
-echo $this->Element('context_sort', array(
-    'context_sort' => array(
-        'type' => 'select',
-        'sorter' => array(array(
-            'heading' => '',
-            'items' => array(
-                $this->Paginator->sort('name'),
-                $this->Paginator->sort('created'),
-                )
-            )), 
-        )
-	)); 
+echo $this->Element('scaffolds/index', array('data' => $contacts));
 
-echo $this->Element('forms/search', array(
-	'url' => '/contacts/contacts/index/', 
+
+
+// set the contextual sorting items
+//echo $this->Element('context_sort', array(
+//    'context_sort' => array(
+//        'type' => 'select',
+//        'sorter' => array(array(
+//            'heading' => '',
+//            'items' => array(
+//                $this->Paginator->sort('name'),
+//                $this->Paginator->sort('created'),
+//                )
+//            )), 
+//        )
+//    ));
+  
+// set contextual search options
+$this->set('forms_search', array(
+    'url' => '/contacts/contacts/index/', 
 	'inputs' => array(
 		array(
 			'name' => 'contains:name', 
@@ -39,10 +44,7 @@ echo $this->Element('forms/search', array(
 			)*/
 		)
 	));
-
-echo $this->Element('scaffolds/index', array('data' => $contacts));
-
-
+    
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(

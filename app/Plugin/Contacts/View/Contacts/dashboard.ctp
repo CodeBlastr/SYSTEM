@@ -1,5 +1,7 @@
-<?php echo $this->Html->script('https://www.google.com/jsapi', array('inline' => false)); ?>
+<?php echo $this->Html->script('http://code.highcharts.com/highcharts.js', array('inline' => false)); ?>
+<?php echo $this->Html->script('http://code.highcharts.com/modules/exporting.js', array('inline' => false)); ?>
 <?php echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false)); ?>
+
 <div class="masonry contacts dashboard">
 	<div class="masonryBox dashboardBox tagLeads">
     	<h3 class="title"><span class="label label-important">Attention!</span> New Leads </h3>
@@ -16,35 +18,58 @@
 		
 		if (!empty($leadActivities)) { 
         	echo '<h4>Leads over time</h4>'; ?>
-            
 			<script type="text/javascript">
-			google.load("visualization", "1", {packages:["corechart"]});
-			google.setOnLoadCallback(drawLeadsChart);
-				 
-			function drawLeadsChart() {
-				// Create and populate the data table.
-				var data = google.visualization.arrayToDataTable([
-				['x', 'Date'],
-				<?php 
-				foreach ($leadActivities as $leadGroup) { ?>
-					['<?php echo date('M d, Y', strtotime($leadGroup['Activity']['created'])); ?>',   <?php echo $leadGroup['Activity']['COUNT(`Activity`.`created`)']; ?>],
-				<?php } ?>
-				]);
-						
-				// Create and draw the visualization.
-				new google.visualization.LineChart(document.getElementById('leads_over_time')).
-					draw(data, {
-						curveType: "function",
-						width: 290, height: 200,
-						legend: {position: 'none'},
-						chartArea: {width: '80%', height: '80%'}
-						}
-					);
-				$(".masonry").masonry("reload"); // reload the layout
-			}
-			</script>
-            
- 			<div id="leads_over_time"></div>
+            // leads chart @todo, once you have daily data convert this to zoomable too (like the above)
+            var chart;
+            $(document).ready(function() {
+                chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'leadsTime',
+                        type: 'spline'
+                    },
+                    credits: false,
+                    title: {
+                        text: false
+                    },
+                    subtitle: {
+                        text: false
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        dateTimeLabelFormats: { // don't display the dummy year
+                            month: '%e. %b',
+                            year: '%b'
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: false
+                        },
+                        min: 0
+                    },
+                    tooltip: {
+                        formatter: function() {
+                                return '<b>'+ this.series.name +'</b><br/>'+
+                                Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y +' m';
+                        }
+                    },
+
+                    series: [{
+                        name: 'Leads',
+                        // Define the data points. All series have a dummy year
+                        // of 1970/71 in order to be compared on the same x axis. Note
+                        // that in JavaScript, months start at 0 for January, 1 for February etc.
+                        data: [
+                        <?php 
+                        foreach ($leadActivities as $leadGroup) { ?>
+                            [Date.UTC(<?php echo date('Y, n-1, d', strtotime($leadGroup['Activity']['created'])); ?>),   <?php echo $leadGroup['Activity']['COUNT(`Activity`.`created`)']; ?>],
+                        <?php } ?>
+                        ]
+                    }]
+                });
+            });
+            </script>
+            <div id="leadsTime" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
 		<?php
         } ?>
 	</div>
@@ -68,34 +93,59 @@
 		if (!empty($estimateActivities)) { 
         	echo '<h4>Opportunities over time</h4>'; ?>
             
-			<script type="text/javascript">
-			google.load("visualization", "1", {packages:["corechart"]});
-			google.setOnLoadCallback(drawLeadsChart);
-				 
-			function drawLeadsChart() {
-				// Create and populate the data table.
-				var data = google.visualization.arrayToDataTable([
-				['x', 'Date'],
-				<?php 
-				foreach ($estimateActivities as $estimateGroup) { ?>
-					['<?php echo date('M d, Y', strtotime($estimateGroup['Activity']['created'])); ?>',   <?php echo $estimateGroup['Activity']['COUNT(`Activity`.`created`)']; ?>],
-				<?php } ?>
-				]);
-						
-				// Create and draw the visualization.
-				new google.visualization.LineChart(document.getElementById('estimates_over_time')).
-					draw(data, {
-						curveType: "function",
-						width: 290, height: 200,
-						legend: {position: 'none'},
-						chartArea: {width: '80%', height: '80%'}
-						}
-					);
-				$(".masonry").masonry("reload"); // reload the layout
-			}
-			</script>
-            
  			<div id="estimates_over_time"></div>
+            <script type="text/javascript">
+            // leads chart @todo, once you have daily data convert this to zoomable too (like the above)
+            var chart;
+            $(document).ready(function() {
+                chart = new Highcharts.Chart({
+                    chart: {
+                        renderTo: 'estimatesTime',
+                        type: 'spline'
+                    },
+                    credits: false,
+                    title: {
+                        text: false
+                    },
+                    subtitle: {
+                        text: false
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        dateTimeLabelFormats: { // don't display the dummy year
+                            month: '%e. %b',
+                            year: '%b'
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: false
+                        },
+                        min: 0
+                    },
+                    tooltip: {
+                        formatter: function() {
+                                return '<b>'+ this.series.name +'</b><br/>'+
+                                Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y +' m';
+                        }
+                    },
+
+                    series: [{
+                        name: 'Opportunities',
+                        // Define the data points. All series have a dummy year
+                        // of 1970/71 in order to be compared on the same x axis. Note
+                        // that in JavaScript, months start at 0 for January, 1 for February etc.
+                        data: [
+                        <?php 
+                        foreach ($estimateActivities as $estimateGroup) { ?>
+                            [Date.UTC(<?php echo date('Y, n-1, d', strtotime($estimateGroup['Activity']['created'])); ?>),   <?php echo $estimateGroup['Activity']['COUNT(`Activity`.`created`)']; ?>],
+                        <?php } ?>
+                        ]
+                    }]
+                });
+            });
+            </script>
+            <div id="estimatesTime" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
 		<?php
         } ?>
 	</div>
@@ -158,36 +208,86 @@
     	for ($i = 0; $i <= 4; $i++) {
     		echo !empty($rActivities[$i]['Activity']['name']) ? '<p>' . $this->Html->link($rActivities[$i]['Activity']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $rActivities[$i]['Activity']['foreign_key'])) . '</p>' : null;
     	} ?> 
-        
-		<script type="text/javascript">
-		google.load("visualization", "1", {packages:["corechart"]});
-		google.setOnLoadCallback(drawLeadsChart);
-			 
-		function drawLeadsChart() {
-			// Create and populate the data table.
-			var data = google.visualization.arrayToDataTable([
-			['x', 'Date'],
-			<?php 
-			foreach ($activities as $activity) { ?>
-				['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity[0]['count']; ?>],
-			<?php } ?>
-			]);
-					
-			// Create and draw the visualization.
-			new google.visualization.LineChart(document.getElementById('activities_over_time')).
-				draw(data, {
-					curveType: "function",
-					width: 290, height: 200,
-					legend: {position: 'none'},
-					chartArea: {width: '80%', height: '80%'}
-					}
-				);
-			$(".masonry").masonry("reload"); // reload the layout
-		}
-		</script>
+        <script type="text/javascript">
+
+        // activity over time chart
+        var chart;
+        $(document).ready(function() {
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'activityTime',
+                    zoomType: 'x',
+                    spacingRight: 20
+                },
+                credits: {
+                    enabled: false
+                },
+                title: false,
+                subtitle: false,
+                xAxis: {
+                    type: 'datetime',
+                    maxZoom: 14 * 24 * 3600000, // fourteen days
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    title: false,
+                    showFirstLabel: false
+                },
+                tooltip: {
+                    shared: true
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    area: {
+                        fillColor: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
+                            stops: [
+                                [0, Highcharts.getOptions().colors[0]],
+                                [1, 'rgba(0,132,240,0)']
+                            ]
+                        },
+                        lineWidth: 1,
+                        marker: {
+                            enabled: false,
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    radius: 5
+                                }
+                            }
+                        },
+                        shadow: false,
+                        states: {
+                            hover: {
+                                lineWidth: 1
+                            }
+                        },
+                        threshold: null
+                    }
+                },
+
+                series: [{
+                    type: 'area',
+                    name: 'Incoming Leads',
+                    pointInterval: 24 * 3600 * 1000,
+                    pointStart: Date.UTC(2012, 19, 10),
+                    data: [
+                    <?php 
+                    foreach ($activities as $activity) { ?>
+                        <?php echo $activity[0]['count']; ?>,
+                    <?php } ?>
+                    ]
+                }]
+            });
+        });
+        </script>
         
 		<h4>Activities for last 60 days</h4>
-		<div id="activities_over_time"></div>
+		<div id="activityTime" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
 		<p class="pull-right"><?php echo $this->Html->link(__('All of Today\'s Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activities', 'contains' => 'created:' . date('Y-m-d'))); ?></p>
 	<?php
     } ?>
