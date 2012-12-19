@@ -33,7 +33,7 @@ $indexHeight = !empty($galleryThumb['GallerySettings']['indexImageHeight']) ? $g
 $thumbWidth = !empty($thumbWidth) ? array('width' => $thumbWidth) : array('width' => $indexWidth);
 $thumbHeight = !empty($thumbHeight) ? array('height' => $thumbHeight) : array('height' => $indexHeight);
 $thumbAlt = !empty($thumbAlt) ? array('alt' => $thumbAlt) : array('alt' => $galleryThumb['GalleryThumb']['filename']);
-$thumbClass = !empty($thumbClass) ? array('class' => $thumbClass) : array('class' => 'gallery-thumb');
+$thumbClass = !empty($thumbClass) ? array('class' => $thumbClass) : array('class' => 'thumbnail gallery-thumb');
 $thumbId = !empty($thumbId) ? array('id' => $thumbId) : array('id' => 'gallery'.$galleryThumb['Gallery']['id']);
 $thumbImageOptions = array_merge($thumbWidth, $thumbHeight, $thumbAlt, $thumbClass, $thumbId);
 $thumbDiv = isset($thumbDiv) ? ($thumbDiv==true ? true : false) : true; // added to skip the display of div on demand (true/false)
