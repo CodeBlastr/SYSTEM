@@ -25,6 +25,12 @@ i {
 .container .navbar .btn-navbar {
     margin: 16px 0 0;
 }
+.nav-list a {
+    cursor: pointer;
+}
+.nav-list a:hover {
+    text-decoration: none;
+}
 small {
     vertical-align: baseline;
 }
@@ -88,8 +94,8 @@ small {
 	overflow: hidden;
 }
 .imageCell img {
-	width: 94px;
-	height: 94px;
+	width: 84px;
+	height: 84px;
 }
 .titleCell.brand {
 	padding-top: 0;
@@ -405,10 +411,11 @@ td input {
 
 
 /* Forms */
-fieldset legend.toggleClick {
+fieldset legend.toggleClick, legend.sectionTitle {
     background: #F7F7F7;
+    border-radius: 0.7em;
 }
-fieldset legend.toggleClick small {
+fieldset legend.toggleClick small, legend.sectionTitle small {
     padding-left: 10px;
 }
 fieldset div.input:last-child {
