@@ -27,7 +27,7 @@ class Setting extends AppModel {
 /**
  * instead of storing available settings in a database we store all of the available settings here
  */
-	public $names = array();
+	public $settings = array();
 
 
 	public function __construct($id = false, $table = null, $ds = null) {
@@ -345,7 +345,7 @@ class Setting extends AppModel {
             ),
 		);
         ksort($settings);
-        $this->names = $settings;
+        $this->settings = $settings;
 	}
     
 /**
@@ -539,8 +539,8 @@ class Setting extends AppModel {
  */
 	public function getNames($typeName = null) {
 		if (!empty($typeName)) {
-			#$preFix = Zuha::enum($typeName);
-			return $this->names[$typeName];
+			//$preFix = Zuha::enum($typeName);
+			return $this->settings[$typeName];
 		}
 
 		/* This is a really helpful piece of code, but I don't know where to put it for reuse
@@ -561,7 +561,7 @@ class Setting extends AppModel {
  * @return {string}		Text description
  */
 	public function getDescription($typeName, $name) {
-		foreach ($this->names[$typeName] as $setting) {
+		foreach ($this->settings[$typeName] as $setting) {
 			if ($setting['name'] == $name) {
 				$description = $setting['description'];
 			}
@@ -576,7 +576,7 @@ class Setting extends AppModel {
  * @return {array}
  */
 	public function types() {
-		foreach ($this->names as $key => $value) :
+		foreach ($this->settings as $key => $value) :
 			$types[$key] = $key;
 		endforeach;
 
