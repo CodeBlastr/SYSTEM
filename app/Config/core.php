@@ -5,8 +5,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php');
 	Configure::write('Session.cookie', 'PHPSESSID');
 } else {
-	echo 'no core.php file exists';
-	die();
+	// this else fires on install/site so we can't have die() here.
+	//echo 'no core.php file exists';
+	//die();
 	$debugger = !empty($_GET['debugger']) ? $_GET['debugger'] : 2;
 	// Configure::write('debug', 2);
 	Configure::write('debug', $debugger);

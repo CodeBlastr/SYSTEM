@@ -91,3 +91,9 @@
 [submodule "app/Plugin/Estimates"]
 	path = app/Plugin/Estimates
 	url = git@github.com:zuha/Estimates-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Ratings"]
+	path = app/Plugin/Ratings
+	url = git@github.com:zuha/Ratings-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Invites"]
+	path = app/Plugin/Invites
+	url = git@github.com:zuha/Invites-Zuha-Cakephp-Plugin.git

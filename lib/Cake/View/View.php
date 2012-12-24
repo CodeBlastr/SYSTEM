@@ -960,6 +960,7 @@ class View extends Object {
 		}
 		$paths = $this->_paths($plugin);
 		$exts = $this->_getExtensions();
+		
 		foreach ($exts as $ext) {
 			foreach ($paths as $path) {
 				if (file_exists($path . $name . $ext)) {
@@ -1088,6 +1089,7 @@ class View extends Object {
 			for ($i = 0; $i < $count; $i++) {
 				if (!in_array($viewPaths[$i], $corePaths)) {
 					$paths[] = $viewPaths[$i] . 'Plugin' . DS . $plugin . DS;
+					$paths[] = sprintf($viewPaths[$i], $plugin) . DS . $plugin . DS; // zuha, better paths for plugins in the sites directory
 				}
 			}
 			$paths = array_merge($paths, App::path('View', $plugin));

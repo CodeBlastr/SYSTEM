@@ -1,20 +1,16 @@
 <?php
-// set the contextual sorting items
-echo $this->Element('context_sort', array(
-    'context_sort' => array(
-        'type' => 'select',
-        'sorter' => array(array(
-            'heading' => '',
-            'items' => array(
-                $this->Paginator->sort('name'),
-                $this->Paginator->sort('created'),
-                )
-            )), 
-        )
-	)); 
 
-echo $this->Element('forms/search', array(
-	'url' => '/webpages/webpages/index/', 
+echo $this->Element('scaffolds/index', array(
+    'data' => $webpages, 
+	'actions' => array(
+		$this->Html->link('View', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'view', '{id}')),
+		$this->Html->link('Edit', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'edit', '{id}')),
+		)
+    ));
+
+// set contextual search options
+$this->set('forms_search', array(
+    'url' => '/webpages/webpages/index/', 
 	'inputs' => array(
 		array(
 			'name' => 'contains:name', 
@@ -39,15 +35,7 @@ echo $this->Element('forms/search', array(
 			)*/
 		)
 	));
-
-echo $this->Element('scaffolds/index', array(
-    'data' => $webpages, 
-	'actions' => array(
-		$this->Html->link('View', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'view', '{id}')),
-		$this->Html->link('Edit', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'edit', '{id}')),
-		)
-    ));
-
+    
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
