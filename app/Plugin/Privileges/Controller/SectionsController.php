@@ -47,7 +47,7 @@ class SectionsController extends PrivilegesAppController {
 						)
 					)
 				),
-			'order' => array('Section.lft ASC')	
+			'order' => array('Section.alias', 'Section.lft ASC')	
 		));
         
 		//$parent = $this->Section->getParentNode($pluginId);
@@ -81,39 +81,6 @@ class SectionsController extends PrivilegesAppController {
 		
 		$this->set('groups' , $groups);
         $this->set('page_title_for_layout', __('Manage Privileges'));
-	}
-	
-
-/*
- * The form for adding an Section Manually. 
- * Added for not running users_controller/build_acl everytime.
- * 
- * @todo Can probably delete this now, as aco_sync should take care of it. 
- */
-	public function add(){		
-		App::import('Component', 'AclExtras.AclExtras');
-		$AclExtras = new AclExtrasComponent;
-		set_time_limit(1200);
-		
-		if(!empty($this->request->data)){
-			if (!empty($this->request->data['Section']['controller'])) : 
-				$AclExtras->aco_sync(array('controllers' => $this->request->data['Section']['controller']));
-			elseif (!empty($this->request->data['Section']['plugin'])) :
-				$AclExtras->aco_sync(array('plugins' => $this->request->data['Section']['plugin']));
-			endif;
-				
-		} else {
-			$AclExtras->aco_sync();
-		}
-		
-		$message = '';
-		foreach ($AclExtras->out as $out) :
-			$message .= $out.'<br />';
-		endforeach;
-		
-		$message = !empty($message) ? 'The following actions took place:<br />'.$message : 'Nothing to update.';
-		$this->Session->setFlash($message);
-		$this->redirect($this->referer());
 	}
 	
 	

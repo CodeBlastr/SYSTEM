@@ -104,7 +104,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Pages');
 		$this->layout = 'default';	
-		$this->render('index_content');
+		$this->view = 'index_content';
     }
     
 /**
@@ -124,7 +124,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', __('%s <small>Section</small>', $webpages[0]['Parent']['name']));
 		$this->layout = 'default';	
-		$this->render('index_sub');
+		$this->view = 'index_sub';
     }
     
 /**
@@ -142,8 +142,8 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Widgets / Elements');
-		$this->layout = 'default';	
-		$this->render('index_element');
+		$this->layout = 'default';
+		$this->view = 'index_element';
     }
     
 /**
@@ -163,7 +163,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Templates');
 		$this->layout = 'default';	
-		$this->render('index_template');
+		$this->view = 'index_template';
     }
     
     
@@ -208,7 +208,7 @@ class WebpagesController extends WebpagesAppController {
 		}
 		$this->set(compact('webpage'));
 		$this->set('page_title_for_layout', $webpage['Webpage']['name']);
-		$this->render('view_' . $webpage['Webpage']['type']);	
+       	$this->view = 'view_' . $webpage['Webpage']['type'];	
 	}
     
 	
@@ -243,7 +243,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Page Builder'));
 		$this->layout = 'default';	
-		$this->render('add_content');        
+		$this->view = 'add_content';        
     }
     
     protected function _addSub($parentId) {
@@ -253,7 +253,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('parent', $parent);
 		$this->set('page_title_for_layout', __('<small>Create a subpage of</small> %s', $parent['Webpage']['name']));
 		$this->layout = 'default';	
-		$this->render('add_sub');      
+		$this->view = 'add_sub';      
     }
     
     protected function _addElement() {
@@ -261,14 +261,14 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Widget/Element Builder'));
 		$this->layout = 'default';	
-		$this->render('add_element');        
+		$this->view = 'add_element';        
     }
     
     protected function _addTemplate() {
         $this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Template Builder'));
 		$this->layout = 'default';	
-		$this->render('add_template');        
+		$this->view = 'add_template';        
     }
 	
 /**
@@ -294,7 +294,7 @@ class WebpagesController extends WebpagesAppController {
 		}
 		
 		$templates = $this->Webpage->syncFiles('template');
-		$this->request->data = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id), 'contain' => array('Child')));
+		$this->request->data = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id), 'contain' => array('Child', 'Alias')));
 		$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
 		
 		// required to have per page permissions
@@ -326,7 +326,7 @@ class WebpagesController extends WebpagesAppController {
 		$templateUrls = !empty($template['urls']) && $template['urls'] != '""' ? implode(PHP_EOL, unserialize(gzuncompress(base64_decode($template['urls'])))) : null;
 		$this->set(compact('templateUrls'));
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
-		$this->render('edit_' . $this->request->data['Webpage']['type']);
+		$this->view = 'edit_' . $this->request->data['Webpage']['type'];
 	}
 	
 /**
@@ -365,16 +365,13 @@ class WebpagesController extends WebpagesAppController {
 		$this->request->data = $this->Webpage->read(null, $id);
 		if (!empty($this->request->data)) {
 			$this->request->data['Webpage']['content'] = $pageData;
-			Inflector::variable("Webpage");
 			if ($this->Webpage->save($this->request->data)) {
 				$msg = "Page saved";
-			}
-			else {
+			} else {
 				$err = true;
 				$msg = "Can't save page";
 			}
-		}
-		else {
+		} else {
 			$err = true;
 			$msg = 'Page not found';
 		}

@@ -66,4 +66,3 @@ class ContactAddressesController extends ContactsAppController {
 		$this->redirect(array('action' => 'index'));
 	}
 }
-?>

@@ -102,7 +102,7 @@ class GalleryImage extends GalleriesAppModel {
  * Protected add method
  *
  * If a gallery id is given, check the defaults, attach the upload behavior, and perform the upload.
- * If no gallery id is given, create a gallery first using site settings, and make the submitted image the thumb
+ * If no gallery id is given, create a gallery first using site settings, and make the submitted image the th
  * The gallery add() function calls back to this function to perform the upload.
  * 
  * This protected version of the add function was pushed down so that it could be called multiple times.
@@ -113,6 +113,8 @@ class GalleryImage extends GalleriesAppModel {
  * @return bool
  */
 	protected function _add($data, $uploadFieldName) {
+        $data = $this->checkForGallery($data);
+        
 		if (!empty($data['GalleryImage']['gallery_id'])) {
 			// existing gallery
 			$uploadOptions[$uploadFieldName] = $this->_getImageOptions($data);
@@ -136,6 +138,25 @@ class GalleryImage extends GalleriesAppModel {
 			}
 		}
 	}
+    
+/**
+ * Check for Gallery
+ * Used to fill in the gallery id, if it exists
+ * 
+ * NOTE : Use $data['Gallery']['create'] = 1, and an empty GalleryImage.gallery_id to force a creation
+ * @param array $data
+ * @return array
+ */
+    public function checkForGallery($data) {
+        if (empty($data['Gallery']['create']) && empty($data['GalleryImage']['gallery_id']) && (!empty($data['Gallery']['model']) && !empty($data['Gallery']['foreign_key']))) {
+            $gallery = $this->Gallery->find('first', array('conditions' => array('Gallery.model' => $data['Gallery']['model'], 'Gallery.foreign_key' => $data['Gallery']['foreign_key'])));
+            if (!empty($gallery)) {
+                $data['GalleryImage']['gallery_id'] = $gallery['Gallery']['id'];
+                $data['Gallery']['id'] = $gallery['Gallery']['id'];
+            }
+        }
+        return $data;
+    }
 		
 /**
  * Clean data method

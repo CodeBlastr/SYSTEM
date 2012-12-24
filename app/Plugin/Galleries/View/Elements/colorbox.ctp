@@ -20,11 +20,11 @@ if (!empty($gallery['GalleryImage'][0])) {
 			});
 		});', array('inline' => 0)); ?>
         
-    <div class="colorboxGallery">
+    <div class="colorboxGallery">  
         <?php 
         foreach ($gallery['GalleryImage'] as $slide) { ?>
             <div id="galleryImage<?php echo $slide['id']; ?>" class="colorBoxGallerImage colorbox galleryImage">
-            <?php
+            <?php 
             # uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
             $largeImage = $slide['dir'].'thumb/large/'.$slide['filename'];
             $image = $this->Html->image($largeImage,

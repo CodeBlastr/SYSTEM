@@ -81,22 +81,22 @@ class MetableBehavior extends ModelBehavior {
 					)
 				)
 			), false);
-        $Model->contain('Meta');
+        $query['contain'][] = 'Meta'; //$Model->contain('Meta');
         
-#        // kept in case we need to manually join again
-#		$query['joins'][] = array(
-#			'table' => 'metas',
-#			'alias' => 'Meta',
-#			'type' => 'LEFT',
-#			'conditions' => array(
-#				"{$Model->alias}.id = Meta.foreign_key",
-#				"Meta.model = '{$Model->alias}'"
-#			)
-#		);
+//        // kept in case we need to manually join again
+//		$query['joins'][] = array(
+//			'table' => 'metas',
+//			'alias' => 'Meta',
+//			'type' => 'LEFT',
+//			'conditions' => array(
+//				"{$Model->alias}.id = Meta.foreign_key",
+//				"Meta.model = '{$Model->alias}'"
+//			)
+//		);
 
-		$query = $this->_queryFields($Model, $query);  // read comment by function
-		$query = $this->_queryConditions($Model, $query);
-		return $query;
+		//$query = $this->_queryFields($Model, $query);  // read comment by function
+		$query = $this->_queryConditions($Model, $query);  
+       	return $query;
 	}
 
 /**
@@ -109,8 +109,8 @@ class MetableBehavior extends ModelBehavior {
  */
     public function afterFind(Model $Model, $results, $primary) {
 		//debug($results);
-		$results = $this->mergeSerializedMeta($Model, $results);//debug($results);
-		$results = $this->filterByMetaConditions($Model, $results);
+		$results = $this->mergeSerializedMeta($Model, $results); 
+		$results = $this->filterByMetaConditions($Model, $results);  
 		return $results;
 	}
     
@@ -162,7 +162,7 @@ class MetableBehavior extends ModelBehavior {
 				$result[$Model->alias] = Set::merge($result[$Model->alias], unserialize($result['Meta']['value']));
 			}
 			unset($result['Meta']);
-		}
+		} 
 		return $results;
 	}
 
@@ -258,6 +258,7 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  */
 	protected function _queryConditions(Model $Model, $query) {
+        
 		if(!empty($query['conditions']) && is_array($query['conditions'])) {
 			foreach($query['conditions'] as $condition => $value) {
 				if(strstr($condition, $Model->alias.'.!')) {

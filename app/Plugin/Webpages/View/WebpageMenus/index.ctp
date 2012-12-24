@@ -37,7 +37,7 @@
 foreach ($menus as $menu) { ?>
 	<tr>
 		<td>
-			<?php echo __('&#123meu: %s&#125;', $menu['WebpageMenu']['code']); ?>
+			<?php echo __('&#123menu: %s&#125;', $menu['WebpageMenu']['code']); ?>
 		</td>
 		<td>
 			<?php echo $menu['WebpageMenu']['name']; ?>
