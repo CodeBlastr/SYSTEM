@@ -1,8 +1,8 @@
 <?php
 App::uses('UsableBehavior', 'Users.Model/Behavior');
 
-if (!class_exists('Article')) {
-	class Article extends CakeTestModel {
+if (!class_exists('UsedArticle')) {
+	class UsedArticle extends CakeTestModel {
 	/**
 	 *
 	 */
@@ -34,6 +34,11 @@ if (!class_exists('Article')) {
 	 *
 	 */
 		public $name = 'Article';
+
+    /**
+	 *
+	 */
+		public $alias = 'Article';
 	}
 }
 
@@ -48,7 +53,9 @@ class UsableBehaviorTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'plugin.Users.used',
+		'app.Condition',
+		'plugin.Users.Used',
+        'plugin.Users.User',
 		'core.article',
 		);
 
@@ -60,7 +67,7 @@ class UsableBehaviorTestCase extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->Usable = new UsableBehavior();
-		$this->Model = Classregistry::init('Article'); // not tied to an actual model file
+		$this->Model = Classregistry::init('UsedArticle'); // not tied to an actual model file
 		$this->Used = ClassRegistry::init('Users.Used'); // not tied to an actual model file
 	}
 
@@ -71,7 +78,8 @@ class UsableBehaviorTestCase extends CakeTestCase {
  */
 	public function tearDown() {
 		unset($this->Usable);
-
+		unset($this->Model);
+		unset($this->Used);
 		parent::tearDown();
 	}
 

@@ -11,6 +11,7 @@ class GalleryFixture extends CakeTestFixture {
  * @var array
  */
 	public $import = array('config' => 'Galleries.Gallery');
+	
 
 /**
  * Records

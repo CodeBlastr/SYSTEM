@@ -1,7 +1,7 @@
 <?php
-if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php')) :
+if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php')) {
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php');
-else :
+} else {
 
 /**
  * Routes configuration
@@ -30,11 +30,11 @@ else :
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
  	Router::connect('/', array('controller' => '', 'home'));
-	Router::parseExtensions();
+	Router::parseExtensions('rss', 'xml', 'json');
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
-	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+//	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 
 /**
  * Load all plugin routes.  See the CakePlugin documentation on 
@@ -51,7 +51,7 @@ else :
 	Router::connect('/robots/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'robot'));	
 	require CAKE . 'Config' . DS . 'routes.php';
 
-endif;
+}
 	
 	
 	

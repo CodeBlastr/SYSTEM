@@ -40,7 +40,7 @@ class AppErrorController extends AppController {
 		if ($request->here == '/') {
 			$request->here = 'home';
 		} else {
-			# seems it was getting over sanitized because dashes were being replaced.  Just converting them back.
+			// seems it was getting over sanitized because dashes were being replaced.  Just converting them back.
 			$request->here = str_replace('&#45;', '-', $request->here);
 		}
 		if (strpos($request->here, '/') === 0) {
@@ -53,6 +53,7 @@ class AppErrorController extends AppController {
 			$request->params['plugin'] = $alias['Alias']['plugin'];
 			$request->params['action'] = $alias['Alias']['action'];
 			$request->params['pass'][] = $alias['Alias']['value'];
+			$request->params['alias'] = $alias['Alias']['name'];
 			$request->url = '/';
 			(!empty($alias['Alias']['plugin']) ? $request->url = $request->url.$alias['Alias']['plugin'].'/' : '');
 			(!empty($alias['Alias']['controller']) ? $request->url = $request->url.$alias['Alias']['controller'].'/' : '');
@@ -61,7 +62,7 @@ class AppErrorController extends AppController {
 			$request->query['url'] = substr($request->url, 1, -1);
 			$request->here = substr($request->url, 1, -1);
 			$dispatcher = new Dispatcher();
-			$result = $dispatcher->dispatch($request, new CakeResponse());
+			$dispatcher->dispatch($request, new CakeResponse());
 		} else {
 			throw new NotFoundException('Page not found.');
 		}
@@ -69,6 +70,12 @@ class AppErrorController extends AppController {
     }
 	
     public function handleNotFound($request, $response, $error, $originalException) {
+		$message = sprintf("[%s] %s\n%s",
+				get_class($originalException),
+				$originalException->getMessage(),
+				$originalException->getTraceAsString()
+			);
+		CakeLog::write(LOG_ERR, $message);
 		$eName = get_class($originalException);
 		//print_r('.'.$eName.'.'); break;
 		if (Configure::read('debug') == 2 && $eName != 'MissingControllerException') {
@@ -78,7 +85,7 @@ class AppErrorController extends AppController {
 			$alias = $Alias->find('first', array('conditions' => array('name' => 'error')));
 			if (!empty($alias['Alias']['name'])) {
 				$Controller = new AppController($request, $response);
-				$Controller->redirect('/error/?referer=' . $request->url);
+				$Controller->redirect('/error?referer=' . $request->url);
 			}
 		}
 	}

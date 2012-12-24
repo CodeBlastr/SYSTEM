@@ -43,7 +43,7 @@ class AdminController extends AppController {
  * @param void
  * @return void
  */
-    public function index () {
+    public function index() {
 		// $this->Session->delete('Updates');
 		// upgrade functionality...
 		if (!empty($this->request->data['Upgrade']['all'])) {
@@ -55,6 +55,8 @@ class AdminController extends AppController {
 			$this->Session->delete('Updates'); 
 			$this->Session->setFlash(__('Update check complete!!!'));
 		}
+		$this->set('page_title_for_layout', 'Admin Dashboard');
+		$this->layout = 'default';
 	}
 	
 /**
@@ -171,29 +173,35 @@ class AdminController extends AppController {
 	protected function _downgrade($table, $lastTable) {
 		$db = ConnectionManager::getDataSource('default');
 		$db->cacheSources = false;
+		$tableCheck = $db->query('SHOW TABLES LIKE "' . $table . '";');
 		
-		try {
-			$db->execute('DROP TABLE `zbk_' . $table . '`;'); 
-		} catch (PDOException $e) {
-			// do nothing, just tried deleting a table that doesn't exist
-		} 
-		
-		if ($db->query('SELECT * FROM `' . $table . '`;')) {
-			// backup a table that we're about to delete
+		if (!empty($tableCheck)) {
 			try {
-				$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;');
-				$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
+				$db->execute('DROP TABLE `zbk_' . $table . '`;'); 
+			} catch (PDOException $e) {
+				// do nothing, just tried deleting a table that doesn't exist
+			} 
+			
+			if ($db->query('SELECT * FROM `' . $table . '`;')) {
+				// backup a table that we're about to delete
+				try {
+					$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;');
+					$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
+				} catch (PDOException $e) {
+					throw new Exception($table . ': ' . $e->getMessage());
+				}
+			} 
+			
+			try {
+				$db->query('DROP TABLE `' . $table . '`;'); 
+				// need the last table, because the table just removed will no longer exist in the tables array
+				return array($lastTable => __('AND %s removed', $table));
 			} catch (PDOException $e) {
 				throw new Exception($table . ': ' . $e->getMessage());
 			}
-		} 
-		
-		try {
-			$db->query('DROP TABLE `' . $table . '`;'); 
-			// need the last table, because the table just removed will no longer exist in the tables array
-			return array($lastTable => __('AND %s removed', $table));
-		} catch (PDOException $e) {
-			throw new Exception($table . ': ' . $e->getMessage());
+		} else {
+			// the table doesn't exist so its already downgrade
+			return array($table => __('AND %s was already gone'));
 		}
 	}
 	
@@ -371,7 +379,7 @@ class AdminController extends AppController {
 				$db->query('ALTER TABLE `webpage_css` CHANGE `type` `type` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT \'all\' COMMENT \'was enum with \'\'all\'\',\'\'screen\'\',\'\'print\'\',\'\'handheld\'\',\'\'braille\'\',\'\'embossed\'\',\'\'projection\'\',\'\'speech\'\',\'\'tty\'\',\'\'tv\'\' as values\';');
 			}
 			if (array_search('webpages', $tables)) {
-				$db->query('ALTER TABLE `webpages` CHANGE `type` `type` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT \'page_content\' COMMENT \'\'\'template\'\',\'\'element\'\',\'\'page_content\'\'\';');
+				$db->query('ALTER TABLE `webpages` CHANGE `type` `type` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT \'content\' COMMENT \'\'\'template\'\',\'\'element\'\',\'\'content\'\'\';');
 			}
 		}
 		

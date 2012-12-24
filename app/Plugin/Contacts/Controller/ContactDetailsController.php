@@ -4,60 +4,63 @@ class ContactDetailsController extends ContactsAppController {
 	public $name = 'ContactDetails';
 	public $uses = 'Contacts.ContactDetail';
 
-	function index() {
+	public function index() {
 		$this->ContactDetail->recursive = 0;
 		$this->set('contactDetails', $this->paginate());
 	}
 
-	function view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid contact detail', true));
-			$this->redirect(array('action' => 'index'));
+	public function view($id = null) {
+		$this->ContactDetail->id = $id;
+		if (!$this->ContactDetail->exists()) {
+			throw new NotFoundException(__('Invalid contact detail.'));
 		}
+		
 		$this->set('contactDetail', $this->ContactDetail->read(null, $id));
 	}
 
-	function add() {
+	public function add($contactId = null) {
 		if (!empty($this->request->data)) {
 			$this->ContactDetail->create();
 			if ($this->ContactDetail->save($this->request->data)) {
 				$this->Session->setFlash(__('The contact detail has been saved', true));
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $this->request->data['ContactDetail']['contact_id']));
 			} else {
 				$this->Session->setFlash(__('The contact detail could not be saved. Please, try again.', true));
 			}
 		}
 		$contactDetailTypes = $this->ContactDetail->types();
 		$contacts = $this->ContactDetail->Contact->find('list');
-		$this->set(compact('contactDetailTypes', 'contacts'));
+		$this->set(compact('contactDetailTypes', 'contacts', 'contactId'));
 	}
 
-	function edit($id = null) {
-		if (!$id && empty($this->request->data)) {
-			$this->Session->setFlash(__('Invalid contact detail', true));
-			$this->redirect(array('action' => 'index'));
+	public function edit($id = null) {
+		$this->ContactDetail->id = $id;
+		if (!$this->ContactDetail->exists()) {
+			throw new NotFoundException(__('Invalid contact detail.'));
 		}
+
 		if (!empty($this->request->data)) {
-			if ($this->ContactDetail->save($this->request->data)) {
-				$this->Session->setFlash(__('The contact detail has been saved', true));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The contact detail could not be saved. Please, try again.', true));
+			try {
+				$this->ContactDetail->save($this->request->data);
+				$this->Session->setFlash(__('The contact detail has been saved'));
+				$this->redirect(array('controller' => 'contacts', 'action' => 'view', $this->request->data['ContactDetail']['contact_id']));
+			} catch(Exception $e) {
+				$this->Session->setFlash($e->getMessage);
 			}
 		}
-		if (empty($this->request->data)) {
-			$this->request->data = $this->ContactDetail->read(null, $id);
-		}
-		$contactDetailTypes = $this->ContactDetail->types();
-		$contacts = $this->ContactDetail->Contact->find('list');
-		$this->set(compact('contactDetailTypes', 'contacts'));
+		
+		$this->ContactDetail->contain('Contact');
+		$this->request->data = $this->ContactDetail->read(null, $id);
+		$this->set('contactDetailTypes', $this->ContactDetail->types());
+		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['Contact']['name']));
 	}
 
-	function delete($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for contact detail', true));
-			$this->redirect(array('action'=>'index'));
+	public function delete($id = null) {
+		$this->ContactDetail->id = $id;
+		if (!$this->ContactDetail->exists()) {
+			throw new NotFoundException(__('Invalid contact detail.'));
 		}
+		
 		if ($this->ContactDetail->delete($id)) {
 			$this->Session->setFlash(__('Contact detail deleted', true));
 			$this->redirect(array('action'=>'index'));
@@ -66,4 +69,3 @@ class ContactDetailsController extends ContactsAppController {
 		$this->redirect(array('action' => 'index'));
 	}
 }
-?>

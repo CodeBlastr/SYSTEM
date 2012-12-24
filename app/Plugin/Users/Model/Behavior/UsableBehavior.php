@@ -15,15 +15,16 @@ class UsableBehavior extends ModelBehavior {
 	public function setup(&$Model, $settings = array()) {
 		$this->defaultRole = !empty($settings['defaultRole']) ? $settings['defaultRole'] : null;
 		$this->superAdminRoleId = defined('__USERS_SUPER_ADMIN_ROLE_ID') ? __USERS_SUPER_ADMIN_ROLE_ID : $this->superAdminRoleId;
+        return true;
 	}
 
 
 	public function beforeSave(&$Model) {
-		#remove habtm user data and give it to the afterSave() function
-		if (!empty($Model->data['User']['User'])) :
+		// remove habtm user data and give it to the afterSave() function
+		if (!empty($Model->data['User']['User'])) {
 			$this->userData = $Model->data;
 			unset($Model->data['User']['User']);
-		endif;
+        }
 		
 		$Model->data = $this->getChildContacts($Model);
 		
@@ -43,10 +44,10 @@ class UsableBehavior extends ModelBehavior {
 		//$userRole = $authUser['user_role_id']; (this uncommented breaks our tests)
 		$userId = $authUser['id'];
 		
-		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/ && empty($queryData['nocheck'])) : 
-			#this tells us whether the result would have returned something if UsableBehavior wasn't used
+		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/ && empty($queryData['nocheck'])) {
+			// this tells us whether the result would have returned something if UsableBehavior wasn't used
 			$queryData['nocheck'] = true;
-			#$originalSearchCount = $Model->find('count', $queryData);
+			// $originalSearchCount = $Model->find('count', $queryData);
 			$originalSearchCount = 0;
 			if ($originalSearchCount > 0) : $this->restrictRedirect = true; endif;
 			
@@ -55,8 +56,7 @@ class UsableBehavior extends ModelBehavior {
 			*/ // left because I don't know where nocheck was used
 			
 			
-			/*
-			# output the new query
+			/* output the new query // left for reference as its a pretty cool query
 			$queryData['joins'] = array(array(
 				'table' => 'used',
 				'alias' => 'Used',
@@ -66,11 +66,11 @@ class UsableBehavior extends ModelBehavior {
 					"Used.model = '{$Model->alias}'",
 					$userQuery,
 				),
-			));*/ // left for reference as its a pretty cool query
+			));*/ 
 			
 			$Dbo = $Model->getDataSource();
 			
-			# First find users with access
+			// First find users with access
 			$subQuery = $Dbo->buildStatement(array(
 				//'fields' => array('`User2`.`id`'),
 				'fields' => array('Used.foreign_key'),
@@ -90,7 +90,7 @@ class UsableBehavior extends ModelBehavior {
 			$subQueryExpression = $Dbo->expression($subQuery);
 			
 			
-			# First model records that aren't accessed controlled
+			// First model records that aren't accessed controlled
 			$subQuery2 = $Dbo->buildStatement(array(
 				//'fields' => array('`User2`.`id`'),
 				'fields' => array('Used.foreign_key'),
@@ -131,9 +131,8 @@ class UsableBehavior extends ModelBehavior {
 				 ))
 				) 
 			LIMIT 25
-			*/		
-		endif;		
-		
+			*/	
+		}
 		return $queryData;
 	}
 	
@@ -183,27 +182,27 @@ class UsableBehavior extends ModelBehavior {
  * Callback used to save related users, into the used table, with the proper relationship.
  */
 	public function afterSave(&$Model, $created) {
-		# get current users using, so that we can merge and keep duplicates out later
+		// get current users using, so that we can merge and keep duplicates out later
 		$currentUsers = $this->findUsedUsers($Model, $Model->data[$Model->alias]['id'], 'all');
 		
-		# this is if we have a hasMany list of users coming in.
+		// this is if we have a hasMany list of users coming in.
 		if (!empty($Model->data['User'][0])) {
 			foreach ($Model->data['User'] as $user) {
-				#$users[]['id'] = $user['user_id']; // before cakephp 2.0 upgrade
+				//$users[]['id'] = $user['user_id']; // before cakephp 2.0 upgrade
 				$users[]['id'] = !empty($user['user_id']) ? $user['user_id'] : $user['id'];
 			}
 		}
 		
-		# this is if we have a habtm list of users coming in.
+		// this is if we have a habtm list of users coming in.
 		if (!empty($this->userData['User']['User'][0])) {
 			foreach ($this->userData['User']['User'] as $userId) {
 				$users[]['id'] = $userId;
 			}
 		}
 		
-		# this is if its a user group we need to look up.
+		// this is if its a user group we need to look up.
 		if (!empty($Model->data[$Model->alias]['user_group_id'])) {
-			# add all of the team members to the used table 
+			// add all of the team members to the used table 
 			$userGroups = $Model->UserGroup->find('all', array(
 				'conditions' => array(
 					'UserGroup.id' => $Model->data[$Model->alias]['user_group_id'],
@@ -222,27 +221,27 @@ class UsableBehavior extends ModelBehavior {
 		}
 		
 		
-		#gets rid of duplicate users from two arrays... @todo: maybe move this to its own function if its needed again
-		if (!empty($users)) :
+		// gets rid of duplicate users from two arrays... @todo: maybe move this to its own function if its needed again
+		if (!empty($users)) {
 			$users = Set::extract('/id', $users);
 			$currentUsers = Set::extract('/User/id', $currentUsers);
 			$users = array_diff($users, $currentUsers);
 		
 			$i=0;
-			foreach ($users as $user) : 
+			foreach ($users as $user) { 
 				$data[$i]['Used']['user_id'] = $user;
 				$data[$i]['Used']['foreign_key'] = $Model->id;
 				$data[$i]['Used']['model'] = $Model->alias;
 				$data[$i]['Used']['role'] = $this->defaultRole; 
 				$i++;
-			endforeach;
+			}
 			
 			$Used = ClassRegistry::init('Users.Used');
-			foreach ($data as $dat) : 
+			foreach ($data as $dat) { 
 				$Used->create();
 				$Used->save($dat);
-			endforeach;
-		endif;
+			}
+		}
 	}
 	
 	
@@ -261,10 +260,10 @@ class UsableBehavior extends ModelBehavior {
 				"Used.foreign_key = {$Model->alias}.id",
 				),
 			)));
-		# note : Last changed this based on adding a user here : /projects/projects/people/{id}
-		# make sure it still works there if changed.
+		// note : Last changed this based on adding a user here : /projects/projects/people/{id}
+		// make sure it still works there if changed.
 		$params = !empty($params) ? array_merge($joins, $params) : $joins;
-		# we can do a simple find with the model, because beforeFind of usable limits the results by user
+		// we can do a simple find with the model, because beforeFind of usable limits the results by user
 		$results = $Model->find($type, $params);
 		if (!empty($results)) { 
 			return $results;
@@ -299,7 +298,6 @@ class UsableBehavior extends ModelBehavior {
 					),
 				),
 			));
-		
 		$results = $Model->Used->User->find($type, $params);
 		if (!empty($results)) { 
 			return $results;
@@ -349,9 +347,9 @@ class UsableBehavior extends ModelBehavior {
  * Find child contacts of a parent contact and add them to the data user list
  */
 	public function getChildContacts(&$Model) {
-		if (!empty($Model->data[$Model->alias]['contact_id']) && $Model->data[$Model->alias]['contact_all_access']) : 
-			# add all of the companies people to the used table
-			# note, if the model has contact_id, then it should belongTo Contact
+		if (!empty($Model->data[$Model->alias]['contact_id']) && $Model->data[$Model->alias]['contact_all_access']) {
+			// add all of the companies people to the used table
+			// note, if the model has contact_id, then it should belongTo Contact
 			$contacts = $Model->Contact->Employer->find('first', array(
 				'conditions' => array(
 					'Employer.id' => $Model->data[$Model->alias]['contact_id'],
@@ -362,22 +360,22 @@ class UsableBehavior extends ModelBehavior {
 						),
 					),
 				));
-			foreach ($contacts['Employee'] as $contact) :
-				if(!empty($contact['User'])) : 
+			foreach ($contacts['Employee'] as $contact) {
+				if(!empty($contact['User'])) {
 					$users[] = $contact['User'];
-				endif;
-			endforeach;
-		endif;
+				}
+			}
+		}
 		
-		if (!empty($users)) :
+		if (!empty($users)) {
 			$i=0;
-			foreach ($users as $user) : 
+			foreach ($users as $user) {
 				$Model->data['User'][$i]['user_id'] = $user['id'];
 				$Model->data['User'][$i]['model'] = $Model->name;
 				$Model->data['User'][$i]['role'] = $this->defaultRole;
 				$i++;
-			endforeach;
-		endif;
+			}
+		}
 		return $Model->data;
 	}
 
@@ -444,4 +442,3 @@ class UsableBehavior extends ModelBehavior {
 	}
 	
 }
-?>
