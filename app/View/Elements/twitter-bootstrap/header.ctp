@@ -1,0 +1,1 @@
+<?php echo $this->Element('header', array('showContext' => true)); ?>

@@ -4,15 +4,15 @@ class RequestorsController extends PrivilegesAppController {
 	public $name = 'Requestors';
 	public $uses = 'Privileges.Requestor';
 
-	function index() {
+	public function index() {
 		$this->set('requestors', $this->paginate());
 	}
 
-	/**
-	 * @todo		Make foreign key return the model value (ie. UserRole, or User)->find('list')
-	 * @todo		Requestor.alias isn't being filled in when users or roles are added.
-	 */
-	function edit($id = null) {
+/**
+ * @todo		Make foreign key return the model value (ie. UserRole, or User)->find('list')
+ * @todo		Requestor.alias isn't being filled in when users or roles are added.
+ */
+	public function edit($id = null) {
 		if (!$id && empty($this->request->data)) {
 			$this->flash(__('Invalid Requestor', true), array('action'=>'index'));
 		}
@@ -28,9 +28,8 @@ class RequestorsController extends PrivilegesAppController {
 		}
 	}
 
-	function delete($id = null) {
+	public function delete($id = null) {
 		$this->__delete('Requestor', $id);
 	}
 
 }
-?>

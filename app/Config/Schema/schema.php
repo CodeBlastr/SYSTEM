@@ -43,7 +43,7 @@ class AppSchema extends CakeSchema {
 		'modifier_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'plugin' => array('column' => 'plugin', 'unique' => 0), 'controller' => array('column' => 'controller', 'unique' => 0), 'action' => array('column' => 'action', 'unique' => 0), 'value' => array('column' => 'value', 'unique' => 0), 'name' => array('column' => 'name', 'unique' => 0)),
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'plugin' => array('column' => 'plugin', 'unique' => 0), 'controller' => array('column' => 'controller', 'unique' => 0), 'action' => array('column' => 'action', 'unique' => 0), 'value' => array('column' => 'value', 'unique' => 0), 'name' => array('column' => 'name', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 	public $aros = array(
@@ -99,6 +99,13 @@ class AppSchema extends CakeSchema {
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'type' => array('column' => 'type', 'unique' => 0)),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+	);
+	public $metas = array(
+		'model' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 100, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'foreign_key' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'value' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'indexes' => array('PRIMARY' => array('column' => array('model', 'foreign_key'), 'unique' => 1)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 	public $settings = array(

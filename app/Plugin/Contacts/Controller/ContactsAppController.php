@@ -2,4 +2,3 @@
 class ContactsAppController extends AppController {
 		
 }
-?>

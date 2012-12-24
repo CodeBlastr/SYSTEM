@@ -40,14 +40,8 @@
 		echo $this->Form->input('GalleryImage.caption', array('type' => 'text'));
 		echo $this->Form->input('GalleryImage.description', array('type' => 'richtext'));
 		#echo $this->Form->input('GalleryImage.alt');
-		echo $this->Form->input('dir', array('type' => 'hidden'));
-	    echo $this->Form->input('mimetype', array('type' => 'hidden'));
-	    echo $this->Form->input('filesize', array('type' => 'hidden'));
-		echo $this->Form->end('Submit');
-		?>
+		echo $this->Form->end('Submit'); ?>
     </fieldset>
-
-    
 </div>
 
 <?php 

@@ -8,8 +8,8 @@
     <p>Only the person's name is required, you can add anything else later if you like.</p>
     <?php
 	 echo $this->Form->hidden('Contact.is_company', array('value' => 0));
-	 # @todo  :  this is not good for non-javascript browsers ( to be good for non-js we need to add a check for class == combobox to the formHelper and in that case output a text input instead of a select input
-	 echo $this->Form->input('Contact.name', array('type' => 'select', 'options' => $people, 'label' => 'Name', 'class' => 'combobox', 'ifMatchName' => 'data[Contact][id]'));
+	 // @todo  :  this is not good for non-javascript browsers ( to be good for non-js we need to add a check for class == combobox to the formHelper and in that case output a text input instead of a select input
+	 echo $this->Form->input('Contact.name');
 	 echo $this->Form->input('Employer', array('label' => 'What company is this person related to?', 'type' => 'select'));
 	?>
   </fieldset>
@@ -40,20 +40,6 @@
 	 echo $this->Form->input('ContactActivity.0.description');
 	?>
     </fieldset>
-    <?php /*  This is saved for later, when we add tasks table for contacts
-  <fieldset>
-    <legend class="toggleClick">
-    <?php echo __('Any future opportunities or tasks you want to remind someone of?');?>
-    </legend>
- 	<?php 
-	 echo $this->Form->input('Task.enumeration_id', array('label' => $this->Html->link(__('Type', true), array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index', 'filter' => 'TASKTYPE', 'admin' => 1), array('class' => 'dialog', 'title' => 'Edit Task List')))); 
-	 echo $this->Form->input('Task.name', array('label' => 'Subject')); 
-	 echo $this->Form->input('Task.description');
-	 echo $this->Form->input('Task.assignee_id', array('label' => 'Assign To'));
-	 echo $this->Form->input('Task.due_date', array('minYear' => date('Y'), 'maxYear' => date('Y') + 10, 'interval' =>  15));
- 	?>
-  </fieldset>
-  */ ?>
   </fieldset>
   <?php echo $this->Form->end('Submit');?> </div>
 
@@ -66,5 +52,4 @@ $this->set('context_menu', array('menus' => array(
 			$this->Html->link(__('List', true), array('action' => 'index')),
 			),
 		),
-	))); 
-?>
+	))); ?>

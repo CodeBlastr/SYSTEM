@@ -3,8 +3,7 @@ class GalleriesController extends GalleriesAppController {
 
 	public $name = 'Galleries';
 	public $uses = 'Galleries.Gallery';
-	public $allowedActions = array('thumb');
-	public $paginate = array();
+	public $allowedActions = array('thumb', 'mythumb');
 
 
 /**
@@ -12,7 +11,7 @@ class GalleriesController extends GalleriesAppController {
  * 
  */
 	public function index() {
-		# paginate the results
+		// paginate the results
 		$this->paginate['fields'] = array(
 			'Gallery.name',
 			'Gallery.description',
@@ -46,7 +45,7 @@ class GalleriesController extends GalleriesAppController {
 					'GalleryImage',
 					),
 				);
-			# This is here, because we have an element doing a request action on this function.
+			// This is here, because we have an element doing a request action on this function.
 			if (isset($this->request->params['requested'])) {
 				$gallery = $this->Gallery->find('first', $conditions);
 	        	if (!empty($gallery)) {
@@ -55,7 +54,7 @@ class GalleriesController extends GalleriesAppController {
 					return null;
 				}
 	        } else {
-				# Otherwise we just need the model and foreignKey
+				// Otherwise we just need the model and foreignKey
 				$gallery = $this->Gallery->find('first', $conditions);
 				$this->set(compact('gallery', 'model', 'foreignKey'));
 			}
@@ -150,6 +149,38 @@ class GalleriesController extends GalleriesAppController {
 	function delete($id = null) {
 		$this->__delete('Gallery', $id);
 	}	
+    
+
+/**
+ * MyThumb method
+ * 
+ * Similiar to edit(), but only the creator can edit  
+ *
+ * @todo		Convert galleries to slugs or aliases, for easier linking into edit and views.
+ */
+	public function mythumb() {
+		if (!empty($this->request->data['Gallery']['model']) && !empty($this->request->data['Gallery']['foreign_key'])) {	
+            $continue = true;
+            // check for gallery and if it exists 
+            $gallery = $this->Gallery->find('first', array(
+                'conditions' => array(
+                    'Gallery.model' => $this->request->data['Gallery']['model'],
+                    'Gallery.foreign_key' => $this->request->data['Gallery']['foreign_key']
+                    )
+                ));
+            if (!empty($gallery) && $gallery['Gallery']['creator_id'] != $this->userId) {
+                $this->request->data['Galery']['id'] = $gallery['Gallery']['id'];
+                $continue = false;
+            }
+            
+			if ($continue === true && $this->Gallery->GalleryImage->add($this->request->data, 'filename')) {
+				$this->Session->setFlash(__('Saved'));
+				$this->redirect($this->referer());
+			} 
+		} 
+		$this->Session->setFlash(__('Could not be saved. Please, try again.'));
+		$this->redirect($this->referer());
+	}
 	
 	
 /**

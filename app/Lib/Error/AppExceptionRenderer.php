@@ -10,6 +10,7 @@ class AppExceptionRenderer extends ExceptionRenderer {
 		}
 		$response = new CakeResponse(array('charset' => Configure::read('App.encoding')));
 		$Controller = new AppErrorController($request, $response);
+		
 		try {
 			$Controller::handleAlias($request, $exception); // checks for alias match
 		} catch (Exception $e) {

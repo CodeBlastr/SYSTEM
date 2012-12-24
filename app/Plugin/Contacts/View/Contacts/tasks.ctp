@@ -1,15 +1,56 @@
-<div class="tasks form">
-  <h2><?php echo 'Tasks for ' . $contact['Contact']['name']; ?></h2>
-  <fieldset>
-	<?php echo $this->Form->create('Task' , array('url'=>'/tasks/tasks/add'));?>
-    <legend class="toggleClick"><?php echo 'Create a new task list?'; ?></legend>
-    <?php
-	 echo $this->Form->input('Task.name', array('label' => __('List Name', true)));
-	 echo $this->Form->input('Task.description', array('label' => 'Is there a description for this task list?', 'type' => 'richtext', 'ckeSettings' => array('buttons' => array('Bold','Italic','Underline','FontSize','TextColor','BGColor','-','NumberedList','BulletedList','Blockquote','JustifyLeft','JustifyCenter','JustifyRight','-','Link','Unlink','-', 'Image'))));
-	 echo $this->Form->input('Success.redirect', array('type' => 'hidden', 'value' => '/contacts/contacts/tasks/'.$foreignKey));
-	 echo $this->Form->input('Task.foreign_key', array('type' => 'hidden', 'value' => $foreignKey));
-	 echo $this->Form->input('Task.model', array('type' => 'hidden', 'value' => 'Contact'));
-	 echo $this->Form->end(__('Save', true));?>
-  </fieldset>
-</div>
-<?php echo $this->Element('scaffolds/index', array('data' => $tasks)); ?>
+<?php 
+// set the contextual sorting items
+echo $this->Element('context_sort', array(
+    'context_sort' => array(
+        'type' => 'select',
+        'sorter' => array(array(
+            'heading' => '',
+            'items' => array(
+                $this->Paginator->sort('name'),
+                $this->Paginator->sort('created'),
+                )
+            )), 
+        )
+	)); 
+
+echo $this->Element('forms/search', array(
+	'url' => '/contacts/contacts/tasks/', 
+	'inputs' => array(
+		array(
+			'name' => 'contains:name', 
+			'options' => array(
+				'label' => '', 
+				'placeholder' => 'Type Your Search and Hit Enter',
+				'value' => !empty($this->request->params['named']['contains']) ? substr($this->request->params['named']['contains'], strpos($this->request->params['named']['contains'], ':') + 1) : null,
+				)
+			),
+		)
+	));
+
+echo $this->Element('scaffolds/index', array('data' => $tasks));
+
+
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => '',
+		'items' => array(
+			$this->Html->link(__('Dashboard'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'dashboard')),
+			),
+		),
+	array(
+		'heading' => '',
+		'items' => array(
+			$this->Html->link(__('All'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index')),
+			$this->Html->link(__('Leads'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'contact_type:lead')),
+			$this->Html->link(__('Companies'), '/contacts/contacts/index/filter:is_company:1/filter:contact_type:customer'),
+			$this->Html->link(__('People'), '/contacts/contacts/index/filter:is_company:0/filter:contact_type:customer'),
+			),
+		),
+	array(
+		'heading' => '',
+		'items' => array(
+			$this->Html->link(__('Add'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'add')),
+			),
+		),
+	))); ?>

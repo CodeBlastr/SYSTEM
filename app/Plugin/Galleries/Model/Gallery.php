@@ -3,12 +3,32 @@ App::uses('GalleriesAppModel', 'Galleries.Model');
 
 class Gallery extends GalleriesAppModel {
 
+/**
+ * Name
+ * 
+ * @var string $name
+ */
 	public $name = 'Gallery';
-	// set up hard coded defaults, which get used if no data or site settings exist
+
+/**
+ * Gallery Type 
+ * 
+ * @var string $galleryType
+ */
 	public $galleryType = 'colorbox';
+	
+/**
+ * Display Field
+ * 
+ * @var string $displayField
+ */
 	public $displayField = 'name';
 
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
+/**
+ * Belongs To
+ * 
+ * @var array $belongsTo
+ */
 	public $belongsTo = array(
 		'GalleryThumb' => array(
 			'className' => 'Galleries.GalleryImage',
@@ -33,6 +53,11 @@ class Gallery extends GalleriesAppModel {
 		)
 	);
 
+/**
+ * Has one
+ * 
+ * @var array $hasOne
+ */
 	public $hasOne = array(
 		'Alias' => array(
 			'className' => 'Alias',
@@ -44,6 +69,12 @@ class Gallery extends GalleriesAppModel {
 		),
 	);
 
+
+/**
+ * Has many
+ * 
+ * @var array $hasMany
+ */
 	public $hasMany = array(
 		'GalleryImage' => array(
 			'className' => 'Galleries.GalleryImage',
@@ -61,6 +92,12 @@ class Gallery extends GalleriesAppModel {
 	);
 
 
+
+/**
+ * After save callback
+ *  
+ * @params bool $created
+ */
 	public function afterSave($created) {
 		$gallery = $this->find('first', array('Gallery.id' => $this->id));
 		if (!empty($gallery) && empty($gallery['Gallery']['model']) && empty($gallery['Gallery']['foreign_key'])) {
@@ -72,27 +109,33 @@ class Gallery extends GalleriesAppModel {
 				return false;
 			}
 		}
+		parent::afterSave($created);
 	}
 
 
+/**
+ * After find callback
+ *  
+ * @params array $results
+ */
 	public function afterFind($results) {
+		parent::afterFind($results);
 		if (!empty($results[0]['Gallery'])) {
-			# handle hasMany results
+			// handle hasMany results
 			$i=0; foreach ($results as $result) {
 				$results[$i] = Set::merge(array('GallerySettings' => $this->gallerySettings($result)), $result);
 				$i++;
 			}
 		}
-
 		if (!empty($results['id'])) {
 			$results = Set::merge(array('GallerySettings' => $this->gallerySettings($results)), $results);
 		}
-
 		return $results;
 	}
 
 /**
- * Adds a gallery, and uploads the image using the GalleryImage model.  The image that is uploaded during Gallery creation is also used as the default thumbnail image for the gallery.
+ * Adds a gallery, and uploads the image using the GalleryImage model.  The image that is uploaded during Gallery
+ * creation is also used as the default thumbnail image for the gallery.
  *
  * @param {data}		An array of data to be saved.
  * @return {bool}		True if saved completely, false otherwise.
@@ -105,7 +148,7 @@ class Gallery extends GalleriesAppModel {
 		$data['Gallery']['name'] = !empty($data['Gallery']['name']) ? $data['Gallery']['name'] : $data['Gallery']['model'];
 		# set any Gallery model fields not filled in data with app or system defaults.
 		$data = $this->GalleryImage->galleryImageDefaults($data);
-		# create the gallery as the first step
+		// create the gallery as the first step
 		if ($this->save($data)) {
 			# now if an image exists in data, save the image as the default thumbnail as well
 			if (!empty($data['GalleryImage'])) {
@@ -139,9 +182,16 @@ class Gallery extends GalleriesAppModel {
 		}
 	}
 
+/**
+ * Make Thumb
+ * 
+ * Changes the default image to be used as the first image in a gallery. 
+ * 
+ * @param array $data
+ */
 	public function makeThumb($data) {
 		if (!empty($data['Gallery']['id']) && !empty($data['GalleryImage']['id'])) {
-			# if the image id is there just set it quick
+			// if the image id is there just set it quick
 			$data['Gallery']['gallery_thumb_id'] = $data['GalleryImage']['id'];
 			if ($this->save($data)) {
 				return true;
@@ -149,7 +199,7 @@ class Gallery extends GalleriesAppModel {
 				throw new Exception(__d('galleries', 'Gallery thumbnail update failed.', true));
 			}
 		} else if (!empty($data['Gallery']['id']) && !empty($data['GalleryImage'])) {
-			#if its a new image then upload and make the thumb
+			// if its a new image then upload and make the thumb
 			$data['GalleryImage']['gallery_id'] = $data['Gallery']['id'];
 			if ($this->GalleryImage->add($data, 'filename')) {
 				$galleryImageId = $this->GalleryImage->id;
@@ -168,6 +218,10 @@ class Gallery extends GalleriesAppModel {
 		}
 	}
 
+/**
+ * Types
+ * 
+ */
 	public function types() {
 		return array(
 			'colorbox' => 'Colorbox',
