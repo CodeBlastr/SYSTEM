@@ -188,7 +188,7 @@ class UsableBehavior extends ModelBehavior {
 		// this is if we have a hasMany list of users coming in.
 		if (!empty($Model->data['User'][0])) {
 			foreach ($Model->data['User'] as $user) {
-				#$users[]['id'] = $user['user_id']; // before cakephp 2.0 upgrade
+				//$users[]['id'] = $user['user_id']; // before cakephp 2.0 upgrade
 				$users[]['id'] = !empty($user['user_id']) ? $user['user_id'] : $user['id'];
 			}
 		}
@@ -202,7 +202,7 @@ class UsableBehavior extends ModelBehavior {
 		
 		// this is if its a user group we need to look up.
 		if (!empty($Model->data[$Model->alias]['user_group_id'])) {
-			# add all of the team members to the used table 
+			// add all of the team members to the used table 
 			$userGroups = $Model->UserGroup->find('all', array(
 				'conditions' => array(
 					'UserGroup.id' => $Model->data[$Model->alias]['user_group_id'],
@@ -260,10 +260,10 @@ class UsableBehavior extends ModelBehavior {
 				"Used.foreign_key = {$Model->alias}.id",
 				),
 			)));
-		# note : Last changed this based on adding a user here : /projects/projects/people/{id}
-		# make sure it still works there if changed.
+		// note : Last changed this based on adding a user here : /projects/projects/people/{id}
+		// make sure it still works there if changed.
 		$params = !empty($params) ? array_merge($joins, $params) : $joins;
-		# we can do a simple find with the model, because beforeFind of usable limits the results by user
+		// we can do a simple find with the model, because beforeFind of usable limits the results by user
 		$results = $Model->find($type, $params);
 		if (!empty($results)) { 
 			return $results;
@@ -348,8 +348,8 @@ class UsableBehavior extends ModelBehavior {
  */
 	public function getChildContacts(&$Model) {
 		if (!empty($Model->data[$Model->alias]['contact_id']) && $Model->data[$Model->alias]['contact_all_access']) {
-			# add all of the companies people to the used table
-			# note, if the model has contact_id, then it should belongTo Contact
+			// add all of the companies people to the used table
+			// note, if the model has contact_id, then it should belongTo Contact
 			$contacts = $Model->Contact->Employer->find('first', array(
 				'conditions' => array(
 					'Employer.id' => $Model->data[$Model->alias]['contact_id'],
@@ -442,4 +442,3 @@ class UsableBehavior extends ModelBehavior {
 	}
 	
 }
-?>
