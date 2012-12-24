@@ -31,12 +31,8 @@ class AppController extends Controller {
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
-	public $paginate = array('page' => 1, 'limit' => 25, 'maxLimit' => 100, 'paramType' => 'named');
-
-/**
- * @todo update this so that it uses the full list of actual user roles
- */
-	public $userRoles = array('administrators', 'guests');
+	public $paginate = array();
+	public $userRoles = array('administrators', 'guests'); // @todo update this so that it uses the full list of actual user roles
 	public $userRoleName = 'guests';
 	public $params = array();
 	public $templateId = '';
@@ -56,42 +52,40 @@ class AppController extends Controller {
  * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
  */
 	public function redirect($url, $status = null, $exit = true) {
-		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') :
+		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') {
 			return parent::redirect($this->request->data['Success']['redirect'], $status, $exit);
-		elseif (!empty($this->request->data['Error']['redirect']) && $status == 'error') :
+		} elseif (!empty($this->request->data['Error']['redirect']) && $status == 'error') {
 			return parent::redirect($this->request->data['Error']['redirect'], $status, $exit);
-		elseif (!empty($this->request->data['Override']['redirect'])) :
+		} elseif (!empty($this->request->data['Override']['redirect'])) {
 			return parent::redirect($this->request->data['Override']['redirect'], $status, $exit);
-		else :
+		} else {
 			return parent::redirect($url, $status, $exit);
-		endif;
+		}
 	}
 
 
 
 	public function beforeFilter() {
-		# DO NOT DELETE #
-		# commented out because for performance this should only be turned on if asked to be turned on
-		# Start Condition Check #
-		#App::Import('Model', 'Condition');
-		#$this->Condition = new Condition;
-		#get the id that was just inserted so you can call back on it.
-		#$conditions['plugin'] = $this->request->params['plugin'];
-		#$conditions['controller'] = $this->request->params['controller'];
-		#$conditions['action'] = $this->request->params['action'];
-		#$conditions['extra_values'] = $this->request->params['pass'];
-		#$this->Condition->checkAndFire('is_read', $conditions, $this->request->data); */
-		# End Condition Check #
-		# End DO NOT DELETE #
+		$this->_writeStats();
+		$this->RequestHandler->ajaxLayout = 'default';
+	    
+		// DO NOT DELETE 
+		// commented out because for performance this should only be turned on if asked to be turned on
+        // 
+		// Start Condition Check
+		// App::Import('Model', 'Condition');
+		// $this->Condition = new Condition;
+		// get the id that was just inserted so you can call back on it.
+		// $conditions['plugin'] = $this->request->params['plugin'];
+		// $conditions['controller'] = $this->request->params['controller'];
+		// $conditions['action'] = $this->request->params['action'];
+		// $conditions['extra_values'] = $this->request->params['pass'];
+		// $this->Condition->checkAndFire('is_read', $conditions, $this->request->data);
+		// End Condition Check
+		// End DO NOT DELETE
 		$this->_configAuth();
-		/**
-		 * @todo 	create this function, so that conditions can fire on the view of records
-				$this->checkConditions($plugin, $controller, $action, $extraValues);
-		 */
-
-		/**
-		 * Implemented for allowing guests access through db acl control
-		 */ #$this->Auth->allow();
+        
+        // check permissions
 		$this->userId = $this->Session->read('Auth.User.id');
 		$allowed = array_search($this->request->params['action'], $this->Auth->allowedActions);
 		if ($allowed === 0 || $allowed > 0 ) {
@@ -106,10 +100,7 @@ class AppController extends Controller {
 			}
 		}
 
-
-		/*
-		 * Below here (in this function) are things that have to come after the final userRoleId is determined
-		 */
+        // order is important for these
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
 		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
 		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
@@ -117,26 +108,28 @@ class AppController extends Controller {
 
 		$this->_siteTemplate();
 
-		/**
-		 * Check whether the site is sync'd up
-		 */
-		#$this->_siteStatus();
-
-		/**
-		 * Automatic view vars available (this location is pretty important, so that other beforeFilter functions run first)
-		 */
+		// order is important for these automatic view vars
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
 		$this->set('title_for_layout', $this->_titleForLayout());
 		$this->set('userRoleId', $this->userRoleId);
 	}
 
-
     public function beforeRender() {
 		parent::beforeRender();
 		$this->set('referer', 'test'); // used for back button links, could be useful for breadcrumbs possibly
 		$this->set('_serialize', array_keys($this->viewVars));
+        $this->set('_view', $this->view);
 	}
-
+	
+/**
+ * Write stats session variables
+ */
+	protected function _writeStats() {		
+		$statsEntry = $this->Session->read('Stats.entry');
+		if (empty($statsEntry)) {
+			 $this->Session->write('Stats.entry', base64_encode(time()));  
+		}
+	}
 
 /**
  * Over write of core paginate method
@@ -181,10 +174,10 @@ class AppController extends Controller {
 			$this->__handlePaginatorArchivable($object);
 		}
 
-		#filter by database field full value
+		// filter by database field full value
 		$filter = !empty($this->request->params['named']['filter']) ? $this->request->params['named']['filter'] : null;
 		if (!empty($filter) && is_array($filter)) {
-			# use an OR filter if we do multiple filters
+			// use an OR filter if we do multiple filters
 			foreach ($filter as $name) {
 				$this->__handlePaginatorFiltering(urldecode($name), $object);
 			}
@@ -192,15 +185,37 @@ class AppController extends Controller {
 			$this->__handlePaginatorFiltering(urldecode($filter), $object);
 		}
 
-		#filter by starting letter of database field
+		// filter by starting letter of database field
 		$starter = !empty($this->request->params['named']['start']) ? $this->request->params['named']['start'] : null;
 		if (!empty($starter) && is_array($starter)) {
-			# use an OR filter if we do multiple filters
+			// use an OR filter if we do multiple filters
 			foreach ($starter as $start) {
 				$this->__handlePaginatorStarter(urldecode($start), $object);
 			}
 		} else if (!empty($starter)) {
 			$this->__handlePaginatorStarter(urldecode($starter), $object);
+		}
+
+		// filter by any match of a string in a particular field
+		$container = !empty($this->request->params['named']['contains']) ? $this->request->params['named']['contains'] : null;
+		if (!empty($container) && is_array($container)) {
+			// use an OR filter if we do multiple filters
+			foreach ($container as $contain) {
+				$this->__handlePaginatorContainer(urldecode($contain), $object);
+			}
+		} else if (!empty($container)) {
+			$this->__handlePaginatorContainer(urldecode($container), $object);
+		}
+
+		// filter by range of a particular field
+		$range = !empty($this->request->params['named']['range']) ? $this->request->params['named']['range'] : null;
+		if (!empty($range) && is_array($range)) {
+			// use an OR filter if we do multiple filters
+			foreach ($range as $singleRange) {
+				$this->__handlePaginatorRange(urldecode($singleRange), $object);
+			}
+		} else if (!empty($range)) {
+			$this->__handlePaginatorRange(urldecode($range), $object);
 		}
 	}
 
@@ -223,12 +238,12 @@ class AppController extends Controller {
 
 		if (@$Object->name) {
 			$options['alias'] = !empty($object) ? $object : $ModelName;
-			$options['schema'] = $Object->schema();
+			$options['schema'] = $this->__paginatorSchema($Object->schema(), $field);
 			$options['fieldName'] = $this->__paginatorFieldName($field, $options['schema']);
 			$options['fieldValue'] = substr($field, strpos($field, ':') + 1); // returns 'incart' from 'status:incart'
 			$options['fieldValue'] = $options['fieldValue'] == 'null' ? null : $options['fieldValue'];  // handle null as a value
-
 			return $options;
+			
 		} else {
 			return null;
 		}
@@ -264,11 +279,34 @@ class AppController extends Controller {
 			}
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
-			# no matching field don't filter anything
+			// no matching field don't filter anything
 			if (Configure::read('debug') > 0) {
 				$this->Session->setFlash(__('Invalid field filter attempted on ' . $options['alias']));
 			}
 		}
+	}
+	
+/**
+ * Paginator Schema
+ * 
+ * Update the schema with the meta fields (refer to metable behavior)
+ * 
+ * @param object $schema
+ * @param string $field
+ */
+	protected function __paginatorSchema($schema, $field) {
+		$field = $this->__paginatorFieldName($field);
+		if (strpos($field, '!') === 0) {
+			$schema[$field] = array(
+				'type' => 'string',
+				'null' => true,
+				'default' => null,
+				'length' => 255,
+				'collate' => 'utf8_general_ci',
+				'charset' => 'utf8'
+			);
+		}
+		return $schema;
 	}
 
 /**
@@ -285,9 +323,53 @@ class AppController extends Controller {
 			$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' LIKE'] = $options['fieldValue'] . '%';
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
-			# no matching field don't filter anything
+			// no matching field don't filter anything
 			if (Configure::read('debug') > 0) {
 				$this->Session->setFlash(__('Invalid starter filter attempted.'));
+			}
+		}
+	}
+
+/**
+ * The actual handling of filtering for paginated pages
+ * Adds additional conditions to the paginate variable (one at time)
+ *
+ * @param mixed
+ * @return void
+ */
+	private function __handlePaginatorContainer($containField, $object) {
+		$options = $this->_getPaginatorVars($object, $containField);
+		if (!empty($options['fieldName'])) {
+			$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' LIKE'] = '%' . $options['fieldValue'] . '%';
+			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
+		} else {
+			// no matching field don't filter anything
+			if (Configure::read('debug') > 0) {
+				$this->Session->setFlash(__('Invalid container filter attempted.'));
+			}
+		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param type $rangeField
+	 * @param type $object
+	 */
+	private function __handlePaginatorRange($rangeField, $object) {
+		$options = $this->_getPaginatorVars($object, $rangeField);
+		$range = explode(';', $options['fieldValue']);
+		if (!empty($options['fieldName'])) {
+			$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' >='] = $range[0];
+			if(!empty($range[1])) {
+				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' <='] = $range[1];
+			}
+//			debug($this->paginate['conditions']);
+			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
+		} else {
+			// no matching field don't filter anything
+			if (Configure::read('debug') > 0) {
+				$this->Session->setFlash(__('Invalid range filter attempted.'));
 			}
 		}
 	}
@@ -299,18 +381,21 @@ class AppController extends Controller {
  * @param string	A string which is close to a db field name.
  * @return string
  */
-	private function __paginatorFieldName($string, $modelFields) {
+	private function __paginatorFieldName($string, $modelFields = array()) {
 		$fieldName = Inflector::underscore(substr($string, 0, strpos($string, ':'))); // standardizes various name versions
 
 		if (!empty($modelFields[$fieldName])) {
-			# match exact field name (no change necessary)
+			// match exact field name (no change necessary)
 			return $fieldName;
 		} else if (!empty($modelFields[$fieldName.'_id'])) {
-			# match something_id naming convention
+			// match something_id naming convention
 			return $fieldName.'_id';
 		} else if (!empty($modelFields['is_'.$fieldName])) {
-			# match is_something naming convention
+			// match is_something naming convention
 			return 'is_'.$fieldName;
+		} else if (strpos($fieldName, '!') === 0) {
+			// match meta fields
+			return $fieldName;
 		} else {
 			return null;
 		}
@@ -318,48 +403,7 @@ class AppController extends Controller {
 
 
 /**
- * Returns a list of items to the list element for any model
- *
- * @param {int} 	We can have multiple calls to this on a single page.  Instance makes each one unique.
- * @return array
- */
-	public function itemize($instance = null) {
-		if(!empty($instance) && defined('__ELEMENT_LIST_'.$instance)) {
-			extract(unserialize(constant('__ELEMENT_LIST_'.$instance)));
-		} else if (defined('__ELEMENT_LIST')) {
-			extract(unserialize(__ELEMENT_LIST));
-		}
-		$options = array();
-		$options['controller'] =  !empty($this->request->controller) ? strtolower($this->request->controller) :  null;
-		$options['plugin'] =  !empty($this->request->plugin) ? strtolower($this->request->plugin) : strtolower(ZuhaInflector::pluginize($options['controller']));
-		$options['model'] = !empty($model) ? $model : Inflector::classify($options['controller']);
-		$options['sortField'] = !empty($sortField) ? strtolower($sortField) : 'id';
-		$options['sortOrder'] = !empty($sortOrder) ? strtolower($sortOrder) : 'ASC';
-		$options['resultsCount'] = !empty($resultsCount) ? strtolower($resultsCount) : 10;
-		$options['viewPlugin'] = !empty($viewPlugin) ? $viewPlugin : $options['plugin'];
-		$options['viewController'] = !empty($viewController) ? $viewController : $options['controller'];
-		$options['viewAction'] = !empty($viewAction) ? strtolower($viewAction) : 'view';
-		$options['displayField'] = !empty($displayField) ? strtolower($displayField) : 'name';
-		$options['displayDescription'] = !empty($displayDescription) ? strtolower($displayDescription) : null;
-		$options['idField'] = !empty($idField) ? strtolower($idField) : 'id';
-		$options['showGallery'] = !empty($showGallery) ? $showGallery : false;
-		$options['galleryModelName'] = !empty($galleryModelName) ? $galleryModelName : $options['model'];
-		$options['galleryForeignKey'] = !empty($galleryForeignKey) ? $galleryForeignKey : $options['idField'];
-		$options['galleryThumbSize'] = !empty($galleryThumbSize) ? $galleryThumbSize : 'small';;
-		App::uses($options['model'], Inflector::camelize($options['plugin']).'.Model');
-		$Model = new $options['model']();
-		$results = $Model->find('all', array(
-			'order' => array(
-				$options['model'].'.'.$options['sortField'] => $options['sortOrder'],
-				),
-			'limit' => $options['resultsCount'],
-			));
-		return array('results' => $results, 'options' => $options);
-	}
-
-
-/**
- * Convenience admin_delete
+ * Convenience delete method
  * The goal is to make less code necessary in individual controllers
  * and have more reusable code.
  *
@@ -367,7 +411,7 @@ class AppController extends Controller {
  * @param int 		$id
  * @param array 	use $options['redirect'] to override default redirect (referer
  * @return string
- * @todo Not entirely sure we need to use import for this, and if that isn't a security problem. We need to check and confirm.
+ * @todo get rid of this, make the controllers handle it themselves
  */
 	public function __delete($model = null, $id = null, $options = null) {
 		// set default class & message for setFlash
@@ -411,77 +455,16 @@ class AppController extends Controller {
 
 
 /**
- * Convenience __ajax_edit
- * The goal is to make less code necessary in individual controllers
- * and have more reusable code.
- */
-	public function __ajax_edit($id = null) {
-        if ($this->request->data) {
-			# This will not work for multiple fields, and is meant for a form with a single value to update
-			# Create the model name from the controller requested in the url
-			$model = Inflector::camelize(Inflector::singularize($this->request->params['controller']));
-			# These apparently aren't necessary. Left for reference.
-			//App::import('Model', $model);
-			//$this->$model = new $model();
-			# Working to determine if there is a sub model needed, for proper display of updated info
-			# For example Project->ProjectStatusType, this is typically denoted by if the field name has _id in it, becuase that means it probably refers to another database table.
-			foreach ($this->request->data[$model] as $key => $value) {
-				# weeding out if the form data is id, because id is standard
-			    if($key != 'id') {
-					# we need to refer back to the actual field name ie. project_status_type_id
-					$fieldName = $key;
-					# if the data from the form has a field name with _id in it.  ie. project_status_type_id
-					if (strpos($key, '_id')) {
-						$submodel = Inflector::camelize(str_replace('_id', '', $key));
-						# These apparently aren't necessary. Left for reference.
-						//App::import('Model', $submodel);
-						//$this->$submodel = new $submodel();
-					}
-				}
-			}
-
-            $this->$model->id = $this->request->data[$model]['id'];
-			$fieldValue = $this->request->data[$model][$fieldName];
-
-			# save the data here
-        	if ($this->$model->saveField($fieldName, $fieldValue, true)) {
-				# if a submodel is needed this is where we use it
-				if (!empty($submodel)) {
-					# get the default display field otherwise leave as the standard 'name' field
-					if (!empty($this->$model->$submodel->displayField)){
-		                $displayField = $this->$model->$submodel->displayField;
-		            } else {
-		                $displayField = 'name';
-		            }
-					echo $this->$model->$submodel->field($displayField, array('id' => $fieldValue));
-					# we should have this echo statement sent to a view file for proper mvc structure. Left for reference
-					//$this->set('displayValue', $displayValue);
-				} else {
-					echo $fieldValue;
-					# we should have this echo statement sent to a view file for proper mvc structure. Left for reference
-					//$this->set('displayValue', $displayValue);
-				}
-			# not sure that this would spit anything out.
-			} else {
-				$this->set('error', true);
-				echo $error;
-			}
-		}
-		$this->render(false);
-	}
-
-
-/**
  * Used to show admin layout for admin pages & userRole views if they exist
  * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
  */
 	public function _siteTemplate() {
 		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
-			# this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
+			// this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
 			$this->layout = 'default';
 		} else if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
-			if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) :
-				# this elseif checks to see if the user role has a specific view file
+            if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
+				// this elseif checks to see if the user role has a specific view file
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
 				unset($this->request->params['prefix']);
 				$this->request->url = str_replace('admin/', '', $this->request->url);
@@ -489,10 +472,10 @@ class AppController extends Controller {
 				$Dispatcher = new Dispatcher();
 				$Dispatcher->dispatch($this->request, new CakeResponse(array('charset' => Configure::read('App.encoding'))));
 				break;
-			else :
-				$this->Session->setFlash(__('Section access restricted.', true));
+			} else {
+				$this->Session->setFlash(__('Section access restricted.'));
 				$this->redirect($this->referer());
-			endif;
+			}
 		} else if (!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) {
 			foreach (App::path('views') as $path) {
 				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'View', DS.'Plugin'.DS.ucfirst($this->request->params['plugin']).DS.'View', $path) : $path;
@@ -514,10 +497,10 @@ class AppController extends Controller {
  * Used to find the template and makes a call to parse all page views.  Sets the defaultTemplate variable for the layout.
  * This function parses the settings for templates, in order to decide which template to use, based on url, and user role.
  *
- * @todo 		Move this to the webpage model.
+ * @todo 		Move this to the webpage model and optimize it.. looks a bit overcomplicated
  */
 	public function _getTemplate() {
-		if (defined('__APP_TEMPLATES')) :
+		if (defined('__APP_TEMPLATES')) {
 			$settings = unserialize(__APP_TEMPLATES);
 			$i = 0;
 			if (!empty($settings['template'])) {
@@ -528,35 +511,40 @@ class AppController extends Controller {
 					$i++;
 				}
 			}
+			
+			// check urls first
+			//  so that we don't accidentally use a default template before a template that was set for this url.
+			if (!empty($templates)) {
+				foreach ($templates as $key => $template) {
+					if (!empty($template['urls'])) {
+						// note : this over rides isDefault, so if its truly a default template, don't set urls
+						$this->templateId = $this->_urlTemplate($template);
+						// get rid of template values so we don't have to check them twice
+						unset($templates[$key]);
+					}
+					if (!empty($this->templateId)) {
+						// as soon as we have the first template that matches, end this loop
+						break;
+					}
+				} // end loop
+			}
+			
+			if (!empty($templates) && empty($this->templateId)) {
+				foreach ($templates as $key => $template) {
+					if (!empty($template['isDefault'])) {
+						$this->templateId = $template['templateId'];
+						$this->templateId = !empty($template['userRoles']) ? $this->_userTemplate($template) : $this->templateId;
+					}
+					if (!empty($this->templateId)) {
+						// as soon as we have the first template that matches, end this loop
+						break;
+					}
+				} // end loop
+			}
 
-			if (!empty($templates)) : foreach ($templates as $key => $template) :
-				// check urls first so that we don't accidentally use a default template before a template set for this url.
-				if (!empty($template['urls'])) :
-					// note : this over rides isDefault, so if its truly a default template, don't set urls
-					$this->templateId = $this->_urlTemplate($template);
-					// get rid of template values so we don't have to check them twice
-					unset($templates[$key]);
-				endif;
-				if (!empty($this->templateId)) :
-					// as soon as we have the first template that matches, end this loop
-					break;
-				endif;
-
-			endforeach; endif;
-			if (!empty($templates) && empty($this->templateId)) : foreach ($templates as $key => $template) :
-				if (!empty($template['isDefault'])) :
-					$this->templateId = $template['templateId'];
-					$this->templateId = !empty($template['userRoles']) ? $this->_userTemplate($template) : $this->templateId;
-				endif;
-				if (!empty($this->templateId)) :
-					// as soon as we have the first template that matches, end this loop
-					break;
-				endif;
-			endforeach; endif;
-
-		elseif (empty($this->templateId)) :
-			# THIS ELSE IF IS DEPRECATED 6/11/2011 : Will be removed in future versions
-			# it was for use when there were two template related constants, which have now been combined into one.
+		} else if (empty($this->templateId)) {
+			// THIS ELSE IF IS DEPRECATED 6/11/2011 : Will be removed in future versions
+			// it was for use when there were two template related constants, which have now been combined into one.
 			if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
            		$this->templateId = __APP_DEFAULT_TEMPLATE_ID;
 	            if (defined('__APP_MULTI_TEMPLATE_IDS')) {
@@ -564,67 +552,69 @@ class AppController extends Controller {
 						extract(unserialize(__APP_MULTI_TEMPLATE_IDS));
 					}
 					$i = 0;
-					if (!empty($url)) { foreach($url as $u) {
-						# check each one against the current url
-						$u = str_replace('/', '\/', $u);
-						$urlRegEx = '/'.str_replace('*', '(.*)', $u).'/';
-						if (preg_match($urlRegEx, $this->request->url)) {
-							$this->templateId = $templateId[$i];
-						}
-						$i++;
-					}}
+					if (!empty($url)) { 
+                        foreach($url as $u) {
+                            // check each one against the current url
+                            $u = str_replace('/', '\/', $u);
+                            $urlRegEx = '/'.str_replace('*', '(.*)', $u).'/';
+                            if (preg_match($urlRegEx, $this->request->url)) {
+                                $this->templateId = $templateId[$i];
+                            }
+                            $i++;
+                        }
+                    }
 
-					if (!empty($webpages)) { foreach ($webpages as $webpage) {
-						echo $webpage['Webpage']['content'];
-					}} else {
-						# echo 'do nothing, use default template';
+					if (!empty($webpages)) { 
+                        foreach ($webpages as $webpage) {
+                            echo $webpage['Webpage']['content'];
+                        }
+                    } else {
+						//echo 'do nothing, use default template';
 					}
 	            }
 			}
-		endif;
+		}
 
-		$conditions = $this->_templateConditions();
 		// this is because the Webpage model is not loaded for the install site page.
-		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', $conditions);
+		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $this->templateId)));
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
-        $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId);
+        $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId, $this->request);
         $this->set('defaultTemplate', $templated);
-
-		# the __APP_DEFAULT_TEMPLATE_ID is deprecated and will be removed
-		if (!empty($this->templateId) && !defined('__APP_DEFAULT_TEMPLATE_ID')) :
+		// the __APP_DEFAULT_TEMPLATE_ID is deprecated and will be removed
+		if (!empty($this->templateId) && !defined('__APP_DEFAULT_TEMPLATE_ID')) {
 			$this->layout = 'custom';
-		elseif (defined('__APP_DEFAULT_TEMPLATE_ID')) :
+		} else if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
 			$this->layout = 'custom';
-		endif;
+		}
 	}
 
 
 /**
- * check if the template selected is available to the current users role
- *
- * @param {array}		Individual template data arrays from the settings.ini (or defaults.ini) file.
+ * Checks if the template selected is available to the current users role
+ * 
+ * @param array $data
+ * @return null
  */
 	private function _userTemplate($data) {
 		// check if the url being requested matches any template settings for user roles
-
-		# set a new template id if the session is over writing it
+		// set a new template id if the session is over writing it
 		$currentUserRole = $this->Session->read('viewingRole') ? $this->Session->read('viewingRole') : $this->userRoleId;
 
-		if (!empty($data['userRoles'])) :
-			foreach ($data['userRoles'] as $userRole) :
-				if ($userRole == $currentUserRole) :
+		if (!empty($data['userRoles'])) {
+			foreach ($data['userRoles'] as $userRole) {
+				if ($userRole == $currentUserRole) {
 					$templateId = $data['templateId'];
-				endif;
-			endforeach;
-		elseif (!empty($data['templateId'])) :
+				}
+			} // end userRole loop
+		} elseif (!empty($data['templateId'])) {
 			$templateId = $data['templateId'];
-		endif;
+		}
 
-		if (!empty($templateId)) :
+		if (!empty($templateId)) {
 			return $templateId;
-		else :
+		} else {
 			return null;
-		endif;
+		}
 	}
 
 /**
@@ -654,43 +644,7 @@ class AppController extends Controller {
 			return null;
 		}
 	}
-
-
-
-/**
- * Add conditions based on user role for the template
- *
- * @todo		Make slideDock menu available to anyone with permissions to $webpages->edit().  Not just admin
- */
-	private function _templateConditions() {
-		# contain the menus for output into the slideDock if its the admin user
-		if ($this->userRoleId == 1 && in_array('Menus', CakePlugin::loaded())) :
-			# this allows the admin to edit menus
-			$this->Webpage->bindModel(array(
-				'hasMany' => array(
-					'Menu' => array(
-						'className' => 'Menus.Menu',
-						'foreignKey' => '',
-						'conditions' => 'Menu.menu_id is null',
-						),
-					),
-				));
-			return array('conditions' => array(
-				'Webpage.id' => $this->templateId,
-					),
-				'contain' => array(
-					'Menu' => array(
-						'conditions' => array(
-							'Menu.menu_id' => null,
-							),
-						),
-					));
-		else :
-			return array('conditions' => array('Webpage.id' => $this->templateId));
-		endif;
-	}
-
-
+    
 /**
  * Loads components dynamically using both system wide, and per controller loading abilities.
  *
@@ -731,8 +685,8 @@ class AppController extends Controller {
  * Loads helpers dynamically system wide, and per controller loading abilities.
  */
 	private function _getHelpers() {
-		if (in_array('Menus', CakePlugin::loaded())) {
-			$this->helpers[] = 'Menus.Tree';
+		if (in_array('Utils', CakePlugin::loaded())) {
+			$this->helpers[] = 'Utils.Tree';
 		}
 
 		if(defined('__APP_LOAD_APP_HELPERS')) {
@@ -768,7 +722,7 @@ class AppController extends Controller {
 			if (is_array($this->uses)) {
 				$this->uses = array_merge($this->uses, array('Webpages.Webpage'));
 			} else {
-				# there is only one (non-array) in $this->uses
+				// there is only one (non-array) in $this->uses
 				$this->uses = array($this->uses, 'Webpages.Webpage');
 			}
 		}
@@ -786,7 +740,7 @@ class AppController extends Controller {
 		if ($this->userRoleId == 1) {
 			$fileSettings = new File(CONFIGS.'settings.ini');
 			$fileDefaults = new File(CONFIGS.'defaults.ini');
-			# the settings file doesn't exist sometimes, and thats fine
+			// the settings file doesn't exist sometimes, and thats fine
 			if ($settings = $fileSettings->read()) {
 				App::uses('File', 'Utility');
 
@@ -861,14 +815,21 @@ class AppController extends Controller {
 			$smtp = base64_decode($smtp);
 			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
 			if(parse_ini_string($smtp)) {
-				$this->SwiftMailer->to = $toEmail;
+
+				if(isset($toEmail['to']) && is_array($toEmail)) $this->SwiftMailer->to = $toEmail['to'];
+				else $this->SwiftMailer->to = $toEmail;
+				if(isset($toEmail['cc']) && is_array($toEmail)) $this->SwiftMailer->cc = $toEmail['cc'];
+				if(isset($toEmail['bcc']) && is_array($toEmail)) $this->SwiftMailer->bcc = $toEmail['bcc'];
+				if(isset($toEmail['replyTo']) && is_array($toEmail)) $this->SwiftMailer->replyTo = $toEmail['replyTo'];
+
 				$this->SwiftMailer->template = $template;
 
 				$this->SwiftMailer->layout = 'email';
 				$this->SwiftMailer->sendAs = 'html';
 
 				if ($message) {
-					$this->SwiftMailer->content = $message;
+              					$this->SwiftMailer->content = $message;
+					if($message['html'] && is_array($message)) $this->SwiftMailer->content = $message['html'];
 					$message['html'] = $message;
 					$this->set('message', $message);
 				}
@@ -888,14 +849,14 @@ class AppController extends Controller {
    }
 
 
-##############################################################
+/**###########################################################
 ##############################################################
 #################  HERE DOWN IS PERMISSIONS ##################
 ##############################################################
 ##############################################################
 ##############################################################
 ##############################################################
-##############################################################
+##############################################################*/
 
 
 /**
@@ -905,18 +866,18 @@ class AppController extends Controller {
  * @todo		Optimize this somehow, someway.
  */
 	public function isAuthorized($user) {
-		# this allows all users in the administrators group access to everything
-		# using user_role_id is deprecated and will be removed in future versions
+		// this allows all users in the administrators group access to everything
+		// using user_role_id is deprecated and will be removed in future versions
 		if (!empty($user['view_prefix']) && ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1)) { return true; }
-		# check guest access
+		// check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
 		if ($this->Acl->check($aro, $aco)) {
-			#echo 'guest access passed';
-			#return array('passed' => 1, 'message' => 'guest access passed');
+			//echo 'guest access passed';
+			//return array('passed' => 1, 'message' => 'guest access passed');
 			return true;
 		} else {
-			# check user access
+			//check user access
 			$aro = $this->_userAro($user['id']); // user aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get aco
 			if ($this->Acl->check($aro, $aco)) {
@@ -924,14 +885,14 @@ class AppController extends Controller {
 				#return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
-				#debug($this->Acl->Aco->node($this->_getAcoPath()));
-				#debug($this->Acl->Aro->node($this->_userAro($user['id'])));
-				#debug($this->Acl->check($aro, $aco));
-				#debug($user);
-				#debug($this->Session->read());
-				#debug($aro);
-				#debug($aco);
-				#break;
+//				debug($this->Acl->Aco->node($this->_getAcoPath()));
+//				debug($this->Acl->Aro->node($this->_userAro($user['id'])));
+//				debug($this->Acl->check($aro, $aco));
+//				debug($user);
+//				debug($this->Session->read());
+//				debug($aro);
+//				debug($aco);
+//				break;
 				$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
 				$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
 				$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';
@@ -949,7 +910,7 @@ class AppController extends Controller {
  */
 	private function _getAcoPath() {
 		if (!empty($this->request->params['pass'][0])) {
-			# check if the record level aco exists first
+			// check if the record level aco exists first
 			$aco = $this->Acl->Aco->find('first', array(
 				'conditions' => array(
 					'model' => $this->modelClass,
@@ -962,7 +923,7 @@ class AppController extends Controller {
 		} else {
 			$controller = Inflector::camelize($this->request->params['controller']);
 			$action = $this->request->params['action'];
-			# $aco = 'controllers/Webpages/Webpages/view'; // you could do the full path, but the shorter path is slightly faster. But it does not allow name collisions. (the full path would allow name collisions, and be slightly slower).
+			// $aco = 'controllers/Webpages/Webpages/view'; // you could do the full path, but the shorter path is slightly faster. But it does not allow name collisions. (the full path would allow name collisions, and be slightly slower).
 			return $controller.'/'.$action;
 		}
 	}

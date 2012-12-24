@@ -26,7 +26,6 @@ class UsersController extends UsersAppController {
 	public $uses = 'Users.User';
 	public $uid;
 	public $components = array('Email', 'Ssl');
-	public $paginate = array();
 	public $allowedActions = array(
 		'login',
 		'desktop_login',
@@ -44,18 +43,16 @@ class UsersController extends UsersAppController {
 
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
-		if (in_array('Invite', CakePlugin::loaded())) :
+		if (in_array('Invite', CakePlugin::loaded())) {
 			$this->components[] = 'Invite.InviteHandler';
-		endif;
-		if (in_array('Recaptcha', CakePlugin::loaded())) :
+		}
+		if (in_array('Recaptcha', CakePlugin::loaded())) {
 			$this->helpers[] = 'Recaptcha.Recaptcha';
-		endif;
+		}
 	}
 
 
 	public function index() {
-		#$this->User->recursive = 0;
-		$this->paginate = !empty($this->userId) ? array('conditions' => array('User.id !=' => $this->userId)) : $this->paginate;
 		$this->paginate['fields'] = array(
 			'User.id',
 			'User.first_name',
@@ -94,7 +91,7 @@ class UsersController extends UsersAppController {
 				),
 			));
 
-		# This is here, because we have an element doing a request action on it.
+		// This is here, because we have an element doing a request action on it.
 		if (isset($this->request->params['requested'])) {
         	if (!empty($user)) {
 				return $user;
@@ -103,8 +100,8 @@ class UsersController extends UsersAppController {
 
 		// check if user exists
 		if(!isset($user['User'])) {
-		#	$this->Session->setFlash('You do not have a user, please create one.');
-		#	$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'register', 'user' => $this->Auth->user('id')));
+			//	$this->Session->setFlash('You do not have a user, please create one.');
+			//	$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'register', 'user' => $this->Auth->user('id')));
 		}
 
 		$followedUsers = $this->User->UserFollower->find('all', array(
@@ -113,9 +110,9 @@ class UsersController extends UsersAppController {
 				),
 			));
 
-		# Setup the user ids which we'll find the statuses of
+		// Setup the user ids which we'll find the statuses of
 		foreach ($followedUsers as $followedUser) {
-			#$followedUserIds[] = $followedUser['User']['id'];
+			//$followedUserIds[] = $followedUser['User']['id'];
 			$statusUserIds[] = $followedUser['UserFollower']['user_id'];
 		}
 		$statusUserIds[] = $user['User']['id'];
@@ -131,7 +128,6 @@ class UsersController extends UsersAppController {
 			'order' => array(
 				'UserStatus.created DESC'
 				),
-			'limit' => 10,
 			));
 
 
@@ -164,7 +160,7 @@ class UsersController extends UsersAppController {
 			),
 			'contain'=>array()
 		));
-
+		
 
 		$is_self = ($user['User']['id'] == $this->Auth->user('id') ? true : false);
 		$this->set('is_self', $is_self );
@@ -179,7 +175,7 @@ class UsersController extends UsersAppController {
 
 
 	public function edit($id = null) {
-		# looking for an existing user to edit
+		// looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
 			$conditions = array('User.user_id' => $this->request->params['named']['user_id']);
 		} else if (!empty($id)) {
@@ -192,14 +188,15 @@ class UsersController extends UsersAppController {
 				'conditions' => $conditions,
 				));
 
-			if (in_array('Orders', CakePlugin::loaded())) :
-				$userShippingAddress = $this->User->OrderShipment->find('first',array(
+/* This should not be here RK Dec 1, 2012 (user is not related to transaction shipment in the model)
+			if (in_array('Transactions', CakePlugin::loaded())) {
+				$userShippingAddress = $this->User->TransactionShipment->find('first',array(
 					'conditions' => array(
-						'OrderShipment.user_id' => $id,
-						'OrderShipment.order_transaction_id is null'
+						'TransactionShipment.user_id' => $id,
+						'TransactionShipment.transaction_id is null'
 						)
 					));
-				$user['OrderShipment'] = $userShippingAddress['OrderShipment'];
+				$user['TransactionShipment'] = $userShippingAddress['TransactionShipment'];
 				$userBillingAddress = $this->User->OrderPayment->find('first',array(
 					'conditions' => array(
 						'OrderPayment.user_id' => $id,
@@ -207,22 +204,23 @@ class UsersController extends UsersAppController {
 						)
 					));
 				$user['OrderPayment'] = $userBillingAddress['OrderPayment'];
-			endif;
+			}
+*/
 
 			if(isset($user['User'])) {
 				$this->request->data = $user;
 			} else {
 				$this->request->data = $this->User->read(null, $id);
 			}
-		# saving a user which was edited
+		// saving a user which was edited
 		} else if(!empty($this->request->data)) {
 			$this->request->data['User']['user_id'] = $this->Auth->user('id');
-			#getting password issue when saving ; so unsetting in this case
+			//getting password issue when saving ; so unsetting in this case
 			if(!isset($this->request->data['User']['password']))	{
 				unset($this->User->validate['password']);
 			}
 			if(!empty($this->request->data['User']['avatar'])) {
-				# upload image if it was set
+				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
 			try {
@@ -243,8 +241,8 @@ class UsersController extends UsersAppController {
  * @todo	Not sure I like the use of contact in the url being possible.  My guess is that you could change the id and register as a different contact, and probably gain access to things you shouldn't.  Maybe switch to some kind of Security::cipher thing.  (on second thought, the database having a unique index on contact_id might keep this from happening)
  */
 	public function register() {
-		# force ssl for PCI compliance during regristration and login
-		if (defined('__ORDERS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
+		// force ssl for PCI compliance during regristration and login
+		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
 
 		if (!empty($this->request->data)) {
 			try {
@@ -252,7 +250,7 @@ class UsersController extends UsersAppController {
 				$this->Session->setFlash(__d('users', 'Successful Registration'));
 				$this->_login();
 			} catch (Exception $e) {
-				# if registration verification is required the model will return this code
+				// if registration verification is required the model will return this code
 				$this->Session->setFlash($e->getMessage());
 				$this->Auth->logout();
 			}
@@ -301,7 +299,7 @@ class UsersController extends UsersAppController {
  */
 	public function login() {
 		// force ssl for PCI compliance during regristration and login
-		if (defined('__ORDERS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
+		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
 
 		if (!empty($this->request->data)) {
 			$this->_login();
@@ -310,7 +308,9 @@ class UsersController extends UsersAppController {
 		unset($userRoles[1]); // remove the administrators group by default - too insecure
 		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
 		$this->set(compact('userRoleId', 'userRoles'));
-		if (empty($this->templateId)) { $this->layout = 'login'; }
+		if (empty($this->templateId)) {
+			 $this->layout = 'login'; 
+		}
 	}
 
 
@@ -321,6 +321,11 @@ class UsersController extends UsersAppController {
 				$this->User->checkEmailVerification($this->request->data);
 				// save the login meta data
 				$this->User->loginMeta($this->request->data);
+				
+				if (in_array('Connections', CakePlugin::loaded())) {
+					$this->User->Connection->afterLogin($user['User']['id']);
+				}
+				
 		        $this->redirect($this->_loginRedirect());
 			} catch (Exception $e) {
 				$this->Auth->logout();
@@ -437,16 +442,15 @@ class UsersController extends UsersAppController {
  * @todo 		This should be updated to some kind of API login (maybe REST) so that any apps can authenticate.
  */
 	public function desktop_login() {
-
         $user = $this->User->find('first', array('conditions' => array('username' => $this->request->data['User']['username'],'password' => AuthComponent::password($this->request->data['User']['password']))));
-        if($user!= null ){
-	        echo $user['User']['id'];
-			$this->layout(false);
-			$this->render(false);
-		} else{
-		    echo "Fail";
-			$this->layout(false);
-			$this->render(false);
+        if(!empty($user)){
+        	$this->set('data', $user['User']['id']);
+			$this->layout = false;
+			//$this->render(false);
+		} else {
+        	$this->set('data', "Fail");
+			$this->layout = false;
+			//$this->render(false);
 		}
     }
 
@@ -528,14 +532,14 @@ class UsersController extends UsersAppController {
  */
 	public function forgot_password() {
 		if(!empty($this->request->data)) {
-			# we need to check the username field and the email field
+			// we need to check the username field and the email field
 		  	$user = $this->User->findbyUsername(trim($this->request->data['User']['username']));
 			if (!empty($user['User']['id']) && !empty($user['User']['email'])) {
-				# the user details exist
-				# so first lets update the user record with a temporary uid key to use for resetting password
+				// the user details exist
+				// so first lets update the user record with a temporary uid key to use for resetting password
 				$forgotKey = $this->User->resetPassword($user['User']['id']);
 				if (!empty($forgotKey)) {
-					# then lets email the user a link to the reset password page
+					// then lets email the user a link to the reset password page
 					$this->set('name', $user['User']['full_name']);
 					$this->set('key', $forgotKey);
 					$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $forgotKey), true);

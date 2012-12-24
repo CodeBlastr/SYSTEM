@@ -3,32 +3,11 @@ This is a system css file to define default css rules so that new sites are at l
 The css placed here should be easily over written even with simple css rules for site css.
 Note that the class names could be updated and change often.
 */
+* {
+	vertical-align: top;
+}
 
 /* Site Errors */
-#databaseUpgrades {
-	padding: 15px;
-}
-.siteUpgradeNeeded {
-	position: absolute;
-	top: 0;
-	left: 0; 
-	z-index: 999999999999999;
-	background: #FC9;
-	padding: 3px;
-	color: #C00;
-	font-weight: bold;
-}
-.message {
-    background: #FCEFE4;
-    border: 2px solid #F90;
-    padding: 1em;
-	margin: 1em;
-    color: #C60;
-    font-weight: bold;
-    -moz-border-radius:5px;
-    -webkit-border-radius:5px;
-    border-radius:5px;
-}
 .error-message, .error {
 	color: #C00;
 }
@@ -37,27 +16,23 @@ Note that the class names could be updated and change often.
     width:24px;
     height:24px;
   }
-.toggleClick.toggle:before {
-	content: '\25BC \ ';
-    border: 1px solid #AAAAAA;
-    border-radius: 0.2em 0.2em 0.2em 0.2em;
+.toggleClick.toggle:after {
+	content: '\25B8 \ ';
     color: #AAAAAA;
-    display: block;
-    float: left;
-    font-size: 0.8em;
-    margin: 0 0.5em 0 0;
-    padding: 0 0.18em 0 0.14em;
+    display: inline-block;
+    font-size: 0.6em;
+    margin: 0 0 0 5px;
+    position: relative;
+    vertical-align: middle;
 }
-.toggleClick.toggled:before {
-	content: '\25B2 \ ';
-    border: 1px solid #AAAAAA;
-    border-radius: 0.2em 0.2em 0.2em 0.2em;
+.toggleClick.toggled:after {
+	content: '\25BE \ ';
     color: #AAAAAA;
-    display: block;
-    float: left;
-    font-size: 0.8em;
-    margin: 0 0.5em 0 0;
-    padding: 0 0.18em 0 0.14em;
+    display: inline-block;
+    font-size: 0.6em;
+    margin: 0 0 0 5px;
+    position: relative;
+    vertical-align: middle;
 }
 .toggleClick, .toggleHover {
 	cursor: pointer;
@@ -69,19 +44,8 @@ Note that the class names could be updated and change often.
 .show {
 	display: block;
 }
-table {
-	width: 100%;
-}
-th, td {
-	border-collapse:collapse;
-	border: 1px solid #ccc;
-}
 td.show {
 	display: table-cell;
-}
-.hide form {
-	display: block;
-	background: #f0f0f0;
 }
 .edit input, .edit textarea, .edit select {
 	min-width: 0;
@@ -116,12 +80,6 @@ input[type=radio], input[type=checkbox] {
 	min-width: 0;
 }
 
-/* /orders/order_transactions/checkout */
-#creditCardInfo .input.select { float: left; }
-#creditCardInfo .input.text { clear: left; }
-#OrderTransactionCardExpMonth { width: 45px !important; float: left !important; }
-#OrderTransactionCardExpYear { width: 75px !important; float: left !important; clear: none !important; }
-
 
 /* Specific for invoices /invoices/invoices/add */
 .lineTotal {
@@ -136,7 +94,6 @@ input[type=radio], input[type=checkbox] {
 	padding: 0;
 }
 .invoiceTotal input, .invoiceTotal label {
-	float: none;
 	float: none;
 	clear: none;
 	display: inline;
@@ -171,82 +128,6 @@ input[type=radio], input[type=checkbox] {
 }
 
 
-
-/* the checkout page is two column by default */
-#orderTransactionAddress {
-	float: left;
-	width: 48%;
-}
-#paymentInformation {
-	float: right;
-	width: 48%;
-}
-
-
-
-
-/* editor */
-#background_layer {
-	position: fixed;
-	background-color: #666;
-	opacity: 0.8;
-	filter: alpha(opacity=70);
-	top: 0px;
-	width: 100%;
-	height: 100%;
-	z-index: 99;
-}
-.hover_div  {
-	min-height: 2em;
-}
-.hover_include {
-	background-color: #FF9;
-	border: 1px dashed #F00;
-	filter: alpha(opacity=70);
-	z-index: 99999;
-	opacity: 0.7;
-	position: absolute;/*border: 1px solid black;*/
-    }
-.hover_include:before {
-	content: "Click to edit content.";
-}
-.global_edit_area .hover_include:before {
-	content: "Click to edit global box.";
-}
-#modalEditorWrap {
-	position: fixed;
-	top: -5000px;
-	left: -5000px;
-	z-index: 100;
-	width: 80%;
-	height: 60%;
-}
-#modalEditorWrap .closeEditor {
-	color: #000;
-	font-size: 14px;
-	text-shadow: 1px 1px #fff;
-	cursor: pointer;
-	padding: 0em 0.2em 0 0em;
-	float: left;
-	margin: 0 0 0 -1em;
-	font-family: Verdana, Geneva, sans-serif;
-}
-#modalEditorWrap .handle {
-	font-size: 20px;
-	color: #999;
-	text-shadow: 1px 1px #fff;
-	cursor:move;
-	padding: 0em 0.2em 0.2em 0.2em;
-	float: left;
-	clear: left;
-	margin: 0 0 0 -1em;
-}
-#modalEditorWrap .closeEditor:hover, #modalEditorWrap .handle:hover {
-	color: #C00;
-}
-
-
-
 .catalogItemOptions {
 	float:left; 
 	width: 200px; 
@@ -265,24 +146,6 @@ input[type=radio], input[type=checkbox] {
 	content: '\25BC \ ';
 }
 
-/* Some dashboard css */
-.dashboard, .masonry {
-	position: relative;
-}
-.dashboard .dashboardBox, .masonry .masonryBox {
-	float: left;
-	margin: 0.5em;
-	padding: 1em;
-	width: 26%;
-	width: 12em;
-	/* height is set with javascript */
-	border: 1px solid #CCC;
-}
-.dashboard .dashboardBox ul, .masonry .masonryBox ul {
-	list-style-type: none;
-	padding: 0;
-	margin: 0;
-}
 
 .ajaxLoader {
 	position: fixed;
@@ -310,3 +173,21 @@ input[type=radio], input[type=checkbox] {
     clear: both;
     visibility: hidden;
 }
+
+/* user edit profile picture  */
+#userEditThumb {
+    display: inline-block;
+    position: relative;
+}
+#userEditThumbLink {
+    position: absolute; 
+    bottom: 0; 
+    right: 0; 
+    background: #000; 
+    margin: 0; 
+    padding: 1px 4px; 
+    opacity:0.6;
+    color: #EEE;
+    font-size: 10px;
+}
+    

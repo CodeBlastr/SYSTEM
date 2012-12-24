@@ -1,5 +1,4 @@
 <div class="index enumerations">
-	<h2><?php echo $page_title_for_layout; ?></h2>
 	<p><span class="label">Filter:</span> | <?php  echo $this->Html->link('ALL', array('controller' => 'enumerations', 'action' => 'index')) ?> |
 	<?php
 	foreach(range('A','Z') as $letter) {
@@ -18,8 +17,8 @@
 			<td><?php echo $enumeration['Enumeration']['type'] ?></td>
 			<td><?php echo $enumeration['Enumeration']['name'] ?></td>
 			<td>
-				<a class='arrow-up-graphic' href='/admin/enumerations/changeOrder/<?php echo $enumeration['Enumeration']['id'] ?>/increase' title='Increase'>Increase</a>
-				<a class='arrow-down-graphic' href='/admin/enumerations/changeOrder/<?php echo $enumeration['Enumeration']['id'] ?>/decrease' title='Decrease'>Decrease</a>
+				<a href='/admin/enumerations/order/<?php echo $enumeration['Enumeration']['id'] ?>/increase' title='Increase'>Increase</a>
+				<a href='/admin/enumerations/order/<?php echo $enumeration['Enumeration']['id'] ?>/decrease' title='Decrease'>Decrease</a>
 			</td>
 			<td>
             	<?php echo $this->Html->link('Edit', array('action' => 'edit', $enumeration['Enumeration']['id'])); ?>

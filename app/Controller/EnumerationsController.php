@@ -20,7 +20,7 @@
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2012, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.controllers
  * @since         Zuha(tm) v 0.0.1
@@ -30,18 +30,6 @@ class EnumerationsController extends AppController {
 	
     public $uses = array('Enumeration');
 	
-	public function search() {
-		if(!empty($this->request->data)) {
-			$this->request->data['Enumeration']['query'] = str_replace('*','%',$this->request->data['Enumeration']['query']);
-			$this->request->data = $this->paginate('Enumeration',array(
-				'Enumeration.type LIKE' => $this->request->data['Enumeration']['query']
-			));
-			
-		}
-		$this->set('schema',$this->Enumeration->_schema);
-		$this->render('admin_index');
-	}
-	
 	public function index() {
 		$this->paginate['order'] = array(
 				'Enumeration.type' => 'ASC',
@@ -49,24 +37,6 @@ class EnumerationsController extends AppController {
 				'Enumeration.name' => 'ASC',
 			);
 		$this->request->data = $this->paginate();
-	}
-	
-	public function changeOrder($id=null,$mode='increase') {
-		$enumeration = $this->Enumeration->find('first',array(
-			'conditions' => array(
-				'Enumeration.id' => $id
-			)
-		));
-		if($mode == 'increase') {
-			$enumeration['Enumeration']['weight']++;
-		}
-		else {
-			$enumeration['Enumeration']['weight']--;
-		}
-		if(!$this->Enumeration->save($enumeration)) {
-			$this->Session->setFlash('There was an error updating Enumeration.');
-		}
-		$this->redirect($this->referer());
 	}
 	
 	public function add($type = null) {
@@ -124,5 +94,22 @@ class EnumerationsController extends AppController {
 		}
 		$this->redirect($this->referer());
 	}
+	
+	public function order($id=null,$mode='increase') {
+		$enumeration = $this->Enumeration->find('first',array(
+			'conditions' => array(
+				'Enumeration.id' => $id
+			)
+		));
+		if($mode == 'increase') {
+			$enumeration['Enumeration']['weight']++;
+		}
+		else {
+			$enumeration['Enumeration']['weight']--;
+		}
+		if(!$this->Enumeration->save($enumeration)) {
+			$this->Session->setFlash('There was an error updating Enumeration.');
+		}
+		$this->redirect($this->referer());
+	}
 }
-?>

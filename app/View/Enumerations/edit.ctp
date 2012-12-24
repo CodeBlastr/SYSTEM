@@ -8,12 +8,23 @@ if(count($enumerationTypes)) {
 else {
 	echo $this->Form->input('Enumeration.type');
 }
-echo $this->Form->button('Done',array('type'=>'submit'));
-?>
+echo $this->Form->end('Save');
+
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Enumerations',
+		'items' => array(
+			$this->Html->link('List', array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index')), 
+			$this->Html->link('Add', array('plugin' => null, 'controller' => 'enumerations', 'action' => 'add')),    
+			)
+		),
+	))); ?>
+
 
 <script type='text/javascript'>
 $(document).ready(function() {
-	$('select<#EnumerationType').change(function() {
+	$('select#EnumerationType').change(function() {
 		if($(this).val() == '+') {
 			$(this).replaceWith('<input name="data[Enumeration][type]" id="EnumerationType" type="text" />')
 		}

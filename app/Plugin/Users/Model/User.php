@@ -82,7 +82,7 @@ class User extends UsersAppModel {
 			'className' => 'Users.UserGroupWallPost',
 			'foreignKey' => 'creator_id',
 			'dependent' => false,
-			),
+			), 
 		);
 
 	public $hasOne = array(
@@ -99,13 +99,6 @@ class User extends UsersAppModel {
 		);
 
 	public $hasAndBelongsToMany = array(
-        /*  bad name for this, changed 1/26/2012
-		'UsersUserGroup' => array(
-			'className' => 'Users.UsersUserGroup',
-			'joinTable' => 'users_user_groups',
-			'foreignKey' => 'user_group_id',
-			'associationForeignKey' => 'user_id',
-			), */
         'UserGroup' => array(
 			'className' => 'Users.UserGroup',
 			'joinTable' => 'users_user_groups',
@@ -116,34 +109,29 @@ class User extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
+
+		if (in_array('Transactions', CakePlugin::loaded())) {
+			$this->hasMany['TransactionAddress'] = array(
+				'className' => 'Transactions.TransactionAddress',
+				'foreign_key' => 'user_id'
+				);
+		}
+		if (in_array('Products', CakePlugin::loaded())) {
+			$this->hasMany['ProductBrand'] = array(
+				'className' => 'Products.ProductBrand',
+				'foreignKey' => 'owner_id',
+				'dependent' => false,
+				);
+		}
+		if (in_array('Connections', CakePlugin::loaded())) {
+			$this->hasMany['Connection'] = array(
+				'className' => 'Connections.Connection',
+				'foreignKey' => 'user_id',
+				'dependent' => true,
+				);
+		}
+		
 		parent::__construct($id, $table, $ds);
-		if (in_array('Affiliates', CakePlugin::loaded())) {
-			$this->Behaviors->attach('Affiliates.Referrable');
-		}
-
-		if (in_array('Orders', CakePlugin::loaded())) {
-			$this->hasMany['OrderPayment'] = array(
-				'className' => 'Orders.OrderPayment',
-				'foreign_key' => 'user_id'
-				);
-			$this->hasMany['OrderShipment'] = array(
-				'className' => 'Orders.OrderShipment',
-				'foreign_key' => 'user_id'
-				);
-			$this->hasMany['CatalogItemBrand'] = array(
-				'className' => 'Catalogs.CatalogItemBrand',
-				'foreignKey' => 'owner_id',
-				'dependent' => false,
-				);
-		}
-
-		if (in_array('Catalogs', CakePlugin::loaded())) {
-			$this->hasMany['CatalogItemBrand'] = array(
-				'className' => 'Catalogs.CatalogItemBrand',
-				'foreignKey' => 'owner_id',
-				'dependent' => false,
-				);
-		}
 	}
 
 	protected function _comparePassword() {
@@ -175,24 +163,32 @@ class User extends UsersAppModel {
 	        return null;
 	    }
 	    $data = $this->data;
-	    if (empty($this->data['User']['user_role_id'])) {
+	    if (empty($this->data[$this->alias]['user_role_id'])) {
 	        $user = $this->read();
-			$data['User']['user_role_id'] = $user['User']['user_role_id'];
+			$data[$this->alias]['user_role_id'] = $user['User']['user_role_id'];
 	    }
-	    if (empty($data['User']['user_role_id'])) {
+	    if (empty($data[$this->alias]['user_role_id'])) {
 	        return null;
 	    } else {
-	        $this->UserRole->id = $data['User']['user_role_id'];
+	        $this->UserRole->id = $data[$this->alias]['user_role_id'];
 	        $roleNode = $this->UserRole->node();
 	        return array('UserRole' => array('id' => $roleNode[0]['Aro']['foreign_key']));
 	    }
 	}
 
-
+/**
+ * before save callback
+ * 
+ * @todo move all of the items in beforeSave() into _cleanData() and put $this->data = $this->_cleanData($this->data) here. Then we can get rid of the add() function all together.
+ */
 	public function beforeSave($options = array()) {
-		if (!empty($this->data['User']['password'])) :
-	        $this->data['User']['password'] = AuthComponent::password($this->data['User']['password']);
-		endif;
+		if (!empty($this->data[$this->alias]['password'])) {
+			App::uses('AuthComponent', 'Controller/Component');
+	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
+		}
+        if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
+			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
+		}
         return true;
     }
 
@@ -206,53 +202,37 @@ class User extends UsersAppModel {
 	public function add($data) {
 		$data = $this->_cleanAddData($data);
 		if ($data = $this->_userContact($data)) {
-			# setup a verification key
-			$data['User']['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null;
-			$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+			// setup a verification key
+			$data[$this->alias]['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null;
+			$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
 
-			$data['User']['parent_id'] = !empty($data['User']['referal_code']) ?
-						$this->getParentId($data['User']['referal_code']) : '';
-			$data['User']['reference_code'] = $this->generateRandomCode();
-			# the contact model calls back to the User model when using save all
-			# and saves the recursive data of contact person / contact company this way.
+			$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
+			$data[$this->alias]['reference_code'] = $this->generateRandomCode();
+			// the contact model calls back to the User model when using save all
+			// and saves the recursive data of contact person / contact company this way.
 			if ($this->Contact->add($data)) {
 
-				# update referral user credits on a new registration
-				if (defined('__USERS_NEW_REGISTRATION_CREDITS') && !empty($data['User']['parent_id'])) {
-					$this->updateUserCredits(__USERS_NEW_REGISTRATION_CREDITS, $data['User']['parent_id']);
-				}
-
-				# add the user to a group if the data for the group exists
+				// add the user to a group if the data for the group exists
 				if (!empty($data['UserGroup']['UserGroup']['id'])) {
 					$this->UserGroup->UsersUserGroup->add($data);
 				}
 
-				if (in_array('Orders', CakePlugin::loaded())) :
-					# setup and save data for a related order shipment record for prefilled checkout
-					$data['OrderShipment']['first_name'] = !empty($data['User']['first_name']) ? $data['User']['first_name'] : '';
-					$data['OrderShipment']['last_name'] =  !empty($data['User']['last_name']) ? $data['User']['last_name'] : '';
-					$data['OrderPayment']['user_id'] = $this->id;
-					$data['OrderShipment']['user_id'] = $this->id;
-					$this->OrderPayment->save($data);
-					$this->OrderShipment->save($data);
-				endif;
-
-				# create a gallery for this user.
-				if (!empty($data['User']['avatar']['name'])) {
+				// create a gallery for this user.
+				if (!empty($data[$this->alias]['avatar']['name'])) {
 					$data['Gallery']['model'] = 'User';
 					$data['Gallery']['foreign_key'] = $this->id;
-					$data['GalleryImage']['filename'] = $data['User']['avatar'];
+					$data['GalleryImage']['filename'] = $data[$this->alias]['avatar'];
 					if ($this->Gallery->GalleryImage->add($data, 'filename')) {
-						#return true;
+						//return true;
 					} else if (!empty($data['GalleryImage']['filename'])) {
-						#return true;
-						# gallery image wasn't saved but I'll leave this error message as a todo,
-						# because I don't have a decision on whether we should roll back the user
-						# if that happens, or just create the user anyway.
+						//return true;
+						// gallery image wasn't saved but I'll leave this error message as a todo,
+						// because I don't have a decision on whether we should roll back the user
+						// if that happens, or just create the user anyway.
 					}
 				}
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-					if ($this->welcome($data['User']['username'])) {
+					if ($this->welcome($data[$this->alias]['username'])) {
 						throw new Exception(__d('users', 'Thank you, please check your email to verify your account.'), 834726476);
 					} else {
 					}
@@ -282,11 +262,6 @@ class User extends UsersAppModel {
 
 		if ($this->saveAll($data)) {
 			return true;
-			/** Hopefully saveAll will handle this now (if the data is coming in formatted right it should be)...
-			if (in_array('Orders', CakePlugin::loaded())) :
-				$this->User->OrderPayment->save($this->request->data);
-				$this->User->OrderShipment->save($this->request->data);
-			endif; */
 		} else {
 			throw new Exception(__d('users', 'Invalid user data.' . implode(', ', $this->invalidFields)));
 		}
@@ -303,19 +278,24 @@ class User extends UsersAppModel {
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->Contact->findById($data['Contact']['id']);
 			$data['Contact'] = $contact['Contact'];
-		} else if (!empty($data['User']['id'])) {
-			$contact = $this->Contact->findByUserId($data['User']['id']);
-			if (!empty($contact)) :
+		} else if (!empty($data[$this->alias]['id'])) {
+			$contact = $this->Contact->findByUserId($data[$this->alias]['id']);
+			if (!empty($contact)) {
 				$data['Contact'] = $contact['Contact'];
-				$data['User']['full_name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : $contact['Contact']['name'];
-			else :
-				$data['User']['full_name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : 'N/A';
-			endif;
+				$data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : $contact['Contact']['name'];
+			} else {
+				$data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'N/A';
+//				// create a Contact
+//				$contact = $this->Contact->create(array(
+//					'name' => $data['User']['full_name']
+//				));
+//				$data['Contact'] = set::merge($data['Contact'], $contact['Contact']);
+			}
 		} else if (!empty($data['Contact']['user_id'])) {
 			debug($this->Contact->findByUserId($data['Contact']['user_id']));
 			break;
 		} else {
-			$data['Contact']['name'] = !empty($data['User']['full_name']) ? $data['User']['full_name'] : 'Not Provided';
+			$data['Contact']['name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'Not Provided';
 		}
 		return $data;
 	}
@@ -396,7 +376,7 @@ class User extends UsersAppModel {
 					'UserRole',
 					),
 				));
-			if (!empty($user)) {
+			if (!empty($user)) {			
 				$data['User']['id'] = $user['User']['id'];
 				$data['User']['last_login'] = date('Y-m-d h:i:s');
 				$data['User']['view_prefix'] = $user['UserRole']['view_prefix'];
@@ -406,8 +386,8 @@ class User extends UsersAppModel {
 					if($this->save($data, array('validate' => false))) {
 						return $user;
 					} else {
-						# we should log errors like this
-						# an error which shouldn't stop functionality, but nevertheless is an error
+						// we should log errors like this
+						// an error which shouldn't stop functionality, but nevertheless is an error
 						return $user;
 					}
 				} else {
@@ -429,7 +409,7 @@ class User extends UsersAppModel {
  */
 	public function verify_key($key = null) {
 		$user = null;
-      	# lets see if the key exists and which user its for.
+      	// lets see if the key exists and which user its for.
 		if(!empty($key))	{
 			$user = $this->find('first', array(
 				'conditions' => array(
@@ -437,14 +417,14 @@ class User extends UsersAppModel {
 					'User.forgot_key_created <=' => date('Y:m:d h:i:s', strtotime("+3 days")),
 					),
 				));
-			# if the user does exist, then reset user record forgot info, login and redirect to users/edit
+			// if the user does exist, then reset user record forgot info, login and redirect to users/edit
 			if (!empty($user)) {
 				$this->id = $user['User']['id'];
 				$this->set('forgot_key', null);
 				$this->set('forgot_key_created', null);
 				$this->validate = null;
 				if ($this->save()) {
-					#$user = null;
+					//$user = null;
 				} else {
 					throw new Exception(__('Verfication key failed to update.'));
 				}
@@ -521,27 +501,27 @@ class User extends UsersAppModel {
  * @return {array}		Parsed form input data.
  */
 	protected function _cleanAddData($data) {
-		if (isset($data['User']['username']) && strpos($data['User']['username'], '@')) :
-			$data['User']['email'] = $data['User']['username'];
+		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@')) :
+			$data[$this->alias]['email'] = $data[$this->alias]['username'];
 		endif;
 
-		if(!isset($data['User']['user_role_id'])) {
-			$data['User']['user_role_id'] = (defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : 3 ;
+		if(!isset($data[$this->alias]['user_role_id'])) {
+			$data[$this->alias]['user_role_id'] = (defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : 3 ;
 		}
 
-		if(!isset($data['User']['contact_type'])) {
-			$data['User']['contact_type'] = (defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) ? __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE : 'person' ;
+		if(!isset($data[$this->alias]['contact_type'])) {
+			$data[$this->alias]['contact_type'] = (defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) ? __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE : 'person' ;
 		}
 
-		# update name into first and last name
-		if (!empty($data['User']['full_name']) && empty($data['User']['first_name'])) {
-			$data['User']['first_name'] = trim(preg_replace('/[ ](.*)/i', '', $data['User']['full_name']));
-			$data['User']['last_name'] = trim(preg_replace('/(.*)[ ]/i', '', $data['User']['full_name']));
+		// update name into first and last name
+		if (!empty($data[$this->alias]['full_name']) && empty($data[$this->alias]['first_name'])) {
+			$data[$this->alias]['first_name'] = trim(preg_replace('/[ ](.*)/i', '', $data[$this->alias]['full_name']));
+			$data[$this->alias]['last_name'] = trim(preg_replace('/(.*)[ ]/i', '', $data[$this->alias]['full_name']));
 		}
 
-		# update first name and last name into full_name
-		if (!empty($data['User']['first_name']) && !empty($data['User']['last_name']) && empty($data['User']['full_name'])) {
-			$data['User']['full_name'] = $data['User']['first_name'] . ' ' . $data['User']['last_name'];
+		// update first name and last name into full_name
+		if (!empty($data[$this->alias]['first_name']) && !empty($data[$this->alias]['last_name']) && empty($data[$this->alias]['full_name'])) {
+			$data[$this->alias]['full_name'] = $data[$this->alias]['first_name'] . ' ' . $data[$this->alias]['last_name'];
 		}
 
 		return $data;

@@ -1,42 +1,24 @@
-[submodule "app/Plugin/Favorites"]
-	path = app/Plugin/Favorites
-	url = git@github.com:zuha/Favorites-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Records"]
-	path = app/Plugin/Records
-	url = git@github.com:zuha/Directories-Zuha-Cakephp-Plugin.git
 [submodule "sites"]
 	path = sites
 	url = git@razorit.beanstalkapp.com:/razorit/zuha-sites.git
-[submodule "lib/Cake"]
-	path = lib/Cake
-	url = git@github.com:zuha/cakephp.git
 [submodule "app/Plugin/Twitter"]
 	path = app/Plugin/Twitter
 	url = git@github.com:zuha/Twitter-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Tags"]
 	path = app/Plugin/Tags
 	url = git@github.com:zuha/Tags-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Polls"]
-	path = app/Plugin/Polls
-	url = git@github.com:zuha/Polls-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Forms"]
 	path = app/Plugin/Forms
 	url = git@github.com:zuha/Custom-Forms-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Catalogs"]
-	path = app/Plugin/Catalogs
+[submodule "app/Plugin/Products"]
+	path = app/Plugin/Products
 	url = git@github.com:zuha/Catalogs-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Orders"]
-	path = app/Plugin/Orders
-	url = git@github.com:zuha/Ecommerce-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Drafts"]
 	path = app/Plugin/Drafts
 	url = git@github.com:zuha/Drafts-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Activities"]
 	path = app/Plugin/Activities
 	url = git@github.com:zuha/Activities-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Affiliates"]
-	path = app/Plugin/Affiliates
-	url = git@github.com:zuha/Affiliates-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Blogs"]
 	path = app/Plugin/Blogs
 	url = git@github.com:zuha/Blogs-MultiUser-Zuha-Cakephp-Plugin.git
@@ -52,51 +34,24 @@
 [submodule "app/Plugin/Credits"]
 	path = app/Plugin/Credits
 	url = git@github.com:zuha/Store-Credits-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Encoders"]
-	path = app/Plugin/Encoders
-	url = git@github.com:zuha/Encoders-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Invites"]
-	path = app/Plugin/Invites
-	url = git@github.com:zuha/Invites-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Invoices"]
 	path = app/Plugin/Invoices
 	url = git@github.com:zuha/Invoices-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Locations"]
-	path = app/Plugin/Locations
-	url = git@github.com:zuha/Locations-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Media"]
 	path = app/Plugin/Media
 	url = git@github.com:zuha/Media-Files-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Members"]
-	path = app/Plugin/Members
-	url = git@github.com:zuha/Subscriptions-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Messages"]
 	path = app/Plugin/Messages
 	url = git@github.com:zuha/Messages-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/News"]
-	path = app/Plugin/News
-	url = git@github.com:zuha/News-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Projects"]
 	path = app/Plugin/Projects
 	url = git@github.com:zuha/Project-Management-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Recaptcha"]
 	path = app/Plugin/Recaptcha
 	url = git@github.com:zuha/Recaptcha-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Reports"]
-	path = app/Plugin/Reports
-	url = git@github.com:zuha/Reports-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Rss"]
-	path = app/Plugin/Rss
-	url = git@github.com:zuha/Rss-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Search"]
-	path = app/Plugin/Search
-	url = git@github.com:zuha/Search-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Searchable"]
 	path = app/Plugin/Searchable
 	url = git@github.com:zuha/Searches-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Shipping"]
-	path = app/Plugin/Shipping
-	url = git@github.com:zuha/Shipping-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Tasks"]
 	path = app/Plugin/Tasks
 	url = git@github.com:zuha/Tasks-Zuha-Cakephp-Plugin.git
@@ -118,6 +73,27 @@
 [submodule "vendors/swift_mailer"]
 	path = vendors/swift_mailer
 	url = git@github.com:zuha/swift-mailer.git
-[submodule "app/Plugin/Notifications"]
-	path = app/Plugin/Notifications
-	url = git@github.com:zuha/Email-Marketing-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Facebook"]
+	path = app/Plugin/Facebook
+	url = git@github.com:zuha/Facebook-Zuha-Cakephp-Plugin.git
+[submodule "vendors/OAuth"]
+	path = vendors/OAuth
+	url = git@github.com:zuha/OAuth-Consumer-Zuha-Cakephp.git
+[submodule "app/Plugin/Connections"]
+	path = app/Plugin/Connections
+	url = git@github.com:zuha/Connections-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Events"]
+	path = app/Plugin/Events
+	url = git@github.com:zuha/Events-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Transactions"]
+	path = app/Plugin/Transactions
+	url = git@github.com:zuha/Transactions-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Estimates"]
+	path = app/Plugin/Estimates
+	url = git@github.com:zuha/Estimates-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Ratings"]
+	path = app/Plugin/Ratings
+	url = git@github.com:zuha/Ratings-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Invites"]
+	path = app/Plugin/Invites
+	url = git@github.com:zuha/Invites-Zuha-Cakephp-Plugin.git
