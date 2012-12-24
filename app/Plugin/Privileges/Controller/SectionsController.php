@@ -47,7 +47,7 @@ class SectionsController extends PrivilegesAppController {
 						)
 					)
 				),
-			'order' => array('Section.lft ASC')	
+			'order' => array('Section.alias', 'Section.lft ASC')	
 		));
         
 		//$parent = $this->Section->getParentNode($pluginId);
