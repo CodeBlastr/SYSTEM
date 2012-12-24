@@ -30,7 +30,7 @@ if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php')) {
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
  	Router::connect('/', array('controller' => '', 'home'));
-	Router::parseExtensions('rss');
+	Router::parseExtensions('rss', 'xml', 'json');
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */

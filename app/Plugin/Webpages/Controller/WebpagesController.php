@@ -365,16 +365,13 @@ class WebpagesController extends WebpagesAppController {
 		$this->request->data = $this->Webpage->read(null, $id);
 		if (!empty($this->request->data)) {
 			$this->request->data['Webpage']['content'] = $pageData;
-			Inflector::variable("Webpage");
 			if ($this->Webpage->save($this->request->data)) {
 				$msg = "Page saved";
-			}
-			else {
+			} else {
 				$err = true;
 				$msg = "Can't save page";
 			}
-		}
-		else {
+		} else {
 			$err = true;
 			$msg = 'Page not found';
 		}
