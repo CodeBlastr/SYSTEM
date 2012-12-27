@@ -37,7 +37,6 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'View'.DS,
 			ROOT.DS.SITE_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS, // to be deprecated soon, 2012-11-29 RK
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS,
-			ROOT.DS.SITE_DIR.DS.'View'.DS, // for the theme directory to work
 			ROOT.DS.APP_DIR.DS.'View'.DS,
 			),
 		'controllers' => array(

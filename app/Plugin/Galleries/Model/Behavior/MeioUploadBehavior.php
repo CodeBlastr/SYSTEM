@@ -217,9 +217,9 @@ class MeioUploadBehavior extends ModelBehavior {
 		$this->defaultValidations = $this->_arrayMerge($this->defaultValidations, $messages);
 		$this->defaultOptions['validations'] = $this->defaultValidations;
 		
-		# Upload image by first checking where it should be uploaded to
-		if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'View'.DS.'Themed'.DS.'Default'.DS.WEBROOT_DIR)) {
-			$this->defaultOptions['dir'] = ROOT.DS.SITE_DIR.DS.'View'.DS.'Themed'.DS.'Default'.DS.WEBROOT_DIR.DS.'upload{DS}{ModelName}{DS}{fieldName}';
+		// Upload image by first checking where it should be uploaded to
+		if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.WEBROOT_DIR)) {
+			$this->defaultOptions['dir'] = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.WEBROOT_DIR.DS.'upload{DS}{ModelName}{DS}{fieldName}';
 		} else {
 			$this->defaultOptions['dir'] = 'upload{DS}{ModelName}{DS}{fieldName}';
 		}
@@ -831,7 +831,7 @@ class MeioUploadBehavior extends ModelBehavior {
  */
 	function __actualUrlPath($modelName, $fieldName) {
 		$modelName = Inflector::underscore($modelName);
-		if (file_exists(ROOT.DS.SITE_DIR.DS.'View'.DS.'Themed'.DS.'Default'.DS.WEBROOT_DIR)) {
+		if (file_exists(ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.WEBROOT_DIR)) {
 			return '/theme/default/upload/'.$modelName.'/'.$fieldName.'/';
 		} else {
 			return '/upload/'.$modelName.'/'.$fieldName.'/';
