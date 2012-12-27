@@ -327,6 +327,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set(compact('templateUrls'));
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
 		$this->view = 'edit_' . $this->request->data['Webpage']['type'];
+        $this->layout = 'default';
 	}
 	
 /**
