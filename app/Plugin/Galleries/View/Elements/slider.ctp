@@ -1,5 +1,6 @@
-<?PHP
-# additional files needed for Nivo Slider display
+<?php
+// get rid of this file 12/27/2012 RK
+// additional files needed for Nivo Slider display
 echo $this->Html->script('/galleries/js/nivoslider/jquery.nivo.slider.pack');
 echo $this->Html->css('/galleries/css/nivoslider/nivo-slider');
 ?>
