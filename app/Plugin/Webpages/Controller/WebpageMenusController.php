@@ -94,6 +94,7 @@ class WebpageMenusController extends WebpagesAppController {
         $this->request->data['WebpageMenu']['children'] = $this->WebpageMenu->find('count', array('conditions' => array('WebpageMenu.lft >' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <' => $menu['WebpageMenu']['rght'])));
 		$types = $this->WebpageMenu->types();
 		$this->set(compact('types'));
+		$this->layout = 'default';
 	}
 
 	public function delete($id = null) {
