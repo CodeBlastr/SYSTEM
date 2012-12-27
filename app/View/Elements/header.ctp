@@ -6,9 +6,9 @@ $showContext = !empty($showContext) ? true : false; ?>
 <div class="navbar navbar-inverse navbar-fixed-top floManagrNav" id="<?php echo $id; ?>">
     <div class="navbar-inner">
         <div class="container">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".floManagrNav .nav-collapse">
                 <span class="icon-bar"></span>
-                <span class="iscon-bar"></span>
+                <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
             <ul class="nav">

@@ -23,7 +23,7 @@ class WebpagesAppModel extends AppModel {
  */
 	public function __construct($id = false, $table = null, $ds = null) {		
 		$this->templateDirectories = array(
-			ROOT.DS.SITE_DIR.DS.'Config'.DS.'Templates'.DS, // must always come first (see saveTemplateFiles() for why)
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS, // must always come first (see saveTemplateFiles() for why)
 			ROOT.DS.APP_DIR.DS.'Config'.DS.'Templates'.DS
 		);
 		
