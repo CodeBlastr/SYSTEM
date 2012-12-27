@@ -235,9 +235,6 @@ span.btn {
 
 /* tablet wide */
 @media (max-width:1200px){
-	.indexData {
-		/*width: 780px; to get rows working in a fluid way*/
-	}
 	.titleCell h3 {
 		width: auto;
 	}
@@ -246,9 +243,6 @@ span.btn {
 @media (min-width:768px) and (max-width:979px) {
 	.hero-unit {
 		padding: 20px;
-	}
-	.indexData, .titleCell h3 {
-		/*width: 500px; to get rows working in a fluid way*/
 	}
 	.imageCell {
 		display: none;
@@ -259,12 +253,15 @@ span.btn {
 	.hero-unit {
 		padding: 10px;
 	}
-	.indexData, .titleCell h3 {
-		/*width: 330px; to get rows working in a fluid way*/
-	}
 	.imageCell {
 		display: none;
 	}
+	.container {
+		width: 300px;
+	}
+	/* these two go together */
+	body { padding-left: 10px; padding-right: 10px; }
+	.navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top { margin-left: -10px; margin-right: -10px; }
 }
 /* mobile tall */
 @media (max-width:480px) and (max-width: 767px) {
