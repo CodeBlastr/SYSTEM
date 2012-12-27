@@ -1,7 +1,7 @@
 /* navbar */
 body {
 	position: relative !important;
-	top: 38px !important;
+	top: 45px !important;
 	margin: 0;
 	padding: 0;
 }
@@ -195,26 +195,85 @@ body {
     background-image: linear-gradient(to bottom, #0088CC, #0077B3);
     background-repeat: repeat-x;
 }
-
-
-
-@media (max-width: 767px) {
-}
-@media (max-width: 480px) {
-}
-@media (min-width: 768px) and (max-width: 979px) {
-}
-@media (min-width: 1200px) {
-}
-@media (max-width: 979px) {
-}
-@media (min-width: 980px) {
-	
+#adminNavFloManagr [class^="icon-"], #adminNavFloManagr[class*=" icon-"] {
+    background: #FFF;
+    margin-top: 3px;
 }
 
 
 
 
+
+/* tablet wide */
+@media (max-width:1200px){
+	#adminNavFloManagr .navbar-inner, #adminNavFloManagr .navbar-inner .container {
+        width: 959px;
+    }
+    #adminNavFloManagr .navbar-inner .nav-collapse {
+        width: 820px;
+    }
+}
+/* tablet tall */
+@media (min-width:768px) and (max-width:979px) {
+    #adminNavFloManagr .navbar-inner, #adminNavFloManagr .navbar-inner .container {
+        width: 737px;
+    }
+    #adminNavFloManagr .btn-navbar {
+        display: block;
+        margin-right: 10px;
+        margin-top: 14px;
+    }
+    #adminNavFloManagr ul li {
+        display: block;
+    }
+    #adminNavFloManagr ul.pull-right {
+        float: left;
+        clear: both;
+    }
+    #adminNavFloManagr.navbar-fixed-top {
+        position: relative;
+    }
+    body {
+        position: relative !important;
+        top: 0 !important;
+    }
+}
+/* mobile wide */
+@media (max-width:767px){
+    #adminNavFloManagr.navbar {
+        width: auto;
+    }
+    #adminNavFloManagr .navbar-inner, #adminNavFloManagr .navbar-inner .container {
+        width: 300px;
+    }
+    #adminNavFloManagr .btn-navbar {
+        display: block;
+        margin-right: 10px;
+        margin-top: 14px;
+    }
+    #adminNavFloManagr ul li {
+        display: block;
+    }
+    #adminNavFloManagr ul.pull-right {
+        float: left;
+        clear: both;
+    }
+    #adminNavFloManagr.navbar .nav > li > a {
+        padding: 0;
+    }
+    #adminNavFloManagr.navbar-fixed-top {
+        position: relative;
+        margin: 0;
+        min-width: 300px;        
+    }
+    body {
+        position: relative !important;
+        top: 0 !important;
+    }
+}
+/* mobile tall */
+@media (max-width:480px) and (max-width: 767px) {
+}
 
 
 
