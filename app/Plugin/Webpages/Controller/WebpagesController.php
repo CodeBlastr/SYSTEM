@@ -200,7 +200,7 @@ class WebpagesController extends WebpagesAppController {
 		} else {
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
 			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
-			$webpage['Webpage']['content'] = '<div id="webpage_content" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
+			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
 		}
 		
 		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error') {
@@ -278,11 +278,10 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function edit($id = null) {
-		$this->Webpage->id = $id;
+        $this->Webpage->id = $id;
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
 		}
-
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->saveAll($this->request->data);
@@ -353,19 +352,19 @@ class WebpagesController extends WebpagesAppController {
 	}
 	
 /**
- * Save page method
+ * Save  method
  * 
  * @param string
  * @return void
  */
-	public function savePage ($id = null) {
+	public function save($id = null) {
 		$this->render(false);
 		$msg   = "";
 		$err   = false;
-		$pageData =  $this->request->data['pageData'];
+		$pageContent=  $this->request->data;
 		$this->request->data = $this->Webpage->read(null, $id);
 		if (!empty($this->request->data)) {
-			$this->request->data['Webpage']['content'] = $pageData;
+			$this->request->data['Webpage']['content'] = $pageContent;
 			if ($this->Webpage->save($this->request->data)) {
 				$msg = "Page saved";
 			} else {
@@ -378,47 +377,9 @@ class WebpagesController extends WebpagesAppController {
 		}
 		if($this->RequestHandler->isAjax()) {
 			$this->autoRender = $this->layout = false;
-			echo json_encode(array('msg'=> $msg));
+			echo json_encode(array('msg' => $msg));
 			exit;
 		}
-		//TODO Add response without ajax
-	}
-
-/**
- * Raw page method
- * 
- * @param string
- * @return void
- */
-	public function getRawPage ($id = null) {
-		Inflector::variable("Webpage");
-		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
-		if($this->RequestHandler->isAjax()) {
-			$this->autoRender = $this->layout = false;
-			echo json_encode(array('page'=> $webpage));
-			exit;
-		}
-		//TODO Add response without ajax
-	}
-
-/**
- * Get render page method
- * 
- * @param string
- * @return void
- */	
-	public function getRenderPage ($id = null) {
-		Inflector::variable("Webpage");
-		$webpage = $this->Webpage->find("first", array("conditions" => array( "id" => $id)));
-		$userRoleId = $this->Session->read('Auth.User.user_role_id');
-		$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId);
-        $webpage['Webpage']['content'] = $this->__parseIncludedElements($webpage['Webpage']['content']);
-		if($this->RequestHandler->isAjax()) {
-			$this->autoRender = $this->layout = false;
-			echo json_encode(array('page'=> $webpage));
-			exit;
-		}
-		//TODO Add response without ajax
 	}
 	
 
@@ -427,12 +388,12 @@ class WebpagesController extends WebpagesAppController {
  * 
  * @param string
  * @return void
- */
     public function __parseIncludedElements($content_str) {
         $this->autoRender = $this->layout = false;
         $this->set('content_str', $content_str);
         $content_str = $this->render('webpages/render_content');
         return $content_str;
     }
+ */
 
 }

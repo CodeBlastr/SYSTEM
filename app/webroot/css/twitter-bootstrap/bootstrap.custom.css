@@ -38,6 +38,26 @@ i {
 small {
     vertical-align: baseline;
 }
+/* getting rid of the negative margins bootstrap uses */
+.row {
+	margin-left: 0;
+}
+.row .span1:first-child, 
+.row .span2:first-child, 
+.row .span3:first-child, 
+.row .span4:first-child, 
+.row .span5:first-child, 
+.row .span6:first-child, 
+.row .span7:first-child, 
+.row .span8:first-child, 
+.row .span9:first-child, 
+.row .span10:first-child, 
+.row .span11:first-child, 
+.row .span12:first-child {
+	margin-left: 0;
+}
+
+
 
 /* zuha specific */ 
 .right-caret {
