@@ -10,12 +10,6 @@
 <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-<style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-</style>
 <?php 
 echo $this->Html->meta('icon') . "\r";
 echo $this->Html->css('system') . "\r";
@@ -42,7 +36,7 @@ echo defined('__REPORTS_ANALYTICS') ? $this->Element('analytics', array(), array
         
 		<?php echo $this->Element('twitter-bootstrap/page_title'); ?>
         
-        <?php echo $this->Element('content'); ?>
+        <?php echo $content_for_layout; ?>
         
         <footer>
         	<hr />

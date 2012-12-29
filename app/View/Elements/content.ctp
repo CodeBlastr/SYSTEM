@@ -13,7 +13,7 @@ if (!empty($defaultTemplate)) {
 	}
 	
 	#skiping the parsing of text area content with this check	
-	preg_match_all ("/(<textarea[^>]+>)(.*)(<\/textarea>)/isU", $defaultTemplate["Webpage"]["content"], $matchesEditable);
+	preg_match_all ("/(<textarea[^>]+>)(.*)(<\/textarea>)/isU", $defaultTemplate['Webpage']['content'], $matchesEditable);
 	
 	$nonParseable = array();
 	
@@ -89,4 +89,4 @@ if (!empty($defaultTemplate)) {
 	echo $content_for_layout;
 }
 
-echo $this->Element('modal_editor', array(), array('plugin' => 'webpages')); ?>
+echo $this->Element('editor', array(), array('plugin' => 'webpages')); ?>
