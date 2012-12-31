@@ -1,0 +1,1 @@
+<?php echo defined('__SYSTEM_SITE_NAME') ? __SYSTEM_SITE_NAME : $_SERVER['HTTP_HOST']; ?>

@@ -134,7 +134,7 @@ class WebpageCss extends WebpagesAppModel {
 		if($theme)	{
 			$themePath = App::themePath($theme);
 		}
-		# check whether this is multi-sites
+		// check whether this is multi-sites
 		if (file_exists($themePath.WEBROOT_DIR)) {
 			return $themePath.WEBROOT_DIR.DS.CSS_URL;
 		} else {
