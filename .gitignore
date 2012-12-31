@@ -24,6 +24,9 @@
 /sites/**/View/Themed/Default/webroot/upload/*
 /sites/**/View/Themed/Default/webroot/files/*
 /sites/**/View/Themed/Default/webroot/media/*
+/sites/**/Locale/View/webroot/upload/*
+/sites/**/Locale/View/webroot/files/*
+/sites/**/Locale/View/webroot/media/*
 settings.ini
 \.*
 \_*

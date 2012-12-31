@@ -1,6 +1,7 @@
 /* @todo - remove parts that were commented with "to get rows to work in a fluid way" : deprecated on Dec 21, 2012 : the end of the world */
 * {
     vertical-align: inherit;
+    transition: all 0.5s ease 0s;
 }
 .hero-unit [class*="span"] {
 	margin-left: 28px;
@@ -16,6 +17,9 @@ i {
 }
 .first {
 	margin-left: 0;
+}
+.last {
+	margin-right: 0;
 }
 .container .navbar {
 	overflow: hidden;
@@ -35,8 +39,40 @@ i {
 small {
     vertical-align: baseline;
 }
+.navbar-fixed-bottom {
+    position: fixed;
+}
+/* getting rid of the negative margins bootstrap uses */
+.row {
+	margin-left: 0;
+}
+.row .span1:first-child, 
+.row .span2:first-child, 
+.row .span3:first-child, 
+.row .span4:first-child, 
+.row .span5:first-child, 
+.row .span6:first-child, 
+.row .span7:first-child, 
+.row .span8:first-child, 
+.row .span9:first-child, 
+.row .span10:first-child, 
+.row .span11:first-child, 
+.row .span12:first-child {
+	margin-left: 0;
+}
+
+
 
 /* zuha specific */ 
+header {
+	padding-top: 30px;
+}
+footer .socialmedia img {
+	opacity: 0.4;
+}
+footer .socialmedia img:hover {
+	opacity: 1;
+}
 .right-caret {
     border-bottom: 4px solid transparent;
     border-top: 4px solid transparent;
@@ -185,6 +221,7 @@ span.btn {
 }
 .form-inline {
     display: inline;
+    float: inherit; /* default template uses this, if you change make sure the search bar at the top responds well */
 }
 .form-inline div {
 	display: inline-block;
@@ -228,55 +265,6 @@ span.btn {
 .form-responsive input[type="color"], 
 .form-responsive .uneditable-input {
     margin-bottom: 0;
-}
-
-
-
-
-/* tablet wide */
-@media (max-width:1200px){
-	.indexData {
-		/*width: 780px; to get rows working in a fluid way*/
-	}
-	.titleCell h3 {
-		width: auto;
-	}
-}
-/* tablet tall */
-@media (min-width:768px) and (max-width:979px) {
-	.hero-unit {
-		padding: 20px;
-	}
-	.indexData, .titleCell h3 {
-		/*width: 500px; to get rows working in a fluid way*/
-	}
-	.imageCell {
-		display: none;
-	}
-}
-/* mobile wide */
-@media (max-width:767px){
-	.hero-unit {
-		padding: 10px;
-	}
-	.indexData, .titleCell h3 {
-		/*width: 330px; to get rows working in a fluid way*/
-	}
-	.imageCell {
-		display: none;
-	}
-}
-/* mobile tall */
-@media (max-width:480px) and (max-width: 767px) {
-	.hero-unit {
-		padding: 10px;
-	}
-	.indexData, .titleCell h3 {
-		/*width: 220px; to get rows working in a fluid way*/
-	}
-	.imageCell {
-		display: none;
-	}
 }
 
 
@@ -572,4 +560,72 @@ ol.linenums li {
 }
 .control-group.success .fileupload .thumbnail {
   border-color: #468847;
+}
+
+
+
+
+
+
+/* tablet wide */
+@media (max-width:1200px){
+	.titleCell h3 {
+		width: auto;
+	}
+}
+/* tablet tall */
+/*		Tablet Layout: 768px.
+		Gutters: 24px.
+		Outer margins: 28px.
+		Inherits styles from: Default Layout.   */
+
+@media only screen and (min-width: 768px) and (max-width: 979px) {
+	.hero-unit {
+		padding: 20px;
+	}
+	.imageCell {
+		display: none;
+	}
+}
+
+/*		Mobile Layout: 320px.
+		Gutters: 24px.
+		Outer margins: 34px.
+		Inherits styles from: Default Layout. */
+@media only screen and (max-width: 767px) {
+	.pull-right[class*="span"], .row-fluid .pull-right[class*="span"] {
+		float: none;
+	}
+	.container {
+		width: 300px;
+	}
+	.hero-unit {
+		padding: 10px;
+	}
+	.imageCell {
+		display: none;
+	}
+	/* these two go together */
+	body { padding-left: 10px; padding-right: 10px; }
+	.navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top { margin-left: -10px; margin-right: -10px; }
+}
+
+/*		Wide Mobile Layout: 480px.
+		Gutters: 24px.
+		Outer margins: 22px.
+		Inherits styles from: Default Layout, Mobile Layout.  */
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+	.container {
+		width: 460px;
+	}
+	.hero-unit {
+		padding: 10px;
+	}
+	.indexData, .titleCell h3 {
+		/*width: 220px; to get rows working in a fluid way*/
+	}
+	.imageCell {
+		display: none;
+	}
 }
