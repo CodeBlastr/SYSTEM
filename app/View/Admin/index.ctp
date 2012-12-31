@@ -19,8 +19,10 @@ echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false))
  * @subpackage    zuha.app.views.admin
  * @since         Zuha(tm) v 0.0009
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
- */ ?>
- 
+ */ 
+
+if (empty($runUpdates)) { ?>
+
 	<div class="row-fluid">
 		<ul class="thumbnails">
 			<li class="span4">
@@ -215,4 +217,37 @@ echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false))
         <?php } ?>
 		
     </div>
+<?php
+} else { ?>
 
+  <div id="databaseUpgrades">
+      <?php 
+       $complete = CakeSession::read('Updates.complete');
+       echo $this->Form->create('', array('id' => 'autoUpdateForm')); 
+       echo $this->Form->hidden('Upgrade.all', array('value' => true));
+       //echo $this->Form->submit('Check for Updates');
+       echo $this->Form->end(); ?>
+    <ul>
+      <?php
+    if (CakeSession::read('Updates.last')) {
+      foreach (CakeSession::read('Updates.last') as $table => $action) {
+        echo __('<li>Table %s is %s</li>', $table, $action);
+      }
+    }?>
+    </ul>
+  </div>
+
+  <?php
+    $complete = CakeSession::read('Updates.complete');
+    if (CakeSession::read('Updates') && empty($complete)) {  ?>
+    <script type="text/javascript">
+        $(function() {
+            //var pathname = window.location.pathname;
+            //window.location.replace(pathname);
+           // alert('lets refresh');
+       $("#autoUpdateForm").submit();
+        });
+        </script>
+<?php 
+    } 
+} ?>
