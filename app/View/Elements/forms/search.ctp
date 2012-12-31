@@ -8,7 +8,7 @@ $url = !empty($url) ? $url : '/webpages/webpages/index/';
 $inputs = !empty($inputs) ? $inputs : array();
 $inputs = Set::merge(array(array('name' => 'contains:name', 'options' => array('class' => 'search-query pull-left', 'label' => false, 'placeholder' => 'Type Your Search and Hit Enter'))), $inputs);
 $action = strpos($_SERVER['REQUEST_URI'], 'index') ? $_SERVER['REQUEST_URI'] : $url;
-echo $this->Form->create('', array('type' => 'get', 'class' => 'form-inline index-form navbar-form pull-left', 'url' => Router::normalize($action) . '/')); 
+echo $this->Form->create('', array('type' => 'get', 'class' => 'form-inline index-form navbar-form', 'url' => Router::normalize($action) . '/')); 
 foreach ($inputs as $input) {
 	echo $this->Form->input($input['name'], $input['options']);
 }

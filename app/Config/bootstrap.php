@@ -197,7 +197,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
     
     /**
      * String to ASCII
-     * Converts the given string to a no spaces, no special characters, no cases string
+     * Converts the given string to a no spaces, no special characters, no cases string, like a url
      * 
      * Tänk efter nu – förr'n vi föser dig bort BECOMES tank-efter-nu-forrn-vi-foser-dig-bort
 	 * 

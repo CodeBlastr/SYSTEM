@@ -24,6 +24,8 @@ class InstallController extends Controller {
     
 	public $config;
     
+    public $installPlugins = array();
+    
 	public $allowedActions = array('index', 'site', 'login', 'plugin');
 	//public $components = array('Auth', 'Session');
 
@@ -95,14 +97,16 @@ class InstallController extends Controller {
  * write the class vars that are used through out the functions in this class
  */
 	protected function _handleInputVars($data) {
-		$this->options['siteName'] = $this->request->data['Install']['site_name'];
+		$this->options['siteName'] = Inflector::camelize(Inflector::underscore(str_replace(' ', '', $this->request->data['Install']['site_name'])));
 		if (strpos($this->request->data['Install']['site_domain'], ',')) {
-			# comma separated domain handler
+			// comma separated domain handler
 			$this->siteDomains = array_map('trim', explode(',', $this->request->data['Install']['site_domain']));
 			$this->options['siteDomain'] = $this->siteDomains[0];
 		} else {
 			$this->options['siteDomain'] = $this->request->data['Install']['site_domain'] == 'mydomain.com' ? '' : $this->request->data['Install']['site_domain'];
 		}
+
+        $this->options['key'] = !empty($this->request->data['Install']['key']) ? $this->request->data['Install']['key'] : null; 
 		
 		$this->config['datasource'] = 'Database/Mysql';
 		$this->config['host'] = $data['Database']['host'];
@@ -110,10 +114,33 @@ class InstallController extends Controller {
 		$this->config['password'] = $data['Database']['password'];
 		$this->config['database'] = $data['Database']['name'];
 		$this->newDir = ROOT.DS.'sites'.DS.$this->options['siteDomain'];
+        
+        $this->options['first_name'] = !empty($this->request->data['User']['first_name']) ? $this->request->data['User']['first_name'] : $this->options['siteName'];
+        $this->options['last_name'] = !empty($this->request->data['User']['last_name']) ? $this->request->data['User']['last_name'] : ''; 
+        $this->options['username'] = !empty($this->request->data['User']['username']) ? $this->request->data['User']['username'] : 'admin';
+        $this->options['password'] = !empty($this->request->data['User']['password']) ? $this->request->data['User']['password'] : '123';
+        
+        /*if (!empty($this->request->data['User']['password'])) {
+        	App::uses('AuthComponent', 'Controller/Component');
+	        $this->options['password'] = AuthComponent::password($this->request->data['User']['password']);
+        } else {
+            $this->options['password'] = '3eb13b1a6738103665003dea496460a1069ac78a'; // test
+        }*/
+        
+        if (!empty($this->request->data['Install']['plugins'])) {
+            foreach($this->request->data['Install']['plugins'] as $name) {
+                $this->installPlugins[$name] = $name;
+            }
+        }
 		
 		if (is_dir($this->newDir)) {
-			$this->Session->setFlash(__('That domain already exists, please try again.'));
-			$this->redirect($this->referer());
+			$message = __('That domain already exists, please try again.');
+			$this->Session->setFlash($message);
+			if (!empty($this->options['key'])) {
+				echo $message; // for offsite installs
+			} else {
+				$this->redirect($this->referer());
+			}
 		}
 	}
 
@@ -153,7 +180,7 @@ class InstallController extends Controller {
 					$sqlData .= 'plugins[] = ' . $sql . PHP_EOL;
 				}
 				$sqlData = $sqlData . "plugins[] = {$plugin}";
-				# "UPDATE `settings` SET `value` = 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges' WHERE `name` = 'LOAD_PLUGINS';";
+				// "UPDATE `settings` SET `value` = 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges' WHERE `name` = 'LOAD_PLUGINS';";
 				App::uses('Setting', 'Model');
 				$Setting = new Setting;
 				$data['Setting']['type'] = 'System';
@@ -210,8 +237,21 @@ class InstallController extends Controller {
 						if ($this->_installPluginSchema('Galleries', 'Galleries')) {
 							$galleries = true;
 						}
-						if ($users && $webpages && $contacts && $galleries) {
-							# run the required data
+                        // extra plugins to install for this site
+                        if (!empty($this->installPlugins)) {
+                            foreach ($this->installPlugins as $name => $plugin) {
+                                if ($this->_installPluginSchema($name, $plugin)) {
+						            $extras = true;
+						        } else {
+    				                $extras = false;
+                                    break;
+						        }
+                            }
+                        } else {
+                            $extras = true;
+                        }
+						if ($users && $webpages && $contacts && $galleries && $extras) {
+							// run the required data
 							try {
 								$this->_installCoreData($db);
 							} catch (Exception $e) {
@@ -220,16 +260,21 @@ class InstallController extends Controller {
 							
 							try {
 								$this->_installCoreFiles();
-								$this->redirect('http://'.$this->options['siteDomain'].'/install/login');
+								if (!empty($this->options['key'])) {
+									$this->login(); // successful install, now write the settings.ini
+								} else {
+									$this->redirect('http://'.$this->options['siteDomain'].'/install/login');
+								}
 							} catch (Exception $e) {
-								throw new Exception(__('File copy failed. %s %s', $install, $e->getMessage()));
+								throw new Exception(__('File copy failed. %s', $e->getMessage()));
 							}
 						} else {
 							throw new Exception(__("Error :
 								Users: {$users},
 								Webpages: {$webpages},
 								Contacts: {$contacts},
-								Galleries: {$galleries}"));
+								Galleries: {$galleries},
+                                Extras: {$extras}"));
 						}
 					}
 				} catch (PDOException $e) {
@@ -254,8 +299,12 @@ class InstallController extends Controller {
 		// write the ini data for the new site
 		App::uses('Setting', 'Model');
 		$Setting = new Setting;
-		if ($Setting->writeSettingsIniData()) {
-			
+		if ($Setting->writeSettingsIniData($this->options['siteDomain'])) {
+			if (!empty($this->options['key'])) {
+				echo 'Success'; // off site installs
+				$this->layout = false;
+				$this->render(false);
+			}
 			// get the user from the install data
 			App::uses('User', 'Users.Model');
 			$User = new User;
@@ -273,7 +322,7 @@ class InstallController extends Controller {
 
 			$user = $User->find('first', array(
 				'conditions' => array(
-					'User.username' => 'admin',
+					'User.username' => $this->options['username'],
 					'User.last_login' => null,
 					),
 				));
@@ -288,10 +337,15 @@ class InstallController extends Controller {
 			}
 
 		} else {
-			$this->Session->setFlash(__('Required settings, update failed.'));
+			$message = __('Required settings, update failed.');
+			if (!empty($this->options['key'])) {
+				echo $message; // off site installs
+				$this->layout = false;
+				$this->render(false);
+			}
+			$this->Session->setFlash($message);
 			$this->redirect($this->referer());
-		} // write settings ini
-
+		}
 		$this->layout = false;
 	}
 
@@ -726,8 +780,13 @@ class InstallController extends Controller {
 		if ($siteDir && defined('IS_ZUHA')) {
 			return true;
 		} else if (!empty($siteDir) && $userRoleId != 1) {
-			$this->Session->setFlash(__('Install access restricted.'));
-			$this->redirect('/users/users/login');
+			$message = __('Install access restricted.');
+			if (!empty($this->options['key'])) {
+				echo $message;
+			} else {
+				$this->Session->setFlash($message);
+				$this->redirect('/users/users/login');
+			}
 		}
 		return true;
 	}
@@ -752,7 +811,13 @@ class InstallController extends Controller {
  * The least amount of sql needed to successfully install zuha.
  */
     protected function _getInstallSqlData() {
-
+    	$installedPlugins = 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges';
+		if (!empty($installPlugins)) {
+			foreach ($installPlugins as $pluginName) {
+				$installedPlugins .= '\r\nplugins[] = ' . $pluginName;
+			}
+		}
+		
 		$options['siteName'] = !empty($this->options['siteName']) ? $this->options['siteName'] : 'My Site';
 
 		$dataStrings[] = "INSERT INTO `aliases` (`id`, `plugin`, `controller`, `action`, `value`, `name`, `created`, `modified`) VALUES
@@ -763,10 +828,10 @@ class InstallController extends Controller {
 		$dataStrings[] = "INSERT INTO `contacts` (`id`, `name`, `user_id`, `is_company`, `created`, `modified`) VALUES
 ('1', 'Zuha Administrator', 1, 0, '".date('Y-m-d h:i:s')."', '".date('Y-m-d h:i:s')."');";
 
-		$dataStrings[] = "INSERT INTO `settings` (`id`, `type`, `name`, `value`) VALUES (1, 'System', 'ZUHA_DB_VERSION', '0.0176'), (2, 'System', 'GUESTS_USER_ROLE_ID', '5'), (3, 'System', 'LOAD_PLUGINS', 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges'), (4, 'System', 'SITE_NAME', '".$options['siteName']."');";
+		$dataStrings[] = "INSERT INTO `settings` (`id`, `type`, `name`, `value`) VALUES (1, 'System', 'ZUHA_DB_VERSION', '0.0176'), (2, 'System', 'GUESTS_USER_ROLE_ID', '5'), (3, 'System', 'LOAD_PLUGINS', " . $installedPlugins . "), (4, 'System', 'SITE_NAME', '" . $options['siteName'] . "');";
 
 		$dataStrings[] = "INSERT INTO `users` (`id`, `full_name`, `first_name`, `last_name`, `username`, `password`, `email`, `view_prefix`, `user_role_id`, `created`, `modified`) VALUES
-('1', 'Zuha Administrator', 'Zuha', 'Administrator', 'admin', '3eb13b1a6738103665003dea496460a1069ac78a', 'admin@example.com', 'admin', 1, '".date('Y-m-d h:i:s')."', '".date('Y-m-d h:i:s')."');";
+('1', '" . $this->options['siteName'] . "', '" . $this->options['first_name'] . "', '" . $this->options['last_name'] ."', '" . $this->options['username'] . "', '" . $this->options['password'] . "', 'admin@example.com', 'admin', 1, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "');";
 
 		$dataStrings[] = "INSERT INTO `user_roles` (`id`, `parent_id`, `name`, `lft`, `rght`, `view_prefix`, `is_system`, `created`, `modified`) VALUES (1, NULL, 'admin', 1, 2, 'admin', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:24'), (2, NULL, 'managers', 3, 4, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:41'), (3, NULL, 'users', 5, 6, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:50'), (5, NULL, 'guests', 7, 8, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:56:05');";
 
