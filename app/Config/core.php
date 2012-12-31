@@ -3,7 +3,6 @@ ini_set('session.cookie_httponly', true); // used for PCI compliance to make ses
 
 if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php')) {
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php');
-	Configure::write('Session.cookie', 'PHPSESSID');
 } else {
 	// this else fires on install/site so we can't have die() here.
 	//echo 'no core.php file exists';
