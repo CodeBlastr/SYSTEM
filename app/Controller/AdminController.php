@@ -15,7 +15,7 @@ App::uses('CakeSchema', 'Model');
  * Must retain the above copyright notice and release modifications publicly.
  *
  * @copyright     Copyright 2009-2012, Zuha Foundation Inc. (http://zuha.com)
- * @link          http://zuha.com Zuha™ Project
+ * @link          http://zuha.com Zuhaï¿½ Project
  * @package       zuha
  * @subpackage    zuha.app.controllers
  * @since         Zuha(tm) v 0.0.1

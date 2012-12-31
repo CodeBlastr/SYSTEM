@@ -383,7 +383,8 @@ class App {
  * @link http://book.cakephp.org/2.0/en/core-utility-libraries/app.html#App::themePath
  */
 	public static function themePath($theme) {
-		$themeDir = 'Themed' . DS . Inflector::camelize($theme);
+		//$themeDir = 'Themed' . DS . Inflector::camelize($theme);
+		$themeDir = ''; // zuha update to shorten paths, original one line above
 		foreach (self::$_packages['View'] as $path) {
 			if (is_dir($path . $themeDir)) {
 				return $path . $themeDir . DS;

@@ -73,12 +73,12 @@
 			));	?>
 			<div class="<?php echo $columnClass; ?>">
 				<div class="<?php echo $holderClass; ?>">
-					<?php echo $this->Form->input('username', array('label'=>$usernameLabel, 'class'=>$inputClass, 'div'=>$rowClass)); ?>
+					<?php echo $this->Form->input('username', array('label' => $usernameLabel, 'class' => $inputClass, 'div' => $rowClass, 'placeholder' => $usernameLabel)); ?>
 				</div>
 			</div>
 			<div class="<?php echo $columnClass?>">
 				<div class="<?php echo $holderClass?>">			
-					<?php echo $this->Form->input('password', array('label'=>$passwordLabel, 'class'=>$inputClass, 'div'=>$rowClass)); ?>
+					<?php echo $this->Form->input('password', array('label' => $passwordLabel, 'class' => $inputClass, 'div' => $rowClass, 'placeholder' => $passwordLabel)); ?>
                     
                     <?php if (!empty($remember)) { ?>
 					<div class="<?php echo $rowClass; ?> stayLoggedIn">

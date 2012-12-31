@@ -1208,11 +1208,11 @@ class HtmlHelper extends AppHelper {
 				$extOptions['quality'] = !empty($extOptions['quality']) ? $extOptions['quality'] : 75;
 
 				if (strpos($path, 'theme') > 0 /*|| strpos($path, 'theme') === 0*/) {
-					# this only works for theme images
+					// this only works for theme images
 					$fileName = substr(strrchr($path, '/'), 1);
 					$themeFolder = str_replace(strtolower('/theme/'.$this->theme.'/'), '', $path);
 					$themeFolder = str_replace('/'.$fileName, '', $themeFolder);
-					if ($convertedFile = $this->_resizeImage($extOptions['conversion'], urldecode($fileName), ROOT.DS.SITE_DIR.DS.'View'.DS.'Themed'.DS.$this->theme.DS.'webroot'.DS.$themeFolder.DS, 'tmp_'.$options['width'].$options['height'].$extOptions['conversion'], $options['width'], $options['height'], $extOptions['quality'])) {
+					if ($convertedFile = $this->_resizeImage($extOptions['conversion'], urldecode($fileName), ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'webroot'.DS.$themeFolder.DS, 'tmp_'.$options['width'].$options['height'].$extOptions['conversion'], $options['width'], $options['height'], $extOptions['quality'])) {
 						$htmlTag = str_replace($fileName, $convertedFile['path'], $image);
 						$htmlTag = preg_replace('/\width=".*?"/', 'width="'.$convertedFile['width'].'"', $htmlTag);
 						$htmlTag = preg_replace('/height=".*?"/', 'height="'.$convertedFile['height'].'"', $htmlTag);
