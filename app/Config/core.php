@@ -12,6 +12,16 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php
 	// Configure::write('debug', 2);
 	Configure::write('debug', $debugger);
 	Configure::write('Config.language', 'en');
+
+/**
+ * A random string used in security hashing methods.
+ */
+	Configure::write('Security.salt', 'DYhuf92384jr348ru92834fokjahk4j98C9mi');
+
+/**
+ * A random numeric string (digits only) used to encrypt/decrypt strings.
+ */
+	Configure::write('Security.cipherSeed', '76859309657453474798792837498');
 	
 	Configure::write('Error', array(
 		'handler' => 'ErrorHandler::handleError',

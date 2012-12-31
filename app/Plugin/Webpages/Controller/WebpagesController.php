@@ -103,7 +103,6 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Pages');
-		$this->layout = 'default';	
 		$this->view = 'index_content';
     }
     

@@ -432,11 +432,10 @@ class Setting extends AppModel {
  *
  * return {string}		A string of data used to write to the settings.ini file.
  */
-	public function writeSettingsIniData() {
-		# move this inside of the save fi statement
+	public function writeSettingsIniData($siteDir = null) {
+		$directory = !empty($siteDir) ? ROOT .DS . $siteDir . DS . 'Config' . DS : CONFIGS;
 		App::uses('File', 'Utility');
-		$file = new File(CONFIGS.'settings.ini');
-		#$file->path = CONFIGS.'settings.ini';
+		$file = new File($directory . 'settings.ini');
 		$writeData = $this->prepareSettingsIniData();
 
 		if($file->write($file->prepare($writeData))) {
@@ -456,11 +455,11 @@ class Setting extends AppModel {
  *
  * return {string}		A string of data used to write to the settings.ini file.
  */
-	public function writeDefaultsIniData() {
-		# move this inside of the save fi statement
+	public function writeDefaultsIniData($siteDir = null) {
+		$directory = !empty($siteDir) ? ROOT .DS . $siteDir . DS . 'Config' . DS : CONFIGS;
 		App::uses('File', 'Utility');
-		$file = new File(CONFIGS.'defaults.ini');
-		#$file->path = CONFIGS.'settings.ini';
+		$file = new File($directory . 'defaults.ini');
+
 		$writeData = $this->prepareSettingsIniData();
 		if($file->write($file->prepare($writeData))) {
 			return true;
