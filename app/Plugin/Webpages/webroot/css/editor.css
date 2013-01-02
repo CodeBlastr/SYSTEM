@@ -46,7 +46,7 @@
 }
 #adminNavFloManagr.navbar {
   *position: relative;
-  background: #1B1B1B;
+  /*background: #1B1B1B;*/
   color: #777777;
   height: auto;
   overflow: visible;
@@ -98,6 +98,7 @@
 }
 #adminNavFloManagr .navbar-inner {
 	border: 0;
+    border-radius: 0.3em 0.3em 0 0;
 }
 #adminNavFloManagr ul {
 	position: relative;
