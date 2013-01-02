@@ -1101,11 +1101,9 @@ class View extends Object {
 			foreach ($paths as $path) {
 				if (strpos($path, DS . 'Plugin' . DS) === false) {
 					if ($plugin) {
-    					//$themePaths[] = $path . 'Themed' . DS . $this->theme . DS . 'Plugin' . DS . $plugin . DS;
-    					$themePaths[] = $path . 'Plugin' . DS . $plugin . DS; // zuha, better paths for sites
+						$themePaths[] = $path . 'Themed' . DS . $this->theme . DS . 'Plugin' . DS . $plugin . DS;
 					}
-					//$themePaths[] = $path . 'Themed' . DS . $this->theme . DS;
-    				$themePaths[] = $path .  DS; // zuha, better paths for sites
+					$themePaths[] = $path . 'Themed' . DS . $this->theme . DS;
 				}
 			}
 			$paths = array_merge($themePaths, $paths);
