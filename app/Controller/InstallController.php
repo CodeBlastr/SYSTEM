@@ -663,7 +663,7 @@ class InstallController extends Controller {
  * If it is not the first upload then we want access to index() and site() to be restricted.
  */
     protected function _handleSecurity() {
-        if (Configure::read('Install') === false && $userRoleId != 1) {
+        if ((defined('SITE_DIR') || Configure::read('Install') === false) && $userRoleId != 1) {
             $this->message[] = __('Install access restricted.');
             $this->_redirect('/users/users/login');
         }
