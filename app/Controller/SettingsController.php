@@ -25,35 +25,36 @@
  */
 class SettingsController extends AppController {
 
-  public $name = 'Settings';
+    public $name = 'Settings';
     public $uses = array('Setting');
-  public $allowedActions = array('install');
+    public $allowedActions = array('install');
 
 
-  public function update_defaults() {
-    if ($this->Setting->writeDefaultsIniData()) {
-      $this->Session->setFlash(__('Defaults update successful.', true));
-      $this->redirect($this->referer());
-    } else {
-      $this->Session->setFlash(__('Defaults update failed. Please, try again.'));
+    public function update_defaults() {
+        if ($this->Setting->writeDefaultsIniData()) {
+            $this->Session->setFlash(__('Defaults update successful.', true));
+            $this->redirect($this->referer());
+        } else {
+            $this->Session->setFlash(__('Defaults update failed. Please, try again.'));
+        }
     }
-  }
   
-  public function update_settings() {
-    if ($this->Setting->writeSettingsIniData()) {
-      $this->Session->setFlash(__('Settings update successful.'));
-      $this->redirect($this->referer());
-    } else {
-      $this->Session->setFlash(__('Settings update failed. Please, try again.'));
+    public function update_settings() {
+        if ($this->Setting->writeSettingsIniData()) {
+            $this->Session->setFlash(__('Settings update successful.'));
+            $this->redirect($this->referer());
+        } else {
+            $this->Session->setFlash(__('Settings update failed. Please, try again.'));
+        }
     }
-  }
   
   public function index() {    
     $this->paginate['fields'] = array('id', 'displayName', 'description');
     $this->paginate['order'] = array('Setting.type' => 'asc', 'Setting.name' => 'asc');
     $this->set('settings', $this->paginate());
     $this->set('displayName', 'displayName');
-    $this->set('displayDescription', 'description'); 
+    $this->set('displayDescription', 'description');
+    $this->layout = 'default';
   }
 
   public function view($id = null) {
@@ -62,6 +63,7 @@ class SettingsController extends AppController {
       $this->redirect(array('action'=>'index'));
     }
     $this->set('setting', $this->Setting->read(null, $id));
+    $this->layout = 'default';
   }
 
   public function add() {
@@ -75,6 +77,7 @@ class SettingsController extends AppController {
     }
     $types = $this->Setting->types();
     $this->set(compact('types')); 
+    $this->layout = 'default';
   }
   
   public function names($typeName = null) {
@@ -111,6 +114,7 @@ class SettingsController extends AppController {
     }
     $types = $this->Setting->types();
     $this->set(compact('types')); 
+    $this->layout = 'default';
   }
 
   public function delete($id = null) {
