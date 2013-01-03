@@ -53,7 +53,7 @@ class AppModel extends Model {
  *
  * @todo    Move this record level access stuff to a behavior
  */
-	public function beforeSave($options) {
+	public function beforeSave($options = array()) {
 	    // Start Record Level Access Save
 	    // If the model needs Record Level Access add an Aco
 	    if (!empty($this->data['RecordLevelAccess']['UserRole'])) {

@@ -139,7 +139,7 @@ class Webpage extends WebpagesAppModel {
  * @return boolean
  * @access public
  */
-	public function beforeSave($options) {
+	public function beforeSave($options = array()) {
 		$this->_saveTemplateFiles(); // does not save to the database, so doesn't come back to this beforeSave()
 		return parent::beforeSave($options);
 	}
@@ -163,7 +163,7 @@ class Webpage extends WebpagesAppModel {
  * After Find
  * 
  */
- 	public function afterFind($results, $primary) {
+ 	public function afterFind($results, $primary = false) {
 		$results = $this->_templateContentResults($results);
 		$results = parent::afterFind($results, $primary);
 		return $results;
