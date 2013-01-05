@@ -76,13 +76,13 @@
  * Zuha added constant because CakePHP 2.0 removed it
  *
  */
-	if (!defined('CONFIGS')) :
-		if (defined('SITE_DIR')) : 
+	if (!defined('CONFIGS')) {
+		if (defined('SITE_DIR')) {
 			define('CONFIGS', ROOT .DS . SITE_DIR . DS . 'Config' . DS);
-		else : 
+		} else { 
 			define('CONFIGS', ROOT .DS . APP_DIR . DS . 'Config' . DS);
-		endif;
-	endif;
+		}
+	}
 
 /**
  * The absolute path to the "cake" directory, WITHOUT a trailing DS.

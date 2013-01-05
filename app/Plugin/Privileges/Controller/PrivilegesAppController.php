@@ -100,6 +100,7 @@ class PrivilegesAppController extends AppController {
 		$this->_setEnd();
 		$this->_useSession = $session;
 		$this->_clean = true;
+    	$this->aco_clean();
 		$this->aco_update();
         $this->set('page_title_for_layout', 'Sections & Actions Update');
 	}
@@ -111,6 +112,28 @@ class PrivilegesAppController extends AppController {
 		$plugins = CakePlugin::loaded();
 		end($plugins);
 		CakeSession::write('Privileges.end', current($plugins));
+	}
+    
+	
+/**
+ * Removes Acos no longer in use
+ *
+ * @return void
+ **/
+	function aco_clean() {
+        $keepers = Set::merge(CakePlugin::loaded(), str_replace('Controller', '', App::objects('controllers')));
+        $ids = Set::extract('/Aco/id', $this->Aco->find('all', array(
+            'conditions' => array(
+                'Aco.parent_id' => 1,
+                'Aco.alias NOT' => $keepers
+                ),
+            'fields' => array(
+                'Aco.id'
+                )
+            )));
+        foreach ($ids as $id) {
+            $this->Aco->delete($id); // can't use deleteAll() it doesn't delete children
+        }
 	}
 	
 	

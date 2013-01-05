@@ -300,10 +300,10 @@ class Webpage extends WebpagesAppModel {
 			}
 			switch ($action) {
 				case 'site_edit':
-				$include_container = array('start' => '<div contenteditable="false" id="edit_webpage_include' . $matches[2][$i] . '" pageid="' . trim($matches[2][$i]) . '" class="global_edit_area">', 'end' => '</div>');
+				$include_container = array('start' => '<div id="webpage' . $matches[2][$i] . '" pageid="' . trim($matches[2][$i]) . '" class="global-edit-box">', 'end' => '</div>');
 				break;
 				default:
-				$include_container = array('start' => '<div id="edit_webpage_include' . trim($matches[2][$i]) . '" pageid="' . trim($matches[2][$i]) . '" class="global_edit_area">', 'end' => '</div>');
+				$include_container = array('start' => '<div id="webpage' . trim($matches[2][$i]) . '" pageid="' . trim($matches[2][$i]) . '" class="global-edit-box">', 'end' => '</div>');
 			}
 		// remove the div.global_edit_area's if this user is not userRoleId = 1
 		if ($userRoleId !== '1') {

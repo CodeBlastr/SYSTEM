@@ -43,51 +43,53 @@ if (!empty($gallery['GalleryImage'][0])) {
         <ul class="thumbs noscript">
             <?php
             foreach ($gallery['GalleryImage'] as $slide) { ?>
-          	<li>
-            <?php 
-            # uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
-            $largeImage = $slide['dir'].'thumb/large/'.$slide['filename'];
-            $image = $this->Html->image($largeImage, 
-            	array(
-                	'width' => $gallery['GallerySettings']['smallImageWidth'], 
-                    'height' => $gallery['GallerySettings']['smallImageHeight'],
-                    'alt' => $slide['alt'],
-                    ), 
-                array(
-                    'conversion' => $gallery['GallerySettings']['conversionType'],
-                    'quality' => 75,
-                    ));	
-			# make the large image for real now, because we link to it with the small image
-			$largeImage = $this->Html->image($largeImage, 
-            	array(
-                	'width' => $gallery['GallerySettings']['largeImageWidth'], 
-                    'height' => $gallery['GallerySettings']['largeImageHeight'],
-                    'alt' => $slide['alt'],
-                    ), 
-                array(
-                    'conversion' => $gallery['GallerySettings']['conversionType'],
-                    'quality' => 75,
-                    ));	
-			$doc = new DOMDocument();
-			$doc->loadHTML($largeImage);
-			$xml = simplexml_import_dom($doc);
-			$largeImgSrc = $xml->xpath('//img/@src');
-			
-            echo $this->Html->link($image,
-            	'/'.$largeImgSrc[0], 
-                array(
-                	'escape' => false,
-                    'id' => 'galleryImage' . $gallery['GalleryImage'][0]['id'],
-                    'class' => 'thumb',
-                    'name' => 'leaf',
-                    'title' => $slide['caption'],
-                    )); 
+	          	<li>
+	            <?php 
+	            // uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+	            $largeImage = $slide['dir'].'thumb/large/'.$slide['filename'];
+	            $image = $this->Html->image($largeImage, 
+	            	array(
+	                	'width' => $gallery['GallerySettings']['smallImageWidth'], 
+	                    'height' => $gallery['GallerySettings']['smallImageHeight'],
+	                    'alt' => $slide['alt'],
+	                    ), 
+	                array(
+	                    'conversion' => $gallery['GallerySettings']['conversionType'],
+	                    'quality' => 75,
+	                    ));	
+				// make the large image for real now, because we link to it with the small image
+				$largeImage = $this->Html->image($largeImage, 
+	            	array(
+	                	'width' => $gallery['GallerySettings']['largeImageWidth'], 
+	                    'height' => $gallery['GallerySettings']['largeImageHeight'],
+	                    'alt' => $slide['alt'],
+	                    ), 
+	                array(
+	                    'conversion' => $gallery['GallerySettings']['conversionType'],
+	                    'quality' => 75,
+	                    ));	
+				if (!empty($largeImage)) {
+					$doc = new DOMDocument();
+					$doc->loadHTML($largeImage);
+					$xml = simplexml_import_dom($doc);
+					$largeImgSrc = $xml->xpath('//img/@src');
+				}
 				
-            echo $this->Element('actions', array('galleryId' => $gallery['Gallery']['id'], 'slideId' => $slide['id']), array('plugin' => 'galleries')); ?>
-            <div class="caption">
-            	<div class="image-title"><?php echo $slide['description']; ?></div>
-            </div>
-          	</li>
+	            echo $this->Html->link($image,
+	            	'/'.$largeImgSrc[0], 
+	                array(
+	                	'escape' => false,
+	                    'id' => 'galleryImage' . $gallery['GalleryImage'][0]['id'],
+	                    'class' => 'thumb',
+	                    'name' => 'leaf',
+	                    'title' => $slide['caption'],
+	                    )); 
+					
+	            echo $this->Element('actions', array('galleryId' => $gallery['Gallery']['id'], 'slideId' => $slide['id']), array('plugin' => 'galleries')); ?>
+	            <div class="caption">
+	            	<div class="image-title"><?php echo $slide['description']; ?></div>
+	            </div>
+	          	</li>
           	<?php
             } // end images loop ?>
         </ul>

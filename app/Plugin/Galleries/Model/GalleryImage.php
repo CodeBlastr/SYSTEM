@@ -53,7 +53,7 @@ class GalleryImage extends GalleriesAppModel {
 				$this->actsAs[] = $behaviors[$this->name];
 			}
 		}
-		$this->rootPath = ROOT . DS . SITE_DIR . DS . 'View' . DS . 'Themed' . DS. 'Default' . DS . 'webroot';
+		$this->rootPath = ROOT . DS . SITE_DIR . DS . 'Locale'.DS.'View' . DS . 'webroot';
 		parent::__construct($id, $table, $ds);
 	}
 	

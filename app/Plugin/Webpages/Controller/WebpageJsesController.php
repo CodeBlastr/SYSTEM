@@ -34,6 +34,7 @@ class WebpageJsesController extends WebpagesAppController {
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Javascript Files');
+        $this->layout = 'default';
 	}
 
 	public function view($id = null) {
