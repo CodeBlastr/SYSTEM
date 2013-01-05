@@ -2,123 +2,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <?php echo $this->Html->charset(); ?>
-<title><?php echo $title_for_layout; __(' : Zuha Business Management'); ?></title>
+<title><?php echo defined('__SYSTEM_SITE_NAME') ? __SYSTEM_SITE_NAME : $title_for_layout ?></title>
 
 <meta name="robots" content="index, follow" />
 <meta http-equiv="X-UA-Compatible" content="IE=8" />
 <meta name="viewport" content="width=device-width"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<?php
-	echo $this->Html->meta('icon');
-	echo $scripts_for_layout;
-	if (defined('__REPORTS_ANALYTICS')) :
-		echo $this->Element('analytics', array(), array('plugin' => 'reports'));
-	endif;
-?>
-	
-<style type="text/css"> 
-<!-- 
-body  {
-	font: 100% Arial, Helvetica, sans-serif;
-	background: #fff;
-	margin: 0; 
-	padding: 0;
-	text-align: center;
-	color: #000000;
-	color: #999;
-}
-form {
-	max-width: 28em;
-	margin: auto;
-	text-align: left;
-}
-fieldset {
-	margin: auto;
-	border: 1px solid #CCC;
-}
-label {
-	clear: both;
-	display: block;
-	float: left;
-	min-width: 9em;
-	padding: 0.3em 0 0 0;
-}
-input[type=submit] {
-	margin: auto;
-	color: #000;
-	font-size: 2em;
-	text-align: center;
-	float: none;
-	-webkit-appearance: button;
-	position: relative;
-	left: -27px;
-}
-input[type=text], input[type=password] {
-	clear: both;
-	font-size: 1.7em;
-	margin: 0 0 10px 0;
-	color: #000;
-	border: 2px solid #999;
-	background: #eaeaea;
-	width: 9em;
-}
-input:focus {
-	border: 2px solid #6C3;
-	background: #fff;
-}
-div.submit {
-	text-align: center;
-}
-legend {
-	font-weight: bold;
-} 
-#flashMessage {
-	margin: auto;
-	text-align: left;
-	max-width: 24em;
-	border: 1px solid #C00;
-	background: #C99;
-	color: #FFF;
-	font-weight: bold;
-	padding: 1em;
-}
-.floManagrLogoBlue {
-	color: #4E86B9;
-}
-h1 {
-	margin-top: 1em;
-}
-#content {
-	max-width: 28em;
-	margin: 0 auto;
-}
-.holder {
-	position: relative;
-}
-.stayLoggedIn {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	display: none;
-}
-.forgotPassword {
-	position: absolute;
-	top: 45px;
-	left: -1px;
-}
--->
+<?php 
+echo $this->Html->meta('icon') . "\r";
+echo $this->Html->css('system') . "\r";
+echo $this->Html->css('twitter-bootstrap/bootstrap.min') . "\r";
+echo $this->Html->css('twitter-bootstrap/bootstrap.custom') . "\r";
+//echo $this->Html->script('http://code.jquery.com/jquery-latest.js') . "\r";
+echo $this->Html->script('//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js');
+echo $this->Html->script('plugins/modernizr-2.6.1-respond-1.1.0.min') . "\r";
+echo $this->Html->script('system') . "\r";
+echo $this->Html->script('twitter-bootstrap/bootstrap.min') . "\r";
+echo $this->Html->meta('icon');
+echo $scripts_for_layout;
+if (defined('__REPORTS_ANALYTICS')) {
+	echo $this->Element('analytics', array(), array('plugin' => 'reports'));
+} ?>
+<style type="text/css">
+	.container { width: 300px; }
+	label[for="UserUsername"], label[for="UserPassword"] { display: none; }
+	input {width: 285px;}
 </style>
 </head>
 <body class="<?php echo $this->request->params['controller']; echo ($this->Session->read('Auth.User') ? __(' authorized') : __(' restricted')); ?>" id="<?php echo !empty($this->request->params['pass'][0]) ? strtolower($this->request->params['controller'].'_'.$this->request->params['action'].'_'.$this->request->params['pass'][0]) : strtolower($this->request->params['controller'].'_'.$this->request->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
-<div id="siteWrap">
-      <div id="content">
-    	<h1>flo<span class="floManagrLogoBlue">Managr</span> Login</h1>
-		<?php echo $this->Session->flash(); ?> <?php echo $this->Session->flash('auth'); ?>
+	<div class="container">
+    	<?php 
+    	echo defined('__SYSTEM_SITE_NAME') ? __('<h3><small>Login to</smalL> %s</h3><hr />', __SYSTEM_SITE_NAME) : __('<h3>flo<span class="floManagrLogoBlue">Managr</span> Login</h3><hr />');
+    	echo $this->Session->flash();
+		echo $this->Session->flash('auth'); ?>
         <div class="contentSection"> 
 			<?php echo $content_for_layout; ?> 
         </div>
-      </div>
-  <?php // echo $this->Element('admin/footer_nav'); ?>
-</div>
+	</div>
 </body>
 </html>

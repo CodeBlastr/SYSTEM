@@ -7,8 +7,8 @@ class PrivilegesController extends PrivilegesAppController {
 
 	public function index() {
  		$this->redirect(array('plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index'));
-		$dat = $this->Privilege->prepare();
-		$this->set('data' , $dat);
+		//$dat = $this->Privilege->prepare();
+		//$this->set('data' , $dat);
 	}
 	
 /**

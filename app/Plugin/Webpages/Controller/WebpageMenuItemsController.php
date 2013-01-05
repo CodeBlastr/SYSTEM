@@ -7,29 +7,31 @@ class WebpageMenuItemsController extends WebpagesAppController {
 	
 	public function sort() {
 		// Configure::write('debug', 0);
-		// get the menu_id for the root items (they should all have the same menu_id        
-		$menu = $this->WebpageMenuItem->find('first', array(
-			'conditions' => array(
-				'WebpageMenuItem.id' => $this->request->data['order'][1]['item_id'],
-				),
-			));
-		$i = 0;
-		foreach ($this->request->data['order'] as $item) {
-			if ($item['depth'] != 0) {
-				$data['WebpageMenuItem']['id'] = $item['item_id'];
-				$data['WebpageMenuItem']['parent_id'] = $item['parent_id'] == 'root' ? $menu['WebpageMenuItem']['menu_id'] : $item['parent_id'];
-				$data['WebpageMenuItem']['order'] = $i;
-				if ($this->WebpageMenuItem->save($data, array('validate' => false))) {
-    			    $output[] = $data;   
-				} else {
-                    $output['brokeOn'] = $data;
-    			    break;
-				}
-			}
-			$i++;
-		}
-        $this->WebpageMenuItem->reorder(array('id' => $menu['WebpageMenuItem']['menu_id'], 'field' => 'order'));
-        $this->set(compact('output'));
+        if (!empty($this->request->data['order'][1])) {
+    		// get the menu_id for the root items (they should all have the same menu_id    
+    		$menu = $this->WebpageMenuItem->find('first', array(
+    			'conditions' => array(
+    				'WebpageMenuItem.id' => $this->request->data['order'][1]['item_id'],
+    				),
+    			));
+    		$i = 0;
+    		foreach ($this->request->data['order'] as $item) {
+    			if ($item['depth'] != 0) {
+    				$data['WebpageMenuItem']['id'] = $item['item_id'];
+    				$data['WebpageMenuItem']['parent_id'] = $item['parent_id'] == 'root' ? $menu['WebpageMenuItem']['menu_id'] : $item['parent_id'];
+    				$data['WebpageMenuItem']['order'] = $i;
+    				if ($this->WebpageMenuItem->save($data, array('validate' => false))) {
+        			    $output[] = $data;   
+    				} else {
+                        $output['brokeOn'] = $data;
+        			    break;
+    				}
+    			}
+    			$i++;
+    		}
+            $this->WebpageMenuItem->reorder(array('id' => $menu['WebpageMenuItem']['menu_id'], 'field' => 'order'));
+            $this->set(compact('output'));
+        }
 		$this->render(false);
 	}
 	

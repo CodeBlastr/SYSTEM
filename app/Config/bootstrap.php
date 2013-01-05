@@ -36,7 +36,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'View'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'View'.DS,
 			ROOT.DS.SITE_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS, // to be deprecated soon, 2012-11-29 RK
-			ROOT.DS.SITE_DIR.DS.'View'.DS, // for the theme directory to work
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS,
 			ROOT.DS.APP_DIR.DS.'View'.DS,
 			),
 		'controllers' => array(
@@ -197,7 +197,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
     
     /**
      * String to ASCII
-     * Converts the given string to a no spaces, no special characters, no cases string
+     * Converts the given string to a no spaces, no special characters, no cases string, like a url
      * 
      * Tänk efter nu – förr'n vi föser dig bort BECOMES tank-efter-nu-forrn-vi-foser-dig-bort
 	 * 

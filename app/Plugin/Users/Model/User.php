@@ -135,12 +135,12 @@ class User extends UsersAppModel {
 	}
 
 	protected function _comparePassword() {
-		# fyi, confirm password is hashed in the beforeValidate method
+		// fyi, confirm password is hashed in the beforeValidate method
 		if (isset($this->data['User']['confirm_password']) &&
 				($this->data['User']['password'] == $this->data['User']['confirm_password'])) {
 			return true;
 		} else if (!isset($this->data['User']['confirm_password'])) {
-			# if confirm_password isn't in the form fields then we aren't updating passwords
+			// if confirm_password isn't in the form fields then we aren't updating passwords
 			return true;
 		} else {
 			return false;
