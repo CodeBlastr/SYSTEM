@@ -10,12 +10,6 @@
 <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-<style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-</style>
 <?php 
 echo $this->Html->meta('icon') . "\r";
 echo $this->Html->css('system') . "\r";
@@ -42,11 +36,11 @@ echo defined('__REPORTS_ANALYTICS') ? $this->Element('analytics', array(), array
         
 		<?php echo $this->Element('twitter-bootstrap/page_title'); ?>
         
-        <?php echo $content_for_layout; ?> 
+        <?php echo $content_for_layout; ?>
         
         <footer>
         	<hr />
-            <p>&copy; Company 2012</p>
+            <?php echo defined('__SYSTEM_SITE_NAME') ? __('<p>&copy; %s %s</p>', __SYSTEM_SITE_NAME, date('Y')) : __('<p>&copy; Company %s</p>', date('Y')); ?>
         </footer>
 		
 		<?php echo $this->Element('sql_dump');  ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> 

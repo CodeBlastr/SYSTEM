@@ -308,9 +308,7 @@ class UsersController extends UsersAppController {
 		unset($userRoles[1]); // remove the administrators group by default - too insecure
 		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
 		$this->set(compact('userRoleId', 'userRoles'));
-		if (empty($this->templateId)) {
-			 $this->layout = 'login'; 
-		}
+		$this->layout = 'login';
 	}
 
 

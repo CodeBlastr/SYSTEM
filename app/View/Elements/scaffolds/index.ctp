@@ -52,7 +52,7 @@ if (!empty($data)) {
 		$link['pluginName'] = !empty($link['pluginName']) ? $link['pluginName'] : $pluginName;
 		$link['controllerName'] = !empty($link['controllerName']) ? $link['controllerName'] : $controller;
 		$link['actionName'] = !empty($link['actionName']) ? $link['actionName'] : 'view';
-		$linkPass = !empty($link['pass']) ? preg_replace('/\{([a-zA-Z_]+)\}/e', "$$1", $link['pass']) : array($id); 
+		$linkPass = !empty($link['pass']) ? preg_replace('/\{([a-zA-Z_]+)\}/e', "$$1", $link['pass']) : 'id'; 
 		$galleryLinkPass = !empty($galleryLink['pass']) ? array(preg_replace('/\{([a-zA-Z_]+)\}/e', "$$1", $galleryLink['pass'])) : $linkPass;
 		$viewUrl = array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName'], $$linkPass); // was the line below, changed to work with /transactions/transactions/my
 		//$viewUrl = array('plugin' => strtolower($link['pluginName']), 'controller' => $link['controllerName'], 'action' => $link['actionName']) + $linkPass;

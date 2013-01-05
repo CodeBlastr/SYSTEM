@@ -66,7 +66,7 @@ class MediableBehavior extends ModelBehavior {
  * @return boolean
  */
 	public function afterSave($Model, $created) {
-        if (isset($Model->data['GalleryImage'])){
+        if (!empty($Model->data['GalleryImage']['filename']['name'])){
             $data = $Model->data;
 			$data[$this->modelName]['id'] = $Model->id;
 			$data['Gallery']['model'] = $this->modelName;

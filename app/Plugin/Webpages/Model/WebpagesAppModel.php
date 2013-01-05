@@ -23,13 +23,13 @@ class WebpagesAppModel extends AppModel {
  */
 	public function __construct($id = false, $table = null, $ds = null) {		
 		$this->templateDirectories = array(
-			ROOT.DS.SITE_DIR.DS.'Config'.DS.'Templates'.DS, // must always come first (see saveTemplateFiles() for why)
+			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS, // must always come first (see saveTemplateFiles() for why)
 			ROOT.DS.APP_DIR.DS.'Config'.DS.'Templates'.DS
 		);
 		
-		$this->cssDirectory = ROOT.DS.SITE_DIR.DS.'View'.DS.'Themed'.DS.'Default'.DS.'webroot'.DS.'css'.DS;
+		$this->cssDirectory = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'webroot'.DS.'css'.DS;
 		
-		$this->jsDirectory = ROOT.DS.SITE_DIR.DS.'View'.DS.'Themed'.DS.'Default'.DS.'webroot'.DS.'js'.DS;
+		$this->jsDirectory = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'webroot'.DS.'js'.DS;
 		
 		parent::__construct($id, $table, $ds);
 	}

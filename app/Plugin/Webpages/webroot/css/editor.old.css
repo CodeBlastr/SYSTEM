@@ -1,17 +1,17 @@
 /* navbar */
-/*body {
-	position: relative !important;
+body {
+    position: relative !important;
 	top: 45px !important;
 	margin: 0;
 	padding: 0;
-}*/
+}
 #adminNavFloManagr * {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
     color: #999999;
     font-weight: normal;
 	font-size: 14px;
     line-height: 40px;
-	/*background: none; ruins icons*/
+	background: none;
 	text-shadow: 0 0 0;
 	margin: 0;
 	padding: 0;
@@ -28,7 +28,7 @@
 	font-size: 20px;
 }
 #adminNavFloManagr.navbar .nav > li > a {
-	padding: 0 8px;
+	padding: 0 10px;
 }
 #adminNavFloManagr.navbar .nav > li > a:hover {
 	background-image: none;
@@ -46,7 +46,7 @@
 }
 #adminNavFloManagr.navbar {
   *position: relative;
-  /*background: #1B1B1B;*/
+  background: #000;
   color: #777777;
   height: auto;
   overflow: visible;
@@ -60,7 +60,7 @@
 #adminNavFloManagr .caret {
 	border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-bottom: 4px solid #999;
+    border-top: 4px solid #999;
     content: "";
     display: inline-block;
     height: 0;
@@ -72,11 +72,9 @@
 	position: relative;
 	top: 20px;
 }
-#adminNavFloManagr.navbar-fixed-bottom {
+#adminNavFloManagr.navbar-fixed-top {
 	position: fixed;
-	bottom: 0;
-	top: auto;
-	margin: 0;
+	top: 0;
 }
 #adminNavFloManagr .btn-navbar {
 	display: none;
@@ -98,7 +96,6 @@
 }
 #adminNavFloManagr .navbar-inner {
 	border: 0;
-    border-radius: 0.3em 0.3em 0 0;
 }
 #adminNavFloManagr ul {
 	position: relative;
@@ -129,7 +126,7 @@
     min-width: 160px;
     padding: 5px 0;
     position: absolute;
-    bottom: 90%;
+    top: 90%;
     z-index: 1000;
 }
 #adminNavFloManagr ul li.dropdown ul.dropdown-menu a {
@@ -144,7 +141,7 @@
 /* context menu */
 #adminNavFloManagr ul li ul.context_menu {
 	position: absolute;
-	bottom: 40px;
+	top: 40px;
 	left: 0;
 	margin: 0;
 	background: #FFF;
@@ -198,68 +195,11 @@
     background-image: linear-gradient(to bottom, #0088CC, #0077B3);
     background-repeat: repeat-x;
 }
-#adminNavFloManagr [data-target=".floManagrNav .nav-collapse"] [class^="icon-"] {
+#adminNavFloManagr [class^="icon-"], #adminNavFloManagr[class*=" icon-"] {
     background: #FFF;
     margin-top: 3px;
 }
 
-/* buttons */
-#adminNavFloManagr .nav-edit {
-    display: none;
-}
-#adminNavFloManagr .btn-nav-edit, #adminNavFloManagr #edit-mode {
-    border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.25);
-    border-radius: 3px 3px 3px 3px;
-    font-size: 10.5px;
-    padding: 0 6px;
-    -moz-border-bottom-colors: none;
-    -moz-border-image: none;
-    -moz-border-left-colors: none;
-    -moz-border-right-colors: none;
-    -moz-border-top-colors: none;
-    background-color: #F5F5F5;
-    background-image: -moz-linear-gradient(center top , #FFFFFF, #E6E6E6);
-    background-repeat: repeat-x;
-    border-style: solid;
-    border-width: 1px;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
-    color: #333333;
-    cursor: pointer;
-    line-height: 20px;
-    margin: 0;
-    text-align: center;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-    vertical-align: middle;
-}
-div.overlay-edit {
-    position: relative;
-    overflow: visible;
-    height: 0;
-}
-div.overlay-edit span.label {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: #FF3300;
-    color: #FFF;
-    display: none;
-}
-div.edit-message {
-    background: none repeat scroll 0 0 #9FD0FF;
-    border: 1px solid #838294;
-    bottom: 25%;
-    box-shadow: 2px 2px 2px #202020;
-    color: #707070;
-    display: none;
-    font-size: 13px;
-    left: 45%;
-    margin: 0;
-    opacity: 0.897;
-    padding: 4px 12px;
-    position: fixed;
-    text-shadow: 1px 1px 1px #FFFFFF;
-    z-index: 99999;
-}
 
 
 
@@ -293,6 +233,9 @@ div.edit-message {
         float: left;
         clear: both;
     }
+    #adminNavFloManagr.navbar-fixed-top {
+        position: relative;
+    }
     body {
         position: relative !important;
         top: 0 !important;
@@ -324,7 +267,8 @@ div.edit-message {
     #adminNavFloManagr.navbar .nav > li > a {
         padding: 0;
     }
-    #adminNavFloManagr.navbar-fixed-bottom {
+    #adminNavFloManagr.navbar-fixed-top {
+        position: relative;
         margin: 0;
         min-width: 300px;        
     }
@@ -335,4 +279,100 @@ div.edit-message {
 }
 /* mobile tall */
 @media (max-width:480px) and (max-width: 767px) {
+}
+
+
+
+
+
+/* editor */
+#background_layer {
+	position: fixed;
+	background-color: #666;
+	opacity: 0.8;
+	filter: alpha(opacity=70);
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+}
+.hover_div  {
+	min-height: 2em;
+}
+.hover_include {
+	/*background-color: #FF9;
+	border: 1px dashed #F00;*/
+	filter: alpha(opacity=95);
+	z-index: 999;
+	opacity: 0.95;
+	position: absolute;
+}
+.hover_include:before {
+	background: none repeat scroll 0 0 red;
+    box-shadow: 2px 2px 3px #000000;
+    color: white;
+    content: "Click to edit content.";
+    display: block;
+    font-size: 9px;
+    font-weight: normal;
+    padding: 1px 10px;
+    width: 87px;
+}
+.nav-edit:before {
+    background: none repeat scroll 0 0 red;
+    box-shadow: 2px 2px 3px #000000;
+    color: white;
+    content: "Click to edit menu.";
+    display: block;
+    font-size: 9px;
+    font-weight: normal;
+    padding: 1px 10px;
+    width: 78px;
+}
+.global_edit_area .hover_include:before {
+	background: none repeat scroll 0 0 red;
+    box-shadow: 2px 2px 3px #000000;
+    color: white;
+    content: "Click to edit global box.";
+    display: block;
+    font-size: 9px;
+    font-weight: normal;
+    padding: 1px 10px;
+    width: 98px;
+}
+#modalEditorWrap {
+	position: fixed;
+	top: -5000px;
+	left: -5000px;
+	z-index: 1000;
+	width: 80%;
+	height: 60%;
+}
+#modalEditorWrap #cke_modalEditor {
+	-webkit-box-shadow: 2px 2px 3px 0px #000000;
+	-moz-box-shadow: 2px 2px 3px 0px #000000;
+	box-shadow: 2px 2px 3px 0px #000000;  
+}
+#modalEditorWrap .closeEditor {
+	color: #000;
+	font-size: 14px;
+	text-shadow: 1px 1px #fff;
+	cursor: pointer;
+	padding: 0em 0.2em 0 0em;
+	float: left;
+	margin: 0 0 0 -1em;
+	font-family: Verdana, Geneva, sans-serif;
+}
+#modalEditorWrap .handle {
+	font-size: 20px;
+	color: #999;
+	text-shadow: 1px 1px #fff;
+	cursor:move;
+	padding: 0em 0.2em 0.2em 0.2em;
+	float: left;
+	clear: left;
+	margin: 0 0 0 -1em;
+}
+#modalEditorWrap .closeEditor:hover, #modalEditorWrap .handle:hover {
+	color: #C00;
 }

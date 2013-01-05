@@ -14,4 +14,3 @@ if (!empty($menus)) {
 	$menu .= '</div>';
 }
 echo !empty($menu) ? $menu : null;
-echo '<div class="clearfix"></div><hr />';
