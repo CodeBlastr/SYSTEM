@@ -25,6 +25,12 @@ i {
 .container .navbar .btn-navbar {
     margin: 16px 0 0;
 }
+.nav-list a {
+    cursor: pointer;
+}
+.nav-list a:hover {
+    text-decoration: none;
+}
 small {
     vertical-align: baseline;
 }
