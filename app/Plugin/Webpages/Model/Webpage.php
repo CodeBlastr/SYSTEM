@@ -154,7 +154,7 @@ class Webpage extends WebpagesAppModel {
 	public function afterSave($created) {
         if ($this->data['Webpage']['type'] == 'template') {
             // template settings are special
-            $this->_saveTemplateSettings($this->id, $this->data);
+            $this->_syncTemplateSettings($this->id, $this->data);
         }
 		return parent::afterSave($created);
 	}
@@ -164,7 +164,7 @@ class Webpage extends WebpagesAppModel {
  * 
  */
  	public function afterFind($results, $primary) {
-		$results = $this->_templateContentResults($results);
+	    $results = $this->_templateContentResults($results);
 		$results = parent::afterFind($results, $primary);
 		return $results;
 	}
@@ -175,7 +175,7 @@ class Webpage extends WebpagesAppModel {
  */
 	public function afterDelete() {
 		// delete template settings
-		$this->_saveTemplateSettings($this->id, null, true);
+		$this->_syncTemplateSettings($this->id, null, true);
 		return parent::afterDelete();
 	}
 
@@ -194,78 +194,6 @@ class Webpage extends WebpagesAppModel {
             throw new Exception(ZuhaInflector::invalidate($this->invalidFields()));
         }
     }
-    
-    
-/**
- * When a page is a template we have to save the settings for that template, so that we know when to show it.
- *
- * @param int			The id of the page we're making settings for
- * @param array			An array of data to get the template, and template settings from
- */
-	private function _saveTemplateSettings($pageId, $data = null, $delete = false) {		
-		if(!empty($data['Webpage']['is_default']) || !empty($data['Webpage']['template_urls'])) {
-			// resave the template with the correct compression
-			if (!empty($data['Webpage']['template_urls'])){
-            	$data = $this->_templateUrls($data);
-				$this->save(array('id' => $this->id, 'template_urls' => $data['Webpage']['template_urls']), array('validate' => false, 'callbacks' => false, 'fieldlist' => array('id', 'template_urls')));
-			}
-			// now move on to saving the actual settings
-			$settings = array(
-				'templateId' => $pageId,
-				'isDefault' => $data['Webpage']['is_default'],
-				'urls' => '"'.$data['Webpage']['template_urls'].'"',
-				'userRoles' => $data['Webpage']['user_roles'],
-				);
-		
-            if (defined('__APP_TEMPLATES')) {
-                @extract(unserialize(__APP_TEMPLATES));
-            }
-
-            $template[$pageId] = !empty($settings) ? base64_encode(gzcompress(serialize($settings))) : null;
-
-            $data['Setting']['value'] = '';
-            $data['Setting']['type'] = 'App';
-            $data['Setting']['name'] = 'TEMPLATES';
-            foreach ($template as $key => $value) {
-                // merge existing values here
-                if ($delete && $key == $pageId) {
-                    // doing nothing should remove the value from the settings
-                } else {
-                    $data['Setting']['value'] .= 'template['.$key.'] = "'.$value.'"'.PHP_EOL;
-                }
-            }
-            $this->Setting = ClassRegistry::init('Setting');
-            if ($this->Setting->add($data)) {
-            	return true;
-            } else {
-                return false;
-            }
-		}
-	}
-
-/**
- * Template Urls
- * Returns an compressed version of the template urls field
- * 
- * @params array
- * @return array
- */
-	protected function _templateUrls($data = null) {
-		if (!empty($data['Webpage']['template_urls'])) {
-			// cleaning the string for common user entry differences
-			$urls = str_replace(PHP_EOL, ',', $data['Webpage']['template_urls']);
-			$urls = str_replace(' ', '', $urls);
-			$urls = explode(',', $urls);
-			foreach ($urls as $url) {
-				$url = str_replace('/*', '*', $url);
-				$url = str_replace(' ', '', $url);
-				$url = str_replace(',/', ',', $url);
-				$out[] = strpos($url, '/') == 0 ? substr($url, 1) : $url;
-			} // end url loop
-			$data['Webpage']['template_urls'] = base64_encode(gzcompress(serialize($out)));
-		}
-		return $data;		
-	}
 		
 /**
  * Parse Included Pages 
@@ -277,6 +205,7 @@ class Webpage extends WebpagesAppModel {
  * @param string
  * @param object
  * @return string
+ * @todo This really needs to be redone, and cleaned.
  */
     public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
         $requestUrl = $request->url;
@@ -388,6 +317,7 @@ class Webpage extends WebpagesAppModel {
 			}
 			
 		}
+        
 		if (empty($data['RecordLevelAccess']['UserRole'])) {
 			unset($data['RecordLevelAccess']);
 		} else {
@@ -406,13 +336,15 @@ class Webpage extends WebpagesAppModel {
  * @todo Clean out alias data for templates and elements.
  */
 	public function cleanOutputData($data) {
+        
 		if (!empty($data['Webpage']['user_roles'])) {
 			$data['Webpage']['user_roles'] = unserialize($data['Webpage']['user_roles']);
 		}
 		
-		if (!empty($data['Webpage']['template_urls'])) {
-			$data['Webpage']['template_urls'] = implode(PHP_EOL, unserialize(gzuncompress(base64_decode($data['Webpage']['template_urls']))));
-		}		
+		// might not need this anymore 1/6/2012 rk, because of updates to how we handle template_urls
+        //if (!empty($data['Webpage']['template_urls'])) {
+		//	$data['Webpage']['template_urls'] = implode(PHP_EOL, unserialize(gzuncompress(base64_decode($data['Webpage']['template_urls']))));
+		//}		
 		
 		return $data;
 	}
@@ -465,13 +397,11 @@ class Webpage extends WebpagesAppModel {
 		if (!empty($results[0]['Webpage']['type']) && $results[0]['Webpage']['type'] == 'template') {
 			App::uses('Folder', 'Utility');
 			App::uses('File', 'Utility');
-			
 			foreach($this->templateDirectories as $directory) {
 				$dir = new Folder( $directory);
 				$file = $dir->find($results[0]['Webpage']['name']);
 				break;
 			}
-			
 			if (!empty($file[0])) {
 				$file = new File($dir->path . $file[0]);
 				$results[0]['Webpage']['content'] = $file->read();				
@@ -479,6 +409,157 @@ class Webpage extends WebpagesAppModel {
 			}
 		}
 		return $results;
+	}
+    
+/**
+ * Parse a serialized template url from $this->request
+ * 
+ * @param string $request - A serialized $this->request->params string.
+ */
+    public function serializedTemplateRequest($request) {
+        $request = unserialize($request['Webpage']['url']);
+        $request = array('plugin' => $request['plugin'], 'controller' => $request['controller'], 'action' => $request['action'], 'named' => $request['named'], 'pass' => $request['pass']);
+        if ($request['plugin'] == 'webpages' && $request['controller'] == 'webpages' && $request['action'] == 'view') {
+            // webpages get special treatment
+            $url = @Router::reverse($request);
+            $url = strpos($url, '/') === 0 ? substr($url, 1) . '/' : $url . '/';
+        } elseif ($request['action'] ==  'index') {
+            $url = $request['plugin'] . '/' . $request['controller'] . '/' . $request['action'] . '*';
+        } else {
+            unset($request['pass']);
+            unset($request['named']);
+            $url = @Router::reverse($request) . '/*';
+        }
+        return $url;
+    }
+
+/**
+ * Update template settings
+ * 
+ * Runs the remove and add settings as needed for a template url change
+ * 
+ * @params array $data
+ */
+    public function updateTemplateSettings($data) {
+        $data = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']))), $data);
+        $remove['Webpage']['id'] = $data['Webpage']['template_id'];
+        $remove['Webpage']['url'] = $this->serializedTemplateRequest($data);
+        if ($this->removeTemplateSetting($remove)) {
+            // good
+        } else {
+            throw new Exception(__('Removal of previous template setting failed'));
+        }
+        if (empty($data['Webpage']['is_default'])) {
+            $data['Webpage']['url'] = $this->serializedTemplateRequest($data);
+            if ($this->addTemplateSetting($data)) {
+                // good
+            } else {
+                throw new Exception(__('Adding template setting failed'));
+            }
+        }
+        return true;
+    }
+    
+    
+/**
+ * Add template setting 
+ * 
+ * Looks for a template, given with $data[Webpage][id]
+ * And add the url given by $data[Webpage][url] to it.
+ * 
+ * @param array $data
+ */
+    public function addTemplateSetting($data) {
+        $template = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']))), $data);
+        $urls = $this->templateUrls($template, true);
+        $cleaned['Webpage']['template_urls'] = !empty($urls) ? $urls . PHP_EOL . $template['Webpage']['url'] : $template['Webpage']['url'];
+        $page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);                
+        if ($this->save($page)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    
+/**
+ * Remove template setting 
+ * 
+ * Looks for a template, given with $data[Webpage][id]
+ * And removes the url given by $data[Webpage][url] from it.
+ * 
+ * @param array $data
+ */
+    public function removeTemplateSetting($data) {
+        $template = $this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id'])));
+        $urls = $this->templateUrls($template, true);
+        $cleaned['Webpage']['template_urls'] = str_replace("\r\n", '', trim(str_replace($data['Webpage']['url'], '', $urls)));
+        $page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);
+        if ($this->save($page)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    
+/**
+ * Sync the template settings.  Usually when a template is updated.
+ *
+ * @param int        	The id of the page we're making settings for
+ * @param array			An array of data to get the template, and template settings from
+ */
+    private function _syncTemplateSettings() {
+        $templates = $this->find('all', array(
+            'conditions' => array(
+                'Webpage.type' => 'template'
+                ), 
+            'fields' => array(
+                'Webpage.id',
+                'Webpage.is_default',
+                'Webpage.template_urls',
+                'Webpage.user_roles'
+                )
+            ));
+        $i = 0;
+        $setting['Setting']['value'] = '';
+        $setting['Setting']['type'] = 'App';
+        $setting['Setting']['name'] = 'TEMPLATES';
+        foreach ($templates as $template) {
+            $value = array('templateId' => $template['Webpage']['id'], 'isDefault' => $template['Webpage']['is_default'], 'urls' => $this->templateUrls($template), 'userRoles' => $template['Webpage']['user_roles']);
+            $setting['Setting']['value'] .= 'template['.$template['Webpage']['id'].'] = "' . base64_encode(gzcompress(serialize($value))) . '"' . PHP_EOL;
+            $i++;
+        }
+        $Setting = ClassRegistry::init('Setting');
+        if ($Setting->add($setting)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+/**
+ * Template Urls
+ * Returns an compressed version of the template urls field
+ * 
+ * @params array
+ * @return array
+ */
+	public function templateUrls($data = null, $sanitized = false) {
+		if (!empty($data['Webpage']['template_urls'])) {
+			// cleaning the string for common user entry differences
+			$urls = str_replace(PHP_EOL, ',', $data['Webpage']['template_urls']);
+			$urls = str_replace(' ', '', $urls);
+			$urls = explode(',', $urls);
+			foreach ($urls as $url) {
+				$url = str_replace('/*', '*', $url);
+				$url = str_replace(' ', '', $url);
+				$url = str_replace(',/', ',', $url);
+				$out[] = strpos($url, '/') == 0 ? substr($url, 1) : $url;
+			} // end url loop
+			$data['Webpage']['template_urls'] = $sanitized ? implode(Set::filter($out), PHP_EOL) : base64_encode(gzcompress(serialize(Set::filter($out))));
+		}
+		return $data['Webpage']['template_urls'];		
 	}
 	
 }
