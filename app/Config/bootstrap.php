@@ -400,7 +400,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'WorkflowItemEvent' => 'Workflows',
 				'WorkflowItem' => 'Workflows',
 				'Workflow' => 'Workflows',
-				
+				'Region' => false,
+                'Regional' => false,
 				// 
 				
 				'Question' => 'Questions',

@@ -168,7 +168,7 @@ class AppModel extends Model {
  * With this function our total_count now appears with the rest of the fields in the resulting data array.
  * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
  */
-	public function afterFind($results, $primary = false) {	
+	public function afterFind($results, $primary = false) {
     	if($primary == true) {
         	if(Set::check($results, '0.0')) {
             	$fieldName = key($results[0][0]);
@@ -178,7 +178,6 @@ class AppModel extends Model {
 	             }
 			}
 		}
-		
 		return parent::afterFind($results, $primary);
 	}
 
@@ -187,10 +186,9 @@ class AppModel extends Model {
 	    $defaultRemove = array('Acl Extras', 'Api Generator', 'Recaptcha', 'Favorites.needs.upgrade', 'Forum.needs.upgrade');
 	    $remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
 	    $plugins = CakePlugin::loaded();
-	    foreach ($plugins as $plugin) :
+	    foreach ($plugins as $plugin) {
 			$return[$plugin] = Inflector::humanize(Inflector::underscore($plugin));
-	    endforeach;
-
+	    }
 	    return array_diff($return, $remove);
 	}
 
@@ -234,27 +232,25 @@ class AppModel extends Model {
  * @todo            We could easily add UserRole to this array, and control group record level access for groups per save as well.  We would need to just add a model = key into the aro lookup in acl_extra as well.
  */
 	private function _isRecordLevelRecord($recordEntities) {
-	    # create the array
+	    // create the array
 	    $data = $this->data;
 	    $recordEntities = explode(',', $recordEntities);
 	    foreach ($recordEntities as $recordEntity) {
-	      $entities = explode('.', $recordEntity);
-	      foreach ($entities as $entity) {
-	        if (is_array($data) && array_key_exists($entity, $data)) {
-	          $value = $data[$entity];
-	          $data = $value;
-	          if (!is_array($value)) {
-	            $userIds[] = $value;
-	          }
+	        $entities = explode('.', $recordEntity);
+	        foreach ($entities as $entity) {
+	            if (is_array($data) && array_key_exists($entity, $data)) {
+	                $value = $data[$entity];
+	                $data = $value;
+	                if (!is_array($value)) {
+	                    $userIds[] = $value;
+	                }
+	            }
 	        }
-	      }
 	    }
-
 	    if (!empty($userIds)) {
-
-	      return array('User' => $userIds);
+	        return array('User' => $userIds);
 	    } else {
-	      return false;
+	        return false;
 		}
 	}
 
@@ -267,8 +263,9 @@ class AppModel extends Model {
     public function __uuid($prefix = null, $table = null) {
         // creates a 6 digit key
         $uid = substr(md5(uniqid(rand(), true)), 0, 40);
-        if ($prefix)
-          $uid = $prefix . $uid;
+        if ($prefix) {
+            $uid = $prefix . $uid;
+        }
         //checkto make sure its not a duplcate
         if ($table) {
         	foreach($table as $model => $col) {
