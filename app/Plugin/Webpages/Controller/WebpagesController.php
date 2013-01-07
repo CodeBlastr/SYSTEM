@@ -314,15 +314,7 @@ class WebpagesController extends WebpagesAppController {
 		} else {
 			$this->set('ckeSettings', null);
 		}
-		
-		// parse this constant for output back into the form field for editing.
-		if (defined('__APP_TEMPLATES')) {
-			$templates = unserialize(__APP_TEMPLATES);
-			$template = !empty($templates['template'][$id]) ? unserialize(gzuncompress(base64_decode($templates['template'][$id]))): null;
-        }
-		
-		$templateUrls = !empty($template['urls']) && $template['urls'] != '""' ? implode(PHP_EOL, unserialize(gzuncompress(base64_decode($template['urls'])))) : null;
-		$this->set(compact('templateUrls'));
+		// 1/6/2012 rk - $this->set('templateUrls', $this->Webpage->templateUrls($this->request->data));
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
 		$this->view = 'edit_' . $this->request->data['Webpage']['type'];
         $this->layout = 'default';
@@ -351,34 +343,47 @@ class WebpagesController extends WebpagesAppController {
 	}
 	
 /**
- * Save  method
+ * Save method
  * 
- * @param string
- * @return void
+ * Special use case for saving content, widgets, and templates via the admin navbar.  
+ * 
+ * @param mixed $id - String or integer
+ * @return void - Always redirect to the referring page
  */
 	public function save($id = null) {
-		$this->render(false);
-		$msg   = "";
-		$err   = false;
-		$pageContent=  $this->request->data;
-		$this->request->data = $this->Webpage->read(null, $id);
-		if (!empty($this->request->data)) {
-			$this->request->data['Webpage']['content'] = $pageContent;
-			if ($this->Webpage->save($this->request->data)) {
-				$msg = "Page saved";
-			} else {
-				$err = true;
-				$msg = "Can't save page";
-			}
-		} else {
-			$err = true;
-			$msg = 'Page not found';
-		}
-		if($this->RequestHandler->isAjax()) {
-			$this->autoRender = $this->layout = false;
-			echo json_encode(array('msg' => $msg));
-			exit;
-		}
+        if (empty($id) && !empty($this->request->data['Webpage']['url'])) {
+            if ($this->Webpage->updateTemplateSettings($this->request->data)) {
+                $this->Session->setFlash(__('Template applied'));
+                $this->redirect($this->referer());
+            } else {
+                $this->Session->setFlash(__('Template is already applied, or could not be applied.'));
+                $this->redirect($this->referer());
+            }
+        } else {
+            // saves a regular content or widget page
+    		$this->render(false);
+    		$msg   = "";
+    		$err   = false;
+    		$pageContent=  $this->request->data;
+    		$this->request->data = $this->Webpage->read(null, $id);
+    		if (!empty($this->request->data)) {
+    			$this->request->data['Webpage']['content'] = $pageContent;
+    			if ($this->Webpage->save($this->request->data)) {
+    				$msg = "Page saved";
+    			} else {
+    				$err = true;
+    				$msg = "Can't save page";
+    			}
+    		} else {
+    			$err = true;
+    			$msg = 'Page not found';
+    		}
+    		if($this->RequestHandler->isAjax()) {
+    			$this->autoRender = $this->layout = false;
+    			echo json_encode(array('msg' => $msg));
+    			exit;
+    		}
+        }
 	}
 	
 

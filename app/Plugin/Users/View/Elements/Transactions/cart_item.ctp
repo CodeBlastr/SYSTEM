@@ -5,6 +5,8 @@ echo $this->Html->link($transactionItem['name'],
 	array('style' => 'text-decoration: underline;'),
 	'Are you sure you want to leave this page?'
 	);
+echo  __(' %s', $this->Html->link('<i class="icon-trash">remove</i>', array('plugin' => 'transactions', 'controller' => 'transaction_items', 'action' => 'delete', $transactionItem['id']), array('title' => 'Remove from cart', 'escape' => false)));
+
 ?>
 </div>
 <?php
