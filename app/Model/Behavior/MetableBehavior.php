@@ -48,7 +48,7 @@ class MetableBehavior extends ModelBehavior {
 			}
 		}
 		if (!empty($metadata)) {
-			$metadata = serialize($metadata);
+			$metadata = mysql_real_escape_string(serialize($metadata));
             $Meta = ClassRegistry::init('Meta');
 			$Meta->query("
 				INSERT INTO `metas` (model, foreign_key, value)
