@@ -342,9 +342,10 @@ class Webpage extends WebpagesAppModel {
 		}
 		
 		// might not need this anymore 1/6/2012 rk, because of updates to how we handle template_urls
-        //if (!empty($data['Webpage']['template_urls'])) {
-		//	$data['Webpage']['template_urls'] = implode(PHP_EOL, unserialize(gzuncompress(base64_decode($data['Webpage']['template_urls']))));
-		//}		
+		// Updated to probably only decode those that are encoded ^JB
+        if (!empty($data['Webpage']['template_urls']) && !strpos($data['Webpage']['template_urls'], '/')) {
+			$data['Webpage']['template_urls'] = implode(PHP_EOL, unserialize(gzuncompress(base64_decode($data['Webpage']['template_urls']))));
+		}
 		
 		return $data;
 	}
