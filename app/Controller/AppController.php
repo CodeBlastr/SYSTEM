@@ -456,15 +456,11 @@ class AppController extends Controller {
 
 /**
  * Used to show admin layout for admin pages & userRole views if they exist
- * THIS IS DEPRECATED and will be removed in the future. (after all sites have the latest templates constant.
  */
 	public function _siteTemplate() {
-		if(defined('__APP_DEFAULT_TEMPLATE_ID') && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
-			// this if is for the deprecated constant __APP_DEFAULT_TEMPLATE_ID
-			$this->layout = 'default';
-		} else if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
+		if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
             if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
-				// this elseif checks to see if the user role has a specific view file
+				// this if checks to see if the user role has a specific view file
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
 				unset($this->request->params['prefix']);
 				$this->request->url = str_replace('admin/', '', $this->request->url);
@@ -479,7 +475,7 @@ class AppController extends Controller {
 		} else if (!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) {
 			foreach (App::path('views') as $path) {
 				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'View', DS.'Plugin'.DS.ucfirst($this->request->params['plugin']).DS.'View', $path) : $path;
-			} // end app::path loop
+			} // end App::path loop
 			foreach ($paths as $path) {
 				if (file_exists($path.CakeSession::read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) {
 					$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.ucfirst($this->request->params['controller']);
@@ -507,13 +503,11 @@ class AppController extends Controller {
 				foreach ($settings['template'] as $setting) {
 					$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
 					$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
-					$templates[$i]['urls'] = $templates[$i]['urls'] == '""' ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
+					$templates[$i]['urls'] = empty($templates[$i]['urls']) ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
 					$i++;
 				}
 			}
-			
-			// check urls first
-			//  so that we don't accidentally use a default template before a template that was set for this url.
+			// check urls first so that we don't accidentally use a default template before a template that was set for this url.
 			if (!empty($templates)) {
 				foreach ($templates as $key => $template) {
 					if (!empty($template['urls'])) {
@@ -541,51 +535,21 @@ class AppController extends Controller {
 					}
 				} // end loop
 			}
-
-		} else if (empty($this->templateId)) {
-			// THIS ELSE IF IS DEPRECATED 6/11/2011 : Will be removed in future versions
-			// it was for use when there were two template related constants, which have now been combined into one.
-			if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
-           		$this->templateId = __APP_DEFAULT_TEMPLATE_ID;
-	            if (defined('__APP_MULTI_TEMPLATE_IDS')) {
-					if(is_array(unserialize(__APP_MULTI_TEMPLATE_IDS))) {
-						extract(unserialize(__APP_MULTI_TEMPLATE_IDS));
-					}
-					$i = 0;
-					if (!empty($url)) { 
-                        foreach($url as $u) {
-                            // check each one against the current url
-                            $u = str_replace('/', '\/', $u);
-                            $urlRegEx = '/'.str_replace('*', '(.*)', $u).'/';
-                            if (preg_match($urlRegEx, $this->request->url)) {
-                                $this->templateId = $templateId[$i];
-                            }
-                            $i++;
-                        }
-                    }
-
-					if (!empty($webpages)) { 
-                        foreach ($webpages as $webpage) {
-                            echo $webpage['Webpage']['content'];
-                        }
-                    } else {
-						//echo 'do nothing, use default template';
-					}
-	            }
-			}
 		}
-
-		// this is because the Webpage model is not loaded for the install site page.
-		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $this->templateId)));
+		// this is because the Webpage model is not loaded for the install site page, and 'all' so that we can pass all templates to the navbar
+		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('all', array('conditions' => array('Webpage.type' => 'template')));
+        $this->set('templates', Set::combine($templated, '{n}.Webpage.id', '{n}.Webpage.name')); // for the admin navbar
+        $templated = !empty($this->templateId) ? Set::extract('/Webpage[id=' . $this->templateId . ']', $templated) : null; // getting it back to 'first' type results
+        $templated = !empty($templated[0]) ? $templated[0] : null; // getting it back to 'first' type results
+        
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
         $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId, $this->request);
         $this->set('defaultTemplate', $templated);
-		// the __APP_DEFAULT_TEMPLATE_ID is deprecated and will be removed
-		if (!empty($this->templateId) && !defined('__APP_DEFAULT_TEMPLATE_ID')) {
+        
+		if (!empty($this->templateId)) {
+            $this->set('templateId', $this->templateId); // for the admin navbar
 			$this->layout = 'custom';
-		} else if (defined('__APP_DEFAULT_TEMPLATE_ID')) {
-			$this->layout = 'custom';
-		}
+		} 
 	}
 
 
@@ -630,7 +594,7 @@ class AppController extends Controller {
 				$urlString = str_replace('/', '\/', trim($url));
 				$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
 				$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
-				$url = $this->request->url;
+				$url = $this->request->action == 'index' ? $this->request->plugin . '/' . $this->request->controller . '/' . $this->request->action . '/' : $this->request->url . '/';
 				$urlCompare = strpos($url, '/') === 0 ? substr($url, 1) : $url;
 				if (preg_match($urlRegEx, $urlCompare)) {
 					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateId'];
