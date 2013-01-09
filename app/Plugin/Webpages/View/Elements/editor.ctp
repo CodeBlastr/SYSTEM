@@ -14,7 +14,7 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
             $('.nav-edit-button').click(function() {
                 window.location = "/webpages/webpage_menus/edit/" + $(this).parent().attr('data-identifier');
             });
-            $('#adminNavFloManagr .collapse ul.nav.pull-right').append('<li><div id="edit-mode" class="btn btn-mini" title="Toggle Edit Mode">Edit Mode</div></li><li class="nav-edit save-edit"><div class="btn btn-nav-edit btn-save-edit">Save Edits</div></li><li class="nav-edit cancel-edit"><div class="btn btn-mini btn-nav-edit btn-cancel-edit">Cancel</div></li>');
+            $('#adminNavFloManagr .collapse ul.nav:first-child').append('<li class="edit-mode"><div id="edit-mode" title="Toggle Edit Mode">Inline Editor</div></li><li class="nav-edit save-edit"><div class="btn btn-nav-edit btn-save-edit">Save Edits</div></li><li class="nav-edit cancel-edit"><div class="btn btn-mini btn-nav-edit btn-cancel-edit">Cancel</div></li>');
             $('div[pageid]').each(function(index) {
                 var width = $(this).width();
                 content[$(this).attr('pageid')] = $(this).html();
@@ -24,6 +24,7 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
             // turn on edit mode
             $('#edit-mode').click( function(e) {
             	e.preventDefault();
+                $('#edit-mode').css('cursor', 'wait');
                 $('div[pageid]').each(function(index) {
                     var block = $(this);
                     var pageId = block.attr('pageid');
@@ -38,10 +39,12 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
                             block.css('outline', '1px dashed ' + color);
                             $('div.overlay-edit span.label', block).css('display', 'block');
                             $('#adminNavFloManagr .btn-nav-edit').parent().css('display', 'inline-block');
+                            $('#toggleMode').attr('disabled', 'disabled').parent().css({cursor: 'not-allowed', opacity: '0.2'}).children('a').css('cursor', 'not-allowed');
+                            $('#edit-mode').parent().hide();
+                            $('#edit-mode').css('cursor', 'pointer');
                         });
                     }
                 });
-                $('#edit-mode').parent().hide();
             });
             
             // save changes 
@@ -63,6 +66,7 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
                             $('div[pageid="' + key + '"]').prepend('<div class="overlay-edit" style="width: ' + width + 'px"> <span class="label">editable</label> </div>');
                             $('.btn-nav-edit').parent().hide();
                             $('#edit-mode').parent().show();
+                            $('#toggleMode').removeAttr('disabled').parent().css({cursor: 'auto', opacity: '1'}).children('a').css('cursor', 'auto');
                             var instance = 'webpage' + key;
                             if (CKEDITOR.instances[instance]) {
                                 var editor = CKEDITOR.instances[instance].destroy();
@@ -80,6 +84,7 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
                     $('div[pageid="' + key + '"]').html(value).prepend('<div class="overlay-edit" style="width: ' + width + 'px"> <span class="label">editable</label> </div>');
                     $('.btn-nav-edit').parent().hide();
                     $('#edit-mode').parent().show();
+                    $('#toggleMode').removeAttr('disabled').parent().css({cursor: 'auto', opacity: '1'}).children('a').css('cursor', 'auto');
                     var instance = 'webpage' + key;
                     if (CKEDITOR.instances[instance]) {
                         var editor = CKEDITOR.instances[instance].destroy();

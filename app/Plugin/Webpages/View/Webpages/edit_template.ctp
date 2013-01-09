@@ -13,7 +13,7 @@
     	<legend> <?php echo __('Template Settings'); ?> </legend>
       	<?php
 		echo $this->Form->input('is_default', array('type' => 'checkbox'));
-		echo $this->Form->input('template_urls', array('type' => 'textarea', 'value' => $templateUrls, 'after' => ' <br>One url per line. (ex. /tickets/tickets/view/*)'));
+		echo $this->Form->input('template_urls', array('type' => 'textarea', 'after' => ' <br>One url per line. (ex. /tickets/tickets/view/*)'));
 		echo $this->Form->input('user_roles', array('type' => 'select', 'options' => $userRoles, 'multiple' => 'checkbox')); ?>
     </fieldset>
     
