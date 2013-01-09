@@ -69,7 +69,7 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  * @todo optimize by flattening and searching for Alias.
  */
-	public function beforeFind(Model $Model, array $query) {
+	public function beforeFind(Model $Model, array $query) {//die('x');break;
         $Model->bindModel(array(
         	'hasOne' => array(
 				'Meta' => array(
@@ -95,7 +95,7 @@ class MetableBehavior extends ModelBehavior {
 //		);
 
 		//$query = $this->_queryFields($Model, $query);  // read comment by function
-		$query = $this->_queryConditions($Model, $query);  
+		$query = $this->_queryConditions($Model, $query);
        	return $query;
 	}
 
