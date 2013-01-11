@@ -690,5 +690,46 @@ class Contact extends ContactsAppModel {
 			}
 		}
  	}
+	
+
+/**
+ * origin_afterFind callback
+ * 
+ * A callback from related plugins which are only related by the abstract model/foreign_key in the db
+ * 
+ * @param array $results
+ */
+    public function origin_afterFind(Model $Model, $results = array(), $primary = false) {
+    	if ($Model->name == 'Task') {
+	        $ids = Set::extract('/Task/foreign_key', $results);
+	        $contacts = $this->find('all', array('conditions' => array('Contact.id' => $ids)));
+	        $names = Set::combine($contacts, '{n}.Contact.id', '{n}.Contact.name');
+	        $i = 0;
+	        foreach ($results as $result) {
+	            if ($names[$result['Task']['foreign_key']]) {
+	                $results[$i]['Task']['name'] = __('%s <small>%s</small>', $results[$i]['Task']['name'], $names[$result['Task']['foreign_key']]);
+	                $results[$i]['Task']['_associated']['name'] = $names[$result['Task']['foreign_key']];
+	                $results[$i]['Task']['_associated']['viewLink'] = __('/contacts/contacts/view/%s', $result['Task']['foreign_key']);
+	            }
+				$i++;
+	        }
+	        return $results;
+    	}
+    	if ($Model->name == 'Estimate') {
+	        $ids = Set::extract('/Estimate/foreign_key', $results);
+	        $contacts = $this->find('all', array('conditions' => array('Contact.id' => $ids)));
+	        $names = Set::combine($contacts, '{n}.Contact.id', '{n}.Contact.name');
+	        $i = 0;
+	        foreach ($results as $result) {
+	            if ($names[$result['Estimate']['foreign_key']]) {
+	                $results[$i]['Estimate']['name'] = __('%s <small>%s</small>', $results[$i]['Estimate']['name'], $names[$result['Estimate']['foreign_key']]);
+	                $results[$i]['Estimate']['_associated']['name'] = $names[$result['Estimate']['foreign_key']];
+	                $results[$i]['Estimate']['_associated']['viewLink'] = __('/contacts/contacts/view/%s', $result['Estimate']['foreign_key']);
+	            }
+				$i++;
+	        }
+	        return $results;
+    	}
+    }
 
 }
