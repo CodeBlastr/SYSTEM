@@ -10,11 +10,11 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
             var content = new Array();
             // this Clear div works good on canopynation, check that if changing
             $('body').append('<div class="#adminNavFloMangrClear" style="clear: both; height: 44px;"></div>').append(<?php echo json_encode($nav); ?>);
-            $('.nav-edit').prepend('<li class="nav-edit-button"><a href="#"><i class="icon-edit">Edit menu</i></a></li>');
+            $('.nav-edit').prepend('<li class="nav-edit-button"><a href="#"><i class="icon-edit"></i></a></li>');
             $('.nav-edit-button').click(function() {
                 window.location = "/webpages/webpage_menus/edit/" + $(this).parent().attr('data-identifier');
             });
-            $('#adminNavFloManagr .collapse ul.nav:first-child').append('<li class="edit-mode"><div id="edit-mode" title="Toggle Edit Mode">Inline Editor</div></li><li class="nav-edit save-edit"><div class="btn btn-nav-edit btn-save-edit">Save Edits</div></li><li class="nav-edit cancel-edit"><div class="btn btn-mini btn-nav-edit btn-cancel-edit">Cancel</div></li>');
+            $('#adminNavFloManagr .collapse ul.nav:first-child').append('<li class="edit-mode" style="display: none;"><div id="edit-mode" title="Toggle Edit Mode">Inline Editor</div></li><li class="nav-edit save-edit"><div class="btn btn-nav-edit btn-save-edit">Save Edits</div></li><li class="nav-edit cancel-edit"><div class="btn btn-mini btn-nav-edit btn-cancel-edit">Cancel</div></li>');
             $('div[pageid]').each(function(index) {
                 var width = $(this).width();
                 content[$(this).attr('pageid')] = $(this).html();

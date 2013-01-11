@@ -352,7 +352,7 @@ class WebpagesController extends WebpagesAppController {
  */
 	public function save($id = null) {
         if (empty($id) && !empty($this->request->data['Webpage']['url'])) {
-            if ($this->Webpage->updateTemplateSettings($this->request->data)) {
+            if (!empty($this->request->data['Webpage']['id']) && $this->Webpage->updateTemplateSettings($this->request->data)) {
                 $this->Session->setFlash(__('Template applied'));
                 $this->redirect($this->referer());
             } else {
