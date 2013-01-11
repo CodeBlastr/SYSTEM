@@ -139,7 +139,7 @@ if (empty($runUpdates)) { ?>
 		
 		<?php if (in_array('Galleries', CakePlugin::loaded())) { ?>        
         <div class="masonryBox dashboardBox tagGalleries tagMedia">
-            <h3 class="title"><i class="icon-picture"></i> <?php echo $this->Html->link('Galleries', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="icon-picture"></i> <?php echo $this->Html->link('Galleries', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'dashboard')); ?></h3>
             <p>Add and edit image and video galleries</p>
         </div>
         <?php } ?>
