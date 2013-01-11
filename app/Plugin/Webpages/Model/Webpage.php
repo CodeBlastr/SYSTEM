@@ -139,7 +139,7 @@ class Webpage extends WebpagesAppModel {
  * @return boolean
  * @access public
  */
-	public function beforeSave($options) {
+	public function beforeSave($options = array()) {
 		$this->_saveTemplateFiles(); // does not save to the database, so doesn't come back to this beforeSave()
 		return parent::beforeSave($options);
 	}
@@ -163,8 +163,8 @@ class Webpage extends WebpagesAppModel {
  * After Find
  * 
  */
- 	public function afterFind($results, $primary) {
-	    $results = $this->_templateContentResults($results);
+ 	public function afterFind($results, $primary = false) {
+		$results = $this->_templateContentResults($results);
 		$results = parent::afterFind($results, $primary);
 		return $results;
 	}
@@ -342,9 +342,10 @@ class Webpage extends WebpagesAppModel {
 		}
 		
 		// might not need this anymore 1/6/2012 rk, because of updates to how we handle template_urls
-        //if (!empty($data['Webpage']['template_urls'])) {
-		//	$data['Webpage']['template_urls'] = implode(PHP_EOL, unserialize(gzuncompress(base64_decode($data['Webpage']['template_urls']))));
-		//}		
+		// Updated to probably only decode those that are encoded ^JB
+        if (!empty($data['Webpage']['template_urls']) && !strpos($data['Webpage']['template_urls'], '/')) {
+			$data['Webpage']['template_urls'] = implode(PHP_EOL, unserialize(gzuncompress(base64_decode($data['Webpage']['template_urls']))));
+		}
 		
 		return $data;
 	}
