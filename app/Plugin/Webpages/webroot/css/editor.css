@@ -15,6 +15,22 @@
 	text-shadow: 0 0 0;
 	margin: 0;
 	padding: 0;
+    vertical-align: middle;
+}
+#adminNavFloManagr .btn {
+    border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.25);
+    background-color: #F5F5F5;
+    background-image: -moz-linear-gradient(center top , #FFFFFF, #E6E6E6);
+    background-repeat: repeat-x;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+    border-radius: 4px 4px 4px 4px;
+}
+#adminNavFloManagr .btn-mini {
+    border-radius: 3px 3px 3px 3px;
+    font-size: 10.5px;
+    padding: 0 6px;
 }
 #adminNavFloManagr a, #adminNavFloManagr {
 	color: #999999;
@@ -37,6 +53,7 @@
 }
 #adminNavFloManagr.navbar .nav > li > a > span {
     display: inline;
+    vertical-align: baseline;
 }
 #adminNavFloManagr.navbar .nav > li > a > span:hover {
     color: #FFF;
@@ -89,6 +106,7 @@
     line-height: inherit;
     background-image: none;
     height: auto;
+    background: transparent;
 } 
 #adminNavFloManagr .navbar-inner div {
 	display: inline-block;
@@ -108,6 +126,7 @@
 #adminNavFloManagr ul li {
 	display: inline-block;
 	margin-right: 15px;
+    vertical-align: top;
 }
 #adminNavFloManagr ul li a {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
@@ -240,6 +259,16 @@
 }
 
 /* form elements */
+#adminNavFloManagr form {
+    background: transparent;
+    border: 0;
+    width: auto;
+}
+#adminNavFloManagr form div input {
+    float: none;
+    width: auto;
+    text-transform: none;
+}
 #adminNavFloManagr select {
     font-size: 12px;
     height: auto;
@@ -250,9 +279,11 @@
     color: #333333;
     font-size: 10.5px;
     font-weight: normal;
+    height: 23px;
     margin-left: 5px;
-    padding: 4px 10px;
+    padding: 3px 10px;
     text-shadow: 1px 1px 1px #FFFFFF;
+    width: 43px;
 }
 
 /* ------------------------------------------
@@ -285,6 +316,15 @@ https://github.com/ghinda/css-toggle-switch
     
     #adminNavFloManagr .toggle.well {
         margin: 10px 0 0 0;
+        width: 70px;
+    }
+    #adminNavFloManagr .well {
+        background-color: #F5F5F5;
+        border: 1px solid #E3E3E3;
+        border-radius: 4px 4px 4px 4px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+        margin-bottom: 20px;
+        min-height: 20px;
     }
 
 	/* Position the label over all the elements, except the slide-button
@@ -483,7 +523,8 @@ https://github.com/ghinda/css-toggle-switch
 	/* Outline the toggles when the inputs are focused */
 	#adminNavFloManagr .toggle input:focus ~ .slide-button,
 	#adminNavFloManagr .switch input:focus + label {
-		outline: 1px dotted #888;
+		/*outline: 1px dotted #888;*/
+        outline: 0;
 	}
 	
 	/* Bugfix for older Webkit, including mobile Webkit. Adapted from:
