@@ -31,7 +31,7 @@ class AclExtraBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-    public function setup($Model, $config = array()) {
+    public function setup(Model $Model, $config = array()) {
 		$this->Aro = ClassRegistry::init('Aro');
 		$this->Aco = ClassRegistry::init('Aco');
 		$this->ArosAco = ClassRegistry::init('ArosAco');
@@ -48,7 +48,7 @@ class AclExtraBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	public function afterSave($Model, $created) {
+	public function afterSave(Model $Model, $created) {
 		parent::afterSave($Model, $created);
 
 		if (!empty($Model->data['RecordLevelAccess']['User'])) {
@@ -128,7 +128,7 @@ class AclExtraBehavior extends ModelBehavior {
  * @access public
  * @todo Make this function work.
  */
-	function afterDelete(&$model) {
+	function afterDelete(Model $model) {
 		/*# nothing has been done here
 		$type = $this->__typeMaps[strtolower($this->settings[$model->name]['type'])];
 		$node = Set::extract($this->node($model), "0.{$type}.id");

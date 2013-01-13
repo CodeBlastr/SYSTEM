@@ -666,8 +666,9 @@ class InstallController extends Controller {
     protected function _handleSecurity() {
     	if (Configure::read('Install') === true) {
     		return true;
-    	} 
-    	if ((defined('SITE_DIR') || Configure::read('Install') === false) && $userRoleId != 1) {
+    	}
+        $userRoleId = !empty($userRoleId) ? $userRoleId : $this->Session->read('Auth.User.id');
+        if ((defined('SITE_DIR') || Configure::read('Install') === false) && $userRoleId != 1) {
             $this->message[] = __('Install access restricted.');
             $this->_redirect('/users/users/login');
         }
