@@ -24,9 +24,9 @@ i {
 .container .navbar {
 	overflow: hidden;
 }
-.container .navbar .nav {
-	margin-top: 12px;
-}
+/*.container .navbar .nav {
+	margin-top: 12px; this is a problem on standard nav bars, ex. http://humanheartproject.com/)
+} */
 .container .navbar .btn-navbar {
     margin: 16px 0 0;
 }
