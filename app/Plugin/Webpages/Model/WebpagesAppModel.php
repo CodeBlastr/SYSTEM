@@ -40,14 +40,12 @@ class WebpagesAppModel extends AppModel {
  *
  * @param string
  * @return bool
+ * @todo This should only happen when there has been a change to the template
  */
 	public function syncFiles($type = 'template') {
-		
 		App::uses('Folder', 'Utility');
 		App::uses('File', 'Utility');
-		
 		if ($type == 'template') {
-			
 			foreach($this->templateDirectories as $directory) {
 				$dir = new Folder( $directory);
 				$files = $dir->find('.*\.ctp');
@@ -68,19 +66,15 @@ class WebpagesAppModel extends AppModel {
 				}
 			}
 			
-			/** @todo This should only happen when there has been a change to the template */
+			
 			foreach ($templates as $template) {
 				$id = $this->find('first', array('conditions' => array('name' => $template['name']), 'fields' => array('id', 'modified')));
 				if (!empty($id)) {
 					if($id['Webpage']['modified'] < $template['modified']) {
-
 						$this->id = $id['Webpage']['id'];
-//						$template['id'] = $id['Webpage']['id'];
-
 						try {
 							$this->save($template);
 						} catch (Exception $e) {
-							//debug($template);
 							throw new Exception ($e->getMessage());
 						}
 					}
@@ -93,16 +87,11 @@ class WebpagesAppModel extends AppModel {
 					}
 				}
 			}
-		}
-		
-		
+		}		
 		
 		if ($type == 'css') {
-			 
 			$dir = new Folder( $this->cssDirectory );
 			$files = $dir->find('.*\.css');
-			
-			
 			if (!empty($files)) {
 				foreach ($files as $file) {
 					$file = new File($dir->pwd() . DS . $file);
@@ -135,14 +124,10 @@ class WebpagesAppModel extends AppModel {
 			}
 		}
 		
-		
-		
 		if ($type == 'js') {
-			 
 			$dir = new Folder( $this->jsDirectory );
 			$files = $dir->find('.*\.js');
-			
-			
+
 			if (!empty($files)) {
 				foreach ($files as $file) {
 					$file = new File($dir->pwd() . DS . $file);
@@ -152,8 +137,7 @@ class WebpagesAppModel extends AppModel {
 			}
 			if (!empty($jses)) {
 				foreach ($jses as $js) {
-					$id = $this->find('first', array('conditions' => array('name' => $js['name']), 'fields' => 'id'));
-					
+					$id = $this->find('first', array('conditions' => array('name' => $js['name']), 'fields' => 'id'));	
 					if (!empty($id)) {
 						$this->id = $id['WebpageJs']['id'];
 						try {
@@ -173,10 +157,7 @@ class WebpagesAppModel extends AppModel {
 					}
 				}
 			}
-		}
-		
-		
-		
+		}		
 	}
 
 /**
