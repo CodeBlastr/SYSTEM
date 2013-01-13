@@ -545,6 +545,7 @@ class Contact extends ContactsAppModel {
 		$return = null;
 		if (in_array('Estimates', CakePlugin::loaded())) {
 			$conditions['Estimate.is_accepted'] = false;
+			$conditions['Estimate.is_archived'] = 0;
 			$conditions['Estimate.model'] = 'Contact';
 			!empty($foreignKey) ? $conditions['Estimate.foreign_key'] = $foreignKey : null; 
 			$return = $this->Estimate->find('all', array(
@@ -707,7 +708,7 @@ class Contact extends ContactsAppModel {
 	        $i = 0;
 	        foreach ($results as $result) {
 	            if ($names[$result['Task']['foreign_key']]) {
-	                $results[$i]['Task']['name'] = __('%s <small>%s</small>', $results[$i]['Task']['name'], $names[$result['Task']['foreign_key']]);
+	                $results[$i]['Task']['name'] = !strpos($results[$i]['Task']['name'], $names[$result['Task']['foreign_key']]) ? __('%s %s', $results[$i]['Task']['name'], $names[$result['Task']['foreign_key']]) : $results[$i]['Task']['name'];
 	                $results[$i]['Task']['_associated']['name'] = $names[$result['Task']['foreign_key']];
 	                $results[$i]['Task']['_associated']['viewLink'] = __('/contacts/contacts/view/%s', $result['Task']['foreign_key']);
 	            }
@@ -722,7 +723,7 @@ class Contact extends ContactsAppModel {
 	        $i = 0;
 	        foreach ($results as $result) {
 	            if ($names[$result['Estimate']['foreign_key']]) {
-	                $results[$i]['Estimate']['name'] = __('%s <small>%s</small>', $results[$i]['Estimate']['name'], $names[$result['Estimate']['foreign_key']]);
+	                $results[$i]['Estimate']['name'] = !strpos($results[$i]['Estimate']['name'], $names[$result['Estimate']['foreign_key']]) ? __('%s %s', $results[$i]['Estimate']['name'], $names[$result['Estimate']['foreign_key']]) : $results[$i]['Estimate']['name'];
 	                $results[$i]['Estimate']['_associated']['name'] = $names[$result['Estimate']['foreign_key']];
 	                $results[$i]['Estimate']['_associated']['viewLink'] = __('/contacts/contacts/view/%s', $result['Estimate']['foreign_key']);
 	            }
