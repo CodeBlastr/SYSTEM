@@ -53,7 +53,7 @@ class AppModel extends Model {
  *
  * @todo    Move this record level access stuff to a behavior
  */
-	public function beforeSave($options) {
+	public function beforeSave($options = array()) {
 	    // Start Record Level Access Save
 	    // If the model needs Record Level Access add an Aco
 	    if (!empty($this->data['RecordLevelAccess']['UserRole'])) {
@@ -303,6 +303,31 @@ class AppModel extends Model {
 		App::uses('AppController', 'Controller');
 		$Controller = new AppController;
 		return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
+	}
+	
+	
+/**
+ * 
+ */
+	public function triggerOriginCallback($callbackName) {
+		$args = func_get_args();
+		unset($args[0]);
+		if (!empty($callbackName) && $callbackName == 'origin_afterFind') {
+			if (!empty($args[1][0][$this->alias]['model'])) { // results
+				$models = array_unique(Set::extract('/' . $this->alias . '/model', $args[1]));
+				if (!empty($models)) {
+		            foreach ($models as $model) {
+						$model = Inflector::classify($model);
+		                App::uses($model, ZuhaInflector::pluginize($model).'.Model');
+		                $Origin = new $model;
+		                if (method_exists($Origin, 'origin_afterFind') && is_callable(array($Origin, 'origin_afterFind'))) {
+		                    $args[1] = $Origin->origin_afterFind($this, $args[1], $args[2]);
+		                }
+		            }
+				}
+			}
+			return $args[1];
+		}
 	}
 
 }
