@@ -43,7 +43,8 @@ class AliasBehavior extends ModelBehavior {
  * @param array $settings
  */
 	public function setup(Model $Model, $settings = array()) {
-        $this->_defaults['plugin'] = Inflector::tableize(ZuhaInflector::pluginize($Model->name));
+            $ZuhaInflector = new ZuhaInflector();
+        $this->_defaults['plugin'] = Inflector::tableize($ZuhaInflector->pluginize($Model->name));
         $this->_defaults['controller'] = Inflector::tableize($Model->name);
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
 	}
@@ -92,7 +93,7 @@ class AliasBehavior extends ModelBehavior {
  * @param object $Model
  * @todo bind the model here if not bound already
  */
-	public function beforeSave(Model $Model, $params) {
+	public function beforeSave(Model $Model) {
 		if (!empty($Model->data['Alias']['name'])) {
             $this->data['Alias'] = $Model->data['Alias'];
         }

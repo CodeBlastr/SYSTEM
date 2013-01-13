@@ -12,7 +12,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php
     
 Configure::write('Error', array(
   'handler' => 'ErrorHandler::handleError',
-  'level' => E_ALL & ~E_DEPRECATED,
+  'level' => E_ALL & ~E_NOTICE & ~E_STRICT,
   'trace' => true
   ));
 Configure::write('Exception', array(

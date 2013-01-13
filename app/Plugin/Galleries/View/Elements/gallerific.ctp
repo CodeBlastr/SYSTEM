@@ -23,13 +23,14 @@ if (!empty($gallery['GalleryImage'][0])) {
           <div id="loading" class="loader"></div>
           <div id="slideshow" class="slideshow">
             <?php 
-            # uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+            // uses large version during dynamic conversion for highest quality (performance?? unknown)
             $largeImage = $gallery['GalleryImage'][0]['dir'].'thumb/large/'.$gallery['GalleryImage'][0]['filename'];
             echo $this->Html->image($largeImage,
                 array(
                     'width' => $gallery['GallerySettings']['largeImageWidth'], 
                     'height' => $gallery['GallerySettings']['largeImageHeight'],
-                    'alt' => $gallery['GalleryImage'][0]['alt'],
+                    //'alt' => $gallery['GalleryImage'][0]['alt'],
+                    'style' => 'display: block;'
                     ),
                 array(
                     'conversion' => $gallery['GallerySettings']['conversionType'],
@@ -97,57 +98,57 @@ if (!empty($gallery['GalleryImage'][0])) {
     </div>
 	<?php
 	echo $this->Html->scriptBlock('jQuery(document).ready(function($) {
-	// We only want these styles applied when javascript is enabled
-	$("div.gallery-content").css("display", "block");
-	$("div.slideshow-container").css("height", $("#slideshow img").height());
-	$("div.slideshow-container").css("width", $("#slideshow img").width());
-	$("#slideshow img").hide();
-	// Initially set opacity on thumbs and add
-	// additional styling for hover effect on thumbs
-	var onMouseOutOpacity = 0.67;
-	$("#thumbs ul.thumbs li").opacityrollover({
-		mouseOutOpacity:   onMouseOutOpacity,
-		mouseOverOpacity:  1.0,
-		fadeSpeed:         "fast",
-		exemptionSelector: ".selected"
-	});
-	
-	// Initialize Advanced Galleriffic Gallery
-	var gallery = $("#thumbs").galleriffic({
-		delay:                     2500,
-		numThumbs:                 15,
-		preloadAhead:              10,
-		enableTopPager:            true,
-		enableBottomPager:         true,
-		maxPagesToShow:            7,
-		imageContainerSel:         "#slideshow",
-		controlsContainerSel:      "#controls",
-		captionContainerSel:       "#caption",
-		loadingContainerSel:       "#loading",
-		renderSSControls:          true,
-		renderNavControls:         true,
-		playLinkText:              "Play Slideshow",
-		pauseLinkText:             "Pause Slideshow",
-		prevLinkText:              "&lsaquo; Previous Photo",
-		nextLinkText:              "Next Photo &rsaquo;",
-		nextPageLinkText:          "Next &rsaquo;",
-		prevPageLinkText:          "&lsaquo; Prev",
-		enableHistory:             false,
-		autoStart:                 false,
-		syncTransitions:           true,
-		defaultTransitionDuration: 2000,
-		onSlideChange:             function(prevIndex, nextIndex) {
-			// "this" refers to the gallery, which is an extension of $("#thumbs")
-			this.find("ul.thumbs").children()
-				.eq(prevIndex).fadeTo("fast", onMouseOutOpacity).end()
-				.eq(nextIndex).fadeTo("fast", 1.0);
-		},
-		onPageTransitionOut:       function(callback) {
-			this.fadeTo("fast", 0.0, callback);
-		},
-		onPageTransitionIn:        function() {
-			this.fadeTo("fast", 1.0);
-		}
+		// Initially set opacity on thumbs and addadditional styling for hover effect on thumbs
+		var onMouseOutOpacity = 0.67;
+		$("#thumbs ul.thumbs li").opacityrollover({
+			mouseOutOpacity:   onMouseOutOpacity,
+			mouseOverOpacity:  1.0,
+			fadeSpeed:         "fast",
+			exemptionSelector: ".selected"
 		});
-	});'); 
+		
+		// Initialize Advanced Galleriffic Gallery
+		var gallery = $("#thumbs").galleriffic({
+			delay:                     2500,
+			numThumbs:                 15,
+			preloadAhead:              10,
+			enableTopPager:            true,
+			enableBottomPager:         true,
+			maxPagesToShow:            7,
+			imageContainerSel:         "#slideshow",
+			controlsContainerSel:      "#controls",
+			captionContainerSel:       "#caption",
+			loadingContainerSel:       "#loading",
+			renderSSControls:          true,
+			renderNavControls:         true,
+			playLinkText:              "Play Slideshow",
+			pauseLinkText:             "Pause Slideshow",
+			prevLinkText:              "&lsaquo; Previous Photo",
+			nextLinkText:              "Next Photo &rsaquo;",
+			nextPageLinkText:          "Next &rsaquo;",
+			prevPageLinkText:          "&lsaquo; Prev",
+			enableHistory:             false,
+			autoStart:                 false,
+			syncTransitions:           true,
+			defaultTransitionDuration: 2000,
+			onSlideChange:             function(prevIndex, nextIndex) {
+				// "this" refers to the gallery, which is an extension of $("#thumbs")
+				this.find("ul.thumbs").children()
+					.eq(prevIndex).fadeTo("fast", onMouseOutOpacity).end()
+					.eq(nextIndex).fadeTo("fast", 1.0);
+			},
+			onPageTransitionOut:       function(callback) {
+				this.fadeTo("fast", 0.0, callback);
+			},
+			onPageTransitionIn:        function() {
+				this.fadeTo("fast", 1.0);
+			}
+			});
+			
+			// We only want these styles applied when javascript is enabled
+			$("div.gallery-content").css("display", "block");
+			$("div.slideshow-container").css("height", $("#slideshow img").attr("height"));
+			$("div.slideshow-container").css("width", $("#slideshow img").width());
+			//$("#slideshow img").hide();
+		});'); 
 } // end gallery image check ?>

@@ -545,6 +545,7 @@ class Contact extends ContactsAppModel {
 		$return = null;
 		if (in_array('Estimates', CakePlugin::loaded())) {
 			$conditions['Estimate.is_accepted'] = false;
+			$conditions['Estimate.is_archived'] = 0;
 			$conditions['Estimate.model'] = 'Contact';
 			!empty($foreignKey) ? $conditions['Estimate.foreign_key'] = $foreignKey : null; 
 			$return = $this->Estimate->find('all', array(
@@ -690,5 +691,46 @@ class Contact extends ContactsAppModel {
 			}
 		}
  	}
+	
+
+/**
+ * origin_afterFind callback
+ * 
+ * A callback from related plugins which are only related by the abstract model/foreign_key in the db
+ * 
+ * @param array $results
+ */
+    public function origin_afterFind(Model $Model, $results = array(), $primary = false) {
+    	if ($Model->name == 'Task') {
+	        $ids = Set::extract('/Task/foreign_key', $results);
+	        $contacts = $this->find('all', array('conditions' => array('Contact.id' => $ids)));
+	        $names = Set::combine($contacts, '{n}.Contact.id', '{n}.Contact.name');
+	        $i = 0;
+	        foreach ($results as $result) {
+	            if ($names[$result['Task']['foreign_key']]) {
+	                $results[$i]['Task']['name'] = !strpos($results[$i]['Task']['name'], $names[$result['Task']['foreign_key']]) ? __('%s %s', $results[$i]['Task']['name'], $names[$result['Task']['foreign_key']]) : $results[$i]['Task']['name'];
+	                $results[$i]['Task']['_associated']['name'] = $names[$result['Task']['foreign_key']];
+	                $results[$i]['Task']['_associated']['viewLink'] = __('/contacts/contacts/view/%s', $result['Task']['foreign_key']);
+	            }
+				$i++;
+	        }
+	        return $results;
+    	}
+    	if ($Model->name == 'Estimate') {
+	        $ids = Set::extract('/Estimate/foreign_key', $results);
+	        $contacts = $this->find('all', array('conditions' => array('Contact.id' => $ids)));
+	        $names = Set::combine($contacts, '{n}.Contact.id', '{n}.Contact.name');
+	        $i = 0;
+	        foreach ($results as $result) {
+	            if ($names[$result['Estimate']['foreign_key']]) {
+	                $results[$i]['Estimate']['name'] = !strpos($results[$i]['Estimate']['name'], $names[$result['Estimate']['foreign_key']]) ? __('%s %s', $results[$i]['Estimate']['name'], $names[$result['Estimate']['foreign_key']]) : $results[$i]['Estimate']['name'];
+	                $results[$i]['Estimate']['_associated']['name'] = $names[$result['Estimate']['foreign_key']];
+	                $results[$i]['Estimate']['_associated']['viewLink'] = __('/contacts/contacts/view/%s', $result['Estimate']['foreign_key']);
+	            }
+				$i++;
+	        }
+	        return $results;
+    	}
+    }
 
 }
