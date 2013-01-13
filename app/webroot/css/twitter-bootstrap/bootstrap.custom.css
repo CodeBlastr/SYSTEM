@@ -64,6 +64,19 @@ small {
 
 
 /* zuha specific */ 
+#headerNavFloManagr  select {
+    font-size: 12px;
+    height: auto;
+    padding: 2px;
+    width: auto;
+    margin: 
+}
+#headerNavFloManagr  form {
+    margin: 8px 0 0 10px;
+}
+#headerNavFloManagr  i {
+    margin: 0;
+}
 header {
 	padding-top: 30px;
 }
@@ -455,115 +468,24 @@ ol.linenums li {
   text-shadow: 0 1px 0 #fff;
 }
 
+
+/* ------------------------------------------
+Toggle Switches (Ionuț Colceriu)
+Licensed under Unlicense 
+https://github.com/ghinda/css-toggle-switch
+------------------------------------------ */
+.switch .slide-button,.toggle p span{display:none;line-height:20px}@media only screen{.toggle{position:relative;padding:0}.toggle.well{margin:0;margin-top:9px}.toggle label{position:relative;z-index:3;display:block;width:100%}.toggle input{position:absolute;opacity:0;z-index:5}.toggle p{position:absolute;left:-100px;width:100%;margin:0;text-align:center}.toggle p span{position:absolute;top:0;left:0;z-index:5;display:block;width:50%;margin-left:100px;text-align:center;font-size:10.5px;color:#333}.toggle p span:last-child{left:50%}.toggle .slide-button{position:absolute;right:0;top:0;z-index:6;display:block;width:50%;height:100%;padding:0;margin:0}.switch{position:relative;padding:0}.switch input{position:absolute;opacity:0}.switch label{position:relative;z-index:2;float:left;width:50%;height:100%;margin:0;text-align:center}.switch .slide-button{position:absolute;top:0;left:0;padding:0;z-index:1;width:50%;height:100%}.switch input:last-of-type:checked ~ .slide-button{left:50%}.switch.switch-three label,.switch.switch-three .slide-button{width:33.3%}.switch.switch-three input:checked:nth-of-type(2) ~ .slide-button{left:33.3%}.switch.switch-three input:checked:last-of-type ~ .slide-button{left:66.6%}.switch.switch-four label,.switch.switch-four .slide-button{width:25%}.switch.switch-four input:checked:nth-of-type(2) ~ .slide-button{left:25%}.switch.switch-four input:checked:nth-of-type(3) ~ .slide-button{left:50%}.switch.switch-four input:checked:last-of-type ~ .slide-button{left:75%}.switch.switch-five label,.switch.switch-five .slide-button{width:20%}.switch.switch-five input:checked:nth-of-type(2) ~ .slide-button{left:20%}.switch.switch-five input:checked:nth-of-type(3) ~ .slide-button{left:40%}.switch.switch-five input:checked:nth-of-type(4) ~ .slide-button{left:60%}.switch.switch-five input:checked:last-of-type ~ .slide-button{left:80%}.toggle,.switch{display:block}.switch *,.toggle *{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;-ms-box-sizing:border-box;-o-box-sizing:border-box;box-sizing:border-box}.switch .slide-button,.toggle .slide-button{display:block;-webkit-transition:all .3s ease-out;-moz-transition:all .3s ease-out;-ms-transition:all .3s ease-out;-o-transition:all .3s ease-out;transition:all .3s ease-out}.toggle label,.toggle p,.switch label{vertical-align:middle}.toggle input:checked ~ .slide-button{right:50%}.toggle input:focus ~ .slide-button,.switch input:focus+label{outline:1px dotted #888}.switch,.toggle{-webkit-animation:bugfix infinite 1s;width:100%}@-webkit-keyframes bugfix{from{position:relative}to{position:relative}}.candy{background-color:#2d3035;color:#fff;font-weight:bold;text-align:center;text-shadow:1px 1px 1px #191b1e;border-radius:3px;box-shadow:inset 0 2px 6px rgba(0,0,0,0.3),0 1px 0 rgba(255,255,255,0.2)}.candy input:checked+label{color:#333;text-shadow:0 1px 0 rgba(255,255,255,0.5)}.candy .slide-button{border:1px solid #333;background-color:#70c66b;background-image:-webkit-linear-gradient(top,rgba(255,255,255,0.2),rgba(0,0,0,0));background-image:-moz-linear-gradient(top,rgba(255,255,255,0.2),rgba(0,0,0,0));background-image:-ms-linear-gradient(top,rgba(255,255,255,0.2),rgba(0,0,0,0));background-image:-o-linear-gradient(top,rgba(255,255,255,0.2),rgba(0,0,0,0));background-image:linear-gradient(top,rgba(255,255,255,0.2),rgba(0,0,0,0));box-shadow:0 1px 1px rgba(0,0,0,0.2),inset 0 1px 1px rgba(255,255,255,0.45);border-radius:3px}.candy p{color:#333;text-shadow:none}.candy span{color:#fff}.candy.blue .slide-button{background-color:#38a3d4}.candy.yellow .slide-button{background-color:#f5e560}.android{background-color:#b6b6b6;color:#fff}.android.toggle{border:2px solid #b6b6b6}.android.switch{overflow:hidden}.android.switch .slide-button{background-color:#279fca;-webkit-transform:skew(20deg) translateX(10px);-moz-transform:skew(20deg) translateX(10px);-ms-transform:skew(20deg) translateX(10px);-o-transform:skew(20deg) translateX(10px);transform:skew(20deg)}.android.toggle .slide-button{border-radius:2px;background-color:#848484}.android.toggle input:first-of-type:checked ~ .slide-button{background-color:#279fca}.android.switch input:first-of-type:checked ~ .slide-button{-webkit-transform:skew(20deg) translateX(-10px);-moz-transform:skew(20deg) translateX(-10px);-ms-transform:skew(20deg) translateX(-10px);-o-transform:skew(20deg) translateX(-10px);transform:skew(20deg) translateX(-10px)}.android p{color:#333}.android span{color:#fff}.android.switch,.android span{text-transform:uppercase}.ios{background:-webkit-linear-gradient(top,#cfcfcf,#efefef 50%,#f9f9f9 50%,#fefefe);background:-moz-linear-gradient(top,#cfcfcf,#efefef 50%,#f9f9f9 50%,#fefefe);background:-o-linear-gradient(top,#cfcfcf,#efefef 50%,#f9f9f9 50%,#fefefe);background:-ms-linear-gradient(top,#cfcfcf,#efefef 50%,#f9f9f9 50%,#fefefe);background:linear-gradient(top,#cfcfcf,#efefef 50%,#f9f9f9 50%,#fefefe);-webkit-box-shadow:inset 0 2px 2px #b6b6b6,inset 3px 0 3px #b6b6b6;box-shadow:inset 0 2px 2px #b6b6b6,inset 3px 0 3px #b6b6b6;border:1px solid #efefef;border-radius:3px;color:#7f7f7f;font:bold 14px sans-serif;text-align:center;text-shadow:none}.ios.toggle .slide-button{border:1px solid #919191;background:-webkit-linear-gradient(top,#cdcdcd,#fbfbfb);background:-moz-linear-gradient(top,#cdcdcd,#fbfbfb);background:-o-linear-gradient(top,#cdcdcd,#fbfbfb);background:-ms-linear-gradient(top,#cdcdcd,#fbfbfb);background:linear-gradient(top,#cdcdcd,#fbfbfb);border-radius:3px;-webkit-box-shadow:inset 0 1px 0 #f0f0f0;box-shadow:inset 0 1px 0 #f0f0f0}.ios.toggle input:first-of-type:checked ~ p span:first-child,.ios.switch input:checked+label{color:#fff;text-shadow:0 -1px 0 #1b3b6f}.ios.toggle input:first-of-type:checked ~ .slide-button,.ios.switch .slide-button{background:-webkit-linear-gradient(top,#3672dc,#4085ec 50%,#4d8fef 50%,#76adfc);background:-moz-linear-gradient(top,#3672dc,#4085ec 50%,#4d8fef 50%,#76adfc);background:-o-linear-gradient(top,#3672dc,#4085ec 50%,#4d8fef 50%,#76adfc);background:-ms-linear-gradient(top,#3672dc,#4085ec 50%,#4d8fef 50%,#76adfc);background:linear-gradient(top,#3672dc,#4085ec 50%,#4d8fef 50%,#76adfc);border-radius:3px;border:1px solid #1654b5;text-align:center;color:#fff;font:bold 14px sans-serif;text-shadow:0 -1px 0 #1b3b6f}.ios.toggle p span{color:#7f7f7f}}
+
+/* ------------------------------------------
+Pretty file upload fields
+http://jasny.github.com/bootstrap/javascript.html#fileupload
+------------------------------------------ */
+.btn-file{position:relative;overflow:hidden;vertical-align:middle}.btn-file>input{position:absolute;top:0;right:0;margin:0;cursor:pointer;border:solid transparent;border-width:0 0 100px 200px;opacity:0;filter:alpha(opacity=0);-moz-transform:translate(-300px,0) scale(4);direction:ltr}.fileupload{margin-bottom:9px}.fileupload .uneditable-input{display:inline-block;margin-bottom:0;vertical-align:middle;cursor:text}.fileupload .thumbnail{display:inline-block;height:28px;margin-bottom:0;overflow:hidden;padding:1px;text-align:center;vertical-align:bottom;width:28px}.fileupload .thumbnail>img{display:inline-block;max-height:100%;vertical-align:bottom}.fileupload .btn{vertical-align:bottom}.fileupload-exists .fileupload-new,.fileupload-new .fileupload-exists{display:none}.fileupload-inline .fileupload-controls{display:inline}.fileupload-new .input-append .btn-file{-webkit-border-radius:0 3px 3px 0;-moz-border-radius:0 3px 3px 0;border-radius:0 3px 3px 0}.thumbnail-borderless .thumbnail{padding:0;border:0;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none}.fileupload-new.thumbnail-borderless .thumbnail{border:1px solid #ddd}.control-group.warning .fileupload .uneditable-input{color:#a47e3c;border-color:#a47e3c}.control-group.warning .fileupload .fileupload-preview{color:#a47e3c}.control-group.warning .fileupload .thumbnail{border-color:#a47e3c}.control-group.error .fileupload .uneditable-input{color:#b94a48;border-color:#b94a48}.control-group.error .fileupload .fileupload-preview{color:#b94a48}.control-group.error .fileupload .thumbnail{border-color:#b94a48}.control-group.success .fileupload .uneditable-input{color:#468847;border-color:#468847}.control-group.success .fileupload .fileupload-preview{color:#468847}.control-group.success .fileupload .thumbnail{border-color:#468847}
+
+
 /* sidebar */
 @media (max-width: 767px){ .bs-docs-sidenav.affix {position: static;width: auto;top: 0;}}
 .bs-docs-sidebar ul li {list-style-type: none;}
-
-
-/* bootstrap file upload fields http://jasny.github.com/bootstrap/javascript.html#fileupload  */
-.btn-file {
-  position: relative;
-  overflow: hidden;
-  vertical-align: middle;
-}
-.btn-file > input {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0;
-  cursor: pointer;
-  border: solid transparent;
-  border-width: 0 0 100px 200px;
-  opacity: 0;
-  filter: alpha(opacity=0);
-  -moz-transform: translate(-300px, 0) scale(4);
-  direction: ltr;
-}
-.fileupload {
-  margin-bottom: 9px;
-}
-.fileupload .uneditable-input {
-  display: inline-block;
-  margin-bottom: 0;
-  vertical-align: middle;
-  cursor: text;
-}
-.fileupload .thumbnail {
-    display: inline-block;
-    height: 28px;
-    margin-bottom: 0;
-    overflow: hidden;
-    padding: 1px;
-    text-align: center;
-    vertical-align: bottom;
-    width: 28px;
-}
-.fileupload .thumbnail > img {
-  display: inline-block;
-  max-height: 100%;
-  vertical-align: bottom;
-}
-.fileupload .btn {
-  vertical-align: bottom;
-}
-.fileupload-exists .fileupload-new,
-.fileupload-new .fileupload-exists {
-  display: none;
-}
-.fileupload-inline .fileupload-controls {
-  display: inline;
-}
-.fileupload-new .input-append .btn-file {
-  -webkit-border-radius: 0 3px 3px 0;
-     -moz-border-radius: 0 3px 3px 0;
-          border-radius: 0 3px 3px 0;
-}
-.thumbnail-borderless .thumbnail {
-  padding: 0;
-  border: none;
-  -webkit-border-radius: 0;
-     -moz-border-radius: 0;
-          border-radius: 0;
-  -webkit-box-shadow: none;
-     -moz-box-shadow: none;
-          box-shadow: none;
-}
-.fileupload-new.thumbnail-borderless .thumbnail {
-  border: 1px solid #ddd;
-}
-.control-group.warning .fileupload .uneditable-input {
-  color: #a47e3c;
-  border-color: #a47e3c;
-}
-.control-group.warning .fileupload .fileupload-preview {
-  color: #a47e3c;
-}
-.control-group.warning .fileupload .thumbnail {
-  border-color: #a47e3c;
-}
-.control-group.error .fileupload .uneditable-input {
-  color: #b94a48;
-  border-color: #b94a48;
-}
-.control-group.error .fileupload .fileupload-preview {
-  color: #b94a48;
-}
-.control-group.error .fileupload .thumbnail {
-  border-color: #b94a48;
-}
-.control-group.success .fileupload .uneditable-input {
-  color: #468847;
-  border-color: #468847;
-}
-.control-group.success .fileupload .fileupload-preview {
-  color: #468847;
-}
-.control-group.success .fileupload .thumbnail {
-  border-color: #468847;
-}
-
-
-
 
 
 
