@@ -734,7 +734,7 @@ class AppController extends Controller {
 		$this->Auth->authenticate = array(
             'Form' => array(
                 'userModel' => 'Users.User',
-                'fields' => array('username' => 'username', 'password' => 'password'),
+                'fields' => array('username' => array('username', 'email'), 'password' => 'password'),
                 /*'scope' => array('User.active' => 1)*/
             )
         );
