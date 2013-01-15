@@ -369,9 +369,10 @@ class User extends UsersAppModel {
 	public function loginMeta($data) {
 		if (!empty($data) && !empty($data['User']['username'])) {
 			$user = $this->find('first', array(
-				'conditions' => array(
+				'conditions' => array('OR' => array(
 					'User.username' => $data['User']['username'],
-					),
+					'User.email' => $data['User']['username'],
+					)),
 				'contain' => array(
 					'UserRole',
 					),
