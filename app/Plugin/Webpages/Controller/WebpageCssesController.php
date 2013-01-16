@@ -40,8 +40,9 @@ class WebpageCssesController extends WebpagesAppController {
 		$this->set('webpageCsses', $this->paginate());
 		
 		$this->set('displayName', 'name');
-		$this->set('displayDescription', 'content'); 
-		$this->set('page_title_for_layout', 'Css Files');	
+		$this->set('displayDescription', 'content');
+		$this->set('page_title_for_layout', 'Css Files');
+		$this->layout = 'default';
 	}
 
 
@@ -116,7 +117,8 @@ class WebpageCssesController extends WebpagesAppController {
 		
 		$this->set('types', $this->WebpageCss->types());
 		$this->set('webpages', $this->WebpageCss->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template'))));
-		$this->set('page_title_for_layout', $this->request->data['WebpageCss']['name']);	
+		$this->set('page_title_for_layout', $this->request->data['WebpageCss']['name']);
+		$this->layout = 'default';
 	}
 
 
