@@ -1,5 +1,6 @@
 <?php
-App::uses('ModelBehavior', 'Model');   
+App::uses('ModelBehavior', 'Model'); 
+ 
 /**
  * MetableBehavior
  * 
@@ -40,7 +41,7 @@ class MetableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param type $created
  */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created) { 
 		foreach ($Model->data[$Model->alias] as $field => $value) {
 			if (strpos($field, '!') === 0) {
 				$metadata[$field] = $value;
@@ -48,10 +49,9 @@ class MetableBehavior extends ModelBehavior {
 			}
 		} 
 		if (!empty($metadata)) { 
-			//$metadata = mysql_real_escape_string(serialize($metadata)); 
-            $metadata = serialize($metadata);  
+           	$metadata = mysql_escape_string(serialize($metadata)); 
             $Meta = ClassRegistry::init('Meta');
-			$Meta->query("
+           	$Meta->query("
 				INSERT INTO `metas` (model, foreign_key, value)
 				VALUES ('{$Model->name}', '{$Model->id}', '{$metadata}')
 					ON DUPLICATE KEY UPDATE	value = '{$metadata}';
@@ -59,7 +59,10 @@ class MetableBehavior extends ModelBehavior {
 		}
 		parent::afterSave($Model, $created);
 	}
+    
+   
 	
+  
 /**
  * Before find callback
  * 
