@@ -1,5 +1,5 @@
 <?php
-App::uses('ModelBehavior', 'Model');
+App::uses('ModelBehavior', 'Model');   
 /**
  * MetableBehavior
  * 
@@ -46,15 +46,16 @@ class MetableBehavior extends ModelBehavior {
 				$metadata[$field] = $value;
 				unset($Model->data[$Model->alias][$field]);
 			}
-		}
-		if (!empty($metadata)) {
-			$metadata = mysql_real_escape_string(serialize($metadata));
+		} 
+		if (!empty($metadata)) { 
+			//$metadata = mysql_real_escape_string(serialize($metadata)); 
+            $metadata = serialize($metadata);  
             $Meta = ClassRegistry::init('Meta');
 			$Meta->query("
 				INSERT INTO `metas` (model, foreign_key, value)
 				VALUES ('{$Model->name}', '{$Model->id}', '{$metadata}')
 					ON DUPLICATE KEY UPDATE	value = '{$metadata}';
-				");
+				"); 
 		}
 		parent::afterSave($Model, $created);
 	}

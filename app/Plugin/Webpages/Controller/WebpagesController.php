@@ -77,6 +77,7 @@ class WebpagesController extends WebpagesAppController {
 	public function index($type = 'content') {
         $index = '_index' . ucfirst($type);
         $this->$index();
+		$this->layout = 'default';
 	}
     
 /**
