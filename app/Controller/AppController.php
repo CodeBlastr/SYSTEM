@@ -503,7 +503,7 @@ class AppController extends Controller {
 				foreach ($settings['template'] as $setting) {
 					$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
 					$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
-					$templates[$i]['urls'] = empty($templates[$i]['urls']) ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
+					$templates[$i]['urls'] = empty($templates[$i]['urls']) || $templates[$i]['urls'] == '""'  ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
 					$i++;
 				}
 			}
