@@ -37,6 +37,15 @@ class CkeHelper extends Helper {
                     $('#exec-source').html('<i class=\"icon-wrench\"></i> HTML');
                 }
             }
+            $('#WebpageContent').ckeditor('instanceReady',  function(config) {
+			   config.filebrowserBrowseUrl = '/js/kcfinder/browse.php?type=files';
+			   config.filebrowserImageBrowseUrl = '/js/kcfinder/browse.php?type=images';
+			   config.filebrowserFlashBrowseUrl = '/js/kcfinder/browse.php?type=flash';
+			   config.filebrowserUploadUrl = '/js/kcfinder/upload.php?type=files';
+			   config.filebrowserImageUploadUrl = '/js/kcfinder/upload.php?type=images';
+			   config.filebrowserFlashUploadUrl = '/js/kcfinder/upload.php?type=flash';
+			});
+			
             $('#".$did."').ckeditor('instanceReady', function() { 
     			toggleExtras();
 			}, {".$configuration."});
@@ -58,7 +67,7 @@ class CkeHelper extends Helper {
 			CakeSession::write('KCFINDER.disabled', false);
 			CakeSession::write('KCFINDER.uploadURL', '/theme/default/upload/' . CakeSession::read('Auth.User.id'));
 			CakeSession::write('KCFINDER.uploadDir', '../../../../' . SITE_DIR . '/Locale/View/webroot/upload/' . CakeSession::read('Auth.User.id'));
-			
+	    /*		
 			// path settings
 			$paths = '';
 			$paths .= "filebrowserBrowseUrl: '/js/kcfinder/browse.php?type=files',";
@@ -89,7 +98,7 @@ class CkeHelper extends Helper {
 					$paths .= "filebrowserFlashUploadUrl: '".$settings['paths']['filebrowserFlashUploadUrl']."',";
 				} 
 			}
-			return $paths;
+			return $paths;*/
 		} else {
 			return null;
 		}
