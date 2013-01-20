@@ -394,7 +394,7 @@ class Webpage extends WebpagesAppModel {
  * 
  * @return array
  */
- 	protected function _templateContentResults($results) { 
+ 	protected function _templateContentResults($results) {
 		if (!empty($results[0]['Webpage']['type']) && $results[0]['Webpage']['type'] == 'template') {
 			App::uses('Folder', 'Utility');
 			App::uses('File', 'Utility');
