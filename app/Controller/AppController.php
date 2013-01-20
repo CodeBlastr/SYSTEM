@@ -537,7 +537,7 @@ class AppController extends Controller {
 			}
 		}
 		// this is because the Webpage model is not loaded for the install site page, and 'all' so that we can pass all templates to the navbar
-		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('all', array('conditions' => array('Webpage.type' => 'template')));
+		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('all', array('conditions' => array('Webpage.type' => 'template'), 'order' => array('FIND_IN_SET(`Webpage`.`id`, \''.$this->templateId.'\')' => 'DESC')));
         $this->set('templates', Set::combine($templated, '{n}.Webpage.id', '{n}.Webpage.name')); // for the admin navbar
         $templated = !empty($this->templateId) ? Set::extract('/Webpage[id=' . $this->templateId . ']', $templated) : null; // getting it back to 'first' type results
         $templated = !empty($templated[0]) ? $templated[0] : null; // getting it back to 'first' type results
