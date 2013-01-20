@@ -1,7 +1,7 @@
 /* @todo - remove parts that were commented with "to get rows to work in a fluid way" : deprecated on Dec 21, 2012 : the end of the world */
 * {
     vertical-align: inherit;
-    transition: all 0.5s ease 0s;
+    /*transition: all 0.5s ease 0s; can't put it on everything, it messes up jquery animate*/
 }
 .hero-unit [class*="span"] {
 	margin-left: 28px;
@@ -24,9 +24,9 @@ i {
 .container .navbar {
 	overflow: hidden;
 }
-.container .navbar .nav {
-	margin-top: 12px;
-}
+/*.container .navbar .nav {
+	margin-top: 12px; this is a problem on standard nav bars, ex. http://humanheartproject.com/)
+} */
 .container .navbar .btn-navbar {
     margin: 16px 0 0;
 }
