@@ -45,8 +45,7 @@ if (file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'routes.php')) {
 /**
  * Load the CakePHP default routes. Remove this if you do not want to use
  * the built-in default routes.
- */
-    Router::connect('/services', array('plugin' => 'users', 'controller' => 'users', 'action' => 'list_services')); 
+ */ 
 	Router::connect('/sitemap', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'index')); 
 	Router::connect('/sitemap/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps')); 
 	Router::connect('/robots/:action/*', array('plugin' => 'sitemaps', 'controller' => 'sitemaps', 'action' => 'robot'));	
