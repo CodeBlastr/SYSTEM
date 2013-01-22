@@ -51,18 +51,24 @@ class MetableBehavior extends ModelBehavior {
 			$existingMeta = $Meta->find( 'first', array('conditions' => array('model' => $Model->name, 'foreign_key' => $Model->id)) );
 			if ( !$existingMeta ) {
 				$Meta->query("
-					INSERT INTO`metas` (model, foreign_key, value)
+					INSERT INTO `metas` (model, foreign_key, value)
 					VALUES ('{$Model->name}', '{$Model->id}', '{$cleanMetadata}');
 				");
 			} else {
 				// Meta already exists, update it. The incoming data, $metadata, needs to overwrite current values.
-				// extract array from $metaExists['Meta']['value']
+				// extract array from $existingMeta['Meta']['value']
 				$existingMetaValue = unserialize( $existingMeta['Meta']['value'] );
+
 				// merge that array with $metadata
 				$updatedMetaValue = Set::merge($existingMetaValue, $metadata);
+
 				// put it back in $existingMeta
 				$existingMeta['Meta']['value'] = serialize($updatedMetaValue);
-				$Meta->save($existingMeta);
+				$Meta->query("
+					UPDATE `metas`
+					SET value = '{$existingMeta['Meta']['value']}'
+					WHERE foreign_key = '{$Model->id}' AND model = '{$Model->name}' LIMIT 1;
+				");
 			}
 		}
 		parent::afterSave($Model, $created);
