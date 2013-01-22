@@ -107,7 +107,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 	
 	
 	public function testEdit() {
-		$data = array('Article' => array(
+		$dataOne = array('Article' => array(
 			'title' => 'Lorem 111',
 			'content' => 'asdf aasdfsdfaasd',
 			'!location' => 'Syracuse',
@@ -117,13 +117,12 @@ class MetableBehaviorTestCase extends CakeTestCase {
 			'!state' => 'NY',
 		));
 		
-		$this->Article->saveAll($data);
-		$testId = $this->Article->id;
-		$result = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.!rent');
+		$this->Article->saveAll($dataOne);
+		$resultOne = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.!rent');
 		// asserts that the first save is complete
-		$this->assertEqual($result[$testId], $data['Article']['!rent']);
+		$this->assertEqual($resultOne[$this->Article->id], $dataOne['Article']['!rent']);
 		
-		$data = array('Article' => array(
+		$dataTwo = array('Article' => array(
 			'id' => $this->Article->id,
 			'title' => 'Lorem 222',
 			'content' => 'asdf aasdfsdfaasd',
@@ -134,10 +133,12 @@ class MetableBehaviorTestCase extends CakeTestCase {
 //			'!state' => 'CA',
 		));
 		
-		$result = $this->Article->saveAll($data);
-		$result = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.!rent');
+		$resultTwo = $this->Article->saveAll($dataTwo);
+		$resultTwo = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.!rent');
+
 		// asserts that the same ID from the first save has an updated rent value from the second save
-		$this->assertNotEqual($result[$testId], $data['Article']['!rent']);
+		//$this->assertNotEqual($resultOne[$testId], $data2['Article']['!rent']);
+		$this->assertNotEqual($resultOne[$this->Article->id], $resultTwo[$this->Article->id]);
 	}
 	
 	
