@@ -41,7 +41,7 @@ class Setting extends AppModel {
                     ),
                 array(
                     'name' => 'SMTP',
-                    'description' => 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'smtpUsername = xyz@example.com'.PHP_EOL.'smtpPassword = "XXXXXXX"'.PHP_EOL.'smtpHost = smtp.example.com'.PHP_EOL.'smtpPort = XXX'.PHP_EOL.'from = myemail@example.com'.PHP_EOL.'fromName = "My Name"',
+                    'description' => 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'smtpUsername = xyz@example.com'.PHP_EOL.'smtpPassword = "XXXXXXX"'.PHP_EOL.'smtpHost = mail.example.com'.PHP_EOL.'smtpPort = 465'.PHP_EOL.'from = myemail@example.com'.PHP_EOL.'fromName = "My Name"',
                     ),
                 array(
           'name' => 'ZUHA_DB_VERSION ',
