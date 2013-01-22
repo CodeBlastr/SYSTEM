@@ -34,12 +34,9 @@ class MetableBehavior extends ModelBehavior {
  * After save callback
  * 
  * Used to save meta data that was included in a data array.
- * Important Note!  You must send all meta data at once.  You
- * can NOT send a single meta field and save it.  All meta fields
- * must come at the same time. 
  * 
  * @param Model $Model
- * @param type $created
+ * @param boolean $created The value of $created will be true if a new record was created (rather than an update).
  */
 	public function afterSave(Model $Model, $created) { 
 		foreach ($Model->data[$Model->alias] as $field => $value) {
@@ -48,14 +45,25 @@ class MetableBehavior extends ModelBehavior {
 				unset($Model->data[$Model->alias][$field]);
 			}
 		} 
-		if (!empty($metadata)) { 
-           	$metadata = mysql_escape_string(serialize($metadata)); 
+		if (!empty($metadata)) {
+           	$cleanMetadata = mysql_escape_string(serialize($metadata)); 
             $Meta = ClassRegistry::init('Meta');
-           	$Meta->query("
-				INSERT INTO `metas` (model, foreign_key, value)
-				VALUES ('{$Model->name}', '{$Model->id}', '{$metadata}')
-					ON DUPLICATE KEY UPDATE	value = '{$metadata}';
-				"); 
+			$existingMeta = $Meta->find( 'first', array('conditions' => array('model' => $Model->name, 'foreign_key' => $Model->id)) );
+			if ( !$existingMeta ) {
+				$Meta->query("
+					INSERT INTO`metas` (model, foreign_key, value)
+					VALUES ('{$Model->name}', '{$Model->id}', '{$cleanMetadata}');
+				");
+			} else {
+				// Meta already exists, update it. The incoming data, $metadata, needs to overwrite current values.
+				// extract array from $metaExists['Meta']['value']
+				$existingMetaValue = unserialize( $existingMeta['Meta']['value'] );
+				// merge that array with $metadata
+				$updatedMetaValue = Set::merge($existingMetaValue, $metadata);
+				// put it back in $existingMeta
+				$existingMeta['Meta']['value'] = serialize($updatedMetaValue);
+				$Meta->save($existingMeta);
+			}
 		}
 		parent::afterSave($Model, $created);
 	}
