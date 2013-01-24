@@ -59,7 +59,7 @@ class Setting extends AppModel {
           ),
         array(
           'name' => 'ENABLE_PAYMENT_OPTIONS',
-          'description' => 'Defines the options which should be shown  in the dropdown of payment mode for the app. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AUTHORIZE = Authorize'.PHP_EOL.'AUTHORIZEONLY = "Authorize Only"'.PHP_EOL.'PAYPAL = Paypal'.PHP_EOL.'CREDIT= Credit',
+          'description' => 'Defines the options, in order, which will be shown in the dropdown of payment options for the app. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AUTHORIZE = Authorize'.PHP_EOL.'AUTHORIZEONLY = "Authorize Only"'.PHP_EOL.'PAYPAL = Paypal'.PHP_EOL.'CREDIT= Credit',
           ),
         array(
           'name' => 'AUTHORIZENET_LOGIN_ID',
