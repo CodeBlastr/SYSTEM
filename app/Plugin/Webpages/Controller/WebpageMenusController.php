@@ -22,7 +22,7 @@ class WebpageMenusController extends WebpagesAppController {
         $menu = $this->WebpageMenu->find('threaded', array('conditions' => array('WebpageMenu.lft >=' => $read['WebpageMenu']['lft'], 'WebpageMenu.rght <=' => $read['WebpageMenu']['rght'])));
         $menu = $menu[0]; // we can only edit one menu at a time.
         $menu['WebpageMenu']['children'] = $this->WebpageMenu->find('count', array('conditions' => array('WebpageMenu.lft >' => $read['WebpageMenu']['lft'], 'WebpageMenu.rght <' => $read['WebpageMenu']['rght'])));
-	
+
 		if (!empty($menu['WebpageMenu']['children'])) {
 			return $menu;
 		} else {
