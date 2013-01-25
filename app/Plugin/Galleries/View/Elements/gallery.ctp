@@ -9,8 +9,8 @@ if(!empty($instance) && defined('__ELEMENT_GALLERIES_GALLERY_'.$instance)) {
 
 if (!empty($model) && !empty($foreignKey)) {
 	# make a request action to pull the gallery data
-	$gallery = $this->requestAction("/galleries/galleries/view/{$model}/{$foreignKey}"); 
-	if (!empty($gallery)) {
+	$gallery = $this->requestAction("/galleries/galleries/view/{$model}/{$foreignKey}");  
+	if (!empty($gallery)) { 
 		echo $this->Element($gallery['GallerySettings']['galleryType'], array('gallery' => $gallery), array('plugin' => 'galleries'));
 	} else {
 		# do nothing so so that other pages can test for null in the html of this gallery (like catalog items view does)
