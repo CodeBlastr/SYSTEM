@@ -1,4 +1,4 @@
-<?php
+<?php          
 # this should be at the top of every element created with format __ELEMENT_PLUGIN_ELEMENTNAME_instanceNumber.
 # it allows a database driven way of configuring elements, and having multiple instances of that configuration.
 if(!empty($instance) && defined('__ELEMENT_GALLERIES_FANCYBOX_'.$instance)) {
