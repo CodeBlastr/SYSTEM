@@ -64,6 +64,7 @@ class MetableBehavior extends ModelBehavior {
 
 				// put it back in $existingMeta
 				$existingMeta['Meta']['value'] = serialize($updatedMetaValue);
+				$existingMeta['Meta']['value'] = mysql_escape_string($existingMeta['Meta']['value']);
 				$Meta->query("
 					UPDATE `metas`
 					SET value = '{$existingMeta['Meta']['value']}'
