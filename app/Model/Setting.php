@@ -41,7 +41,7 @@ class Setting extends AppModel {
                     ),
                 array(
                     'name' => 'SMTP',
-                    'description' => 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'smtpUsername = xyz@example.com'.PHP_EOL.'smtpPassword = "XXXXXXX"'.PHP_EOL.'smtpHost = smtp.example.com'.PHP_EOL.'smtpPort = XXX'.PHP_EOL.'from = myemail@example.com'.PHP_EOL.'fromName = "My Name"',
+                    'description' => 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.'.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'smtpUsername = xyz@example.com'.PHP_EOL.'smtpPassword = "XXXXXXX"'.PHP_EOL.'smtpHost = mail.example.com'.PHP_EOL.'smtpPort = 465'.PHP_EOL.'from = myemail@example.com'.PHP_EOL.'fromName = "My Name"',
                     ),
                 array(
           'name' => 'ZUHA_DB_VERSION ',
@@ -59,7 +59,7 @@ class Setting extends AppModel {
           ),
         array(
           'name' => 'ENABLE_PAYMENT_OPTIONS',
-          'description' => 'Defines the options which should be shown  in the dropdown of payment mode for the app. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AUTHORIZE = Authorize'.PHP_EOL.'AUTHORIZEONLY = "Authorize Only"'.PHP_EOL.'PAYPAL = Paypal'.PHP_EOL.'CREDIT= Credit',
+          'description' => 'Defines the options, in order, which will be shown in the dropdown of payment options for the app. '.PHP_EOL.PHP_EOL.'Example value : '.PHP_EOL.'AUTHORIZE = Authorize'.PHP_EOL.'AUTHORIZEONLY = "Authorize Only"'.PHP_EOL.'PAYPAL = Paypal'.PHP_EOL.'CREDIT= Credit',
           ),
         array(
           'name' => 'AUTHORIZENET_LOGIN_ID',
