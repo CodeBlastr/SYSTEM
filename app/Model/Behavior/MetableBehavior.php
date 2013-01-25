@@ -46,10 +46,10 @@ class MetableBehavior extends ModelBehavior {
 			}
 		} 
 		if (!empty($metadata)) {
-           	$cleanMetadata = mysql_escape_string(serialize($metadata)); 
             $Meta = ClassRegistry::init('Meta');
 			$existingMeta = $Meta->find( 'first', array('conditions' => array('model' => $Model->name, 'foreign_key' => $Model->id)) );
 			if ( !$existingMeta ) {
+				$cleanMetadata = mysql_escape_string(serialize($metadata)); 
 				$Meta->query("
 					INSERT INTO `metas` (model, foreign_key, value)
 					VALUES ('{$Model->name}', '{$Model->id}', '{$cleanMetadata}');
@@ -63,8 +63,7 @@ class MetableBehavior extends ModelBehavior {
 				$updatedMetaValue = Set::merge($existingMetaValue, $metadata);
 
 				// put it back in $existingMeta
-				$existingMeta['Meta']['value'] = serialize($updatedMetaValue);
-				$existingMeta['Meta']['value'] = mysql_escape_string($existingMeta['Meta']['value']);
+				$existingMeta['Meta']['value'] = mysql_escape_string(serialize($updatedMetaValue));
 				$Meta->query("
 					UPDATE `metas`
 					SET value = '{$existingMeta['Meta']['value']}'
