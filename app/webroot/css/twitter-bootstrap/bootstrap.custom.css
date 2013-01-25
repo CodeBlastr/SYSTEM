@@ -69,7 +69,7 @@ small {
     height: auto;
     padding: 2px;
     width: auto;
-    margin: 
+    /*margin: undefined? */
 }
 #headerNavFloManagr  form {
     margin: 8px 0 0 10px;
@@ -171,6 +171,8 @@ footer .socialmedia img:hover {
 	height: auto;
 }
 
+#InvoiceAddForm small a,
+#InvoiceEditForm small a { display: inline; }
 
 /* masonry for dashboards */
 .dashboard,
