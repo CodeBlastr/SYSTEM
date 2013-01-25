@@ -668,7 +668,7 @@ class InstallController extends Controller {
     		return true;
     	}
         $userRoleId = !empty($userRoleId) ? $userRoleId : $this->Session->read('Auth.User.id');
-        if ((defined('SITE_DIR') || Configure::read('Install') === false) && $userRoleId != 1) {
+        if ((defined('SITE_DIR') && SITE_DIR && $userRoleId != 1) || Configure::read('Install') === false) {
             $this->message[] = __('Install access restricted.');
             $this->_redirect('/users/users/login');
         }
