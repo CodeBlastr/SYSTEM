@@ -93,11 +93,13 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		
 		$data = array('Article' => array(
 			'title' => 'Lorem 222',
-			'!location' => 'Syracuse',
-			'!food' => 'turkey',
-			'!fireproof' => 'no',
-			'!rent' => 535,
-			'!state' => 'NY',
+			'Meta' => array(
+					'location' => 'Syracuse',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 		));
 		$this->Article->saveAll($data);
 		$result = $this->Article->find('first', array('conditions' => array('Article.id' => $this->Article->id)));
@@ -110,11 +112,13 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		$dataOne = array('Article' => array(
 			'title' => 'Lorem 111',
 			'content' => 'asdf aasdfsdfaasd',
-			'!location' => 'Syracuse',
-			'!food' => 'turkey',
-			'!fireproof' => 'no',
-			'!rent' => 535,
-			'!state' => 'NY',
+			'Meta' => array(
+					'location' => 'Syracuse',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 		));
 		
 		$this->Article->saveAll($dataOne);
@@ -126,11 +130,9 @@ class MetableBehaviorTestCase extends CakeTestCase {
 			'id' => $this->Article->id,
 			'title' => 'Lorem 222',
 			'content' => 'asdf aasdfsdfaasd',
-//			'!location' => 'loc',
-//			'!food' => 'turkdaey',
-//			'!fireproof' => 'no',
-			'!rent' => 111,
-//			'!state' => 'CA',
+			'Meta' => array(
+					'rent' => 111,
+					)
 		));
 		
 		$resultTwo = $this->Article->saveAll($dataTwo);
@@ -148,41 +150,52 @@ class MetableBehaviorTestCase extends CakeTestCase {
 			array('Article' => array(
 				'title' => 'Lorem 333',
 				'content' => 'abcdefg',
-				'!location' => 'Geneva',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
+				'Meta' => array(
+					'location' => 'Geneva',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 				)),
 			array('Article' => array(
 				'title' => 'Lorem',
 				'content' => 'asdf aasdfsdfaasd',
-				'!location' => 'Syracuse',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
+				'Meta' => array(
+					'location' => 'Syracuse',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 				)),
 			array('Article' => array(
 				'title' => 'Lorem 333',
 				'content' => 'bcdefg',
-				'!location' => 'Austin',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
-				)),
+				'Meta' => array(
+					'location' => 'Austin',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
+				))
 			);
-		
+//		debug($data);
 		$this->Article->saveAll($data);
 		
 		$result = $this->Article->find('first', array(
 			'conditions' => array(
-				'Article.!location' => 'Syracuse'
+				'Article.Meta.location' => 'Syracuse'
 			),
 		));
+//		debug($result);
+//		break;
 		// we insert a few records, then run a search based on a meta field only
-		$this->assertEqual($result['Article']['!location'], $data[1]['Article']['!location']);
+		$this->assertEqual(
+				$result['Article']['Meta']['location'],
+				$data[1]['Article']['Meta']['location']
+				);
 		
 	}
 	
@@ -193,29 +206,35 @@ class MetableBehaviorTestCase extends CakeTestCase {
 			array('Article' => array(
 				'title' => 'Lorem 333',
 				'content' => 'abcdefg',
-				'!location' => 'Geneva',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
+				'Meta' => array(
+					'location' => 'Geneva',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 				)),
 			array('Article' => array(
 				'title' => 'Lorem',
 				'content' => 'asdf aasdfsdfaasd',
-				'!location' => 'Syracuse',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
+				'Meta' => array(
+					'location' => 'Syracuse',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 				)),
 			array('Article' => array(
 				'title' => 'Lorem 333',
 				'content' => 'bcdefg',
-				'!location' => 'Austin',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
+				'Meta' => array(
+					'location' => 'Austin',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 				)),
 			);
 		
@@ -240,12 +259,14 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		
 		$data = array('Article' => array(
 			'title' => 'Lorem 222',
-			'!location' => 'Syracuse',
-			'!food' => 'turkey',
-			'!fireproof' => 'no',
-			'!rent' => 535,
-			'!state' => 'NY',
-		));
+			'Meta' => array(
+					'location' => 'Syracuse',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
+			));
 		$this->Article->saveAll($data);
         $id = $this->Article->id;
         $result = $this->Meta->find('first', array('conditions' => array('Meta.foreign_key' => $id)));
@@ -256,7 +277,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
     	$article = $this->Article->findById($id);
         $this->assertTrue(empty($article)); // make sure article is gone
         $result = $this->Meta->find('first', array('conditions' => $metaLookup));
-        $this->assertTrue(empty($result));
+        $this->assertTrue(empty($result)); // make sure meta is gone
 	}
 
 }
