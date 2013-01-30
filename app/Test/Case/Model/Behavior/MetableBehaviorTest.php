@@ -144,6 +144,54 @@ class MetableBehaviorTestCase extends CakeTestCase {
 	}
 	
 	
+	public function testRemovalOfExclamationsAfterFind() {
+		$resultOne = $this->Article->find('first', array('Article.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
+		//$resultOne = $this->Article->find('all');
+		//debug($resultOne);
+		$this->assertEqual( empty($resultOne['Article']['Meta']['!location']), true );
+	}
+	public function testRemovalOfExclamationsAfterSave() {
+//		$data = array('Article' => array(
+//			'title' => 'Lorem 222',
+//			'!location' => 'Syracuse',
+//			'!food' => 'turkey',
+//			'!fireproof' => 'no',
+//			'!rent' => 535,
+//			'!state' => 'NY'
+//		));
+//		debug(serialize(array('!location' => 'Syracuse',
+//			'!food' => 'turkey',
+//			'!fireproof' => 'no',
+//			'!rent' => 535,
+//			'!state' => 'NY')));
+		$data2 = array('Article' => array(
+			'id' => '4f88970e-b438-4b01-8740-1a14124e0d46',
+			'title' => 'Meta 222',
+			'Meta' => array(
+				'!location' => 'MetaSyracuse',
+				'!food' => 'Metaturkey',
+				'!fireproof' => 'Metano',
+				'!rent' => 101,
+				'!state' => 'MetaNY'
+				)
+		));
+//		$this->Article->create();
+//		$this->Article->saveAll($data);
+		$resultOne = $this->Article->find('first', array('Article.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
+		debug($resultOne);
+		$this->Article->saveAll($data2);
+		$result2 = $this->Article->find('first', array('Article.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
+		debug($result2);
+		
+		$this->assertEqual(
+				!empty($resultOne['Article']['Meta']['location']),
+				!empty($result2['Article']['Meta']['location'])
+				);
+		
+//		break;
+	}
+	
+	
 	public function testMetaSearchOnlyTypeFirst() {
 		
 		$data = array(
