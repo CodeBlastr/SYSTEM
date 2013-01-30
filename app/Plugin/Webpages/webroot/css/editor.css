@@ -700,7 +700,7 @@ https://github.com/ghinda/css-toggle-switch
 	#adminNavFloManagr .ios.toggle input:first-of-type:checked ~ p span:first-child,
 	#adminNavFloManagr .ios.switch input:checked + label {
 		color: #fff;
-		text-shadow: 0 -1px 0 #1b3b6f;
+		text-shadow: 0 -1px 0 #1b3b6f;  
 	}
 
 	#adminNavFloManagr .ios.toggle input:first-of-type:checked ~ .slide-button,
