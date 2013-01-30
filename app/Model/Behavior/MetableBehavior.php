@@ -54,13 +54,24 @@ class MetableBehavior extends ModelBehavior {
 					INSERT INTO `metas` (model, foreign_key, value)
 					VALUES ('{$Model->name}', '{$Model->id}', '{$cleanMetadata}');
 				");
+//					debug($cleanMetadata);
 			} else {
 				// Meta already exists, update it. The incoming data, $metadata, needs to overwrite current values.
 				// extract array from $existingMeta['Meta']['value']
 				$existingMetaValue = unserialize( $existingMeta['Meta']['value'] );
 
+				// clean out obsolete exclamation points
+				foreach ( $existingMetaValue as $k => $v ) {
+					if(strstr($k, '!')) {
+						$noPoint = str_replace('!', '', $k);
+						$existingMetaValue[$noPoint] = $v;
+						unset( $existingMetaValue[$k] );
+					}
+				}
+
 				// merge that array with $metadata
 				$updatedMetaValue = Set::merge( $existingMetaValue, $metadata );
+//debug($updatedMetaValue);
 
 				// put it back in $existingMeta
 				$existingMeta['Meta']['value'] = mysql_escape_string( serialize($updatedMetaValue) );
@@ -171,11 +182,23 @@ class MetableBehavior extends ModelBehavior {
  */
     public function mergeSerializedMeta($Model, $results = array()) {
 		foreach($results as &$result) {
+//			debug($result);
 			if(isset($result['Meta']['foreign_key'])) {
 				// merges the unserialized Meta values into the Model.Meta array
 				$result[$Model->alias]['Meta'] = unserialize($result['Meta']['value']);
+				
+				// clean out obsolete exclamation points
+				foreach ( $result[$Model->alias]['Meta'] as $k => $v ) {
+					if( strstr($k, '!') ) {
+						$noPoint = str_replace('!', '', $k);
+						$result[$Model->alias]['Meta'][$noPoint] = $v;
+						unset( $result[$Model->alias]['Meta'][$k] );
+					}
+				}
+				
 			}
 			unset($result['Meta']);
+//			debug($result);
 		} 
 		return $results;
 	}
