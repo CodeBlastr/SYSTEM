@@ -93,16 +93,18 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		
 		$data = array('Article' => array(
 			'title' => 'Lorem 222',
-			'!location' => 'Syracuse',
-			'!food' => 'turkey',
-			'!fireproof' => 'no',
-			'!rent' => 535,
-			'!state' => 'NY',
+			'Meta' => array(
+					'location' => 'Syracuse',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 		));
 		$this->Article->saveAll($data);
 		$result = $this->Article->find('first', array('conditions' => array('Article.id' => $this->Article->id)));
 		// tests that an article was saved, and that the meta info submitted was also saved (and of course returned in proper format)
-		$this->assertEqual(!empty($result['Article']['!location']), true);
+		$this->assertEqual(!empty($result['Article']['Meta']['location']), true);
 	}
 	
 	
@@ -110,35 +112,83 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		$dataOne = array('Article' => array(
 			'title' => 'Lorem 111',
 			'content' => 'asdf aasdfsdfaasd',
-			'!location' => 'Syracuse',
-			'!food' => 'turkey',
-			'!fireproof' => 'no',
-			'!rent' => 535,
-			'!state' => 'NY',
+			'Meta' => array(
+					'location' => 'Syracuse',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 		));
 		
 		$this->Article->saveAll($dataOne);
-		$resultOne = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.!rent');
+		$resultOne = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.Meta.rent');
 		// asserts that the first save is complete
-		$this->assertEqual($resultOne[$this->Article->id], $dataOne['Article']['!rent']);
+		$this->assertEqual($resultOne[$this->Article->id], $dataOne['Article']['Meta']['rent']);
 		
 		$dataTwo = array('Article' => array(
 			'id' => $this->Article->id,
 			'title' => 'Lorem 222',
 			'content' => 'asdf aasdfsdfaasd',
-//			'!location' => 'loc',
-//			'!food' => 'turkdaey',
-//			'!fireproof' => 'no',
-			'!rent' => 111,
-//			'!state' => 'CA',
+			'Meta' => array(
+					'rent' => 111,
+					)
 		));
 		
 		$resultTwo = $this->Article->saveAll($dataTwo);
-		$resultTwo = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.!rent');
+		$resultTwo = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.Meta.rent');
 
 		// asserts that the same ID from the first save has an updated rent value from the second save
 		//$this->assertNotEqual($resultOne[$testId], $data2['Article']['!rent']);
 		$this->assertNotEqual($resultOne[$this->Article->id], $resultTwo[$this->Article->id]);
+	}
+	
+	
+	public function testRemovalOfExclamationsAfterFind() {
+		$resultOne = $this->Article->find('first', array('Article.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
+		//$resultOne = $this->Article->find('all');
+		//debug($resultOne);
+		$this->assertEqual( empty($resultOne['Article']['Meta']['!location']), true );
+	}
+	public function testRemovalOfExclamationsAfterSave() {
+//		$data = array('Article' => array(
+//			'title' => 'Lorem 222',
+//			'!location' => 'Syracuse',
+//			'!food' => 'turkey',
+//			'!fireproof' => 'no',
+//			'!rent' => 535,
+//			'!state' => 'NY'
+//		));
+//		debug(serialize(array('!location' => 'Syracuse',
+//			'!food' => 'turkey',
+//			'!fireproof' => 'no',
+//			'!rent' => 535,
+//			'!state' => 'NY')));
+		$data2 = array('Article' => array(
+			'id' => '4f88970e-b438-4b01-8740-1a14124e0d46',
+			'title' => 'Meta 222',
+			'Meta' => array(
+				'!location' => 'MetaSyracuse',
+				'!food' => 'Metaturkey',
+				'!fireproof' => 'Metano',
+				'!rent' => 101,
+				'!state' => 'MetaNY'
+				)
+		));
+//		$this->Article->create();
+//		$this->Article->saveAll($data);
+		$resultOne = $this->Article->find('first', array('Article.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
+		debug($resultOne);
+		$this->Article->saveAll($data2);
+		$result2 = $this->Article->find('first', array('Article.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
+		debug($result2);
+		
+		$this->assertEqual(
+				!empty($resultOne['Article']['Meta']['location']),
+				!empty($result2['Article']['Meta']['location'])
+				);
+		
+//		break;
 	}
 	
 	
@@ -148,41 +198,52 @@ class MetableBehaviorTestCase extends CakeTestCase {
 			array('Article' => array(
 				'title' => 'Lorem 333',
 				'content' => 'abcdefg',
-				'!location' => 'Geneva',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
+				'Meta' => array(
+					'location' => 'Geneva',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 				)),
 			array('Article' => array(
 				'title' => 'Lorem',
 				'content' => 'asdf aasdfsdfaasd',
-				'!location' => 'Syracuse',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
+				'Meta' => array(
+					'location' => 'Syracuse',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 				)),
 			array('Article' => array(
 				'title' => 'Lorem 333',
 				'content' => 'bcdefg',
-				'!location' => 'Austin',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
-				)),
+				'Meta' => array(
+					'location' => 'Austin',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
+				))
 			);
-		
+//		debug($data);
 		$this->Article->saveAll($data);
 		
 		$result = $this->Article->find('first', array(
 			'conditions' => array(
-				'Article.!location' => 'Syracuse'
+				'Article.Meta.location' => 'Syracuse'
 			),
 		));
+//		debug($result);
+//		break;
 		// we insert a few records, then run a search based on a meta field only
-		$this->assertEqual($result['Article']['!location'], $data[1]['Article']['!location']);
+		$this->assertEqual(
+				$result['Article']['Meta']['location'],
+				$data[1]['Article']['Meta']['location']
+				);
 		
 	}
 	
@@ -193,29 +254,35 @@ class MetableBehaviorTestCase extends CakeTestCase {
 			array('Article' => array(
 				'title' => 'Lorem 333',
 				'content' => 'abcdefg',
-				'!location' => 'Geneva',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
+				'Meta' => array(
+					'location' => 'Geneva',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 				)),
 			array('Article' => array(
 				'title' => 'Lorem',
 				'content' => 'asdf aasdfsdfaasd',
-				'!location' => 'Syracuse',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
+				'Meta' => array(
+					'location' => 'Syracuse',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 				)),
 			array('Article' => array(
 				'title' => 'Lorem 333',
 				'content' => 'bcdefg',
-				'!location' => 'Austin',
-				'!food' => 'turkey',
-				'!fireproof' => 'no',
-				'!rent' => 535,
-				'!state' => 'NY',
+				'Meta' => array(
+					'location' => 'Austin',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
 				)),
 			);
 		
@@ -230,7 +297,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 			)
 		));
 		// we insert a few records, then run a search based on a meta field only
-		$this->assertEqual($result['Article']['!location'], $data[2]['Article']['!location']);
+		$this->assertEqual($result['Article']['Meta']['location'], $data[2]['Article']['Meta']['location']);
 	}
     
 /**
@@ -240,12 +307,14 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		
 		$data = array('Article' => array(
 			'title' => 'Lorem 222',
-			'!location' => 'Syracuse',
-			'!food' => 'turkey',
-			'!fireproof' => 'no',
-			'!rent' => 535,
-			'!state' => 'NY',
-		));
+			'Meta' => array(
+					'location' => 'Syracuse',
+					'food' => 'turkey',
+					'fireproof' => 'no',
+					'rent' => 535,
+					'state' => 'NY'
+					)
+			));
 		$this->Article->saveAll($data);
         $id = $this->Article->id;
         $result = $this->Meta->find('first', array('conditions' => array('Meta.foreign_key' => $id)));
@@ -256,7 +325,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
     	$article = $this->Article->findById($id);
         $this->assertTrue(empty($article)); // make sure article is gone
         $result = $this->Meta->find('first', array('conditions' => $metaLookup));
-        $this->assertTrue(empty($result));
+        $this->assertTrue(empty($result)); // make sure meta is gone
 	}
 
 }

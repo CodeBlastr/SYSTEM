@@ -39,31 +39,42 @@ class MetableBehavior extends ModelBehavior {
  * @param boolean $created The value of $created will be true if a new record was created (rather than an update).
  */
 	public function afterSave(Model $Model, $created) { 
-		foreach ($Model->data[$Model->alias] as $field => $value) {
-			if (strpos($field, '!') === 0) {
-				$metadata[$field] = $value;
-				unset($Model->data[$Model->alias][$field]);
-			}
-		} 
-		if (!empty($metadata)) {
-           	$cleanMetadata = mysql_escape_string(serialize($metadata)); 
+
+		if ( !empty($Model->data[$Model->alias]['Meta']) && is_array($Model->data[$Model->alias]['Meta']) ) {
+			$metadata = $Model->data[$Model->alias]['Meta'];
+			unset( $Model->data[$Model->alias]['Meta'] );
+		}
+
+		if ( !empty($metadata) ) {
             $Meta = ClassRegistry::init('Meta');
 			$existingMeta = $Meta->find( 'first', array('conditions' => array('model' => $Model->name, 'foreign_key' => $Model->id)) );
 			if ( !$existingMeta ) {
+				$cleanMetadata = mysql_escape_string( serialize($metadata) ); 
 				$Meta->query("
 					INSERT INTO `metas` (model, foreign_key, value)
 					VALUES ('{$Model->name}', '{$Model->id}', '{$cleanMetadata}');
 				");
+//					debug($cleanMetadata);
 			} else {
 				// Meta already exists, update it. The incoming data, $metadata, needs to overwrite current values.
 				// extract array from $existingMeta['Meta']['value']
 				$existingMetaValue = unserialize( $existingMeta['Meta']['value'] );
 
+				// clean out obsolete exclamation points
+				foreach ( $existingMetaValue as $k => $v ) {
+					if(strstr($k, '!')) {
+						$noPoint = str_replace('!', '', $k);
+						$existingMetaValue[$noPoint] = $v;
+						unset( $existingMetaValue[$k] );
+					}
+				}
+
 				// merge that array with $metadata
-				$updatedMetaValue = Set::merge($existingMetaValue, $metadata);
+				$updatedMetaValue = Set::merge( $existingMetaValue, $metadata );
+//debug($updatedMetaValue);
 
 				// put it back in $existingMeta
-				$existingMeta['Meta']['value'] = serialize($updatedMetaValue);
+				$existingMeta['Meta']['value'] = mysql_escape_string( serialize($updatedMetaValue) );
 				$Meta->query("
 					UPDATE `metas`
 					SET value = '{$existingMeta['Meta']['value']}'
@@ -126,7 +137,6 @@ class MetableBehavior extends ModelBehavior {
  * @return type
  */
     public function afterFind(Model $Model, $results, $primary) {
-		//debug($results);
 		$results = $this->mergeSerializedMeta($Model, $results); 
 		$results = $this->filterByMetaConditions($Model, $results);  
 		return $results;
@@ -166,20 +176,29 @@ class MetableBehavior extends ModelBehavior {
 /**
  * Merge Serialized Meta
  * 
- * Take the meta data and merge it into the results as if 
- * it were part of the data array to begin with.
- * 
  * @param object $Model
  * @param array $results
  * @return array
  */
     public function mergeSerializedMeta($Model, $results = array()) {
 		foreach($results as &$result) {
+//			debug($result);
 			if(isset($result['Meta']['foreign_key'])) {
-				// merges the unserialized Meta values into the Model array
-				$result[$Model->alias] = Set::merge($result[$Model->alias], unserialize($result['Meta']['value']));
+				// merges the unserialized Meta values into the Model.Meta array
+				$result[$Model->alias]['Meta'] = unserialize($result['Meta']['value']);
+				
+				// clean out obsolete exclamation points
+				foreach ( $result[$Model->alias]['Meta'] as $k => $v ) {
+					if( strstr($k, '!') ) {
+						$noPoint = str_replace('!', '', $k);
+						$result[$Model->alias]['Meta'][$noPoint] = $v;
+						unset( $result[$Model->alias]['Meta'][$k] );
+					}
+				}
+				
 			}
 			unset($result['Meta']);
+//			debug($result);
 		} 
 		return $results;
 	}
@@ -200,9 +219,6 @@ class MetableBehavior extends ModelBehavior {
 			foreach ($Model->metaConditions as $key => $value) {
 				$i = 0;
 				$query = explode('.', $key);
-//				debug($query);
-//				debug($value);
-//				debug($results);
 				// check for operators in the field query
 				if(strpos($query[1], ' ')) {
 					$operator = explode(' ', $query[1]);
@@ -213,20 +229,20 @@ class MetableBehavior extends ModelBehavior {
 				} else {
 					$operator = false;
 				}
-//				debug($operator);
+
 				foreach ($results as $result) {
-					if (isset($result[$query[0]][$query[1]])) {
-						if ($operator === false && $result[$query[0]][$query[1]] == $value) {
+					if (isset($result[$Model->alias][$query[0]][$query[1]])) {
+						if ($operator === false && $result[$Model->alias][$query[0]][$query[1]] == $value) {
 							// leave this result in the $results
-						} elseif ($operator == '>=' && $result[$query[0]][$query[1]] >= $value) {
+						} elseif ($operator == '>=' && $result[$Model->alias][$query[0]][$query[1]] >= $value) {
 							// leave this result in the $results
-						} elseif ($operator == '>' && $result[$query[0]][$query[1]] > $value) {
+						} elseif ($operator == '>' && $result[$Model->alias][$query[0]][$query[1]] > $value) {
 							// leave this result in the $results
-						} elseif ($operator == '<=' && $result[$query[0]][$query[1]] <= $value) {
+						} elseif ($operator == '<=' && $result[$Model->alias][$query[0]][$query[1]] <= $value) {
 							// leave this result in the $results
-						} elseif ($operator == '<' && $result[$query[0]][$query[1]] < $value) {
+						} elseif ($operator == '<' && $result[$Model->alias][$query[0]][$query[1]] < $value) {
 							// leave this result in the $results
-						} elseif ($operator == 'LIKE' && strpos($result[$query[0]][$query[1]], str_replace ('%', '', $value)) !== false) {
+						} elseif ($operator == 'LIKE' && strpos($result[$Model->alias][$query[0]][$query[1]], str_replace ('%', '', $value)) !== false) {
 							// leave this result in the $results
 						} else {
 							// does not compute, remove this result from the $results
@@ -279,8 +295,8 @@ class MetableBehavior extends ModelBehavior {
         
 		if(!empty($query['conditions']) && is_array($query['conditions'])) {
 			foreach($query['conditions'] as $condition => $value) {
-				if(strstr($condition, $Model->alias.'.!')) {
-					$Model->metaConditions[$condition] = $value;
+				if(strstr($condition, $Model->alias.'.Meta.')) {
+					$Model->metaConditions[str_replace($Model->alias.'.', '', $condition)] = $value;
 					unset($query['conditions'][$condition]);
 				}
 			}
@@ -306,6 +322,6 @@ class MetableBehavior extends ModelBehavior {
 		}
 		return $results;
 	}
-		
-		
+
+
 }

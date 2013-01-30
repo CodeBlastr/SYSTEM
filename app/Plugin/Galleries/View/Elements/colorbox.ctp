@@ -37,15 +37,17 @@ if (!empty($gallery['GalleryImage'][0])) {
                     'conversion' => $gallery['GallerySettings']['conversionType'],
                     'quality' => 75,
                     ));	
-            echo $this->Html->link($image,
-                '/'.$largeImage, 
+          echo $this->Html->link($image,
+                array('plugin' => 'users', 'controller' => 'users', 'action' => 'view',$gallery['Gallery']['foreign_key']), 
                 array(
                     'escape' => false,
                     'id' => 'galleryImage' . $slide['id'],
                     'class' => 'jqzoom2 zoomable galleryImage',
                     'title' => $slide['caption'],
                     'rel' => 'example4',
-                    ));  
+                    ));   
+    
+                    
             echo $this->Element('actions', array('galleryId' => $gallery['Gallery']['id'], 'slideId' => $slide['id']), array('plugin' => 'galleries')); ?>
             </div>
         <?php 
