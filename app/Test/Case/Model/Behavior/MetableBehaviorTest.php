@@ -104,7 +104,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		$this->Article->saveAll($data);
 		$result = $this->Article->find('first', array('conditions' => array('Article.id' => $this->Article->id)));
 		// tests that an article was saved, and that the meta info submitted was also saved (and of course returned in proper format)
-		$this->assertEqual(!empty($result['Article']['!location']), true);
+		$this->assertEqual(!empty($result['Article']['Meta']['location']), true);
 	}
 	
 	
@@ -122,9 +122,9 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		));
 		
 		$this->Article->saveAll($dataOne);
-		$resultOne = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.!rent');
+		$resultOne = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.Meta.rent');
 		// asserts that the first save is complete
-		$this->assertEqual($resultOne[$this->Article->id], $dataOne['Article']['!rent']);
+		$this->assertEqual($resultOne[$this->Article->id], $dataOne['Article']['Meta']['rent']);
 		
 		$dataTwo = array('Article' => array(
 			'id' => $this->Article->id,
@@ -136,7 +136,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		));
 		
 		$resultTwo = $this->Article->saveAll($dataTwo);
-		$resultTwo = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.!rent');
+		$resultTwo = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.Meta.rent');
 
 		// asserts that the same ID from the first save has an updated rent value from the second save
 		//$this->assertNotEqual($resultOne[$testId], $data2['Article']['!rent']);
@@ -249,7 +249,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 			)
 		));
 		// we insert a few records, then run a search based on a meta field only
-		$this->assertEqual($result['Article']['!location'], $data[2]['Article']['!location']);
+		$this->assertEqual($result['Article']['Meta']['location'], $data[2]['Article']['Meta']['location']);
 	}
     
 /**
