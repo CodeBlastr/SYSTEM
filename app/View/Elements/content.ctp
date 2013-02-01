@@ -4,10 +4,10 @@ $flash_auth_for_layout = $this->Session->flash('auth');
 if (!empty($defaultTemplate)) {
 	
 	// matches helper template tags like {helper: content_for_layout}
-	preg_match_all ("/(\{helper: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	preg_match_all ("/\{helper: (.*?)\}/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
 	foreach ($matches[0] as $helperMatch) {
-		$helper = trim($matches[3][$i]);
+		$helper = trim($matches[1][$i]);
 		$defaultTemplate["Webpage"]["content"] = str_replace($helperMatch, $$helper, $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
