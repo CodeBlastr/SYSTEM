@@ -137,8 +137,10 @@ class MetableBehavior extends ModelBehavior {
  * @return type
  */
     public function afterFind(Model $Model, $results, $primary) {
-		$results = $this->mergeSerializedMeta($Model, $results); 
-		$results = $this->filterByMetaConditions($Model, $results);  
+		if ($Model->findQueryType !== 'count') {
+			$results = $this->mergeSerializedMeta($Model, $results);
+			$results = $this->filterByMetaConditions($Model, $results);
+		}
 		return $results;
 	}
     
@@ -217,12 +219,11 @@ class MetableBehavior extends ModelBehavior {
 	public function filterByMetaConditions($Model, $results = array()) {
 		if ($Model->metaConditions) {
 			foreach ($Model->metaConditions as $key => $value) {
-				$i = 0;
-				$query = explode('.', $key);
 				// check for operators in the field query
-				if(strpos($query[1], ' ')) {
-					$operator = explode(' ', $query[1]);
+				if(strpos($key, ' ')) {
+					$operator = explode(' ', $key);
 					// set $query[1] to the field without the operator (as it is expected to be, below)
+					$query[0] = 'Meta';
 					$query[1] = $operator[0];
 					// set a variable to the operator
 					$operator = $operator[1];
@@ -230,6 +231,7 @@ class MetableBehavior extends ModelBehavior {
 					$operator = false;
 				}
 
+				$i = 0;
 				foreach ($results as $result) {
 					if (isset($result[$Model->alias][$query[0]][$query[1]])) {
 						if ($operator === false && $result[$Model->alias][$query[0]][$query[1]] == $value) {
@@ -253,9 +255,9 @@ class MetableBehavior extends ModelBehavior {
 					}
 					++$i;
 				}
+				$results = array_values($results);
 			}
 
-			$results = array_values($results);
 		}
 		return $this->_checkOriginalSearchType($Model, $results);
 	}
@@ -299,6 +301,10 @@ class MetableBehavior extends ModelBehavior {
 					$Model->metaConditions[str_replace($Model->alias.'.', '', $condition)] = $value;
 					unset($query['conditions'][$condition]);
 				}
+				elseif(strstr($condition, $Model->alias.'.!')) {  // support deprecated !fields
+					$Model->metaConditions[str_replace($Model->alias.'.!', '', $condition)] = $value;
+					unset($query['conditions'][$condition]);
+				}
 			}
 		}
 		return $query;
@@ -320,6 +326,7 @@ class MetableBehavior extends ModelBehavior {
 		if ($Model->metaType == 'first' && !empty($results[0])) {
 			$results = $results[0];
 		}
+//		debug( $results );
 		return $results;
 	}
 

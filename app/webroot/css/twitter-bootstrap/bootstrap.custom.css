@@ -1,3 +1,7 @@
+/* bsmSelect for better looking multi-select (https://github.com/vicb/bsmSelect) */
+.bsmSelect{display:inline}.bsmOptionDisabled{color:#999}.bsmHighlight{float:right;padding:0;margin:0 0 0 1em}.bsmList{margin:.25em 0 1em 0;position:relative;display:block;padding-left:0;list-style:none}.bsmListItem{position:relative;margin-left:0;padding-left:0;list-style:none;background:#ddd;border:1px solid #bbb;width:auto;margin:0 0 -1px 0;line-height:1em}.bsmListItem:hover{background-color:#e5e5e5}.bsmListItemLabel{padding:5px;display:block}.bsmListSortable .bsmListItemLabel{cursor:move}.bsmListItemRemove{position:absolute;right:0;top:0;padding:5px}.bsmScrollWorkaround{padding-bottom:1px;overflow:auto}
+
+
 /* @todo - remove parts that were commented with "to get rows to work in a fluid way" : deprecated on Dec 21, 2012 : the end of the world */
 * {
     vertical-align: inherit;
@@ -118,6 +122,16 @@ footer .socialmedia img:hover {
 .indexCell {
 	/*float: left; to get rows to work in a fluid way*/
 	overflow: hidden;
+    display: inline-block; /* in lieu of float: left on the contacts index */
+}
+.indexDrop.actions {
+    margin: 10px 0 0 10px; /* used on the contacts index */
+}
+.indexDrop.actions .nav {
+    margin-bottom: -9px; /* used on the contacts index */ 
+}
+.page-title.navbar {
+    margin-bottom: 0; /* used on the contacts index */ 
 }
 .indexData {
 	/*width: 1000px; to get rows to work in a fluid way*/
@@ -132,6 +146,9 @@ footer .socialmedia img:hover {
 	/*max-width: 100px; projects index looks better with this gone */
 	max-height: 20px;
 	margin-right: 10px;
+}
+.metaDataLabel {
+    color: #CCC;
 }
 .metaCell {
 	width: 100%;
@@ -300,6 +317,7 @@ span.btn {
 }
 .page-title .index-form {
     margin: 12px 0 0 20px;
+    float: left; /* contacts index looks good with this */
 }
 .page-title .index-form:after, .clearfix:after {
     content: ".";
