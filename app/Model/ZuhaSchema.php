@@ -193,9 +193,9 @@ class ZuhaSchema extends CakeSchema {
 				}
 
 				$vars = get_class_vars($model);
-				debug($vars);
-				debug($connection);
-				break;
+//				debug($vars);
+//				debug($connection);
+//				break;
 				if (empty($vars['useDbConfig']) || $vars['useDbConfig'] != $connection) {
 					continue;
 				}
