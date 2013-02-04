@@ -16,6 +16,17 @@
 .hero-unit {
 	clear: both;
 }
+/* super select */
+.super-select ol, .super-select ul {
+    margin: 0;
+    max-height: 70px;
+    overflow: auto;
+}
+.super-select ol li, .super-select ul li {
+    margin: 0 2px 2px 0;
+}
+
+
 i {
     text-indent: -5000px;
 }
