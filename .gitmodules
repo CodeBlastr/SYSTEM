@@ -97,3 +97,6 @@
 [submodule "app/Plugin/Invites"]
 	path = app/Plugin/Invites
 	url = git@github.com:zuha/Invites-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Maps"]
+	path = app/Plugin/Maps
+	url = git@github.com:zuha/Maps-Zuha-Cakephp-Plugin.git
