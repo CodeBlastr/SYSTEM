@@ -435,7 +435,7 @@ class Setting extends AppModel {
 /**
  * This function sets up the data from the settings table so that it will write a whole new file each time a setting is saved.
  *
- * return {string}    A string of data used to write to the settings.ini file.
+ * @return {string}    A string of data used to write to the settings.ini file.
  */
 	public function writeSettingsIniData($siteDir = null) {
 		$directory = !empty($siteDir) ? ROOT . DS . $siteDir . DS . 'Config' . DS : CONFIGS;
@@ -457,7 +457,7 @@ class Setting extends AppModel {
 /**
  * This function writes the defaults.ini file, assuming that it is because the settings.ini has been fully upgraded to the latest version.
  *
- * return {string}    A string of data used to write to the settings.ini file.
+ * @return {string}    A string of data used to write to the settings.ini file.
  */
 	public function writeDefaultsIniData($siteDir = null) {
 		$directory = !empty($siteDir) ? ROOT . DS . $siteDir . DS . 'Config' . DS : CONFIGS;
@@ -497,7 +497,7 @@ class Setting extends AppModel {
 			$data = $data['Setting']; // because we are using saveAll
 		}
 
-		// @todo break these out into individual setting function in a foreach loop that will handle many and single records to save
+		/** @todo break these out into individual setting function in a foreach loop that will handle many and single records to save */
 
 		if (!empty($data['Setting']['name']) && !empty($data['Setting']['type'])) {
 			// see if the setting already exists
