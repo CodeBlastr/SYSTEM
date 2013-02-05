@@ -118,8 +118,8 @@ class Gallery extends GalleriesAppModel {
  *  
  * @params array $results
  */
-	public function afterFind($results) {
-		parent::afterFind($results);
+	public function afterFind($results, $primary = false) {
+		parent::afterFind($results, $primary);
 		if (!empty($results[0]['Gallery'])) {
 			// handle hasMany results
 			$i=0; foreach ($results as $result) {
@@ -150,12 +150,12 @@ class Gallery extends GalleriesAppModel {
 		$data = $this->GalleryImage->galleryImageDefaults($data);
 		// create the gallery as the first step
 		if ($this->save($data)) {
-			# now if an image exists in data, save the image as the default thumbnail as well
+			// now if an image exists in data, save the image as the default thumbnail as well
 			if (!empty($data['GalleryImage'])) {
 				$galleryId = $this->id;
 				$data['GalleryImage']['gallery_id'] = $galleryId;
 				if ($this->GalleryImage->add($data, $fileName)) {
-					# RESAVE the Gallery with this image that was just uploaded as the default thumb.
+					// RESAVE the Gallery with this image that was just uploaded as the default thumb.
 					$galleryImageId = $this->GalleryImage->id;
 					$newData['Gallery']['id'] = $galleryId;
 					$newData['GalleryImage']['id'] = $galleryImageId;
@@ -164,13 +164,13 @@ class Gallery extends GalleriesAppModel {
 						return true;
 					} else {
 
-						# roll back everything the resave failed.
+						// roll back everything the resave failed.
 						$this->GalleryImage->delete($galleryImageId);
 						$this->delete($galleryId);
 						throw new Exception(__d('galleries', 'ERROR : Making of gallery thumb failed.', true));
 					}
 				} else {
-					# roll back by deleting the gallery if the image didn't save correctly.
+					// roll back by deleting the gallery if the image didn't save correctly.
 					$this->delete($galleryId);
 					throw new Exception(__d('galleries', 'ERROR : Gallery image update from gallery model.', true));
 				}
