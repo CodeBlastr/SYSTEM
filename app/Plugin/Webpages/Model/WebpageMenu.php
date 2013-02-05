@@ -40,7 +40,7 @@ class WebpageMenu extends WebpagesAppModel {
 			);
 	}
     
-    public function beforeSave(array $options){
+    public function beforeSave($options = array()){
         $this->data = $this->_cleanData($this->data);
         return true;
     }
