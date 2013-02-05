@@ -72,14 +72,12 @@ class UserRole extends UsersAppModel {
  * @param array $data A payment object
  */
 	public function afterSuccessfulPayment($data) {
-//		debug( $data );
-//		break;
 		foreach ( $data['TransactionItem'] as $transactionItem ) {
 			if ( $transactionItem['model'] == 'UserRole' ) {
 				$this->User->changeRole(array(
 					'User' => array(
 						'id' => $data['Customer']['id'],
-						'user_role' => $transactionItem['foreign_key']
+						'user_role' => (int) $transactionItem['foreign_key']
 					)
 				));
 			}
