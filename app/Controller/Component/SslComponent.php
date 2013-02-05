@@ -9,9 +9,9 @@ class SslComponent extends Component {
         $this->Controller = $Controller;
     }
 	
-	public function startup() { }
-	public function beforeRender() { }
-	public function shutdown() { }
+    public function startup(Controller $Controller) { }
+    public function beforeRender(Controller $Controller) { }
+    public function shutdown(Controller $Controller) { }
     
     public function force() {
         if(!$this->RequestHandler->isSSL() && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
