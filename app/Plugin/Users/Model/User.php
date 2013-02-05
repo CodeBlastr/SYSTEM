@@ -302,6 +302,7 @@ class User extends UsersAppModel {
 
 /**
  * Function to change the role of the user submitted
+ * @todo Clean this up to what is neccessary ^JB
  */
 	public function changeRole($data = null) {
 		# check whether user is a data array or the actual user.
@@ -321,6 +322,7 @@ class User extends UsersAppModel {
 
 /**
  * a function which goes through the different ways to get to a user id
+ * @todo Clean this up to what is neccessary ^JB
  */
 	protected function _getUserId($user) {
 		if (is_array($user)) {
@@ -337,6 +339,7 @@ class User extends UsersAppModel {
 
 /**
  * a function which goes through the different ways to get to a user role id
+ * @todo Clean this up to what is neccessary ^JB
  */
 	protected function _getUserRoleId($user) {
 		if (is_array($user)) {
