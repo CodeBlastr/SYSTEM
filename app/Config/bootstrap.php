@@ -263,7 +263,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 *
 	 * @todo There must be a better way...
 	 */
-		public function pluginize($name) {
+		public static function pluginize($name) {
              
             if($name == "1s")
             debug(debug_backtrace());
