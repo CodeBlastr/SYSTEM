@@ -12,14 +12,14 @@ class UsableBehavior extends ModelBehavior {
 	public $restrictRedirect = false;
 
 
-	public function setup(&$Model, $settings = array()) {
+	public function setup(Model $Model, $settings = array()) {
 		$this->defaultRole = !empty($settings['defaultRole']) ? $settings['defaultRole'] : null;
 		$this->superAdminRoleId = defined('__USERS_SUPER_ADMIN_ROLE_ID') ? __USERS_SUPER_ADMIN_ROLE_ID : $this->superAdminRoleId;
         return true;
 	}
 
 
-	public function beforeSave(&$Model) {
+	public function beforeSave(Model $Model) {
 		// remove habtm user data and give it to the afterSave() function
 		if (!empty($Model->data['User']['User'])) {
 			$this->userData = $Model->data;
@@ -39,7 +39,7 @@ class UsableBehavior extends ModelBehavior {
  * @param {array}		An array specifying the conditions for the query to be triggered.
  * @todo				I'm semi-sure that the big query this makes could be optimized better.  An OR and a NOT IN in one query isn't exactly high performance.   But after 9 hours coming up with that we'll leave optimization for another day. 
  */
-	public function beforeFind(&$Model, $queryData) {
+	public function beforeFind(Model $Model, $queryData) {
 		$authUser = CakeSession::read('Auth.User');
 		//$userRole = $authUser['user_role_id']; (this uncommented breaks our tests)
 		$userId = $authUser['id'];
@@ -146,7 +146,7 @@ class UsableBehavior extends ModelBehavior {
  * @param {class} 		Model class triggering this callback
  * @param {array}		The data returned from the find query
  */
-	public function afterFind($Model, $results) {
+	public function afterFind(Model $Model, $results, $primary) {
 		if(empty($results) && str_replace('/', '', $_SERVER['REQUEST_URI']) != 'usersusersrestricted' && $this->restrictRedirect) { 
 			header("Location: /users/users/restricted");
 			break;
@@ -181,7 +181,7 @@ class UsableBehavior extends ModelBehavior {
 /**
  * Callback used to save related users, into the used table, with the proper relationship.
  */
-	public function afterSave(&$Model, $created) {
+	public function afterSave(Model $Model, $created) {
 		// get current users using, so that we can merge and keep duplicates out later
 		$currentUsers = $this->findUsedUsers($Model, $Model->data[$Model->alias]['id'], 'all');
 		
