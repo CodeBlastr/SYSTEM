@@ -44,7 +44,7 @@ class MediableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
-    public function setup($Model, $config = array()) {        
+    public function setup(Model $Model, $config = array()) {        
     	$this->settings = array_merge($this->defaults, $config);
 		$this->modelName = !empty($this->settings['modelAlias']) ? $this->settings['modelAlias'] : $Model->alias;
 		$this->foreignKey =  !empty($this->settings['foreignKeyName']) ? $this->settings['foreignKeyName'] : $Model->primaryKey;
@@ -65,7 +65,7 @@ class MediableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
-	public function afterSave($Model, $created) {
+	public function afterSave(Model $Model, $created) {
         if (!empty($Model->data['GalleryImage']['filename']['name'])){
             $data = $Model->data;
 			$data[$this->modelName]['id'] = $Model->id;
