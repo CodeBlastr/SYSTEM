@@ -11,7 +11,7 @@ class AppErrorHandler extends ErrorHandler {
 	public static function handleException(Exception $exception) {
 		
 		if ($exception instanceof MissingTableException) {
-            return self::MissingTableException($exception);
+            return $this->MissingTableException($exception);
         }
 		
 		$config = Configure::read('Exception');
