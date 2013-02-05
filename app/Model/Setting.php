@@ -355,7 +355,7 @@ class Setting extends AppModel {
  * @param type $primary
  * @return type
  */
-	public function afterFind($results, $primary) {
+	public function afterFind($results, $primary = false) {
 		$i = 0;
 		if (!empty($results[$i]['Setting'])) {
 			foreach ($results as $result) {
