@@ -73,7 +73,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
-    public function setup($Model, $config = array()) {
+    public function setup(Model $Model, $config = array()) {
     	$this->settings[$Model->alias] = array_merge($this->defaults, $config);
     	return true;
 	}
@@ -86,7 +86,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
-	public function copy($Model, $id) {
+	public function copy(Model $Model, $id) {
 		$this->generateContain($Model);
 
 		$this->record = $Model->find('first', array(
@@ -113,7 +113,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access public
  * @return array
  */
-	public function generateContain($Model) {
+	public function generateContain(Model $Model) {
 		if (!$this->__verifyContainable($Model)) {
 			return false;
 		}
@@ -131,7 +131,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
-	private function __removeIgnored($Model) {
+	private function __removeIgnored(Model $Model) {
 		if (!$this->settings[$Model->alias]['ignore']) {
 			return true;
 		}
@@ -153,7 +153,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access private
  * @return array $record
  */
-	private function __convertChildren($Model, $record) {
+	private function __convertChildren(Model $Model, $record) {
 		$children = array_merge($Model->hasMany, $Model->hasOne);
 		foreach ($children as $key => $val) {
 			if (!isset($record[$key])) {
@@ -196,7 +196,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access private
  * @return array $this->record
  */
-	private function __convertData($Model) {
+	private function __convertData(Model $Model) {
 		$this->record[$Model->alias] = $this->__stripFields($Model, $this->record[$Model->alias]);
 		$this->record = $this->__convertHabtm($Model, $this->record);
 		$this->record = $this->__convertChildren($Model, $this->record);
@@ -215,7 +215,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access public
  * @return array modified $record
  */
-	private function __convertHabtm($Model, $record) {
+	private function __convertHabtm(Model $Model, $record) {
 		if (!$this->settings[$Model->alias]['habtm']) {
 			return $record;
 		}
@@ -250,7 +250,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access private
  * @return mixed
  */
-	private function __copyRecord($Model) {
+	private function __copyRecord(Model $Model) {
 		$Model->create();
 		$Model->set($this->record);
 		return $Model->saveAll(null, array('validate' => false));
@@ -265,7 +265,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access private
  * @return array
  */
-	private function __recursiveChildContain($Model) {
+	private function __recursiveChildContain(Model $Model) {
 		$contain = array();
 		if (!$this->settings[$Model->alias]['recursive']) {
 			return $contain;
@@ -291,7 +291,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access private
  * @return array
  */
-	private function __stripFields($Model, $record) {
+	private function __stripFields(Model $Model, $record) {
 		foreach ($this->settings[$Model->alias]['stripFields'] as $field) {
 			if (array_key_exists($field, $record)) {
 				unset($record[$field]);
@@ -308,7 +308,7 @@ class CopyableBehavior extends ModelBehavior {
  * @access private
  * @return boolean
  */
-	private function __verifyContainable($Model) {
+	private function __verifyContainable(Model $Model) {
 		if (!$Model->Behaviors->attached('Containable')) {
 			return $Model->Behaviors->attach('Containable');
 		}
