@@ -198,7 +198,7 @@ class Contact extends ContactsAppModel {
     }
 	
 	
-	function beforeSave() {
+	function beforeSave($options = array()) {
 		!empty($this->data['Contact']['contact_type']) ? $this->data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']) : null; 
 		if (in_array('Activities', CakePlugin::loaded()) && !empty($this->data['Contact']['contact_type']) && $this->data['Contact']['contact_type'] == 'lead') {
 			// log when leads are created
