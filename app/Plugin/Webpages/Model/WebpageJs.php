@@ -67,7 +67,7 @@ class WebpageJs extends WebpagesAppModel {
  * After Find
  * 
  */
- 	public function afterFind($results, $primary) {
+ 	public function afterFind($results, $primary = false) {
 		return $this->_jsContentResults($results);
 	}
 	
@@ -104,7 +104,7 @@ class WebpageJs extends WebpagesAppModel {
 	public function _jsFile($fileName = 'all.js', $content, $theme=null) {
 
 		$filePath = $this->_getJsFilePath($theme) . $fileName;
-		# file helper
+		// file helper
 		App::uses('File', 'Utility');
 		$file = new File($filePath);
 		$file->path = $filePath;
@@ -120,7 +120,7 @@ class WebpageJs extends WebpagesAppModel {
 		if($theme)	{
 			$themePath = App::themePath($theme);
 		}
-		# check whether this is multi-sites
+		// check whether this is multi-sites
 		if (file_exists($themePath.WEBROOT_DIR)) {
 			return $themePath.WEBROOT_DIR.DS.JS_URL;
 		} else {
@@ -137,11 +137,11 @@ class WebpageJs extends WebpagesAppModel {
 	
 	
 	public function remove($id, $theme=null) {
-		# find the js file being deleted
+		// find the js file being deleted
 		$webpageJs = $this->find('first', array('conditions' => array('WebpageJs.id' => $id)));
-		# Get file path
+		// Get file path
 		$filePath = $this->_getJsFilePath($theme) . $webpageJs['WebpageJs']['name'];
-		#import the file helper
+		// import the file helper
 		App::uses('File', 'Utility');
 		$file = new File($filePath);
 		$file->path = $filePath;
@@ -154,7 +154,7 @@ class WebpageJs extends WebpagesAppModel {
 					return false;
 				}
 			} else {
-				# the file was deleted.  but we're not re-creating it at this point, because it would introduce a whole 'nother set of ifs that have to go here, to check whether the file was recreated.  Until we start switching to the "try" and "throw" exceptions methods, that won't be very easy here.  And it shouldn't be a big deal because it won't be called anymore, and it would just be over written if you created a js file with the same name.
+				// the file was deleted.  but we're not re-creating it at this point, because it would introduce a whole 'nother set of ifs that have to go here, to check whether the file was recreated.  Until we start switching to the "try" and "throw" exceptions methods, that won't be very easy here.  And it shouldn't be a big deal because it won't be called anymore, and it would just be over written if you created a js file with the same name.
 				return false;
 			}
 		} else {
@@ -187,10 +187,10 @@ class WebpageJs extends WebpagesAppModel {
 		App::import('Model', 'Setting');
 		$this->Setting = new Setting;
 		
-		# find all of the js files that have been created
+		// find all of the js files that have been created
 		$jsFiles = $this->find('all');
 		if (!empty($jsFiles)) {
-			# write the settings using all js files in existence
+			// write the settings using all js files in existence
 			$data['Setting']['type'] = 'Webpages';
 			$data['Setting']['name'] = 'DEFAULT_JS_FILENAMES';
 			$data['Setting']['value'] = '';
@@ -207,7 +207,7 @@ class WebpageJs extends WebpagesAppModel {
 				return false;
 			}
 		} else {
-			# if its empty then just delete the setting
+			// if its empty then just delete the setting
 			$setting = $this->Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_JS_FILENAMES')));
 			if ($this->Setting->delete($setting['Setting']['id'])) {
 				if ($this->Setting->writeSettingsIniData()) {
@@ -222,9 +222,9 @@ class WebpageJs extends WebpagesAppModel {
 	}
 	
 	protected function _cleanData($data) {
-		if(!strpos($data['WebpageJs']['name'], '.js')) :
+		if(!strpos($data['WebpageJs']['name'], '.js')) {
 			$data['WebpageJs']['name'] = $data['WebpageJs']['name'].'.js';
-		endif;
+                }
 			
 		return $data;
 	}
