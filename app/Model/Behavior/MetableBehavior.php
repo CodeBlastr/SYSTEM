@@ -26,7 +26,7 @@ class MetableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param type $settings
  */
-	public function setup($Model, $settings = array()) {
+	public function setup(Model $Model, $settings = array()) {
         return true;
 	}
 
@@ -98,7 +98,7 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  * @todo optimize by flattening and searching for Alias.
  */
-	public function beforeFind(Model $Model, array $query) {//die('x');break;
+	public function beforeFind(Model $Model, $query) {//die('x');break;
         $Model->bindModel(array(
         	'hasOne' => array(
 				'Meta' => array(
@@ -136,7 +136,7 @@ class MetableBehavior extends ModelBehavior {
  * @param type $primary
  * @return type
  */
-    public function afterFind(Model $Model, $results, $primary) {
+    public function afterFind(Model $Model, $results, $primary = false) {
 		if ($Model->findQueryType !== 'count') {
 			$results = $this->mergeSerializedMeta($Model, $results);
 			$results = $this->filterByMetaConditions($Model, $results);
@@ -182,7 +182,7 @@ class MetableBehavior extends ModelBehavior {
  * @param array $results
  * @return array
  */
-    public function mergeSerializedMeta($Model, $results = array()) {
+    public function mergeSerializedMeta(Model $Model, $results = array()) {
 		foreach($results as &$result) {
 //			debug($result);
 			if(isset($result['Meta']['foreign_key'])) {
@@ -216,7 +216,7 @@ class MetableBehavior extends ModelBehavior {
  * @param array $results
  * @return array
  */
-	public function filterByMetaConditions($Model, $results = array()) {
+	public function filterByMetaConditions(Model $Model, $results = array()) {
 		if ($Model->metaConditions) {
 			foreach ($Model->metaConditions as $key => $value) {
 				// check for operators in the field query
@@ -322,7 +322,7 @@ class MetableBehavior extends ModelBehavior {
  * @param type $results
  * @return type
  */
-	protected function _checkOriginalSearchType($Model, $results) {
+	protected function _checkOriginalSearchType(Model $Model, $results) {
 		if ($Model->metaType == 'first' && !empty($results[0])) {
 			$results = $results[0];
 		}

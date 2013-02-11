@@ -72,7 +72,8 @@ class AdminController extends AppController {
 		$lastTable = @array_pop(array_keys($this->Session->read('Updates.last'))); // check the session for the last TABLE run  
 		$nextTable = key(array_slice($allTables, array_search($lastTable, array_keys($allTables)) + 1));
 		$nextPlugin = !empty($nextTable) ? $allTables[$nextTable] : null;
-		$endTable = array_pop(array_keys($allTables)); // check the session for the last TABLE run  
+                $keysOfAllTables = array_keys($allTables);
+		$endTable = array_pop($keysOfAllTables); // check the session for the last TABLE run  
 		
 		
 		/* Turn on to debug 

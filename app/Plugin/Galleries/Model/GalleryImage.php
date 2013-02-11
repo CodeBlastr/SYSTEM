@@ -241,11 +241,11 @@ class GalleryImage extends GalleriesAppModel {
  */
 	private function _getImageOptions($data) {
 		if (!empty($data['UploadOptions'])) {
-			# ex. array('filename' => array('thumbsizes' => array('small' => array('width' => 50, 'height' => 50))));
-			# if you name one, you must name them all with this function
+			// ex. array('filename' => array('thumbsizes' => array('small' => array('width' => 50, 'height' => 50))));
+			// if you name one, you must name them all with this function
 			$uploadOptions = $data['UploadOptions']; 
 		} else {
-			# ex. array('filename' => array('thumbsizes' => array('small' => array('width' => 50, 'height' => 50))));
+			// ex. array('filename' => array('thumbsizes' => array('small' => array('width' => 50, 'height' => 50))));
 			$uploadOptions = $this->galleryImageDefaults($data); 
 		}
 		return $uploadOptions;
