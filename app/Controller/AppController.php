@@ -772,7 +772,7 @@ class AppController extends Controller {
  * @param UNKNOWN		Have not used it don't know what it does or if it works.
  * @return bool
  */
-	public function __sendMail($toEmail = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
+	public function __sendMail($toEmail = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = array()) {
 		$this->SwiftMailer = $this->Components->load('SwiftMailer');
 		if (defined('__SYSTEM_SMTP')) {
 			extract(unserialize(__SYSTEM_SMTP));
@@ -787,7 +787,7 @@ class AppController extends Controller {
 				if(isset($toEmail['replyTo']) && is_array($toEmail)) $this->SwiftMailer->replyTo = $toEmail['replyTo'];
 
 				$this->SwiftMailer->template = $template;
-
+				$this->SwiftMailer->attachments = $attachment;
 				$this->SwiftMailer->layout = 'email';
 				$this->SwiftMailer->sendAs = 'html';
 

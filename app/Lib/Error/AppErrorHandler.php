@@ -48,7 +48,7 @@ class AppErrorHandler extends ErrorHandler {
 /** 
  * Handle mssing table exception in order to create the table if the plugin is loaded (typically triggered like this during upgrades)
  */
- 	public function MissingTableException ($exception) {	
+ 	public static function MissingTableException ($exception) {	
 		
 		$exceptionMessage = $exception->getMessage();
 		if(preg_match('/Table\s(\w*)\sfor model /', $exceptionMessage, $matches)) {

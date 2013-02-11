@@ -80,7 +80,7 @@ class WebpageCss extends WebpagesAppModel {
  * After Find
  * 
  */
- 	public function afterFind($results, $primary) {
+ 	public function afterFind($results, $primary = false) {
 		return $this->_cssContentResults($results);
 	}
 	
@@ -117,7 +117,7 @@ class WebpageCss extends WebpagesAppModel {
 	
 	protected function _cssFile($fileName = 'all.css', $content, $theme=null) {
 		$filePath = $this->_getCssFilePath($theme) . $fileName;
-		# file helper
+		// file helper
 		App::uses('File', 'Utility');
 		$file = new File($filePath);
 		$file->path = $filePath;
@@ -167,12 +167,12 @@ class WebpageCss extends WebpagesAppModel {
 	
 	
 	public function remove($id, $theme=null) {
-		# find the css file being deleted
+		// find the css file being deleted
 		$webpageCss = $this->find('first', array('conditions' => array('WebpageCss.id' => $id)));
-		# Get file path
+		// Get file path
 		$filePath = $this->_getCssFilePath($theme) . $webpageCss['WebpageCss']['name'];
 		
-		#import the file helper
+		// import the file helper
 		App::uses('File', 'Utility');
 		$file = new File($filePath);
 		$file->path = $filePath;
@@ -218,10 +218,10 @@ class WebpageCss extends WebpagesAppModel {
 		App::import('Model', 'Setting');
 		$this->Setting = new Setting;
 		
-		# find all of the css files that have been created
+		// find all of the css files that have been created
 		$cssFiles = $this->find('all');
 		if (!empty($cssFiles)) {
-			# write the settings using all css files in existence
+			// write the settings using all css files in existence
 			$data['Setting']['type'] = 'Webpages';
 			$data['Setting']['name'] = 'DEFAULT_CSS_FILENAMES';
 			$data['Setting']['value'] = '';
@@ -238,7 +238,7 @@ class WebpageCss extends WebpagesAppModel {
 				return false;
 			}
 		} else {
-			# if its empty then just delete the setting
+			// if its empty then just delete the setting
 			$setting = $this->Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_CSS_FILENAMES')));
 			if ($this->Setting->delete($setting['Setting']['id'])) {
 				if ($this->Setting->writeSettingsIniData()) {
@@ -253,9 +253,9 @@ class WebpageCss extends WebpagesAppModel {
 	}
 	
 	protected function _cleanData($data) {
-		if(!strpos($data['WebpageCss']['name'], '.css')) :
+		if(!strpos($data['WebpageCss']['name'], '.css')) {
 			$data['WebpageCss']['name'] = $data['WebpageCss']['name'].'.css';
-		endif;
+                }
 			
 		return $data;
 	}
