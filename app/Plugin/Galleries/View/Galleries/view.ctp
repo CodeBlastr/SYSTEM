@@ -15,7 +15,7 @@ if (!empty($gallery)) { ?>
 	<?php echo $this->Element($gallery['GallerySettings']['galleryType'], array('gallery' => $gallery), array('plugin' => 'galleries'));
 } else { ?>
 	<div class="noData">
-    	<p> No gallery to display. <?php echo $this->Html->link('Go back', $referer); ?> </p>
+    	<p> No gallery to display. <?php echo $this->Html->link('Go back', 'javascript:history.go(-1)'); ?> </p>
     </div>
 <?php
 } ?>
