@@ -317,27 +317,31 @@ class AppModel extends Model {
 				$models = array_unique(Set::extract('/' . $this->alias . '/model', $args[1]));
 				if (!empty($models)) {
 		            foreach ($models as $model) {
-						$model = Inflector::classify($model);
-		                App::uses($model, ZuhaInflector::pluginize($model).'.Model');
-		                $Origin = new $model;
-		                if (method_exists($Origin, 'origin_afterFind') && is_callable(array($Origin, 'origin_afterFind'))) {
-		                    $args[1] = $Origin->origin_afterFind($this, $args[1], $args[2]);
-		                }
+		            	if (!empty($model)) {
+							$model = Inflector::classify($model);
+			                App::uses($model, ZuhaInflector::pluginize($model).'.Model');
+			                $Origin = new $model;
+			                if (method_exists($Origin, 'origin_afterFind') && is_callable(array($Origin, 'origin_afterFind'))) {
+			                    $args[1] = $Origin->origin_afterFind($this, $args[1], $args[2]);
+			                }
+		            	}
 		            }
 				}
 			}
 			return $args[1];
 		}
-		elseif (!empty($callbackName) && $callbackName == 'origin_afterSave') {
+		if (!empty($callbackName) && $callbackName == 'origin_afterSave') {
 			$models = $args[1];
 			$created = $args[2];
 			if (!empty($models)) {
 				foreach ($models as $model) {
-					$model = Inflector::classify($model);
-					App::uses($model, ZuhaInflector::pluginize($model).'.Model');
-					$Origin = new $model;
-					if (method_exists($Origin, 'origin_afterSave') && is_callable(array($Origin, 'origin_afterSave'))) {
-						$Origin->origin_afterSave($this, $created);
+		            if (!empty($model)) {
+						$model = Inflector::classify($model);
+						App::uses($model, ZuhaInflector::pluginize($model).'.Model');
+						$Origin = new $model;
+						if (method_exists($Origin, 'origin_afterSave') && is_callable(array($Origin, 'origin_afterSave'))) {
+							$Origin->origin_afterSave($this, $created);
+						}
 					}
 				}
 			}
