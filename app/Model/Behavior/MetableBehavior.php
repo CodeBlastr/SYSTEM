@@ -228,11 +228,14 @@ class MetableBehavior extends ModelBehavior {
 					// set a variable to the operator
 					$operator = $operator[1];
 				} else {
+					$query[0] = 'Meta';
+					$query[1] = $key;
 					$operator = false;
 				}
 
 				$i = 0;
 				foreach ($results as $result) {
+					//debug($result);
 					if (isset($result[$Model->alias][$query[0]][$query[1]])) {
 						if ($operator === false && $result[$Model->alias][$query[0]][$query[1]] == $value) {
 							// leave this result in the $results
