@@ -282,6 +282,12 @@ class Setting extends AppModel {
 					. 'linkIdSignIn = "signinLink"' . PHP_EOL
 				),
 			),
+    		'Forms' => array(
+				array(
+					'name' => 'KEYS',
+					'description' => 'Defines keys to bypass form security.' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'key[] = "gf2398f989a8j9823987923"' . PHP_EOL . 'key[] = "jhaksf283787aj9j298aj9f82j"',
+				),
+			),
 			'Media' => array(
 				array(
 					'name' => 'MEDIA_SORTED',
