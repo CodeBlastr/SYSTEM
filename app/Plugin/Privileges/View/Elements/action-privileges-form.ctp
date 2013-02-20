@@ -5,47 +5,46 @@ $groupCount = count($groups);
 echo $this->Form->create('Privilege' , array('url'=> array('plugin'=> 'privileges', 'controller'=> 'privileges', 'action'=> 'add'))); ?>
 <table>
     <thead>
-         <tr>
-            <th>Action</th>
-            <?php 
-            foreach($groups as $g) { 
+		<?php
+		$tableHeaders[] = 'Action';
+		foreach($groups as $g) { 
                 if($g["UserRole"]["id"] != 1) { 
-                    echo __('<th>%s</th>', $g["UserRole"]["name"]);
+					$tableHeaders[] = $g["UserRole"]["name"];
                 }
-            } ?>
-        </tr>
+            }
+		echo $this->Html->tableHeaders($tableHeaders);
+		?>
     </thead>
     <tbody>
-  
-
-
     <?php
-    foreach($data as $ac) { ?>
-        <tr>
-            <td> <?php echo $ac['Section']["alias"]; ?> </td>
-            <?php
-            for($i = 0; $i < $groupCount; $i++) { 
-                $field_name = $ac["Section"]["id"] . '_' . $groups[$i]["Requestor"]['id']; 
-                if(isset($ac["Requestor"][0]) && $groups[$i]['UserRole']['id'] != 1){
-                    // loop throug Requestors to see if it maches the given group
-                    $has_check  = false;
-                    for($j = 0 ; $j < count($ac["Requestor"]); $j++){
-                        if($ac["Requestor"][$j]['ArosAco']['_create'] == 1 && $ac["Requestor"][$j]['ArosAco']['aro_id'] == $groups[$i]["Requestor"]['id']){
-                            $has_check = true;
-                        }
-                    }
-                    if($has_check) { 
-                        echo '<td>' . $this->Form->input($field_name , array('type' => 'checkbox' , 'label'=>'' , 'checked'=>'true')) . '</td>';
-                    } else { 
-                        echo '<td>' . $this->Form->input($field_name , array('type' => 'checkbox' , 'label'=>'')) . '</td>';
-                    }
-                } elseif($groups[$i]["UserRole"]['id'] != 1) {
-                    echo '<td>' . $this->Form->input($field_name , array('type' => 'checkbox' , 'label'=>'')) . '</td>';
-                }
-            } ?>
-        </tr>
-    <?php
+    foreach($data as $ac) {
+		
+		$tableCells = array($ac['Section']["alias"]);
+		
+		for($i = 0; $i < $groupCount; $i++) {
+			$field_name = $ac["Section"]["id"] . '_' . $groups[$i]["Requestor"]['id']; 
+			if(isset($ac["Requestor"][0]) && $groups[$i]['UserRole']['id'] != 1){
+				// loop throug Requestors to see if it maches the given group
+				$has_check  = false;
+				for($j = 0 ; $j < count($ac["Requestor"]); $j++){
+					if($ac["Requestor"][$j]['ArosAco']['_create'] == 1 && $ac["Requestor"][$j]['ArosAco']['aro_id'] == $groups[$i]["Requestor"]['id']){
+						$has_check = true;
+					}
+				}
+				if($has_check) { 
+					$tableCells[] = $this->Form->input($field_name, array('type' => 'checkbox', 'label'=>false, 'checked'=>'true', 'div'=>false));
+				} else { 
+					$tableCells[] = $this->Form->input($field_name, array('type' => 'checkbox', 'label'=>false, 'div'=>false));
+				}
+			} elseif($groups[$i]["UserRole"]['id'] != 1) {
+				$tableCells[] =  $this->Form->input($field_name, array('type' => 'checkbox', 'label'=>false, 'div'=>false));
+			}
+		}
+		
+		echo $this->Html->tableCells(array($tableCells));
+
     } ?>
+
     </tbody>
 </table>
 
