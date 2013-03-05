@@ -50,12 +50,6 @@ class SectionsController extends PrivilegesAppController {
       'order' => array('Section.alias', 'Section.lft ASC')  
     ));
         
-    //$parent = $this->Section->getParentNode($pluginId);
-    //$this->set('userFields', $this->_userFields($parent, $sections));
-    //$this->set('userFieldSettings', $this->_userFieldSettings($sections));
-    //$this->set('parent', $this->Section->getParentNode($pluginId));
-    $this->set('section', $sections[0]['Section']['alias']);
-    unset($sections[0]);
     $this->set('sections', $sections);
     
     
