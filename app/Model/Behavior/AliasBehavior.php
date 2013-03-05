@@ -99,7 +99,7 @@ class AliasBehavior extends ModelBehavior {
         }
         //unset($Model->data['Alias']); // commented out 11/28/2012 RK remove if webpage adding / editing still works
 		$this->trigger = isset($params['atomic']) ? false : true; // test for whether this is a saveAll() or save()
-		return parent::beforeSave($Model, $params);
+		return parent::beforeSave($Model);
 	}
 
 /**
