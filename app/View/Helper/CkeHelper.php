@@ -64,9 +64,9 @@ class CkeHelper extends Helper {
 	
 	protected function _fileManager() {
 		if (CakeSession::read('Auth.User') && defined('SITE_DIR')) {
-			CakeSession::write('KCFINDER.disabled', false);
-			CakeSession::write('KCFINDER.uploadURL', '/theme/default/upload/' . CakeSession::read('Auth.User.id'));
-			CakeSession::write('KCFINDER.uploadDir', '../../../../' . SITE_DIR . '/Locale/View/webroot/upload/' . CakeSession::read('Auth.User.id'));
+//			CakeSession::write('KCFINDER.disabled', false);
+//			CakeSession::write('KCFINDER.uploadURL', '/theme/default/upload/' . CakeSession::read('Auth.User.id'));
+//			CakeSession::write('KCFINDER.uploadDir', '../../../../' . SITE_DIR . '/Locale/View/webroot/upload/' . CakeSession::read('Auth.User.id'));
 	    /*		
 			// path settings
 			$paths = '';
