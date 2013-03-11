@@ -198,7 +198,7 @@ class Contact extends ContactsAppModel {
     }
 	
 	
-	function beforeSave($options = array()) {
+	public function beforeSave($options = array()) {
 		!empty($this->data['Contact']['contact_type']) ? $this->data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']) : null; 
 		if (in_array('Activities', CakePlugin::loaded()) && !empty($this->data['Contact']['contact_type']) && $this->data['Contact']['contact_type'] == 'lead') {
 			// log when leads are created
@@ -211,11 +211,12 @@ class Contact extends ContactsAppModel {
 				));
 		}
 		$this->checkAssigneeChange();
-		return true;
+		return parent::beforeSave($options);
 	}
 	
-	function afterSave($created) {
+	public function afterSave($created) {
 		$this->notifyAssignee();
+		return parent::afterSave($created);
 	}
  
 

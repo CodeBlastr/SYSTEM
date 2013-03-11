@@ -1,13 +1,12 @@
 <?php 
-if (isset($this->Paginator) && !empty($this->Paginator)) { ?>
-<div class="paging">
-	<p><?php echo $this->Paginator->counter('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}');?></p>
-    <p>
-        <?php echo $this->Paginator->prev('<< Previous', array(), null, array('class'=>'disabled'));?>
-        <?php echo $this->Paginator->numbers(array('separator' => ''));  ?> 
-        <?php echo $this->Paginator->next('Next >>', array(), null, array('class' => 'disabled'));?>
-    </p>
-</div>
-<?php } ?>
-
-
+if (isset($this->Paginator) && !empty($this->Paginator)) {
+	echo '<div class="paging">';
+	
+	if ($this->Paginator->counter('{:pages}') > 1) {
+		echo __('<p>%s</p>', $this->Paginator->counter('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}.')); 
+		echo __('<p>%s %s %s</p>', $this->Paginator->prev('Previous', array(), null, array('class'=>'disabled')), $this->Paginator->numbers(array('separator' => '')), $this->Paginator->next('Next', array(), null, array('class' => 'disabled')));
+	} else {
+		echo __('<p>%s</p>', $this->Paginator->counter('Showing {:current} records out of {:count} total.')); 
+	}
+	echo '</div>';
+} 

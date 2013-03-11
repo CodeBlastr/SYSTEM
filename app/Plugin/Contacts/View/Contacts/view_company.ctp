@@ -57,7 +57,7 @@
 	</div>
 </div>
 
-<div class="contacts view">
+<div class="contacts view pull-left span8 first">
 	<?php
 	echo '<h4>Contact Details ' . $this->Html->link('Add', array('plugin' => 'contacts', 'controller' => 'contact_details', 'action' => 'add', $contact['Contact']['id']), array('class' => 'btn btn-mini btn-primary')) . '</h4>';
 	if (!empty($contact['ContactDetail'])) {

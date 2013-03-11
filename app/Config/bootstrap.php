@@ -220,6 +220,18 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
         
         	return $clean;
         }
+	/**
+	 * Flatten a multidimensional array to a single string
+	 * 
+	 * @param array $array
+	 */
+	function flatten($array = array()) {
+		$json  = json_encode($array); // converts an object to an array
+		$array = json_decode($json, true);
+	    $return = array();
+	    @array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+	    return implode(',', $return);
+	}
 	
 	/**
 	 * Function for formatting the pricing of an item.

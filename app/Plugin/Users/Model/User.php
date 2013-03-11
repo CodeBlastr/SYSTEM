@@ -26,6 +26,12 @@ class User extends UsersAppModel {
 				'message' => 'Password, and confirm password fields do not match.',
 				'required' => true
 				),
+        	'strongPassword' => array(
+				'rule' => array('_strongPassword'),
+				'allowEmpty' => false,
+				'message' => 'Password should be six characters, contain numbers and capital and lowercase letters.',
+				'required' => true
+				),
 			),
 		'username' => array(
 			'notempty' => array(
@@ -134,6 +140,12 @@ class User extends UsersAppModel {
 		parent::__construct($id, $table, $ds);
 	}
 
+/**
+ * Compare Password
+ * 
+ * Matching password test.
+ * @return bool
+ */
 	protected function _comparePassword() {
 		// fyi, confirm password is hashed in the beforeValidate method
 		if (isset($this->data['User']['confirm_password']) &&
@@ -146,7 +158,23 @@ class User extends UsersAppModel {
 			return false;
 		}
 	}
+    
+/**
+ * Strong Password
+ * 
+ * Password strength test
+ * @return bool
+ */
+    protected function _strongPassword() {
+        return preg_match('/^((?=.*[^a-zA-Z])(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,})$/', $this->data['User']['password']);
+    }
 
+/**
+ * Email Required
+ * 
+ * Check if email is required
+ * @return bool
+ */
 	protected function _emailRequired() {
 		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION') && empty($this->data['User']['email'])) {
 			return false;
@@ -505,9 +533,9 @@ class User extends UsersAppModel {
  * @return {array}		Parsed form input data.
  */
 	protected function _cleanAddData($data) {
-		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@')) :
+		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@')) {
 			$data[$this->alias]['email'] = $data[$this->alias]['username'];
-		endif;
+		}
 
 		if(!isset($data[$this->alias]['user_role_id'])) {
 			$data[$this->alias]['user_role_id'] = (defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : 3 ;
