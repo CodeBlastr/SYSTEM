@@ -29,33 +29,28 @@ class Zuha {
 		$toDate = !empty($toDate) ? $toDate : date('Y-m-d'); 
 		$options['type'] = !empty($options['type']) ? $options['type'] : 'days';
 		$options['format'] = !empty($options['format']) ? $options['format'] : 'Y-m-d';
-		
 		if ($options['type'] == 'days') {
 			$dateMonthYearArr = array();
 			$fromDateTs = strtotime($fromDate);
 			$toDateTs = strtotime($toDate);
-			
 			for ($currentDateTs = $fromDateTs; $currentDateTs <= $toDateTs; $currentDateTs += (60 * 60 * 24)) {
 				// use date() and $currentDateTS to format the dates in between
 				$currentDateStr = date($options['format'], $currentDateTs);
 				$dateMonthYearArr[] = $currentDateStr;
 				//print $currentDateStr.Ó<br />Ó;
 			}
-			
 			return $dateMonthYearArr;
 		} else {
 			$time1 = strtotime($date1);
 			$time2 = strtotime($date2);
 			$my = date('mY', $time2);
-			
 			$months = array(date('F Y', $time1));
-			
 			while($time1 < $time2) {
-			$time1 = strtotime(date('Y-m-d', $time1).' +1 month');
-			if(date('mY', $time1) != $my && ($time1 < $time2))
-			$months[] = date('F Y', $time1);
+				$time1 = strtotime(date('Y-m-d', $time1).' +1 month');
+				if(date('mY', $time1) != $my && ($time1 < $time2)) {
+					$months[] = date('F Y', $time1);
+				}
 			}
-			
 			$months[] = date('F Y', $time2);
 			return $months;
 		}
