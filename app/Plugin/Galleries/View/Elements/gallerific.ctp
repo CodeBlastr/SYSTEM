@@ -12,9 +12,9 @@ if (!empty($gallery['GalleryImage'][0])) {
 	# put default variable setups here
 	
 	# additional files needed for gallery display
-	echo $this->Html->css('/galleries/css/galleriffic/galleriffic-2', '', array('inline' => 0));
-	echo $this->Html->script('/galleries/js/galleriffic/jquery.galleriffic', array('inline' => 0));
-	echo $this->Html->script('/galleries/js/galleriffic/jquery.opacityrollover', array('inline' => 0)); ?>
+	echo $this->Html->css('/galleries/css/galleriffic/galleriffic-2', '', array('inline' => false, 'once'=>true));
+	echo $this->Html->script('/galleries/js/galleriffic/jquery.galleriffic', array('inline' => false, 'once'=>true));
+	echo $this->Html->script('/galleries/js/galleriffic/jquery.opacityrollover', array('inline' => false, 'once'=>true)); ?>
 
     <div id="inlineGallery">
       <div id="gallery" class="gallery-content">
