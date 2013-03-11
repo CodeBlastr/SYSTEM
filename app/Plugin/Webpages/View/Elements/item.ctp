@@ -27,8 +27,7 @@ echo $this->Html->link($data['WebpageMenu']['item_text'], $data['WebpageMenu']['
     echo $this->Form->input('WebpageMenuItem.item_text', array('label' => 'Link Text', 'value' => $data['WebpageMenu']['item_text']));
     echo $this->Form->input('WebpageMenuItem.item_url', array('label' => 'Url', 'value' => $data['WebpageMenu']['item_url']));
     echo $this->Form->end(__('Save'));
-    
-    echo $this->Html->link(__('Delete'), array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'delete', $data['WebpageMenu']['id']), array('class' => 'btn btn-danger'), __('Are you sure you want to delete %s?', $data['WebpageMenu']['item_text']));
+    echo $this->Form->postlink(__('Delete'), array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'delete', $data['WebpageMenu']['id']), array('class' => 'btn btn-danger'), __('Are you sure you want to delete the %s menu item?', $data['WebpageMenu']['item_text']));
     
     echo '</div>';
 

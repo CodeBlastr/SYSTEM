@@ -118,6 +118,16 @@ footer .socialmedia img:hover {
 	margin: 18px 0 0 7px;
 }
 /* indexes */
+.indexRow {
+	border-left: 5px solid #eaeaea;
+	padding-left: 11px;-webkit-box-sizing: 
+	border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+}
+.indexRow:hover {
+	border-left: 5px solid #08c;
+}
 .indexContainer .navbar-inner {
 	padding: 0 20px 10px;
 }
@@ -132,7 +142,7 @@ footer .socialmedia img:hover {
 }
 .indexCell {
 	/*float: left; to get rows to work in a fluid way*/
-	overflow: hidden;
+	/* overflow: hidden; removed for index action buttons */
     display: inline-block; /* in lieu of float: left on the contacts index */
 }
 .indexDrop.actions {
@@ -188,12 +198,6 @@ footer .socialmedia img:hover {
 .descriptionCell {
 	clear: left;
 	padding: 0 0 10px 0;
-}
-.truncate {
-	clear: left;
-	max-height: 20px;
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 .pagination {
 	height: auto;

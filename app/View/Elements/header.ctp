@@ -12,14 +12,13 @@ $showContext = !empty($showContext) ? true : false; ?>
             </a>
             <ul class="nav">
             	<li class="dropdown">
-            		<a class="brand dropdown-toggle" data-toggle="dropdown" href="#"><span>flo</span>Managr <b class="caret"></b></a>
-            		<?php echo !empty($showContext) ? $this->Element('context_menu', array('before' => '<li>' . $this->Html->link('View Site', '/') . '</li><li class="divider"></li>')) : null; ?>   
+            		<a class="brand dropdown-toggle" data-toggle="dropdown" href="#">buildrr<b class="caret"></b></a>
+            		<?php echo !empty($showContext) ? $this->Element('context_menu', array('before' => __('<li>%s</li><li>%s</li><li class="divider"></li>', $this->Html->link('Dashboard', '/admin/', array('title' => 'Admin Dashboard')), $this->Html->link('View Site', '/')))) : null; ?>   
             	</li>
             </ul>
             
             <div class="nav-collapse collapse">
                 <ul class="nav">
-               		<li class="nav-mode"><?php echo $this->Html->link('Dashboard', '/admin/', array('title' => 'Admin Dashboard')); ?></li>
                     <li class="nav-mode"><?php echo $this->Html->link('Content', '/admin/#tagPages+tagMedia+tagDiscussion+tagElements', array('title' => 'Pages, Modules, Media, Categories, Tags, Enumerations', 'onclick' => 'window.location.replace(this.href);window.location.reload(true)')); // takes extra js, because of the hash tags ?></li>
                     <li class="nav-mode"><?php echo $this->Html->link('Contacts', '/admin/contacts/contacts/dashboard', array('title' => 'Leads, Opportunities')); ?></li>
     				<?php if (in_array('Transactions', CakePlugin::loaded())) { ?><li class="nav-mode"><?php echo $this->Html->link('Ecommerce', array('plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('title' => 'Catalogs, Orders', 'id' => 'navProducts')); ?></li><?php } ?>

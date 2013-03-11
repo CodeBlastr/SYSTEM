@@ -29,7 +29,7 @@ class MetableBehavior extends ModelBehavior {
 	public function setup(Model $Model, $settings = array()) {
         return true;
 	}
-
+    
 /**
  * After save callback
  * 
@@ -38,8 +38,8 @@ class MetableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param boolean $created The value of $created will be true if a new record was created (rather than an update).
  */
-	public function afterSave(Model $Model, $created) { 
-
+	public function afterSave(Model $Model, $created) {
+        
 		if ( !empty($Model->data[$Model->alias]['Meta']) && is_array($Model->data[$Model->alias]['Meta']) ) {
 			$metadata = $Model->data[$Model->alias]['Meta'];
 			unset( $Model->data[$Model->alias]['Meta'] );
@@ -54,7 +54,6 @@ class MetableBehavior extends ModelBehavior {
 					INSERT INTO `metas` (model, foreign_key, value)
 					VALUES ('{$Model->name}', '{$Model->id}', '{$cleanMetadata}');
 				");
-//					debug($cleanMetadata);
 			} else {
 				// Meta already exists, update it. The incoming data, $metadata, needs to overwrite current values.
 				// extract array from $existingMeta['Meta']['value']
@@ -71,7 +70,6 @@ class MetableBehavior extends ModelBehavior {
 
 				// merge that array with $metadata
 				$updatedMetaValue = Set::merge( $existingMetaValue, $metadata );
-//debug($updatedMetaValue);
 
 				// put it back in $existingMeta
 				$existingMeta['Meta']['value'] = mysql_escape_string( serialize($updatedMetaValue) );
@@ -218,6 +216,9 @@ class MetableBehavior extends ModelBehavior {
  */
 	public function filterByMetaConditions(Model $Model, $results = array()) {
 		if ($Model->metaConditions) {
+			
+//			debug($Model->metaConditions);break;
+			
 			foreach ($Model->metaConditions as $key => $value) {
 				// check for operators in the field query
 				if(strpos($key, ' ')) {
@@ -228,11 +229,19 @@ class MetableBehavior extends ModelBehavior {
 					// set a variable to the operator
 					$operator = $operator[1];
 				} else {
+					$query[0] = 'Meta';
+					$query[1] = $key;
 					$operator = false;
 				}
 
+//				debug($value);
+//				debug($query);
+//				debug($operator);
+//				break;
+				
 				$i = 0;
 				foreach ($results as $result) {
+					//debug($result);
 					if (isset($result[$Model->alias][$query[0]][$query[1]])) {
 						if ($operator === false && $result[$Model->alias][$query[0]][$query[1]] == $value) {
 							// leave this result in the $results
