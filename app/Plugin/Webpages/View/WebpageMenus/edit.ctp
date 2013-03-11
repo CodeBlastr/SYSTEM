@@ -101,7 +101,7 @@ $this->set('context_menu', array('menus' => array(
             $this->Html->link(__('All'), array('action' => 'index')),
         	$this->Html->link(__('Edit'), array('action' => 'edit', $this->request->data['WebpageMenu']['id'])),
             $this->Html->link(__('Add'), array('action' => 'add')),
-			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('WebpageMenu.id')), null, __('Are you sure you want to delete # %s?', true), $this->Form->value('WebpageMenu.name')),
+			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('WebpageMenu.id')), null, __('Are you sure you want to delete the entire menu?'), $this->Form->value('WebpageMenu.name')),
 			)
 		),
 	))); ?>
