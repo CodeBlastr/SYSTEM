@@ -67,6 +67,7 @@ class AppController extends Controller {
 
 	public function beforeFilter() {
 		$this->_writeStats();
+		$this->_configEditor();
 		$this->RequestHandler->ajaxLayout = 'default';
 	    
 		// DO NOT DELETE 
@@ -116,7 +117,7 @@ class AppController extends Controller {
 
     public function beforeRender() {
 		parent::beforeRender();
-		$this->set('referer', 'test'); // used for back button links, could be useful for breadcrumbs possibly
+		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
 		$this->set('_serialize', array_keys($this->viewVars));
         $this->set('_view', $this->view);
 	}
@@ -131,7 +132,17 @@ class AppController extends Controller {
 		}
 	}
 
-/**
+	
+	protected function _configEditor() {
+		if ($this->Session->read('Auth.User') && defined('SITE_DIR')) {
+			$this->Session->write('KCFINDER.disabled', false);
+			$this->Session->write('KCFINDER.uploadURL', '/theme/default/upload/' . $this->Session->read('Auth.User.id'));
+			$this->Session->write('KCFINDER.uploadDir', '../../../../' . SITE_DIR . '/Locale/View/webroot/upload/' . $this->Session->read('Auth.User.id'));
+		}
+	}
+
+
+	/**
  * Over write of core paginate method
  * to handle auto filtering.
  *
