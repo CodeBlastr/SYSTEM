@@ -93,8 +93,8 @@ class AppController extends Controller {
 		} else if (empty($this->userId) && empty($allowed)) {
 			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get controller and action
-			# this first one checks record level if record level exists
-			# which it can exist and guests could still have access
+			// this first one checks record level if record level exists
+			// which it can exist and guests could still have access
 			if ($this->Acl->check($aro, $aco)) {
 				$this->Auth->allow();
 			}
@@ -723,13 +723,9 @@ class AppController extends Controller {
  * Configure AuthComponent
  */
    private function _configAuth() {
-		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ?
-			array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) :
-			array('message'=> 'Please register or login to access that feature.');
+		$authError = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ?	array('message'=> __APP_DEFAULT_LOGIN_ERROR_MESSAGE) : array('message'=> 'Please register or login to access that feature.');
 		$this->Auth->authError = $authError['message'];
-        $this->Auth->loginAction = defined('__APP_LOGIN_ACTION') ?
-			__APP_LOGIN_ACTION :
-			array('plugin' => 'users', 'controller' => 'users', 'action' => 'login');
+        $this->Auth->loginAction = defined('__APP_LOGIN_ACTION') ? __APP_LOGIN_ACTION : array('plugin' => 'users', 'controller' => 'users', 'action' => 'login');
 		$this->Auth->authorize = array('Controller');
 		$this->Auth->authenticate = array(
             'Form' => array(
