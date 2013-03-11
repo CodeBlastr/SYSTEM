@@ -100,3 +100,6 @@
 [submodule "app/Plugin/Maps"]
 	path = app/Plugin/Maps
 	url = git@github.com:zuha/Maps-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Courses"]
+	path = app/Plugin/Courses
+	url = git@github.com:zuha/Courses-Zuha-Cakephp-Plugin.git
