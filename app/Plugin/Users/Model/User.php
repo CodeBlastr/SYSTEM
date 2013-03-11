@@ -533,9 +533,9 @@ class User extends UsersAppModel {
  * @return {array}		Parsed form input data.
  */
 	protected function _cleanAddData($data) {
-		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@')) :
+		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@')) {
 			$data[$this->alias]['email'] = $data[$this->alias]['username'];
-		endif;
+		}
 
 		if(!isset($data[$this->alias]['user_role_id'])) {
 			$data[$this->alias]['user_role_id'] = (defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID')) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : 3 ;
