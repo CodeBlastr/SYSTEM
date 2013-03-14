@@ -1,5 +1,10 @@
 class="<?php
-echo $this->request->params['controller'];
+$bootstrapConflicts = array('media');
+if ( in_array($this->request->params['controller'], $bootstrapConflicts) ) {
+	echo $this->request->params['controller'] . 'Controller';
+} else {
+	echo $this->request->params['controller'];
+}
 echo ($this->Session->read('Auth.User') ? __(' authorized') : __(' restricted'));
 echo ' ';
 echo $this->request->params['action'];
