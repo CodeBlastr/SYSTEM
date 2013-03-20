@@ -2,12 +2,10 @@
 if($this->Session->read('Auth.User.user_role_id') == 1) { 
 	echo $this->Html->css('/webpages/css/editor');
 	echo $this->Html->script('/js/ckeditor/ckeditor');
-	echo $this->Html->script('/js/jquery.easing.1.3');
-?>
-<script type="text/javascript" >
-
+	echo $this->Html->script('/js/jquery.easing.1.3'); ?>
+    
+<script type="text/javascript">
 	//admin dock panel
-	
 	$(document).ready(function() {
 	var top = '-' + ($('#slidedock').height() - 25);
 	var easing = 'easeOutBounce';
@@ -19,10 +17,8 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 		function() {
 			$('#slidedock').animate({'bottom' : top}, {queue:false, duration:500, easing: easing});
 		});
-	$('#slidedock').animate({'bottom' : top}, {queue:false, duration:500, easing: easing});
-   });
-
-
+	    $('#slidedock').animate({'bottom' : top}, {queue:false, duration:500, easing: easing});
+    });
 
 	var myStyles = new Array('tmp');
 	//TODO Fix session lose
@@ -203,9 +199,6 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
 </script>
 
 <div id="slidedock"> 
-	<div id="slidedock_promo">
-	    <a href="http://www.zuha.com/" title="Web Development">Zuha Web Development</a>
-    </div>
 	<div id="slidedock_content">
  	    <div class="dock_btn edit_button" id="edit_button" title="On edit mode"><p>Edit Mode : Off</p></div>
  	    <a href="/webpages/webpage_csses"><div class="dock_btn" id="btn_css" title="Edit Css"><p>Edit CSS</p></div></a>
