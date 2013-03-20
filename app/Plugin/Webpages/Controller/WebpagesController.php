@@ -181,7 +181,7 @@ class WebpagesController extends WebpagesAppController {
 		}
 		
 		$update = $this->Webpage->syncFiles('template'); // template 
-		$webpage = $this->Webpage->find("first", array(
+		$page = $webpage = $this->Webpage->find("first", array(
 		    "conditions" => array(
                 'Webpage.id' => $id
                 ),
@@ -189,14 +189,9 @@ class WebpagesController extends WebpagesAppController {
 				'Child'
 				)
 		    ));
-        
-		// this is here because an element uses this view function ? What element ? 
-		if (!empty($webpage) && isset($this->request->params['requested'])) {
-		    return $webpage;
-		}
 		
 		if ($webpage['Webpage']['type'] == 'template') {
-				
+			// do nothing??
 		} else {
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
 			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
@@ -208,7 +203,8 @@ class WebpagesController extends WebpagesAppController {
 		}
 		$this->set(compact('webpage'));
 		$this->set('page_title_for_layout', $webpage['Webpage']['name']);
-       	$this->view = 'view_' . $webpage['Webpage']['type'];	
+        $this->set('page', $page['Webpage']['content']); // an unparsed version of the page for the inline editor
+       	$this->view = 'view_' . $webpage['Webpage']['type'];
 	}
     
 	
@@ -328,12 +324,10 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function delete($id = null) {
-	
 		$this->Webpage->id = $id;
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
 		}
-		
 		if ($this->Webpage->delete($id, true)) {
 			$this->Session->setFlash(__('Webpage deleted', true));
 			$this->redirect(array('action'=>'index'));
