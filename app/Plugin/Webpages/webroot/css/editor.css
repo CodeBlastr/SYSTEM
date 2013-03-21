@@ -302,6 +302,26 @@ https://github.com/ghinda/css-toggle-switch
     line-height: 20px;
 }
 
+
+
+.edit-box-active {
+	position: relative;
+}
+.edit-box-active:before {
+	content: ' ';
+	background: url("/img/twitter-bootstrap/glyphicons-halflings.png") repeat scroll -93px -70px white;
+	/*background-size: 938px 318px;*/
+	display: block;
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	box-shadow: 1px 1px 1px #000000;
+}
+.global-edit-box:after {
+} 
+
 /* Toggle Switches */
 
 /* We can't test for a specific feature,
