@@ -26,3 +26,32 @@ echo $this->Html->css('/galleries/css/nivoslider/nivo-slider');
         });
     });
     </script>
+    
+
+<div class="slide-wrapper">
+<div class="slide-container">
+<div id="slides">
+<div class="slides_container">
+<div class="slide"><a href="#" target="_blank" title="title1"><img alt="Slide 1" src="/theme/default/upload/1/img/slide-1.jpg" style="width: 630px; height: 396px;" /></a>
+
+<div class="caption">
+<p>finding a home was never this easy</p>
+</div>
+</div>
+
+<div class="slide"><a href="#" target="_blank" title="title2"><img alt="Slide 2" src="/theme/default/upload/1/img/slide-2.jpg" style="width: 630px; height: 396px;" /></a>
+
+<div class="caption">
+<p>lorem ipsum dolor</p>
+</div>
+</div>
+
+<div class="slide"><a href="#" target="_blank" title="title3"><img alt="Slide 3" src="/theme/default/upload/1/img/slide-3.jpg" style="width: 630px; height: 396px;" /></a>
+
+<div class="caption">
+<p>finding a home was never this easy</p>
+</div>
+</div>
+</div>
+</div>
+</div>

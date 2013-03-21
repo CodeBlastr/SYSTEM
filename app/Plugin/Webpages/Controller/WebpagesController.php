@@ -195,7 +195,7 @@ class WebpagesController extends WebpagesAppController {
 		} else {
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
 			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
-			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
+			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" class="edit-box" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
 		}
 		
 		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error') {
@@ -364,14 +364,14 @@ class WebpagesController extends WebpagesAppController {
     		if (!empty($this->request->data)) {
     			$this->request->data['Webpage']['content'] = $pageContent;
     			if ($this->Webpage->save($this->request->data)) {
-    				$msg = "Page saved";
+    				$msg = __('Page %s saved', $this->request->data['Webpage']['id']);
     			} else {
     				$err = true;
-    				$msg = "Can't save page";
+    				$msg = __('Cannot save page id #%s', $this->request->data['Webpage']['id']);
     			}
     		} else {
     			$err = true;
-    			$msg = 'Page not found';
+    			$msg = __('Page %s not found', $this->request->data['Webpage']['id']);
     		}
     		if($this->RequestHandler->isAjax()) {
     			$this->autoRender = $this->layout = false;
