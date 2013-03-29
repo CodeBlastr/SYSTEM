@@ -181,7 +181,7 @@ class WebpagesController extends WebpagesAppController {
 		}
 		
 		$update = $this->Webpage->syncFiles('template'); // template 
-		$webpage = $this->Webpage->find("first", array(
+		$page = $webpage = $this->Webpage->find("first", array(
 		    "conditions" => array(
                 'Webpage.id' => $id
                 ),
@@ -189,18 +189,13 @@ class WebpagesController extends WebpagesAppController {
 				'Child'
 				)
 		    ));
-        
-		// this is here because an element uses this view function ? What element ? 
-		if (!empty($webpage) && isset($this->request->params['requested'])) {
-		    return $webpage;
-		}
 		
 		if ($webpage['Webpage']['type'] == 'template') {
-				
+			// do nothing??
 		} else {
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
 			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
-			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
+			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" class="edit-box" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
 		}
 		
 		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error') {
@@ -208,7 +203,8 @@ class WebpagesController extends WebpagesAppController {
 		}
 		$this->set(compact('webpage'));
 		$this->set('page_title_for_layout', $webpage['Webpage']['name']);
-       	$this->view = 'view_' . $webpage['Webpage']['type'];	
+        $this->set('page', $page['Webpage']['content']); // an unparsed version of the page for the inline editor
+       	$this->view = 'view_' . $webpage['Webpage']['type'];
 	}
     
 	
@@ -328,12 +324,10 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function delete($id = null) {
-	
 		$this->Webpage->id = $id;
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
 		}
-		
 		if ($this->Webpage->delete($id, true)) {
 			$this->Session->setFlash(__('Webpage deleted', true));
 			$this->redirect(array('action'=>'index'));
@@ -370,14 +364,14 @@ class WebpagesController extends WebpagesAppController {
     		if (!empty($this->request->data)) {
     			$this->request->data['Webpage']['content'] = $pageContent;
     			if ($this->Webpage->save($this->request->data)) {
-    				$msg = "Page saved";
+    				$msg = __('Page %s saved', $this->request->data['Webpage']['id']);
     			} else {
     				$err = true;
-    				$msg = "Can't save page";
+    				$msg = __('Cannot save page id #%s', $this->request->data['Webpage']['id']);
     			}
     		} else {
     			$err = true;
-    			$msg = 'Page not found';
+    			$msg = __('Page %s not found', $this->request->data['Webpage']['id']);
     		}
     		if($this->RequestHandler->isAjax()) {
     			$this->autoRender = $this->layout = false;
