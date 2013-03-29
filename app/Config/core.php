@@ -7,10 +7,15 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php
     Configure::write('Session.cookie', 'PHPSESSID');
 } else {
 	// we are installing a new site here
+    if ($_SERVER['SCRIPT_URL'] != '/install/site') {
+        header('Location: /install/site');
+        break;
+    }
 	require_once(ROOT . DS . 'sites' . DS . 'example.com' . DS . 'Config' . DS . 'core.php');
   	$debugger = !empty($_GET['debugger']) ? $_GET['debugger'] : 2;
   	Configure::write('debug', $debugger);
   	Configure::write('Config.language', 'en');  
+    Configure::write('Install', true);
 }
     
 Configure::write('Error', array(

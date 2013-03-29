@@ -31,7 +31,7 @@ class AppModel extends Model {
  * @var int
  */
   	public $recursive = -1;
-
+	
 /**
  * When finding with the Meta model, the conditions are removed beforeFind, and applied afterFind.
  * They are stored in this varialbe during that window.
@@ -43,10 +43,10 @@ class AppModel extends Model {
    /**
  * Constructor
  */
- public function __construct($id = false, $table = null, $ds = null) {
-  $this->actsAs[] = 'Containable'; // moved here because it was being triggered too late 
-  parent::__construct($id, $table, $ds);
- }
+	public function __construct($id = false, $table = null, $ds = null) {
+		$this->actsAs[] = 'Containable'; // moved here because it was being triggered too late 
+		parent::__construct($id, $table, $ds);
+	}
 
 /**
  * Manipulate data before it is saved.
