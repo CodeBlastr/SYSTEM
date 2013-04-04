@@ -328,6 +328,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Facebook' => 'Facebook',
 				'Faq' => 'Faqs',
 				'Favorite' => 'Favorites',
+				'FormAnswer' => 'Forms',
 				'FormFieldset' => 'Forms',
 				'FormInput' => 'Forms',
 				'FormKey' => 'Forms',		
