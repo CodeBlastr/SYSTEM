@@ -31,10 +31,10 @@ i {
     text-indent: -5000px;
 }
 .first {
-	margin-left: 0;
+	margin-left: 0 !important;
 }
 .last {
-	margin-right: 0;
+	margin-right: 0 !important;
 }
 .container .navbar {
 	overflow: hidden;
@@ -257,6 +257,9 @@ footer .socialmedia img:hover {
 }
 span.btn {
 	/* margin-top: -10px; this caused a problem with file uploads ie. /products/products/add */
+}
+button.btn, input.btn[type="submit"] {
+    padding: 6px 12px;
 }
 
 /* top nav */

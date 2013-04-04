@@ -49,10 +49,12 @@ class WebpagesAppModel extends AppModel {
 			foreach($this->templateDirectories as $directory) {
 				$dir = new Folder( $directory);
 				$files = $dir->find('.*\.ctp');
-				if (!empty($files)) {
-					$dbTemplates = $this->_getDbFileRecords($files, 'template');
-					break; // stops us from searching in more directories
-				}
+				// not sure that this won't break something, so I left it for a little while - RK March 19, 2013
+                // seems like the $dbTemplates variable isn't used anywhere, and the file based template editing still works though
+                //if (!empty($files)) {
+				//	$dbTemplates = $this->_getDbFileRecords($files, 'template');
+				//	break; // stops us from searching in more directories
+				//}
 			}
 			
 			if (!empty($files)) {
@@ -186,8 +188,7 @@ class WebpagesAppModel extends AppModel {
 					'Webpage.name' => $files
 					)
 				));
-		} 
-			
+		}
 		return $dbTemplates;
 	}
 
