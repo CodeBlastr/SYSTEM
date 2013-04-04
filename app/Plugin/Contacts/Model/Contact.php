@@ -545,7 +545,7 @@ class Contact extends ContactsAppModel {
 	public function estimates($foreignKey = null) {
 		$return = null;
 		if (in_array('Estimates', CakePlugin::loaded())) {
-			$conditions['Estimate.is_accepted'] = false;
+			$conditions['Estimate.is_accepted'] = 0;
 			$conditions['Estimate.is_archived'] = 0;
 			$conditions['Estimate.model'] = 'Contact';
 			!empty($foreignKey) ? $conditions['Estimate.foreign_key'] = $foreignKey : null; 
@@ -555,6 +555,20 @@ class Contact extends ContactsAppModel {
 					'Contact'
 					)
 				));
+			$converted = $this->Estimate->find('count', array(
+				'conditions' => array(
+					'Estimate.is_accepted' => 1,
+					'Estimate.model' => 'Contact',
+					)
+				));
+			$dead = $this->Estimate->find('count', array(
+				'conditions' => array(
+					'Estimate.is_accepted' => 0,
+					'Estimate.is_archived' => 1,
+					'Estimate.model' => 'Contact',
+					)
+				));
+			
 			$ratings['hot'] = 85;
 			$ratings['warm'] = 30;
 			$ratings['cold'] = 10;
@@ -565,6 +579,7 @@ class Contact extends ContactsAppModel {
 			$return['_subTotal'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)));
 			$return['_multiplier'] = !empty($average) ? array_sum($average) / count($values) : 0;
 			$return['_total'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)) * ('.' . $return['_multiplier']));
+			$return['_conversion'] = intval(($converted / (count($return) + $converted + $dead)) * 100);
 		}
 		
 		return $return;

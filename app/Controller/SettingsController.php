@@ -66,24 +66,32 @@ class SettingsController extends AppController {
     $this->layout = 'default';
   }
 
-  public function add() {
-    if (!empty($this->request->data)) {
-      if ($this->Setting->add($this->request->data)) {
-        $this->Session->setFlash(__('The Setting has been saved', true));
-        $this->redirect(array('action'=>'index'));
-      } else {
-        $this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true));
-      }
-    }
-    $types = $this->Setting->types();
-    $this->set(compact('types')); 
-    $this->layout = 'default';
-  }
+/**
+ * Add method
+ */
+	public function add() {
+		if ($this->request->is('post')) {
+			if ($this->Setting->add($this->request->data)) {
+				$this->Session->setFlash(__('The Setting has been saved', true));
+				$this->redirect(array('action'=>'index'));
+			} else {
+				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true));
+			}
+	    }
+	    $types = $this->Setting->types();
+	    $this->set(compact('types')); 
+	    $this->layout = 'default';
+	}
   
-  public function names($typeName = null) {
-    $settings = $this->Setting->getNames($typeName);
-    $this->set(compact('settings'));
-  }
+/**
+ * Names method
+ * 
+ * @param string $typeName
+ */
+  	public function names($typeName = null) {
+    	$settings = $this->Setting->getNames($typeName);
+    	$this->set(compact('settings'));
+  	}
 
   public function edit($id = null) {
     if (!$id && empty($this->request->data) && empty($this->request->params['named'])) {

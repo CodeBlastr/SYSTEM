@@ -5,7 +5,6 @@
 <?php echo $this->Form->create('Gallery', array('enctype'=>'multipart/form-data'));?>
 	<fieldset id="galleryFields">
  		<legend class="toggleClick"><?php echo __('Edit Gallery Options'); ?></legend>
-		
 		<?php
 		echo $this->Form->input('Gallery.id');
 		echo $this->Form->input('Gallery.name');
@@ -27,7 +26,6 @@
 		echo $this->Form->end('Submit'); ?>
         
 	</fieldset>
-
 <?php echo $this->Form->create('GalleryImage', array('enctype'=>'multipart/form-data'));?>
 	<fieldset>
  		<legend><?php echo __('Add Images'); ?></legend>
