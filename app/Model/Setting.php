@@ -1,4 +1,5 @@
 <?php
+App::uses('Sanitize', 'Utility');
 /**
  * Settings Model
  *
@@ -182,6 +183,10 @@ class Setting extends AppModel {
 					'name' => 'ENABLE_GUEST_CHECKOUT',
 					'description' => 'Defines whether or not guest checkout is enabled.' . PHP_EOL . PHP_EOL . 'Default Value : ' . PHP_EOL . 'false',
 				),
+				array(
+					'name' => 'RECEIPT_EMAIL', 
+					'description' => 'Sets the email content for a transaction receipt.' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'subject = "Some Subject"' . PHP_EOL . 'body = "Some body of the email"',
+				)
 			),
 			'App' => array(
 				array(
@@ -485,6 +490,14 @@ class Setting extends AppModel {
  * @param {array}    An array of Setting data
  */
 	private function _cleanSettingData($data, $append = false) {
+		
+		if (is_array($data['Setting']['value'])) {
+			$settingValue = '';
+			foreach ($data['Setting']['value'] as $key => $value) {
+				$settingValue .= __('%s = "%s"%s', $key, Sanitize::escape($value), PHP_EOL);
+			}
+			$data['Setting']['value'] = $settingValue;
+		}
 
 		if (!empty($data['Setting'][0])) {
 			$i = 0;
@@ -503,16 +516,16 @@ class Setting extends AppModel {
 			$data = $data['Setting']; // because we are using saveAll
 		}
 
-		/** @todo break these out into individual setting function in a foreach loop that will handle many and single records to save */
-
+		// @todo break these out into individual setting function in a foreach loop that will 
+		// handle many and single records to save
 		if (!empty($data['Setting']['name']) && !empty($data['Setting']['type'])) {
 			// see if the setting already exists
 			$setting = $this->find('first', array(
 				'conditions' => array(
 					'Setting.name' => $data['Setting']['name'],
 					'Setting.type' => $data['Setting']['type'],
-				),
-					));
+					),
+				));
 			if (!empty($setting)) {
 				// if it does, then set the id, so that we over write instead of creating a new setting
 				$data['Setting']['id'] = $setting['Setting']['id'];
@@ -523,13 +536,13 @@ class Setting extends AppModel {
 			}
 		}
 
-		// some values need to be encrypted.  We do that here (@todo put this in its own two functions.  One for "encode" function, and one for which settings should be encoded, so that we can specify all settings which need encryption, and reuse this instead of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well.
-		if (!empty($data['Setting']['name']) && $data['Setting']['name'] == 'SMTP' && !parse_ini_string($data['Setting']['name'])) :
+		// some values need to be encrypted.  We do that here (@todo put this in its own two 
+		// functions.  One for "encode" function, and one for which settings should be encoded, 
+		// so that we can specify all settings which need encryption, and reuse this instead 
+		// of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well.
+		if (!empty($data['Setting']['name']) && $data['Setting']['name'] == 'SMTP' && !parse_ini_string($data['Setting']['name'])) {
 			$data['Setting']['value'] = 'smtp = "' . base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'))) . '"';
-		//$data['Setting']['value'] = 'smtp = "'.base64_encode(gzcompress($data['Setting']['value'])).'"';
-		//$data['Setting']['value'] = base64_decode($data['Setting']['value']);
-		//$data['Setting']['value'] = Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'));
-		endif;
+		}
 
 		if (!empty($data['Query']) && $data['Setting']['name'] == 'ZUHA_DB_VERSION') {
 			$data['Setting']['value'] = $data['Setting']['value'] + 0.0001;
