@@ -525,7 +525,9 @@ class InstallController extends Controller {
                     $Schema->after(array($event => $table, 'errors' => $error));
 
                     if (!empty($error)) {
-                        $this->err($error);
+                        //$this->err($error);
+						$this->message[] = __('<b>Database Error : </b>' . $error);
+						$this->_redirect($this->referer());
                     } else {
                         $this->progress = $table;
                         //$this->_out(__d('cake_console', '%s updated.', $table));
