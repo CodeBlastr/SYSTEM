@@ -622,10 +622,12 @@ class CakeResponse {
 		}
 		if (is_array($contentType)) {
 			$type = key($contentType);
+			$type = strtolower($type); // ZUHA
 			$defitition = current($contentType);
 			$this->_mimeTypes[$type] = $defitition;
 			return $this->_contentType;
 		}
+		$contentType = strtolower($contentType); // ZUHA
 		if (isset($this->_mimeTypes[$contentType])) {
 			$contentType = $this->_mimeTypes[$contentType];
 			$contentType = is_array($contentType) ? current($contentType) : $contentType;
