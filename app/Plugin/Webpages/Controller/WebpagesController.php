@@ -219,7 +219,8 @@ class WebpagesController extends WebpagesAppController {
 			try {
 				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'));
-				$this->redirect(array('action' => 'view', $this->Webpage->id));
+				$redirect = !empty($this->request->data['Alias']['name']) ? __('/%s', $this->request->data['Alias']['name']) : array('action' => 'view', $this->Webpage->id);
+				$this->redirect($redirect);
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}
@@ -233,6 +234,9 @@ class WebpagesController extends WebpagesAppController {
         $this->$add($parentId);
 	}
     
+/**
+ * add content page
+ */
     protected function _addContent() {
 		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? str_replace('+', '/', $this->request->params['named']['alias']) : null;
 		// reuquired to have per page permissions
@@ -242,6 +246,11 @@ class WebpagesController extends WebpagesAppController {
 		$this->view = 'add_content';        
     }
     
+/**
+ * add sub page
+ * 
+ * @param string $parentId
+ */
     protected function _addSub($parentId) {
 		$parent = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $parentId), 'contain' => array('Child')));
 		$this->request->data['Alias']['name'] = !empty($parent['Alias']['name']) ? $parent['Alias']['name'] . '/' : null;
@@ -252,6 +261,9 @@ class WebpagesController extends WebpagesAppController {
 		$this->view = 'add_sub';      
     }
     
+/**
+ * add element
+ */
     protected function _addElement() {
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
@@ -260,6 +272,9 @@ class WebpagesController extends WebpagesAppController {
 		$this->view = 'add_element';        
     }
     
+/**
+ * add template
+ */
     protected function _addTemplate() {
         $this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Template Builder'));
