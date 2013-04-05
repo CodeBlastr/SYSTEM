@@ -96,7 +96,7 @@ if (!empty($data)) {
 			  } // end metadata loop ?>
 	        </ul>
 	      </div>
-	      <div class="indexCell indexData">
+	      <div class="indexCell indexData span10 first"><?php // we can move this span10 and first to javascript if it becomes an issue ?>
 	        <div class="indexCell titleCell">
 	          <div class="recorddat">
 	            <h3> <?php echo $this->Html->link($name, $viewUrl, array_merge($viewUrlOptions + array('escape' => false))); ?></h3>
