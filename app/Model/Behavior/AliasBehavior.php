@@ -43,7 +43,7 @@ class AliasBehavior extends ModelBehavior {
  * @param array $settings
  */
 	public function setup(Model $Model, $settings = array()) {
-            $ZuhaInflector = new ZuhaInflector();
+		$ZuhaInflector = new ZuhaInflector();
         $this->_defaults['plugin'] = Inflector::tableize($ZuhaInflector->pluginize($Model->name));
         $this->_defaults['controller'] = Inflector::tableize($Model->name);
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
@@ -93,13 +93,12 @@ class AliasBehavior extends ModelBehavior {
  * @param object $Model
  * @todo bind the model here if not bound already
  */
-	public function beforeSave(Model $Model) {
+	public function beforeSave(Model $Model, $options = array()) {
 		if (!empty($Model->data['Alias']['name'])) {
             $this->data['Alias'] = $Model->data['Alias'];
         }
-        //unset($Model->data['Alias']); // commented out 11/28/2012 RK remove if webpage adding / editing still works
-		$this->trigger = isset($params['atomic']) ? false : true; // test for whether this is a saveAll() or save()
-		return parent::beforeSave($Model);
+		$this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
+		return parent::beforeSave($Model, $options);
 	}
 
 /**

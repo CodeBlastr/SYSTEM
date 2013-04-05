@@ -64,6 +64,17 @@ if (!empty($defaultTemplate)) {
 		$i++;
 	}
 	
+	// matches gallery template tags {gallery: Id} for example {gallery: 28749283}
+	preg_match_all ("/(\{gallery: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	$i = 0;
+	foreach ($matches[0] as $galleryMatch) {
+		$galleryCfg['foreignKey'] = trim($matches[3][$i]);
+		// removed cache for forms, because you can't set it based on form inputs
+		// $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
+		$defaultTemplate["Webpage"]["content"] = str_replace($galleryMatch, $this->element('gallery', $galleryCfg, array('plugin' => 'galleries')), $defaultTemplate['Webpage']['content']);
+		$i++;
+	}
+	
 	// matches menu template tags like {menu: Id} for example {menu: 3}
 	// This mysteriously broke. I replaced it with what seems to be a good regex.
 	// For some reason, the old regex started chopping off the first letter of the match.

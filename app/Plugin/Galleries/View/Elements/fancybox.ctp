@@ -65,7 +65,7 @@ if (!empty($gallery['GalleryImage'][0])) {
               <ul>
                 <li class="thumbImg">
                	<?php
-           		# uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+           		// uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
 	            $largeImage = $slide['dir'].'thumb/large/'.$slide['filename'];
 	            $image = $this->Html->image($largeImage,
 	                array(
@@ -89,7 +89,7 @@ if (!empty($gallery['GalleryImage'][0])) {
                 </li>
                 <li class="thumbMedium">
                	<?php
-           		# uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+           		// uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
 	            $largeImage = $slide['dir'].'thumb/large/'.$slide['filename'];
 	            $image = $this->Html->image($largeImage,
 	                array(
@@ -130,7 +130,7 @@ if (!empty($gallery['GalleryImage'][0])) {
       </ul>
     </div>
 	<?php
-	#slide options and javascript output
+	// slide options and javascript output
 	echo $this->Html->scriptBlock('	$(document).ready(function(){
 		var options = {
 			"overlayShow"		: '.$overlayShow.',
