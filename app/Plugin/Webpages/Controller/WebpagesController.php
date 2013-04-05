@@ -181,7 +181,7 @@ class WebpagesController extends WebpagesAppController {
 		}
 		
 		$update = $this->Webpage->syncFiles('template'); // template 
-		$webpage = $this->Webpage->find("first", array(
+		$page = $webpage = $this->Webpage->find("first", array(
 		    "conditions" => array(
                 'Webpage.id' => $id
                 ),
@@ -189,18 +189,13 @@ class WebpagesController extends WebpagesAppController {
 				'Child'
 				)
 		    ));
-        
-		// this is here because an element uses this view function ? What element ? 
-		if (!empty($webpage) && isset($this->request->params['requested'])) {
-		    return $webpage;
-		}
 		
 		if ($webpage['Webpage']['type'] == 'template') {
-				
+			// do nothing??
 		} else {
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
 			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
-			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
+			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" class="edit-box" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
 		}
 		
 		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error') {
@@ -208,7 +203,8 @@ class WebpagesController extends WebpagesAppController {
 		}
 		$this->set(compact('webpage'));
 		$this->set('page_title_for_layout', $webpage['Webpage']['name']);
-       	$this->view = 'view_' . $webpage['Webpage']['type'];	
+        $this->set('page', $page['Webpage']['content']); // an unparsed version of the page for the inline editor
+       	$this->view = 'view_' . $webpage['Webpage']['type'];
 	}
     
 	
@@ -223,7 +219,8 @@ class WebpagesController extends WebpagesAppController {
 			try {
 				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'));
-				$this->redirect(array('action' => 'view', $this->Webpage->id));
+				$redirect = !empty($this->request->data['Alias']['name']) ? __('/%s', $this->request->data['Alias']['name']) : array('action' => 'view', $this->Webpage->id);
+				$this->redirect($redirect);
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}
@@ -237,6 +234,9 @@ class WebpagesController extends WebpagesAppController {
         $this->$add($parentId);
 	}
     
+/**
+ * add content page
+ */
     protected function _addContent() {
 		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? str_replace('+', '/', $this->request->params['named']['alias']) : null;
 		// reuquired to have per page permissions
@@ -246,6 +246,11 @@ class WebpagesController extends WebpagesAppController {
 		$this->view = 'add_content';        
     }
     
+/**
+ * add sub page
+ * 
+ * @param string $parentId
+ */
     protected function _addSub($parentId) {
 		$parent = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $parentId), 'contain' => array('Child')));
 		$this->request->data['Alias']['name'] = !empty($parent['Alias']['name']) ? $parent['Alias']['name'] . '/' : null;
@@ -256,6 +261,9 @@ class WebpagesController extends WebpagesAppController {
 		$this->view = 'add_sub';      
     }
     
+/**
+ * add element
+ */
     protected function _addElement() {
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
@@ -264,6 +272,9 @@ class WebpagesController extends WebpagesAppController {
 		$this->view = 'add_element';        
     }
     
+/**
+ * add template
+ */
     protected function _addTemplate() {
         $this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Template Builder'));
@@ -328,12 +339,10 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function delete($id = null) {
-	
 		$this->Webpage->id = $id;
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
 		}
-		
 		if ($this->Webpage->delete($id, true)) {
 			$this->Session->setFlash(__('Webpage deleted', true));
 			$this->redirect(array('action'=>'index'));
@@ -370,14 +379,14 @@ class WebpagesController extends WebpagesAppController {
     		if (!empty($this->request->data)) {
     			$this->request->data['Webpage']['content'] = $pageContent;
     			if ($this->Webpage->save($this->request->data)) {
-    				$msg = "Page saved";
+    				$msg = __('Page %s saved', $this->request->data['Webpage']['id']);
     			} else {
     				$err = true;
-    				$msg = "Can't save page";
+    				$msg = __('Cannot save page id #%s', $this->request->data['Webpage']['id']);
     			}
     		} else {
     			$err = true;
-    			$msg = 'Page not found';
+    			$msg = __('Page %s not found', $this->request->data['Webpage']['id']);
     		}
     		if($this->RequestHandler->isAjax()) {
     			$this->autoRender = $this->layout = false;

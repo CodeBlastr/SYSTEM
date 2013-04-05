@@ -77,10 +77,11 @@
     <?php 
     if (!empty($estimates)) { ?>
     <div class="masonryBox dashboardBox tagOpportunities">
-        <h3 class="title"><i class="icon-th-large"></i> Open Opportunities </h3>
+        <h3 class="title"><i class="icon-th-large"></i>Opportunities </h3>
         <?php
-        echo '<div class="alert alert-success"><h1> $'. $estimates['_total'] . '</h1></div>';
-        echo '<p> Calculated by taking the total, <strong> $'. $estimates['_subTotal'] . '</strong> and multiplying by the average likelihood of closing, <strong> ' . $estimates['_multiplier'] . '%</strong></p>';
+        echo '<div class="alert alert-success clearfix"><div class="pull-left">' . round($estimates['_subTotal'], 3) . 'k Out<h1> $'. round($estimates['_total'], 3) . 'k </h1></div><div class="pull-right">Est. Conversion<h1>' . intval($estimates['_multiplier']) . '%</h1></div></div>';
+        echo '<div class="alert alert-info clearfix"><div class="pull-left"> ' . round($estimates['_subTotal'], 3) . 'k Out<h1> $'. intval(round(($estimates['_subTotal'] * ($estimates['_conversion'] / 100)), 3)) . 'k </h1></div><div class="pull-right">Act. Conversion<h1>' . $estimates['_conversion'] . '%</h1></div></div>';
+        //echo '<p> Calculated by taking the total, <strong> $'. $estimates['_subTotal'] . '</strong> and multiplying by the average likelihood of closing, <strong> ' . $estimates['_multiplier'] . '%</strong></p>';
 		echo '<table>';
         unset($estimates['_subTotal']);
         unset($estimates['_multiplier']);
