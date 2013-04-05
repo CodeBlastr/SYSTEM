@@ -79,6 +79,9 @@ small {
 
 
 /* zuha specific */ 
+.message.alert {
+	margin-top: 10px;
+}
 #headerNavFloManagr  select {
     font-size: 12px;
     height: auto;
