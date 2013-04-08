@@ -167,7 +167,7 @@ class ContactsController extends ContactsAppController {
 		$this->set('modelName', 'Contact');
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', '');
-		$this->set('page_title_for_layout', __('%s %s', $contact['Contact']['name'], !empty($contact['Assignee']['full_name']) ? __('<br /><small>%s is responsible for this %s %s.</small>', $contact['Assignee']['full_name'], $contact['Contact']['contact_rating'], $contact['Contact']['contact_type']) : __('<br /><small>No one is currently assigned to this %s %s</small>', $contact['Contact']['contact_rating'], $contact['Contact']['contact_type'])));
+		$this->set('page_title_for_layout', __('%s %s', $contact['Contact']['name'], !empty($contact['Assignee']['full_name']) ? __('<br /><small>%s is responsible for this %s %s.</small>', $contact['Assignee']['full_name'], $contact['Contact']['contact_rating'], $contact['Contact']['contact_type']) : '<br /><small>Unassigned</small>'));
 		$this->set('title_for_layout',  $contact['Contact']['name']);
 		$this->set('loggedActivities', $this->Contact->activities(array('foreign_key' => $id, 'start_date' => $contact['Contact']['created'])));
 		$this->set('loggedEstimates', $this->Contact->estimates($id));
