@@ -57,6 +57,13 @@ class AdminController extends AppController {
 		}
 		$this->set('page_title_for_layout', 'Admin Dashboard');
 		$this->layout = 'default';
+		
+		
+		if (in_array('Blogs', CakePlugin::loaded())) {
+			App::uses('Blog', 'Blogs.Model');
+			$Blog = new Blog();
+			$this->set('blogs', $Blog->find('all'));
+		}
 	}
 	
 /**
