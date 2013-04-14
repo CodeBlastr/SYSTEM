@@ -34,7 +34,7 @@ if (!empty($gallery['GalleryImage'][0])) {
                     ),
                 array(
                     'conversion' => $gallery['GallerySettings']['conversionType'],
-                    'quality' => 75,
+                    'quality' => 80,
                     )); ?>
           </div>
         </div>
@@ -56,7 +56,7 @@ if (!empty($gallery['GalleryImage'][0])) {
 	                    ), 
 	                array(
 	                    'conversion' => $gallery['GallerySettings']['conversionType'],
-	                    'quality' => 75,
+	                    'quality' => 80,
 	                    ));	
 				// make the large image for real now, because we link to it with the small image
 				$largeImage = $this->Html->image($largeImage, 
@@ -67,7 +67,7 @@ if (!empty($gallery['GalleryImage'][0])) {
 	                    ), 
 	                array(
 	                    'conversion' => $gallery['GallerySettings']['conversionType'],
-	                    'quality' => 75,
+	                    'quality' => 80,
 	                    ));	
 				if (!empty($largeImage)) {
 					$doc = new DOMDocument();
@@ -75,7 +75,8 @@ if (!empty($gallery['GalleryImage'][0])) {
 					$xml = simplexml_import_dom($doc);
 					$largeImgSrc = $xml->xpath('//img/@src');
 				}
-				
+//				debug($largeImage);
+//				debug($largeImgSrc[0]);
 	            echo $this->Html->link($image,
 	            	'/'.$largeImgSrc[0], 
 	                array(
