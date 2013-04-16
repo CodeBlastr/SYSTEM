@@ -8,47 +8,71 @@ class CkeHelper extends Helper {
 
     public $helpers = array('Html', 'Javascript'); 
 
-    public function load($id, $settings = null) { 		
-		// this is the id to replace the following two foreach's change it into the id format that cake uses from the field name.
-		$did = ''; 
-        foreach (explode('.', $id) as $v) { 
-            $did .= ucfirst($v);
-        }
-		
+	/**
+	 * 
+	 * @param type $id  this is the id to replace
+	 * @param type $settings
+	 * @return type
+	 */
+    public function load($id, $settings = null) {
+
         $css = '<style type="text/css">.richtext {position: relative;} .ckeditorLinks {position: absolute; right: 6px; top: 3px;} .ckeditorLinks a {color: #000; text-decoration: none; cursor: pointer} .ckeditorLinks a:hover {text-decoration: none; color: #000;}</style>';
-		$did = str_replace('[', '_', $did);
-		$did = str_replace('Data_', '', $did);
-		$did = str_replace(']', '', $did);		
-		$did = Inflector::camelize($did);
 
 		$configuration = $this->_config($settings);
         $code = "
-            
-            function toggleExtras() {
-    			$('.cke_toolbar_break').nextAll().toggle();
-            }
-            function ExecuteCommand( commandName ) {
-                var editor = CKEDITOR.instances.$did;
+			if (typeof window.toggleExtras === 'undefined') {
+				function toggleExtras() {
+	    			$('.cke_toolbar_break').nextAll().toggle();
+	            }
+			}
+
+			$('.exec-source').click(function(){
+				var fieldName =  $(this).attr('id').replace('_exec-source', '').replace('_', '.').split('.');
+				fieldName.forEach(function(val, index, array){
+					fieldName[index] = fieldName[index].charAt(0).toUpperCase() + fieldName[index].slice(1);
+				});
+				var actualFieldName = '';
+				$.each(fieldName, function(i, v){
+					if ( v !== undefined ) {
+						actualFieldName += v;
+					}
+				});
+
+                var editor = CKEDITOR.instances[actualFieldName];
                 if ( editor.mode == 'wysiwyg' ) {
-		            editor.execCommand( commandName );
+		            editor.execCommand( 'source' );
                     $('#exec-source').html('<i class=\"icon-edit\"></i> DESIGN');
 	            } else {
-    	            editor.execCommand( commandName );
+    	            editor.execCommand( 'source' );
                     $('#exec-source').html('<i class=\"icon-wrench\"></i> HTML');
                 }
-            }
-            $('#WebpageContent').ckeditor('instanceReady',  function(config) {
-			   config.filebrowserBrowseUrl = '/js/kcfinder/browse.php?type=files';
-			   config.filebrowserImageBrowseUrl = '/js/kcfinder/browse.php?type=images';
-			   config.filebrowserFlashBrowseUrl = '/js/kcfinder/browse.php?type=flash';
-			   config.filebrowserUploadUrl = '/js/kcfinder/upload.php?type=files';
-			   config.filebrowserImageUploadUrl = '/js/kcfinder/upload.php?type=images';
-			   config.filebrowserFlashUploadUrl = '/js/kcfinder/upload.php?type=flash';
+
 			});
-			
-            $('#".$did."').ckeditor('instanceReady', function() { 
-    			toggleExtras();
-			}, {".$configuration."});
+
+// Replaced by the above ^JB
+//            function ExecuteCommand( commandName ) {
+//                var editor = CKEDITOR.instances.$did;
+//                if ( editor.mode == 'wysiwyg' ) {
+//		            editor.execCommand( commandName );
+//                    $('#exec-source').html('<i class=\"icon-edit\"></i> DESIGN');
+//	            } else {
+//    	            editor.execCommand( commandName );
+//                    $('#exec-source').html('<i class=\"icon-wrench\"></i> HTML');
+//                }
+//            }
+//// Thorwing errors on products/edit (may not be needed..  Webpages/edit??) ^JB
+////            $('#WebpageContent').ckeditor('instanceReady',  function(config) {
+////			   config.filebrowserBrowseUrl = '/js/kcfinder/browse.php?type=files';
+////			   config.filebrowserImageBrowseUrl = '/js/kcfinder/browse.php?type=images';
+////			   config.filebrowserFlashBrowseUrl = '/js/kcfinder/browse.php?type=flash';
+////			   config.filebrowserUploadUrl = '/js/kcfinder/upload.php?type=files';
+////			   config.filebrowserImageUploadUrl = '/js/kcfinder/upload.php?type=images';
+////			   config.filebrowserFlashUploadUrl = '/js/kcfinder/upload.php?type=flash';
+////			});
+//			
+//            $('#".$did."').ckeditor('instanceReady', function() { 
+//    			toggleExtras();
+//			}, {".$configuration."});
         "; 
         return $css . $this->Html->scriptBlock($code);  
         
