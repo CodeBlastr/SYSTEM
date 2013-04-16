@@ -238,7 +238,7 @@ class FormHelper extends CakeFormHelper {
 				$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // cakephp specific
 			break;
 			case 'richtext': // zuha specific
-				$input =  '<div class="ckeditorLinks"><a onclick="ExecuteCommand(\'source\');" id="exec-source"><i class="icon-wrench"></i> HTML</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a onclick="toggleExtras();" id="toggle-extras"><i class="icon-fire"></i> TOGGLE EXTRAS</a></div>' . $this->richtext($fieldName, $options + array('class' => 'ckeditor')); // zuha specific
+				$input =  '<div class="ckeditorLinks"><a id="'.$fieldName.'_exec-source" class="exec-source"><i class="icon-wrench"></i> HTML</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a onclick="toggleExtras();" id="toggle-extras"><i class="icon-fire"></i> TOGGLE EXTRAS</a></div>' . $this->richtext($fieldName, $options + array('class' => 'ckeditor')); // zuha specific
 			break; // zuha specific
 			case 'textarea':
 				$input = $this->textarea($fieldName, $options + array('cols' => '30', 'rows' => '6'));
@@ -320,10 +320,17 @@ class FormHelper extends CakeFormHelper {
 			unset($options['value']);
 		}
 		// this one throws an error
-		return $this->Html->useTag('richtext', $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)).$this->Html->script('ckeditor/adapters/jquery', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
+		//return $this->Html->useTag('richtext', $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)).$this->Html->script('ckeditor/adapters/jquery', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
 		
 		// this one doesn't
-		//return $this->Html->useTag('richtext', $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
+		return $this->Html->useTag(
+				'richtext',
+				$options['name'],
+				array_diff_key($options, array('type' => '', 'name' => '')),
+				$value,
+				$this->Html->script('ckeditor/ckeditor', array('inline' => false)),
+				$Cke->load($fieldId, $ckeSettings)
+		);
 	}
 	
 	
