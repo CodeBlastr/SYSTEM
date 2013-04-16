@@ -246,7 +246,15 @@ class MetableBehavior extends ModelBehavior {
 						if ($operator === false && $result[$Model->alias][$query[0]][$query[1]] == $value) {
 							// leave this result in the $results
 						} elseif ($operator == '>=' && $result[$Model->alias][$query[0]][$query[1]] >= $value) {
-							// leave this result in the $results
+							if ( is_numeric($value) && !is_numeric($result[$Model->alias][$query[0]][$query[1]]) ) {
+								/**
+								 * @TODO : This logic may be a little flawed - OR - this needs to be replicated throught this loop
+								 * What I'm trying to do is: do not return results who's value is_string when $value is_numeric
+								 */
+								unset($results[$i]);
+							} else {
+								// leave this result in the $results
+							}
 						} elseif ($operator == '>' && $result[$Model->alias][$query[0]][$query[1]] > $value) {
 							// leave this result in the $results
 						} elseif ($operator == '<=' && $result[$Model->alias][$query[0]][$query[1]] <= $value) {
