@@ -484,6 +484,7 @@ class AppController extends Controller {
 				$this->redirect($this->referer());
 			}
 		} else if (!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) {
+			$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
 			foreach (App::path('views') as $path) {
 				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'View', DS.'Plugin'.DS.ucfirst($this->request->params['plugin']).DS.'View', $path) : $path;
 			} // end App::path loop
