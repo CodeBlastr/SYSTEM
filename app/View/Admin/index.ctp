@@ -130,6 +130,14 @@ if (empty($runUpdates)) { ?>
         <div class="masonryBox dashboardBox tagBlogs tagPages">
             <h3 class="title"><i class="icon-file"></i> <?php echo $this->Html->link('Blogs', array('plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'index')); ?></h3>
             <p>Create multiple blogs, and post new content.</p>
+            <ul>
+            	<?php
+            	if (!empty($blogs)) {
+            		foreach ($blogs as $blog) {
+            			echo __('<li>%s to %s</li>', $this->Html->link('Add Post', array('admin' => true, 'plugin' => 'blogs', 'controller' => 'blog_posts', 'action' => 'add', $blog['Blog']['id'])), $this->Html->link($blog['Blog']['title'], array('plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'view', $blog['Blog']['id'])));
+            		}
+            	} ?>
+            </ul>
         </div>
         <?php } ?>
 		

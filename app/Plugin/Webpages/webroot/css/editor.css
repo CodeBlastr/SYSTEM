@@ -45,6 +45,7 @@
 }
 #adminNavFloManagr.navbar .nav > li > a {
 	padding: 0 8px;
+	background: none;
 }
 #adminNavFloManagr.navbar .nav > li > a:hover {
 	background-image: none;
