@@ -24,7 +24,7 @@ if (!empty($model) && !empty($foreignKey)) {
 } else {
     $model = 'Gallery';
 }
- 
+
 // set up the config vars
 $thumbLink = !empty($thumbLink) ? $thumbLink : null;
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
@@ -47,7 +47,8 @@ $thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; // to a
 
 if (!empty($galleryThumb['GalleryThumb']['filename'])) {
 	
-    $imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'.$thumbSize.'/'.$galleryThumb['GalleryThumb']['filename'];
+    $imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'. $thumbSize .'/'.$galleryThumb['GalleryThumb']['filename'];
+	//debug($thumbImageOptions);
     $image = $this->Html->image($imagePath, $thumbImageOptions,	array(
     	'conversion' => $galleryThumb['GallerySettings']['conversionType'],
 		'quality' => 75,
