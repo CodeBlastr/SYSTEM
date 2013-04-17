@@ -159,6 +159,7 @@ class GalleriesController extends GalleriesAppController {
  * @todo		Convert galleries to slugs or aliases, for easier linking into edit and views.
  */
 	public function mythumb() {
+		debug($this->request->data);
 		if (!empty($this->request->data['Gallery']['model']) && !empty($this->request->data['Gallery']['foreign_key'])) {	
             $continue = true;
             // check for gallery and if it exists 
