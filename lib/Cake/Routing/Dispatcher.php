@@ -272,14 +272,34 @@ class Dispatcher {
 			}
 		} else {
 			$plugin = Inflector::camelize($parts[0]);
-			if (CakePlugin::loaded($plugin)) {
+			
+			// hacking with zuha
+			$path = App::themePath($themeName) . 'webroot' . DS;
+			$fileFragment = urldecode(implode(DS, $parts));
+			if (file_exists($path . $fileFragment)) {
+				$assetFile = $path . $fileFragment;
+			} else if (CakePlugin::loaded($plugin)) {
 				unset($parts[0]);
-				$fileFragment = urldecode(implode(DS, $parts));
+				$fileFragment = urldecode(implode(DS, $parts)); // zuha hack to remove
 				$pluginWebroot = CakePlugin::path($plugin) . 'webroot' . DS;
+				
 				if (file_exists($pluginWebroot . $fileFragment)) {
 					$assetFile = $pluginWebroot . $fileFragment;
 				}
 			}
+			// end hacking with zuha (replaced the below commented out area)
+			
+			/* removed by zuha 
+			if (CakePlugin::loaded($plugin)) {
+				unset($parts[0]);
+				$fileFragment = urldecode(implode(DS, $parts)); // zuha hack to remove
+				$pluginWebroot = CakePlugin::path($plugin) . 'webroot' . DS;
+				
+				if (file_exists($pluginWebroot . $fileFragment)) {
+					$assetFile = $pluginWebroot . $fileFragment;
+				}
+			}
+			*/ 
 		}
 
 		if ($assetFile !== null) {

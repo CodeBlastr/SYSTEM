@@ -57,6 +57,13 @@ class AdminController extends AppController {
 		}
 		$this->set('page_title_for_layout', 'Admin Dashboard');
 		$this->layout = 'default';
+		
+		
+		if (in_array('Blogs', CakePlugin::loaded())) {
+			App::uses('Blog', 'Blogs.Model');
+			$Blog = new Blog();
+			$this->set('blogs', $Blog->find('all'));
+		}
 	}
 	
 /**
@@ -72,18 +79,18 @@ class AdminController extends AppController {
 		$lastTable = @array_pop(array_keys($this->Session->read('Updates.last'))); // check the session for the last TABLE run  
 		$nextTable = key(array_slice($allTables, array_search($lastTable, array_keys($allTables)) + 1));
 		$nextPlugin = !empty($nextTable) ? $allTables[$nextTable] : null;
-                $keysOfAllTables = array_keys($allTables);
+        $keysOfAllTables = array_keys($allTables);
 		$endTable = array_pop($keysOfAllTables); // check the session for the last TABLE run  
 		
 		
-		/* Turn on to debug 
-		debug($lastTable);
-		debug($nextTable);
-		debug($nextPlugin); // if false, means its not a plugin
-		debug($endTable);
-		debug($allTables);
-		debug($this->Session->read());
-		break;*/
+		// Turn on to debug 
+//		debug($lastTable);
+//		debug($nextTable);
+//		debug($nextPlugin); // if false, means its not a plugin
+//		debug($endTable);
+//		debug($allTables);
+//		debug($this->Session->read());
+//		break;
 		
 		if (!$this->Session->read('Updates.upgrade')) {
 			// there are some upgrades that have to be hard coded
