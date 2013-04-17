@@ -45,6 +45,7 @@
 }
 #adminNavFloManagr.navbar .nav > li > a {
 	padding: 0 8px;
+	background: none;
 }
 #adminNavFloManagr.navbar .nav > li > a:hover {
 	background-image: none;
@@ -748,8 +749,8 @@ https://github.com/ghinda/css-toggle-switch
 	}
 	
 }
-[class^="icon-"], [class*=" icon-"],
-.icon-off {
+#adminNavFloManagr [class^="icon-"], #adminNavFloManagr [class*=" icon-"],
+#adminNavFloManagr .icon-off {
     background-position: -384px 0;
     background-image: url("/img/twitter-bootstrap/glyphicons-halflings.png");
     background-repeat: no-repeat;
@@ -758,7 +759,7 @@ https://github.com/ghinda/css-toggle-switch
     vertical-align: text-top;
     width: 14px;
 }
-.icon-eye-open {
+#adminNavFloManagr .icon-eye-open {
     background-position: -96px -120px;
 }
 

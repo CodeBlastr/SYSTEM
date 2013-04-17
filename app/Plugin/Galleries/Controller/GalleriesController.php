@@ -120,6 +120,7 @@ class GalleriesController extends GalleriesAppController {
 	public function edit($model = null, $foreignKey = null) {
 		if (!empty($this->request->data)) {			
 			if ($this->Gallery->GalleryImage->add($this->request->data, 'filename')) {
+				$this->Gallery->save($this->request->data);
 				$this->Session->setFlash(__('Saved'));
 				$this->redirect($this->referer());
 			} else {
