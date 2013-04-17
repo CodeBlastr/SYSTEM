@@ -261,7 +261,7 @@ class MetableBehavior extends ModelBehavior {
 							// leave this result in the $results
 						} elseif ($operator == '<' && $result[$Model->alias][$query[0]][$query[1]] < $value) {
 							// leave this result in the $results
-						} elseif ($operator == 'LIKE' && strpos($result[$Model->alias][$query[0]][$query[1]], str_replace ('%', '', $value)) !== false) {
+						} elseif ($operator == 'LIKE' && stripos($result[$Model->alias][$query[0]][$query[1]], str_replace ('%', '', $value)) !== false) {
 							// leave this result in the $results
 						} else {
 							// does not compute, remove this result from the $results
