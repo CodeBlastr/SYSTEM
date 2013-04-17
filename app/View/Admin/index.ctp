@@ -22,7 +22,8 @@ echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false))
  */ 
 
 if (empty($runUpdates)) { ?>
-
+	
+	<?php /* this should only show on dev branch until done
 	<div class="row-fluid">
 		<ul class="thumbnails">
 			<li class="span4">
@@ -69,9 +70,11 @@ if (empty($runUpdates)) { ?>
 			</li>
 		</ul>
 	</div>
+	*/ ?>
 
     <div class="btn-group">
         <a href="#masonryBox" class="filterClick btn">All</a>
+        <?php if (in_array('Products', CakePlugin::loaded())) { ?><a href="/admin/products/products/dashboard" class="btn">Ecommerce</a><?php } ?>
         <a href="#tagPages" class="filterClick btn">Pages</a>
         <a href="#tagMedia" class="filterClick btn">Media</a>
         <?php if (in_array('Comments', CakePlugin::loaded())) { ?><a href="#tagDiscussion" class="filterClick btn">Discussion</a><?php } ?>
@@ -127,6 +130,14 @@ if (empty($runUpdates)) { ?>
         <div class="masonryBox dashboardBox tagBlogs tagPages">
             <h3 class="title"><i class="icon-file"></i> <?php echo $this->Html->link('Blogs', array('plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'index')); ?></h3>
             <p>Create multiple blogs, and post new content.</p>
+            <ul>
+            	<?php
+            	if (!empty($blogs)) {
+            		foreach ($blogs as $blog) {
+            			echo __('<li>%s to %s</li>', $this->Html->link('Add Post', array('admin' => true, 'plugin' => 'blogs', 'controller' => 'blog_posts', 'action' => 'add', $blog['Blog']['id'])), $this->Html->link($blog['Blog']['title'], array('plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'view', $blog['Blog']['id'])));
+            		}
+            	} ?>
+            </ul>
         </div>
         <?php } ?>
 		

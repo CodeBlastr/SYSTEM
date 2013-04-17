@@ -46,7 +46,6 @@ class Alias extends AppModel {
 			// remove the alias if the name is blank
 			unset($data['Alias']);
 		}
-		
 		return $data;
 	}
 
