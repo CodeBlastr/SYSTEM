@@ -37,9 +37,14 @@ class UserGroupsController extends UsersAppController {
 					),
 				'UserGroupWallPost' => array(
 					'Creator',
-						),
-				)
-			));
+					'Comment' => array(
+//						'contain' => array(
+//							'User' => array('fields' => array('User.id', 'User.full_name'))
+//						)
+					),
+				),
+			)
+		));
 		
 		$this->set('userGroup', $userGroup);
 		$this->set('userId' , $this->Session->read('Auth.User.id'));
