@@ -89,6 +89,35 @@ class AppModel extends Model {
 
 
 /**
+ * After Find Method
+ * 
+ * Currently this is just framed up piece of code for Nick's review. 
+ * It is for denying approved access to an aro, if they are not also 
+ * in the userIdFields array coming from the appcontroller
+	public function afterFind($results) {
+		// $this->action = 'view'; // passed from appcontroller // we won't even need this, because its not necessary to know the action, just whether userIdFields is set for whatever aco is being requested
+		$this->aco['userIdFields'] = array('owner_id', 'modifier_id'); // passed from app controller
+		if (!empty($this->aco['userIdFields'])) {
+			foreach ($this->aco['userIdFields'] as $field) {
+				if ($result[$model][$field] == [CakeSession::read('Auth.User.id')]) {
+					$userGood = true;
+					break;
+				}
+			}
+			// now what to do with good and bad users
+			if (!empty($userGood)) {
+				return true; 
+			} else {
+				header('Location: /');
+				break;
+			}
+		} 
+		return $results;
+	}
+ */
+
+
+/**
  * Condition Check, checks to see if any conditions from the conditions table were met.
  * 
  * This has been removed, because it should be in a behavior.  We won't use it until it has
