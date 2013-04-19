@@ -89,35 +89,6 @@ class AppModel extends Model {
 
 
 /**
- * After Find Method
- * 
- * Currently this is just framed up piece of code for Nick's review. 
- * It is for denying approved access to an aro, if they are not also 
- * in the userIdFields array coming from the appcontroller
-	public function afterFind($results) {
-		// $this->action = 'view'; // passed from appcontroller // we won't even need this, because its not necessary to know the action, just whether userIdFields is set for whatever aco is being requested
-		$this->aco['userIdFields'] = array('owner_id', 'modifier_id'); // passed from app controller
-		if (!empty($this->aco['userIdFields'])) {
-			foreach ($this->aco['userIdFields'] as $field) {
-				if ($result[$model][$field] == [CakeSession::read('Auth.User.id')]) {
-					$userGood = true;
-					break;
-				}
-			}
-			// now what to do with good and bad users
-			if (!empty($userGood)) {
-				return true; 
-			} else {
-				header('Location: /');
-				break;
-			}
-		} 
-		return $results;
-	}
- */
-
-
-/**
  * Condition Check, checks to see if any conditions from the conditions table were met.
  * 
  * This has been removed, because it should be in a behavior.  We won't use it until it has
@@ -191,13 +162,61 @@ class AppModel extends Model {
 		return $type;
 	}
 
-
+/**
+ * After Find Method
+ * 
+ * Currently this is just framed up piece of code for Nick's review. 
+ * It is for denying approved access to an aro, if they are not also 
+ * in the userIdFields array coming from the appcontroller
+	public function afterFind($results) {
+		// $this->action = 'view'; // passed from appcontroller // we won't even need this, because its not necessary to know the action, just whether userIdFields is set for whatever aco is being requested
+		$this->aco['userIdFields'] = array('owner_id', 'modifier_id'); // passed from app controller
+		if (!empty($this->aco['userIdFields'])) {
+			foreach ($this->aco['userIdFields'] as $field) {
+				if ($result[$model][$field] == [CakeSession::read('Auth.User.id')]) {
+					$userGood = true;
+					break;
+				}
+			}
+			// now what to do with good and bad users
+			if (!empty($userGood)) {
+				return true; 
+			} else {
+				header('Location: /');
+				break;
+			}
+		} 
+		return $results;
+	}
+ */
 
 /**
  * With this function our total_count now appears with the rest of the fields in the resulting data array.
  * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
  */
 	public function afterFind($results, $primary = false) {
+			
+		//This is a permission check for record level permissions.
+		//userfields are ACO records from the controller
+		if (!empty($this->acoRecords[0])) {
+		  $userFields = explode(',', $this->acoRecords[0]['Aco']['user_fields']);	
+		  foreach ($results as $k => $result) {
+			  foreach($userFields as $u) {
+			  		if ($result[$u] !== null && $result[$u] == CakeSession::read('Auth.User.id')) {
+			  			$userAccess = true;
+			  		}
+			  }
+		  }
+			// What we do with users that don't have record level user access
+		  if ($userAccess == true) {
+				debug('user is good'); 
+		  } else {
+				debug('user is not good'); 
+			}
+		}
+
+		
+		
     	if($primary == true) {
         	if(Set::check($results, '0.0')) {
             	$fieldName = key($results[0][0]);
