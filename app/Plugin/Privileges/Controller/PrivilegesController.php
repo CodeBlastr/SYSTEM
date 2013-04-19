@@ -17,7 +17,10 @@ class PrivilegesController extends PrivilegesAppController {
  * @return void
  */
 	public function add() {
+ 		debug($this->request->data);
+		break;	
  		$dat = $this->request->data['Privilege'];
+		
  		
  		for($i = 0; $i < count($dat); $i++){
  			//set the variables 

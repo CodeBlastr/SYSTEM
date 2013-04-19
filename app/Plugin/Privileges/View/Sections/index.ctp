@@ -33,12 +33,12 @@
             if (!empty($section['children'][0]['children'])) {
                 echo __('<section id="%s">', Inflector::underscore(Inflector::singularize(ZuhaInflector::pluginize($section['Section']['alias']))));
                 foreach ($section['children'] as $child) {
-                    echo $this->Element('action-privileges-form', array('name' => $child['Section']['alias'], 'data' => $child['children']));
+                    echo $this->Element('action-privileges-form', array('name' => $child['Section']['alias'], 'data' => $child['children'], 'userfields' => $section['userfields']));
                 }
                 echo __('</section>');
             } else {
                 echo __('<section id="%s">', Inflector::underscore(Inflector::singularize($section['Section']['alias'])));
-                echo $this->Element('action-privileges-form', array('name' => $section['Section']['alias'], 'data' => $section['children']));
+                echo $this->Element('action-privileges-form', array('name' => $section['Section']['alias'], 'data' => $section['children'], 'userfields' => $section['userfields']));
                 echo __('</section>');
             }
         } ?>
