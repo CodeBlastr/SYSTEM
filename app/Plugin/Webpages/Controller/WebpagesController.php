@@ -238,7 +238,7 @@ class WebpagesController extends WebpagesAppController {
  * add content page
  */
     protected function _addContent() {
-		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? str_replace('+', '/', $this->request->params['named']['alias']) : null;
+		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? rtrim(str_replace('+', '/', $this->request->params['named']['alias']), '/') : null;
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Page Builder'));
