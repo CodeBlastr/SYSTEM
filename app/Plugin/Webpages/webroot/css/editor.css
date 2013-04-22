@@ -109,6 +109,7 @@
     background-image: none;
     height: auto;
     background: transparent;
+    min-height: auto;
 } 
 #adminNavFloManagr .navbar-inner div {
 	display: inline-block;
