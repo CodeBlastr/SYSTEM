@@ -32,7 +32,7 @@ foreach ($data as $ac) {
 					$has_check = true;
 				}
 			}
-			$cell .= '<div class="checkboxToggle">';
+			$cell .= '<div class="checkboxToggleDiv">';
 			if($groups[$i]['UserRole']['id'] != 5) {
 					foreach($userfields as $field) {
 						if($has_check) {
@@ -41,20 +41,19 @@ foreach ($data as $ac) {
 						}else {
 							$checked = false;
 						}
-						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => Inflector::humanize(strstr($field, '_', TRUE)), 'checked' => $checked === false ? null : 'true', 'div' => false));
+						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => 'Only ' . Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))), 'checked' => $checked === false ? null : 'true', 'div' => false));
 					}	
 			
 			}
 			
 			if ($has_check) {
-				$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'checked' => 'true', 'div' => false));
+				$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => '', 'checked' => 'true', 'div' => false));
 				$cell .= '<div class="ct-on">';
 				$cell .= $formInputs;
 				$cell .= '</div></div>';
-				debug($cell);
-				break;
+				
 			} else {
-				$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'div' => false));
+				$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => '', 'div' => false));
 				$cell .= '<div class="ct-on">';
 				$cell .= $formInputs;
 				$cell .= '</div></div>';	
@@ -63,17 +62,19 @@ foreach ($data as $ac) {
 			$cell .= '<div class="checkboxToggle">';
 			 if($groups[$i]['UserRole']['id'] != 5) {
 					foreach($userfields as $field) {
-						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => Inflector::humanize(strstr($field, '_', TRUE)), 'div' => false));
+						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => 'Only ' . Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))), 'div' => false));
 					}	
 			
 			}
-			$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'div' => false));
+			$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => '', 'div' => false));
 			$cell .= '<div class="ct-on">';
 			$cell .= $formInputs;
 			$cell .= '</div></div>';
 		}
+		if($cell !== ''){
+			$tableCells[] = $cell;
+		}
 		
-		$tableCells[] = $cell;
 	}
 
 	echo $this->Html->tableCells(array($tableCells));
