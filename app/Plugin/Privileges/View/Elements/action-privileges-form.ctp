@@ -15,7 +15,7 @@ foreach ($groups as $g) {
 }
 echo $this->Html->tableHeaders($tableHeaders);
 echo '</thead><tbody>';
-debug($data);
+
 foreach ($data as $ac) {
 
 	$tableCells = array($ac['Section']["alias"]);
@@ -23,6 +23,7 @@ foreach ($data as $ac) {
 	for ($i = 0; $i < $groupCount; $i++) {
 		$field_name = $ac["Section"]["id"] . '_' . $groups[$i]["Requestor"]['id'];	
 		$formInputs = '';
+		$cell = '';
 		if (isset($ac["Requestor"][0]) && $groups[$i]['UserRole']['id'] != 1) {
 			// loop throug Requestors to see if it maches the given group
 			$has_check = false;
@@ -31,8 +32,7 @@ foreach ($data as $ac) {
 					$has_check = true;
 				}
 			}
-			
-			debug($ac['Section']['user_fields']);
+			$cell .= '<div class="checkboxToggle">';
 			if($groups[$i]['UserRole']['id'] != 5) {
 					foreach($userfields as $field) {
 						if($has_check) {
@@ -47,19 +47,33 @@ foreach ($data as $ac) {
 			}
 			
 			if ($has_check) {
-				$tableCells[] = $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'checked' => 'true', 'div' => false)) . $formInputs;
+				$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'checked' => 'true', 'div' => false));
+				$cell .= '<div class="ct-on">';
+				$cell .= $formInputs;
+				$cell .= '</div></div>';
+				debug($cell);
+				break;
 			} else {
-				$tableCells[] = $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'div' => false)) . $formInputs;
+				$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'div' => false));
+				$cell .= '<div class="ct-on">';
+				$cell .= $formInputs;
+				$cell .= '</div></div>';	
 			}
 		} elseif ($groups[$i]["UserRole"]['id'] != 1) {
+			$cell .= '<div class="checkboxToggle">';
 			 if($groups[$i]['UserRole']['id'] != 5) {
 					foreach($userfields as $field) {
 						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => Inflector::humanize(strstr($field, '_', TRUE)), 'div' => false));
 					}	
 			
 			}
-			$tableCells[] = $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'div' => false)). $formInputs;
+			$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'div' => false));
+			$cell .= '<div class="ct-on">';
+			$cell .= $formInputs;
+			$cell .= '</div></div>';
 		}
+		
+		$tableCells[] = $cell;
 	}
 
 	echo $this->Html->tableCells(array($tableCells));
