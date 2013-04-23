@@ -59,7 +59,7 @@ foreach ($data as $ac) {
 				$cell .= '</div></div>';	
 			}
 		} elseif ($groups[$i]["UserRole"]['id'] != 1) {
-			$cell .= '<div class="checkboxToggle">';
+			$cell .= '<div class="checkboxToggleDiv">';
 			 if($groups[$i]['UserRole']['id'] != 5) {
 					foreach($userfields as $field) {
 						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => 'Only ' . Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))), 'div' => false));
