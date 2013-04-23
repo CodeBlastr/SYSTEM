@@ -15,6 +15,7 @@ foreach ($groups as $g) {
 }
 echo $this->Html->tableHeaders($tableHeaders);
 echo '</thead><tbody>';
+debug($data);
 foreach ($data as $ac) {
 
 	$tableCells = array($ac['Section']["alias"]);
@@ -31,15 +32,16 @@ foreach ($data as $ac) {
 				}
 			}
 			
-			
+			debug($ac['Section']['user_fields']);
 			if($groups[$i]['UserRole']['id'] != 5) {
 					foreach($userfields as $field) {
 						if($has_check) {
 							$checked = strpos($ac['Section']['user_fields'], $field);
+							
 						}else {
 							$checked = false;
 						}
-						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => Inflector::humanize(strstr($field, '_', TRUE)), 'checked' => $checked == false ? null : 'true', 'div' => false));
+						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => Inflector::humanize(strstr($field, '_', TRUE)), 'checked' => $checked === false ? null : 'true', 'div' => false));
 					}	
 			
 			}
