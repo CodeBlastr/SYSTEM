@@ -14,7 +14,6 @@ foreach ($groups as $g) {
 	}
 }
 echo $this->Html->tableHeaders($tableHeaders);
-
 echo '</thead><tbody>';
 foreach ($data as $ac) {
 
@@ -22,15 +21,7 @@ foreach ($data as $ac) {
 
 	for ($i = 0; $i < $groupCount; $i++) {
 		$field_name = $ac["Section"]["id"] . '_' . $groups[$i]["Requestor"]['id'];	
-		
 		$formInputs = '';
-		
-		if($groups[$i]['UserRole']['id'] != 5) {
-			foreach($userfields as $field) {
-				$formInputs .= $this->Form->input($field_name . '.' . $field, array('type' => 'checkbox', 'label' => Inflector::humanize(strstr($field, '_', TRUE)), 'div' => false));
-			}	
-		}
-
 		if (isset($ac["Requestor"][0]) && $groups[$i]['UserRole']['id'] != 1) {
 			// loop throug Requestors to see if it maches the given group
 			$has_check = false;
@@ -40,12 +31,31 @@ foreach ($data as $ac) {
 				}
 			}
 			
+			
+			if($groups[$i]['UserRole']['id'] != 5) {
+					foreach($userfields as $field) {
+						if($has_check) {
+							$checked = strpos($ac['Section']['user_fields'], $field);
+						}else {
+							$checked = false;
+						}
+						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => Inflector::humanize(strstr($field, '_', TRUE)), 'checked' => $checked == false ? null : 'true', 'div' => false));
+					}	
+			
+			}
+			
 			if ($has_check) {
 				$tableCells[] = $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'checked' => 'true', 'div' => false)) . $formInputs;
 			} else {
 				$tableCells[] = $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'div' => false)) . $formInputs;
 			}
 		} elseif ($groups[$i]["UserRole"]['id'] != 1) {
+			 if($groups[$i]['UserRole']['id'] != 5) {
+					foreach($userfields as $field) {
+						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => Inflector::humanize(strstr($field, '_', TRUE)), 'div' => false));
+					}	
+			
+			}
 			$tableCells[] = $this->Form->input($field_name, array('type' => 'checkbox', 'label' => 'All', 'div' => false)). $formInputs;
 		}
 	}
