@@ -19,7 +19,7 @@ class Webpage extends WebpagesAppModel {
  * 
  * @var string 
  */
-	public $fullName = "Webpages.Webpage";
+	public $fullName = 'Webpages.Webpage';
 	
 /**
  * Display Field
@@ -36,7 +36,8 @@ class Webpage extends WebpagesAppModel {
     public $actsAs = array(
         'Tree', 
         'AclExtra', 
-        'Alias'
+        'Alias',
+        'Galleries.Mediable' => array('modelAlias' => 'Webpage')
 		);
 	
 /**
