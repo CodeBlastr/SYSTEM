@@ -853,8 +853,8 @@ class AppController extends Controller {
 			$aro = $this->_userAro($user['id']); // user aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get aco
 			if ($this->Acl->check($aro, $aco)) {
-				#echo 'user access passed';
-				#return array('passed' => 1, 'message' => 'user access passed');
+				//echo 'user access passed';
+				//return array('passed' => 1, 'message' => 'user access passed');
 				return true;
 			} else {
 //				debug($this->Acl->Aco->node($this->_getAcoPath()));
