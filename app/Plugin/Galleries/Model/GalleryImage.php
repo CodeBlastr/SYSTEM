@@ -86,15 +86,23 @@ class GalleryImage extends GalleriesAppModel {
  */
 	public function add($data, $uploadFieldName) {
 		$data = $this->_cleanData($data);
-		if (!empty($data['GalleryImage']['filename'][0])) {
-			$image = $data;
-			foreach ($data['GalleryImage']['filename'] as $fileName) {
-				$image['GalleryImage']['filename'] = $this->_fileName($fileName);
-				$this->_add($image, $uploadFieldName);
+		if (isset($data['GalleryImage']['filename'][0]) && is_array($data['GalleryImage']['filename'])) {
+			try {
+				$image = $data;
+				foreach ($data['GalleryImage']['filename'] as $f) {
+					$image['GalleryImage']['filename'] = $this->_fileName($f);
+					$this->_add($image, $uploadFieldName);
+				}
+				return true;
+			} catch(Exception $e) {
+				throw new Exception($e->getMessage());
 			}
-			return true;
 		} else {
-			return $this->_add($data, $uploadFieldName);
+			try {
+				return $this->_add($data, $uploadFieldName);
+			} catch (Exception $e) {
+				throw new Exception($e->getMessage());
+			}
 		}
 	}
 	
@@ -114,7 +122,6 @@ class GalleryImage extends GalleriesAppModel {
  */
 	protected function _add($data, $uploadFieldName) {
         $data = $this->checkForGallery($data);
-        
 		if (!empty($data['GalleryImage']['gallery_id'])) {
 			// existing gallery
 			$uploadOptions[$uploadFieldName] = $this->_getImageOptions($data);
@@ -123,14 +130,10 @@ class GalleryImage extends GalleriesAppModel {
 			if ($this->save($data)) {
 				return true;
 			} else {
-				$errors = '';
-				foreach ($this->invalidFields() as $key => $error) {
-					$errors .= $key . ' - ' . $error . ', ';
-				}
-				throw new Exception(__('ERROR : %s', $errors));
+				throw new Exception(__('ERROR : %s', ZuhaInflector::flatten($this->invalidFields())));
 			}
 		} else {
-			// new gallery
+			// new gallery			
 			if ($this->Gallery->add($data, $uploadFieldName)) {
 				return true;
 			} else {
