@@ -52,6 +52,7 @@ class AppController extends Controller {
  * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
  */
 	public function redirect($url, $status = null, $exit = true) {
+		
 		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') {
 			return parent::redirect($this->request->data['Success']['redirect'], $status, $exit);
 		} elseif (!empty($this->request->data['Error']['redirect']) && $status == 'error') {
@@ -838,12 +839,14 @@ class AppController extends Controller {
  * @todo		Optimize this somehow, someway.
  */
 	public function isAuthorized($user) {
+		//debug($user);
 		// this allows all users in the administrators group access to everything
 		// using user_role_id is deprecated and will be removed in future versions
 		if (!empty($user['view_prefix']) && ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1)) { return true; }
 		// check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
+		
 		if ($this->Acl->check($aro, $aco)) {
 			//echo 'guest access passed';
 			//return array('passed' => 1, 'message' => 'guest access passed');
@@ -852,19 +855,26 @@ class AppController extends Controller {
 			//check user access
 			$aro = $this->_userAro($user['id']); // user aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get aco
+			
 			if ($this->Acl->check($aro, $aco)) {
-				//echo 'user access passed';
-				//return array('passed' => 1, 'message' => 'user access passed');
+				#echo 'user access passed';
+				#return array('passed' => 1, 'message' => 'user access passed');
+				//Gets Model name
+				$modelname = Inflector::singularize($this->name);
+				//assigns the Aco record to the acoRecords property in the model of the controller
+				//This is used in the afterfind method of the app controller for record level
+				//access checks
+				$this->$modelname->acoRecords = $this->Acl->Aco->node($this->_getAcoPath());
 				return true;
 			} else {
-//				debug($this->Acl->Aco->node($this->_getAcoPath()));
-//				debug($this->Acl->Aro->node($this->_userAro($user['id'])));
-//				debug($this->Acl->check($aro, $aco));
-//				debug($user);
-//				debug($this->Session->read());
-//				debug($aro);
-//				debug($aco);
-//				break;
+				// debug($this->Acl->Aco->node($this->_getAcoPath()));
+				// debug($this->Acl->Aro->node($this->_userAro($user['id'])));
+				// debug($this->Acl->check($aro, $aco));
+				// debug($user);
+				// debug($this->Session->read());
+				// debug($aro);
+				// debug($aco);
+				// break;
 				$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
 				$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
 				$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';
