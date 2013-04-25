@@ -114,6 +114,10 @@ class AppController extends Controller {
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
 		$this->set('title_for_layout', $this->_titleForLayout());
 		$this->set('userRoleId', $this->userRoleId);
+		if($this->RequestHandler->ext == 'csv') {
+			$this->viewClass = 'Csv';
+		}
+		
 	}
 
     public function beforeRender() {
@@ -469,8 +473,8 @@ class AppController extends Controller {
 /**
  * Used to show admin layout for admin pages & userRole views if they exist
  */
-	public function _siteTemplate() {
-		if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
+	public function _siteTemplate() {		
+		if (!$this->request->ext == 'csv' && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
             if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
 				// this if checks to see if the user role has a specific view file
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
@@ -495,10 +499,11 @@ class AppController extends Controller {
 				} // end view prefix loop
 			} // end paths loop
 			$this->layout = 'default';
-		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax')) {
+		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax') && !$this->request->ext == 'csv') {
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		}
+		
 	}
 
 
