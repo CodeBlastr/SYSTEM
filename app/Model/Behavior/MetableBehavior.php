@@ -96,7 +96,7 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  * @todo optimize by flattening and searching for Alias.
  */
-	public function beforeFind(Model $Model, $query) {//die('x');break;
+	public function beforeFind(Model $Model, $query) {
         $Model->bindModel(array(
         	'hasOne' => array(
 				'Meta' => array(
