@@ -436,9 +436,8 @@ class User extends UsersAppModel {
 /**
  * Set the default redirect variables, using the settings table constant.
  */
-	public function loginRedirectUrl() {
+	public function loginRedirectUrl($redirect) {
 		# this handles redirects where a url was called that redirected you to the login page
-		$redirect = $this->Auth->redirect();
 
 		if ($redirect == '/') {
 			# default login location
