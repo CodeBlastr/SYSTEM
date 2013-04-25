@@ -329,7 +329,7 @@ class UsersController extends UsersAppController {
 				if (in_array('Connections', CakePlugin::loaded())) {
 					$this->User->Connection->afterLogin($user['User']['id']);
 				}
-		        $this->redirect($this->User->loginRedirectUrl());
+		        $this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 			} catch (Exception $e) {
 				$this->Auth->logout();
 				$this->Session->setFlash($e->getMessage());
