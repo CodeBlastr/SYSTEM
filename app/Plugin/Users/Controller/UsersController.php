@@ -41,13 +41,17 @@ class UsersController extends UsersAppController {
 		);
 
 
-	public function __construct($request = null, $response = null) {
+	public function __construct($request = null, $response = null) {break;
 		parent::__construct($request, $response);
 		if (in_array('Invite', CakePlugin::loaded())) {
 			$this->components[] = 'Invite.InviteHandler';
 		}
 		if (in_array('Recaptcha', CakePlugin::loaded())) {
 			$this->helpers[] = 'Recaptcha.Recaptcha';
+		}
+		if (in_array('Facebook', CakePlugin::loaded())) {
+			$this->helpers[] = 'Facebook.Facebook';
+			$this->uses[] = 'Facebook.Facebook';
 		}
 	}
 
