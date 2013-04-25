@@ -326,6 +326,11 @@ class Contact extends ContactsAppModel {
 			unset($data['Contact']['modified']);
 		}
 
+		// belongsTo records return null values when there is nothing to contain
+		if (empty($data['User']['id'])) {
+			unset($data['User']);
+		}
+
 		// if employer is not empty merge all employers so that we don't lose any existing employers in the Habtm update
 		if (!empty($data['Employer'])) {
 			$mergedEmployers = Set::merge(Set::extract('/id', $data['Employer']), $data['Employer']['Employer']);
