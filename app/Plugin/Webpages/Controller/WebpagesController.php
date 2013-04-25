@@ -33,7 +33,7 @@ class WebpagesController extends WebpagesAppController {
  * 
  * @var string
  */
-    public $uses = 'Webpages.Webpage';
+    public $uses = array('Webpages.Webpage');
 
 /**
  * Paginate
