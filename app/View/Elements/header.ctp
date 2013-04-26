@@ -1,4 +1,5 @@
 <?php // $requestUrl = strpos($this->request->url, '/') === 0 ? $this->request->url : '/'.$this->request->url; 
+
 $id = !empty($id) ? $id : 'headerNavFloManagr'; 
 $showEditMode = !empty($showEditMode) ? true : false;
 $showContext = !empty($showContext) ? true : false; ?>

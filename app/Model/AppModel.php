@@ -167,8 +167,34 @@ class AppModel extends Model {
 /**
  * With this function our total_count now appears with the rest of the fields in the resulting data array.
  * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
+ * 
+ * afterFind method
  */
 	public function afterFind($results, $primary = false) {
+			
+		//This is a permission check for record level permissions.
+		//userfields are ACO records from the controller
+		if ( isset($this->acoRecords[0]['Aco']['user_fields']) && !empty($this->acoRecords[0]['Aco']['user_fields']) && CakeSession::read('Auth.User.id') !== 1 ) {
+		  $userFields = explode(',', $this->acoRecords[0]['Aco']['user_fields']);	
+		  foreach ($results as $k => $result) {
+			  foreach($userFields as $u) {
+			  		if ($result[$u] !== null && $result[$u] == CakeSession::read('Auth.User.id')) {
+			  			$userAccess = true;
+			  		}
+			  }
+		  }
+			// What we do with users that don't have record level user access
+		  if ( !isset($userAccess) ) {
+			  SessionComponent::setFlash($this->acoRecords[0]['Aco']);
+			  header('Location: /users/users/restricted');
+			  break;
+				//$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'restricted'));
+		  } 
+		  
+		}
+
+		
+		
     	if($primary == true) {
         	if(Set::check($results, '0.0')) {
             	$fieldName = key($results[0][0]);

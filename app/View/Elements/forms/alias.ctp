@@ -8,6 +8,7 @@ $aliasIdDefaults = array('type' => 'hidden');
 $aliasId['Alias.id'] = !empty($aliasId['Alias.id']) ? array_merge($aliasIdDefaults, $aliasId['Alias.id']) : $aliasIdDefaults;
 $aliasNameDefaults = array('label' => 'Permanent Url');
 $aliasName['Alias.name'] = !empty($aliasId['Alias.name']) ? array_merge($aliasNameDefaults, $aliasId['Alias.name']) : $aliasNameDefaults;
+$prefix = !empty($prefix) ? $prefix : '';
 $formId = !empty($formId) ? $formId : null;
 $nameInput = !empty($nameInput) ? $nameInput : null;
 $aliasInput = !empty($aliasInput) ? $aliasInput : '#AliasName';
@@ -34,9 +35,10 @@ $(function() {
     
     var formId = '<?php echo $formId; ?>';
     var aliasId = $("#AliasId");
-    var aliasValue = $('<?php echo $nameInput; ?>').val().replace(/\s+/g, '-').toLowerCase();
+    var aliasValue = $('<?php echo $nameInput; ?>').val().replace(/\s+/g, '-').toLowerCase()
     var permaLinkHtml = '<?php echo __(' <br /><small>%s/<span id="permaLink" title="Edit">%s</span> <a class="btn btn-mini" id="permaLinkEdit">Edit</a></small>', $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name']); ?>'.replace('></span>', aliasValue + '></span>');
-   
+   	var prefix = '<?php echo $prefix; ?>';
+   	   	
     $('h1.pageTitle').append(permaLinkHtml);
     
     $('#permaLink, #permaLinkEdit').live('click', function() {
@@ -73,11 +75,11 @@ $(function() {
     $('<?php echo $nameInput; ?>').live('keyup', function () {
         <?php if (!empty($parent)) { ?>
         if ($('<?php echo $aliasInput; ?>').val() == '<?php echo $this->request->data['Alias']['name']; ?>') {
-            $('#permaLink').html('<?php echo $this->request->data['Alias']['name']; ?>' + $(this).val().replace(/\s+/g, '-').toLowerCase());
+            $('#permaLink').html(prefix + '<?php echo $this->request->data['Alias']['name']; ?>' + $(this).val().replace(/\s+/g, '-').toLowerCase());
         }
         <?php } else { ?> 
         if (!$('<?php echo $aliasInput; ?>').val()) {
-            $('#permaLink').html($(this).val().replace(/\s+/g, '-').toLowerCase());
+            $('#permaLink').html(prefix + $(this).val().replace(/\s+/g, '-').toLowerCase());
         }
         <?php } ?>
     });

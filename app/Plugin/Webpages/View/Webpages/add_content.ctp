@@ -1,5 +1,5 @@
 <div class="webpages form">
-	<?php echo $this->Form->create('Webpage');?>
+	<?php echo $this->Form->create('Webpage', array('type' => 'file'));?>
     
 	<fieldset>
     	<?php
@@ -11,11 +11,16 @@
 	<fieldset>
 		<legend class="toggleClick"><?php echo __('Search Engine Optimization');?></legend>
     	<?php 
-		echo $this->Element('forms/alias', array('formId' => '#WebpageAddForm', 'nameInput' => '#WebpageName'));
+		echo $this->Element('forms/alias', array('formId' => '#WebpageAddForm', 'nameInput' => '#WebpageName')); // must have the alias behavior attached to work
 		echo $this->Form->input('Webpage.title', array('label' => 'SEO Title'));
 		echo $this->Form->input('Webpage.keywords', array('label' => 'SEO Keywords'));
 		echo $this->Form->input('Webpage.description', array('label' => 'SEO Description')); ?>
     </fieldset>
+    
+	<fieldset>
+		<legend class="toggleClick"><?php echo __('Featured Image'); ?></legend>
+			<?php echo $this->Form->input('GalleryImage.filename', array('type' => 'file')); ?>
+	</fieldset>
     
 	<fieldset>
 		<legend class="toggleClick"><?php echo __('<span class="hoverTip" title="User role site privileges are used by default. Choose an option to restrict access to only the chosen group for this specific page.">Access Restrictions (optional)</span>');?></legend>

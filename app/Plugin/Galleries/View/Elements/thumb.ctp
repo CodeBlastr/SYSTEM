@@ -28,6 +28,7 @@ if (!empty($model) && !empty($foreignKey)) {
 // set up the config vars
 $thumbLink = !empty($thumbLink) ? $thumbLink : null;
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
+$showEmpty = isset($showEmpty) ? $showEmpty : true;
 // default sizes
 $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'] = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageWidth']) ? $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'] : 24;
 $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'] = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageHeight']) ? $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'] : 24;
@@ -35,7 +36,9 @@ $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'] = !empty($galleryThum
 $indexWidth = !empty($galleryThumb['GallerySettings']['indexImageWidth']) ? $galleryThumb['GallerySettings']['indexImageWidth'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'];
 $indexHeight = !empty($galleryThumb['GallerySettings']['indexImageHeight']) ? $galleryThumb['GallerySettings']['indexImageHeight'] : $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'];
 // if the width was defined in the element call
+
 $thumbWidth = !empty($thumbWidth) ? array('width' => $thumbWidth) : array('width' => $indexWidth);
+
 $thumbHeight = !empty($thumbHeight) ? array('height' => $thumbHeight) : array('height' => $indexHeight);
 $thumbAlt = !empty($thumbAlt) ? array('alt' => $thumbAlt) : array('alt' => $model);
 $thumbClass = !empty($thumbClass) ? array('class' => $thumbClass) : array('class' => 'thumbnail gallery-thumb');
@@ -46,15 +49,13 @@ $thumbLinkOptions = !empty($thumbLinkOptions) ? array_merge($thumbClass, $thumbI
 $thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; // to append anything to the image within the link
 
 if (!empty($galleryThumb['GalleryThumb']['filename'])) {
-	
     $imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'. $thumbSize .'/'.$galleryThumb['GalleryThumb']['filename'];
-	//debug($thumbImageOptions);
     $image = $this->Html->image($imagePath, $thumbImageOptions,	array(
     	'conversion' => $galleryThumb['GallerySettings']['conversionType'],
 		'quality' => 75,
 		'alt' => 'thumbnail',
 		));	
-} else {
+} else if (!empty($showEmpty)) {
 	$imagePath = '/img/noImage.jpg';
     $image = $this->Html->image($imagePath,	$thumbImageOptions);	
 }
