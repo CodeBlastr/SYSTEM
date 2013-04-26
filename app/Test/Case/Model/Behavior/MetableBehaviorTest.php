@@ -150,6 +150,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		//debug($resultOne);
 		$this->assertEqual( empty($resultOne['Article']['Meta']['!location']), true );
 	}
+	
 	public function testRemovalOfExclamationsAfterSave() {
 //		$data = array('Article' => array(
 //			'title' => 'Lorem 222',
@@ -187,13 +188,10 @@ class MetableBehaviorTestCase extends CakeTestCase {
 				!empty($resultOne['Article']['Meta']['location']),
 				!empty($result2['Article']['Meta']['location'])
 				);
-		
-//		break;
 	}
 	
 	
 	public function testMetaSearchOnlyTypeFirst() {
-		
 		$data = array(
 			array('Article' => array(
 				'title' => 'Lorem 333',
@@ -229,16 +227,12 @@ class MetableBehaviorTestCase extends CakeTestCase {
 					)
 				))
 			);
-//		debug($data);
 		$this->Article->saveAll($data);
-		
 		$result = $this->Article->find('first', array(
 			'conditions' => array(
 				'Article.Meta.location' => 'Syracuse'
 			),
 		));
-//		debug($result);
-//		break;
 		// we insert a few records, then run a search based on a meta field only
 		$this->assertEqual(
 				$result['Article']['Meta']['location'],

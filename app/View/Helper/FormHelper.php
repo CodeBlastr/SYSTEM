@@ -232,10 +232,11 @@ class FormHelper extends CakeFormHelper {
 			break;
 			case 'datetime':
 				$options['value'] = $selected;
-				//$options['class'] = !empty($options['class']) ?  $options['class'] . ' datetimepicker' : 'datetimepicker'; // zuha specific
+				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datetimepicker' : 'datetimepicker'; // zuha specific
 				//$type = 'text'; // zuha specific
 				//$input = $this->{$type}($fieldName, $options); // zuha specific
-				$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // cakephp specific
+				//$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // cakephp specific
+				$input = $this->{$type}($fieldName, $options); // zuha specific
 			break;
 			case 'richtext': // zuha specific
 				$input =  '<div class="ckeditorLinks"><a id="'.$fieldName.'_exec-source" class="exec-source"><i class="icon-wrench"></i> HTML</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a onclick="toggleExtras();" id="toggle-extras"><i class="icon-fire"></i> TOGGLE EXTRAS</a></div>' . $this->richtext($fieldName, $options + array('class' => 'ckeditor')); // zuha specific

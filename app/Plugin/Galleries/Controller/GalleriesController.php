@@ -120,7 +120,8 @@ class GalleriesController extends GalleriesAppController {
 	public function edit($model = null, $foreignKey = null) {
 		if (!empty($this->request->data)) {			
 			if ($this->Gallery->GalleryImage->add($this->request->data, 'filename')) {
-				$this->Gallery->save($this->request->data);
+				// if this comes back tell us why!  GalleryImage::add() should do Gallery::save() already. So what are you trying to save here.
+				// $this->Gallery->save($this->request->data);
 				$this->Session->setFlash(__('Saved'));
 				$this->redirect($this->referer());
 			} else {
@@ -160,7 +161,7 @@ class GalleriesController extends GalleriesAppController {
  * @todo		Convert galleries to slugs or aliases, for easier linking into edit and views.
  */
 	public function mythumb() {
-		debug($this->request->data);
+		
 		if (!empty($this->request->data['Gallery']['model']) && !empty($this->request->data['Gallery']['foreign_key'])) {	
             $continue = true;
             // check for gallery and if it exists 
