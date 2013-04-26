@@ -198,7 +198,6 @@ class MetableBehavior extends ModelBehavior {
 				
 			}
 			unset($result['Meta']);
-//			debug($result);
 		} 
 		return $results;
 	}
@@ -215,10 +214,7 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  */
 	public function filterByMetaConditions(Model $Model, $results = array()) {
-		if ($Model->metaConditions) {
-			
-//			debug($Model->metaConditions);break;
-			
+		if ($Model->metaConditions) {			
 			foreach ($Model->metaConditions as $key => $value) {
 				// check for operators in the field query
 				if(strpos($key, ' ')) {
@@ -230,18 +226,12 @@ class MetableBehavior extends ModelBehavior {
 					$operator = $operator[1];
 				} else {
 					$query[0] = 'Meta';
-					$query[1] = $key;
+					$query[1] = str_replace('Meta.', '', $key); // some cases have Meta.field, some have just field
 					$operator = false;
 				}
-
-//				debug($value);
-//				debug($query);
-//				debug($operator);
-//				break;
 				
 				$i = 0;
 				foreach ($results as $result) {
-					//debug($result);
 					if (isset($result[$Model->alias][$query[0]][$query[1]])) {
 						if ($operator === false && $result[$Model->alias][$query[0]][$query[1]] == $value) {
 							// leave this result in the $results

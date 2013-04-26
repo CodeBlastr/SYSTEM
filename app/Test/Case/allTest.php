@@ -95,8 +95,6 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 			$suite->addTestFile($pluginsPath . 'Workflows' . $modelPath . DS . 'WorkflowItemEventTest.php');
 		}
         
-        
-        
     	return $suite;
 	}
 }
