@@ -41,7 +41,7 @@ class UsersController extends UsersAppController {
 		);
 
 
-	public function __construct($request = null, $response = null) {break;
+	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
 		if (in_array('Invite', CakePlugin::loaded())) {
 			$this->components[] = 'Invite.InviteHandler';
