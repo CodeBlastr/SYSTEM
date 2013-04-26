@@ -433,7 +433,73 @@ class User extends UsersAppModel {
 		}
 	}
 
+/**
+ * Set the default redirect variables, using the settings table constant.
+ */
+	public function loginRedirectUrl($redirect) {
+		# this handles redirects where a url was called that redirected you to the login page
 
+		if ($redirect == '/') {
+			# default login location
+			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
+
+			if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
+				# this setting name is deprecated, will be deleted (got rid of the DEFAULT in the setting name.)
+				if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
+					$redirect = $urlParams;
+				}
+				$redirect = __APP_DEFAULT_LOGIN_REDIRECT_URL;
+			}
+
+			if (defined('__APP_LOGIN_REDIRECT_URL')) {
+				$urlParams = @unserialize(__APP_LOGIN_REDIRECT_URL);
+				if (!empty($urlParams) && is_numeric(key($urlParams)) && $this->Session->read('Auth.User.user_role_id')) {
+					# if the keys are numbers we're looking for a user role
+					if (!empty($urlParams[$this->Session->read('Auth.User.user_role_id')])) {
+						# if the user role is the index key then we have a special login redirect just for them
+						#debug($urlParams[$this->Session->read('Auth.User.user_role_id')]); break;
+						return $urlParams[$this->Session->read('Auth.User.user_role_id')];
+					} else {
+						# need a return here, to stop processing of the $redirect var
+						#debug($redirect); break;
+						return $redirect;
+					}
+				}
+				if (!empty($urlParams) && is_string(key($urlParams))) {
+					# if the keys are strings we've just formatted the settings by plugin, controller, action, instead of a text url
+					$redirect = $urlParams;
+				}
+				# its not an array because it couldn't be unserialized
+				$redirect = __APP_LOGIN_REDIRECT_URL;
+			}
+		}
+		#debug($redirect); break;
+		return $redirect;
+	}
+
+/**
+ * Set the default redirect variables, using the settings table constant.
+ */
+	public function logoutRedirectUrl() {
+		if (defined('__APP_LOGOUT_REDIRECT_URL')) {
+			if ($urlParams = @unserialize(__APP_LOGOUT_REDIRECT_URL)) {
+				if (is_numeric(key($urlParams))) {
+					return $urlParams[$this->Session->read('Auth.User.user_role_id')];
+				} else {
+					return $urlParams;
+				}
+			} else {
+				return __APP_LOGOUT_REDIRECT_URL;
+			}
+		} else {
+			return array(
+				'plugin' => 'users',
+				'controller' => 'users',
+				'action' => 'login',
+			);
+		}
+	}
+	
 /**
  * verifies the key passed and if valid key, remove it from DB and return user else
  *

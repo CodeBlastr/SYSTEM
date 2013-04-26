@@ -1,0 +1,1 @@
+<?php if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html>'; } ?>

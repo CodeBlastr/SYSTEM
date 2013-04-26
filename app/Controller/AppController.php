@@ -45,6 +45,24 @@ class AppController extends Controller {
 		$this->_getHelpers();
 		$this->_getUses();
 		$this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(' ' . $this->name . ' '));
+
+		if (in_array('Facebook', CakePlugin::loaded())) {
+			$this->Auth->authenticate = array('Form' => array('fields'=>array('username'=>'email')));
+			foreach ( $this->components as &$component ) {
+				if ( $component == 'Auth' ) {
+					$component = array('Auth' => array(
+						'authenticate' => array(
+							'Form' => array('fields' => array('username' => 'email'))
+						),
+						'authorize' => 'Controller'
+					));
+				}
+			}
+
+			$this->components['Facebook.Connect'] = array('plugin' => 'Users', 'model' => 'User'); // correct way !!?
+			$this->helpers[] = 'Facebook.Facebook';
+			$this->uses[] = 'Facebook.Facebook';
+		}
 	}
 
 
