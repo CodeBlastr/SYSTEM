@@ -282,7 +282,7 @@ class Contact extends ContactsAppModel {
  * @return array
  */
 	public function findCompaniesWithRegisteredUsers($type = 'list', $params = null) {
-		#first find registered people
+		// first find registered people
 		$people = $this->find('list', array(
 			'conditions' => array(
 				'Contact.user_id is NOT NULL',
@@ -310,6 +310,10 @@ class Contact extends ContactsAppModel {
  * @return array
  */
 	protected function _cleanContactData($data) {
+		// get rid of the name field so it can be merged from existing data if empty
+		if (isset($data['Contact']['name']) && empty($data['Contact']['name'])) {
+			unset($data['Contact']['name']); 
+		}
 		
 		// if id is here, then merge the data with the existing data (new data over writes old)
 		if (!empty($data['Contact']['id'])) {
