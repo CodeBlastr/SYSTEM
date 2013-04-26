@@ -12,8 +12,8 @@ class GalleryTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-        'plugin.galleries.gallery',
-        'plugin.galleries.gallery_image',
+        'plugin.Galleries.Gallery',
+        'plugin.Galleries.GalleryImage',
         );
 
 /**

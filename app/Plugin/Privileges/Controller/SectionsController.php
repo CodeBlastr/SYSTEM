@@ -49,7 +49,8 @@ class SectionsController extends PrivilegesAppController {
         ),
       'order' => array('Section.alias', 'Section.lft ASC')  
     ));
-        
+
+	$sections = $this->_modelUserFields($sections); 
     $this->set('sections', $sections);
     
     
@@ -108,6 +109,23 @@ class SectionsController extends PrivilegesAppController {
       }
     }
   }
+  
+  
+  protected function _modelUserFields($sections) {
+  		
+  	foreach($sections as $k => $parent) {
+		$modelName = Inflector::classify($parent['Section']['alias']);
+		$this->$modelName = ClassRegistry::init($parent['Section']['alias'] .'.'.$modelName);
+		$belongs = $this->$modelName->belongsTo;
+		foreach($belongs as $b) {
+			if($b['className'] == 'Users.user') {
+				$sections[$k]['userfields'][] = $b['foreignKey'];
+			}
+		}
+	}
+	return $sections;
+  	}	
+  	
     
 
 }

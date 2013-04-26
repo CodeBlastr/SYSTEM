@@ -895,6 +895,7 @@ class HtmlHelper extends AppHelper {
  * @return string Formatted block
  */
 	public function useTag($tag) {
+		
 		if (!isset($this->_tags[$tag])) {
 			return '';
 		}
@@ -905,6 +906,7 @@ class HtmlHelper extends AppHelper {
 				$arg = $this->_parseAttributes($arg, null, ' ', '');
 			}
 		}
+		
 		return vsprintf($this->_tags[$tag], $args);
 	}
 
