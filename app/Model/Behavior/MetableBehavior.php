@@ -96,7 +96,7 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  * @todo optimize by flattening and searching for Alias.
  */
-	public function beforeFind(Model $Model, $query) {//die('x');break;
+	public function beforeFind(Model $Model, $query) {
         $Model->bindModel(array(
         	'hasOne' => array(
 				'Meta' => array(
@@ -246,14 +246,22 @@ class MetableBehavior extends ModelBehavior {
 						if ($operator === false && $result[$Model->alias][$query[0]][$query[1]] == $value) {
 							// leave this result in the $results
 						} elseif ($operator == '>=' && $result[$Model->alias][$query[0]][$query[1]] >= $value) {
-							// leave this result in the $results
+							if ( is_numeric($value) && !is_numeric($result[$Model->alias][$query[0]][$query[1]]) ) {
+								/**
+								 * @TODO : This logic may be a little flawed - OR - this needs to be replicated throught this loop
+								 * What I'm trying to do is: do not return results who's value is_string when $value is_numeric
+								 */
+								unset($results[$i]);
+							} else {
+								// leave this result in the $results
+							}
 						} elseif ($operator == '>' && $result[$Model->alias][$query[0]][$query[1]] > $value) {
 							// leave this result in the $results
 						} elseif ($operator == '<=' && $result[$Model->alias][$query[0]][$query[1]] <= $value) {
 							// leave this result in the $results
 						} elseif ($operator == '<' && $result[$Model->alias][$query[0]][$query[1]] < $value) {
 							// leave this result in the $results
-						} elseif ($operator == 'LIKE' && strpos($result[$Model->alias][$query[0]][$query[1]], str_replace ('%', '', $value)) !== false) {
+						} elseif ($operator == 'LIKE' && stripos($result[$Model->alias][$query[0]][$query[1]], str_replace ('%', '', $value)) !== false) {
 							// leave this result in the $results
 						} else {
 							// does not compute, remove this result from the $results
