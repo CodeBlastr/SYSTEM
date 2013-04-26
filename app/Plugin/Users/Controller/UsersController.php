@@ -41,13 +41,17 @@ class UsersController extends UsersAppController {
 		);
 
 
-	public function __construct($request = null, $response = null) {
+	public function __construct($request = null, $response = null) {break;
 		parent::__construct($request, $response);
 		if (in_array('Invite', CakePlugin::loaded())) {
 			$this->components[] = 'Invite.InviteHandler';
 		}
 		if (in_array('Recaptcha', CakePlugin::loaded())) {
 			$this->helpers[] = 'Recaptcha.Recaptcha';
+		}
+		if (in_array('Facebook', CakePlugin::loaded())) {
+			$this->helpers[] = 'Facebook.Facebook';
+			$this->uses[] = 'Facebook.Facebook';
 		}
 	}
 
@@ -325,11 +329,11 @@ class UsersController extends UsersAppController {
 				if (in_array('Connections', CakePlugin::loaded())) {
 					$this->User->Connection->afterLogin($user['User']['id']);
 				}
-		        $this->redirect($this->_loginRedirect());
+		        $this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 			} catch (Exception $e) {
 				$this->Auth->logout();
 				$this->Session->setFlash($e->getMessage());
-		        $this->redirect($this->_logoutRedirect());
+		        $this->redirect($this->User->logoutRedirectUrl());
 			}
 	    } else {
 	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
@@ -341,82 +345,12 @@ class UsersController extends UsersAppController {
 		if ($this->Auth->logout() || $this->Session->delete('Auth')) {
 			$this->Session->destroy();
 			$this->Session->setFlash('Successful Logout');
-			$this->redirect($this->_logoutRedirect());
+			$this->redirect($this->User->logoutRedirectUrl());
 		} else {
 			$this->Session->setFlash('Logout Failed');
-			$this->redirect($this->_loginRedirect());
+			$this->redirect($this->User->loginRedirectUrl());
 		}
     }
-
-
-/**
- * Set the default redirect variables, using the settings table constant.
- */
-	private function _loginRedirect() {
-		// this handles redirects where a url was called that redirected you to the login page
-		$redirect = $this->Auth->redirect();
-
-		if ($redirect == '/') {
-			// default login location
-			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
-
-			if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
-				// this setting name is deprecated, will be deleted (got rid of the DEFAULT in the setting name.)
-				if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
-					$redirect = $urlParams;
-				}
-				$redirect = __APP_DEFAULT_LOGIN_REDIRECT_URL;
-			}
-
-			if (defined('__APP_LOGIN_REDIRECT_URL')) {
-				$urlParams = @unserialize(__APP_LOGIN_REDIRECT_URL);
-				if (!empty($urlParams) && is_numeric(key($urlParams)) && $this->Session->read('Auth.User.user_role_id')) {
-					// if the keys are numbers we're looking for a user role
-					if (!empty($urlParams[$this->Session->read('Auth.User.user_role_id')])) {
-						// if the user role is the index key then we have a special login redirect just for them
-						// debug($urlParams[$this->Session->read('Auth.User.user_role_id')]); break;
-						return $urlParams[$this->Session->read('Auth.User.user_role_id')];
-					} else {
-						// need a return here, to stop processing of the $redirect var
-						// debug($redirect); break;
-						return $redirect;
-					}
-				}
-				if (!empty($urlParams) && is_string(key($urlParams))) {
-					// if the keys are strings we've just formatted the settings by plugin, controller, action, instead of a text url
-					$redirect = $urlParams;
-				}
-				// its not an array because it couldn't be unserialized
-				$redirect = __APP_LOGIN_REDIRECT_URL;
-			}
-		}
-		// debug($redirect); break;
-		return $redirect;
-	}
-
-
-/**
- * Set the default redirect variables, using the settings table constant.
- */
-	public function _logoutRedirect() {
-		if (defined('__APP_LOGOUT_REDIRECT_URL')) {
-			if ($urlParams = @unserialize(__APP_LOGOUT_REDIRECT_URL)) {
-				if (is_numeric(key($urlParams))) {
-					return $urlParams[$this->Session->read('Auth.User.user_role_id')];
-				} else {
-					return $urlParams;
-				}
-			} else {
-				return __APP_LOGOUT_REDIRECT_URL;
-			}
-		} else {
-			return array(
-				'plugin' => 'users',
-				'controller' => 'users',
-				'action' => 'login',
-			);
-		}
-	}
 
 
 /**

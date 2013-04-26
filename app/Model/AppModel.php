@@ -174,7 +174,7 @@ class AppModel extends Model {
 			
 		//This is a permission check for record level permissions.
 		//userfields are ACO records from the controller
-		if (!empty($this->acoRecords[0]) && CakeSession::read('Auth.User.id') !== 1) {
+		if ( isset($this->acoRecords[0]['Aco']['user_fields']) && !empty($this->acoRecords[0]['Aco']['user_fields']) && CakeSession::read('Auth.User.id') !== 1 ) {
 		  $userFields = explode(',', $this->acoRecords[0]['Aco']['user_fields']);	
 		  foreach ($results as $k => $result) {
 			  foreach($userFields as $u) {
@@ -184,8 +184,11 @@ class AppModel extends Model {
 			  }
 		  }
 			// What we do with users that don't have record level user access
-		  if ($userAccess !== true) {
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'restricted')); 
+		  if ( !isset($userAccess) ) {
+			  SessionComponent::setFlash($this->acoRecords[0]['Aco']);
+			  header('Location: /users/users/restricted');
+			  break;
+				//$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'restricted'));
 		  } 
 		  
 		}
