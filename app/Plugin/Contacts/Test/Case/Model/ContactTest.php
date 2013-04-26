@@ -12,9 +12,11 @@ class ContactTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-        'plugin.activities.activity',
-        'plugin.tasks.task',
-        'plugin.estimates.estimate',
+		'plugin.Contacts.Contact',
+		'plugin.Contacts.ContactDetail', // gotta make sure the fixture file exists, not just the config schema!!!
+        'plugin.Activities.Activity',
+        'plugin.Tasks.Task',
+        'plugin.Estimates.Estimate',
         );
 
 /**
@@ -99,7 +101,7 @@ class ContactTestCase extends CakeTestCase {
 		$result = $this->Contact->find('first', array('conditions' => array('Contact.id' => $this->Contact->id), 'contain' => 'Task'));
 		
         $this->assertEqual($result['Contact']['name'], $data['Contact']['name']); // test that save occured
-        $this->assertEqual($result['Task'][0]['name'], $data['Task'][0]['name']); // test that task is included
+        $this->assertEqual($result['Task'][0]['name'], $data['Task'][0]['name'] . ' ' . $data['Contact']['name']); // test that task is included with contact name added
 	}
 
 /**
