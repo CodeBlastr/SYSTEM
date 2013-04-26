@@ -96,7 +96,7 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  * @todo optimize by flattening and searching for Alias.
  */
-	public function beforeFind(Model $Model, $query) {//die('x');break;
+	public function beforeFind(Model $Model, $query) {
         $Model->bindModel(array(
         	'hasOne' => array(
 				'Meta' => array(
@@ -198,7 +198,6 @@ class MetableBehavior extends ModelBehavior {
 				
 			}
 			unset($result['Meta']);
-//			debug($result);
 		} 
 		return $results;
 	}
@@ -215,10 +214,7 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  */
 	public function filterByMetaConditions(Model $Model, $results = array()) {
-		if ($Model->metaConditions) {
-			
-//			debug($Model->metaConditions);break;
-			
+		if ($Model->metaConditions) {			
 			foreach ($Model->metaConditions as $key => $value) {
 				// check for operators in the field query
 				if(strpos($key, ' ')) {
@@ -230,18 +226,12 @@ class MetableBehavior extends ModelBehavior {
 					$operator = $operator[1];
 				} else {
 					$query[0] = 'Meta';
-					$query[1] = $key;
+					$query[1] = str_replace('Meta.', '', $key); // some cases have Meta.field, some have just field
 					$operator = false;
 				}
-
-//				debug($value);
-//				debug($query);
-//				debug($operator);
-//				break;
 				
 				$i = 0;
 				foreach ($results as $result) {
-					//debug($result);
 					if (isset($result[$Model->alias][$query[0]][$query[1]])) {
 						if ($operator === false && $result[$Model->alias][$query[0]][$query[1]] == $value) {
 							// leave this result in the $results
@@ -261,7 +251,7 @@ class MetableBehavior extends ModelBehavior {
 							// leave this result in the $results
 						} elseif ($operator == '<' && $result[$Model->alias][$query[0]][$query[1]] < $value) {
 							// leave this result in the $results
-						} elseif ($operator == 'LIKE' && strpos($result[$Model->alias][$query[0]][$query[1]], str_replace ('%', '', $value)) !== false) {
+						} elseif ($operator == 'LIKE' && stripos($result[$Model->alias][$query[0]][$query[1]], str_replace ('%', '', $value)) !== false) {
 							// leave this result in the $results
 						} else {
 							// does not compute, remove this result from the $results
