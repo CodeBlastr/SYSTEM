@@ -44,6 +44,7 @@ class ConditionsControllerTestCase extends ControllerTestCase {
 	}
 
 	public function testView() {
+		$this->assertEqual('a', 'b');
 		# http://www.phpunit.de/manual/3.6/en/writing-tests-for-phpunit.html
    		//$result = $this->testAction('/conditions/view/1');
 		//debug($result);

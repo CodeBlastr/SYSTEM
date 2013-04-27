@@ -1,5 +1,4 @@
-<?php // $requestUrl = strpos($this->request->url, '/') === 0 ? $this->request->url : '/'.$this->request->url; 
-
+<?php
 $id = !empty($id) ? $id : 'headerNavFloManagr'; 
 $showEditMode = !empty($showEditMode) ? true : false;
 $showContext = !empty($showContext) ? true : false; ?>
@@ -66,3 +65,22 @@ $(function() {
     }
 });
 </script>
+
+<!-- Start ZenDesk -->
+<script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+<style type="text/css" media="screen, projection">
+  @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
+</style>
+<script type="text/javascript">
+  if (typeof(Zenbox) !== "undefined") {
+    Zenbox.init({
+      dropboxID:   "20165921",
+      url:         "https://buildrr.zendesk.com",
+      tabTooltip:  "Help",
+      tabImageURL: "https://assets.zendesk.com/external/zenbox/images/tab_help_right.png",
+      tabColor:    "black",
+      tabPosition: "Right"
+    });
+  }
+</script>
+<!-- End ZenDesk -->
