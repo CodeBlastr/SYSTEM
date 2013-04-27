@@ -133,9 +133,9 @@ if ($result->failureCount() > 0 && !$isLocalhost) {
 	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 	
 	// Additional headers
-	$headers .= 'To: Richard <richard@razorit.com>, Anthony <anthony@razorit.com>, Joel <joel@razorit.com>' . "\r\n";
+	$headers .= 'To: Richard <richard@buildrr.com>, Nick <nick@buildrr.com>, Joel <joel@buildrr.com>' . "\r\n";
 	//$headers .= 'To: Mary <richard@razorit.com>, Kelly <kelly@example.com>' . "\r\n";
-	$headers .= 'From: Zuha <zuha@razorit.com>' . "\r\n";
+	$headers .= 'From: Zuha <buildrr@buildrr.com>' . "\r\n";
 	
 	mail('', 'UNIT TEST FAILURE!', "<html><body>".$result->failureCount()."</body></html>", $headers); 
 }
