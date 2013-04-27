@@ -11,6 +11,7 @@ Built on an MVC framework (CakePHP), by a CakePHP contributor.
 
 1. Download the files OR BETTER if you plan to contribute, do a clone of the repository.
     * Clone using the command `git clone git://github.com/zuha/Zuha.git [REPLACE WITH DESIRED INSTALL DIRECTORY PATH]`
+    * To pull submodules/plugins run the command `git submodule update --init`, and then I like to run `git submodule foreach git checkout master`
     * Php 5.3 is required, and MySQL 5+. 
     * mod_rewrite and .htaccess must be turned on
 + Create a domain or subdomain name that points to the directory the files are saved to. 
