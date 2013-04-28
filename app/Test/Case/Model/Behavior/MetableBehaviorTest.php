@@ -18,16 +18,16 @@ if (!class_exists('MetaArticle')) {
 	/**
 	 *
 	 */
-		public $useTable = 'articles';
+		public $useTable = 'meta_articles';
 
 	/**
 	 *
 	 */
-		public $name = 'Article';
+		public $name = 'MetaArticle';
 	/**
 	 *
 	 */
-		public $alias = 'Article';
+		public $alias = 'MetaArticle';
         
 	}
 }
@@ -45,7 +45,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
  */
 	public $fixtures = array(
 		'app.Meta',
-		'app.Article',
+		'app.MetaArticle',
 		);
 
 /**
@@ -91,7 +91,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
  */ 
 	public function testAdd() {
 		
-		$data = array('Article' => array(
+		$data = array('MetaArticle' => array(
 			'title' => 'Lorem 222',
 			'Meta' => array(
 					'location' => 'Syracuse',
@@ -102,14 +102,14 @@ class MetableBehaviorTestCase extends CakeTestCase {
 					)
 		));
 		$this->Article->saveAll($data);
-		$result = $this->Article->find('first', array('conditions' => array('Article.id' => $this->Article->id)));
+		$result = $this->Article->find('first', array('conditions' => array('MetaArticle.id' => $this->Article->id)));
 		// tests that an article was saved, and that the meta info submitted was also saved (and of course returned in proper format)
-		$this->assertEqual(!empty($result['Article']['Meta']['location']), true);
+		$this->assertEqual(!empty($result['MetaArticle']['Meta']['location']), true);
 	}
 	
 	
 	public function testEdit() {
-		$dataOne = array('Article' => array(
+		$dataOne = array('MetaArticle' => array(
 			'title' => 'Lorem 111',
 			'content' => 'asdf aasdfsdfaasd',
 			'Meta' => array(
@@ -122,11 +122,11 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		));
 		
 		$this->Article->saveAll($dataOne);
-		$resultOne = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.Meta.rent');
+		$resultOne = Set::combine($this->Article->find('all'), '{n}.MetaArticle.id', '{n}.MetaArticle.Meta.rent');
 		// asserts that the first save is complete
-		$this->assertEqual($resultOne[$this->Article->id], $dataOne['Article']['Meta']['rent']);
+		$this->assertEqual($resultOne[$this->Article->id], $dataOne['MetaArticle']['Meta']['rent']);
 		
-		$dataTwo = array('Article' => array(
+		$dataTwo = array('MetaArticle' => array(
 			'id' => $this->Article->id,
 			'title' => 'Lorem 222',
 			'content' => 'asdf aasdfsdfaasd',
@@ -136,7 +136,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		));
 		
 		$resultTwo = $this->Article->saveAll($dataTwo);
-		$resultTwo = Set::combine($this->Article->find('all'), '{n}.Article.id', '{n}.Article.Meta.rent');
+		$resultTwo = Set::combine($this->Article->find('all'), '{n}.MetaArticle.id', '{n}.MetaArticle.Meta.rent');
 
 		// asserts that the same ID from the first save has an updated rent value from the second save
 		//$this->assertNotEqual($resultOne[$testId], $data2['Article']['!rent']);
@@ -145,10 +145,10 @@ class MetableBehaviorTestCase extends CakeTestCase {
 	
 	
 	public function testRemovalOfExclamationsAfterFind() {
-		$resultOne = $this->Article->find('first', array('Article.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
+		$resultOne = $this->Article->find('first', array('MetaArticle.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
 		//$resultOne = $this->Article->find('all');
 		//debug($resultOne);
-		$this->assertEqual( empty($resultOne['Article']['Meta']['!location']), true );
+		$this->assertEqual( empty($resultOne['MetaArticle']['Meta']['!location']), true );
 	}
 	
 	public function testRemovalOfExclamationsAfterSave() {
@@ -165,7 +165,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 //			'!fireproof' => 'no',
 //			'!rent' => 535,
 //			'!state' => 'NY')));
-		$data2 = array('Article' => array(
+		$data2 = array('MetaArticle' => array(
 			'id' => '4f88970e-b438-4b01-8740-1a14124e0d46',
 			'title' => 'Meta 222',
 			'Meta' => array(
@@ -176,24 +176,21 @@ class MetableBehaviorTestCase extends CakeTestCase {
 				'!state' => 'MetaNY'
 				)
 		));
-//		$this->Article->create();
-//		$this->Article->saveAll($data);
-		$resultOne = $this->Article->find('first', array('Article.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
-		debug($resultOne);
+		$resultOne = $this->Article->find('first', array('MetaArticle.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
+		//debug($resultOne);
 		$this->Article->saveAll($data2);
-		$result2 = $this->Article->find('first', array('Article.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
-		debug($result2);
-		
+		$result2 = $this->Article->find('first', array('MetaArticle.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
+		//debug($result2);
 		$this->assertEqual(
-				!empty($resultOne['Article']['Meta']['location']),
-				!empty($result2['Article']['Meta']['location'])
+				!empty($resultOne['MetaArticle']['Meta']['location']),
+				!empty($result2['MetaArticle']['Meta']['location'])
 				);
 	}
 	
 	
 	public function testMetaSearchOnlyTypeFirst() {
 		$data = array(
-			array('Article' => array(
+			array('MetaArticle' => array(
 				'title' => 'Lorem 333',
 				'content' => 'abcdefg',
 				'Meta' => array(
@@ -204,7 +201,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 					'state' => 'NY'
 					)
 				)),
-			array('Article' => array(
+			array('MetaArticle' => array(
 				'title' => 'Lorem',
 				'content' => 'asdf aasdfsdfaasd',
 				'Meta' => array(
@@ -215,7 +212,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 					'state' => 'NY'
 					)
 				)),
-			array('Article' => array(
+			array('MetaArticle' => array(
 				'title' => 'Lorem 333',
 				'content' => 'bcdefg',
 				'Meta' => array(
@@ -230,13 +227,13 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		$this->Article->saveAll($data);
 		$result = $this->Article->find('first', array(
 			'conditions' => array(
-				'Article.Meta.location' => 'Syracuse'
+				'MetaArticle.Meta.location' => 'Syracuse'
 			),
 		));
 		// we insert a few records, then run a search based on a meta field only
 		$this->assertEqual(
-				$result['Article']['Meta']['location'],
-				$data[1]['Article']['Meta']['location']
+				$result['MetaArticle']['Meta']['location'],
+				$data[1]['MetaArticle']['Meta']['location']
 				);
 		
 	}
@@ -245,7 +242,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 	public function testNonMetaSearchTypeFirst() {
 		
 		$data = array(
-			array('Article' => array(
+			array('MetaArticle' => array(
 				'title' => 'Lorem 333',
 				'content' => 'abcdefg',
 				'Meta' => array(
@@ -256,7 +253,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 					'state' => 'NY'
 					)
 				)),
-			array('Article' => array(
+			array('MetaArticle' => array(
 				'title' => 'Lorem',
 				'content' => 'asdf aasdfsdfaasd',
 				'Meta' => array(
@@ -267,7 +264,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 					'state' => 'NY'
 					)
 				)),
-			array('Article' => array(
+			array('MetaArticle' => array(
 				'title' => 'Lorem 333',
 				'content' => 'bcdefg',
 				'Meta' => array(
@@ -284,14 +281,14 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		
 		$result = $this->Article->find('first', array(
 			'conditions' => array(
-				'Article.title' => 'Lorem 333',
+				'MetaArticle.title' => 'Lorem 333',
 			),
 			'order' => array(
-				'Article.content' => 'DESC'
+				'MetaArticle.content' => 'DESC'
 			)
 		));
 		// we insert a few records, then run a search based on a meta field only
-		$this->assertEqual($result['Article']['Meta']['location'], $data[2]['Article']['Meta']['location']);
+		$this->assertEqual($result['MetaArticle']['Meta']['location'], $data[2]['MetaArticle']['Meta']['location']);
 	}
     
 /**
@@ -299,15 +296,15 @@ class MetableBehaviorTestCase extends CakeTestCase {
  */ 
     public function testDelete() {
 		
-		$data = array('Article' => array(
+		$data = array('MetaArticle' => array(
 			'title' => 'Lorem 222',
 			'Meta' => array(
-					'location' => 'Syracuse',
-					'food' => 'turkey',
-					'fireproof' => 'no',
-					'rent' => 535,
-					'state' => 'NY'
-					)
+				'location' => 'Syracuse',
+				'food' => 'turkey',
+				'fireproof' => 'no',
+				'rent' => 535,
+				'state' => 'NY'
+				)
 			));
 		$this->Article->saveAll($data);
         $id = $this->Article->id;
