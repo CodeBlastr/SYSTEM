@@ -1,6 +1,7 @@
 /app/Config/facebook.php
 /app/tmp/logs/debug.log
 /app/tmp/logs/error.log
+/app/webroot/ip.php
 /app/tmp/cache/models/cake*
 /app/tmp/cache/persistent/cake*
 /app/tmp/cache/views/cake*
