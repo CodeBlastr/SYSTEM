@@ -1,13 +1,13 @@
 <?php
 
-class ArticleFixture extends CakeTestFixture {
+class MetaArticleFixture extends CakeTestFixture {
 
 /**
  * name property
  *
  * @var string
  */
-	public $name = 'Article';
+	public $name = 'MetaArticle';
 
 /**
  * fields property

@@ -43,8 +43,8 @@ class UserTestCase extends CakeTestCase {
 		$data = array(
 			'User' => array(
 				'password' => 'asdDDFEF234424fasdf',
-				'username' => 'byrnes.joel@gmail.com',
-				'email' => 'byrnes.joel@gmail.com',
+				'username' => 'byrnes.joel@razorit.com',
+				'email' => 'byrnes.joel@razorit.com',
 				'facebook_id' => '1102252405',
 				'first_name' => 'Joel',
 				'last_name' => 'Byrnes',
@@ -55,29 +55,14 @@ class UserTestCase extends CakeTestCase {
 				'forgot_key_created' => '2013-04-26 01:32:16',
 				'parent_id' => '',
 				'reference_code' => '2quif40p'
-			),
-			'Contact' => array(
-				'name' => 'Joel Byrnes',
-//				'contact_type' => 'person',
 			)
 		);
 		
-		try {
-			$this->User->add($data);
-			
-		} catch (Exception $exc) {
-			echo $exc->getTraceAsString();
-		}
-
-		
-		
-		$users = $this->User->find('all');
-		$contacts = $this->User->Contact->find('first', array('conditions' => array('Contact.name' => $data['User']['full_name']) ));
-		
-		debug($users);
-		debug($contacts);
-		break;
+		$this->User->add($data);
+		$user = $this->User->find('first', array('conditions' => array('User.email' => $data['User']['email'])));
+		$this->assertEqual(1, count($user)); // user was added
+		$contact = $this->User->Contact->find('first', array('conditions' => array('Contact.user_id' => $this->User->id)));
+		$this->assertEqual(1, count($contact)); // contact for the user was added too
 	}
-
-
+	
 }
