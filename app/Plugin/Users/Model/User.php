@@ -16,13 +16,13 @@ class User extends UsersAppModel {
 		'password' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => false,
+				'allowEmpty' => true,
 				'message' => 'Please enter a value for password',
 				'required' => true
 				),
 			'comparePassword' => array(
 				'rule' => array('_comparePassword'),
-				'allowEmpty' => false,
+				'allowEmpty' => true,
 				'message' => 'Password, and confirm password fields do not match.',
 				'required' => true
 				),
@@ -36,6 +36,7 @@ class User extends UsersAppModel {
 		'username' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
+				'allowEmpty' => true,
 				'message' => 'Please enter a value for username',
 				'required' => true
 				),

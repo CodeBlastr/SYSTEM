@@ -40,6 +40,12 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 			$suite->addTestFile($pluginsPath . 'Activities' . $controllerPath . DS .  'ActivitiesTest.php');
 		}
 
+		// Contacts Plugin
+		if (in_array('Contacts', CakePlugin::loaded())) {
+	        $suite->addTestFile($pluginsPath . 'Contacts' . $modelPath . DS . 'ContactTest.php');
+		}
+		
+
 		// Categories Plugin
 		if (in_array('Categories', CakePlugin::loaded())) {
 	        //$suite->addTestFile($pluginsPath . 'Categories' . $modelPath . DS . 'CategorizedTest.php');
@@ -81,6 +87,8 @@ class AllTests extends PHPUnit_Framework_TestSuite {
 		
 		// Users Plugin
 		if (in_array('Users', CakePlugin::loaded())) {
+			$suite->addTestFile($pluginsPath . 'Users' . $modelPath . DS . 'UserTest.php');
+			$suite->addTestFile($pluginsPath . 'Users' . $modelPath . DS . 'UserRoleTest.php');
 			$suite->addTestFile($pluginsPath . 'Users' . $behaviorPath . DS . 'UsableBehaviorTest.php');
 		}
 
