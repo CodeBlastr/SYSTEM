@@ -122,6 +122,7 @@ class UsersSchema extends CakeSchema {
 		'modifier_id' => array('type' => 'integer', 'null' => true, 'default' => NULL),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
+		// from here down needs to be deleted
 		'status' => array('type' => 'integer', 'null' => true, 'default' => '0', 'length' => 6),
 		'signature' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'locale' => array('type' => 'string', 'null' => true, 'default' => 'eng', 'length' => 3, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),

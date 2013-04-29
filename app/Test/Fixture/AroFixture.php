@@ -32,19 +32,55 @@ class AroFixture extends CakeTestFixture {
 			'id' => 1,
 			'parent_id' => null,
 			'model' => 'UserRole',
-			'foreign_key' => 1,
+			'foreign_key' => 1, // admin user role
 			'alias' => null,
 			'lft' => 1,
 			'rght' => 4
 		),
 		array(
 			'id' => 2,
-			'parent_id' => null,
-			'model' => 'UserRole',
-			'foreign_key' => 5,
+			'parent_id' => 1,
+			'model' => 'User',
+			'foreign_key' => 42, // admin user
 			'alias' => null,
 			'lft' => 2,
 			'rght' => 3
+		),
+		array(
+			'id' => 3,
+			'parent_id' => null,
+			'model' => 'UserRole',
+			'foreign_key' => 2, // managers user role
+			'alias' => null,
+			'lft' => 5,
+			'rght' => 6
+		),
+		array(
+			'id' => 4,
+			'parent_id' => null,
+			'model' => 'UserRole',
+			'foreign_key' => 3, // users user role
+			'alias' => null,
+			'lft' => 7,
+			'rght' => 10
+		),
+		array(
+			'id' => 5,
+			'parent_id' => null,
+			'model' => 'UserRole',
+			'foreign_key' => 5, // guests user role
+			'alias' => null,
+			'lft' => 11,
+			'rght' => 12
+		),
+		array(
+			'id' => 6,
+			'parent_id' => null,
+			'model' => 'User',
+			'foreign_key' => 2, // user in users user role
+			'alias' => null,
+			'lft' => 8,
+			'rght' => 9
 		),
 	);
 }
