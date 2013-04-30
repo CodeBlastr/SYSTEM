@@ -13,7 +13,6 @@ $this->set('context_menu', array('menus' => array(
 		'heading' => 'Aliases',
 		'items' => array(
 			$this->Html->link(__('List'), array('controller' => 'aliases', 'action' => 'index')),
-			$this->Html->link(__('Add'), array('controller' => 'aliases', 'action' => 'add')),
 			)
 		),
 	)));
