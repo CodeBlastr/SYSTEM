@@ -228,14 +228,14 @@ class AppModel extends Model {
 
 	    $plugins = $this->listPlugins();
 
-	    foreach ($plugins as $plugin) :
-			$models = !empty($models) ? array_merge($models, App::objects($plugin . '.Model')) : App::objects($pluginPath . '.Model');
-	    endforeach;
-
+	    foreach ($plugins as $plugin) {
+	    	// the else here was App::objects($pluginPath . '.Model')  // not totally sure the changing to just plugin, won't break something
+			$models = !empty($models) ? array_merge($models, App::objects($plugin . '.Model')) : App::objects($plugin . '.Model');
+	    }
     	sort($models);
-	    foreach ($models as $model) :
+	    foreach ($models as $model) {
 			$return[$model] = Inflector::humanize(Inflector::underscore($model));
-	    endforeach;
+	    }
 
     	return array_diff($return, $remove);
 	}
