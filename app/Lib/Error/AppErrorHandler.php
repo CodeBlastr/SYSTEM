@@ -9,7 +9,7 @@ class AppErrorHandler extends ErrorHandler {
  * for changes to the writing of error messages to the log file. 
  */
 	public static function handleException(Exception $exception) {
-		
+//		debug($exception);
 		if ($exception instanceof MissingTableException) {
             return self::MissingTableException($exception);
         }
@@ -29,6 +29,9 @@ class AppErrorHandler extends ErrorHandler {
 			list($plugin, $renderer) = pluginSplit($renderer, true);
 			App::uses($renderer, $plugin . 'Error');
 		}
+//		debug($config);
+//		debug($renderer);
+//		debug($plugin);
 		try {
 			$error = new $renderer($exception);
 			$error->render();
