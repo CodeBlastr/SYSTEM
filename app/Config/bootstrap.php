@@ -105,8 +105,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 					}
 				}
 			}
-			//debug(get_defined_constants());
-		} else {
+		} else if (defined(SITE_DIR)) {
 			debug('A defaults.ini file is required here : ' . $path . 'defaults.ini');
 			break;
 		}
