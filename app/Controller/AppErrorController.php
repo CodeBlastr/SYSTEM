@@ -81,11 +81,15 @@ class AppErrorController extends AppController {
 		if (Configure::read('debug') == 2 && $eName != 'MissingControllerException') {
 			throw new $eName($originalException->getMessage());
 		} else {
+			$this->_getTemplate(); // from AppController
+			
 			$Alias = ClassRegistry::init('Alias');
-			$alias = $Alias->find('first', array('conditions' => array('name' => 'error')));
-			if (!empty($alias['Alias']['name'])) {
-				$Controller = new AppController($request, $response);
-				$Controller->redirect('/error?referer=' . $request->url);
+			$alias = $Alias->find('first', array('conditions' => array('Alias.name' => 'error')));
+			
+			if (!empty($alias['Alias']['value'])) {
+				$Webpage = ClassRegistry::init('Webpages.Webpage');
+				$content = $Webpage->find('first', array('conditions' => array('Webpage.id' => $alias['Alias']['value'])));
+				$this->set('content', $content['Webpage']['content']);
 			}
 		}
 	}
