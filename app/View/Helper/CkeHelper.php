@@ -20,19 +20,22 @@ class CkeHelper extends Helper {
 
 		$configuration = $this->_config($settings);
         $code = "
+        //$(function() {
+        	
 			if (typeof window.toggleExtras === 'undefined') {
 				function toggleExtras() {
 	    			$('.cke_toolbar_break').nextAll().toggle();
 	            }
 			}
 
-			$('.exec-source').click(function(){
+			$('.exec-source').click(function() {
+				// get ID of our textarea from the mode toggle link that was clicked
 				var fieldName =  $(this).attr('id').replace('_exec-source', '').replace('_', '.').split('.');
-				fieldName.forEach(function(val, index, array){
+				fieldName.forEach(function(val, index, array) {
 					fieldName[index] = fieldName[index].charAt(0).toUpperCase() + fieldName[index].slice(1);
 				});
 				var actualFieldName = '';
-				$.each(fieldName, function(i, v){
+				$.each(fieldName, function(i, v) {
 					if ( v !== undefined ) {
 						actualFieldName += v;
 					}
@@ -41,38 +44,17 @@ class CkeHelper extends Helper {
                 var editor = CKEDITOR.instances[actualFieldName];
                 if ( editor.mode == 'wysiwyg' ) {
 		            editor.execCommand( 'source' );
-                    $('#exec-source').html('<i class=\"icon-edit\"></i> DESIGN');
+		            //toggleExtras();
+		            $('.cke_toolbar_break').nextAll().hide();
+                    $('#'+actualFieldName).parent().parent().find('.exec-source').html('<i class=\"icon-edit\"></i> DESIGN');
 	            } else {
     	            editor.execCommand( 'source' );
-                    $('#exec-source').html('<i class=\"icon-wrench\"></i> HTML');
+					//toggleExtras(); // would be cool to hide Extras when in HTML mode
+                    $('#'+actualFieldName).parent().parent().find('.exec-source').html('<i class=\"icon-wrench\"></i> HTML');
                 }
-
 			});
 
-// Replaced by the above ^JB
-//            function ExecuteCommand( commandName ) {
-//                var editor = CKEDITOR.instances.$did;
-//                if ( editor.mode == 'wysiwyg' ) {
-//		            editor.execCommand( commandName );
-//                    $('#exec-source').html('<i class=\"icon-edit\"></i> DESIGN');
-//	            } else {
-//    	            editor.execCommand( commandName );
-//                    $('#exec-source').html('<i class=\"icon-wrench\"></i> HTML');
-//                }
-//            }
-//// Thorwing errors on products/edit (may not be needed..  Webpages/edit??) ^JB
-////            $('#WebpageContent').ckeditor('instanceReady',  function(config) {
-////			   config.filebrowserBrowseUrl = '/js/kcfinder/browse.php?type=files';
-////			   config.filebrowserImageBrowseUrl = '/js/kcfinder/browse.php?type=images';
-////			   config.filebrowserFlashBrowseUrl = '/js/kcfinder/browse.php?type=flash';
-////			   config.filebrowserUploadUrl = '/js/kcfinder/upload.php?type=files';
-////			   config.filebrowserImageUploadUrl = '/js/kcfinder/upload.php?type=images';
-////			   config.filebrowserFlashUploadUrl = '/js/kcfinder/upload.php?type=flash';
-////			});
-//			
-//            $('#".$did."').ckeditor('instanceReady', function() { 
-//    			toggleExtras();
-//			}, {".$configuration."});
+		//});
         "; 
         return $css . $this->Html->scriptBlock($code);  
         
