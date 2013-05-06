@@ -68,4 +68,10 @@ $this->set('context_menu', array('menus' => array(
             $this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add'))
             ),
 		),
+	array(
+	'heading' => 'Page Types',
+	'items' => array(
+        $this->Html->link(__('Add a Challenge'), array('controller' => 'webpages', 'action' => 'add', 'challenge'))
+        ),
+	),
 	)));
