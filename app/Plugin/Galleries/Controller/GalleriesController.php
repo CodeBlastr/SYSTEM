@@ -42,7 +42,9 @@ class GalleriesController extends GalleriesAppController {
 					'Gallery.foreign_key' => $foreignKey,
 					),
 				'contain' => array(
-					'GalleryImage',
+					'GalleryImage' => array(
+						'order' => 'order'
+						)
 					),
 				);
 			// This is here, because we have an element doing a request action on this function.
@@ -135,6 +137,11 @@ class GalleriesController extends GalleriesAppController {
 					'Gallery.model' => $model,
 					'Gallery.foreign_key' => $foreignKey,
 					),
+				'contain' => array(
+					'GalleryImage' => array(
+						'order' => 'order'
+						)
+					)
 				));
 		} else {
 			$this->Session->setFlash(__('Invalid Gallery', true));

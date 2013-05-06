@@ -150,10 +150,19 @@ if (empty($runUpdates)) { ?>
 		
 		<?php if (in_array('Galleries', CakePlugin::loaded())) { ?>        
         <div class="masonryBox dashboardBox tagGalleries tagMedia">
-            <h3 class="title"><i class="icon-picture"></i> <?php echo $this->Html->link('Galleries', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'dashboard')); ?></h3>
+            <h3 class="title"><i class="icon-picture"></i> <?php echo $this->Html->link('Galleries', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'dashboard', 'admin' => 'true')); ?></h3>
             <p>Add and edit image and video galleries</p>
         </div>
         <?php } ?>
+		      
+        <div class="masonryBox dashboardBox tagMedia">
+            <h3 class="title"><i class="icon-picture"></i> Favicon</h3>
+            <p>Add the little icon that appears in browser title bars. </p>
+          	<?php
+          	echo $this->Form->create('Admin', array('type' => 'file'));
+			echo $this->Form->input('icon', array('type' => 'file', 'label' => false));
+			echo $this->Form->end('Upload'); ?>
+        </div>
 		
 		<?php if (in_array('Categories', CakePlugin::loaded())) { ?>  
         <div class="masonryBox dashboardBox tagText tagAdmin">
