@@ -27,6 +27,7 @@ class Webpage extends WebpagesAppModel {
  * @var string 
  */
 	public $displayField = 'name';
+	
         
  /**
   * Acts as
@@ -37,7 +38,8 @@ class Webpage extends WebpagesAppModel {
         'Tree', 
         'AclExtra', 
         'Alias',
-        'Galleries.Mediable' => array('modelAlias' => 'Webpage')
+        'Galleries.Mediable' => array('modelAlias' => 'Webpage'),
+     	'Metable',
 		);
 	
 /**
@@ -67,7 +69,8 @@ class Webpage extends WebpagesAppModel {
 		'template' => 'Template',
 		'element' => 'Element',
 		'sub' => 'Sub',
-		'content' => 'Content'
+		'content' => 'Content',
+		'challenge' => 'Challenge',
 		);
 	
 /**
