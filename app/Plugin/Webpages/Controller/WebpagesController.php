@@ -33,7 +33,7 @@ class WebpagesController extends WebpagesAppController {
  * 
  * @var string
  */
-    public $uses = array('Webpages.Webpage');
+    public $uses = array('Webpages.Webpage', 'File');
 
 /**
  * Paginate
@@ -204,7 +204,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set(compact('webpage'));
 		$this->set('page_title_for_layout', $webpage['Webpage']['name']);
         $this->set('page', $page['Webpage']['content']); // an unparsed version of the page for the inline editor
-       	$this->view = 'view_' . $webpage['Webpage']['type'];
+       	$this->view = $this->_fileExistsCheck('view_' . $page['Webpage']['type'] . $this->ext) ? 'view_' . $page['Webpage']['type'] : 'view_content';
 	}
     
 	
@@ -215,6 +215,7 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function add($type = 'content', $parentId = NULL) {
+		$this->type = $type;
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->saveAll($this->request->data);
@@ -229,8 +230,8 @@ class WebpagesController extends WebpagesAppController {
 		if (empty($this->Webpage->types[$type])) {
 			throw new NotFoundException(__('Invalid content type'));
 		}
-        
-        $add = '_add' . ucfirst($type);
+		
+        $add = method_exists($this, '_add' . ucfirst($type)) ? '_add' . ucfirst($type) : '_addContent';
         $this->$add($parentId);
 	}
     
@@ -242,10 +243,10 @@ class WebpagesController extends WebpagesAppController {
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Page Builder'));
-		$this->layout = 'default';	
-		$this->view = 'add_content';        
+		$this->layout = 'default';
+		$this->view = $this->_fileExistsCheck('add_' . $this->type . $this->ext) ? 'add_' . $this->type : 'add_content';       
     }
-    
+	
 /**
  * add sub page
  * 
@@ -328,7 +329,9 @@ class WebpagesController extends WebpagesAppController {
 		}
 		// 1/6/2012 rk - $this->set('templateUrls', $this->Webpage->templateUrls($this->request->data));
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
-		$this->view = 'edit_' . $this->request->data['Webpage']['type'];
+		
+		$type = $this->request->data['Webpage']['type'];
+		$this->view = $this->_fileExistsCheck('edit_' . $type . $this->ext) ? 'edit_' . $type : 'edit_content';
         $this->layout = 'default';
 	}
 	
@@ -409,5 +412,33 @@ class WebpagesController extends WebpagesAppController {
         return $content_str;
     }
  */
+ 
+ /**
+  * Convience Function checks if files exists in sites pat.
+  * or in App path this could be moved to the AppController
+  * 
+  * Probably a better way to do this. 
+  * 
+  * @param string
+  * @return bool
+  */
+ 
+ private function _fileExistsCheck($filename) {
+	 
+	 if(isset($filename)) {
+	 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
+		$file = new File($path . $filename);
+		return $file->exists();
+	 }
+	 
+	 if(isset($filename)) {
+	 	$path = App::pluginPath($this->plugin) . '/View/' . $this->viewPath . '/';
+		$file = new File($path . $filename);
+		return $file->exists();
+	 }
+	 
+	 return false;
+	 
+ }
 
 }
