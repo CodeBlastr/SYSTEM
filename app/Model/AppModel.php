@@ -49,12 +49,11 @@ class AppModel extends Model {
 		
 		//Security Fix, will need to removed Start date 5/7/2013
 		$acos = $this->query("SELECT * FROM `acos` WHERE `model` = 'Webpage'");
-			if(isset($acos)) {
-				foreach($acos as $aco) {
-				$this->query("UPDATE `aros_acos` SET `_create`=1,`_read`=1,`_update`=1,`_delete`=1 WHERE `aco_id` = " . $aco['acos']['id']);
-				}
+		if(isset($acos)) {
+			foreach($acos as $aco) {
+			$this->query("UPDATE `aros_acos` SET `_create`=0,`_read`=1,`_update`=0,`_delete`=0 WHERE `aco_id` = " . $aco['acos']['id']);
 			}
-		
+		}
 	}
 
 /**
