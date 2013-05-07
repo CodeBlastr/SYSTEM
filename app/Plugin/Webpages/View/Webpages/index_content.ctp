@@ -65,7 +65,13 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Sections',
 		'items' => array(
-            $this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add'))
+            $this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add', 'sub')) 
+            ),
+		),
+	array(
+		'heading' => 'Page Types',
+		'items' => array(
+            $this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'addPageType')) 
             ),
 		),
 	)));
