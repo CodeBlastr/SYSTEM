@@ -57,7 +57,7 @@ class EnumerationsController extends AppController {
 		foreach($enumerations as $enumeration) {
 			$enumerationTypes[$enumeration['Enumeration']['type']] = $enumeration['Enumeration']['type'];
 		}
-		$this->set('enumerationTypes',$enumerationTypes);
+		$this->set(compact('enumerationTypes', 'type'));
 	}
 	
 	public function edit($id=null) {

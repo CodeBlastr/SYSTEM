@@ -14,6 +14,13 @@ foreach ($sections as $section) {
     $items[] = $this->Html->link($section['Parent']['name'], array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'sub', 'filter' => 'parent_id:' . $section['Parent']['id']));
 }
 
+$typeMenuItems = array();
+$typeMenuItems[] = $this->Html->link(__('Add Page Type'), array('controller' => 'enumerations', 'action' => 'add', 'WEBPAGES_PAGE_TYPE')); //Add Link
+
+foreach($page_types as $typeKey => $typeItem) {
+	$typeMenuItems[] = $this->Html->link(__('Add ' . $typeItem), array('controller' => 'webpages', 'action' => 'add', $typeKey)); 
+}
+
 // set the contextual sorting items
 //echo $this->Element('context_sort', array(
 //    'context_sort' => array(
@@ -70,8 +77,6 @@ $this->set('context_menu', array('menus' => array(
 		),
 	array(
 		'heading' => 'Page Types',
-		'items' => array(
-            $this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'addPageType')) 
-            ),
+		'items' => $typeMenuItems,
 		),
 	)));

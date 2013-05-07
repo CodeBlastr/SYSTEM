@@ -72,7 +72,6 @@ class GalleriesAppModel extends AppModel {
 		
 	    // automatic upgrade the categories table 5/6/2013
 	    // temporary, will be removed soon
-	    if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0191) {
 	    	$db = ConnectionManager::getDataSource('default');
 	      	$tables = $db->describe('gallery_images');
 	      	if (!array_key_exists('order', $tables)) {
@@ -81,7 +80,6 @@ class GalleriesAppModel extends AppModel {
 	        	$this->query('ALTER TABLE  `gallery_images` ADD  `order` INT( 5 ) NULL AFTER  `gallery_id`');
 	        	header('Location: ' . $_SERVER['REQUEST_URI']); // refresh the page to establish new table name
 	        	break;
-	      	}
 	    }
 	}
 	
