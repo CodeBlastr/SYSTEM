@@ -119,7 +119,6 @@ class AppController extends Controller {
 			$aco = $this->_getAcoPath(); // get controller and action
 			// this first one checks record level if record level exists
 			// which it can exist and guests could still have access
-			
 			if ($this->Acl->check($aro, $aco)) {
 				$this->Auth->allow();
 			}
