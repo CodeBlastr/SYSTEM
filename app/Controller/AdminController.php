@@ -46,6 +46,10 @@ class AdminController extends AppController {
     public function index() {
 		// $this->Session->delete('Updates');
 		// upgrade functionality...
+		
+		if (!empty($this->request->data['Admin']['icon'])) {
+			$this->_saveFavicon();
+		}
 		if (!empty($this->request->data['Upgrade']['all'])) {
 			$this->_runUpdates();
 			$this->set('runUpdates', true);
@@ -58,7 +62,7 @@ class AdminController extends AppController {
 		$this->set('page_title_for_layout', 'Admin Dashboard');
 		$this->layout = 'default';
 		
-		
+		// someone please comment why this is here
 		if (in_array('Blogs', CakePlugin::loaded())) {
 			App::uses('Blog', 'Blogs.Model');
 			$Blog = new Blog();
@@ -417,6 +421,13 @@ class AdminController extends AppController {
 				}
 			}
 		}	
+	}
+	
+	protected function _saveFavicon() {
+		$upload = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . WEBROOT_DIR . DS . 'favicon.ico';
+		if(move_uploaded_file($this->request->data['Admin']['icon']['tmp_name'], $upload)){
+			$this->Session->setFlash('Favicon Updated. NOTE ( You may need to clear browser histry and refresh to see it. )');
+		}
 	}
 	
 }

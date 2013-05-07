@@ -79,7 +79,7 @@ class WebpagesController extends WebpagesAppController {
         $this->$index();
 		$this->layout = 'default';
 	}
-    
+	
 /**
  * Index of type Content
  * 
@@ -104,6 +104,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Pages');
+		$this->set('page_types', $this->Webpage->pageTypes());
 		$this->view = 'index_content';
     }
     
@@ -192,7 +193,8 @@ class WebpagesController extends WebpagesAppController {
 		
 		if ($webpage['Webpage']['type'] == 'template') {
 			// do nothing??
-		} else {
+		} 
+		else {
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
 			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
 			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" class="edit-box" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
@@ -234,6 +236,7 @@ class WebpagesController extends WebpagesAppController {
         $add = method_exists($this, '_add' . ucfirst($type)) ? '_add' . ucfirst($type) : '_addContent';
         $this->$add($parentId);
 	}
+	
     
 /**
  * add content page
@@ -253,11 +256,14 @@ class WebpagesController extends WebpagesAppController {
  * @param string $parentId
  */
     protected function _addSub($parentId) {
+		//Set Parent Properties if parentID is given else creat a new Page Type
+		
 		$parent = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $parentId), 'contain' => array('Child')));
 		$this->request->data['Alias']['name'] = !empty($parent['Alias']['name']) ? $parent['Alias']['name'] . '/' : null;
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('parent', $parent);
 		$this->set('page_title_for_layout', __('<small>Create a subpage of</small> %s', $parent['Webpage']['name']));
+	
 		$this->layout = 'default';	
 		$this->view = 'add_sub';      
     }
