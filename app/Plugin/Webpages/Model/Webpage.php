@@ -131,12 +131,7 @@ class Webpage extends WebpagesAppModel {
 		}
 				
 		parent::__construct($id, $table, $ds);
-		$conditions = array();
-		foreach($this->$types)
-		$this->pageTypes = $this->Article->find('list', array(
-       		'fields' => 'DISTINCT Webpage.type',
-       		'conditions' => array('Article.status !=' => 'pending')
-    	));
+		
 	}
 
 /**
@@ -577,9 +572,9 @@ class Webpage extends WebpagesAppModel {
  */
 	public function pageTypes() {
 	    $types = array();
-	    foreach (Zuha::enum('WEBPAGES_PAGE_TYPES') as $type) {
-		  $types[Inflector::underscore($types)] = $type;
+	    foreach (Zuha::enum('WEBPAGES_PAGE_TYPE') as $type) {
+		  $types[Inflector::underscore(Inflector::singularize($type))] = $type;
 	    }
-	    return Set::merge(array('content' => 'Content'), $statuses);
+	    return Set::merge(array('content' => 'Content'), $types);
 	}
 }
