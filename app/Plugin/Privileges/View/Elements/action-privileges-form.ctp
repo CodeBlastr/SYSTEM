@@ -34,16 +34,15 @@ foreach ($data as $ac) {
 			}
 			$cell .= '<div class="checkboxToggleDiv">';
 			if($groups[$i]['UserRole']['id'] != 5) {
-					foreach($userfields as $field) {
-						if($has_check) {
-							$checked = strpos($ac['Section']['user_fields'], $field);
-							
-						}else {
-							$checked = false;
-						}
-						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => 'Only ' . Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))), 'checked' => $checked === false ? null : 'true', 'div' => false));
-					}	
-			
+				foreach($userfields as $field) {
+					if($has_check) {
+						$checked = strpos($ac['Section']['user_fields'], $field);
+						
+					}else {
+						$checked = false;
+					}
+					$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => 'Only ' . Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))), 'checked' => $checked === false ? null : 'true', 'div' => false));
+				}
 			}
 			
 			if ($has_check) {
@@ -60,11 +59,12 @@ foreach ($data as $ac) {
 			}
 		} elseif ($groups[$i]["UserRole"]['id'] != 1) {
 			$cell .= '<div class="checkboxToggleDiv">';
-			 if($groups[$i]['UserRole']['id'] != 5) {
+			if($groups[$i]['UserRole']['id'] != 5) {
+				if (!empty($userfields)) {
 					foreach($userfields as $field) {
 						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => 'Only ' . Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))), 'div' => false));
-					}	
-			
+					}
+				}			
 			}
 			$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => '', 'div' => false));
 			$cell .= '<div class="ct-on">';
