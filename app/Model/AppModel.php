@@ -46,20 +46,6 @@ class AppModel extends Model {
 	public function __construct($id = false, $table = null, $ds = null) {
 		$this->actsAs[] = 'Containable'; // moved here because it was being triggered too late 
 		parent::__construct($id, $table, $ds);
-		
-	    // automatic upgrade the categories table 5/6/2013
-	    // temporary, will be removed soon
-	    if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0191) {
-	    	$db = ConnectionManager::getDataSource('default');
-	      	$tables = $db->describe('gallery_images');
-	      	if (!array_key_exists('order', $tables)) {
-	        	$this->uses = false;
-	        	$this->useTable = false;
-	        	$this->query('ALTER TABLE  `gallery_images` ADD  `order` INT( 5 ) NULL AFTER  `gallery_id`');
-	        	header('Location: ' . $_SERVER['REQUEST_URI']); // refresh the page to establish new table name
-	        	break;
-	      	}
-	    }
 	}
 
 /**
@@ -185,7 +171,7 @@ class AppModel extends Model {
  * afterFind method
  */
 	public function afterFind($results, $primary = false) {
-			
+			 
 		//This is a permission check for record level permissions.
 		//userfields are ACO records from the controller
 		if ( isset($this->acoRecords[0]['Aco']['user_fields']) && !empty($this->acoRecords[0]['Aco']['user_fields']) && CakeSession::read('Auth.User.id') !== 1 ) {
