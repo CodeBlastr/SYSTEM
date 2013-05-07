@@ -6,7 +6,7 @@ if(count($enumerationTypes)) {
 	echo $this->Form->input('Enumeration.type',array('type'=>'select','options'=>array_merge($enumerationTypes,array('+'=>'+ Add new type'))));
 }
 else {
-	echo $this->Form->input('Enumeration.type');
+	echo $this->Form->input('Enumeration.type', array('value' => $type));
 }
 echo $this->Form->end('Done');
 

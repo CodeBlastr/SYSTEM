@@ -134,6 +134,7 @@ class Webpage extends WebpagesAppModel {
 		}
 				
 		parent::__construct($id, $table, $ds);
+		
 	}
 
 /**
@@ -567,4 +568,16 @@ class Webpage extends WebpagesAppModel {
 		return $data['Webpage']['template_urls'];		
 	}
 	
+		
+/**
+ * An array of options for select inputs
+ *
+ */
+	public function pageTypes() {
+	    $types = array();
+	    foreach (Zuha::enum('WEBPAGES_PAGE_TYPE') as $type) {
+		  $types[Inflector::underscore(Inflector::singularize($type))] = $type;
+	    }
+	    return Set::merge(array('content' => 'Content'), $types);
+	}
 }
