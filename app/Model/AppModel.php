@@ -180,7 +180,7 @@ class AppModel extends Model {
  * afterFind method
  */
 	public function afterFind($results, $primary = false) {
-			
+			 
 		//This is a permission check for record level permissions.
 		//userfields are ACO records from the controller
 		if ( isset($this->acoRecords[0]['Aco']['user_fields']) && !empty($this->acoRecords[0]['Aco']['user_fields']) && CakeSession::read('Auth.User.id') !== 1 ) {
