@@ -431,19 +431,20 @@ class WebpagesController extends WebpagesAppController {
  
  private function _fileExistsCheck($filename) {
 	 
+	 $return = false;
 	 if(isset($filename)) {
 	 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
 		$file = new File($path . $filename);
-		return $file->exists();
+		$return =  $file->exists();
 	 }
 	 
-	 if(isset($filename)) {
+	 if($return == false) {
 	 	$path = App::pluginPath($this->plugin) . '/View/' . $this->viewPath . '/';
 		$file = new File($path . $filename);
-		return $file->exists();
+		$return = $file->exists();
 	 }
 	 
-	 return false;
+	 return $return;
 	 
  }
 
