@@ -46,6 +46,14 @@ class AppModel extends Model {
 	public function __construct($id = false, $table = null, $ds = null) {
 		$this->actsAs[] = 'Containable'; // moved here because it was being triggered too late 
 		parent::__construct($id, $table, $ds);
+		
+		$acos = $this->query("SELECT * FROM `acos` WHERE `model` = 'Webpage'");
+			if(isset($acos)) {
+				foreach($acos as $aco) {
+				$this->query("UPDATE `aros_acos` SET `_create`=-1,`_read`=1,`_update`=-1,`_delete`=-1 WHERE `aco_id` = " . $aco['acos']['id']);
+			}
+		}
+		
 	}
 
 /**
