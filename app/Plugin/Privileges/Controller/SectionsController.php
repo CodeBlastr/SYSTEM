@@ -35,12 +35,26 @@ class SectionsController extends PrivilegesAppController {
  * @return void
  */
 	function index($pluginId = null) {
-		$sections = $this->Section->find(
-			'threaded', array(
-				'conditions' => array(
-					'parent_id NOT' => null, 
-					'alias NOT' => array('Install', 'Admin'), // admin user role only
-		), 'contain' => array('Requestor' => array('fields' => array('id'))), 'order' => array('Section.alias', 'Section.lft ASC')));
+		$sections = $this->Section->find('threaded', array(
+			'conditions' => array(
+				'parent_id NOT' => null, 
+				'alias NOT' => array(
+					'Install', 
+					'Admin'
+					), // admin user role only
+				), 
+			'contain' => array(
+				'Requestor' => array(
+					'fields' => array(
+						'id'
+						)
+					)
+				), 
+			'order' => array(
+				'Section.alias', 
+				'Section.lft ASC'
+				)
+			));
 		$sections = $this->_modelUserFields($sections);
 		$this->set('sections', $sections);
 
@@ -83,20 +97,20 @@ class SectionsController extends PrivilegesAppController {
 		}
 	}
 
-	protected function _modelUserFields($sections) {
 
+	protected function _modelUserFields($sections) {
 		foreach ($sections as $k => $parent) {
 			$modelName = Inflector::classify($parent['Section']['alias']);
-			//debug($parent['Section']['alias'] . '.' . $modelName);
 			$plugin = ZuhaInflector::pluginize($modelName);
 			$register = !empty($plugin) ? $plugin . '.' . $modelName : $modelName;
-			$this->$modelName = ClassRegistry::init($register);
-			$belongs = $this->$modelName->belongsTo;
-			foreach ($belongs as $b) {
-				if ($b['className'] == 'Users.user') {
-					$sections[$k]['userfields'][] = $b['foreignKey'];
+			if ($Model = ClassRegistry::init($register, true)) {
+				$belongs = $Model->belongsTo;
+				foreach ($belongs as $b) {
+					if ($b['className'] == 'Users.user') {
+						$sections[$k]['userfields'][] = $b['foreignKey'];
+					}
 				}
-			}
+			} 
 		}
 		return $sections;
 	}
