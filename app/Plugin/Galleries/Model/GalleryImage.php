@@ -122,19 +122,28 @@ class GalleryImage extends GalleriesAppModel {
  */
 	protected function _add($data, $uploadFieldName) {
         $data = $this->checkForGallery($data);
-		if (!empty($data['GalleryImage']['gallery_id'])) {
-			// existing gallery
-			$uploadOptions[$uploadFieldName] = $this->_getImageOptions($data);
-			$this->Behaviors->attach('Galleries.MeioUpload', $uploadOptions);
-			$this->create();
-			if ($this->save($data)) {
-				return true;
+		if ( !empty($data['GalleryImage']['gallery_id']) ) {
+			if ( !empty($data['GalleryImage'][$uploadFieldName]) ) {
+				// existing gallery and image submitted
+				$uploadOptions[$uploadFieldName] = $this->_getImageOptions($data);
+				$this->Behaviors->attach('Galleries.MeioUpload', $uploadOptions);
+				$this->create();
+				if ( $this->save($data) ) {
+					return true;
+				} else {
+					throw new Exception(__('ERROR : %s', ZuhaInflector::flatten($this->invalidFields())));
+				}
 			} else {
-				throw new Exception(__('ERROR : %s', ZuhaInflector::flatten($this->invalidFields())));
+				// just saving an existing gallery
+				if ( $this->Gallery->save($data) ) {
+					return true;
+				} else {
+					throw new Exception(__d('galleries', 'ERROR : Gallery save failed.', true));
+				}
 			}
 		} else {
 			// new gallery			
-			if ($this->Gallery->add($data, $uploadFieldName)) {
+			if ( $this->Gallery->add($data, $uploadFieldName) ) {
 				return true;
 			} else {
 				throw new Exception(__d('galleries', 'ERROR : Gallery add failed.', true));
