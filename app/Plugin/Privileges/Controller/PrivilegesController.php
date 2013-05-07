@@ -17,7 +17,6 @@ class PrivilegesController extends PrivilegesAppController {
  * @return void
  */
 	public function add() {
-		
 		//First we save the Aco record with the userfields for record level access.
 		//This cleans up the sent data and gives us an array with the keyed by aco id
 		$userfields = $this->_cleanAcoArray($this->request->data['Aco']);
@@ -33,9 +32,7 @@ class PrivilegesController extends PrivilegesAppController {
                 break;
 			} 
 		}
-		
-		
-		
+
  		$dat = $this->request->data['Privilege'];
 		
  		for($i = 0; $i < count($dat); $i++){
@@ -100,26 +97,32 @@ class PrivilegesController extends PrivilegesAppController {
 	private function _cleanAcoArray($acoArr) {
 		
 		//Check the Aro record if 0 just skip
-		$acoReturnArr = array();	
-		foreach($acoArr as $key => $acoRes) {
-			$acoId = explode('_', $key);	//Grab the Aco id 
-			$acoId = $acoId[0];	
-			if(!isset($acoReturnArr[$acoId])) {
-				$acoReturnArr[$acoId] = array();
-			}	
-			
-			//check the aro record, then populates the array with the user fields
-			
-			if($this->request->data['Privilege'][$key] == 1) {
-				foreach($acoRes as $k => $v) {
-					if(!in_array($k, $acoReturnArr[$acoId])) {
-						if($v == 1){
-							$acoReturnArr[$acoId][] = $k;
+		$acoReturnArr = array();
+		if (!empty($acoArr)) {
+			foreach($acoArr as $key => $acoRes) {
+				$acoId = explode('_', $key);	//Grab the Aco id 
+				$acoId = $acoId[0];	
+				if(!isset($acoReturnArr[$acoId])) {
+					$acoReturnArr[$acoId] = array();
+				}	
+				
+				//check the aro record, then populates the array with the user fields
+				
+				if($this->request->data['Privilege'][$key] == 1) {
+					foreach($acoRes as $k => $v) {
+						if(!in_array($k, $acoReturnArr[$acoId])) {
+							if($v == 1){
+								$acoReturnArr[$acoId][] = $k;
+							}
 						}
 					}
 				}
+				
 			}
-			
+		} else {
+			debug('Should not be here, if it is then we need unit test for it, please.');
+			debug($this->request->data);
+			break;
 		}
 		
 		return $acoReturnArr;

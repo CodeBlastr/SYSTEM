@@ -107,14 +107,19 @@ class AppController extends Controller {
         
         // check permissions
 		$this->userId = $this->Session->read('Auth.User.id');
+		
 		$allowed = array_search($this->request->params['action'], $this->Auth->allowedActions);
+		
+		
 		if ($allowed === 0 || $allowed > 0 ) {
 			$this->Auth->allow('*');
+			
 		} else if (empty($this->userId) && empty($allowed)) {
 			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get controller and action
 			// this first one checks record level if record level exists
 			// which it can exist and guests could still have access
+			
 			if ($this->Acl->check($aro, $aco)) {
 				$this->Auth->allow();
 			}
