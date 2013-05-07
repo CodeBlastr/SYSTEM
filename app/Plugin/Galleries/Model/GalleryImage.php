@@ -300,19 +300,19 @@ class GalleryImage extends GalleriesAppModel {
 		
 		
 		if (parent::delete($id)) {
-			if (file_exists($file)) {
+			if ( file_exists($file) && is_file($file) ) {
 				unlink($file); // delete the largest file
 			}
 			$small = str_replace($fileName, 'thumb' . DS . 'small' . DS . $fileName, $file);
-			if (file_exists($small)) {
+			if ( file_exists($small) && is_file($small) ) {
 				unlink($small); // delete the small thumb
 			}
 			$medium = str_replace($fileName, 'thumb' . DS . 'medium' . DS . $fileName, $file);
-			if (file_exists($medium)) {
+			if ( file_exists($medium) && is_file($medium) ) {
 				unlink($medium); // delete the medium thumb
 			}
 			$large = str_replace($fileName, 'thumb' . DS . 'large' . DS . $fileName, $file);
-			if (file_exists($large)) {
+			if ( file_exists($large) && is_file($large) ) {
 				unlink($large); // delete the medium thumb
 			}
 			return true;
