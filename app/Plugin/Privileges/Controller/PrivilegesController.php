@@ -20,18 +20,21 @@ class PrivilegesController extends PrivilegesAppController {
 		
 		//First we save the Aco record with the userfields for record level access.
 		//This cleans up the sent data and gives us an array with the keyed by aco id
-		$userfields = $this->_cleanAcoArray($this->request->data['Aco']);
-		$aco = new Aco; //Creates a new aco object just for simplicity	
-		
-		//Need to update the Aco Record with the userfields
-		foreach($userfields as $acoid => $userfield) {
-			$aco->id = $acoid;	
+		if(isset($this->request->data['Aco'])) {
+			$userfields = $this->_cleanAcoArray($this->request->data['Aco']);
+			$aco = new Aco; //Creates a new aco object just for simplicity	
 			
-			//save userfield to acorecord throw a message if doesn't work
-			if(!$aco->saveField('user_fields', implode(',', $userfield))) {
-				$message = __('Privlege update failed, please try again.', true);
-                break;
-			} 
+			//Need to update the Aco Record with the userfields
+			foreach($userfields as $acoid => $userfield) {
+				$aco->id = $acoid;	
+				
+				//save userfield to acorecord throw a message if doesn't work
+				if(!$aco->saveField('user_fields', implode(',', $userfield))) {
+					$message = __('Privlege update failed, please try again.', true);
+	                break;
+				} 
+			}
+			
 		}
 		
 		
