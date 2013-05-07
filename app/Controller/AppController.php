@@ -773,8 +773,8 @@ class AppController extends Controller {
                 'userModel' => 'Users.User',
                 'fields' => array('username' => array('username', 'email'), 'password' => 'password'),
                 /*'scope' => array('User.active' => 1)*/
-            )
-        );
+            	)
+        	);
 
 		$this->Auth->actionPath = 'controllers/';
 		$this->Auth->allowedActions = array('display', 'itemize');
