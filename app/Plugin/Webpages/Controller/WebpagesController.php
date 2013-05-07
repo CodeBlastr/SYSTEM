@@ -104,6 +104,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Pages');
+		$this->set('page_types', $this->Webpage->pageTypes());
 		$this->view = 'index_content';
     }
     
@@ -235,26 +236,6 @@ class WebpagesController extends WebpagesAppController {
         $this->$add($parentId);
 	}
 	
-/**
- * Add Page Type Method
- * 
- */
- 
- 	public function addPageType() {
- 		if ($this->request->is('post')) {
-        // If the form data can be validated and saved...
-	        if ($this->Webpage->save($this->request->data)) {
-	        	
-				$this->request->data['Webpage']['type'] = strtolower($this->request->data['Webpage']['type']);
-	            // Set a session flash message and redirect.
-	            $this->Session->setFlash('Page Type Saved!');
-	            $this->redirect($this->referer());
-	        }
-    	}
-		 
- 		$this->set('page_title_for_layout', __('<small>Create a New Page Type</small>'));
-		$this->layout = 'default';
- 	}
     
 /**
  * add content page
