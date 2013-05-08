@@ -20,7 +20,6 @@ class CkeHelper extends Helper {
 
 		$configuration = $this->_config($settings);
         $code = "
-        //$(function() {
         	
 			if (typeof window.toggleExtras === 'undefined') {
 				function toggleExtras() {
@@ -53,9 +52,13 @@ class CkeHelper extends Helper {
                     $('#'+actualFieldName).parent().parent().find('.exec-source').html('<i class=\"icon-wrench\"></i> HTML');
                 }
 			});
-
-		//});
-        "; 
+";
+		if ( $configuration ) {
+			$code .= "
+			CKEDITOR.replace( '$id', {
+				$configuration	
+			});";
+        }
         return $css . $this->Html->scriptBlock($code);  
         
         /* these will be useful in the future
@@ -166,7 +169,6 @@ class CkeHelper extends Helper {
 				$output = $button;
 			}
 		} 
-		
 		if (!empty($output)) {
 			return $output;
 		} else {
