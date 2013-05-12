@@ -1,4 +1,5 @@
 <?php
+App::uses('WebpagesAppModel', 'Webpages.Model');
 /** 
  * CMS Webpage Model.
  * Handles the cms data 
