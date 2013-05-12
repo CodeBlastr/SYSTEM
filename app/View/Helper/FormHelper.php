@@ -239,7 +239,16 @@ class FormHelper extends CakeFormHelper {
 				$input = $this->{$type}($fieldName, $options); // zuha specific
 			break;
 			case 'richtext': // zuha specific
-				$input =  '<div class="ckeditorLinks"><a id="'.$fieldName.'_exec-source" class="exec-source"><i class="icon-wrench"></i> HTML</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a onclick="toggleExtras();" id="toggle-extras"><i class="icon-fire"></i> TOGGLE EXTRAS</a></div>' . $this->richtext($fieldName, $options + array('class' => 'ckeditor')); // zuha specific
+				$input = '';
+				if ( $options['hideToggleLinks'] !== true ) {
+					$input = '
+					<div class="ckeditorLinks">
+						<a id="'.$fieldName.'_exec-source" class="exec-source"><i class="icon-wrench"></i> HTML</a>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<a onclick="toggleExtras();" id="toggle-extras"><i class="icon-fire"></i> TOGGLE EXTRAS</a>
+					</div>';
+				}
+				$input .= $this->richtext($fieldName, $options + array('class' => 'ckeditor')); // zuha specific
 			break; // zuha specific
 			case 'textarea':
 				$input = $this->textarea($fieldName, $options + array('cols' => '30', 'rows' => '6'));
