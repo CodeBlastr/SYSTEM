@@ -83,5 +83,4 @@ foreach ($data as $ac) {
 echo '</tbody></table>';
 
 echo $this->Form->end(array('label' => __('Update %s Privileges', Inflector::humanize(Inflector::underscore($name))), 'class' => 'btn-primary', 'div' => false));
-echo $this->Html->link(__('Back to Top'), '#sections_index', array('class' => 'pull-right'));
-?>
+//echo $this->Html->link(__('Back to Top'), '#sections_index', array('class' => 'pull-right'));
