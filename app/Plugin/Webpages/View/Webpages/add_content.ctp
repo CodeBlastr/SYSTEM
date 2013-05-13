@@ -19,7 +19,7 @@
     
 	<fieldset>
 		<legend class="toggleClick"><?php echo __('Featured Image'); ?></legend>
-			<?php echo $this->Form->input('GalleryImage.filename', array('type' => 'file')); ?>
+		<?php echo $this->Form->input('GalleryImage.filename', array('type' => 'file')); ?>
 	</fieldset>
     
 	<fieldset>
