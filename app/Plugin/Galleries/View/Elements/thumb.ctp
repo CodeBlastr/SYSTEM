@@ -50,8 +50,9 @@ $thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; // to a
 
 if (!empty($galleryThumb['GalleryThumb']['filename'])) {
     $imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'. $thumbSize .'/'.$galleryThumb['GalleryThumb']['filename'];
+	$conversionType = !empty($conversionType) ? $conversionType : $galleryThumb['GallerySettings']['conversionType'];
     $image = $this->Html->image($imagePath, $thumbImageOptions,	array(
-    	'conversion' => $galleryThumb['GallerySettings']['conversionType'],
+    	'conversion' => $conversionType,
 		'quality' => 75,
 		'alt' => 'thumbnail',
 		));	
