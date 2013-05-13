@@ -112,7 +112,7 @@ class WebpagesController extends WebpagesAppController {
  */
     protected function _indexSub() {
 		$this->paginate['conditions']['Webpage.type'] = 'content';
-		$this->paginate['fields'] = array('Webpage.id', 'Webpage.name', 'Webpage.content', 'Webpage.modified', 'Parent.id', 'Parent.name');
+		//$this->paginate['fields'] = array('Webpage.id', 'Webpage.name', 'Webpage.content', 'Webpage.modified', 'Parent.id', 'Parent.name');
 		$this->paginate['contain'] = array('Parent');
         $webpages = $this->paginate();
 		$this->set(compact('webpages'));
@@ -227,6 +227,7 @@ class WebpagesController extends WebpagesAppController {
 			throw new NotFoundException(__('Invalid content type'));
 		}
 		
+		$this->request->data['Webpage']['type'] = $type;
         $add = method_exists($this, '_add' . ucfirst($type)) ? '_add' . ucfirst($type) : '_addContent';
         $this->$add($parentId);
 	}
@@ -424,7 +425,7 @@ class WebpagesController extends WebpagesAppController {
   */
  
  private function _fileExistsCheck($filename) {
-	 
+	 App::uses('File', 'Utility');
 	 $return = false;
 	 if(isset($filename)) {
 	 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
