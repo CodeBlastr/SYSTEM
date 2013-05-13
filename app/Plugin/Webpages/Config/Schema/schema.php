@@ -101,6 +101,7 @@ class WebpagesSchema extends CakeSchema {
 		'is_default' => array('type' => 'boolean', 'null' => true, 'default' => NULL, 'comment' => 'convenience field for template type webpages'),
 		'template_urls' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'convenience field for template type webpages', 'charset' => 'utf8'),
 		'user_roles' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'convenience field for template type webpages', 'charset' => 'utf8'),
+		'alias' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'creator_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'modifier_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),

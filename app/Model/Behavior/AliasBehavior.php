@@ -69,7 +69,6 @@ class AliasBehavior extends ModelBehavior {
                 )
             ), false);
         $query['contain'][] = 'Alias';
-        
         return parent::beforeFind($Model, $query);
     }
 
