@@ -224,7 +224,7 @@ if (empty($runUpdates)) { ?>
             <h3 class="title"><i class="icon-globe"></i> Install Updates </h3>
             <p>Check for updates, install plugins, and  generally improve your site system.
             <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index')); ?></p>
-			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Upgrade.all', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
+			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Update.index', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
         </div>
         
         <?php if (in_array('Projects', CakePlugin::loaded())) { ?>
