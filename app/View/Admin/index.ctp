@@ -85,14 +85,14 @@ if (empty($runUpdates)) { ?>
     
     <div class="masonry dashboard">
         <div class="masonryBox dashboardBox tagPages">
-            <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
+            <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>View, edit, delete, and create static content pages with text, graphics, video and/or audio. </p>
             <ul>
-            	<li><?php echo $this->Html->link('Add Page', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'content')); ?></li>
-            	<li><?php echo $this->Html->link('Add Section', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'section')); ?> (eg. page with multiple pages)</li>
+            	<li><?php echo $this->Html->link('Add Page', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'content')); ?></li>
+            	<li><?php echo $this->Html->link('Add Section', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'section')); ?> (eg. page with multiple pages)</li>
             	<?php
             	foreach (Zuha::enum('WEBPAGES_PAGE_TYPE') as $type) {
-					echo __('<li>%s</li>', $this->Html->link(__('Add %s Page', $type), array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', Inflector::underscore($type))));
+					echo __('<li>%s</li>', $this->Html->link(__('Add %s Page', $type), array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', Inflector::underscore($type))));
 				} ?>
             </ul>
         </div>
