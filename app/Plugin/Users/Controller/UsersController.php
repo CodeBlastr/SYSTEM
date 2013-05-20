@@ -20,7 +20,7 @@
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  * @todo		  The "view" method needs a requestAction fix so that requestAction works for all requestAction type calls, without the if params['requested'] thing being necessary everyhwere we want to do that.
  */
-class UsersController extends UsersAppController {
+class _UsersController extends UsersAppController {
 
 	public $name = 'Users';
 	public $uses = 'Users.User';
@@ -501,4 +501,8 @@ If you have received this message in error please ignore, the link will be unusa
 		}
 	}
 
+}
+
+if (!isset($refuseInit)) {
+	class UsersController extends _UsersController {}
 }
