@@ -138,6 +138,14 @@ class User extends UsersAppModel {
 				);
 		}
 		
+		if (in_array('Estimates', CakePlugin::loaded())) {
+			$this->hasMany['Estimates'] = array(
+				'className' => 'Estimates.Estimate',
+				'foreignKey' => 'user_id',
+				'dependent' => true,
+				);
+		}
+		
 		parent::__construct($id, $table, $ds);
 	}
 

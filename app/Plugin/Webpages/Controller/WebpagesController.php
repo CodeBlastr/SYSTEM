@@ -75,9 +75,11 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function index($type = 'content') {
-        $index = '_index' . ucfirst($type);
-        $this->$index();
-		$this->layout = 'default';
+        $index = method_exists($this, '_index' . ucfirst($type)) ? '_index' . ucfirst($type) : '_indexContent';
+        $this->$index($type);
+		if($type == 'content') {
+			$this->layout = 'default';
+		}
 	}
 	
 /**
@@ -87,13 +89,13 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  * @throws NotFoundException
  */
-    protected function _indexContent() {
+    protected function _indexContent($type) {
         if ($this->Webpage->find('first', array('conditions' => array('Webpage.parent_id' => 0, 'Webpage.lft' => 0, 'Webpage.rght' => 0)))) {
             // takes care of a bad tree structure (Temporary 11/19/2012 RK)
             $this->Webpage->recover('parent');
         }
         
-		$this->paginate['conditions']['Webpage.type'] = 'content';
+		$this->paginate['conditions']['Webpage.type'] = $type;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
 		$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
@@ -105,7 +107,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Pages');
 		$this->set('page_types', $this->Webpage->pageTypes());
-		$this->view = 'index_content';
+		$this->view = $this->_fileExistsCheck('index_' . $type . $this->ext) ? 'index_' . $type : 'index_content';
     }
     
 /**
@@ -431,19 +433,20 @@ class WebpagesController extends WebpagesAppController {
  
  private function _fileExistsCheck($filename) {
 	 
+	 $return = false;
 	 if(isset($filename)) {
 	 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
 		$file = new File($path . $filename);
-		return $file->exists();
+		$return =  $file->exists();
 	 }
 	 
-	 if(isset($filename)) {
+	 if($return == false) {
 	 	$path = App::pluginPath($this->plugin) . '/View/' . $this->viewPath . '/';
 		$file = new File($path . $filename);
-		return $file->exists();
+		$return = $file->exists();
 	 }
 	 
-	 return false;
+	 return $return;
 	 
  }
 
