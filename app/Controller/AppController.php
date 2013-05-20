@@ -119,8 +119,9 @@ class AppController extends Controller {
 			$aco = $this->_getAcoPath(); // get controller and action
 			// this first one checks record level if record level exists
 			// which it can exist and guests could still have access
-			
-			if ($this->Acl->check($aro, $aco)) {
+			// @todo Auth->action() didn't work, but we can get the actual action mapping at some point
+			$action = $this->request->action == 'view' ? 'read' : 'update';
+			if ($this->Acl->check($aro, $aco, $action)) {
 				$this->Auth->allow();
 			}
 		}
@@ -773,8 +774,8 @@ class AppController extends Controller {
                 'userModel' => 'Users.User',
                 'fields' => array('username' => array('username', 'email'), 'password' => 'password'),
                 /*'scope' => array('User.active' => 1)*/
-            )
-        );
+            	)
+        	);
 
 		$this->Auth->actionPath = 'controllers/';
 		$this->Auth->allowedActions = array('display', 'itemize');
