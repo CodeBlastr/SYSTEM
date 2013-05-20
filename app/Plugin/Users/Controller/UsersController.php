@@ -1,4 +1,5 @@
 <?php
+//App::uses('UsersAppController', 'Users.Controller');
 /**
  * Users Controller
  *
@@ -500,7 +501,6 @@ If you have received this message in error please ignore, the link will be unusa
 			}
 		}
 	}
-
 }
 
 if (!isset($refuseInit)) {
