@@ -46,7 +46,7 @@
   $loggedElement = (isset($loggedElement) ? (!empty($loggedElement) ? $loggedElement : 'login_form_logged') : 'login_form_logged');
   $textWelcome = !empty($textWelcome) ? $textWelcome : 'Welcome : ';
   $linkRegisterText = !empty($linkRegisterText) ? $linkRegisterText : 'Register a new account';
-  $linkRegisterUrl = !empty($linkRegisterUrl) ? $linkRegisterUrl : '/users/users/login';
+  $linkRegisterUrl = !empty($linkRegisterUrl) ? $linkRegisterUrl : '/users/users/register';
   $linkClass = !empty($linkClass) ? $linkClass : 'loginLink';
   $linkIdUser = !empty($linkIdUser) ? $linkIdUser : 'useridLink';
   $textSeparator = !empty($textSeparator) ? $textSeparator : '-';
