@@ -4,7 +4,7 @@
     }
 </style>
 
-<div class="privileges index row"> 
+<div class="privileges index row">
     <?php
     // navigation links
     echo '<div class="span3 bs-docs-sidebar"><ul class="nav nav-list bs-docs-sidenav affix">';
@@ -13,11 +13,42 @@
         if (!empty($section['children'][0]['children'])) {
             echo $this->Html->link(__('<i class="icon-chevron-right"></i> %s', Inflector::humanize(Inflector::underscore($section['Section']['alias']))), '#' . Inflector::singularize(Inflector::underscore($section['Section']['alias'])), array('escape' => false)) . '<ul class="dropdown-menu">';
             foreach ($section['children'] as $child) {
-                echo '<li>' . $this->Html->link(Inflector::singularize(Inflector::humanize(Inflector::underscore($child['Section']['alias']))), '#' . Inflector::underscore($child['Section']['alias']), array('escape' => false)) . '</li>';
+                #echo '<li>' . $this->Html->link(Inflector::singularize(Inflector::humanize(Inflector::underscore($child['Section']['alias']))), '#' . Inflector::underscore($child['Section']['alias']), array('escape' => false)) . '</li>';
+				echo $this->Html->tag('li',
+					$this->Js->link(Inflector::singularize(Inflector::humanize(Inflector::underscore($child['Section']['alias']))), array(
+						'plugin' => 'privileges', 
+						'controller' => 'sections',
+						'action' => 'loadElement', $child['Section']['alias']
+						),
+						array(
+							'update' => '#privilegesTables',
+							'method' => 'post',
+							'data' => 'json='.serialize(array('sdata' => $child['children'], 'userfields' => $section['userfields'])),
+							'complete' => 'applyCheckboxToggles();$("#privilegesTables").fadeIn();',
+							'before' => '$("#privilegesTables").fadeOut();'
+						)
+					)
+				);
             }
             echo __('</ul>');
         } else {
-            echo $this->Html->link(__('<i class="icon-chevron-right"></i> %s', Inflector::humanize(Inflector::underscore($section['Section']['alias']))), '#' . Inflector::singularize(Inflector::underscore($section['Section']['alias'])), array('escape' => false));
+           # echo $this->Html->link(__('<i class="icon-chevron-right"></i> %s', Inflector::humanize(Inflector::underscore($section['Section']['alias']))), '#' . Inflector::singularize(Inflector::underscore($section['Section']['alias'])), array('escape' => false));
+					echo $this->Js->link(
+						'<i class="icon-chevron-right"></i> '.Inflector::humanize(Inflector::underscore($section['Section']['alias'])),
+						array(
+							'plugin' => 'privileges', 
+							'controller' => 'sections',
+							'action' => 'loadElement', $section['Section']['alias']
+						),
+						array(
+							'update' => '#privilegesTables',
+							'method' => 'post',
+							'data' => 'json='.serialize(array('sdata' => $section['children'], 'userfields' => $section['userfields'])),
+							'complete' => 'applyCheckboxToggles();$("#privilegesTables").fadeIn();',
+							'before' => '$("#privilegesTables").fadeOut();',
+							'escape' => false
+						)
+					);
         }
         echo __('</li>');
     }
@@ -29,23 +60,28 @@
 
         <?php
         // privileges tables (element)
-        foreach ($sections as $section) {
-            if (!empty($section['children'][0]['children'])) {
-                echo __('<section id="%s">', Inflector::underscore(Inflector::singularize(ZuhaInflector::pluginize($section['Section']['alias']))));
-                foreach ($section['children'] as $child) {
-                    echo $this->Element('action-privileges-form', array('name' => $child['Section']['alias'], 'data' => $child['children'], 'userfields' => $section['userfields']));
-                }
-                echo __('</section>');
-            } else {
-                echo __('<section id="%s">', Inflector::underscore(Inflector::singularize($section['Section']['alias'])));
-                echo $this->Element('action-privileges-form', array('name' => $section['Section']['alias'], 'data' => $section['children'], 'userfields' => $section['userfields']));
-                echo __('</section>');
-            }
-        } ?>
+        // foreach ($sections as $section) {
+            // if (!empty($section['children'][0]['children'])) {
+                // echo __('<section id="%s">', Inflector::underscore(Inflector::singularize(ZuhaInflector::pluginize($section['Section']['alias']))));
+                // foreach ($section['children'] as $child) {
+                    // #echo $this->Element('action-privileges-form', array('name' => $child['Section']['alias'], 'data' => $child['children'], 'userfields' => $section['userfields']));
+                // }
+                // echo __('</section>');
+            // } else {
+                // echo __('<section id="%s">', Inflector::underscore(Inflector::singularize($section['Section']['alias'])));
+                // #echo $this->Element('action-privileges-form', array('name' => $section['Section']['alias'], 'data' => $section['children'], 'userfields' => $section['userfields']));
+                // echo __('</section>');
+            // }
+        // }
+        ?>
+        <div id="privilegesTables"></div>
     </div>
 </div>
 
 <?php
+
+echo $this->Js->writeBuffer();
+
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
         array(
@@ -55,4 +91,4 @@ $this->set('context_menu', array('menus' => array(
                 $this->Html->link(__('Edit User Roles'), array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'index')),
             )
         ),
-        ))); ?>
+        )));
