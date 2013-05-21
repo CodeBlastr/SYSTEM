@@ -114,5 +114,23 @@ class SectionsController extends PrivilegesAppController {
 		}
 		return $sections;
 	}
+	
+	public function loadElement ($name) {
+		$params = unserialize($this->request->data['json']);
+		
+		$this->layout = null;
+		//$this->autoRender = false;
+
+		$this->Section->Requestor->bindModel(array('belongsTo' => array('UserRole' => array('className' => 'Users.UserRole', 'foreignKey' => 'foreign_key'))));
+		$groups = $this->Section->Requestor->find('all', array('conditions' => array('Requestor.model' => 'UserRole'), 'contain' => array('UserRole' => array('fields' => array('name', 'id')))));
+		
+		$this->set(compact('name', 'groups'));
+		$this->set('data', $params['sdata']);
+		$this->set('userfields', $params['userfields']);
+		
+		//$this->viewPath = 'elements';
+		
+		 //return $this->render('action-privileges-form');
+    }
 
 }
