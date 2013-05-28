@@ -109,3 +109,6 @@
 [submodule "app/Plugin/Favorites"]
 	path = app/Plugin/Favorites
 	url = https://github.com/zuha/Favorites-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Feeds"]
+	path = app/Plugin/Feeds
+	url = git@github.com:zuha/Feeds-Zuha-Cakephp-Plugin.git
