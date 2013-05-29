@@ -1,7 +1,7 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
 
-class User extends UsersAppModel {
+class _User extends UsersAppModel {
 
 	public $name = 'User';
 	public $displayField = 'full_name';
@@ -844,4 +844,8 @@ Thank you for registering with us and welcome to the community.";
 			return false;
 		}
 	}
+}
+
+if (!isset($refuseInit)) {
+	class User extends _User {}
 }
