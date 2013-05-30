@@ -355,6 +355,18 @@ class Setting extends AppModel {
 					'description' => 'A string or array of permssions to request from the PayPal user.'
 				)
 			),
+			'Favorites' => array(
+				array(
+					'name' => 'FAVORITES_SETTINGS',
+					'description' => 'Favorites Plugin Settings' . PHP_EOL
+					. PHP_EOL . 'types[favorite] = "Post"'
+					. PHP_EOL . 'types[watch] = "Post"'
+					. PHP_EOL . 'defaultTexts[favorite] = "Favorite it"'
+					. PHP_EOL . 'defaultTexts[watch] = "Watch it"'
+					. PHP_EOL . 'modelCategories[] = "Post"'
+					,
+				),
+			),
 		);
 		ksort($settings);
 		$this->settings = $settings;
