@@ -16,4 +16,3 @@ class UserFollower extends UsersAppModel {
 	);
 	
 }
-?>
