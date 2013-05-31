@@ -367,6 +367,16 @@ class Setting extends AppModel {
 					,
 				),
 			),
+			'Ratings' => array(
+				array(
+					'name' => 'RATINGS_SETTINGS',
+					'description' => 'Ratings Plugin Settings, used to set the values to rate be' . PHP_EOL
+					. PHP_EOL . '0 = "Hate"'
+					. PHP_EOL . '1 = "OK"'
+					. PHP_EOL . '2 = "Like"'
+					,
+				),
+			),
 		);
 		ksort($settings);
 		$this->settings = $settings;
