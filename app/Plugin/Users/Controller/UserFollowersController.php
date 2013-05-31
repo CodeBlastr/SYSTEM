@@ -64,4 +64,19 @@ class UserFollowersController extends UsersAppController {
 		//$this->redirect(array('action' => 'index'));
 		$this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $id));
 	}
+	
+	function revoke($id = null) {
+		if ( !$id ) {
+			$this->flash(sprintf(__('Invalid user follower', true)), array('action' => 'index'));
+		}
+		if ( $this->UserFollower->deleteAll(array('user_id' => $this->Auth->user('id'), 'follower_id' => $id)) ) {
+			$this->flash(__('Follower deleted', true), array('action' => 'index'));
+		} else {
+			break;
+			$this->flash(__('Follower was not deleted', true), array('action' => 'index'));
+		}
+		//$this->redirect(array('action' => 'index'));
+		$this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $this->Auth->user('id')));
+	}
+	
 }
