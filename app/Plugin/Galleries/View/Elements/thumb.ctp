@@ -24,7 +24,6 @@ if (!empty($model) && !empty($foreignKey)) {
 } else {
     $model = 'Gallery';
 }
-
 // set up the config vars
 $thumbLink = !empty($thumbLink) ? $thumbLink : null;
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
