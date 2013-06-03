@@ -406,6 +406,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'UserWall' => 'Users',
 				'User' => 'Users',
 				'UsersUserGroup' => 'Users',
+				'UserMeasurement' => 'Users',
 				'Util' => 'Utils',
 				'Utils' => 'Utils',
 				'WebpageCss' => 'Webpages',
