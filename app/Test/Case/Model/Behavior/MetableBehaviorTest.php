@@ -148,7 +148,7 @@ class MetableBehaviorTestCase extends CakeTestCase {
 		$resultOne = $this->Article->find('first', array('MetaArticle.id' => '4f88970e-b438-4b01-8740-1a14124e0d46'));
 		//$resultOne = $this->Article->find('all');
 		//debug($resultOne);
-		$this->assertEqual( empty($resultOne['MetaArticle']['Meta']['!location']), true );
+		$this->assertEqual(empty($resultOne['MetaArticle']['Meta']['!location']), true);
 	}
 	
 	public function testRemovalOfExclamationsAfterSave() {
@@ -240,7 +240,6 @@ class MetableBehaviorTestCase extends CakeTestCase {
 	
 	
 	public function testNonMetaSearchTypeFirst() {
-		
 		$data = array(
 			array('MetaArticle' => array(
 				'title' => 'Lorem 333',
