@@ -7,7 +7,7 @@
 <div class="privileges index row">
     <?php
     // navigation links
-    echo '<div class="span3 bs-docs-sidebar"><ul class="nav nav-list bs-docs-sidenav affix">';
+    echo '<div class="span3 bs-docs-sidebar"><ul class="nav nav-list bs-docs-sidenav">';
     foreach ($sections as $section) {
         echo __('<li class="dropdown">');
         if (!empty($section['children'][0]['children'])) {
