@@ -14,6 +14,5 @@ class UserFollower extends UsersAppModel {
 			'order' => ''
 		)
 	);
-	
+
 }
-?>
