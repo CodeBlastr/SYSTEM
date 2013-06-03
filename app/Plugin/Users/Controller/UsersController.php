@@ -166,6 +166,7 @@ class _UsersController extends UsersAppController {
 			'contain'=>array()
 		));
 		
+		$friends = array_intersect($followedUsers, $followers);
 
 		$is_self = ($user['User']['id'] == $this->Auth->user('id') ? true : false);
 		$this->set('is_self', $is_self );
@@ -176,6 +177,7 @@ class _UsersController extends UsersAppController {
 		$this->set('statuses' , $statuses);
 		$this->set('does_follow' , $does_follow);
 		$this->set('user', $user);
+		$this->set('friends', $friends);
 	}
 
 
