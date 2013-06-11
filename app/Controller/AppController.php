@@ -138,6 +138,7 @@ class AppController extends Controller {
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
 		$this->set('title_for_layout', $this->_titleForLayout());
 		$this->set('userRoleId', $this->userRoleId);
+		
 		if($this->RequestHandler->ext == 'csv') {
 			$this->viewClass = 'Csv';
 		}
