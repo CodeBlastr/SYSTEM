@@ -27,7 +27,7 @@ class AppController extends Controller {
 	public $userId = '';
     public $uses = array('Condition');
 	public $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html');
-	public $components = array('Auth', 'Session', 'RequestHandler',  /*'RegisterCallbacks' , 'Security' Desktop Login Stops Working When This is On*/);
+	public $components = array('Auth', 'Session', 'RequestHandler', 'Cookie',  /*'RegisterCallbacks' , 'Security' Desktop Login Stops Working When This is On*/);
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
@@ -85,6 +85,7 @@ class AppController extends Controller {
 
 
 	public function beforeFilter() {
+	    parent::beforeFilter();
 		$this->_writeStats();
 		$this->_configEditor();
 		$this->RequestHandler->ajaxLayout = 'default';
@@ -104,6 +105,33 @@ class AppController extends Controller {
 		// End Condition Check
 		// End DO NOT DELETE
 		$this->_configAuth();
+		
+		
+		
+		
+		// testing remember me
+		
+	   	$this->Cookie->httpOnly = true;
+		
+		if (!$this->Auth->loggedIn() && $this->Cookie->read('rememberMe')) {
+	         $cookie = $this->Cookie->read('rememberMe');
+	         $this->loadModel('Users.User'); // If the User model is not loaded already
+	         $user = $this->User->find('first', array(
+	         	'conditions' => array(
+	            	'User.username' => $cookie['username'],
+	                'User.password' => $cookie['password']
+	              	)
+	         	));
+	        if ($user && !$this->Auth->login($user['User'])) {
+	        	$this->redirect('/users/users/logout'); // destroy session & cookie
+	    	}
+		}
+		
+		
+		
+		
+		
+		
         
         // check permissions
 		$this->userId = $this->Session->read('Auth.User.id');
