@@ -1,20 +1,28 @@
 <?php  
+
+App::uses('Folder', 'Utility');
+App::uses('File', 'Utility');
+
 class WkHtmlToPdfComponent extends Component 
 { 
 
 /** 
  * wkhtmltopdf component class for exporting a view as pdf 
  *  
- * @author Justin Swart 
+ * @author Zuha
  * 
  * @category Components 
  */ 
 
-    public $uses = array('folder', 'file'); 
-
-    public function startup(&$controller) 
-    { 
-        $this->controller = $controller; 
+    public function startup($controller) 
+    {
+        //generate random number to ensure file is unique 
+        $randomNumber = mt_rand();
+        $this->randomNumber = $randomNumber;  
+        $this->controller = $controller;
+        $this->siteFolder = new Folder(TMP, true, 0755); 
+        $fileName = 'viewDump' . $randomNumber . '.tmp'; 
+        $this->viewFile = new File($this->siteFolder->pwd().DS.$fileName); 
     } 
 
     public function createPdf($layout = null) 
@@ -24,39 +32,41 @@ class WkHtmlToPdfComponent extends Component
         $this->controller->output = ''; 
 
         //render view to memory with optional layout specified 
-        $view = $this->controller->render($layout); 
+        $view = $this->controller->render($layout);
 
-        $folder = &new Folder(TMP, $create = true, $mode = 0777); 
-
-        //generate random number to ensure file is unique 
-        $randomNumber = mt_rand(); 
-
-        $fileName = 'viewDump' . $randomNumber . '.tmp'; 
-
-        $file = &new File($folder->pwd().DS.$fileName); 
-
-        if ($file !== false) 
+        if ($this->viewFile !== false) 
         { 
-            $file->delete(); 
+            $this->viewFile->delete(); 
         } 
 
         //write view from memory to file and then execute wkhtmltopdf externally to generate the pdf
-        if ($file->write($view, 'w')) 
+        if ($this->viewFile->write($view, 'w')) 
         { 
-            $file->close(); 
+            $this->viewFile->close(); 
 
             $controllerName = strtolower($this->controller->name); 
 
             $url = "http://{$_SERVER['HTTP_HOST']}/{$controllerName}/getViewDump/{$fileName}"; 
-            $output = TMP."output{$randomNumber}.pdf"; 
-            exec("wkhtmltopdf {$url} {$output}"); 
+            $output = TMP."output{$randomNumber}.pdf";
+            switch(PHP_INT_SIZE) {
+                case 4:
+                     $cmd = VENDORS . 'wkhtmltopdf/32bit/wkhtmltopdf ' . $url . ' ' . $output;
+                    break;
+                case 8:
+                     $cmd = VENDORS . 'wkhtmltopdf/32bit/wkhtmltopdf ' . $url . ' ' . $output;
+                    break;
+                default:
+                    throw new Exception('32/64? no found', 1);
+                    break;
+            }
+            exec($cmd); 
         } 
 
         //send file to browser and trigger download dialogue box 
         $this->returnFile(TMP."output{$randomNumber}.pdf", "document{$randomNumber}.pdf"); 
 
         //remove files 
-        $this->cleanUp($randomNumber); 
+        $this->cleanUp(); 
     } 
 
     public function getViewDump($fileName) 
@@ -64,20 +74,17 @@ class WkHtmlToPdfComponent extends Component
         //prevent view from rendering normally 
         $this->controller->autoRender = false; 
         $this->controller->output = ''; 
-         
-        $file = &new File(TMP . $fileName); 
 
-        print_r($file->read()); 
+        print_r($this->viewFile->read()); 
     } 
 
-    public function cleanUp($randomNumber) 
+    public function cleanUp() 
     { 
         //delete viewDump 
-        $file = &new File(TMP.'viewDump' . $randomNumber . '.tmp'); 
-        $file->delete(); 
+        $this->viewFile->delete(); 
 
         //delete outputPdf 
-        $file = &new File(TMP.'output' . $randomNumber . '.pdf'); 
+        $this->pdfFile = new File(TMP.'output' . $this->randomNumber . '.pdf'); 
         $file->delete(); 
     } 
 
