@@ -216,27 +216,43 @@ class FormHelper extends CakeFormHelper {
 				unset($options['options']);
 				$input = $this->select($fieldName, $list, $options);
 			break;
+			// cakePHP-style date/time inputs
 			case 'time':
+				$options['value'] = $selected;
+				$options['class'] = !empty($options['class']) ?  $options['class'] : ''; // zuha specific
+				$input = $this->dateTime($fieldName, null, $timeFormat, $options); // cakephp specific
+			break;
+			case 'date':
+				$options['value'] = $selected;
+				$options['class'] = !empty($options['class']) ?  $options['class'] : ''; // zuha specific
+				$input = $this->dateTime($fieldName, $dateFormat, null, $options); // cakephp specific
+			break;
+			case 'datetime':
+				$options['value'] = $selected;
+				$options['class'] = !empty($options['class']) ?  $options['class'] : ''; // zuha specific
+				$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // original cakephp call
+			break;
+			// popup date/time pickers
+			case 'timepicker':
 				$options['value'] = $selected;
 				$options['class'] = !empty($options['class']) ?  $options['class'] . ' timepicker' : 'timepicker'; // zuha specific
 				$type = 'text'; // zuha specific
 				$input = $this->{$type}($fieldName, $options); // zuha specific
 				//$input = $this->dateTime($fieldName, null, $timeFormat, $options); // cakephp specific
 			break;
-			case 'date':
+			case 'datepicker':
 				$options['value'] = $selected;
 				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datepicker' : 'datepicker'; // zuha specific
 				$type = 'text'; // zuha specific
 				$input = $this->{$type}($fieldName, $options); // zuha specific
-				// $input = $this->dateTime($fieldName, $dateFormat, null, $options); // cakephp specific
+				//$input = $this->dateTime($fieldName, $dateFormat, null, $options); // cakephp specific
 			break;
-			case 'datetime':
+			case 'datetimepicker':
 				$options['value'] = $selected;
 				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datetimepicker' : 'datetimepicker'; // zuha specific
-				//$type = 'text'; // zuha specific
-				//$input = $this->{$type}($fieldName, $options); // zuha specific
-				//$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // cakephp specific
+				$type = 'text'; // displaying this datetime as a text input because we are using the popup datepicker
 				$input = $this->{$type}($fieldName, $options); // zuha specific
+				//$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // original cakephp call
 			break;
 			case 'richtext': // zuha specific
 				$input = '';
