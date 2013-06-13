@@ -54,7 +54,7 @@ class WkHtmlToPdfComponent extends Component
                      $cmd = VENDORS . 'wkhtmltopdf/32bit/wkhtmltopdf ' . $url . ' ' . $output;
                     break;
                 case 8:
-                     $cmd = VENDORS . 'wkhtmltopdf/32bit/wkhtmltopdf ' . $url . ' ' . $output;
+                     $cmd = VENDORS . 'wkhtmltopdf/64bit/wkhtmltopdf ' . $url . ' ' . $output;
                     break;
                 default:
                     throw new Exception('32/64? no found', 1);
@@ -65,7 +65,7 @@ class WkHtmlToPdfComponent extends Component
         } 
 		
         //send file to browser and trigger download dialogue box 
-        $this->returnFile($this->filepath.DS."output{$this->randomNumber}.pdf", "document{$this->randomNumber}.pdf"); 
+        $this->returnFile($output, "document{$this->randomNumber}.pdf"); 
 		
         //remove files 
         $this->cleanUp(); 
