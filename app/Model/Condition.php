@@ -193,8 +193,10 @@ Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
 		return $return;
 	}
 
-		# This has been saved so that we can use it when we finish of the extra condition checking in the condition model
-	# If it exists there, then delete this function, but NOT until then.
+/**
+ * This has been saved so that we can use it when we finish of the extra condition checking in the condition model
+ * If it exists there, then delete this function, but NOT until then.
+ */
 	protected function __checkExtraCondition($conditionTrigger) {
 	}
 
@@ -265,4 +267,3 @@ Test case: ModelDeleteTest(testDeleteArticleBLinks) FROM All Model Unit Test
 	}
 
 }
-?>
