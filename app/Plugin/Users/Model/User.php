@@ -1,7 +1,7 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
 
-class User extends UsersAppModel {
+class _User extends UsersAppModel {
 
 	public $name = 'User';
 	public $displayField = 'full_name';
@@ -133,6 +133,14 @@ class User extends UsersAppModel {
 		if (in_array('Connections', CakePlugin::loaded())) {
 			$this->hasMany['Connection'] = array(
 				'className' => 'Connections.Connection',
+				'foreignKey' => 'user_id',
+				'dependent' => true,
+				);
+		}
+		
+		if (in_array('Estimates', CakePlugin::loaded())) {
+			$this->hasMany['Estimates'] = array(
+				'className' => 'Estimates.Estimate',
 				'foreignKey' => 'user_id',
 				'dependent' => true,
 				);
@@ -836,4 +844,8 @@ Thank you for registering with us and welcome to the community.";
 			return false;
 		}
 	}
+}
+
+if (!isset($refuseInit)) {
+	class User extends _User {}
 }

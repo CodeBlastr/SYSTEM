@@ -41,7 +41,7 @@
   //$submitDiv = !empty($submitDiv) ? $submitDiv : false; // don't think it will work with the standard end() function
   $checkboxClass = !empty($checkboxClass) ? $checkboxClass : 'checkbox';
   $remember = isset($remember) ? $remember : true;
-  $rememberLabel = !empty($rememberLabel) ? $rememberLabel : 'Keep me logged in';
+  $rememberLabel = !empty($rememberLabel) ? $rememberLabel : 'Remember me?';
   $forgotPasswordTitle = !empty($forgotPasswordTitle) ? $forgotPasswordTitle : 'Forgot Password?';
   $loggedElement = (isset($loggedElement) ? (!empty($loggedElement) ? $loggedElement : 'login_form_logged') : 'login_form_logged');
   $textWelcome = !empty($textWelcome) ? $textWelcome : 'Welcome : ';
@@ -78,11 +78,11 @@
       </div>
       <div class="<?php echo $columnClass?>">
         <div class="<?php echo $holderClass?>">      
-          <?php echo $this->Form->input('password', array('label' => $passwordLabel, 'class' => $inputClass, 'div' => $rowClass, 'placeholder' => $passwordLabel)); ?>
+          <?php echo $this->Form->input('password', array('label' => $passwordLabel, 'class' => $inputClass, 'value' => false, 'div' => $rowClass, 'placeholder' => $passwordLabel)); ?>
                     
                     <?php if (!empty($remember)) { ?>
           <div class="<?php echo $rowClass; ?> stayLoggedIn">
-            <?php echo $this->Form->input('remember_me', array('label' => $rememberLabel, 'class' => $checkboxClass, 'div' => false, 'type' => 'checkbox')); ?>
+            <?php echo $this->Form->input('rememberMe', array('label' => __('&nbsp;%s', $rememberLabel), 'class' => $checkboxClass, 'div' => false, 'type' => 'checkbox')); ?>
           </div>
                     <?php } ?>
                     
