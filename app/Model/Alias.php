@@ -49,4 +49,34 @@ class Alias extends AppModel {
 		return $data;
 	}
 
+/**
+ * Sync all tables that have the alias field in them
+ * 
+ */
+ 	public function sync() {
+ 		$aliases = array();
+ 		$db = $this->getDataSource();
+		foreach ($db->listSources() as $table) {
+			foreach ($db->describe($table) as $column => $description) {
+				if ($column == 'alias') {
+					$aliases = array_merge($aliases, $this->find('all', array(
+						'conditions' => array(
+							'Alias.plugin' => ZuhaInflector::pluginize($table),
+							'Alias.controller' => $table,
+							'Alias.action' => 'view'
+							)
+						)));
+				}
+			}
+		}
+		if (!empty($aliases)) {
+			foreach($aliases as $alias) {
+				$query = __("UPDATE `%s` SET `alias` = '%s' WHERE `%s`.`id` = '%s';", $alias['Alias']['controller'], $alias['Alias']['name'], $alias['Alias']['controller'], $alias['Alias']['value']);
+				$this->query($query);
+				$return[] = $query;
+			}
+		}
+		return $return;
+ 	}
+
 }
