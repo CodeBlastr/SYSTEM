@@ -69,7 +69,6 @@ class AliasBehavior extends ModelBehavior {
                 )
             ), false);
         $query['contain'][] = 'Alias';
-        
         return parent::beforeFind($Model, $query);
     }
 
@@ -96,6 +95,7 @@ class AliasBehavior extends ModelBehavior {
 	public function beforeSave(Model $Model, $options = array()) {
 		if (!empty($Model->data['Alias']['name'])) {
             $this->data['Alias'] = $Model->data['Alias'];
+            $this->data[$Model->alias]['alias'] = $Model->data['Alias']['name'];
         }
 		$this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
 		return parent::beforeSave($Model, $options);
