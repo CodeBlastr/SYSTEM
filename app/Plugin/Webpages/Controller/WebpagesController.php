@@ -76,10 +76,7 @@ class WebpagesController extends WebpagesAppController {
  */
 	public function index($type = 'content') {
         $index = method_exists($this, '_index' . ucfirst($type)) ? '_index' . ucfirst($type) : '_indexContent';
-        $this->$index($type);
-		if($type == 'content') {
-			$this->layout = 'default';
-		}
+        return $this->$index($type);
 	}
 	
 /**
@@ -89,25 +86,21 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  * @throws NotFoundException
  */
-    protected function _indexContent($type) {
-        if ($this->Webpage->find('first', array('conditions' => array('Webpage.parent_id' => 0, 'Webpage.lft' => 0, 'Webpage.rght' => 0)))) {
-            // takes care of a bad tree structure (Temporary 11/19/2012 RK)
-            $this->Webpage->recover('parent');
-        }
-        
+    protected function _indexContent($type) {        
 		$this->paginate['conditions']['Webpage.type'] = $type;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
 		$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
-		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
-		$this->set('webpages', $this->paginate());
-        
+		//$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
+		$this->set('webpages', $webpages = $this->paginate());
+		
 		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Pages');
-		$this->set('page_types', $this->Webpage->pageTypes());
+		$this->set('page_types', $this->Webpage->types());
 		$this->view = $this->_fileExistsCheck('index_' . $type . $this->ext) ? 'index_' . $type : 'index_content';
+		return $webpages;
     }
     
 /**
@@ -119,7 +112,7 @@ class WebpagesController extends WebpagesAppController {
  */
     protected function _indexSub() {
 		$this->paginate['conditions']['Webpage.type'] = 'content';
-		$this->paginate['fields'] = array('Webpage.id', 'Webpage.name', 'Webpage.content', 'Webpage.modified', 'Parent.id', 'Parent.name');
+		//$this->paginate['fields'] = array('Webpage.id', 'Webpage.name', 'Webpage.content', 'Webpage.modified', 'Parent.id', 'Parent.name');
 		$this->paginate['contain'] = array('Parent');
         $webpages = $this->paginate();
 		$this->set(compact('webpages'));
@@ -230,11 +223,11 @@ class WebpagesController extends WebpagesAppController {
 				$this->Session->setFlash($e->getMessage());
 			}
 		}
-		
-		if (empty($this->Webpage->types[$type])) {
+		if (!$this->Webpage->types($type)) {
 			throw new NotFoundException(__('Invalid content type'));
 		}
 		
+		$this->request->data['Webpage']['type'] = $type;
         $add = method_exists($this, '_add' . ucfirst($type)) ? '_add' . ucfirst($type) : '_addContent';
         $this->$add($parentId);
 	}
@@ -432,7 +425,7 @@ class WebpagesController extends WebpagesAppController {
   */
  
  private function _fileExistsCheck($filename) {
-	 
+	 App::uses('File', 'Utility');
 	 $return = false;
 	 if(isset($filename)) {
 	 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';

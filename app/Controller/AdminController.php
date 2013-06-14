@@ -44,16 +44,22 @@ class AdminController extends AppController {
  * @return void
  */
     public function index() {
-		// $this->Session->delete('Updates');
-		// upgrade functionality...
-		
 		if (!empty($this->request->data['Admin']['icon'])) {
 			$this->_saveFavicon();
 		}
 		if (!empty($this->request->data['Upgrade']['all'])) {
 			$this->_runUpdates();
 			$this->set('runUpdates', true);
+		}
+		if (!empty($this->request->data['Update']['index'])) {
+			$this->view = 'index_upgrade';
 		} 
+		if (!empty($this->request->data['Alias']['update'])) {
+			App::uses('Alias', 'Model');
+			$Alias = new Alias;
+			$this->set('syncd', $Alias->sync());
+			$this->view = 'index_upgrade';
+		}
 		$complete = $this->Session->read('Updates.complete');
 		if (!empty($complete)) {
 			$this->Session->delete('Updates'); 

@@ -3,7 +3,7 @@
     
 	<fieldset>
     	<?php
-		echo $this->Form->input('Webpage.type', array('type' => 'hidden', 'value' => 'content'));
+		echo $this->Form->input('Webpage.type', array('type' => 'hidden'));
 		echo $this->Form->input('Webpage.name', array('label' => 'Internal Page Name'));
 		echo $this->Form->input('Webpage.content', array('type' => 'richtext')); ?>
 	</fieldset>
@@ -19,7 +19,7 @@
     
 	<fieldset>
 		<legend class="toggleClick"><?php echo __('Featured Image'); ?></legend>
-			<?php echo $this->Form->input('GalleryImage.filename', array('type' => 'file')); ?>
+		<?php echo $this->Form->input('GalleryImage.filename', array('type' => 'file')); ?>
 	</fieldset>
     
 	<fieldset>
