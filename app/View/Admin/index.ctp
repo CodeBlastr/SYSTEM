@@ -85,8 +85,16 @@ if (empty($runUpdates)) { ?>
     
     <div class="masonry dashboard">
         <div class="masonryBox dashboardBox tagPages">
-            <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
+            <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>View, edit, delete, and create static content pages with text, graphics, video and/or audio. </p>
+            <ul>
+            	<li><?php echo $this->Html->link('Add Page', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'content')); ?></li>
+            	<li><?php echo $this->Html->link('Add Section', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'section')); ?> (eg. page with multiple pages)</li>
+            	<?php
+            	foreach (Zuha::enum('WEBPAGES_PAGE_TYPE') as $type) {
+					echo __('<li>%s</li>', $this->Html->link(__('Add %s Page', $type), array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', Inflector::underscore($type))));
+				} ?>
+            </ul>
         </div>
         
         <div class="masonryBox dashboardBox tagThemes tagElements">
@@ -216,7 +224,7 @@ if (empty($runUpdates)) { ?>
             <h3 class="title"><i class="icon-globe"></i> Install Updates </h3>
             <p>Check for updates, install plugins, and  generally improve your site system.
             <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index')); ?></p>
-			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Upgrade.all', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
+			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Update.index', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
         </div>
         
         <?php if (in_array('Projects', CakePlugin::loaded())) { ?>

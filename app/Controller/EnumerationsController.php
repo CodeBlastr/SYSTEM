@@ -30,6 +30,11 @@ class EnumerationsController extends AppController {
 	
     public $uses = array('Enumeration');
 	
+	
+	public function beforeFilter() {
+		$this->layout = 'default';
+	}
+	
 	public function index() {
 		$this->paginate['order'] = array(
 				'Enumeration.type' => 'ASC',
