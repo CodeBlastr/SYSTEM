@@ -37,7 +37,7 @@ class Zuha {
 				// use date() and $currentDateTS to format the dates in between
 				$currentDateStr = date($options['format'], $currentDateTs);
 				$dateMonthYearArr[] = $currentDateStr;
-				//print $currentDateStr.Ó<br />Ó;
+				//print $currentDateStr.ï¿½<br />ï¿½;
 			}
 			return $dateMonthYearArr;
 		} else {
