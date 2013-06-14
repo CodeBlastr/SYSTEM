@@ -56,7 +56,9 @@ class _UsersController extends UsersAppController {
 		}
 	}
 
-
+/**
+ * index method
+ */
 	public function index() {
 		$this->paginate['fields'] = array(
 			'User.id',
@@ -85,7 +87,9 @@ class _UsersController extends UsersAppController {
 			));
 	}
 
-
+/**
+ * view method
+ */
 	public function view($id) {
 		$user = $this->User->find('first', array(
 			'conditions' => array(
@@ -166,6 +170,7 @@ class _UsersController extends UsersAppController {
 			'contain'=>array()
 		));
 		
+		$friends = array_intersect($followedUsers, $followers);
 
 		$is_self = ($user['User']['id'] == $this->Auth->user('id') ? true : false);
 		$this->set('is_self', $is_self );
@@ -176,9 +181,12 @@ class _UsersController extends UsersAppController {
 		$this->set('statuses' , $statuses);
 		$this->set('does_follow' , $does_follow);
 		$this->set('user', $user);
+		$this->set('friends', $friends);
 	}
 
-
+/**
+ * edit method
+ */
 	public function edit($id = null) {
 		// looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
@@ -318,8 +326,13 @@ class _UsersController extends UsersAppController {
 		}
 	}
 
-
-	protected function _login($user = null) {
+/**
+ * Protected Login method
+ * 
+ * @param array $user
+ */
+	protected function _login($user = null) {		
+		// log user in
 		if ($this->Auth->login($user)) {
 			try {
 				// make sure you don't need to verify your email first
@@ -329,6 +342,20 @@ class _UsersController extends UsersAppController {
 				
 				if (in_array('Connections', CakePlugin::loaded())) {
 					$this->User->Connection->afterLogin($user['User']['id']);
+				}
+				// Create a remember me login cookie for two weeks if checked
+				if ($this->request->data['User']['rememberMe'] == 1) {
+			        // After what time frame should the cookie expire
+			        $cookieTime = '2 weeks'; // You can do e.g: 1 week, 17 weeks, 14 days
+				 
+				    // remove "remember me checkbox"
+				    unset($this->request->data['User']['rememberMe']);
+				                 
+				    // hash the user's password
+				    $this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
+				                 
+				    // write the cookie
+				    $this->Cookie->write('rememberMe', $this->request->data['User'], true, $cookieTime);
 				}
 		        $this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 			} catch (Exception $e) {
@@ -341,10 +368,13 @@ class _UsersController extends UsersAppController {
 	    }
 	}
 
-
+/**
+ * Logout method
+ */
     public function logout() {
 		if ($this->Auth->logout() || $this->Session->delete('Auth')) {
 			$this->Session->destroy();
+			$this->Cookie->destroy('rememberMe');
 			$this->Session->setFlash('Successful Logout');
 			$this->redirect($this->User->logoutRedirectUrl());
 		} else {
