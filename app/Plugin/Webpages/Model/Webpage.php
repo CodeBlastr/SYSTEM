@@ -36,9 +36,9 @@ class Webpage extends WebpagesAppModel {
   * @var array
   */
     public $actsAs = array(
+        'Alias',
         'Tree', 
         'AclExtra', 
-        'Alias',
         'Galleries.Mediable' => array('modelAlias' => 'Webpage'),
      	'Metable',
 		);
@@ -69,9 +69,9 @@ class Webpage extends WebpagesAppModel {
 	public $types = array(
 		'template' => 'Template',
 		'element' => 'Element',
+		'section' => 'Section',
 		'sub' => 'Sub',
-		'content' => 'Content',
-		'challenge' => 'Challenge',
+		'content' => 'Content'
 		);
 	
 /**
@@ -289,15 +289,6 @@ class Webpage extends WebpagesAppModel {
 				$webpage["Webpage"]["content"] = str_replace($matches[0][$i], $webpage2["Webpage"]["content"], $webpage["Webpage"]["content"]);
 			}
 		}
-	}
-    
-/**
- * Types function
- * 
- * @return array
- */
-	public function types() {
-		return $this->types;
 	}
 	
 /**
@@ -569,16 +560,23 @@ class Webpage extends WebpagesAppModel {
 		return $data['Webpage']['template_urls'];		
 	}
 	
-		
+    
 /**
+ * Types function
  * An array of options for select inputs
- *
+ * 
+ * @return array
  */
-	public function pageTypes() {
-	    $types = array();
+	public function types($name = null) {
 	    foreach (Zuha::enum('WEBPAGES_PAGE_TYPE') as $type) {
-		  $types[Inflector::underscore(Inflector::singularize($type))] = $type;
+			$types[Inflector::underscore($type)] = $type;
 	    }
-	    return Set::merge(array('content' => 'Content'), $types);
+		$this->types = Set::merge($this->types, $types);
+		
+		if (!empty($name)) {
+			return $this->types[$name];
+		} else {
+	    	return $this->types;
+		}
 	}
 }
