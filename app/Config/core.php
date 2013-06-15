@@ -1,10 +1,14 @@
 <?php
 ini_set('session.cookie_httponly', true); // used for PCI compliance to make session unavailable to Javascript, can be overwritten on a site by site level
 
-if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php')) {
+if (defined('SITE_DIR')) {
 	// we are in a site within the sites directory
-  	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php');
-    Configure::write('Session.cookie', 'PHPSESSID');
+  	if (@include(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php')) {
+    	Configure::write('Session.cookie', 'PHPSESSID');
+  	} else {
+  		echo 'Core.php File is Missing';
+		break;
+  	}
 } else {
 	// we are installing a new site here
 	// OR using the cake console
@@ -26,14 +30,13 @@ Configure::write('Error', array(
   'level' => E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED,
   'trace' => true
   ));
-Configure::write('Exception', array(
-  'handler' => 'ErrorHandler::handleException',
-  'renderer' => 'AppExceptionRenderer',
-  'log' => true
-));
-
+// this is the same config variable as the one below??? 6/14/2013 rk
+//Configure::write('Exception', array(
+//  'handler' => 'ErrorHandler::handleException',
+//  'renderer' => 'AppExceptionRenderer',
+//  'log' => true
+//));
 App::uses('AppErrorHandler', 'Lib/Error');
-
 Configure::write('Exception', array(
   'handler' => 'AppErrorHandler::handleException',
   'renderer' => 'AppExceptionRenderer',
