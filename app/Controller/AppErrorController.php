@@ -46,6 +46,9 @@ class AppErrorController extends AppController {
 		if (strpos($request->here, '/') === 0) {
 			$request->here = substr($request->here, 1);
 		}
+		
+		$this->db(); // we can get here with no db connection, so check db before looking up an alias
+		
 		$Alias = ClassRegistry::init('Alias');
 		$alias = $Alias->find('first', array('conditions' => array('name' => trim(urldecode($request->here), "/"))));
 		if(!empty($alias)) {
@@ -92,6 +95,20 @@ class AppErrorController extends AppController {
 				$this->set('content', $content['Webpage']['content']);
 			}
 		}
+	}
+	
+/** 
+ * Check if there is a database connection before doing an alias check
+ * 
+ * 
+ */
+	public function db() {
+		try {
+			ConnectionManager::getDataSource('default'); 
+			return true;
+		} catch(Exception $e){
+			debug($e->getMessage());
+		} 
 	}
 	
 }
