@@ -112,3 +112,6 @@
 [submodule "app/Plugin/Feeds"]
 	path = app/Plugin/Feeds
 	url = git@github.com:zuha/Feeds-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Answers"]
+	path = app/Plugin/Answers
+	url = git@github.com:zuha/Answers-Zuha-Cakephp-Plugin.git
