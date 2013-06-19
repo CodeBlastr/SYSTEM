@@ -22,6 +22,10 @@ class AppExceptionRenderer extends ExceptionRenderer {
 				}
 			}
 			return $Controller;	
+		} elseif (get_class($exception) == 'PDOException') {
+			// had to put this in because debugger would fix the error and you'd never see it
+			debug($exception->errorInfo);
+			return parent::_getController($exception);
 		} else {
 			return parent::_getController($exception);
 		}

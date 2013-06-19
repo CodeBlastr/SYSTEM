@@ -2,6 +2,7 @@
 class UserWallsController extends UsersAppController {
 
 	public $name = 'UserWalls';
+	
 	public $uses = 'Users.UserWall';
 
 	function index() {
