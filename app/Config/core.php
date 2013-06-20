@@ -9,6 +9,7 @@ if (defined('SITE_DIR')) {
   		echo 'Core.php File is Missing';
 		break;
   	}
+	$prefix = SITE_DIR;
 } else {
 	// we are installing a new site here
 	// OR using the cake console
@@ -23,6 +24,7 @@ if (defined('SITE_DIR')) {
   	$debugger = !empty($_GET['debugger']) ? $_GET['debugger'] : 2;
   	Configure::write('debug', $debugger);
   	Configure::write('Config.language', 'en');
+	$prefix = 'console';
 }
     
 Configure::write('Error', array(
@@ -42,3 +44,50 @@ Configure::write('Exception', array(
   'renderer' => 'AppExceptionRenderer',
   'log' => true
   ));
+  
+Cache::config('default', array(
+ 	'engine' => 'Apc', //[required]
+ 	'duration'=> 3600, //[optional]
+ 	'probability'=> 100, //[optional]
+ 	'prefix' => Inflector::slug($prefix) . '_', //[optional]  prefix every cache file with this string
+ 	));
+
+/**
+ * Pick the caching engine to use.  If APC is enabled use it.
+ * If running via cli - apc is disabled by default. ensure it's available and enabled in this case
+ *
+ */
+$engine = 'Memcache';
+if (extension_loaded('apc') && (php_sapi_name() !== 'cli' || ini_get('apc.enable_cli'))) {
+	$engine = 'Apc';
+}
+
+// In development mode, caches should expire quickly.
+$duration = '+999 days';
+if (Configure::read('debug') >= 1) {
+	$duration = '+10 seconds';
+}
+
+/**
+ * Configure the cache used for general framework caching.  Path information,
+ * object listings, and translation cache files are stored with this configuration.
+ */
+Cache::config('_cake_core_', array(
+	'engine' => $engine,
+	'prefix' => 'cake_core_' . Inflector::slug($prefix) . '_',
+	'path' => CACHE . 'persistent' . DS,
+	'serialize' => ($engine === 'File'),
+	'duration' => $duration
+));
+
+/**
+ * Configure the cache for model and datasource caches.  This cache configuration
+ * is used to store schema descriptions, and table listings in connections.
+ */
+Cache::config('_cake_model_', array(
+	'engine' => $engine,
+	'prefix' => 'cake_model_' . Inflector::slug($prefix) . '_',
+	'path' => CACHE . 'models' . DS,
+	'serialize' => ($engine === 'File'),
+	'duration' => $duration
+));
