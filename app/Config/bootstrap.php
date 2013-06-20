@@ -73,7 +73,6 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	//   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),
 	//   'locales' => array('/full/path/to/locale/', '/next/full/path/to/locale/')
 	));
-	
     Inflector::rules('singular', array('irregular' => array('webpage_jses' => 'webpage_js')));
     Inflector::rules('plural', array('irregular' => array('webpage_js' => 'webpage_jses')));
 	
