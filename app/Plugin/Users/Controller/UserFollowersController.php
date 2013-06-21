@@ -1,4 +1,6 @@
 <?php
+App::uses('UsersAppController', 'Users.Controller');
+
 class UserFollowersController extends UsersAppController {
 
 	public $name = 'UserFollowers';
