@@ -2,6 +2,9 @@
 if (defined('SITE_DIR')) {
 	// we are in a site within the sites directory
   	if (@include(ROOT.DS.SITE_DIR.DS.'Config'.DS.'database.php')) {
+  		// already included
+  	} else if (SITE_DIR === null) {
+  		include(ROOT.DS.'sites'.DS.'example.com'.DS.'Config'.DS.'database.php');
   	} else {
   		debug('Please create the file database.php '.SITE_DIR.'/Config/.  ');
 		exit;
