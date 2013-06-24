@@ -14,7 +14,7 @@ if (defined('SITE_DIR')) {
 	// we are installing a new site here
 	// OR using the cake console
 	if (php_sapi_name() !== 'cli') {
-	    if ($_SERVER['SCRIPT_URL'] != '/install/site') {
+	    if ($_SERVER['REQUEST_URI'] != '/install/site') {
 	        header('Location: /install/site');
 	        break;
 		}
