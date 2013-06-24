@@ -893,7 +893,7 @@ class AppController extends Controller {
 				$this->SwiftMailer->sendAs = 'html';
 
 				if ($message) {
-              					$this->SwiftMailer->content = $message;
+              		$this->SwiftMailer->content = $message;
 					if($message['html'] && is_array($message)) $this->SwiftMailer->content = $message['html'];
 					$message['html'] = $message;
 					$this->set('message', $message);
