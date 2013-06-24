@@ -46,16 +46,18 @@ class AppController extends Controller {
 		$this->_getUses();
 		$this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(' ' . $this->name . ' '));
 
+		// this needs to go somewhere else!
 		if (in_array('Facebook', CakePlugin::loaded())) {
 			$this->Auth->authenticate = array('Form' => array('fields'=>array('username'=>'email')));
 			foreach ( $this->components as &$component ) {
 				if ( $component == 'Auth' ) {
-					$component = array('Auth' => array(
+					// this was $component = array('Auth') and that causes an error with Set Utiltity
+					$component['Auth'] = array(
 						'authenticate' => array(
 							'Form' => array('fields' => array('username' => 'email'))
-						),
+							),
 						'authorize' => 'Controller'
-					));
+						);
 				}
 			}
 
@@ -859,7 +861,7 @@ class AppController extends Controller {
 				$this->SwiftMailer->sendAs = 'html';
 
 				if ($message) {
-              					$this->SwiftMailer->content = $message;
+              		$this->SwiftMailer->content = $message;
 					if($message['html'] && is_array($message)) $this->SwiftMailer->content = $message['html'];
 					$message['html'] = $message;
 					$this->set('message', $message);
