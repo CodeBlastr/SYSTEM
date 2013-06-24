@@ -1,4 +1,5 @@
 <?php
+App::uses('ContactsAppController', 'Contacts.Controller');
 class ContactsController extends ContactsAppController {
 
 	public $name = 'Contacts';
