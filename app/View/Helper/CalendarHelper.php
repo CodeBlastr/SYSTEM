@@ -20,6 +20,14 @@ class CalendarHelper extends AppHelper {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param array $params
+	 *	$params['sources']	= array of event feeds to combine and display
+	 *	$params['data']		= raw JSON event objects
+	 *	$params['header']	= array of calendar header options, or false for no header. @see http://arshaw.com/fullcalendar/docs/display/header/
+	 * @return string HTML and JavaScript to display the calendar
+	 */
 	public function renderCalendar ($params = array()) {
 		
 		// queue up the JavaScript and CSS
@@ -40,6 +48,11 @@ class CalendarHelper extends AppHelper {
 			$events = $params['data'];
 		}
 		
+		// handle header settings
+		if ( !isset($params['header']) ) {
+			$params['header'] = array('left' => 'title', 'center' => 'today prev next', 'right' => 'month agendaWeek agendaDay');
+		}
+		
 		// the container for the calendar
 		$output = '<div id="calendar"></div>';
 		
@@ -47,11 +60,7 @@ class CalendarHelper extends AppHelper {
 		$output .= $this->Html->scriptBlock(
 '$(document).ready(function() {
 	$("#calendar").fullCalendar({
-		header: {
-			left: "title",
-			center: "today prev next",
-			right: "month agendaWeek agendaDay"
-		},
+		header: '.json_encode($params['header']).',
 		events: '.$events.'
 	})
 });'
