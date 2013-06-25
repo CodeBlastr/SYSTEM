@@ -124,3 +124,6 @@
 [submodule "app/Plugin/Chats"]
 	path = app/Plugin/Chats
 	url = git@github.com:zuha/Chats-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Wizards"]
+	path = app/Plugin/Wizards
+	url = git@github.com:zuha/Wizards-Zuha-CakePHP-Plugin.git
