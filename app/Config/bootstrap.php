@@ -421,6 +421,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'WikiContent' => 'Wikis',
 				'WikiPage' => 'Wikis',
 				'Wiki' => 'Wikis',
+				'Wizard' => 'Wizards',
 				'WorkflowEvent' => 'Workflows',
 				'WorkflowItemEvent' => 'Workflows',
 				'WorkflowItem' => 'Workflows',
