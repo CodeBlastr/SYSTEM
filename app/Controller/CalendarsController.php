@@ -1,7 +1,7 @@
 <?php
 class CalendarsController extends AppController {
 	public $name = 'Calendars';
-
+	public $allowedActions = array('feed');
 /**
  * It basically retrieves and combines the json feeds that you give it.
  *
