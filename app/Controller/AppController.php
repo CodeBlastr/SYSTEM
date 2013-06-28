@@ -528,7 +528,7 @@ class AppController extends Controller {
 /**
  * Used to show admin layout for admin pages & userRole views if they exist
  */
-	public function _siteTemplate() {		
+	public function _siteTemplate() {
 		if (!$this->request->ext == 'csv' && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
             if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
 				// this if checks to see if the user role has a specific view file
