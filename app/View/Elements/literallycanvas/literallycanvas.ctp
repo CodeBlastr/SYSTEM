@@ -1,17 +1,14 @@
 <?php
+// configuration
+$id = !empty($id) ? $id : '';
+
+// queue required files
 echo $this->Html->css('/css/literallycanvas/literally', null, array('inline' => false));
 echo $this->Html->script('/js/underscore/underscore-1.4.2', array('inline' => false));
 echo $this->Html->script('/js/literallycanvas/literallycanvas', array('inline' => false));
 ?>
 
-<div class="literally"><canvas></canvas></div>
-
-<?php
-//echo $this->Form->create(null, array('id' => 'saveCanvasImage'));
-echo $this->Form->hidden('canvasImageData', array('id' => 'canvasImageData'));
-//echo $this->Form->submit('Save', array('id' => 'saveCanvas', 'class' => 'btn'));
-//echo $this->Form->end();
-?>
+<div class="literally"><canvas id="<?php echo $id ?>"></canvas></div>
 
 <script type="text/javascript">
 	$( document ).ready( function() {
@@ -24,9 +21,5 @@ echo $this->Form->hidden('canvasImageData', array('id' => 'canvasImageData'));
 
 		// the only LC-specific thing we have to do
 		$('.literally').literallycanvas( {imageURLPrefix: '/img/literallycanvas'} );
-		
-		$('#canvasImageData').closest('form').submit(function(){
-			$('#canvasImageData').val( $('.literally').canvasForExport().toDataURL() );
-		});
 	} );
 </script>
