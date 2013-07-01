@@ -12,17 +12,29 @@ class CalendarsController extends AppController {
  * @param $format	string	Format of something	
  */
 	public function feed ($sources, $format = 'json') {
-		
+		$output = array();
 		parse_str($sources, $urls);
-		
+		//debug($urls);
 		foreach ( $urls as $url ) {
-			// debug(base64_decode($url));
-			//$data[] = $this->requestAction( base64_decode($url) );
-			$output = array_merge( json_decode($this->requestAction( base64_decode($url) )), $output );
-		}
+			//debug(_decode($url));
+			//debug(  $this->requestAction( base64_decode($url))  );
+			//debug(base64_decode($url));
 
+			$newData = json_decode($this->requestAction( base64_decode($url) ), true);
+
+			if ( !empty($newData) ) {
+//				debug($newData);
+//				$data[] = $newData;
+				$output = array_merge( $newData, $output );
+			}
+			//debug($data);
+			//$output = array_merge( json_decode($this->requestAction( base64_decode($url) )), $output );
+			//$output = array_merge( $data, $output );
+		}
+//debug($output);
+//break;
 		header("Content-type: application/json");
-		echo $output;
+		echo json_encode($output);
 		exit;
 	}
 }
