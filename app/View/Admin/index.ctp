@@ -195,6 +195,13 @@ if (empty($runUpdates)) { ?>
         </div>
         <?php } ?>
         
+        <?php if (in_array('Answers', CakePlugin::loaded())) { ?>  
+        <div class="masonryBox dashboardBox tagForms tagPages">
+            <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Custom Forms', array('plugin' => 'answers', 'controller' => 'answers', 'action' => 'index')); ?></h3>
+            <p>Create custom forms using the Answers Plugin, Allows Drag and Drop Form Building</p>
+        </div>
+        <?php } ?>
+        
         <div class="masonryBox dashboardBox tagConditions tagAdmin">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Conditions', array('plugin' => null, 'controller' => 'conditions', 'action' => 'index')); ?></h3>
             <p>Create customized actions for use in workflows.</p>
