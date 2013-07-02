@@ -124,10 +124,15 @@ class AppController extends Controller {
 		$this->_checkAccess();
 		$this->_userAttributes();
 		
-		 // move these and other request handlers in this file to Theme class
+		// move these and other request handlers in this file to Theme class
 		$this->RequestHandler->ajaxLayout = 'default';
 		$this->_siteTemplate(); // move this 
-		$this->viewClass = $this->RequestHandler->ext == 'csv' ? 'Csv' : $this->viewClass;		
+		$this->viewClass = $this->RequestHandler->ext == 'csv' ? 'Csv' : $this->viewClass;
+		
+		// order is important for these automatic view vars
+		$this->set('page_title_for_layout', $this->_pageTitleForLayout()); 
+		$this->set('title_for_layout', $this->_titleForLayout()); 
+		$this->set('userRoleId', $this->userRoleId); 
 	}
 	
 	
@@ -138,11 +143,6 @@ class AppController extends Controller {
  */
     public function beforeRender() {
 		parent::beforeRender();
-		// order is important for these automatic view vars
-		$this->set('page_title_for_layout', $this->_pageTitleForLayout()); // was in beforeFilter 6/18/2013
-		$this->set('title_for_layout', $this->_titleForLayout()); // was in beforeFilter 6/18/2013
-		$this->set('userRoleId', $this->userRoleId); // was in beforeFilter 6/18/2013
-		
 		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
 		$this->set('_serialize', array_keys($this->viewVars));
         $this->set('_view', $this->view);
@@ -218,6 +218,10 @@ class AppController extends Controller {
 		$statsEntry = $this->Session->read('Stats.entry');
 		if (empty($statsEntry)) {
 			 $this->Session->write('Stats.entry', base64_encode(time()));  
+		}		
+		$referral = $this->Session->read('Stats.referer');
+		if (empty($referral)) {
+			$this->Session->write('Stats.referer', $_SERVER['HTTP_REFERER']);
 		}
 	}
 
@@ -545,7 +549,7 @@ class AppController extends Controller {
 /**
  * Used to show admin layout for admin pages & userRole views if they exist
  */
-	public function _siteTemplate() {		
+	public function _siteTemplate() {
 		if (!$this->request->ext == 'csv' && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
             if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
 				// this if checks to see if the user role has a specific view file
@@ -575,7 +579,6 @@ class AppController extends Controller {
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		}
-		
 	}
 
 
