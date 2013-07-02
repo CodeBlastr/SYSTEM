@@ -1,8 +1,9 @@
 Options -Indexes
 <IfModule mod_rewrite.c>
-   RewriteEngine on
-   RewriteRule "^(.*/)?\.git/" - [F,L]
+    RewriteEngine on
 
-   RewriteRule    ^$ app/webroot/    [L]
-   RewriteRule    (.*) app/webroot/$1 [L]
+   	RewriteRule "^(.*/)?\.git/" - [F,L]
+
+   	RewriteRule    ^$ app/webroot/    [L]
+   	RewriteRule    (.*) app/webroot/$1 [L]
 </IfModule>
