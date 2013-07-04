@@ -20,9 +20,20 @@ class CalendarHelper extends AppHelper {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param array $params
+	 *	$params['sources']	= array of event feeds to combine and display
+	 *	$params['data']		= raw JSON event objects
+	 *	$params['header']	= array of calendar header options, or false for no header. @see http://arshaw.com/fullcalendar/docs/display/header/
+	 * @return string HTML and JavaScript to display the calendar
+	 */
 	public function renderCalendar ($params = array()) {
 		
 		// queue up the JavaScript and CSS
+
+		// jQueryUI is needed when editable = true.  It is used to drag and drop events on the calendar.
+		#$this->Html->script('/js/jquery-ui/jquery-ui-1.9.2.custom.min.js', array('inline' => false));
 		$this->Html->script('fullcalendar/fullcalendar', array('inline' => false));
 		$this->Html->css('fullcalendar/fullcalendar', null, array('inline' => false));
 		
@@ -40,23 +51,24 @@ class CalendarHelper extends AppHelper {
 			$events = $params['data'];
 		}
 		
+		// handle header settings
+		if ( !isset($params['header']) ) {
+			$params['header'] = array('left' => 'title', 'center' => 'today prev next', 'right' => 'month agendaWeek agendaDay');
+		}
+		
 		// the container for the calendar
 		$output = '<div id="calendar"></div>';
 		
 		// JavaScript to initialize/configure the calendar
 		$output .= $this->Html->scriptBlock(
 '$(document).ready(function() {
-	$("#calendar").fullCalendar({
-		header: {
-			left: "title",
-			center: "today prev next",
-			right: "month agendaWeek agendaDay"
-		},
-		events: '.$events.'
+	var calendar = $("#calendar").fullCalendar({
+		header: '.json_encode($params['header']).',
+		events: '.$events.',
 	})
 });'
 		);
-		
+
 		return $output;
 	}
 
