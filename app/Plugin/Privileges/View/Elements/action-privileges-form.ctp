@@ -5,7 +5,7 @@ echo __('<span id="%s"></span><hr /><h2> %s Access Privileges </h2><p>Set privil
 $groupCount = count($groups);
 echo $this->Form->create('Privilege', array('url' => array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'add')));
 
-echo '<table><thead>';
+echo '<table class="table"><thead>';
 
 $tableHeaders[] = 'Action';
 foreach ($groups as $g) {
