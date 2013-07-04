@@ -62,7 +62,7 @@ class AdminController extends AppController {
 		$this->set('page_title_for_layout', 'Admin Dashboard');
 		$this->layout = 'default';
 		
-		// someone please comment why this is here
+		// this is here so we can show "Add Post" links foreach Blog on the dashboard
 		if (in_array('Blogs', CakePlugin::loaded())) {
 			App::uses('Blog', 'Blogs.Model');
 			$Blog = new Blog();
@@ -105,6 +105,13 @@ class AdminController extends AppController {
 		if (!empty($nextPlugin) && !in_array($nextPlugin, CakePlugin::loaded())) { 
 			// plugin is not loaded so downgrade
 			$this->Session->write('Updates.last', !empty($lastTableWithPlugin) ? array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) : $this->_downgrade($nextTable, $lastTable));
+			// more debugging
+//			if ( !empty($lastTableWithPlugin) ) {
+//				debug($lastTableWithPlugin);
+//				debug($this->_downgrade($nextTable, $lastTable));
+//				debug( array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) );
+//				die();
+//			}
 			return true;
 		} elseif ($endTable == $lastTable) {
 			// if last TABLE run equals the end then quit and set a session Updates.complete = true and quit
