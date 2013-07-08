@@ -41,38 +41,38 @@ $(function() {
    	   	
     $('h1.pageTitle').append(permaLinkHtml);
     
-    $('#permaLink, #permaLinkEdit').on('click', function() {
+    $(document).on('click', '#permaLink, #permaLinkEdit', function() {
        permaLink = $('#permaLink').html();
        $('#permaLink').replaceWith('<div class="form-inline" id="aliasForm"><input type="text" value="' + permaLink + '" id="slugInput"> <a class="btn" id="saveSlug">Done</a> <a class="btn" id="cancelSlug">Cancel</a> <span id="saveOld"></span></div>');
        $('#permaLinkEdit').hide();
     });
-    $('#slugInput').on('keyup', function () {
+    $(document).on('keyup', '#slugInput', function () {
         $("#AliasName").val($(this).val());
         if ($("#AliasId").length > 0 ) {
             $("#saveOld").replaceWith('<a id="saveOldLink" class="btn btn-danger" rel="tooltip" title="Click here to keep the old url working, so that links pointing to the old url will not break.">Keep old url live?</a></small>');
         }
         $("a[rel=tooltip]").tooltip();
     });
-    $('#saveOldLink').on('click', function () {
+    $(document).on('click', '#saveOldLink', function () {
         $(".tooltip").remove();
         $("#AliasId").remove();
         $("#saveOldLink").replaceWith('<a id="oldLinkSaved" class="btn btn-success" rel="tooltip" title="This means that old links pointing to the old url will still work. If this was a mistake, you will need to refresh the page before saving any changes.">Old url has been preserved! &nbsp;&nbsp; <button type="button" class="close" data-dismiss="alert">×</button></a></small>');
         $("a[rel=tooltip]").tooltip();
     });
-    $('.close').on('click', function() {
+    $(document).on('click', '.close', function() {
         $(".tooltip").remove();
     });
-    $('#saveSlug').on('click', function () {
+    $(document).on('click', '#saveSlug', function () {
         checkAvailability();
     });
-    $('#cancelSlug').on('click', function () {
+    $(document).on('click', '#cancelSlug', function () {
         $(formId).prepend(aliasId); // bring back the alias id in case it was removed with the #saveOldLink button
         $('#aliasForm').replaceWith('<span id="permaLink">' + permaLink + '</span>');
         $('#permaLinkEdit').show();
     });
     
     <?php if (!empty($nameInput)) { ?>
-    $('<?php echo $nameInput; ?>').on('keyup', function () {
+    $(document).on('keyup', '<?php echo $nameInput; ?>', function () {
         <?php if (!empty($parent)) { ?>
         if ($('<?php echo $aliasInput; ?>').val() == '<?php echo $this->request->data['Alias']['name']; ?>') {
             $('#permaLink').html(prefix + '<?php echo $this->request->data['Alias']['name']; ?>' + $(this).val().replace(/\s+/g, '-').toLowerCase());
@@ -83,16 +83,16 @@ $(function() {
         }
         <?php } ?>
     });
-    $('<?php echo $nameInput; ?>').on('blur', function () {
+    $(document).on('blur', '<?php echo $nameInput; ?>', function () {
         checkAvailability();
     });
     <?php } ?>
     
-    $('<?php echo $aliasInput; ?>').on('keyup', function () {
+    $(document).on('keyup', '<?php echo $aliasInput; ?>', function () {
         $(this).val($(this).val().replace(/\s+/g, '-').toLowerCase());
         $('#permaLink').html($(this).val().replace(/\s+/g, '-').toLowerCase());
     });
-    $('<?php echo $aliasInput; ?>').on('blur', function () {
+    $(document).on('blur', '<?php echo $aliasInput; ?>', function () {
         checkAvailability();
     });
     
