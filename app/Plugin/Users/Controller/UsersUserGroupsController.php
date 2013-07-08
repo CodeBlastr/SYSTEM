@@ -2,6 +2,7 @@
 class UsersUserGroupsController extends UsersAppController {
 
 	public $name = 'UsersUserGroups';
+	
 	public $uses = 'Users.UsersUserGroup';
 
 	public function index() {

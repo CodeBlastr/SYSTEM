@@ -24,47 +24,59 @@ App::uses('Controller', 'Controller');
 //Note : Enable CURL PHP in php.ini file to use Facebook.Connect component of facebook plugin: Faheem
 class AppController extends Controller {
 
+	public $uses = array();
 	public $userId = '';
-    public $uses = array('Condition');
-	public $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html');
-	public $components = array('Auth', 'Session', 'RequestHandler', 'Cookie',  /*'RegisterCallbacks' , 'Security' Desktop Login Stops Working When This is On*/);
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
 	public $paginate = array();
-	public $userRoles = array('administrators', 'guests'); // @todo update this so that it uses the full list of actual user roles
+	public $userRoles = array(
+		'administrators',
+		'guests'
+		); 
 	public $userRoleName = 'guests';
 	public $params = array();
 	public $templateId = '';
 	public $pageTitleForLayout;
+	public $helpers = array(
+		'Session', 
+		'Text', 
+		'Form', 
+		'Js', 
+		'Time', 
+		'Html'
+		);
+	public $components = array(
+		'Auth' => array(
+			'authenticate' => array(
+				'Form' => array(
+					'fields' => array(
+						'username' => array(
+							'username', 
+							'email'
+							)
+						)
+					)
+				),
+			'authorize' => 'Controller'
+			),
+			'Session', 
+			'RequestHandler', 
+			'Cookie'
+		);
 
-
+/**
+ * Constructor method
+ * 
+ * @param
+ * @param
+ */
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
 		$this->_getComponents();
 		$this->_getHelpers();
 		$this->_getUses();
 		$this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(' ' . $this->name . ' '));
-
-		// this needs to go somewhere else!
-		if (in_array('Facebook', CakePlugin::loaded())) {
-			$this->Auth->authenticate = array('Form' => array('fields'=>array('username'=>'email')));
-			foreach ( $this->components as &$component ) {
-				if ( $component == 'Auth' ) {
-					// this was $component = array('Auth') and that causes an error with Set Utiltity
-					$component['Auth'] = array(
-						'authenticate' => array(
-							'Form' => array('fields' => array('username' => 'email'))
-							),
-						'authorize' => 'Controller'
-						);
-				}
-			}
-
-			$this->components['Facebook.Connect'] = array('plugin' => 'Users', 'model' => 'User'); // correct way !!?
-			$this->helpers[] = 'Facebook.Facebook';
-			$this->uses[] = 'Facebook.Facebook';
-		}
 	}
 
 
@@ -72,7 +84,6 @@ class AppController extends Controller {
  * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
  */
 	public function redirect($url, $status = null, $exit = true) {
-		
 		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') {
 			return parent::redirect($this->request->data['Success']['redirect'], $status, $exit);
 		} elseif (!empty($this->request->data['Error']['redirect']) && $status == 'error') {
@@ -84,62 +95,81 @@ class AppController extends Controller {
 		}
 	}
 
+/**
+ * Over write of core paginate method
+ * to handle auto filtering.
+ *
+ * @param string
+ * @param array
+ * @param array
+ */
+	public function paginate($object = null, $scope = array(), $whitelist = array()) {
+		$this->_handlePaginatorSorting();
+		$this->_handlePaginatorFiltering($object);
+		return parent::paginate($object, $scope, $whitelist);
+	}
 
 
+/**
+ * Before Filter method
+ * 
+ * @todo Need to move the bottom three to the Theme class along with all of the theme / template stuff in this file.
+ */
 	public function beforeFilter() {
 	    parent::beforeFilter();
 		$this->_writeStats();
 		$this->_configEditor();
-		$this->RequestHandler->ajaxLayout = 'default';
-	    
-		// DO NOT DELETE 
-		// commented out because for performance this should only be turned on if asked to be turned on
-        // 
-		// Start Condition Check
-		// App::Import('Model', 'Condition');
-		// $this->Condition = new Condition;
-		// get the id that was just inserted so you can call back on it.
-		// $conditions['plugin'] = $this->request->params['plugin'];
-		// $conditions['controller'] = $this->request->params['controller'];
-		// $conditions['action'] = $this->request->params['action'];
-		// $conditions['extra_values'] = $this->request->params['pass'];
-		// $this->Condition->checkAndFire('is_read', $conditions, $this->request->data);
-		// End Condition Check
-		// End DO NOT DELETE
 		$this->_configAuth();
+		$this->_rememberMe();
+		$this->_checkAccess();
+		$this->_userAttributes();
 		
+		// move these and other request handlers in this file to Theme class
+		$this->RequestHandler->ajaxLayout = 'default';
+		$this->_siteTemplate(); // move this 
+		$this->viewClass = $this->RequestHandler->ext == 'csv' ? 'Csv' : $this->viewClass;
 		
-		
-		
-		// testing remember me
-		
-	   	$this->Cookie->httpOnly = true;
-		
-		if (!$this->Auth->loggedIn() && $this->Cookie->read('rememberMe')) {
-	         $cookie = $this->Cookie->read('rememberMe');
-	         $this->loadModel('Users.User'); // If the User model is not loaded already
-	         $user = $this->User->find('first', array(
-	         	'conditions' => array(
-	            	'User.username' => $cookie['username'],
-	                'User.password' => $cookie['password']
-	              	)
-	         	));
-	        if ($user && !$this->Auth->login($user['User'])) {
-	        	$this->redirect('/users/users/logout'); // destroy session & cookie
-	    	}
-		}
-		
-		
-		
-		
-		
-		
-        
-        // check permissions
-		$this->userId = $this->Session->read('Auth.User.id');
-		
+		// order is important for these automatic view vars
+		$this->set('page_title_for_layout', $this->_pageTitleForLayout()); 
+		$this->set('title_for_layout', $this->_titleForLayout()); 
+		$this->set('userRoleId', $this->userRoleId); 
+	}
+	
+	
+/**
+ * Before Render method
+ * 
+ * sets a few variables needed for all views
+ */
+    public function beforeRender() {
+		parent::beforeRender();
+		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
+		$this->set('_serialize', array_keys($this->viewVars));
+        $this->set('_view', $this->view);
+	}
+	
+
+/**
+ * User attributes method
+ * 
+ */
+	protected function _userAttributes() {
+        // order is important for these
+		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
+		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
+		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
+		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
+	}
+	
+	
+/**
+ * Check Access Method
+ * 
+ * Where the rubber meets the road in ACL
+ */
+	protected function _checkAccess() {
+		$this->userId = $this->Session->read('Auth.User.id');   // check permissions
 		$allowed = array_search($this->request->params['action'], $this->Auth->allowedActions);
-		
 		
 		if ($allowed === 0 || $allowed > 0 ) {
 			$this->Auth->allow('*');
@@ -155,31 +185,30 @@ class AppController extends Controller {
 				$this->Auth->allow();
 			}
 		}
-
-        // order is important for these
-		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
-		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
-		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
-		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
-
-		$this->_siteTemplate();
-
-		// order is important for these automatic view vars
-		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
-		$this->set('title_for_layout', $this->_titleForLayout());
-		$this->set('userRoleId', $this->userRoleId);
-		
-		if($this->RequestHandler->ext == 'csv') {
-			$this->viewClass = 'Csv';
-		}
-		
 	}
 
-    public function beforeRender() {
-		parent::beforeRender();
-		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
-		$this->set('_serialize', array_keys($this->viewVars));
-        $this->set('_view', $this->view);
+
+/**
+ * Remember Me Method
+ * 
+ * Logs you in if you have the rememberMe cookie on your client.
+ */
+	protected function _rememberMe() {
+	   	$this->Cookie->httpOnly = true;
+		
+		if (!$this->Auth->loggedIn() && $this->Cookie->read('rememberMe')) {
+	         $cookie = $this->Cookie->read('rememberMe');
+	         $this->loadModel('Users.User'); // If the User model is not loaded already
+	         $user = $this->User->find('first', array(
+	         	'conditions' => array(
+	            	'User.username' => $cookie['username'],
+	                'User.password' => $cookie['password']
+	              	)
+	         	));
+	        if ($user && !$this->Auth->login($user['User'])) {
+	        	$this->redirect('/users/users/logout'); // destroy session & cookie
+	    	}
+		}
 	}
 	
 /**
@@ -189,31 +218,23 @@ class AppController extends Controller {
 		$statsEntry = $this->Session->read('Stats.entry');
 		if (empty($statsEntry)) {
 			 $this->Session->write('Stats.entry', base64_encode(time()));  
+		}		
+		$referral = $this->Session->read('Stats.referer');
+		if (empty($referral)) {
+			$this->Session->write('Stats.referer', $_SERVER['HTTP_REFERER']);
 		}
 	}
 
-	
+/**
+ * Configure Editor (CKE Editor)
+ * 
+ */
 	protected function _configEditor() {
 		if ($this->Session->read('Auth.User') && defined('SITE_DIR')) {
 			$this->Session->write('KCFINDER.disabled', false);
 			$this->Session->write('KCFINDER.uploadURL', '/theme/default/upload/' . $this->Session->read('Auth.User.id'));
 			$this->Session->write('KCFINDER.uploadDir', '../../../../' . SITE_DIR . '/Locale/View/webroot/upload/' . $this->Session->read('Auth.User.id'));
 		}
-	}
-
-
-	/**
- * Over write of core paginate method
- * to handle auto filtering.
- *
- * @param string
- * @param array
- * @param array
- */
-	public function paginate($object = null, $scope = array(), $whitelist = array()) {
-		$this->_handlePaginatorSorting();
-		$this->_handlePaginatorFiltering($object);
-		return parent::paginate($object, $scope, $whitelist);
 	}
 
 
@@ -558,7 +579,6 @@ class AppController extends Controller {
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		}
-		
 	}
 
 
@@ -714,6 +734,12 @@ class AppController extends Controller {
 				$this->components = array_merge($this->components, explode(',', $settings));
 			}
 		}
+		
+
+		// not really loving it but it has to be here because it is in the construct and for logins to work
+		if (in_array('Facebook', CakePlugin::loaded())) {
+			$this->components['Facebook.Connect'] = array('plugin' => 'Users', 'model' => 'User'); // correct way !!?
+		}
 	}
 
 
@@ -748,6 +774,11 @@ class AppController extends Controller {
 				$this->helpers = array_merge($this->helpers, explode(',', $settings));
 			}
 		}
+
+		// not really loving it but it has to be here because it is in the construct and for logins to work
+		if (in_array('Facebook', CakePlugin::loaded())) {
+			$this->helpers[] = 'Facebook.Facebook';
+		}
 	}
 
 
@@ -762,6 +793,12 @@ class AppController extends Controller {
 				// there is only one (non-array) in $this->uses
 				$this->uses = array($this->uses, 'Webpages.Webpage');
 			}
+		}
+		
+
+		// not really loving it but it has to be here because it is in the construct and for logins to work
+		if (in_array('Facebook', CakePlugin::loaded())) {
+			$this->uses[] = 'Facebook.Facebook';
 		}
 	}
 
@@ -804,10 +841,8 @@ class AppController extends Controller {
             'Form' => array(
                 'userModel' => 'Users.User',
                 'fields' => array('username' => array('username', 'email'), 'password' => 'password'),
-                /*'scope' => array('User.active' => 1)*/
             	)
         	);
-
 		$this->Auth->actionPath = 'controllers/';
 		$this->Auth->allowedActions = array('display', 'itemize');
 
