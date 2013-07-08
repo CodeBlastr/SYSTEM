@@ -2,7 +2,9 @@
 class GalleriesController extends GalleriesAppController {
 
 	public $name = 'Galleries';
+	
 	public $uses = 'Galleries.Gallery';
+	
 	public $allowedActions = array('thumb', 'mythumb');
 
 
@@ -41,25 +43,18 @@ class GalleriesController extends GalleriesAppController {
 					'Gallery.model' => $model,
 					'Gallery.foreign_key' => $foreignKey,
 					),
+				'order' => array(
+					'Gallery.created' => 'DESC',
+					),
 				'contain' => array(
 					'GalleryImage' => array(
 						'order' => 'order'
 						)
 					),
 				);
-			// This is here, because we have an element doing a request action on this function.
-			if (isset($this->request->params['requested'])) {
-				$gallery = $this->Gallery->find('first', $conditions);
-	        	if (!empty($gallery)) {
-					return $gallery;
-				} else {
-					return null;
-				}
-	        } else {
-				// Otherwise we just need the model and foreignKey
-				$gallery = $this->Gallery->find('first', $conditions);
-				$this->set(compact('gallery', 'model', 'foreignKey'));
-			}
+			$gallery = $this->Gallery->find('first', $conditions);
+			$this->set(compact('gallery', 'model', 'foreignKey'));
+			return $gallery;
 		} else {
 			$this->Session->setFlash(__('Invalid gallery request.'));
 			$gallery = null;
