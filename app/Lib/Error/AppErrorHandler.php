@@ -8,7 +8,7 @@ class AppErrorHandler extends ErrorHandler {
  * An exact copy of the function in ErrorHandler except
  * for changes to the writing of error messages to the log file. 
  */
-	public static function handleException(Exception $exception) {		
+	public static function handleException(Exception $exception) {
 		$config = Configure::read('Exception');
 		if (!empty($config['log'])) {
 			$message = sprintf("[%s] %s\n%s",
@@ -16,7 +16,6 @@ class AppErrorHandler extends ErrorHandler {
 				$exception->getMessage(),
 				$exception->getTraceAsString()
 			);
-			
 			get_class($exception) != 'MissingControllerException' ? CakeLog::write(LOG_ERR, $message) : null;
 		}
 		$renderer = $config['renderer'];
