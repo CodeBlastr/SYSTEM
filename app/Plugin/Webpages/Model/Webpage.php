@@ -36,7 +36,7 @@ class Webpage extends WebpagesAppModel {
   * @var array
   */
     public $actsAs = array(
-        'Alias',
+        'Optimizable',
         'Tree', 
         'AclExtra', 
         'Galleries.Mediable' => array('modelAlias' => 'Webpage'),
