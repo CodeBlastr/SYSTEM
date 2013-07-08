@@ -1,5 +1,5 @@
 <?php
-class UserGroupsController extends UsersAppController {
+class _UserGroupsController extends UsersAppController {
 
 	public $name = 'UserGroups';
 	public $uses = 'Users.UserGroup';
@@ -152,4 +152,7 @@ class UserGroupsController extends UsersAppController {
 		$this->redirect(array('action' => 'index'));
 	}
 }
-?>
+
+if (!isset($refuseInit)) {
+	class UserGroupsController extends _UserGroupsController {}
+}
