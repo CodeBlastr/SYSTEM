@@ -117,6 +117,7 @@ class OptimizableBehavior extends ModelBehavior {
  * @todo bind the model here if not bound already
  */
 	public function beforeSave(Model $Model, $options = array()) {
+		$this->Alias = ClassRegistry::init('Alias');	
 		$oldAlias = $this->Alias->find('first', array('conditions' => array('id' => $this->data['Alias']['id'])));
 		$newAlias = $Model->data['Alias']['name'];
 		
