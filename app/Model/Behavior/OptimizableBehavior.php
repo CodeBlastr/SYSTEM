@@ -160,18 +160,15 @@ class OptimizableBehavior extends ModelBehavior {
  */
     public function makeUniqueSlug(Model $Model) {
 		$this->Alias = ClassRegistry::init('Alias');
-        $count = 0;
-		//Get all aliases with the name name
-		$aliases = $this->Alias->find('all', array('conditions' => array('Alias.name' => $Model->data['Alias']['name']), 'fields' => array('Alias.id', 'Alias.name')));
-		//remove the alias for this model
-		foreach($aliases as $k => $alias) {
-			if($alias['id'] == $Model->data['Alias']['id']) {
-				unset($aliases[$k]);
-			}
-		}
-		$count = count($aliases); //count how many aliases there already are
-
-        return ($count > 0) ? $this->aliasName = $Model->data['Alias']['name'] . '-' . $count : $this->aliasName = $Model->data['Alias']['name'];
+        
+        $names[] = $Model->data['Alias']['name'];
+        for($i = 0; $i < 10; $i++){
+            $names[] = $Model->data['Alias']['name'] . $i;
+        }
+		
+        $count = $this->Alias->find('count', array('conditions' => array('Alias.name' => $names), 'fields' => 'Alias.id'));
+        
+        return !empty($count) ? $this->aliasName = $Model->data['Alias']['name'] . $count : $this->aliasName = $Model->data['Alias']['name'];
     }
     
 }
