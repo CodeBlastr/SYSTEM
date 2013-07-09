@@ -29,17 +29,20 @@ echo $this->Form->input(key($aliasName), array('label' => 'Permanent Url')); ?>
         background: #fff7c9;
     }
 </style>
+
 <script type="text/javascript">
 
-$(function() {
+(function($) {
     
     var formId = '<?php echo $formId; ?>';
     var aliasId = $("#AliasId");
     var aliasValue = $('<?php echo $nameInput; ?>').val().replace(/\s+/g, '-').toLowerCase()
-    var permaLinkHtml = '<?php echo __(' <br /><small>%s/<span id="permaLink" title="Edit">%s</span> <a class="btn btn-mini" id="permaLinkEdit">Edit</a></small>', $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name']); ?>'.replace('></span>', aliasValue + '></span>');
+    var permaLinkHtml = '<?php echo __('<div style="float: left;"><h1><small>%s/<span id="permaLink" title="Edit">%s</span> <a class="btn btn-mini" id="permaLinkEdit">Edit</a></small>', $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name']); ?>'.replace('></span>', aliasValue + '></span></h1></div>');
    	var prefix = '<?php echo $prefix; ?>';
+   	var permaLink = null;
+   	var newPermaLink = null;
    	   	
-    $('h1.pageTitle').append(permaLinkHtml);
+    $('h1.page-title').after(permaLinkHtml);
     
     $(document).on('click', '#permaLink, #permaLinkEdit', function() {
        permaLink = $('#permaLink').html();
@@ -105,10 +108,10 @@ $(function() {
     function checkAvailability() {
         // check alias availability, append a number at the end if not available
         // right now 11/19/2012 the only failure I see, is in the sub page add it doesn't run a check after the webpage name input is used
-        var permaLink = $('#permaLink').html();
-        var newPermaLink = $('#slugInput').val() ? $('#slugInput').val() : $("#permaLink").html();
-        //console.log(permaLink);
-        //console.log(newPermaLink);
+        permaLink = $('#permaLink').html();
+        newPermaLink = $('#slugInput').val() ? $('#slugInput').val() : $("#permaLink").html();
+        console.log(permaLink);
+        console.log(newPermaLink);
         if (newPermaLink != permaLink) {
             $.getJSON('/aliases/count/' + newPermaLink.replace('/', '\+', 'g') + '.json', 
                 function(data) {
@@ -132,5 +135,5 @@ $(function() {
             $('#permaLinkEdit').show();
         }
     }
-});
+})(jQuery);
 </script>
