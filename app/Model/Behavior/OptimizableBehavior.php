@@ -1,11 +1,11 @@
 <?php
 /**
- * Alias Behavior
+ * Optimizable Behavior
  *
  * @package model
  * @subpackage model.behaviors
  */
-class AliasBehavior extends ModelBehavior {
+class OptimizableBehavior extends ModelBehavior {
 
 /**
  * Settings to configure the behavior
@@ -69,9 +69,32 @@ class AliasBehavior extends ModelBehavior {
                 )
             ), false);
         $query['contain'][] = 'Alias';
-        
+		$query['group'] = !empty($query['group']) ? $query['group'] : array($Model->alias => 'id');
         return parent::beforeFind($Model, $query);
     }
+	
+/**
+ * afterFind callback
+ * 
+ * if beforeFind doesn't get the alias, then we need to get it here and add it in
+ * 
+ * @param object $Model
+ * @param mixed $results
+ */
+ 	public function afterFind(Model $Model, $results, $primary) {
+ 		if (!empty($results[0][$Model->alias]) && !isset($results[0]['Alias'])) {
+ 			for($i = 0, $count = count($results); $i < $count; ++$i) {
+ 				$alias = $Model->Alias->find('first', array('conditions' => array(
+ 					'Alias.value' => $results[$i][$Model->name]['id'],
+					'Alias.controller' => Inflector::tableize($Model->name),
+					)));
+				if (!empty($alias)) {
+					$results[$i]['Alias'] = $alias['Alias'];
+				}
+			}
+ 		}
+		return $results;
+ 	}
 
 /**
  * beforeValidate callback
@@ -94,10 +117,22 @@ class AliasBehavior extends ModelBehavior {
  * @todo bind the model here if not bound already
  */
 	public function beforeSave(Model $Model, $options = array()) {
+		$this->Alias = ClassRegistry::init('Alias');	
+		$oldAlias = $this->Alias->find('first', array('conditions' => array('id' => $this->data['Alias']['id'])));
+		$newAlias = $Model->data['Alias']['name'];
+		
+		$this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
+		
+		//Added check for the alias won't save if they match
+		if($oldAlias['Alias']['name'] == $newAlias) {
+			$this->trigger = false;
+		}
+		
 		if (!empty($Model->data['Alias']['name'])) {
             $this->data['Alias'] = $Model->data['Alias'];
+            $this->data[$Model->alias]['alias'] = $Model->data['Alias']['name'];
         }
-		$this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
+		
 		return parent::beforeSave($Model, $options);
 	}
 
@@ -136,7 +171,6 @@ class AliasBehavior extends ModelBehavior {
  */
     public function makeUniqueSlug(Model $Model) {
 		$this->Alias = ClassRegistry::init('Alias');
-        
         $names[] = $Model->data['Alias']['name'];
         for($i = 0; $i < 10; $i++){
             $names[] = $Model->data['Alias']['name'] . $i;
