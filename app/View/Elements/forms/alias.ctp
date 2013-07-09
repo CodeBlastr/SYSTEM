@@ -46,7 +46,9 @@ echo $this->Form->input(key($aliasName), array('label' => 'Permanent Url')); ?>
     var permaLink = $('<?php echo $aliasInput ?>').val();
     
     $(document).on('click', '#permaLink, #permaLinkEdit', function() {
-       $('#permaLink').replaceWith('<div class="form-inline" id="aliasForm"><input type="text" value="' + permaLink + '" id="slugInput"> <a class="btn" id="saveSlug">Done</a> <a class="btn" id="cancelSlug">Cancel</a> <span id="saveOld"></span></div>');
+       var newlink = $('#permaLink').html();
+       console.log(newlink);
+       $('#permaLink').replaceWith('<div class="form-inline" id="aliasForm"><input type="text" value="' + newlink + '" id="slugInput"> <a class="btn" id="saveSlug">Done</a> <a class="btn" id="cancelSlug">Cancel</a> <span id="saveOld"></span></div>');
        $('#permaLinkEdit').hide();
     });
     $(document).on('keyup', '#slugInput', function () {
