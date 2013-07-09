@@ -47,7 +47,6 @@ echo $this->Form->input(key($aliasName), array('label' => 'Permanent Url')); ?>
     
     $(document).on('click', '#permaLink, #permaLinkEdit', function() {
        var newlink = $('#permaLink').html();
-       console.log(newlink);
        $('#permaLink').replaceWith('<div class="form-inline" id="aliasForm"><input type="text" value="' + newlink + '" id="slugInput"> <a class="btn" id="saveSlug">Done</a> <a class="btn" id="cancelSlug">Cancel</a> <span id="saveOld"></span></div>');
        $('#permaLinkEdit').hide();
     });
@@ -111,8 +110,6 @@ echo $this->Form->input(key($aliasName), array('label' => 'Permanent Url')); ?>
         // check alias availability, append a number at the end if not available
         // right now 11/19/2012 the only failure I see, is in the sub page add it doesn't run a check after the webpage name input is used
         newPermaLink = $('#slugInput').val() ? $('#slugInput').val() : $("#permaLink").html();
-        console.log(permaLink);
-        console.log(newPermaLink);
         if (newPermaLink != permaLink) {
             $.getJSON('/aliases/count/' + newPermaLink.replace('/', '\+', 'g') + '.json', 
                 function(data) {
