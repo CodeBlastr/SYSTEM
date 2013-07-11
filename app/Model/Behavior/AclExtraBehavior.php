@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Database driven, record level access control. 
  *
@@ -24,45 +25,49 @@
  */
 class AclExtraBehavior extends ModelBehavior {
 
-/**
- * Get the settings for saving ArosAco records related to the Aco that was last created
- *
- * @param mixed $config
- * @return void
- * @access public
- */
-    public function setup(Model $Model, $config = array()) {
+	/**
+	 * Get the settings for saving ArosAco records related to the Aco that was last created
+	 *
+	 * @param mixed $config
+	 * @return void
+	 * @access public
+	 */
+	public function setup(Model $Model, $config = array()) {
 		$this->Aro = ClassRegistry::init('Aro');
 		$this->Aco = ClassRegistry::init('Aco');
 		$this->ArosAco = ClassRegistry::init('ArosAco');
-		
+
 //		if (!method_exists($model, 'parentNode')) {
 //			trigger_error(sprintf(__('Callback parentNode() not defined in %s', true), $model->alias), E_USER_WARNING);
 //		}
 	}
 
-/**
- * Creates mutliple new ArosAco nodes as needed for access to the Aco entity created.
- *
- * @param boolean $created True if this is a new record
- * @return void
- * @access public
- */
+	/**
+	 * Creates mutliple new ArosAco nodes as needed for access to the Aco entity created.
+	 *
+	 * @todo the ['RecordLevelAccess']['User'] might be able to be deleted
+	 *
+	 * @param boolean $created True if this is a new record
+	 * @return void
+	 * @access public
+	 */
 	public function afterSave(Model $Model, $created) {
 		parent::afterSave($Model, $created);
 
-		if (!empty($Model->data['RecordLevelAccess']['User'])) {
+		if ( !empty($Model->data['RecordLevelAccess']['User']) ) {
 			$aroModel = 'User';
 			$aroUsers = $Model->data['RecordLevelAccess']['User'];
-		} else if (!empty($Model->data['RecordLevelAccess']['UserRole'])) {
+		} else if ( !empty($Model->data['RecordLevelAccess']['UserRole']) ) {
 			$aroModel = 'UserRole';
 			$aroUsers = $Model->data['RecordLevelAccess']['UserRole'];
-		} else {
-			return false;
 		}
-		
-		// create the Aco record from Model data
-		if (!$created) {
+
+		/**
+		 *  create the Aco record from Model data
+		 */
+
+		// set Aco.id if possible
+		if ( !$created ) {
 			try {
 				$node = $this->Aco->node($Model);
 				$aco['Aco']['id'] = isset($node[0]['Aco']['id']) ? $node[0]['Aco']['id'] : null;
@@ -71,18 +76,38 @@ class AclExtraBehavior extends ModelBehavior {
 				// set Aco.id to null.
 				$aco['Aco']['id'] = null;
 			}
-
 		}
-		$aco['Aco']['parent_id'] =  null;
+		$aco['Aco']['parent_id'] = null;
 		$aco['Aco']['model'] = $Model->name;
 		$aco['Aco']['foreign_key'] = $Model->id;
+
+		// check to see if no permissions were set.
+		// we may need to delete some ArosAcos, and exit out.
+		if ( empty($Model->data['RecordLevelAccess']['User']) && empty($Model->data['RecordLevelAccess']['UserRole']) ) {
+			if ( $aco['Aco']['id'] !== null ) {
+				return $this->ArosAco->deleteAll(array(
+					'aco_id' => $aco['Aco']['id']
+				));
+			} else {
+				return true;
+			}
+		}
 
 		// save Aco record
 		$this->Aco->create();
 		$this->Aco->save($aco);
 
-		// create an ArosAco record foreach desired User or UserRole
-		foreach ($aroUsers as $user) {
+		/**
+		 *  create an ArosAco record foreach desired User or UserRole
+		 */
+
+		// delete current ArosAcos to be safe
+		$this->ArosAco->deleteAll(array(
+			'aco_id' => $this->Aco->id
+		));
+
+		// create new ArosAcos
+		foreach ( $aroUsers as $user ) {
 			$aro = $this->Aro->node(array('model' => $aroModel, 'foreign_key' => $user));
 			$data = array(
 				'aro_id' => $aro[0]['Aro']['id'],
@@ -100,20 +125,18 @@ class AclExtraBehavior extends ModelBehavior {
 				return false;
 			}
 		}
-
 	}
 
-	
-/**
- * 
- * @param \Model $model
- * @param type $results
- * @param type $primary
- */
+	/**
+	 *
+	 * @param \Model $model
+	 * @param type $results
+	 * @param type $primary
+	 */
 	public function afterFind(Model $Model, $results, $primary) {
 		parent::afterFind($Model, $results, $primary);
-		
-		if(!empty($results[0][$Model->name]['user_roles'])) {
+
+		if ( !empty($results[0][$Model->name]['user_roles']) ) {
 			$results[0]['RecordLevelAccess']['UserRole'] = unserialize($results[0][$Model->name]['user_roles']);
 		}
 
@@ -121,19 +144,20 @@ class AclExtraBehavior extends ModelBehavior {
 	}
 
 	/**
- * NOT USED YET
- * Destroys the ARO/ACO node bound to the deleted record
- *
- * @return void
- * @access public
- * @todo Make this function work.
- */
+	 * NOT USED YET
+	 * Destroys the ARO/ACO node bound to the deleted record
+	 *
+	 * @return void
+	 * @access public
+	 * @todo Make this function work.
+	 */
 	function afterDelete(Model $model) {
-		/*# nothing has been done here
-		$type = $this->__typeMaps[strtolower($this->settings[$model->name]['type'])];
-		$node = Set::extract($this->node($model), "0.{$type}.id");
-		if (!empty($node)) {
-			$model->{$type}->delete($node);
-		}*/
+		/* # nothing has been done here
+		  $type = $this->__typeMaps[strtolower($this->settings[$model->name]['type'])];
+		  $node = Set::extract($this->node($model), "0.{$type}.id");
+		  if (!empty($node)) {
+		  $model->{$type}->delete($node);
+		  } */
 	}
+
 }
