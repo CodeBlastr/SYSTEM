@@ -29,9 +29,11 @@ if (!empty($defaultTemplate)) {
 	// matches element template tags like {element: plugin.name.instance} for example {element: contacts.recent.2}
 	preg_match_all ("/(\{element: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 
+
 	$i=0; 
 	foreach ($matches[0] as $elementMatch) {
 		$element = trim($matches[3][$i]);
+		
 		if (preg_match('/([a-zA-Z0-9_\.]+)([a-zA-Z0-9_]+\.[0-9]+)/', $element)) {
 			// means there is an instance number at the end
 			$element = explode('.', $element);
@@ -39,6 +41,16 @@ if (!empty($defaultTemplate)) {
 			$instance = !empty($element[2]) ? $element[2] : $element[1]; 
 			$plugin = !empty($element[2]) ? $element[0] : null;
 			$element = !empty($element[2]) ? $element[1] : $element[0];
+		} else if (preg_match('/([a-zA-Z0-9_\.]+)([a-zA-Z0-9_]+\.[a-zA-Z0-9_,=]+)/', $element)) {
+			// means we have named variables at the end, {element: webpages.types type=portfolio,id=something}
+			$vars = explode(' ', $element);
+			$element = $vars[0];
+			$vars = explode(',', $vars[1]);
+			foreach ($vars as $var) {
+				$option = explode('=', $var);
+				$elementCfg[$option[0]] = $option[1];
+			}
+			$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg), $defaultTemplate['Webpage']['content']); 
 		} else if (strpos($element, '.')) {
 			// this is used to handle non plugin elements with no instance number in the tag
 			$element = explode('.', $element);  
