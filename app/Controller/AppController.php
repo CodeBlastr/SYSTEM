@@ -550,8 +550,14 @@ class AppController extends Controller {
  * Used to show admin layout for admin pages & userRole views if they exist
  */
 	public function _siteTemplate() {
-		if (!$this->request->ext == 'csv' && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
-            if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
+		if (
+				!$this->request->ext == 'csv'
+				&& !$this->request->is('ajax')
+				&& !empty($this->request->params['prefix'])
+				&& $this->request->params['prefix'] == 'admin'
+				&& strpos($this->request->params['action'], 'admin_') === 0
+		) {
+			if ( $this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix') ) {
 				// this if checks to see if the user role has a specific view file
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
 				unset($this->request->params['prefix']);
@@ -564,18 +570,18 @@ class AppController extends Controller {
 				$this->Session->setFlash(__('Section access restricted.'));
 				$this->redirect($this->referer());
 			}
-		} else if (!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) {
+		} else if ( !empty($this->request->params['admin']) && $this->request->params['admin'] == 1 ) {
 			$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
-			foreach (App::path('views') as $path) {
-				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'View', DS.'Plugin'.DS.ucfirst($this->request->params['plugin']).DS.'View', $path) : $path;
+			foreach ( App::path('views') as $path ) {
+				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS . 'View', DS . 'Plugin' . DS . ucfirst($this->request->params['plugin']) . DS . 'View', $path) : $path;
 			} // end App::path loop
-			foreach ($paths as $path) {
-				if (file_exists($path.CakeSession::read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) {
-					$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.ucfirst($this->request->params['controller']);
+			foreach ( $paths as $path ) {
+				if ( file_exists($path . CakeSession::read('Auth.User.view_prefix') . DS . $this->viewPath . DS . $this->request->params['action'] . '.ctp') ) {
+					$this->viewPath = CakeSession::read('Auth.User.view_prefix') . DS . ucfirst($this->request->params['controller']);
 				} // end view prefix loop
 			} // end paths loop
 			$this->layout = 'default';
-		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax') && !$this->request->ext == 'csv') {
+		} else if ( empty($this->request->params['requested']) && !$this->request->is('ajax') && !$this->request->ext == 'csv' ) {
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		}
