@@ -46,8 +46,6 @@ class AppModel extends Model {
 	public function __construct($id = false, $table = null, $ds = null) {
 		$this->actsAs[] = 'Containable'; // moved here because it was being triggered too late 
 		parent::__construct($id, $table, $ds);
-		
-		
 	}
 
 /**
