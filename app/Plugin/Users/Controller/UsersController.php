@@ -190,11 +190,11 @@ class _UsersController extends UsersAppController {
 	public function edit($id = null) {
 		// looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
-			$conditions = array('User.user_id' => $this->request->params['named']['user_id']);
+			$conditions = array('User.id' => $this->request->params['named']['user_id']);
 		} else if (!empty($id)) {
 			$conditions = array('User.id' => $id);
 		} else {
-			$conditions = array('User.user_id' => $this->Session->read('Auth.User.id'));
+			$conditions = array('User.id' => $this->Session->read('Auth.User.id'));
 		}
 		if (empty($this->request->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
 			$user = $this->User->find('first',array(
