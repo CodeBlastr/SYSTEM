@@ -154,6 +154,7 @@
     position: absolute;
     bottom: 90%;
     z-index: 1000;
+    text-align:left;
 }
 #adminNavFloManagr ul li.dropdown ul.dropdown-menu a {
 	clear: both;
@@ -163,6 +164,8 @@
     line-height: 30px;
     padding: 3px 20px;
     white-space: nowrap;
+    background-color:white;
+    text-align:auto;
 }
 /* context menu */
 #adminNavFloManagr ul li ul.context_menu {
