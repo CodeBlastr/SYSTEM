@@ -66,6 +66,25 @@ class UserFollowersController extends UsersAppController {
 		//$this->redirect(array('action' => 'index'));
 		$this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $id));
 	}
+    
+    function destroy($id = null) {
+        $uid = $this->Auth->user('id');
+        if ( !$id ) {
+            $this->Session->setFlash('Invalid User');
+            $this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $uid));
+        }
+
+        try {
+            $this->UserFollower->deleteAll(array('user_id'=>$id, 'follower_id'=> $uid));
+            $this->UserFollower->deleteAll(array('user_id'=>$uid, 'follower_id'=> $id));
+            $this->Session->setFlash('Relationship Deleted');
+        }catch (Exception $e) {
+            $this->Session->setFlash('User Not Deleted');
+            $this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $uid));
+        }       
+        //$this->redirect(array('action' => 'index'));
+        $this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $uid));
+    }
 	
 	function revoke($id = null) {
 		if ( !$id ) {
