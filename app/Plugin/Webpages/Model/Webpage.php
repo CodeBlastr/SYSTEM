@@ -316,11 +316,12 @@ class Webpage extends WebpagesAppModel {
 		}
         
 		if (empty($data['RecordLevelAccess']['UserRole'])) {
+			$data['Webpage']['user_roles'] = '';
 			unset($data['RecordLevelAccess']);
 		} else {
 			$data['Webpage']['user_roles'] = serialize($data['RecordLevelAccess']['UserRole']);
 		}
-		
+
 		return $data;
 	}
 	
