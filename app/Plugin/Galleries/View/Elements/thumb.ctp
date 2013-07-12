@@ -19,6 +19,8 @@
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
+ 
+ 
 if (!empty($model) && !empty($foreignKey)) {
 	$galleryThumb = $this->requestAction("/galleries/galleries/thumb/{$model}/{$foreignKey}");
 } else {
@@ -56,7 +58,9 @@ if (!empty($galleryThumb['GalleryThumb']['filename'])) {
 		));	
 } else if (!empty($showEmpty)) {
 	$imagePath = '/img/noImage.jpg';
-    $image = $this->Html->image($imagePath,	$thumbImageOptions);	
+    $image = $this->Html->image($imagePath, array(
+        'class' => $thumbImageOptions['class']
+    ));	
 }
 
 echo !empty($thumbLink) ? $this->Html->link($image . $thumbLinkAppend, $thumbLink, $thumbLinkOptions) :	$image;
