@@ -947,7 +947,7 @@ class AppController extends Controller {
 		// check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
-		
+
 		if ($this->Acl->check($aro, $aco)) {
 			//echo 'guest access passed';
 			//return array('passed' => 1, 'message' => 'guest access passed');
@@ -956,8 +956,20 @@ class AppController extends Controller {
 			//check user access
 			$aro = $this->_userAro($user['id']); // user aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get aco
-			
-			if ($this->Acl->check($aro, $aco)) {
+
+			/**
+			 * The 3rd parameter for Acl->check() defaults to '*'.
+			 * When '*', it checks ALL 4 types: _create, _read, _update, _delete
+			 * In our use case, webpages/webpages/view/X, we only want to assign _read
+			 * To check for that, we must specify 'read' when doing Acl->check().
+			 * There is kinda supposed to be internal mapping of 'view' => 'read' in Auth,
+			 * but it's not happening here.
+			 *
+			 * Here is a quick and dirty fix:
+			 */
+			$aclCheckAction = ( $this->request->action == 'view' ) ? 'read' : '*';
+
+			if ($this->Acl->check($aro, $aco, $aclCheckAction)) {
 				#echo 'user access passed';
 				#return array('passed' => 1, 'message' => 'user access passed');
 				//Gets Model name
