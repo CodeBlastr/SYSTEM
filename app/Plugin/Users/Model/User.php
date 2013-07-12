@@ -36,9 +36,9 @@ class _User extends UsersAppModel {
 		'username' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => true,
+				'allowEmpty' => false, // must have a value
 				'message' => 'Please enter a value for username',
-				'required' => true
+				'required' => 'create' // field key User.username must be present during User::create
 				),
 			'isUnique' => array(
 				'rule' => 'isUnique',
