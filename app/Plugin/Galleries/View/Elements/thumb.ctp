@@ -34,6 +34,7 @@ $showEmpty = isset($showEmpty) ? $showEmpty : true;
 $indexWidth = !empty($galleryThumb['GallerySettings']['indexImageWidth']) ? $galleryThumb['GallerySettings']['indexImageWidth'] : 24;
 $indexHeight = !empty($galleryThumb['GallerySettings']['indexImageHeight']) ? $galleryThumb['GallerySettings']['indexImageHeight'] : 24;
 
+$title = isset($title) ? array('title' => $title) : array();
 $thumbWidth = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageWidth']) ? $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'] : $indexWidth;
 $thumbHeight = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageHeight']) ? $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'] : $indexHeight;
 // if the width was defined in the element call
@@ -43,7 +44,7 @@ $thumbHeight = !empty($thumbHeight) ? array('height' => $thumbHeight) : array('h
 $thumbAlt = !empty($thumbAlt) ? array('alt' => $thumbAlt) : array('alt' => $model);
 $thumbClass = !empty($thumbClass) || $thumbClass == 'empty' ? array('class' => $thumbClass) : array('class' => 'thumbnail gallery-thumb');
 $thumbId = !empty($thumbId) ? array('id' => $thumbId) : array('id' => 'gallery'.$foreignKey); // was $galleryThumb['Gallery']['id'] (didn't work for /cart)
-$thumbImageOptions = array_merge($thumbWidth, $thumbHeight, $thumbAlt, $thumbClass, $thumbId);
+$thumbImageOptions = array_merge($thumbWidth, $thumbHeight, $thumbAlt, $thumbClass, $thumbId, $title);
 $thumbDiv = isset($thumbDiv) ? ($thumbDiv==true ? true : false) : true; // added to skip the display of div on demand (true/false)
 $thumbLinkOptions = !empty($thumbLinkOptions) ? array_merge($thumbClass, $thumbId, $thumbLinkOptions, array('escape' => false)) : array('escape' => false);
 $thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; // to append anything to the image within the link
@@ -59,7 +60,8 @@ if (!empty($galleryThumb['GalleryThumb']['filename'])) {
 } else if (!empty($showEmpty)) {
 	$imagePath = '/img/noImage.jpg';
     $image = $this->Html->image($imagePath, array(
-        'class' => $thumbImageOptions['class']
+        'class' => $thumbImageOptions['class'],
+        'title' => $thumbImageOptions['title']
     ));	
 }
 
