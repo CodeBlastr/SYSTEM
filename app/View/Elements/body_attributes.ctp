@@ -5,7 +5,7 @@ if ( in_array($this->request->params['controller'], $bootstrapConflicts) ) {
 } else {
 	echo $this->request->params['controller'];
 }
-echo ($this->Session->read('Auth.User') ? __(' authorized') : __(' restricted'));
+echo $this->Session->read('Auth.User') ? __(' authorized') : __(' restricted');
 echo ' ';
 echo $this->request->params['action'];
 echo ' ';
