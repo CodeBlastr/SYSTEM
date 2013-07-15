@@ -76,6 +76,17 @@ if (!empty($defaultTemplate)) {
 		$i++;
 	}
 	
+	// matches form template tags {answer: Id} for example {answer: 1}
+	preg_match_all ("/(\{answer: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	$i = 0;
+	foreach ($matches[0] as $answerMatch) {
+		$answerCfg['id'] = trim($matches[3][$i]);
+		// removed cache for forms, because you can't set it based on form inputs
+		// $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
+		$defaultTemplate["Webpage"]["content"] = str_replace($answerMatch, $this->element('Answers.answer', $answerCfg), $defaultTemplate['Webpage']['content']);
+		$i++;
+	}
+	
 	// matches gallery template tags {gallery: Id} for example {gallery: 28749283}
 	preg_match_all ("/(\{gallery: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
