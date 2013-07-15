@@ -187,12 +187,12 @@ if (empty($runUpdates)) { ?>
         <?php } ?>
         
         <div class="masonryBox dashboardBox tagPrivileges tagAdmin">
-            <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="icon-signal"></i> <?php echo $this->Html->link('Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index')); ?></h3>
             <p>Control what content your different user roles can see.</p>
         </div>
          
         <div class="masonryBox dashboardBox tagSettings tagAdmin">
-            <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Settings', array('plugin' => null, 'controller' => 'settings', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="icon-wrench"></i> <?php echo $this->Html->link('Settings', array('plugin' => null, 'controller' => 'settings', 'action' => 'index')); ?></h3>
             <p>Configure your system with customizable variables.</p>
         </div>
         
@@ -228,7 +228,7 @@ if (empty($runUpdates)) { ?>
         </div>
         
         <div class="masonryBox dashboardBox tagUpdates tagAdmin">
-            <h3 class="title"><i class="icon-globe"></i> Install Updates </h3>
+            <h3 class="title"><i class="icon-download-alt"></i> Install Updates </h3>
             <p>Check for updates, install plugins, and  generally improve your site system.
             <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index')); ?></p>
 			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Update.index', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
@@ -248,6 +248,16 @@ if (empty($runUpdates)) { ?>
         <div class="masonryBox dashboardBox tagProjects tagTasks">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Tasks', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'my')); ?> </h3>
             <p>See and manage all to-do tasks whether they're for a project a contact or anything else.</p>
+        </div>
+        <?php } ?>
+
+        <?php if (in_array('Events', CakePlugin::loaded())) { ?>
+        <div class="masonryBox dashboardBox">
+            <h3 class="title"><i class="icon-th-list"></i> <?php echo $this->Html->link('Events', array('plugin' => 'events')); ?> </h3>
+            <p>See and manage event listings.</p>
+            <ul>
+                <li><?php echo $this->Html->link('Add Event', array('plugin' => 'events', 'controller' => 'events', 'action' => 'add')); ?></li>
+            </ul>
         </div>
         <?php } ?>
 		
