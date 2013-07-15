@@ -44,13 +44,6 @@ Configure::write('Exception', array(
   'renderer' => 'AppExceptionRenderer',
   'log' => true
   ));
-  
-Cache::config('default', array(
- 	'engine' => 'Apc', //[required]
- 	'duration'=> 3600, //[optional]
- 	'probability'=> 100, //[optional]
- 	'prefix' => Inflector::slug($prefix) . '_', //[optional]  prefix every cache file with this string
- 	));
 
 /**
  * Pick the caching engine to use.  If APC is enabled use it.
@@ -91,3 +84,5 @@ Cache::config('_cake_model_', array(
 	'serialize' => ($engine === 'File'),
 	'duration' => $duration
 ));
+  
+

@@ -311,6 +311,7 @@ class WebpagesController extends WebpagesAppController {
 		
 		// required to have per page permissions
 		$userRoles = $this->Webpage->Creator->UserRole->find('list');
+		unset($userRoles[1]);
 		$types = $this->Webpage->types();
 		$this->set(compact('userRoles', 'types'));
 
