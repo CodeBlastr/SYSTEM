@@ -85,12 +85,21 @@ class AclExtraBehavior extends ModelBehavior {
 		// we may need to delete some ArosAcos, and exit out.
 		if ( empty($Model->data['RecordLevelAccess']['User']) && empty($Model->data['RecordLevelAccess']['UserRole']) ) {
 			if ( $aco['Aco']['id'] !== null ) {
+<<<<<<< HEAD
 				return $this->ArosAco->deleteAll(array(
 					'aco_id' => $aco['Aco']['id']
 				));
 			} else {
 				return true;
 			}
+=======
+				$this->Aco->delete($aco['Aco']['id']);
+				$this->ArosAco->deleteAll(array(
+					'aco_id' => $aco['Aco']['id']
+				));
+			}
+			return true;
+>>>>>>> 44236dd2b190cfdad21d7e73383164a24ff02e1c
 		}
 
 		// save Aco record
