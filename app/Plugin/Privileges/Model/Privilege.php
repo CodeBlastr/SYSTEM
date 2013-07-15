@@ -92,4 +92,3 @@ class Privilege extends PrivilegesAppModel {
 	}
 	
 }
-?>
