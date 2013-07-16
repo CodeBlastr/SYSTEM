@@ -311,9 +311,8 @@ class WebpagesController extends WebpagesAppController {
 		
 		// required to have per page permissions
 		$userRoles = $this->Webpage->Creator->UserRole->find('list');
-		unset($userRoles[1]);
+		
 		$types = $this->Webpage->types();
-		$this->set(compact('userRoles', 'types'));
 
 		if ($this->request->data['Webpage']['type'] == 'template') {
 			if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
@@ -327,11 +326,14 @@ class WebpagesController extends WebpagesAppController {
 				'buttons' => array('Source')
 				));
 		} else {
+			unset($userRoles[1]);
 			$this->set('ckeSettings', null);
 		}
 		// 1/6/2012 rk - $this->set('templateUrls', $this->Webpage->templateUrls($this->request->data));
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
-		
+
+		$this->set(compact('userRoles', 'types'));
+
 		$type = $this->request->data['Webpage']['type'];
 		$this->view = $this->_fileExistsCheck('edit_' . $type . $this->ext) ? 'edit_' . $type : 'edit_content';
         $this->layout = 'default';
