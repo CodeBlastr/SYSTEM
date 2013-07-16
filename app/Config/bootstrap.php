@@ -340,6 +340,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Event' => 'Events',
 				'EventsGuest' => 'Events',
 				'Facebook' => 'Facebook',
+				'Favorite' => 'Favorites',
 				'Faq' => 'Faqs',
 				'Favorite' => 'Favorites',
 				'FeedCJ' => 'Feeds',
