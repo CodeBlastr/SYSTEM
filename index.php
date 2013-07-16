@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 echo '<h1>Please turn on mod_rewrite, it is a requirement.</h1>';
 break;
