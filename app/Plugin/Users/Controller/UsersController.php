@@ -256,7 +256,7 @@ class _UsersController extends UsersAppController {
 	public function register() {
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
-
+		
 		if (!empty($this->request->data)) {
 			try {
 				$this->User->add($this->request->data);
