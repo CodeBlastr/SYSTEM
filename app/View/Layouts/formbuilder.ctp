@@ -19,6 +19,7 @@
     <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
     <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    
   </head>
 
  <body class="<?php echo __('%s %s %s', $this->request->params['controller'], $this->request->params['action'], ($this->Session->read('Auth.User') ? __(' authorized') : __(' restricted'))); ?>" id="<?php echo !empty($this->request->params['pass'][0]) ? strtolower($this->request->params['controller'].'_'.$this->request->params['action'].'_'.$this->request->params['pass'][0]) : strtolower($this->request->params['controller'].'_'.$this->request->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">
@@ -40,6 +41,8 @@
 		<?php echo $this->Element('sql_dump');  ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> 
     </div> <!-- /container -->
     
+      
     <script data-main="/Answers/js/main-built.js" src="/Answers/js/lib/require.js" ></script>
+     
   </body>
 </html>
