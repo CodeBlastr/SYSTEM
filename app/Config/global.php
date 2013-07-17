@@ -306,7 +306,7 @@ class ZuhaSet {
 	}
 	
 	/**
-	 * Array Replace Recusive
+	 * Replaces the values in array_a with array_b
 	 * 
 	 * @param $array_a array being merged with
 	 * @param $array_b array replacing values
