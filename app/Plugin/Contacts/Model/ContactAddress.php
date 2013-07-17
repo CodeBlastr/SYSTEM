@@ -19,6 +19,7 @@ class ContactAddress extends ContactsAppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		),
+		'User'
 	);
 }
