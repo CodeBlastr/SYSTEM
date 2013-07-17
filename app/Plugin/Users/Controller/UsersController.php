@@ -298,11 +298,14 @@ class _UsersController extends UsersAppController {
 
 	public function my() {
 		$userId = $this->Session->read('Auth.User.id');
+		if($userId == null || $userId == __SYSTEM_GUESTS_USER_ROLE_ID) {
+			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+		}
 		if (!empty($userId)) {
 			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $userId));
 		} else {
-			$this->Session->setFlash('No Session');
-			$this->redirect('/');
+			$this->Session->setFlash('Please Login');
+			$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 		}
 	}
 
@@ -330,8 +333,9 @@ class _UsersController extends UsersAppController {
  * Protected Login method
  * 
  * @param array $user
+ * @param bool $forceUrl forces login redirect url
  */
-	protected function _login($user = null) {		
+	protected function _login($user = null, $forceUrl = false) {		
 		// log user in
 		if ($this->Auth->login($user)) {
 			try {
@@ -357,7 +361,11 @@ class _UsersController extends UsersAppController {
 				    // write the cookie
 				    $this->Cookie->write('rememberMe', $this->request->data['User'], true, $cookieTime);
 				}
-		        $this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
+				if($forceUrl) {
+					$this->redirect($this->User->loginRedirectUrl('/'));
+				}else {
+					$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
+				}
 			} catch (Exception $e) {
 				$this->Auth->logout();
 				$this->Session->setFlash($e->getMessage());
