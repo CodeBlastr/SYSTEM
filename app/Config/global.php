@@ -304,5 +304,29 @@ class ZuhaSet {
 		$path = str_replace('theme'.DS.'default'.DS, '', $path); // get webroot directory
 		return $path;
 	}
+	
+	/**
+	 * Array Replace Recusive
+	 * 
+	 * @param $array_a array being merged with
+	 * @param $array_b array replacing values
+	 * 
+	 * @return $array_a with all the values from array_b 
+	 */
+	 
+    public function array_replace_r($array_a, $array_b) {
+    	
+		foreach($array_b as $k => $v) {
+			if($array_b[$k] != $array_a[$k]) {
+				if(is_array($array_a[$k])) {
+					$this->array_replace_r($array_a[$k], $array_b[$k]);
+				}else {
+					$array_a[$k] = $v;
+				}
+			}
+		}
+		
+		return $array_a;	
+    }
 
 }
