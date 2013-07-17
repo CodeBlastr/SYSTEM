@@ -51,6 +51,10 @@ class _User extends UsersAppModel {
 				'message' => 'Email required for registration, Please try again.'
 				),
 			),
+			'email' => array(
+        		'rule'    => array('email', true),
+        		'message' => 'Please supply a valid email address.'
+    		)
 		);
 
 	// this seems to break things because of nesting if I put Users.UserRole for the className
@@ -454,7 +458,7 @@ class _User extends UsersAppModel {
  */
 	public function loginRedirectUrl($redirect) {
 		# this handles redirects where a url was called that redirected you to the login page
-
+		
 		if ($redirect == '/') {
 			# default login location
 			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
