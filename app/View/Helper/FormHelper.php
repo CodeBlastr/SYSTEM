@@ -216,29 +216,55 @@ class FormHelper extends CakeFormHelper {
 				unset($options['options']);
 				$input = $this->select($fieldName, $list, $options);
 			break;
+			// cakePHP-style date/time inputs
 			case 'time':
+				$options['value'] = $selected;
+				$options['class'] = !empty($options['class']) ?  $options['class'] : ''; // zuha specific
+				$input = $this->dateTime($fieldName, null, $timeFormat, $options); // cakephp specific
+			break;
+			case 'date':
+				$options['value'] = $selected;
+				$options['class'] = !empty($options['class']) ?  $options['class'] : ''; // zuha specific
+				$input = $this->dateTime($fieldName, $dateFormat, null, $options); // cakephp specific
+			break;
+			case 'datetime':
+				$options['value'] = $selected;
+				$options['class'] = !empty($options['class']) ?  $options['class'] : ''; // zuha specific
+				$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // original cakephp call
+			break;
+			// popup date/time pickers
+			case 'timepicker':
 				$options['value'] = $selected;
 				$options['class'] = !empty($options['class']) ?  $options['class'] . ' timepicker' : 'timepicker'; // zuha specific
 				$type = 'text'; // zuha specific
 				$input = $this->{$type}($fieldName, $options); // zuha specific
 				//$input = $this->dateTime($fieldName, null, $timeFormat, $options); // cakephp specific
 			break;
-			case 'date':
+			case 'datepicker':
 				$options['value'] = $selected;
 				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datepicker' : 'datepicker'; // zuha specific
 				$type = 'text'; // zuha specific
 				$input = $this->{$type}($fieldName, $options); // zuha specific
-				// $input = $this->dateTime($fieldName, $dateFormat, null, $options); // cakephp specific
+				//$input = $this->dateTime($fieldName, $dateFormat, null, $options); // cakephp specific
 			break;
-			case 'datetime':
+			case 'datetimepicker':
 				$options['value'] = $selected;
-				//$options['class'] = !empty($options['class']) ?  $options['class'] . ' datetimepicker' : 'datetimepicker'; // zuha specific
-				//$type = 'text'; // zuha specific
-				//$input = $this->{$type}($fieldName, $options); // zuha specific
-				$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // cakephp specific
+				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datetimepicker' : 'datetimepicker'; // zuha specific
+				$type = 'text'; // displaying this datetime as a text input because we are using the popup datepicker
+				$input = $this->{$type}($fieldName, $options); // zuha specific
+				//$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // original cakephp call
 			break;
 			case 'richtext': // zuha specific
-				$input =  '<div class="ckeditorLinks"><a onclick="ExecuteCommand(\'source\');" id="exec-source"><i class="icon-wrench"></i> HTML</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a onclick="toggleExtras();" id="toggle-extras"><i class="icon-fire"></i> TOGGLE EXTRAS</a></div>' . $this->richtext($fieldName, $options + array('class' => 'ckeditor')); // zuha specific
+				$input = '';
+				if ( $options['hideToggleLinks'] !== true ) {
+					$input = '
+					<div class="ckeditorLinks">
+						<a id="'.$fieldName.'_exec-source" class="exec-source"><i class="icon-wrench"></i> HTML</a>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<a onclick="toggleExtras();" id="toggle-extras"><i class="icon-fire"></i> TOGGLE EXTRAS</a>
+					</div>';
+				}
+				$input .= $this->richtext($fieldName, $options + array('class' => 'ckeditor')); // zuha specific
 			break; // zuha specific
 			case 'textarea':
 				$input = $this->textarea($fieldName, $options + array('cols' => '30', 'rows' => '6'));
@@ -320,10 +346,17 @@ class FormHelper extends CakeFormHelper {
 			unset($options['value']);
 		}
 		// this one throws an error
-		return $this->Html->useTag('richtext', $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)).$this->Html->script('ckeditor/adapters/jquery', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
+		//return $this->Html->useTag('richtext', $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)).$this->Html->script('ckeditor/adapters/jquery', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
 		
 		// this one doesn't
-		//return $this->Html->useTag('richtext', $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
+		return $this->Html->useTag(
+				'richtext',
+				$options['name'],
+				array_diff_key($options, array('type' => '', 'name' => '')),
+				$value,
+				$this->Html->script('ckeditor/ckeditor', array('inline' => false)),
+				$Cke->load($fieldId, $ckeSettings)
+		);
 	}
 	
 	

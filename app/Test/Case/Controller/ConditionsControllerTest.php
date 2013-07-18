@@ -38,20 +38,8 @@ class ConditionsControllerTestCase extends ControllerTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-
 		$this->Conditions = new TestConditions();
 		#$this->Conditions->constructClasses();
-	}
-
-	public function testView() {
-		# http://www.phpunit.de/manual/3.6/en/writing-tests-for-phpunit.html
-   		//$result = $this->testAction('/conditions/view/1');
-		//debug($result);
-	}
-
-	public function testViewRedirect() {
-   		//$this->testAction('/conditions/view/');
-		//$this->assertContains('/conditions', $this->headers['Location']);
 	}
 
 /**
@@ -61,8 +49,28 @@ class ConditionsControllerTestCase extends ControllerTestCase {
  */
 	public function tearDown() {
 		unset($this->Conditions);
-
 		parent::tearDown();
+	}
+
+/**
+ * test View method
+ * 
+ * @return void
+ */
+	public function testView() {
+		// http://www.phpunit.de/manual/3.6/en/writing-tests-for-phpunit.html
+   		// $result = $this->testAction('/conditions/view/1');
+		// debug($result);
+	}
+
+/**
+ * test View Redirect
+ * 
+ * @return void
+ */
+	public function testViewRedirect() {
+   		// $this->testAction('/conditions/view/');
+		// $this->assertContains('/conditions', $this->headers['Location']);
 	}
 
 }

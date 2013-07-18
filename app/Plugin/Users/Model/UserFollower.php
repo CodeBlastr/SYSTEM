@@ -2,18 +2,24 @@
 App::uses('UsersAppModel', 'Users.Model');
 
 class UserFollower extends UsersAppModel {
-	var $name = 'UserFollower';
+	public $name = 'UserFollower';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
-
-	var $belongsTo = array(
+    
+	public $belongsTo = array(
 		'User' => array(
 			'className' => 'Users.User',
 			'foreignKey' => 'user_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		),
+		'UserRef' => array(
+            'className' => 'Users.User',
+            'foreignKey' => 'follower_id',
+            'conditions' => '',
+            'fields' => '',
+            'order' => ''
+        )
 	);
-	
+
 }
-?>

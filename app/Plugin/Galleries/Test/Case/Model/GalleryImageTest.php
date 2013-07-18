@@ -12,7 +12,8 @@ class GalleryImageTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'plugin.Galleries.gallery',
+		'plugin.Galleries.Gallery',
+        'plugin.Galleries.GalleryImage',
 		);
 
 /**
@@ -42,7 +43,13 @@ class GalleryImageTestCase extends CakeTestCase {
  * @return void
  */
 	public function testAdd() {
-
+		$data = array('GalleryImage' => array('filename' => array('image.jpg')));
+		try {
+			$result = $this->GalleryImage->add($data, 'filename');
+		} catch (Exception $e) {
+			// Should throw an error with a message like "ERROR : invalid file type"
+			$this->assertTrue(is_int(strpos($e->getMessage(), 'RROR')));
+		}
 	}
 /**
  * testGalleryImageDefaults method

@@ -45,13 +45,6 @@
 	if (file_exists(ROOT . DS . 'sites' . DS . 'bootstrap.php')) {
 		require_once(ROOT . DS . 'sites' . DS . 'bootstrap.php');
 	} 
-
-/** 
- * Redirect to install if zuha isn't installed yet.
- */
-	if (!defined('SITE_DIR') && basename($_SERVER['REQUEST_URI']) != 'install' && basename($_SERVER['REQUEST_URI']) != 'site') {
-		header('Location: /install/site/');
-	} 
     
 /**
  * The actual directory name for the "app".

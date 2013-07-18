@@ -12,6 +12,7 @@
 
     <div class="galleries index">
     	<h3><?php echo __('Galleries List'); ?></h3>
+	
 	<?php
 	echo $this->Element('scaffolds/index', array(
 		'data' => $galleries,

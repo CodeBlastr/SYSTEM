@@ -53,6 +53,20 @@ class AliasesController extends AppController {
     }
 
 /**
+ * Add method
+ * 
+ * @param string $id
+ */
+    public function add() {
+        if ($this->request->is('post') || $this->request->is('push')) {
+            if ($this->Alias->save($this->request->data)) {
+                $this->Session->setFlash(__('Alias saved'));
+                $this->redirect(array('controller' => 'aliases', 'action' => 'index'));
+            }
+        }
+    }
+
+/**
  * Edit method
  * 
  * @param string $id

@@ -1,6 +1,7 @@
 <?php 
-if($this->Session->read('Auth.User.user_role_id') == 1) { 
-    $nav = $this->Element('navigation', array(), array('plugin' => 'webpages'));
+if($this->Session->read('Auth.User.user_role_id') == 1) {
+    // this Clear div works good on canopynation, check that if changing 
+   	echo '<div class="#adminNavFloMangrClear" style="clear: both; height: 44px;"></div> ' . $this->Element('navigation', array(), array('plugin' => 'webpages'));
     echo $this->Html->css('/webpages/css/editor');
     echo $this->Html->script('/js/ckeditor/ckeditor'); ?>
     
@@ -9,8 +10,6 @@ if($this->Session->read('Auth.User.user_role_id') == 1) {
             // init editor
             var content = new Array();
             var oContent = new Array(); // original html
-            // this Clear div works good on canopynation, check that if changing
-            $('body').append('<div class="#adminNavFloMangrClear" style="clear: both; height: 44px;"></div>').append(<?php echo json_encode($nav); ?>);
             // find a better way to put this menu edit button in
             //$('.nav-edit').prepend('<li class="nav-edit-button"><a href="#"><i class="icon-edit"></i></a></li>');
             //$('.nav-edit-button').click(function() {
