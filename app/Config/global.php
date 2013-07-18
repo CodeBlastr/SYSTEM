@@ -265,7 +265,6 @@ class ZuhaSet {
 		$options['betweenItem'] = empty($options['betweenItem']) ? ' : ' : $options['betweenItem'];
 		$options['endItem'] = empty($options['endItem']) ? '</li>' : $options['endItem'];
 		$options['end'] = empty($options['end']) ? '</ul>' : $options['end'];
-		
 		if (is_array($data)) {
 			// then send it back
 			foreach ($data as $key => $value) {
