@@ -75,14 +75,15 @@ class GalleryImage extends GalleriesAppModel {
 		}
 	}
 	
-	
+
 /**
  * Add method
- * 
+ *
  * @access public
- * @param array
- * @param string
- * @return bool
+ * @param array $data
+ * @param string $uploadFieldName
+ * @return boolean
+ * @throws Exception
  */
 	public function add($data, $uploadFieldName) {
 		$data = $this->_cleanData($data);
