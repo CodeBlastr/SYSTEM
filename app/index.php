@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP 5
+ * PHP 5 
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)

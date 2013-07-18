@@ -1531,6 +1531,7 @@ class CakeFormHelper extends AppHelper {
 			$name = str_replace(array('[', ']'), array('.', ''), $options['name']);
 			$this->_secure($options['secure'], $name);
 		}
+		
 		return $this->Html->useTag('button', $options, $title);
 	}
 
@@ -1559,6 +1560,7 @@ class CakeFormHelper extends AppHelper {
 			}
 			unset($options['data']);
 		}
+		//debug($this->button($title, $options));
 		$out .= $this->button($title, $options);
 		$out .= $this->end();
 		return $out;

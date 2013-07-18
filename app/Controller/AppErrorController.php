@@ -46,8 +46,64 @@ class AppErrorController extends AppController {
 		if (strpos($request->here, '/') === 0) {
 			$request->here = substr($request->here, 1);
 		}
-		$Alias = ClassRegistry::init('Alias');
-		$alias = $Alias->find('first', array('conditions' => array('name' => trim(urldecode($request->here), "/"))));
+		
+		$this->_db(); // we can get here with no db connection, so check db before looking up an alias
+		
+		$this->_alias($request); // check for an alias throws not found otherwise
+    }
+	
+/**
+ * handle not found method
+ * 
+ * over written so that custom error pages can be handled from the database
+ * 
+ * @param object
+ * @param object
+ * @param array
+ * @param object
+ * @return void
+ */
+    public function handleNotFound($request, $response, $error, $originalException) {
+		$message = sprintf("[%s] %s\n%s",
+				get_class($originalException),
+				$originalException->getMessage(),
+				$originalException->getTraceAsString()
+			);
+		CakeLog::write(LOG_ERR, $message);
+		$eName = get_class($originalException);
+		//print_r('.'.$eName.'.'); break;
+		if (Configure::read('debug') == 2 && $eName != 'MissingControllerException') {
+			throw new $eName($originalException->getMessage());
+		} else {
+			$this->_getTemplate(); // from AppController
+			
+			$Alias = ClassRegistry::init('Alias');
+			$alias = $Alias->find('first', array('conditions' => array('Alias.name' => 'error')));
+			
+			if (!empty($alias['Alias']['value'])) {
+				$Webpage = ClassRegistry::init('Webpages.Webpage');
+				$content = $Webpage->find('first', array('conditions' => array('Webpage.id' => $alias['Alias']['value'])));
+				$this->set('content', $content['Webpage']['content']);
+			}
+		}
+	}
+
+/**
+ * alias method
+ * 
+ * checks for an alias/slug and returns sends a new dispatch if found
+ * otherwise throws the not found exception like it would have anyway
+ * 
+ * @return void
+ */
+	protected function _alias($request) {
+		try {
+			$Alias = ClassRegistry::init('Alias');
+			$alias = $Alias->find('first', array('conditions' => array('Alias.name' => trim(urldecode($request->here), "/"))));
+		} catch (Exception $e) {
+			debug($e->getMessage()); // in some rare cases this is a hard to find error 
+			break;
+		}
 		if(!empty($alias)) {
 			$request->params['controller'] = $alias['Alias']['controller'];
 			$request->params['plugin'] = $alias['Alias']['plugin'];
@@ -67,27 +123,19 @@ class AppErrorController extends AppController {
 			throw new NotFoundException('Page not found.');
 		}
 	    exit;
-    }
+	}
 	
-    public function handleNotFound($request, $response, $error, $originalException) {
-		$message = sprintf("[%s] %s\n%s",
-				get_class($originalException),
-				$originalException->getMessage(),
-				$originalException->getTraceAsString()
-			);
-		CakeLog::write(LOG_ERR, $message);
-		$eName = get_class($originalException);
-		//print_r('.'.$eName.'.'); break;
-		if (Configure::read('debug') == 2 && $eName != 'MissingControllerException') {
-			throw new $eName($originalException->getMessage());
-		} else {
-			$Alias = ClassRegistry::init('Alias');
-			$alias = $Alias->find('first', array('conditions' => array('name' => 'error')));
-			if (!empty($alias['Alias']['name'])) {
-				$Controller = new AppController($request, $response);
-				$Controller->redirect('/error?referer=' . $request->url);
-			}
-		}
+/** 
+ * Check if there is a database connection before doing an alias check
+ * 
+ */
+	protected function _db() {
+		try {
+			ConnectionManager::getDataSource('default'); 
+			return true;
+		} catch(Exception $e){
+			debug($e->getMessage());
+		} 
 	}
 	
 }

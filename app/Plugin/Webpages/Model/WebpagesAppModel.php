@@ -51,10 +51,11 @@ class WebpagesAppModel extends AppModel {
 				$files = $dir->find('.*\.ctp');
 				// not sure that this won't break something, so I left it for a little while - RK March 19, 2013
                 // seems like the $dbTemplates variable isn't used anywhere, and the file based template editing still works though
-                //if (!empty($files)) {
-				//	$dbTemplates = $this->_getDbFileRecords($files, 'template');
-				//	break; // stops us from searching in more directories
-				//}
+                // This function call must be responsible for making new template files show up at /webpages/index/template ^JB 6/3/2013
+                if (!empty($files)) {
+					$dbTemplates = $this->_getDbFileRecords($files, 'template');
+					break; // stops us from searching in more directories
+				}
 			}
 			
 			if (!empty($files)) {

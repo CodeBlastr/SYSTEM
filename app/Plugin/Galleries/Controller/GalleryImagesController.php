@@ -64,4 +64,20 @@ class GalleryImagesController extends GalleriesAppController {
 		}
 	}
 
+/**
+ * Down method
+ *
+ * @param string $id
+ */
+	public function down($id = null) {
+		$galleryImage = $this->GalleryImage->findById($id);
+		$this->GalleryImage->id = $galleryImage['GalleryImage']['id'];
+		if ($this->GalleryImage->saveField('order', $galleryImage['GalleryImage']['order'] + 1)) {
+			$this->Session->setFlash(__('Moved'));
+			$this->redirect($this->referer());
+		}
+		$this->Session->setFlash(__('Move Failed'));
+		$this->redirect($this->referer());
+	}
+
 }

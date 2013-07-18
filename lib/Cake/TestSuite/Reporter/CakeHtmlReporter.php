@@ -126,18 +126,18 @@ class CakeHtmlReporter extends CakeBaseReporter {
 		$colour = ($result->failureCount()  + $result->errorCount() > 0 ? "red" : "green");
 		
 //zuha only edit start
-		$isLocalhost = strstr($_SERVER['SERVER_NAME'], 'localhost');
-if ($result->failureCount() > 0 && !$isLocalhost) {
+$isLocalhost = strstr($_SERVER['SERVER_NAME'], 'localhost'); // so that smtp doesn't cause a problem
+if ($result->failureCount() > 0 && !$isLocalhost && !empty($_GET['auto'])) {
 	// To send HTML mail, the Content-type header must be set
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
 	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 	
 	// Additional headers
-	$headers .= 'To: Richard <richard@razorit.com>, Anthony <anthony@razorit.com>, Joel <joel@razorit.com>' . "\r\n";
-	//$headers .= 'To: Mary <richard@razorit.com>, Kelly <kelly@example.com>' . "\r\n";
-	$headers .= 'From: Zuha <zuha@razorit.com>' . "\r\n";
-	
-	mail('', 'UNIT TEST FAILURE!', "<html><body>".$result->failureCount()."</body></html>", $headers); 
+	$headers .= 'To: Richard <richard@buildrr.com>, Nick <nick@buildrr.com>, Joel <joel@buildrr.com>' . "\r\n";
+	$headers .= 'From: Zuha <buildrr@buildrr.com>' . "\r\n";
+	$url = str_replace('&auto=true', '', 'http://' . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"]); // remove auto=true
+	$url = '<a href="'.$url.'">'.$url.'</a>';
+	mail('', 'UNIT TEST FAILURE!', "<html><body>Go here asap : ".$url."<br /><br />Fail count : ".$result->failureCount()."</body></html>", $headers); 
 }
 //zuha only end
 		

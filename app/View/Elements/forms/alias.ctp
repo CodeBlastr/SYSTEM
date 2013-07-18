@@ -29,50 +29,54 @@ echo $this->Form->input(key($aliasName), array('label' => 'Permanent Url')); ?>
         background: #fff7c9;
     }
 </style>
+
 <script type="text/javascript">
 
-$(function() {
+(function($) {
     
     var formId = '<?php echo $formId; ?>';
     var aliasId = $("#AliasId");
     var aliasValue = $('<?php echo $nameInput; ?>').val().replace(/\s+/g, '-').toLowerCase()
-    var permaLinkHtml = '<?php echo __(' <br /><small>%s/<span id="permaLink" title="Edit">%s</span> <a class="btn btn-mini" id="permaLinkEdit">Edit</a></small>', $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name']); ?>'.replace('></span>', aliasValue + '></span>');
+    var permaLinkHtml = '<?php echo __('<div style="float: left;"><h1><small>%s/<span id="permaLink" title="Edit">%s</span> <a class="btn btn-mini" id="permaLinkEdit">Edit</a></small>', $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name']); ?>'.replace('></span>', aliasValue + '></span></h1></div>');
    	var prefix = '<?php echo $prefix; ?>';
+   	var newPermaLink = null;
    	   	
-    $('h1.pageTitle').append(permaLinkHtml);
+    $('h1.page-title').after(permaLinkHtml);
     
-    $('#permaLink, #permaLinkEdit').live('click', function() {
-       permaLink = $('#permaLink').html();
-       $('#permaLink').replaceWith('<div class="form-inline" id="aliasForm"><input type="text" value="' + permaLink + '" id="slugInput"> <a class="btn" id="saveSlug">Done</a> <a class="btn" id="cancelSlug">Cancel</a> <span id="saveOld"></span></div>');
+    var permaLink = $('<?php echo $aliasInput ?>').val();
+    
+    $(document).on('click', '#permaLink, #permaLinkEdit', function() {
+       var newlink = $('#permaLink').html();
+       $('#permaLink').replaceWith('<div class="form-inline" id="aliasForm"><input type="text" value="' + newlink + '" id="slugInput"> <a class="btn" id="saveSlug">Done</a> <a class="btn" id="cancelSlug">Cancel</a> <span id="saveOld"></span></div>');
        $('#permaLinkEdit').hide();
     });
-    $('#slugInput').live('keyup', function () {
+    $(document).on('keyup', '#slugInput', function () {
         $("#AliasName").val($(this).val());
         if ($("#AliasId").length > 0 ) {
             $("#saveOld").replaceWith('<a id="saveOldLink" class="btn btn-danger" rel="tooltip" title="Click here to keep the old url working, so that links pointing to the old url will not break.">Keep old url live?</a></small>');
         }
         $("a[rel=tooltip]").tooltip();
     });
-    $('#saveOldLink').live('click', function () {
+    $(document).on('click', '#saveOldLink', function () {
         $(".tooltip").remove();
         $("#AliasId").remove();
         $("#saveOldLink").replaceWith('<a id="oldLinkSaved" class="btn btn-success" rel="tooltip" title="This means that old links pointing to the old url will still work. If this was a mistake, you will need to refresh the page before saving any changes.">Old url has been preserved! &nbsp;&nbsp; <button type="button" class="close" data-dismiss="alert">×</button></a></small>');
         $("a[rel=tooltip]").tooltip();
     });
-    $('.close').live('click', function() {
+    $(document).on('click', '.close', function() {
         $(".tooltip").remove();
     });
-    $('#saveSlug').live('click', function () {
+    $(document).on('click', '#saveSlug', function () {
         checkAvailability();
     });
-    $('#cancelSlug').live('click', function () {
+    $(document).on('click', '#cancelSlug', function () {
         $(formId).prepend(aliasId); // bring back the alias id in case it was removed with the #saveOldLink button
         $('#aliasForm').replaceWith('<span id="permaLink">' + permaLink + '</span>');
         $('#permaLinkEdit').show();
     });
     
     <?php if (!empty($nameInput)) { ?>
-    $('<?php echo $nameInput; ?>').live('keyup', function () {
+    $(document).on('keyup', '<?php echo $nameInput; ?>', function () {
         <?php if (!empty($parent)) { ?>
         if ($('<?php echo $aliasInput; ?>').val() == '<?php echo $this->request->data['Alias']['name']; ?>') {
             $('#permaLink').html(prefix + '<?php echo $this->request->data['Alias']['name']; ?>' + $(this).val().replace(/\s+/g, '-').toLowerCase());
@@ -83,16 +87,16 @@ $(function() {
         }
         <?php } ?>
     });
-    $('<?php echo $nameInput; ?>').live('blur', function () {
+    $(document).on('blur', '<?php echo $nameInput; ?>', function () {
         checkAvailability();
     });
     <?php } ?>
     
-    $('<?php echo $aliasInput; ?>').live('keyup', function () {
+    $(document).on('keyup', '<?php echo $aliasInput; ?>', function () {
         $(this).val($(this).val().replace(/\s+/g, '-').toLowerCase());
         $('#permaLink').html($(this).val().replace(/\s+/g, '-').toLowerCase());
     });
-    $('<?php echo $aliasInput; ?>').live('blur', function () {
+    $(document).on('blur', '<?php echo $aliasInput; ?>', function () {
         checkAvailability();
     });
     
@@ -105,10 +109,7 @@ $(function() {
     function checkAvailability() {
         // check alias availability, append a number at the end if not available
         // right now 11/19/2012 the only failure I see, is in the sub page add it doesn't run a check after the webpage name input is used
-        var permaLink = $('#permaLink').html();
-        var newPermaLink = $('#slugInput').val() ? $('#slugInput').val() : $("#permaLink").html();
-        //console.log(permaLink);
-        //console.log(newPermaLink);
+        newPermaLink = $('#slugInput').val() ? $('#slugInput').val() : $("#permaLink").html();
         if (newPermaLink != permaLink) {
             $.getJSON('/aliases/count/' + newPermaLink.replace('/', '\+', 'g') + '.json', 
                 function(data) {
@@ -132,5 +133,5 @@ $(function() {
             $('#permaLinkEdit').show();
         }
     }
-});
+})(jQuery);
 </script>

@@ -73,7 +73,6 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	//   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),
 	//   'locales' => array('/full/path/to/locale/', '/next/full/path/to/locale/')
 	));
-	
     Inflector::rules('singular', array('irregular' => array('webpage_jses' => 'webpage_js')));
     Inflector::rules('plural', array('irregular' => array('webpage_js' => 'webpage_jses')));
 	
@@ -105,7 +104,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 					}
 				}
 			}
-			#debug(get_defined_constants());
+		} else if (defined(SITE_DIR)) {
+			debug('A defaults.ini file is required here : ' . $path . 'defaults.ini');
+			break;
 		}
 	}
 	
@@ -290,6 +291,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Affiliated' => 'Affiliates',
 				'Affiliate' => 'Affiliates',
 				'Alias' => false,
+				'Answer' => 'Answers',
+				'AnswerAnswer' => 'Answers',
+				'AnswerSubmission' => 'Answers',
 				'Aro' => false,
 				'ArosAco' => false,
 				'Banner' => 'Banners',
@@ -306,6 +310,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Categorized' => 'Categories',
 				'CategorizedOption' => 'Categories',
 				'CategoryOption' => 'Categories',
+				'Chat' => 'Chats',
 				'Comment' => 'Comments',
 				'Condition' => false,
 				'Connection' => 'Connections',
@@ -314,11 +319,17 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Contact' => 'Contacts',
 				'ContactsContact' => 'Contacts',
 				'Course' => 'Courses',
-				'Grade' => 'Courses',
-				'Lesson' => 'Courses',
+				'CourseUser' => 'Courses',
+				'Grade' => 'Courses',//removable??
+				'CourseGrade' => 'Courses',
+				'Lesson' => 'Courses',//removable??
+				'CourseLesson' => 'Courses',
+				'Series' => 'Courses',//removable??
+				'CourseSeries' => 'Courses',
 				'Coupon' => 'Coupons',
 				'Credit' => 'Credits',
 				'Draft' => 'Drafts',
+				'Educast' => 'Educasts',
 				'Enumeration' => false,
 				'EstimateItem' => 'Estimates',
 				'Estimated' => 'Estimates',
@@ -331,11 +342,15 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Facebook' => 'Facebook',
 				'Faq' => 'Faqs',
 				'Favorite' => 'Favorites',
+				'FeedCJ' => 'Feeds',
+				'Feed' => 'Feeds',
 				'FormAnswer' => 'Forms',
 				'FormFieldset' => 'Forms',
 				'FormInput' => 'Forms',
 				'FormKey' => 'Forms',		
-				'Form' => 'Forms',			
+				'Form' => 'Forms',	
+				'Forum' => 'Forums',
+				'ForumPost' => 'Forums',	
 				'Gallery' => 'Galleries',
 				'GalleryImage' => 'Galleries',
 				'Invite' => 'Invites',
@@ -400,6 +415,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'UserWall' => 'Users',
 				'User' => 'Users',
 				'UsersUserGroup' => 'Users',
+				'UserMeasurement' => 'Users',
 				'Util' => 'Utils',
 				'Utils' => 'Utils',
 				'WebpageCss' => 'Webpages',
@@ -413,6 +429,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'WikiContent' => 'Wikis',
 				'WikiPage' => 'Wikis',
 				'Wiki' => 'Wikis',
+				'Wizard' => 'Wizards',
 				'WorkflowEvent' => 'Workflows',
 				'WorkflowItemEvent' => 'Workflows',
 				'WorkflowItem' => 'Workflows',

@@ -37,7 +37,7 @@ class Zuha {
 				// use date() and $currentDateTS to format the dates in between
 				$currentDateStr = date($options['format'], $currentDateTs);
 				$dateMonthYearArr[] = $currentDateStr;
-				//print $currentDateStr.Ó<br />Ó;
+				//print $currentDateStr.ï¿½<br />ï¿½;
 			}
 			return $dateMonthYearArr;
 		} else {
@@ -107,9 +107,63 @@ class Zuha {
 			return $Enum->find('list');
 		}
 	}
+
+/**
+ * This function will return an array of Plugin(s), it's Controllers, and those Controllers' Actions.
+ * It returns all currently loaded Plugins' Controllers' Actions by default.
+ *
+ * @param array $plugin Array with Plugin name(s) to return Controllers and Actions for
+ * @return array an array of all [PLUGINS][CONTROLLERS][ACTIONS] that are currently loaded
+ */
+	public function getPluginControllerActions($plugin = array('all')) {
+		$allActions = ( $plugin == array('all') ) ? CakePlugin::loaded() : $plugin;
+		foreach ( $allActions as $pKey => &$plugin ) {
+			if (
+					// filter out Plugins that we will never want to see here
+					$plugin == 'Utils'
+				) {
+				unset($allActions[$pKey]);
+			} else {
+				$pluginsControllers = array_diff(App::objects($plugin.'.Controller'), App::objects('Controller'));
+
+				foreach ( $pluginsControllers as $cKey => &$controller ) {
+					$controllerName = $controller;
+					App::uses($controllerName, $plugin . '.Controller');
+
+					$reflect = new ReflectionClass($controllerName);
+					$actions = false;
+					foreach ($reflect->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+						if (
+								// filter out methods that we won't ever want to see (could be configurable at some point if needed)
+								( $method->class == $controllerName || $method->class == '_'.$controllerName )
+								&& $method->isPublic() // handled above in getMethods()?
+								&& strstr($method->name, '_') == false
+								&& strstr($method->name, '__') == false
+								&& $method->name !== 'beforeFilter'
+							) {
+							$actions[] = $method->name;
+						}
+					}
+
+					if ( !$actions ) {
+						// remove Controllers that have no Actions
+						unset($pluginsControllers[$cKey]);
+					} else {
+						$controller = array($controller => $actions);
+					}
+
+				}
+				$plugin = array($plugin => array_values($pluginsControllers));
+			}
+		}
+
+		$allActions = array_values($allActions);
+		return $allActions;
+	}
+
 }
-	
-	
+
+
 /**
  * To add to the Set core utility with cake for array parsing functions.
  */

@@ -69,8 +69,8 @@ class MediableBehavior extends ModelBehavior {
         if (!empty($Model->data['GalleryImage']['filename']['name'])){
             $data = $Model->data;
 			$data[$this->modelName]['id'] = $Model->id;
-			$data['Gallery']['model'] = $this->modelName;
-			$data['Gallery']['foreign_key'] = $Model->id;
+			$data['Gallery']['model'] = !empty($data['Gallery']['model']) ? $data['Gallery']['model'] : $this->modelName;
+			$data['Gallery']['foreign_key'] = !empty($data['Gallery']['foreign_key']) ? $data['Gallery']['foreign_key'] : $Model->id;
             if ($data['GalleryImage']['filename']['error'] == 0 && $this->Gallery->GalleryImage->add($data, 'filename')) {
                 return true;
             } else {

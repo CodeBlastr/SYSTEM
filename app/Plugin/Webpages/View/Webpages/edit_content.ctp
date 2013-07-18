@@ -4,8 +4,6 @@
 	<fieldset>
     	<?php
 		echo $this->Form->input('Webpage.id');
-		echo $this->Form->input('Webpage.parent_id', array('type' => 'hidden'));
-		echo $this->Form->input('Webpage.type', array('type' => 'hidden', 'value' => 'content'));
 		echo $this->Form->input('Webpage.name', array('label' => 'Internal Page Name'));
 		echo $this->Form->input('Webpage.content', array('type' => 'richtext')); ?>
 	</fieldset>
@@ -21,6 +19,7 @@
     
 	<fieldset>
 		<legend class="toggleClick"><?php echo __('<span class="hoverTip" data-original-title="User role site privileges are used by default. Choose an option to restrict access to only the chosen group for this specific page.">Access Restrictions (optional)</span>');?></legend>
+		<p>Check these boxes to restrict access to only the chosen group(s) for this specific page.</p>
     	<?php 
 		echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => 'User Roles', 'type' => 'select', 'multiple' => 'checkbox', 'options' => $userRoles)); ?>
     </fieldset>

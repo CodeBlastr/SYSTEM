@@ -282,7 +282,7 @@ class Contact extends ContactsAppModel {
  * @return array
  */
 	public function findCompaniesWithRegisteredUsers($type = 'list', $params = null) {
-		#first find registered people
+		// first find registered people
 		$people = $this->find('list', array(
 			'conditions' => array(
 				'Contact.user_id is NOT NULL',
@@ -310,6 +310,10 @@ class Contact extends ContactsAppModel {
  * @return array
  */
 	protected function _cleanContactData($data) {
+		// get rid of the name field so it can be merged from existing data if empty
+		if (isset($data['Contact']['name']) && empty($data['Contact']['name'])) {
+			unset($data['Contact']['name']); 
+		}
 		
 		// if id is here, then merge the data with the existing data (new data over writes old)
 		if (!empty($data['Contact']['id'])) {
@@ -324,6 +328,24 @@ class Contact extends ContactsAppModel {
 				));
 			$data = Set::merge($contact, $data);
 			unset($data['Contact']['modified']);
+		} else if (!empty($data['User']['id']) && empty($data['Contact']['user_id'])) {
+			// this id should only be checked if contact id isn't there because if id is there user is found above
+			$user = $this->User->find('first', array(
+				'conditions' => array(
+					'User.id' => $data['User']['id']
+					),
+				'fields' => array(
+					'User.id'
+					)
+				));
+			$data['Contact']['user_id'] = !empty($user) ? $data['User']['id'] : null;
+			// unset User because we can't run callbacks using saveAll (so validation fails for user)
+			unset($data['User']);
+		}
+		
+		// belongsTo records return null values when there is nothing to contain (guest checkout gives you some data with no id)
+		if (empty($data['User']['id']) && empty($data['User']['email'])) {
+			unset($data['User']);
 		}
 
 		// if employer is not empty merge all employers so that we don't lose any existing employers in the Habtm update

@@ -80,7 +80,7 @@ class AclNode extends Model {
 				'conditions' => array(
 					$db->name("{$type}.lft") . ' <= ' . $db->name("{$type}0.lft"),
 					$db->name("{$type}.rght") . ' >= ' . $db->name("{$type}0.rght")),
-				'fields' => array('id', 'parent_id', 'model', 'foreign_key', 'alias'),
+				//'fields' => array('id', 'parent_id', 'model', 'foreign_key', 'alias'), Zuha Core Edit
 				'joins' => array(array(
 					'table' => $table,
 					'alias' => "{$type}0",

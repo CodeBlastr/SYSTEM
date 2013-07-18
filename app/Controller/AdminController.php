@@ -44,12 +44,22 @@ class AdminController extends AppController {
  * @return void
  */
     public function index() {
-		// $this->Session->delete('Updates');
-		// upgrade functionality...
+		if (!empty($this->request->data['Admin']['icon'])) {
+			$this->_saveFavicon();
+		}
 		if (!empty($this->request->data['Upgrade']['all'])) {
 			$this->_runUpdates();
 			$this->set('runUpdates', true);
+		}
+		if (!empty($this->request->data['Update']['index'])) {
+			$this->view = 'index_upgrade';
 		} 
+		if (!empty($this->request->data['Alias']['update'])) {
+			App::uses('Alias', 'Model');
+			$Alias = new Alias;
+			$this->set('syncd', $Alias->sync());
+			$this->view = 'index_upgrade';
+		}
 		$complete = $this->Session->read('Updates.complete');
 		if (!empty($complete)) {
 			$this->Session->delete('Updates'); 
@@ -58,7 +68,7 @@ class AdminController extends AppController {
 		$this->set('page_title_for_layout', 'Admin Dashboard');
 		$this->layout = 'default';
 		
-		
+		// this is here so we can show "Add Post" links foreach Blog on the dashboard
 		if (in_array('Blogs', CakePlugin::loaded())) {
 			App::uses('Blog', 'Blogs.Model');
 			$Blog = new Blog();
@@ -101,6 +111,13 @@ class AdminController extends AppController {
 		if (!empty($nextPlugin) && !in_array($nextPlugin, CakePlugin::loaded())) { 
 			// plugin is not loaded so downgrade
 			$this->Session->write('Updates.last', !empty($lastTableWithPlugin) ? array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) : $this->_downgrade($nextTable, $lastTable));
+			// more debugging
+//			if ( !empty($lastTableWithPlugin) ) {
+//				debug($lastTableWithPlugin);
+//				debug($this->_downgrade($nextTable, $lastTable));
+//				debug( array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) );
+//				die();
+//			}
 			return true;
 		} elseif ($endTable == $lastTable) {
 			// if last TABLE run equals the end then quit and set a session Updates.complete = true and quit
@@ -417,6 +434,13 @@ class AdminController extends AppController {
 				}
 			}
 		}	
+	}
+	
+	protected function _saveFavicon() {
+		$upload = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . WEBROOT_DIR . DS . 'favicon.ico';
+		if(move_uploaded_file($this->request->data['Admin']['icon']['tmp_name'], $upload)){
+			$this->Session->setFlash('Favicon Updated. NOTE ( You may need to clear browser histry and refresh to see it. )');
+		}
 	}
 	
 }
