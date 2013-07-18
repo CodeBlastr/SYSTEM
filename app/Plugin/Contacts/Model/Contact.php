@@ -199,6 +199,8 @@ class Contact extends ContactsAppModel {
 	
 	
 	public function beforeSave($options = array()) {
+		$data = $this->_cleanContactData($data);
+		
 		!empty($this->data['Contact']['contact_type']) ? $this->data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']) : null; 
 		if (in_array('Activities', CakePlugin::loaded()) && !empty($this->data['Contact']['contact_type']) && $this->data['Contact']['contact_type'] == 'lead') {
 			// log when leads are created
@@ -214,6 +216,11 @@ class Contact extends ContactsAppModel {
 		return parent::beforeSave($options);
 	}
 	
+/**
+ * Aftersave method
+ * 
+ * @param bool $created
+ */
 	public function afterSave($created) {
 		$this->notifyAssignee();
 		return parent::afterSave($created);
@@ -226,26 +233,7 @@ class Contact extends ContactsAppModel {
  * @return bool
  */
 	public function add($data) {
-		$data = $this->_cleanContactData($data);
-		if ($this->saveAll($data)) {
-			return __d('contacts', 'Contact saved successfully.');
-		} else {
-			$error = 'Error : ';
-			foreach ($this->invalidFields() as $models) {
-				if (is_array($models)) {
-					foreach ($models as $err) {
-						if(is_string($err)) $error .= $err . ', ';
-						if(is_array($err)) {
-                          foreach($err as $er)
-                          $error .= $er . ', ';
-                        }
-					}
-				} else {
-					$error .= $models;
-				}
-			}
-			throw new Exception($error);
-		}
+		return $this->saveAll($data);
 	}
 
 /**
