@@ -21,5 +21,12 @@ class UserGroupWallPost extends UsersAppModel {
 			'order' => ''
 		)
 	);
+	
+	var $hasMany = array(
+		'Comment' => array(
+			'className' => 'Comments.Comment',
+			'foreignKey' => 'foreign_key',
+			'conditions' => array('Comment.model' => 'UserGroupWallPost')
+		)
+	);
 }
-?>

@@ -6,4 +6,6 @@ echo $this->Element('scaffolds/index', array(
 		$this->Html->link('Edit', array('action' => 'edit', '{model}', '{foreign_key}')), 
 		$this->Html->link('Delete', array('action' => 'delete', '{id}'), array(), 'Are you sure you want to permanently delete?'),
 		),*/
-	)); ?>
+	)); 
+	
+	?>

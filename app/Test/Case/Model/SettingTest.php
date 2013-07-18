@@ -13,10 +13,10 @@ class SettingModelTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'app.setting',
-		'app.aco',
-		'app.aro',
-		'app.aros_aco',
+		'app.Setting',
+		'app.Aco',
+		'app.Aro',
+		'app.ArosAco',
 		);
 
 /**

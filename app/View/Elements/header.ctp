@@ -1,4 +1,4 @@
-<?php // $requestUrl = strpos($this->request->url, '/') === 0 ? $this->request->url : '/'.$this->request->url; 
+<?php
 $id = !empty($id) ? $id : 'headerNavFloManagr'; 
 $showEditMode = !empty($showEditMode) ? true : false;
 $showContext = !empty($showContext) ? true : false; ?>
@@ -47,21 +47,37 @@ $showContext = !empty($showContext) ? true : false; ?>
 
 <script type="text/javascript">
 $(function() {
-    $('.edit-mode').hide();
+    $(".edit-mode").hide();
     toggleMode();
-    $('#toggleMode').change(function() {
+    $("#toggleMode").change(function() {
         toggleMode();
     });
     function toggleMode() {
-        if ($('#toggleMode').is(':checked')) {
-            $('.nav-mode').fadeOut('slow', function() {
-                $('.edit-mode').fadeIn('slow');
+        if ($("#toggleMode").is(":checked")) {
+            $(".nav-mode").fadeOut("slow", function() {
+                $(".edit-mode").fadeIn("slow");
             });
         } else {
-            $('.edit-mode').fadeOut('slow', function() {
-                $('.nav-mode').fadeIn('slow');
+            $(".edit-mode").fadeOut("slow", function() {
+                $(".nav-mode").fadeIn("slow");
             });
         }
     }
 });
+</script>
+<script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
+<style type="text/css" media="screen, projection">
+  @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
+</style>
+<script type="text/javascript">
+  if (typeof(Zenbox) !== "undefined") {
+    Zenbox.init({
+      dropboxID:   "20165921",
+      url:         "https://buildrr.zendesk.com",
+      tabTooltip:  "Help",
+      tabImageURL: "https://assets.zendesk.com/external/zenbox/images/tab_help_right.png",
+      tabColor:    "black",
+      tabPosition: "Right"
+    });
+  }
 </script>

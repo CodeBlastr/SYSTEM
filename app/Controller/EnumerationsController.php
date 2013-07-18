@@ -30,6 +30,11 @@ class EnumerationsController extends AppController {
 	
     public $uses = array('Enumeration');
 	
+	
+	public function beforeFilter() {
+		$this->layout = 'default';
+	}
+	
 	public function index() {
 		$this->paginate['order'] = array(
 				'Enumeration.type' => 'ASC',
@@ -57,7 +62,7 @@ class EnumerationsController extends AppController {
 		foreach($enumerations as $enumeration) {
 			$enumerationTypes[$enumeration['Enumeration']['type']] = $enumeration['Enumeration']['type'];
 		}
-		$this->set('enumerationTypes',$enumerationTypes);
+		$this->set(compact('enumerationTypes', 'type'));
 	}
 	
 	public function edit($id=null) {

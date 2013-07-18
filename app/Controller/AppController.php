@@ -24,21 +24,53 @@ App::uses('Controller', 'Controller');
 //Note : Enable CURL PHP in php.ini file to use Facebook.Connect component of facebook plugin: Faheem
 class AppController extends Controller {
 
+	public $uses = array();
 	public $userId = '';
-    public $uses = array('Condition');
-	public $helpers = array('Session', 'Text', 'Form', 'Js', 'Time', 'Html');
-	public $components = array('Auth', 'Session', 'RequestHandler',  /*'RegisterCallbacks' , 'Security' Desktop Login Stops Working When This is On*/);
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
 	public $paginate = array();
-	public $userRoles = array('administrators', 'guests'); // @todo update this so that it uses the full list of actual user roles
+	public $userRoles = array(
+		'administrators',
+		'guests'
+		); 
 	public $userRoleName = 'guests';
 	public $params = array();
 	public $templateId = '';
 	public $pageTitleForLayout;
+	public $helpers = array(
+		'Session', 
+		'Text', 
+		'Form', 
+		'Js', 
+		'Time', 
+		'Html'
+		);
+	public $components = array(
+		'Auth' => array(
+			'authenticate' => array(
+				'Form' => array(
+					'fields' => array(
+						'username' => array(
+							'username', 
+							'email'
+							)
+						)
+					)
+				),
+			'authorize' => 'Controller'
+			),
+			'Session', 
+			'RequestHandler', 
+			'Cookie'
+		);
 
-
+/**
+ * Constructor method
+ * 
+ * @param
+ * @param
+ */
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
 		$this->_getComponents();
@@ -63,86 +95,7 @@ class AppController extends Controller {
 		}
 	}
 
-
-
-	public function beforeFilter() {
-		$this->_writeStats();
-		$this->_configEditor();
-		$this->RequestHandler->ajaxLayout = 'default';
-	    
-		// DO NOT DELETE 
-		// commented out because for performance this should only be turned on if asked to be turned on
-        // 
-		// Start Condition Check
-		// App::Import('Model', 'Condition');
-		// $this->Condition = new Condition;
-		// get the id that was just inserted so you can call back on it.
-		// $conditions['plugin'] = $this->request->params['plugin'];
-		// $conditions['controller'] = $this->request->params['controller'];
-		// $conditions['action'] = $this->request->params['action'];
-		// $conditions['extra_values'] = $this->request->params['pass'];
-		// $this->Condition->checkAndFire('is_read', $conditions, $this->request->data);
-		// End Condition Check
-		// End DO NOT DELETE
-		$this->_configAuth();
-        
-        // check permissions
-		$this->userId = $this->Session->read('Auth.User.id');
-		$allowed = array_search($this->request->params['action'], $this->Auth->allowedActions);
-		if ($allowed === 0 || $allowed > 0 ) {
-			$this->Auth->allow('*');
-		} else if (empty($this->userId) && empty($allowed)) {
-			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
-			$aco = $this->_getAcoPath(); // get controller and action
-			// this first one checks record level if record level exists
-			// which it can exist and guests could still have access
-			if ($this->Acl->check($aro, $aco)) {
-				$this->Auth->allow();
-			}
-		}
-
-        // order is important for these
-		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
-		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
-		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
-		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
-
-		$this->_siteTemplate();
-
-		// order is important for these automatic view vars
-		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
-		$this->set('title_for_layout', $this->_titleForLayout());
-		$this->set('userRoleId', $this->userRoleId);
-	}
-
-    public function beforeRender() {
-		parent::beforeRender();
-		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
-		$this->set('_serialize', array_keys($this->viewVars));
-        $this->set('_view', $this->view);
-	}
-	
 /**
- * Write stats session variables
- */
-	protected function _writeStats() {		
-		$statsEntry = $this->Session->read('Stats.entry');
-		if (empty($statsEntry)) {
-			 $this->Session->write('Stats.entry', base64_encode(time()));  
-		}
-	}
-
-	
-	protected function _configEditor() {
-		if ($this->Session->read('Auth.User') && defined('SITE_DIR')) {
-			$this->Session->write('KCFINDER.disabled', false);
-			$this->Session->write('KCFINDER.uploadURL', '/theme/default/upload/' . $this->Session->read('Auth.User.id'));
-			$this->Session->write('KCFINDER.uploadDir', '../../../../' . SITE_DIR . '/Locale/View/webroot/upload/' . $this->Session->read('Auth.User.id'));
-		}
-	}
-
-
-	/**
  * Over write of core paginate method
  * to handle auto filtering.
  *
@@ -154,6 +107,134 @@ class AppController extends Controller {
 		$this->_handlePaginatorSorting();
 		$this->_handlePaginatorFiltering($object);
 		return parent::paginate($object, $scope, $whitelist);
+	}
+
+
+/**
+ * Before Filter method
+ * 
+ * @todo Need to move the bottom three to the Theme class along with all of the theme / template stuff in this file.
+ */
+	public function beforeFilter() {
+	    parent::beforeFilter();
+		$this->_writeStats();
+		$this->_configEditor();
+		$this->_configAuth();
+		$this->_rememberMe();
+		$this->_checkAccess();
+		$this->_userAttributes();
+		
+		// move these and other request handlers in this file to Theme class
+		$this->RequestHandler->ajaxLayout = 'default';
+		$this->_siteTemplate(); // move this 
+		$this->viewClass = $this->RequestHandler->ext == 'csv' ? 'Csv' : $this->viewClass;
+		
+		// order is important for these automatic view vars
+		$this->set('page_title_for_layout', $this->_pageTitleForLayout()); 
+		$this->set('title_for_layout', $this->_titleForLayout()); 
+		$this->set('userRoleId', $this->userRoleId); 
+	}
+	
+	
+/**
+ * Before Render method
+ * 
+ * sets a few variables needed for all views
+ */
+    public function beforeRender() {
+		parent::beforeRender();
+		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
+		$this->set('_serialize', array_keys($this->viewVars));
+        $this->set('_view', $this->view);
+	}
+	
+
+/**
+ * User attributes method
+ * 
+ */
+	protected function _userAttributes() {
+        // order is important for these
+		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
+		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
+		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
+		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
+	}
+	
+	
+/**
+ * Check Access Method
+ * 
+ * Where the rubber meets the road in ACL
+ */
+	protected function _checkAccess() {
+		$this->userId = $this->Session->read('Auth.User.id');   // check permissions
+		$allowed = array_search($this->request->params['action'], $this->Auth->allowedActions);
+		
+		if ($allowed === 0 || $allowed > 0 ) {
+			$this->Auth->allow('*');
+			
+		} else if (empty($this->userId) && empty($allowed)) {
+			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
+			$aco = $this->_getAcoPath(); // get controller and action
+			// this first one checks record level if record level exists
+			// which it can exist and guests could still have access
+			// @todo Auth->action() didn't work, but we can get the actual action mapping at some point
+			$action = $this->request->action == 'view' ? 'read' : 'update';
+			if ($this->Acl->check($aro, $aco, $action)) {
+				$this->Auth->allow();
+			}
+		}
+	}
+
+
+/**
+ * Remember Me Method
+ * 
+ * Logs you in if you have the rememberMe cookie on your client.
+ */
+	protected function _rememberMe() {
+	   	$this->Cookie->httpOnly = true;
+		
+		if (!$this->Auth->loggedIn() && $this->Cookie->read('rememberMe')) {
+	         $cookie = $this->Cookie->read('rememberMe');
+	         $this->loadModel('Users.User'); // If the User model is not loaded already
+	         $user = $this->User->find('first', array(
+	         	'conditions' => array(
+	            	'User.username' => $cookie['username'],
+	                'User.password' => $cookie['password']
+	              	)
+	         	));
+	        if ($user && !$this->Auth->login($user['User'])) {
+	        	$this->redirect('/users/users/logout'); // destroy session & cookie
+	    	}
+		}
+	}
+	
+/**
+ * Write stats session variables
+ */
+	protected function _writeStats() {		
+		$statsEntry = $this->Session->read('Stats.entry');
+		if (empty($statsEntry)) {
+			 $this->Session->write('Stats.entry', base64_encode(time()));  
+		}		
+		$referral = $this->Session->read('Stats.referer');
+		if (empty($referral)) {
+			$this->Session->write('Stats.referer', $_SERVER['HTTP_REFERER']);
+		}
+	}
+
+/**
+ * Configure Editor (CKE Editor)
+ * 
+ */
+	protected function _configEditor() {
+		if ($this->Session->read('Auth.User') && defined('SITE_DIR')) {
+			$this->Session->write('KCFINDER.disabled', false);
+			$this->Session->write('KCFINDER.uploadURL', '/theme/default/upload/' . $this->Session->read('Auth.User.id'));
+			$this->Session->write('KCFINDER.uploadDir', '../../../../' . SITE_DIR . '/Locale/View/webroot/upload/' . $this->Session->read('Auth.User.id'));
+		}
 	}
 
 
@@ -286,7 +367,7 @@ class AppController extends Controller {
 			if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {
 				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' >'] = $options['fieldValue'];
 			} else {
-				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']] = $options['fieldValue'];
+				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']][] = $options['fieldValue'];
 			}
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
@@ -469,8 +550,14 @@ class AppController extends Controller {
  * Used to show admin layout for admin pages & userRole views if they exist
  */
 	public function _siteTemplate() {
-		if (!empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0 && !$this->request->is('ajax')) {
-            if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
+		if (
+				!$this->request->ext == 'csv'
+				&& !$this->request->is('ajax')
+				&& !empty($this->request->params['prefix'])
+				&& $this->request->params['prefix'] == 'admin'
+				&& strpos($this->request->params['action'], 'admin_') === 0
+		) {
+			if ( $this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix') ) {
 				// this if checks to see if the user role has a specific view file
 				$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
 				unset($this->request->params['prefix']);
@@ -483,17 +570,18 @@ class AppController extends Controller {
 				$this->Session->setFlash(__('Section access restricted.'));
 				$this->redirect($this->referer());
 			}
-		} else if (!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) {
-			foreach (App::path('views') as $path) {
-				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS.'View', DS.'Plugin'.DS.ucfirst($this->request->params['plugin']).DS.'View', $path) : $path;
+		} else if ( !empty($this->request->params['admin']) && $this->request->params['admin'] == 1 ) {
+			$this->request->params['action'] = str_replace('admin_', '', $this->request->params['action']);
+			foreach ( App::path('views') as $path ) {
+				$paths[] = !empty($this->request->params['plugin']) ? str_replace(DS . 'View', DS . 'Plugin' . DS . ucfirst($this->request->params['plugin']) . DS . 'View', $path) : $path;
 			} // end App::path loop
-			foreach ($paths as $path) {
-				if (file_exists($path.CakeSession::read('Auth.User.view_prefix').DS.$this->viewPath.DS.$this->request->params['action'].'.ctp')) {
-					$this->viewPath = CakeSession::read('Auth.User.view_prefix').DS.ucfirst($this->request->params['controller']);
+			foreach ( $paths as $path ) {
+				if ( file_exists($path . CakeSession::read('Auth.User.view_prefix') . DS . $this->viewPath . DS . $this->request->params['action'] . '.ctp') ) {
+					$this->viewPath = CakeSession::read('Auth.User.view_prefix') . DS . ucfirst($this->request->params['controller']);
 				} // end view prefix loop
 			} // end paths loop
 			$this->layout = 'default';
-		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax')) {
+		} else if ( empty($this->request->params['requested']) && !$this->request->is('ajax') && !$this->request->ext == 'csv' ) {
 			// this else if makes so that extensions still get parsed
 			$this->_getTemplate();
 		}
@@ -652,6 +740,12 @@ class AppController extends Controller {
 				$this->components = array_merge($this->components, explode(',', $settings));
 			}
 		}
+		
+
+		// not really loving it but it has to be here because it is in the construct and for logins to work
+		if (in_array('Facebook', CakePlugin::loaded())) {
+			$this->components['Facebook.Connect'] = array('plugin' => 'Users', 'model' => 'User'); // correct way !!?
+		}
 	}
 
 
@@ -686,6 +780,11 @@ class AppController extends Controller {
 				$this->helpers = array_merge($this->helpers, explode(',', $settings));
 			}
 		}
+
+		// not really loving it but it has to be here because it is in the construct and for logins to work
+		if (in_array('Facebook', CakePlugin::loaded())) {
+			$this->helpers[] = 'Facebook.Facebook';
+		}
 	}
 
 
@@ -700,6 +799,12 @@ class AppController extends Controller {
 				// there is only one (non-array) in $this->uses
 				$this->uses = array($this->uses, 'Webpages.Webpage');
 			}
+		}
+		
+
+		// not really loving it but it has to be here because it is in the construct and for logins to work
+		if (in_array('Facebook', CakePlugin::loaded())) {
+			$this->uses[] = 'Facebook.Facebook';
 		}
 	}
 
@@ -742,10 +847,8 @@ class AppController extends Controller {
             'Form' => array(
                 'userModel' => 'Users.User',
                 'fields' => array('username' => array('username', 'email'), 'password' => 'password'),
-                /*'scope' => array('User.active' => 1)*/
-            )
-        );
-
+            	)
+        	);
 		$this->Auth->actionPath = 'controllers/';
 		$this->Auth->allowedActions = array('display', 'itemize');
 
@@ -799,7 +902,7 @@ class AppController extends Controller {
 				$this->SwiftMailer->sendAs = 'html';
 
 				if ($message) {
-              					$this->SwiftMailer->content = $message;
+              		$this->SwiftMailer->content = $message;
 					if($message['html'] && is_array($message)) $this->SwiftMailer->content = $message['html'];
 					$message['html'] = $message;
 					$this->set('message', $message);
@@ -837,12 +940,14 @@ class AppController extends Controller {
  * @todo		Optimize this somehow, someway.
  */
 	public function isAuthorized($user) {
+		//debug($user);
 		// this allows all users in the administrators group access to everything
 		// using user_role_id is deprecated and will be removed in future versions
 		if (!empty($user['view_prefix']) && ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1)) { return true; }
 		// check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
+
 		if ($this->Acl->check($aro, $aco)) {
 			//echo 'guest access passed';
 			//return array('passed' => 1, 'message' => 'guest access passed');
@@ -851,19 +956,38 @@ class AppController extends Controller {
 			//check user access
 			$aro = $this->_userAro($user['id']); // user aro model and foreign_key
 			$aco = $this->_getAcoPath(); // get aco
-			if ($this->Acl->check($aro, $aco)) {
+
+			/**
+			 * The 3rd parameter for Acl->check() defaults to '*'.
+			 * When '*', it checks ALL 4 types: _create, _read, _update, _delete
+			 * In our use case, webpages/webpages/view/X, we only want to assign _read
+			 * To check for that, we must specify 'read' when doing Acl->check().
+			 * There is kinda supposed to be internal mapping of 'view' => 'read' in Auth,
+			 * but it's not happening here.
+			 *
+			 * Here is a quick and dirty fix:
+			 */
+			$aclCheckAction = ( $this->request->action == 'view' ) ? 'read' : '*';
+
+			if ($this->Acl->check($aro, $aco, $aclCheckAction)) {
 				#echo 'user access passed';
 				#return array('passed' => 1, 'message' => 'user access passed');
+				//Gets Model name
+				$modelname = Inflector::singularize($this->name);
+				//assigns the Aco record to the acoRecords property in the model of the controller
+				//This is used in the afterfind method of the app controller for record level
+				//access checks
+				$this->$modelname->acoRecords = $this->Acl->Aco->node($this->_getAcoPath());
 				return true;
 			} else {
-//				debug($this->Acl->Aco->node($this->_getAcoPath()));
-//				debug($this->Acl->Aro->node($this->_userAro($user['id'])));
-//				debug($this->Acl->check($aro, $aco));
-//				debug($user);
-//				debug($this->Session->read());
-//				debug($aro);
-//				debug($aco);
-//				break;
+				// debug($this->Acl->Aco->node($this->_getAcoPath()));
+				// debug($this->Acl->Aro->node($this->_userAro($user['id'])));
+				// debug($this->Acl->check($aro, $aco));
+				// debug($user);
+				// debug($this->Session->read());
+				// debug($aro);
+				// debug($aco);
+				// break;
 				$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
 				$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
 				$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';

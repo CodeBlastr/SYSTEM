@@ -29,12 +29,14 @@ echo defined('__REPORTS_ANALYTICS') ? $this->Element('analytics', array(), array
 <![endif]-->
 
 	<?php echo $this->Element('twitter-bootstrap/header'); ?> 
-
+	
     <div class="container">
         
         <?php echo $this->Session->flash(); echo $this->Session->flash('auth'); ?>
         
 		<?php echo $this->Element('twitter-bootstrap/page_title'); ?>
+		
+		<?php echo $this->Element('breadcrumbs'); ?>
         
         <?php echo $content_for_layout; ?>
         

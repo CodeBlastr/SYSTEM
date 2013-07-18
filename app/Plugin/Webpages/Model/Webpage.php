@@ -1,4 +1,5 @@
 <?php
+App::uses('WebpagesAppModel', 'Webpages.Model');
 /** 
  * CMS Webpage Model.
  * Handles the cms data 
@@ -19,7 +20,7 @@ class Webpage extends WebpagesAppModel {
  * 
  * @var string 
  */
-	public $fullName = "Webpages.Webpage";
+	public $fullName = 'Webpages.Webpage';
 	
 /**
  * Display Field
@@ -27,6 +28,7 @@ class Webpage extends WebpagesAppModel {
  * @var string 
  */
 	public $displayField = 'name';
+	
         
  /**
   * Acts as
@@ -34,9 +36,11 @@ class Webpage extends WebpagesAppModel {
   * @var array
   */
     public $actsAs = array(
+        'Optimizable',
         'Tree', 
         'AclExtra', 
-        'Alias'
+        'Galleries.Mediable' => array('modelAlias' => 'Webpage'),
+     	'Metable',
 		);
 	
 /**
@@ -65,6 +69,7 @@ class Webpage extends WebpagesAppModel {
 	public $types = array(
 		'template' => 'Template',
 		'element' => 'Element',
+		'section' => 'Section',
 		'sub' => 'Sub',
 		'content' => 'Content'
 		);
@@ -130,6 +135,7 @@ class Webpage extends WebpagesAppModel {
 		}
 				
 		parent::__construct($id, $table, $ds);
+		
 	}
 
 /**
@@ -284,15 +290,6 @@ class Webpage extends WebpagesAppModel {
 			}
 		}
 	}
-    
-/**
- * Types function
- * 
- * @return array
- */
-	public function types() {
-		return $this->types;
-	}
 	
 /**
  * Clean Input Data
@@ -319,11 +316,12 @@ class Webpage extends WebpagesAppModel {
 		}
         
 		if (empty($data['RecordLevelAccess']['UserRole'])) {
+			$data['Webpage']['user_roles'] = '';
 			unset($data['RecordLevelAccess']);
 		} else {
 			$data['Webpage']['user_roles'] = serialize($data['RecordLevelAccess']['UserRole']);
 		}
-		
+
 		return $data;
 	}
 	
@@ -563,4 +561,23 @@ class Webpage extends WebpagesAppModel {
 		return $data['Webpage']['template_urls'];		
 	}
 	
+    
+/**
+ * Types function
+ * An array of options for select inputs
+ * 
+ * @return array
+ */
+	public function types($name = null) {
+	    foreach (Zuha::enum('WEBPAGES_PAGE_TYPE') as $type) {
+			$types[Inflector::underscore($type)] = $type;
+	    }
+		$this->types = Set::merge($this->types, $types);
+		
+		if (!empty($name)) {
+			return $this->types[$name];
+		} else {
+	    	return $this->types;
+		}
+	}
 }

@@ -33,7 +33,7 @@ class WebpagesController extends WebpagesAppController {
  * 
  * @var string
  */
-    public $uses = 'Webpages.Webpage';
+    public $uses = array('Webpages.Webpage', 'File');
 
 /**
  * Paginate
@@ -75,11 +75,10 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function index($type = 'content') {
-        $index = '_index' . ucfirst($type);
-        $this->$index();
-		$this->layout = 'default';
+        $index = method_exists($this, '_index' . ucfirst($type)) ? '_index' . ucfirst($type) : '_indexContent';
+        return $this->$index($type);
 	}
-    
+	
 /**
  * Index of type Content
  * 
@@ -87,24 +86,21 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  * @throws NotFoundException
  */
-    protected function _indexContent() {
-        if ($this->Webpage->find('first', array('conditions' => array('Webpage.parent_id' => 0, 'Webpage.lft' => 0, 'Webpage.rght' => 0)))) {
-            // takes care of a bad tree structure (Temporary 11/19/2012 RK)
-            $this->Webpage->recover('parent');
-        }
-        
-		$this->paginate['conditions']['Webpage.type'] = 'content';
+    protected function _indexContent($type) {        
+		$this->paginate['conditions']['Webpage.type'] = $type;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
 		$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
-		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
-		$this->set('webpages', $this->paginate());
-        
+		//$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
+		$this->set('webpages', $webpages = $this->paginate());
+		
 		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Pages');
-		$this->view = 'index_content';
+		$this->set('page_types', $this->Webpage->types());
+		$this->view = $this->_fileExistsCheck('index_' . $type . $this->ext) ? 'index_' . $type : 'index_content';
+		return $webpages;
     }
     
 /**
@@ -116,7 +112,7 @@ class WebpagesController extends WebpagesAppController {
  */
     protected function _indexSub() {
 		$this->paginate['conditions']['Webpage.type'] = 'content';
-		$this->paginate['fields'] = array('Webpage.id', 'Webpage.name', 'Webpage.content', 'Webpage.modified', 'Parent.id', 'Parent.name');
+		//$this->paginate['fields'] = array('Webpage.id', 'Webpage.name', 'Webpage.content', 'Webpage.modified', 'Parent.id', 'Parent.name');
 		$this->paginate['contain'] = array('Parent');
         $webpages = $this->paginate();
 		$this->set(compact('webpages'));
@@ -192,7 +188,8 @@ class WebpagesController extends WebpagesAppController {
 		
 		if ($webpage['Webpage']['type'] == 'template') {
 			// do nothing??
-		} else {
+		} 
+		else {
 			$userRoleId = $this->Session->read('Auth.User.user_role_id');
 			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
 			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" class="edit-box" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
@@ -204,7 +201,7 @@ class WebpagesController extends WebpagesAppController {
 		$this->set(compact('webpage'));
 		$this->set('page_title_for_layout', $webpage['Webpage']['name']);
         $this->set('page', $page['Webpage']['content']); // an unparsed version of the page for the inline editor
-       	$this->view = 'view_' . $webpage['Webpage']['type'];
+       	$this->view = $this->_fileExistsCheck('view_' . $page['Webpage']['type'] . $this->ext) ? 'view_' . $page['Webpage']['type'] : 'view_content';
 	}
     
 	
@@ -215,6 +212,7 @@ class WebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function add($type = 'content', $parentId = NULL) {
+		$this->type = $type;
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->saveAll($this->request->data);
@@ -225,14 +223,15 @@ class WebpagesController extends WebpagesAppController {
 				$this->Session->setFlash($e->getMessage());
 			}
 		}
-		
-		if (empty($this->Webpage->types[$type])) {
+		if (!$this->Webpage->types($type)) {
 			throw new NotFoundException(__('Invalid content type'));
 		}
-        
-        $add = '_add' . ucfirst($type);
+		
+		$this->request->data['Webpage']['type'] = $type;
+        $add = method_exists($this, '_add' . ucfirst($type)) ? '_add' . ucfirst($type) : '_addContent';
         $this->$add($parentId);
 	}
+	
     
 /**
  * add content page
@@ -242,21 +241,24 @@ class WebpagesController extends WebpagesAppController {
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Page Builder'));
-		$this->layout = 'default';	
-		$this->view = 'add_content';        
+		$this->layout = 'default';
+		$this->view = $this->_fileExistsCheck('add_' . $this->type . $this->ext) ? 'add_' . $this->type : 'add_content';       
     }
-    
+	
 /**
  * add sub page
  * 
  * @param string $parentId
  */
     protected function _addSub($parentId) {
+		//Set Parent Properties if parentID is given else creat a new Page Type
+		
 		$parent = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $parentId), 'contain' => array('Child')));
 		$this->request->data['Alias']['name'] = !empty($parent['Alias']['name']) ? $parent['Alias']['name'] . '/' : null;
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('parent', $parent);
 		$this->set('page_title_for_layout', __('<small>Create a subpage of</small> %s', $parent['Webpage']['name']));
+	
 		$this->layout = 'default';	
 		$this->view = 'add_sub';      
     }
@@ -309,6 +311,7 @@ class WebpagesController extends WebpagesAppController {
 		
 		// required to have per page permissions
 		$userRoles = $this->Webpage->Creator->UserRole->find('list');
+		unset($userRoles[1]);
 		$types = $this->Webpage->types();
 		$this->set(compact('userRoles', 'types'));
 
@@ -328,7 +331,9 @@ class WebpagesController extends WebpagesAppController {
 		}
 		// 1/6/2012 rk - $this->set('templateUrls', $this->Webpage->templateUrls($this->request->data));
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
-		$this->view = 'edit_' . $this->request->data['Webpage']['type'];
+		
+		$type = $this->request->data['Webpage']['type'];
+		$this->view = $this->_fileExistsCheck('edit_' . $type . $this->ext) ? 'edit_' . $type : 'edit_content';
         $this->layout = 'default';
 	}
 	
@@ -409,5 +414,34 @@ class WebpagesController extends WebpagesAppController {
         return $content_str;
     }
  */
+ 
+ /**
+  * Convience Function checks if files exists in sites pat.
+  * or in App path this could be moved to the AppController
+  * 
+  * Probably a better way to do this. 
+  * 
+  * @param string
+  * @return bool
+  */
+ 
+ private function _fileExistsCheck($filename) {
+	 App::uses('File', 'Utility');
+	 $return = false;
+	 if(isset($filename)) {
+	 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
+		$file = new File($path . $filename);
+		$return =  $file->exists();
+	 }
+	 
+	 if($return == false) {
+	 	$path = App::pluginPath($this->plugin) . '/View/' . $this->viewPath . '/';
+		$file = new File($path . $filename);
+		$return = $file->exists();
+	 }
+	 
+	 return $return;
+	 
+ }
 
 }

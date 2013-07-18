@@ -2,6 +2,7 @@
 class UserStatusesController extends UsersAppController {
 
 	public $name = 'UserStatuses';
+	
 	public $uses = 'Users.UserStatus';
 
 	function index() {

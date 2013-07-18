@@ -12,9 +12,16 @@ class ContactTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-        'plugin.activities.activity',
-        'plugin.tasks.task',
-        'plugin.estimates.estimate',
+		'plugin.Contacts.Contact',
+		'plugin.Contacts.ContactDetail', // gotta make sure the fixture file exists, not just the config schema!!!
+		'plugin.Contacts.ContactsContact', // gotta make sure the fixture file exists, not just the config schema!!!
+		
+		'plugin.Users.User',
+		'plugin.Users.Used',
+		
+        'plugin.Activities.Activity',
+        'plugin.Tasks.Task',
+        'plugin.Estimates.Estimate',
         );
 
 /**
@@ -66,6 +73,45 @@ class ContactTestCase extends CakeTestCase {
 	}
 
 /**
+ * test Add Employee
+ * 
+ * @return void
+ */
+	public function testAddEmployee() {
+		$data = array(
+			'Contact' => array(
+				'id' => '4ea754d1-2f50-4f19-8998-4d1245a3a949',
+				'is_company' => '0',
+				'name' => ''
+			),
+			'Employer' => array(
+				'Employer' => '51799607-6440-4cc9-8a72-797145a3a949'
+			)
+		);
+		$result = $this->Contact->add($data);
+		$this->assertEqual($result, 'Contact saved successfully.');
+		
+		$result = $this->Contact->find('first', array('contain' => array('Employer'), 'conditions' => array('Contact.id' => $data['Contact']['id'])));
+		$this->assertEqual($result['Employer'][0]['name'], 'Josie\'s Company');  // shows that the existing Josie was added to Josie's Company
+	} 
+	
+/**
+ * test Add With User method
+ *
+ * @return void
+ */
+	public function testAddWithUser() {
+		$beforeCount = $this->Contact->find('count');
+		$data['Contact']['name'] = 'Issac Contact';
+		$data['User']['id'] = 100;
+		$this->Contact->add($data);
+		$afterCount = $this->Contact->find('count');
+		$result = $this->Contact->find('first', array('conditions' => array('Contact.id' => $this->Contact->id)));
+		$this->assertTrue(($beforeCount + 1) == $afterCount); // contact added
+		$this->assertTrue($result['Contact']['user_id'] == $data['User']['id']); // contact has a user id set
+	}
+	
+/**
  * test Add With Activity method
  *
  * @return void
@@ -99,7 +145,7 @@ class ContactTestCase extends CakeTestCase {
 		$result = $this->Contact->find('first', array('conditions' => array('Contact.id' => $this->Contact->id), 'contain' => 'Task'));
 		
         $this->assertEqual($result['Contact']['name'], $data['Contact']['name']); // test that save occured
-        $this->assertEqual($result['Task'][0]['name'], $data['Task'][0]['name']); // test that task is included
+        $this->assertEqual($result['Task'][0]['name'], $data['Task'][0]['name'] . ' ' . $data['Contact']['name']); // test that task is included with contact name added
 	}
 
 /**
@@ -165,7 +211,7 @@ class ContactTestCase extends CakeTestCase {
 		$result = $this->Contact->find('first', array('conditions' => array('Contact.id' => $this->Contact->id), 'contain' => array('Activity', 'Estimate', 'ContactDetail', 'Task')));
 				
         $this->assertEqual($result['Contact']['name'], $data['Contact']['name']); // test that save occured
-        $this->assertEqual($result['Task'][0]['name'], $data['Task'][0]['name']); // test that task is included
+        $this->assertEqual($result['Task'][0]['name'], $data['Task'][0]['name'] . ' ' . $data['Contact']['name']); // test that task is included
         $this->assertEqual($result['Estimate'][0]['total'], $data['Estimate'][0]['total']); // test that estimate is included
         $this->assertEqual($result['Activity'][0]['name'], $data['Contact']['name']); // test that activity is included
         $this->assertEqual($result['Activity'][1]['name'], $data['Activity'][0]['name']); // test that activity is included

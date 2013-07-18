@@ -1,5 +1,5 @@
 <?php
-class UserGroupsController extends UsersAppController {
+class _UserGroupsController extends UsersAppController {
 
 	public $name = 'UserGroups';
 	public $uses = 'Users.UserGroup';
@@ -37,9 +37,14 @@ class UserGroupsController extends UsersAppController {
 					),
 				'UserGroupWallPost' => array(
 					'Creator',
-						),
-				)
-			));
+					'Comment' => array(
+//						'contain' => array(
+//							'User' => array('fields' => array('User.id', 'User.full_name'))
+//						)
+					),
+				),
+			)
+		));
 		
 		$this->set('userGroup', $userGroup);
 		$this->set('userId' , $this->Session->read('Auth.User.id'));
@@ -147,4 +152,7 @@ class UserGroupsController extends UsersAppController {
 		$this->redirect(array('action' => 'index'));
 	}
 }
-?>
+
+if (!isset($refuseInit)) {
+	class UserGroupsController extends _UserGroupsController {}
+}
