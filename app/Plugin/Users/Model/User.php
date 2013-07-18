@@ -36,9 +36,9 @@ class _User extends UsersAppModel {
 		'username' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => true,
+				'allowEmpty' => false, // must have a value
 				'message' => 'Please enter a value for username',
-				'required' => true
+				'required' => 'create' // field key User.username must be present during User::create
 				),
 			'isUnique' => array(
 				'rule' => 'isUnique',
@@ -300,7 +300,14 @@ class _User extends UsersAppModel {
 		if ($this->saveAll($data)) {
 			return true;
 		} else {
-			throw new Exception(__d('users', 'Invalid user data.' . implode(', ', $this->invalidFields)));
+			$exceptionMessage = '';
+			if ( !empty($this->invalidFields) ) {
+				$exceptionMessage .= implode(', ', $this->invalidFields) . ' ';
+			}
+			if ( !empty($this->validationErrors) ) {
+				$exceptionMessage .= implode(', ', Set::flatten($this->validationErrors));
+			}
+			throw new Exception(__d('users', 'Invalid user data.' . $exceptionMessage ));
 		}
 	}
 
