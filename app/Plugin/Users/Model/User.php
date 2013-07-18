@@ -327,7 +327,9 @@ class _User extends UsersAppModel {
 		} else {
 			$data['Contact']['name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'Not Provided';
 		}
-		if ($this->Contact->saveAll($data)) {
+		$contactData = $data;
+		unset($contactData['User']); // we will save this in the user model not from the contact model
+		if ($this->Contact->saveAll($contactData)) {
 			unset($data['Contact']);
 		}
 		return $data;
