@@ -1,5 +1,5 @@
 <?php
-//App::uses('UsersAppController', 'Users.Controller');
+App::uses('UsersAppController', 'Users.Controller');
 /**
  * Users Controller
  *
