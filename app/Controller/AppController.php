@@ -757,6 +757,10 @@ class AppController extends Controller {
 		if (in_array('Utils', CakePlugin::loaded())) {
 			$this->helpers[] = 'Utils.Tree';
 		}
+		
+		if (in_array('Media', CakePlugin::loaded())) {
+			$this->helpers[] = 'Media.Media';
+		}
 
 		if(defined('__APP_LOAD_APP_HELPERS')) {
 			$settings = __APP_LOAD_APP_HELPERS;
