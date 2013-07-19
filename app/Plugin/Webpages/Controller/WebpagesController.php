@@ -194,7 +194,11 @@ class WebpagesController extends WebpagesAppController {
 			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
 			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" class="edit-box" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
 		}
-		
+
+		if (!empty($this->request->params['requested'])) {
+            return $webpage['Webpage']['content'];
+        }
+
 		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error') {
 			$webpage = $this->Webpage->handleError($webpage, $this->request);
 		}
