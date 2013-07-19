@@ -34,14 +34,16 @@ foreach ($data as $ac) {
 			}
 			$cell .= '<div class="checkboxToggleDiv">';
 			if($groups[$i]['UserRole']['id'] != 5) {
-				foreach($userfields as $field) {
-					if($has_check) {
-						$checked = strpos($ac['Section']['user_fields'], $field);
-						
-					}else {
-						$checked = false;
+				if (!empty($userfields)) {
+					foreach($userfields as $field) {
+						if($has_check) {
+							$checked = strpos($ac['Section']['user_fields'], $field);
+							
+						}else {
+							$checked = false;
+						}
+						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => 'Only ' . Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))), 'checked' => $checked === false ? null : 'true', 'div' => false));
 					}
-					$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => 'Only ' . Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))), 'checked' => $checked === false ? null : 'true', 'div' => false));
 				}
 			}
 			
