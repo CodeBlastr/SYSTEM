@@ -231,19 +231,30 @@ class Contact extends ContactsAppModel {
 			return __d('contacts', 'Contact saved successfully.');
 		} else {
 			$error = 'Error : ';
-			foreach ($this->invalidFields() as $models) {
-				if (is_array($models)) {
-					foreach ($models as $err) {
-						if(is_string($err)) $error .= $err . ', ';
-						if(is_array($err)) {
-                          foreach($err as $er)
-                          $error .= $er . ', ';
-                        }
-					}
-				} else {
-					$error .= $models;
+
+			// this duplicates error messages...
+			// We need both in an array.. combining the two.
+			$validationErrors = Set::merge($this->validationErrors, $this->invalidFields());
+
+			if ( !empty($validationErrors) ) {
+				foreach ( $validationErrors as $k => $validationError ) {
+					$error .= implode(', ', Set::flatten($validationError));
 				}
 			}
+//			// original code
+//			foreach ($this->invalidFields() as $models) {
+//				if (is_array($models)) {
+//					foreach ($models as $err) {
+//						if(is_string($err)) $error .= $err . ', ';
+//						if(is_array($err)) {
+//                          foreach($err as $er)
+//                          $error .= $er . ', ';
+//                        }
+//					}
+//				} else {
+//					$error .= $models;
+//				}
+//			}
 			throw new Exception($error);
 		}
 	}
