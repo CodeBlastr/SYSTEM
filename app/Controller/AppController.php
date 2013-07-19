@@ -950,7 +950,6 @@ class AppController extends Controller {
 		// check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
-
 		if ($this->Acl->check($aro, $aco)) {
 			//echo 'guest access passed';
 			//return array('passed' => 1, 'message' => 'guest access passed');
