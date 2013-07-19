@@ -132,7 +132,8 @@ class AppController extends Controller {
 		// order is important for these automatic view vars
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout()); 
 		$this->set('title_for_layout', $this->_titleForLayout()); 
-		$this->set('userRoleId', $this->userRoleId); 
+		$this->set('userRoleId', $this->userRoleId); // deprecated (use the one below) // 07/19/2013 RK
+		$this->set('__userRoleId', $this->userRoleId);
 	}
 	
 	
