@@ -301,8 +301,9 @@ class _User extends UsersAppModel {
 			return true;
 		} else {
 			$exceptionMessage = '';
-			if ( !empty($this->invalidFields) ) {
-				$exceptionMessage .= implode(', ', $this->invalidFields) . ' ';
+			$invalidFields = $this->invalidFields();
+			if ( !empty($invalidFields) ) {
+				$exceptionMessage .= implode(', ', $invalidFields) . ' ';
 			}
 			if ( !empty($this->validationErrors) ) {
 				$exceptionMessage .= implode(', ', Set::flatten($this->validationErrors));
