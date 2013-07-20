@@ -225,13 +225,14 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * Flatten a multidimensional array to a single string
 		 * 
 		 * @param array $array
+		 * @param array $options
 		 */
-		public function flatten($array = array()) {
+		public function flatten($array = array(), $options = array('separator' => ',')) {
 			$json  = json_encode($array); // converts an object to an array
 			$array = json_decode($json, true);
 		    $return = array();
 		    @array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
-		    return implode(',', $return);
+		    return implode($options['separator'], $return);
 		}
 	
 		/**
