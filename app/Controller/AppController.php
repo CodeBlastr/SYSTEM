@@ -915,7 +915,6 @@ class AppController extends Controller {
 				if (!$subject) {
 					$subject = 'No Subject';
 				}
-
 				//Set view variables as normal
 				return $this->SwiftMailer->send($template, $subject);
 			} else {
