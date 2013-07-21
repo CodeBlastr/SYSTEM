@@ -17,21 +17,19 @@ class _User extends UsersAppModel {
 		'password' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => true,
+				'allowEmpty' => false, 
 				'message' => 'Please enter a value for password',
-				'required' => true
+				'required' => 'create'
 				),
 			'comparePassword' => array(
 				'rule' => array('_comparePassword'),
-				'allowEmpty' => true,
+				'allowEmpty' => false, 
 				'message' => 'Password, and confirm password fields do not match.',
-				'required' => true
 				),
         	'strongPassword' => array(
 				'rule' => array('_strongPassword'),
-				'allowEmpty' => false,
+				'allowEmpty' => false, 
 				'message' => 'Password should be six characters, contain numbers and capital and lowercase letters.',
-				'required' => true
 				),
 			),
 		'username' => array(
@@ -198,6 +196,8 @@ class _User extends UsersAppModel {
 	}
 
 /**
+ * Parent Node method
+ * 
  * For relating the user to the correct parent user role in the aros table.
  */
 	function parentNode() {
@@ -606,6 +606,9 @@ class _User extends UsersAppModel {
  * @return {array}		Parsed form input data.
  */
 	protected function _cleanAddData($data) {
+		if (!isset($data[$this->alias])) {
+			return $data;
+		}
 		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@')) {
 			$data[$this->alias]['email'] = $data[$this->alias]['username'];
 		}
