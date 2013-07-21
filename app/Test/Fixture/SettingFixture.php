@@ -1,23 +1,23 @@
 <?php
 /**
- * AliasFixture
+ * SettingFixture
  *
  */
-class AliasFixture extends CakeTestFixture {
+class SettingFixture extends CakeTestFixture {
 
 /**
  * name property
  *
  * @var string
  */
-	public $name = 'Alias';
+	public $name = 'Setting';
 	
 /**
  * Import
  *
  * @var array
  */
-	public $import = array('config' => 'Alias');
+	public $import = array('config' => 'Setting');
 	
 
 /**
