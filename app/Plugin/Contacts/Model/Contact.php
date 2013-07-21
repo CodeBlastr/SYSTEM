@@ -196,12 +196,19 @@ class Contact extends ContactsAppModel {
     	parent::__construct($id, $table, $ds);
 		$this->order = array("{$this->alias}.name");
     }
+
+/**
+ * Before validate method
+ */
+	public function beforeValidate($options = array()) {
+		$this->data = $this->_cleanContactData($this->data);
+		return parent::beforeValidate($options);
+	}
 	
-	
+/**
+ * Before save
+ */
 	public function beforeSave($options = array()) {
-		$data = $this->_cleanContactData($data);
-		
-		!empty($this->data['Contact']['contact_type']) ? $this->data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']) : null; 
 		if (in_array('Activities', CakePlugin::loaded()) && !empty($this->data['Contact']['contact_type']) && $this->data['Contact']['contact_type'] == 'lead') {
 			// log when leads are created
 			$this->Behaviors->attach('Activities.Loggable', array(
@@ -298,6 +305,11 @@ class Contact extends ContactsAppModel {
  * @return array
  */
 	protected function _cleanContactData($data) {
+		
+		if (!empty($data['Contact']['contact_type'])) {
+			 $data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']);
+		}
+		
 		// get rid of the name field so it can be merged from existing data if empty
 		if (isset($data['Contact']['name']) && empty($data['Contact']['name'])) {
 			unset($data['Contact']['name']); 

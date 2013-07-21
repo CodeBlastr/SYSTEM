@@ -101,6 +101,7 @@ class AppErrorController extends AppController {
 			$alias = $Alias->find('first', array('conditions' => array('Alias.name' => trim(urldecode($request->here), "/"))));
 		} catch (Exception $e) {
 			debug($e->getMessage()); // in some rare cases this is a hard to find error 
+			debug(Debugger::trace());
 			break;
 		}
 		if(!empty($alias)) {
