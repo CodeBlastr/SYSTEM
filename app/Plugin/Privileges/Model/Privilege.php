@@ -14,6 +14,11 @@ class Privilege extends PrivilegesAppModel {
 	       	'foreignKey' => 'aro_id'
 	        )
 		);
+		
+	public function beforeSave($options = array()) {
+		debug($this->data);
+		break;
+	}
 	
 /**
  * After Save Callback
