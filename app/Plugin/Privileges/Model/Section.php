@@ -1,4 +1,6 @@
 <?php
+App::uses('PrivilegesAppModel', 'Privileges.Model');
+
 class Section extends PrivilegesAppModel {
 
 	public $name = 'Section'; 
