@@ -978,7 +978,7 @@ class AppController extends Controller {
 				$modelname = Inflector::singularize($this->name);
 				//assigns the Aco record to the acoRecords property in the model of the controller
 				//This is used in the afterfind method of the app controller for record level access checks
-				$this->CourseLesson->acoRecords = $this->Acl->Aco->node($this->_getAcoPath());
+				$this->$modelname->acoRecords = $this->Acl->Aco->node($this->_getAcoPath());
 				return true;
 			} else {
 				// debug($this->Acl->Aco->node($this->_getAcoPath()));
