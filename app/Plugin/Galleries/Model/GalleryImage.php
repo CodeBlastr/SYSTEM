@@ -223,7 +223,7 @@ class GalleryImage extends GalleriesAppModel {
  * @param string
  */
  	protected function _fileName($fileName) {
-		if (is_array($fileName['tmp_name'])) {
+		if (isset($fileName['tmp_name']) && is_array($fileName['tmp_name'])) {
 			App::uses('File', 'Utility');
 			$fileName['tmp_name'][1] = $this->rootPath . ZuhaSet::webrootSubPath($fileName['tmp_name'][1]);
 			$File = new File($fileName['tmp_name'][1]);
