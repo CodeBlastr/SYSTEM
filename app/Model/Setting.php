@@ -406,6 +406,7 @@ class Setting extends AppModel {
  * $data['Setting']['type'] = Plugin
  * $data['Setting']['name'] = RATINGS_SETTINGS
  * $data['Setting']['value'] = some string
+ * 
  * @param {data}    An array contain the setting data
  * @param {bool}    If set to true, it will add to the value instead of replace.
  * @return {bool}    True if the settings were saved and the file was created.

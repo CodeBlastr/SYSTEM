@@ -972,14 +972,13 @@ class AppController extends Controller {
 			$aclCheckAction = ( $this->request->action == 'view' ) ? 'read' : '*';
 
 			if ($this->Acl->check($aro, $aco, $aclCheckAction)) {
-				#echo 'user access passed';
-				#return array('passed' => 1, 'message' => 'user access passed');
+				//echo 'user access passed';
+				//return array('passed' => 1, 'message' => 'user access passed');
 				//Gets Model name
 				$modelname = Inflector::singularize($this->name);
 				//assigns the Aco record to the acoRecords property in the model of the controller
-				//This is used in the afterfind method of the app controller for record level
-				//access checks
-				$this->$modelname->acoRecords = $this->Acl->Aco->node($this->_getAcoPath());
+				//This is used in the afterfind method of the app controller for record level access checks
+				$this->CourseLesson->acoRecords = $this->Acl->Aco->node($this->_getAcoPath());
 				return true;
 			} else {
 				// debug($this->Acl->Aco->node($this->_getAcoPath()));
