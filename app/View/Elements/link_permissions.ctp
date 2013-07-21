@@ -1,4 +1,4 @@
-<?php if (defined('__APP_LINK_PERMISSIONS')) { ?>
+<?php if (defined('__APP_LINK_PERMISSIONS') && $__userRoleId != 1) { ?>
 <script type="text/javascript">
 	$(function() {
 		// first hide everything with data-check-acces 

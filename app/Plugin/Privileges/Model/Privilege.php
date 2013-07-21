@@ -1,7 +1,10 @@
 <?php
+App::uses('PrivilegesAppModel', 'Privileges.Model');
+
 class Privilege extends PrivilegesAppModel {
 
 	public $name = 'Privilege'; 
+	
 	public $useTable = 'aros_acos';
 	
 	public $belongsTo = array(
@@ -14,11 +17,6 @@ class Privilege extends PrivilegesAppModel {
 	       	'foreignKey' => 'aro_id'
 	        )
 		);
-		
-	public function beforeSave($options = array()) {
-		debug($this->data);
-		break;
-	}
 	
 /**
  * After Save Callback
@@ -132,11 +130,54 @@ class Privilege extends PrivilegesAppModel {
 		}		
 		App::uses('Setting', 'Model');
 		$Setting = new Setting;
-		
 		$data['Setting']['type'] = 'APP';
  		$data['Setting']['name'] = 'LINK_PERMISSIONS';
  		$data['Setting']['value'] = trim($settings);
 		$Setting->add($data);
+	}
+
+/**
+ * Duplicate Permissions method
+ * 
+ * Takes one requestors permissions and duplicates all of their permissions duplicating it to a second user role. 
+ * 
+ * @param string $ModelName
+ * @param int $oldForeignKey
+ * @param int $newForeignKey
+ * @return bool
+ */ 	
+	public function duplicatePermissions($modelName, $oldForeignKey, $newForeignKey) {
+		
+ 		$oldAroId = $this->Requestor->field('id', array('Requestor.model' => $modelName, 'Requestor.foreign_key' => $oldForeignKey));
+		$newAroId = $this->Requestor->field('id', array('Requestor.model' => $modelName, 'Requestor.foreign_key' => $newForeignKey));
+
+		if (!empty($oldAroId) && !empty($newAroId)) {
+			// find the old permissions
+			$permissions = $this->find('all', array('conditions' => array('Privilege.aro_id' => $oldAroId)));
+			// get acos for checking that they don't already exist
+			$acos = Set::extract('/Privilege/aco_id', $permissions);
+			// find if any existing permissions exist for them
+			$existingPermissions = $this->find('all', array('conditions' => array('Privilege.aro_id' => $newAroId, 'Privilege.aco_id' => $acos)));
+			if (empty($existingPermissions)) {
+				if (!empty($permissions)) {
+					for($i = 0; $i < count($permissions); $i++) {
+						unset($permissions[$i]['Privilege']['id']);
+						$permissions[$i]['Privilege']['aro_id'] = $newAroId;
+					}
+				}
+				if ($this->saveAll($permissions)) {
+					return true;
+				} else {
+					//throw new Exception(__('No permissions to duplicate'));
+					return false;
+				}
+			} else {
+				//throw new Exception(__('Aro has existing permissions'));
+				return false;
+			}
+		} else {
+			throw new Exception(__('Missing aro. Old aro : %s, New aro : %s', $oldAroId, $newAroId));
+		}
 	}
 	
 }

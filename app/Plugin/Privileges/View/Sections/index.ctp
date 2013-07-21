@@ -85,8 +85,8 @@ $this->set('context_menu', array('menus' => array(
         array(
             'heading' => 'Privileges',
             'items' => array(
-                $this->Html->link(__('Update Sections & Actions'), array('controller' => 'sections', 'action' => 'clear_session')),
-                $this->Html->link(__('Edit User Roles'), array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'index')),
+                $this->Html->link(__('Sync Sections'), array('controller' => 'sections', 'action' => 'clear_session')),
+                $this->Html->link(__('User Roles'), array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'index')),
             )
         ),
         )));

@@ -525,7 +525,7 @@ class Setting extends AppModel {
 			}
 			$data['Setting']['value'] = $settingValue;
 		}
-
+		
 		if (!empty($data['Setting'][0])) {
 			$i = 0;
 			foreach ($data['Setting'] as $setting) {
