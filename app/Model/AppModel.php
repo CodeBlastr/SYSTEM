@@ -174,7 +174,7 @@ class AppModel extends Model {
 			 
 		//This is a permission check for record level permissions.
 		//userfields are ACO records from the controller
-		if ( isset($this->acoRecords[0]['Aco']['user_fields']) && !empty($this->acoRecords[0]['Aco']['user_fields']) && CakeSession::read('Auth.User.id') !== 1 ) {
+		if (isset($this->acoRecords[0]['Aco']['user_fields']) && !empty($this->acoRecords[0]['Aco']['user_fields']) && CakeSession::read('Auth.User.id') !== 1) {
 		  $userFields = explode(',', $this->acoRecords[0]['Aco']['user_fields']);	
 		  foreach ($results as $k => $result) {
 			  foreach($userFields as $u) {

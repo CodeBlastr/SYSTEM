@@ -49,7 +49,7 @@ class PrivilegesController extends PrivilegesAppController {
  			$this->request->data['Privilege']['aro_id'] = $split[1];
 			
 			
- 			if($v == 'on' || $v == 1){
+ 			if($v == 'on' || $v == 1) {
  				$this->request->data['Privilege']['_create'] = 1;
  				$this->request->data['Privilege']['_read'] = 1;
  				$this->request->data['Privilege']['_update'] = 1;
@@ -82,7 +82,6 @@ class PrivilegesController extends PrivilegesAppController {
                     break;
                 }
             }
- 			
  			next($dat);
  		}
 		
