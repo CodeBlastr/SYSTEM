@@ -22,7 +22,7 @@
 						array(
 							'update' => '#privilegesTables',
 							'method' => 'post',
-							'data' => 'json='.serialize(array('sdata' => $child['children'], 'userfields' => $section['userfields'])),
+							'data' => 'json='.serialize(array('sdata' => $child['children'], 'userFields' => $section['userFields'])),
 							'complete' => 'applyCheckboxToggles();$("#privilegesTables").fadeIn();',
 							'before' => '$("#privilegesTables").fadeOut();'
 						)
@@ -41,7 +41,7 @@
 				array(
 					'update' => '#privilegesTables',
 					'method' => 'post',
-					'data' => 'json='.serialize(array('sdata' => $section['children'], 'userfields' => $section['userfields'])),
+					'data' => 'json='.serialize(array('sdata' => $section['children'], 'userFields' => $section['userFields'])),
 					'complete' => 'applyCheckboxToggles();$("#privilegesTables").fadeIn();',
 					'before' => '$("#privilegesTables").fadeOut();',
 					'escape' => false
@@ -55,23 +55,6 @@
 
     <div class="span9">
         <p>Each section listed below contains rows of <a rel="tooltip" title="Things like view, add, edit, delete.  Typically they correspond to an actual page url you can visit.">Actions</a> that a user can take with columns of what the <a rel="tooltip" title="Groups that you put users into to control their access to actions.">User Roles</a> are.  To give a User Role access to an action, simply click the check box under the role, and then the save button at the bottom of that section. By default all actions are restricted to admins, and must be purposely granted. </p>
-
-        <?php
-        // privileges tables (element)
-        // foreach ($sections as $section) {
-            // if (!empty($section['children'][0]['children'])) {
-                // echo __('<section id="%s">', Inflector::underscore(Inflector::singularize(ZuhaInflector::pluginize($section['Section']['alias']))));
-                // foreach ($section['children'] as $child) {
-                    // #echo $this->Element('action-privileges-form', array('name' => $child['Section']['alias'], 'data' => $child['children'], 'userfields' => $section['userfields']));
-                // }
-                // echo __('</section>');
-            // } else {
-                // echo __('<section id="%s">', Inflector::underscore(Inflector::singularize($section['Section']['alias'])));
-                // #echo $this->Element('action-privileges-form', array('name' => $section['Section']['alias'], 'data' => $section['children'], 'userfields' => $section['userfields']));
-                // echo __('</section>');
-            // }
-        // }
-        ?>
         <div id="privilegesTables"></div>
     </div>
 </div>
