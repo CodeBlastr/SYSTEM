@@ -42,7 +42,7 @@ foreach ($data as $ac) {
 						}else {
 							$checked = false;
 						}
-						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => 'Only ' . Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))), 'checked' => $checked === false ? null : 'true', 'div' => false));
+						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => __('Only %s', Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE)))), 'checked' => $checked === false ? null : 'true', 'div' => false));
 					}
 				}
 			}
@@ -64,7 +64,7 @@ foreach ($data as $ac) {
 			if($groups[$i]['UserRole']['id'] != 5) {
 				if (!empty($userfields)) {
 					foreach($userfields as $field) {
-						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => 'Only ' . Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))), 'div' => false));
+						$formInputs .= $this->Form->input('Aco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => __('Only %s', Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE)))), 'div' => false));
 					}
 				}			
 			}
