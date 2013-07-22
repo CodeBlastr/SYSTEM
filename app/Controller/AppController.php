@@ -58,11 +58,16 @@ class AppController extends Controller {
 						)
 					)
 				),
-			'authorize' => 'Controller'
+			'authorize' => 'Controller',
+			'loginAction' => array(
+				'plugin' => 'users',
+				'controller' => 'users',
+				'action' => 'login'
+				)
 			),
-			'Session', 
-			'RequestHandler', 
-			'Cookie'
+		'Session', 
+		'RequestHandler', 
+		'Cookie'
 		);
 
 /**

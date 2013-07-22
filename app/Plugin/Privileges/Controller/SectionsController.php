@@ -106,7 +106,7 @@ class SectionsController extends PrivilegesAppController {
 			if ($Model = ClassRegistry::init($register, true)) {
 				$belongs = $Model->belongsTo;
 				foreach ($belongs as $b) {
-					if ($b['className'] == 'Users.user') {
+					if ($b['className'] == 'Users.User') {
 						$sections[$k]['userfields'][] = $b['foreignKey'];
 					}
 				}
@@ -117,7 +117,6 @@ class SectionsController extends PrivilegesAppController {
 	
 	public function loadElement ($name) {
 		$params = unserialize($this->request->data['json']);
-		
 		$this->layout = null;
 		$this->Section->Requestor->bindModel(array('belongsTo' => array('UserRole' => array('className' => 'Users.UserRole', 'foreignKey' => 'foreign_key'))));
 		$groups = $this->Section->Requestor->find('all', array('conditions' => array('Requestor.model' => 'UserRole'), 'contain' => array('UserRole' => array('fields' => array('name', 'id')))));
