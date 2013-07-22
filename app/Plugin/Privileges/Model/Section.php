@@ -14,7 +14,7 @@ class Section extends PrivilegesAppModel {
 			'joinTable' => 'aros_acos',
 			'foreignKey' => 'aco_id',
 			'associationForeignKey' => 'aro_id'
-		)
-	);
+			)
+		);
 
 }
