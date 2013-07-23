@@ -153,10 +153,10 @@ class AppController extends Controller {
 		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
 		$this->set('_serialize', array_keys($this->viewVars));
         $this->set('_view', $this->view);
-		
 		// do a final permission check on the user field
-		$modelname = Inflector::singularize($this->name);
-		$this->Acl->check(array('permission' => true), $this->$modelname->data);
+		$modelName = Inflector::singularize($this->name);
+		$this->set('_layout', $this->$modelName->data);
+		$this->Acl->check(array('permission' => true), $this->$modelName->data);
 	}
 	
 
