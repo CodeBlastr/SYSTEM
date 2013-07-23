@@ -14,11 +14,19 @@ foreach ($userRoles as $userRole):
 		$class = ' class="altrow"';
 	}
 ?>
-    <tr<?php echo $class;?>>
-      <td><?php echo $userRole['UserRole']['id']; ?></td>
-      <td><?php echo $userRole['UserRole']['name']; ?></td>
-      <td><?php echo $userRole['UserRole']['view_prefix']; ?></td>
-      <td class="actions"><?php echo $this->Html->link(__('View', true), array('action' => 'view', $userRole['UserRole']['id'])); ?> <?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $userRole['UserRole']['id'])); ?> <?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $userRole['UserRole']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $userRole['UserRole']['id'])); ?></td>
+	<tr<?php echo $class;?>>
+		<td><?php echo $userRole['UserRole']['id']; ?></td>
+      	<td><?php echo $userRole['UserRole']['name']; ?></td>
+      	<td><?php echo $userRole['UserRole']['view_prefix']; ?></td>
+      	<td class="actions">
+      		<?php 
+      		echo __('%s %s %s %s', 
+      			$this->Html->link(__('View', true), array('action' => 'view', $userRole['UserRole']['id']), array('class' => 'btn btn-mini')),
+      			$this->Html->link(__('Edit', true), array('action' => 'edit', $userRole['UserRole']['id']), array('class' => 'btn btn-mini')),
+				$this->Html->link(__('Duplicate', true), array('action' => 'add', $userRole['UserRole']['id']), array('class' => 'btn btn-mini')),
+				$this->Html->link(__('Delete', true), array('action' => 'delete', $userRole['UserRole']['id']), array('class' => 'btn btn-mini'), sprintf(__('Are you sure you want to delete # %s?', true), $userRole['UserRole']['id']))
+			); ?>
+		</td>
     </tr>
     <?php endforeach; ?>
   </table>
@@ -31,6 +39,7 @@ $this->set('context_menu', array('menus' => array(
 		'heading' => 'User Roles',
 		'items' => array(
 			 $this->Html->link(__('Add User Role', true), array('action' => 'add')),
+			 $this->Html->link(__('Manage Permissions', true), array('plugin' => 'privileges', 'controller' => 'sections')),
 			 )
 		),
 	array(
