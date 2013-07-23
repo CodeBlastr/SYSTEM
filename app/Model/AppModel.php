@@ -170,7 +170,7 @@ class AppModel extends Model {
  * afterFind method
  */
 	public function afterFind($results, $primary = false) {		 
-		/* Deprecated : Not sure if it broke anything 7/21/13 RK
+		/* Deprecated : Not sure if removing broke anything 7/21/13 RK
  		// With this function our total_count now appears with the rest of the fields in the resulting data array.
 		// http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
     	if($primary == true) {
@@ -182,7 +182,9 @@ class AppModel extends Model {
 	             }
 			}
 		} */
-		return parent::afterFind($results, $primary);
+		
+		// used so that the app controller can pass all data to elements and components in a consistent way
+		$this->data = !empty($this->data) ? $this->data : $results;
 	}
 
 /**
