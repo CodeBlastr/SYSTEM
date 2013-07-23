@@ -40,9 +40,11 @@ foreach ($data as $ac) {
 					$q = 0;
 					foreach($userFields as $field) {
 						if($hasCheck) {
-							$isUserFieldSet = strpos($ac['Requestor'][$q]['ArosAco']['user_fields'], $field) > 0 || strpos($ac['Requestor'][$q]['ArosAco']['user_fields'], $field) === 0;
-							$isRequestorMatched = $ac['Requestor'][$q]['ArosAco']['aro_id'] == $groups[$i]["Requestor"]['id'];
-							$checked = $isUserFieldSet && $isRequestorMatched;
+							// check each user field to see if it is set
+							$requestors = Set::combine($ac['Requestor'], '{n}.ArosAco.aro_id', '{n}.ArosAco.user_fields');
+							$requestorUserFields = $requestors[$groups[$i]['Requestor']['id']];
+							$isUserFieldSet = strpos($requestorUserFields, $field) > 0 || strpos($requestorUserFields, $field) === 0;
+							$checked = $isUserFieldSet;
 						} else {
 							$checked = false;
 						}
