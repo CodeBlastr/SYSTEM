@@ -68,7 +68,6 @@ class WebpagesAppModel extends AppModel {
 				}
 			}
 			
-			
 			foreach ($templates as $template) {
 				$id = $this->find('first', array('conditions' => array('name' => $template['name']), 'fields' => array('id', 'modified'), 'callbacks' => false));
 				if (!empty($id)) {
