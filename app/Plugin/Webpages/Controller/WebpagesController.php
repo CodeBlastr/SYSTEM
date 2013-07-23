@@ -176,7 +176,6 @@ class WebpagesController extends WebpagesAppController {
 			throw new NotFoundException(__('Page not found'));
 		}
 		
-		$this->Webpage->syncFiles('template'); // template synching
 		$page = $webpage = $this->Webpage->find("first", array(
 		    "conditions" => array(
                 'Webpage.id' => $id
