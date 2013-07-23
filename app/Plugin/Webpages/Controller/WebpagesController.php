@@ -176,7 +176,7 @@ class WebpagesController extends WebpagesAppController {
 			throw new NotFoundException(__('Page not found'));
 		}
 		
-		$update = $this->Webpage->syncFiles('template'); // template 
+		$this->Webpage->syncFiles('template'); // template synching
 		$page = $webpage = $this->Webpage->find("first", array(
 		    "conditions" => array(
                 'Webpage.id' => $id
@@ -187,12 +187,10 @@ class WebpagesController extends WebpagesAppController {
 		    ));
 		
 		if ($webpage['Webpage']['type'] == 'template') {
-			// do nothing??
-		} 
-		else {
-			$userRoleId = $this->Session->read('Auth.User.user_role_id');
-			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
-			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" class="edit-box" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
+			// do nothing, we don't need to parse template pages, because if we're viewing a template page we want to see the template tags
+		} else {
+			$this->Webpage->parseIncludedPages ($webpage, null, null, $this->userRoleId, $this->request);
+			$webpage['Webpage']['content'] = $this->userRoleId == 1 ? '<div id="webpage'.$id.'" class="edit-box" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>' : $webpage['Webpage']['content'];
 		}
 
 		if (!empty($this->request->params['requested'])) {
