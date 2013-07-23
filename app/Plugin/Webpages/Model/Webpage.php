@@ -211,7 +211,7 @@ class Webpage extends WebpagesAppModel {
  * @param string
  * @param object
  * @return string
- * @todo This really needs to be redone, and cleaned.
+ * @todo This really needs to be redone, and cleaned. (like what is the alias stuff for???)
  */
     public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
         $requestUrl = $request->url;
@@ -240,49 +240,63 @@ class Webpage extends WebpagesAppModel {
 				default:
 				$include_container = array('start' => '<div id="webpage' . trim($matches[2][$i]) . '" pageid="' . trim($matches[2][$i]) . '" class="edit-box global-edit-box">', 'end' => '</div>');
 			}
-		// remove the div.global_edit_area's if this user is not userRoleId = 1
-		if ($userRoleId !== '1') {
-		    $include_container = array('start' => '', 'end' => '');
-		}
-		$webpage2 = $this->find("first", array(
-		    "conditions" => array("Webpage.id" => trim($matches[2][$i])),
-		    'contain' => array('Child'),
-		    ));
-		/** @todo Find out WTF this was for **/
-		if (empty($webpage2) || !is_array($webpage2)) {
-		    continue;
-		}
-		if(!empty($webpage2['Child'])) {
-		    foreach($webpage2['Child'] as $child) {
-				$urls = unserialize(gzuncompress(base64_decode($child['template_urls'])));
-				if(!empty($urls)) {
-					foreach($urls as $url) {
-						$urlString = str_replace('/', '\/', trim($url));
-						$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
-						$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
-						$urlCompare = strpos($requestUrl, '/') === 0 ? substr($requestUrl, 1) : $requestUrl;
-						if (preg_match($urlRegEx, $urlCompare)) {
-							$webpage2['Webpage'] = $child;
-							break;
-						}
-						if(!empty($aliasName)) {
-							if($aliasName[strlen($aliasName)-1] !== '/') {
-								$aliasName .= '/';
-							}
-							
-							$urlCompare = strpos($aliasName, '/') === 0 ? substr($aliasName, 1) : $aliasName;
-							
+			// remove the div.global_edit_area's if this user is not userRoleId = 1
+			if ($userRoleId !== '1') {
+				$include_container = array('start' => '', 'end' => '');
+			}
+			$webpage2 = $this->find("first", array(
+				"conditions" => array("Webpage.id" => trim($matches[2][$i])),
+				'contain' => array(
+					'Child' => array(
+						'fields' => array(
+							'Child.id',
+							'Child.template_urls',
+							'Child.content'
+						)
+					)
+				),
+				'fields' => array(
+					'Webpage.id',
+					'Webpage.content',
+					),
+				'callbacks' => false
+				));
+			// @todo Find out WTF this is for (Comment your damn code)
+			if (empty($webpage2) || !is_array($webpage2)) {
+				continue;
+			}
+			if(!empty($webpage2['Child'])) {
+				foreach($webpage2['Child'] as $child) {
+					$urls = unserialize(gzuncompress(base64_decode($child['template_urls'])));
+					if(!empty($urls)) {
+						foreach($urls as $url) {
+							$urlString = str_replace('/', '\/', trim($url));
+							$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
+							$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
+							$urlCompare = strpos($requestUrl, '/') === 0 ? substr($requestUrl, 1) : $requestUrl;
 							if (preg_match($urlRegEx, $urlCompare)) {
 								$webpage2['Webpage'] = $child;
 								break;
 							}
+							// could someone please friggin comment why this is put here????
+							if(!empty($aliasName)) {
+								if($aliasName[strlen($aliasName)-1] !== '/') {
+									$aliasName .= '/';
+								}
+
+								$urlCompare = strpos($aliasName, '/') === 0 ? substr($aliasName, 1) : $aliasName;
+
+								if (preg_match($urlRegEx, $urlCompare)) {
+									$webpage2['Webpage'] = $child;
+									break;
+								}
+							}
 						}
 					}
 				}
-		    }
-		}
-			
-		$this->parseIncludedPages($webpage2, $parents, $action, $userRoleId, $request);
+			}
+
+			$this->parseIncludedPages($webpage2, $parents, $action, $userRoleId, $request);
 			if ($webpage['Webpage']['type'] == 'template') {
 				$webpage["Webpage"]["content"] = str_replace($matches[0][$i], $include_container['start'] . $webpage2["Webpage"]["content"] . $include_container['end'], $webpage["Webpage"]["content"]);
 			} else {
@@ -515,6 +529,7 @@ class Webpage extends WebpagesAppModel {
                 ), 
             'fields' => array(
                 'Webpage.id',
+                'Webpage.name',
                 'Webpage.is_default',
                 'Webpage.template_urls',
                 'Webpage.user_roles'
@@ -525,7 +540,8 @@ class Webpage extends WebpagesAppModel {
         $setting['Setting']['type'] = 'App';
         $setting['Setting']['name'] = 'TEMPLATES';
         foreach ($templates as $template) {
-            $value = array('templateId' => $template['Webpage']['id'], 'isDefault' => $template['Webpage']['is_default'], 'urls' => $this->templateUrls($template), 'userRoles' => $template['Webpage']['user_roles']);
+            $value = array('templateName' => $template['Webpage']['name'], 'templateId' => $template['Webpage']['id'], 'isDefault' => $template['Webpage']['is_default'], 'urls' => $this->templateUrls($template), 'userRoles' => $template['Webpage']['user_roles']);
+            // deprecated this line in favor of the line right after (so that we can pull the file instead of a db call) 7/22/2013 RK
             $setting['Setting']['value'] .= 'template['.$template['Webpage']['id'].'] = "' . base64_encode(gzcompress(serialize($value))) . '"' . PHP_EOL;
             $i++;
         }

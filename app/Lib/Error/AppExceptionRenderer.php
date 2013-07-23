@@ -11,7 +11,10 @@ class AppExceptionRenderer extends ExceptionRenderer {
 			} elseif (get_class($exception) == 'PDOException') {
 				// had to put this in because debugger would fix the error and you'd never see it
 				debug($exception->errorInfo);
-			} 
+			} elseif (get_class($exception) == 'MissingPluginException') {
+				// had to put this in because debugger would fix the error and you'd never see it
+				debug($exception->getMessage());
+			}
 		}
 		
 		App::uses('AppErrorController', 'Controller');

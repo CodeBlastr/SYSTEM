@@ -1,4 +1,5 @@
 <?php
+App::uses('UsersAppController', 'Users.Controller');
 /**
  * User Roles Controller
  *
@@ -22,17 +23,35 @@
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  * @todo		  Consider moving user roles and users to a plugin, (maybe the permissions plugin) or replacing this with the users plugin available from CakeDC.
  */
-class UserRolesController extends AppController {
+class UserRolesController extends UsersAppController {
 
 	public $name = 'UserRoles';
     
 	public $uses = 'Users.UserRole';
-
+	
+/**
+ * Before Render method
+ * 
+ */
+	public function beforeRender() {
+		$this->layout = 'default';
+		return parent::beforeRender();
+	}
+	
+/**
+ * Index method
+ * 
+ */
 	public function index() {		
 		$this->UserRole->recursive = 0;
 		$this->set('userRoles', $this->paginate());
 	}
 
+/**
+ * View method
+ * 
+ * @param int $id
+ */
 	public function view($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid UserRole.', true));
@@ -41,7 +60,12 @@ class UserRolesController extends AppController {
 		$this->set('userRole', $this->UserRole->read(null, $id));
 	}
 
-	public function add() {	
+/**
+ * Add method
+ * 
+ * @param int $duplicateId (user role to duplicate permissions for)
+ */
+	public function add($duplicateId = null) {	
 		if (!empty($this->request->data)) {
 			$this->UserRole->create();
 			if ($this->UserRole->save($this->request->data)) {
@@ -51,9 +75,17 @@ class UserRolesController extends AppController {
 				$this->Session->setFlash(__('The UserRole could not be saved. Please, try again.', true));
 			}
 		}
+		$this->request->data['UserRole']['duplicate'] = $duplicateId;
 		$this->set('viewPrefixes', $this->UserRole->viewPrefixes);
+		$this->set('title_for_layout', $titleForLayout = !empty($duplicateId) ? __('Add New User Role <small>(Duplicating user role "%s")</small>', $this->UserRole->field('name', array('UserRole.id' => $duplicateId))) : __('Add User Role'));
+		$this->set('page_title_for_layout', $titleForLayout);
 	}
 
+/**
+ * Edit method
+ * 
+ * @param int $id
+ */
 	public function edit($id = null) {
 		if (!$id && empty($this->request->data)) {
 			$this->Session->setFlash(__('Invalid UserRole', true));
@@ -73,6 +105,11 @@ class UserRolesController extends AppController {
 		$this->set('viewPrefixes', $this->UserRole->viewPrefixes);
 	}
 
+/**
+ * Delete method
+ * 
+ * @param int $id
+ */
 	public function delete($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for UserRole', true));
