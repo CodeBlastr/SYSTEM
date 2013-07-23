@@ -154,7 +154,7 @@
     <div class="masonryBox dashboardBox tagActivities">
         <h3 class="title"><i class="icon-th-large"></i> Search Contacts </h3>
         <?php   
-        echo $this->Element('forms/search', array(
+        echo $this->Element('forms/search', array('forms_search' => array(
             'url' => '/contacts/contacts/index/', 
             'inputs' => array(
                 array(
@@ -165,7 +165,7 @@
                         )
                     ),
                 )
-            )); ?>
+            ))); ?>
     </div>
     
     
