@@ -59,9 +59,9 @@ class MetableBehavior extends ModelBehavior {
 				// extract array from $existingMeta['Meta']['value']
 				$existingMetaValue = unserialize( $existingMeta['Meta']['value'] );
 
-				// clean out obsolete exclamation points
 				foreach ( $existingMetaValue as $k => $v ) {
-					if(strstr($k, '!')) {
+					// clean out obsolete exclamation points
+					if ( strstr($k, '!') ) {
 						$noPoint = str_replace('!', '', $k);
 						$existingMetaValue[$noPoint] = $v;
 						unset( $existingMetaValue[$k] );
@@ -69,7 +69,7 @@ class MetableBehavior extends ModelBehavior {
 				}
 
 				// merge that array with $metadata
-				$updatedMetaValue = Set::merge( $existingMetaValue, $metadata );
+				$updatedMetaValue = ZuhaSet::array_replace_r( $existingMetaValue, $metadata );
 
 				// put it back in $existingMeta
 				$existingMeta['Meta']['value'] = mysql_escape_string( serialize($updatedMetaValue) );

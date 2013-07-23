@@ -196,10 +196,19 @@ class Contact extends ContactsAppModel {
     	parent::__construct($id, $table, $ds);
 		$this->order = array("{$this->alias}.name");
     }
+
+/**
+ * Before validate method
+ */
+	public function beforeValidate($options = array()) {
+		$this->data = $this->_cleanContactData($this->data);
+		return parent::beforeValidate($options);
+	}
 	
-	
+/**
+ * Before save
+ */
 	public function beforeSave($options = array()) {
-		!empty($this->data['Contact']['contact_type']) ? $this->data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']) : null; 
 		if (in_array('Activities', CakePlugin::loaded()) && !empty($this->data['Contact']['contact_type']) && $this->data['Contact']['contact_type'] == 'lead') {
 			// log when leads are created
 			$this->Behaviors->attach('Activities.Loggable', array(
@@ -214,6 +223,11 @@ class Contact extends ContactsAppModel {
 		return parent::beforeSave($options);
 	}
 	
+/**
+ * Aftersave method
+ * 
+ * @param bool $created
+ */
 	public function afterSave($created) {
 		$this->notifyAssignee();
 		return parent::afterSave($created);
@@ -226,26 +240,7 @@ class Contact extends ContactsAppModel {
  * @return bool
  */
 	public function add($data) {
-		$data = $this->_cleanContactData($data);
-		if ($this->saveAll($data)) {
-			return __d('contacts', 'Contact saved successfully.');
-		} else {
-			$error = 'Error : ';
-			foreach ($this->invalidFields() as $models) {
-				if (is_array($models)) {
-					foreach ($models as $err) {
-						if(is_string($err)) $error .= $err . ', ';
-						if(is_array($err)) {
-                          foreach($err as $er)
-                          $error .= $er . ', ';
-                        }
-					}
-				} else {
-					$error .= $models;
-				}
-			}
-			throw new Exception($error);
-		}
+		return $this->saveAll($data);
 	}
 
 /**
@@ -310,6 +305,11 @@ class Contact extends ContactsAppModel {
  * @return array
  */
 	protected function _cleanContactData($data) {
+		
+		if (!empty($data['Contact']['contact_type'])) {
+			 $data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']);
+		}
+		
 		// get rid of the name field so it can be merged from existing data if empty
 		if (isset($data['Contact']['name']) && empty($data['Contact']['name'])) {
 			unset($data['Contact']['name']); 
