@@ -3,12 +3,15 @@ App::uses('PrivilegesAppModel', 'Privileges.Model');
 
 class Requestor extends PrivilegesAppModel {
 
-	var $name = 'Requestor'; 
-	var $useTable = 'aros';
-	var $displayField = 'model';
-	var $actsAs = array('Tree');
+	public $name = 'Requestor'; 
+	
+	public $useTable = 'aros';
+	
+	public $displayField = 'model';
+	
+	public $actsAs = array('Tree');
 
-	var $hasAndBelongsToMany = array(
+	public $hasAndBelongsToMany = array(
 		'Section'=>array(
 			'className'=>'Privileges.Section',
 			'joinTable'=>'aros_acos',
@@ -17,16 +20,17 @@ class Requestor extends PrivilegesAppModel {
 			)
 		);
 	
-	/*  I think, but I'm not sure that this is causing an error on the privileges index page,
-		because the foreign_key is not unique.
-	var $belongsTo = array(
+	/* I think, but I'm not sure that this is causing an error on the privileges index page,
+	 * because the foreign_key is not unique.  (Sign and date please, I don't know how long this has been commented
+	 * out, and probably should be removed by now.  7/23/2013 RK)
+	public $belongsTo = array(
 		'UserRole' => array(
 	        'className' => 'Users.UserRole',
 	    	'foreignKey' => 'foreign_key',
 	        ),
 		);*/
 	
-	var $hasMany = array(
+	public $hasMany = array(
 		'Privilege' => array(
 	    	'className'     => 'Privileges.Privilege',
 	        'foreignKey'    => 'aro_id'
@@ -34,4 +38,3 @@ class Requestor extends PrivilegesAppModel {
 		);
 	
 }
-?>
