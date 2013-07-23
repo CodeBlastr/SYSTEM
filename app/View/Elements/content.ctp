@@ -3,6 +3,45 @@ $flash_for_layout = $this->Session->flash();
 $flash_auth_for_layout = $this->Session->flash('auth');
 if (!empty($defaultTemplate)) {
 	
+	// configurable template settings ex. {config: 0}
+	$modelName = Inflector::classify($this->request->controller);
+	$_layout = !empty($_layout[0]) ? $_layout[0] : $_layout; // takes care of $Model->data results which are set in AppModel afterfind()
+	if (!empty($_layout[$modelName]['_layout']) && !empty($_layout[$modelName]['_layoutSettings'])) {
+		$settings = !empty($_layout[$modelName]['_layoutSettings']) ? unserialize($_layout[$modelName]['_layoutSettings']) : null;
+		$actionMatch = in_array($this->request->action, $settings['settings']['actions']);
+		$settings = $settings['settings'];
+
+		if ($actionMatch === true) { // test if we're in a good action to apply the template to
+			$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$_layout[$modelName]['_layout'].'.ctp';
+			if (file_exists($templateFile)) {
+				$templateContents = preg_split('/\?>/s', file_get_contents($templateFile));
+				$searches = array('<?php', '/**', 'Settings', ' * ', ' */');
+				/** get default settings from the top of the template file.  Ex.
+				<?php
+				/**
+				 * Settings
+				 * elements[] = "config 0"
+				 * elements[] = "config 1"
+				 * elements[] = "config 2"
+				 * / (remove space between * / and delete this paranthesis)
+				?>
+				*/
+				$settings = !empty($settings) ? $settings : parse_ini_string(trim(str_replace($searches, '', $templateContents[0])));
+				$defaultTemplate["Webpage"]["content"] = trim($templateContents[1]);
+				preg_match_all ("/(\{config: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $configMatches);
+				$i = 0;
+				foreach ($configMatches[0] as $configMatch) {
+					$replacement = $settings['elements'][trim($configMatches[3][$i])];
+					// removed cache for forms, because you can't set it based on form inputs
+					// $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
+					$defaultTemplate["Webpage"]["content"] = str_replace($configMatch, $replacement, $defaultTemplate['Webpage']['content']);
+					$i++;
+				}
+			}
+		}
+	}
+	
+	
 	// matches helper template tags like {helper: content_for_layout}
 	preg_match_all ("/\{helper: (.*?)\}/", $defaultTemplate["Webpage"]["content"], $matches);
 	$i = 0;
@@ -72,7 +111,18 @@ if (!empty($defaultTemplate)) {
 		$formCfg['id'] = trim($matches[3][$i]);
 		// removed cache for forms, because you can't set it based on form inputs
 		// $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
-		$defaultTemplate["Webpage"]["content"] = str_replace($formMatch, $this->element('forms', $formCfg, array('plugin' => 'forms')), $defaultTemplate['Webpage']['content']);
+		$defaultTemplate["Webpage"]["content"] = str_replace($formMatch, $this->element('Forms.forms', $formCfg), $defaultTemplate['Webpage']['content']);
+		$i++;
+	}
+	
+	// matches form template tags {answer: Id} for example {answer: 1}
+	preg_match_all ("/(\{answer: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	$i = 0;
+	foreach ($matches[0] as $answerMatch) {
+		$answerCfg['id'] = trim($matches[3][$i]);
+		// removed cache for forms, because you can't set it based on form inputs
+		// $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
+		$defaultTemplate["Webpage"]["content"] = str_replace($answerMatch, $this->element('Answers.answer', $answerCfg), $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
 	
