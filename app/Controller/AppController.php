@@ -636,7 +636,7 @@ class AppController extends Controller {
 		if (!empty($this->templateId)) {
             $this->set('templateId', $this->templateId); // for the admin navbar
 			$this->layout = 'custom';
-		} 
+		}
 	}
 
 

@@ -666,10 +666,12 @@ class InstallController extends Controller {
  * If it is not the first upload then we want access to index() and site() to be restricted.
  */
     protected function _handleSecurity() {
-    	if (defined('SITE_DIR') && strpos(SITE_DIR, $_SERVER['HTTP_HOST'])) {
-			$this->Session->setFlash(__('Site installed successfully.')); 
-			$this->redirect('/');
-		}
+    	// this was here to handle post install redirect (so that it wouldn't come back to the install page)
+    	// but it is not working, because you also see this message when you click install plugin
+    	// if (defined('SITE_DIR') && strpos(SITE_DIR, $_SERVER['HTTP_HOST'])) {
+			// $this->Session->setFlash(__('Site installed successfully.')); 
+			// $this->redirect('/');
+		// }
 		
     	if (Configure::read('Install') === true) {
     		return true;
