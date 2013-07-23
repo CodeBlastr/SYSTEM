@@ -240,49 +240,61 @@ class Webpage extends WebpagesAppModel {
 				default:
 				$include_container = array('start' => '<div id="webpage' . trim($matches[2][$i]) . '" pageid="' . trim($matches[2][$i]) . '" class="edit-box global-edit-box">', 'end' => '</div>');
 			}
-		// remove the div.global_edit_area's if this user is not userRoleId = 1
-		if ($userRoleId !== '1') {
-		    $include_container = array('start' => '', 'end' => '');
-		}
-		$webpage2 = $this->find("first", array(
-		    "conditions" => array("Webpage.id" => trim($matches[2][$i])),
-		    'contain' => array('Child'),
-		    ));
-		/** @todo Find out WTF this was for **/
-		if (empty($webpage2) || !is_array($webpage2)) {
-		    continue;
-		}
-		if(!empty($webpage2['Child'])) {
-		    foreach($webpage2['Child'] as $child) {
-				$urls = unserialize(gzuncompress(base64_decode($child['template_urls'])));
-				if(!empty($urls)) {
-					foreach($urls as $url) {
-						$urlString = str_replace('/', '\/', trim($url));
-						$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
-						$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
-						$urlCompare = strpos($requestUrl, '/') === 0 ? substr($requestUrl, 1) : $requestUrl;
-						if (preg_match($urlRegEx, $urlCompare)) {
-							$webpage2['Webpage'] = $child;
-							break;
-						}
-						if(!empty($aliasName)) {
-							if($aliasName[strlen($aliasName)-1] !== '/') {
-								$aliasName .= '/';
-							}
-							
-							$urlCompare = strpos($aliasName, '/') === 0 ? substr($aliasName, 1) : $aliasName;
-							
+			// remove the div.global_edit_area's if this user is not userRoleId = 1
+			if ($userRoleId !== '1') {
+				$include_container = array('start' => '', 'end' => '');
+			}
+			$webpage2 = $this->find("first", array(
+				"conditions" => array("Webpage.id" => trim($matches[2][$i])),
+				'contain' => array(
+					'Child' => array(
+						'fields' => array(
+							'Child.id',
+							'Child.template_urls',
+							'Child.content'
+						)
+					)
+				),
+				'fields' => array(
+					'Webpage.id',
+					'Webpage.content',
+					)
+				));
+			/** @todo Find out WTF this was for **/
+			if (empty($webpage2) || !is_array($webpage2)) {
+				continue;
+			}
+			if(!empty($webpage2['Child'])) {
+				foreach($webpage2['Child'] as $child) {
+					$urls = unserialize(gzuncompress(base64_decode($child['template_urls'])));
+					if(!empty($urls)) {
+						foreach($urls as $url) {
+							$urlString = str_replace('/', '\/', trim($url));
+							$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
+							$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
+							$urlCompare = strpos($requestUrl, '/') === 0 ? substr($requestUrl, 1) : $requestUrl;
 							if (preg_match($urlRegEx, $urlCompare)) {
 								$webpage2['Webpage'] = $child;
 								break;
 							}
+							if(!empty($aliasName)) {
+								if($aliasName[strlen($aliasName)-1] !== '/') {
+									$aliasName .= '/';
+								}
+
+								$urlCompare = strpos($aliasName, '/') === 0 ? substr($aliasName, 1) : $aliasName;
+
+								if (preg_match($urlRegEx, $urlCompare)) {
+									$webpage2['Webpage'] = $child;
+									break;
+								}
+							}
 						}
 					}
 				}
-		    }
-		}
-			
-		$this->parseIncludedPages($webpage2, $parents, $action, $userRoleId, $request);
+			}
+
+			$this->parseIncludedPages($webpage2, $parents, $action, $userRoleId, $request);
 			if ($webpage['Webpage']['type'] == 'template') {
 				$webpage["Webpage"]["content"] = str_replace($matches[0][$i], $include_container['start'] . $webpage2["Webpage"]["content"] . $include_container['end'], $webpage["Webpage"]["content"]);
 			} else {
@@ -316,11 +328,12 @@ class Webpage extends WebpagesAppModel {
 		}
         
 		if (empty($data['RecordLevelAccess']['UserRole'])) {
+			$data['Webpage']['user_roles'] = '';
 			unset($data['RecordLevelAccess']);
 		} else {
 			$data['Webpage']['user_roles'] = serialize($data['RecordLevelAccess']['UserRole']);
 		}
-		
+
 		return $data;
 	}
 	
