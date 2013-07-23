@@ -797,7 +797,7 @@ class _User extends UsersAppModel {
 					'User.forgot_key',
 					),
 				));
-			# W at the start of the key tells us the account needs to be verified still.
+			// W at the start of the key tells us the account needs to be verified still.
 			if ($user['User']['forgot_key'][0] != 'W') {
 				return $user;
 			} else {

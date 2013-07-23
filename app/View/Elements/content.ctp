@@ -6,8 +6,8 @@ if (!empty($defaultTemplate)) {
 	// configurable template settings ex. {config: 0}
 	$modelName = Inflector::classify($this->request->controller);
 	$_layout = !empty($_layout[0]) ? $_layout[0] : $_layout; // takes care of $Model->data results which are set in AppModel afterfind()
-	if (!empty($_layout[$modelName]['_layout']) && !empty($_layout[$modelName]['_layoutSettings'])) {
-		$settings = !empty($_layout[$modelName]['_layoutSettings']) ? unserialize($_layout[$modelName]['_layoutSettings']) : null;
+	if (!empty($_layout[$modelName]['_layout'])) {
+		$settings = !empty($_layout[$modelName]['_layoutSettings']) ? unserialize($_layout[$modelName]['_layoutSettings']) : array('settings' => array('actions' => array('view')));
 		$actionMatch = in_array($this->request->action, $settings['settings']['actions']);
 		$settings = $settings['settings'];
 
@@ -26,7 +26,7 @@ if (!empty($defaultTemplate)) {
 				 * / (remove space between * / and delete this paranthesis)
 				?>
 				*/
-				$settings = !empty($settings) ? $settings : parse_ini_string(trim(str_replace($searches, '', $templateContents[0])));
+				$settings = !empty($settings['elements']) ? $settings : parse_ini_string(trim(str_replace($searches, '', $templateContents[0])));
 				$defaultTemplate["Webpage"]["content"] = trim($templateContents[1]);
 				preg_match_all ("/(\{config: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $configMatches);
 				$i = 0;
