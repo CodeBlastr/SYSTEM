@@ -611,7 +611,7 @@ class AppController extends Controller {
 			if (!empty($templates) && empty($this->templateId)) {
 				foreach ($templates as $key => $template) {
 					if (!empty($template['isDefault'])) {
-						$this->templateId = $template['templateId'];
+						$this->templateId = $template['templateName'];
 						$this->templateId = !empty($template['userRoles']) ? $this->_userTemplate($template) : $this->templateId;
 					}
 					if (!empty($this->templateId)) {
@@ -621,14 +621,16 @@ class AppController extends Controller {
 				} // end loop
 			}
 		}
+		// getting rid of the template in the navbar (no one uses it) 7/22/2013 RK
 		// this is because the Webpage model is not loaded for the install site page, and 'all' so that we can pass all templates to the navbar
-		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('all', array('conditions' => array('Webpage.type' => 'template'), 'order' => array('FIND_IN_SET(`Webpage`.`id`, \''.$this->templateId.'\')' => 'DESC')));
-        $this->set('templates', Set::combine($templated, '{n}.Webpage.id', '{n}.Webpage.name')); // for the admin navbar
-        $templated = !empty($this->templateId) ? Set::extract('/Webpage[id=' . $this->templateId . ']', $templated) : null; // getting it back to 'first' type results
-        $templated = !empty($templated[0]) ? $templated[0] : null; // getting it back to 'first' type results
-        
-		$userRoleId = $this->Session->read('Auth.User.user_role_id');
-        $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId, $this->request);
+		// $templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('all', array('conditions' => array('Webpage.type' => 'template'), 'order' => array('FIND_IN_SET(`Webpage`.`id`, \''.$this->templateId.'\')' => 'DESC')));
+		$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$this->templateId;
+		$templated['Webpage']['content'] = file_exists($templateFile) ? file_get_contents($templateFile) : '';
+		// $templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $this->templateId), 'callbacks' => false));
+        // $this->set('templates', Set::combine($templated, '{n}.Webpage.id', '{n}.Webpage.name')); // for the admin navbar
+        // $templated = !empty($this->templateId) ? Set::extract('/Webpage[id=' . $this->templateId . ']', $templated) : null; // getting it back to 'first' type results
+        // $templated = !empty($templated[0]) ? $templated[0] : null; // getting it back to 'first' type results
+        $this->Webpage->parseIncludedPages($templated, null, null, $this->userRoleId, $this->request);
         $this->set('defaultTemplate', $templated);
         
 		if (!empty($this->templateId)) {
@@ -652,11 +654,11 @@ class AppController extends Controller {
 		if (!empty($data['userRoles'])) {
 			foreach ($data['userRoles'] as $userRole) {
 				if ($userRole == $currentUserRole) {
-					$templateId = $data['templateId'];
+					$templateId = $data['templateName'];
 				}
 			} // end userRole loop
-		} elseif (!empty($data['templateId'])) {
-			$templateId = $data['templateId'];
+		} elseif (!empty($data['templateName'])) {
+			$templateId = $data['templateName'];
 		}
 
 		if (!empty($templateId)) {
@@ -682,7 +684,7 @@ class AppController extends Controller {
 				$url = $this->request->action == 'index' ? $this->request->plugin . '/' . $this->request->controller . '/' . $this->request->action . '/' : $this->request->url . '/';
 				$urlCompare = strpos($url, '/') === 0 ? substr($url, 1) : $url;
 				if (preg_match($urlRegEx, $urlCompare)) {
-					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateId'];
+					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateName'];
 				}
 			$i++;
 			}
@@ -1020,7 +1022,7 @@ class AppController extends Controller {
 	private function _getAcoPath() {
 		if (!empty($this->request->params['pass'][0])) {
 			// check if the record level aco exists first
-			$aco = $this->Acl->Aco->find('first', array(
+			$aco = $this->Acl->Aco->find('count', array(
 				'conditions' => array(
 					'model' => $this->modelClass,
 					'foreign_key' => $this->request->params['pass'][0]
