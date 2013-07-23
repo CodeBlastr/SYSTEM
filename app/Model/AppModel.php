@@ -184,7 +184,8 @@ class AppModel extends Model {
 		} */
 		
 		// used so that the app controller can pass all data to elements and components in a consistent way
-		$this->data = !empty($this->data) ? $this->data : $results;
+		//$this->data = !empty($this->data) ? $this->data : $results;
+		return $results;
 	}
 
 /**
