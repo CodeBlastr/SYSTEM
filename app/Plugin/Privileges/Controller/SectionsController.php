@@ -57,7 +57,6 @@ class SectionsController extends PrivilegesAppController {
 			));
 		$sections = $this->_modelUserFields($sections);
 		$this->set('sections', $sections);
-
 		$this->Section->Requestor->bindModel(array('belongsTo' => array('UserRole' => array('className' => 'Users.UserRole', 'foreignKey' => 'foreign_key'))));
 
 		$groups = $this->Section->Requestor->find('all', array('conditions' => array('Requestor.model' => 'UserRole'), 'contain' => array('UserRole' => array('fields' => array('name', 'id')))));

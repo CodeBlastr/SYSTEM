@@ -354,6 +354,7 @@ class _UsersController extends UsersAppController {
 		// log user in
 		if ($this->Auth->login($user)) {
 			try {
+				$cookieData = $this->request->data;
 				// make sure you don't need to verify your email first
 				$this->User->checkEmailVerification($this->request->data);
 				// save the login meta data
@@ -371,10 +372,10 @@ class _UsersController extends UsersAppController {
 				    unset($this->request->data['User']['rememberMe']);
 				                 
 				    // hash the user's password
-				    $this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
+				    $cookieData['User']['password'] = $this->Auth->password($cookieData['User']['password']);
 				                 
 				    // write the cookie
-				    $this->Cookie->write('rememberMe', $this->request->data['User'], true, $cookieTime);
+				    $this->Cookie->write('rememberMe', $cookieData['User'], true, $cookieTime);
 				}
 				if($forceUrl) {
 					$this->redirect($this->User->loginRedirectUrl('/'));
