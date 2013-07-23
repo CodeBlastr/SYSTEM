@@ -1,4 +1,6 @@
 <?php
+App::uses('PrivilegesAppModel', 'Privileges.Model');
+
 class Requestor extends PrivilegesAppModel {
 
 	var $name = 'Requestor'; 

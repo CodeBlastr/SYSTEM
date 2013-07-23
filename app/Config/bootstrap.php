@@ -225,13 +225,14 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * Flatten a multidimensional array to a single string
 		 * 
 		 * @param array $array
+		 * @param array $options
 		 */
-		public function flatten($array = array()) {
+		public function flatten($array = array(), $options = array('separator' => ',')) {
 			$json  = json_encode($array); // converts an object to an array
 			$array = json_decode($json, true);
 		    $return = array();
 		    @array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
-		    return implode(',', $return);
+		    return implode($options['separator'], $return);
 		}
 	
 		/**
@@ -294,6 +295,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Answer' => 'Answers',
 				'AnswerAnswer' => 'Answers',
 				'AnswerSubmission' => 'Answers',
+				'AnswerStep' => 'Answers',
 				'Aro' => false,
 				'ArosAco' => false,
 				'Banner' => 'Banners',
@@ -393,6 +395,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Tagged' => 'Tags',
 				'Tag' => 'Tags',
 				'Task' => 'Tasks',
+				'TaskAttachment' => 'Tasks',
 				'TicketDepartmentsAssignee' => 'Tickets',
 				'Ticket' => 'Tickets',
 				'TimesheetTime' => 'Timesheets',

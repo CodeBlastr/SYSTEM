@@ -55,6 +55,11 @@ Cache::config('default', array(
  	));
 
 /**
+ * We need to implement our own acl check.
+ */
+Configure::write('Acl.classname', 'ZuhaAcl');
+
+/**
  * Pick the caching engine to use.  If APC is enabled use it.
  * If running via cli - apc is disabled by default. ensure it's available and enabled in this case
  *

@@ -12,6 +12,8 @@ class ContactTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
+		'app.Aro',
+		
 		'plugin.Contacts.Contact',
 		'plugin.Contacts.ContactDetail', // gotta make sure the fixture file exists, not just the config schema!!!
 		'plugin.Contacts.ContactsContact', // gotta make sure the fixture file exists, not just the config schema!!!
@@ -78,6 +80,7 @@ class ContactTestCase extends CakeTestCase {
  * @return void
  */
 	public function testAddEmployee() {
+		$before = $this->Contact->ContactsContact->find('count');
 		$data = array(
 			'Contact' => array(
 				'id' => '4ea754d1-2f50-4f19-8998-4d1245a3a949',
@@ -89,7 +92,10 @@ class ContactTestCase extends CakeTestCase {
 			)
 		);
 		$result = $this->Contact->add($data);
-		$this->assertEqual($result, 'Contact saved successfully.');
+		$after = $this->Contact->ContactsContact->find('count');
+		
+		$this->assertTrue($before < $after); // compares contacts_contacts to see if there is an extra relationship
+		$this->assertTrue($result);
 		
 		$result = $this->Contact->find('first', array('contain' => array('Employer'), 'conditions' => array('Contact.id' => $data['Contact']['id'])));
 		$this->assertEqual($result['Employer'][0]['name'], 'Josie\'s Company');  // shows that the existing Josie was added to Josie's Company
@@ -102,9 +108,10 @@ class ContactTestCase extends CakeTestCase {
  */
 	public function testAddWithUser() {
 		$beforeCount = $this->Contact->find('count');
+		debug($this->Contact->find('all'));
 		$data['Contact']['name'] = 'Issac Contact';
 		$data['User']['id'] = 100;
-		$this->Contact->add($data);
+		debug($this->Contact->add($data));
 		$afterCount = $this->Contact->find('count');
 		$result = $this->Contact->find('first', array('conditions' => array('Contact.id' => $this->Contact->id)));
 		$this->assertTrue(($beforeCount + 1) == $afterCount); // contact added

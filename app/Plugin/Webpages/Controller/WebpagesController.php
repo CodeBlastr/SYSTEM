@@ -176,7 +176,7 @@ class WebpagesController extends WebpagesAppController {
 			throw new NotFoundException(__('Page not found'));
 		}
 		
-		$update = $this->Webpage->syncFiles('template'); // template 
+		$this->Webpage->syncFiles('template'); // template synching
 		$page = $webpage = $this->Webpage->find("first", array(
 		    "conditions" => array(
                 'Webpage.id' => $id
@@ -187,14 +187,16 @@ class WebpagesController extends WebpagesAppController {
 		    ));
 		
 		if ($webpage['Webpage']['type'] == 'template') {
-			// do nothing??
-		} 
-		else {
-			$userRoleId = $this->Session->read('Auth.User.user_role_id');
-			$this->Webpage->parseIncludedPages ($webpage, null, null, $userRoleId, $this->request);
-			$webpage['Webpage']['content'] = '<div id="webpage'.$id.'" class="edit-box" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>';
+			// do nothing, we don't need to parse template pages, because if we're viewing a template page we want to see the template tags
+		} else {
+			$this->Webpage->parseIncludedPages ($webpage, null, null, $this->userRoleId, $this->request);
+			$webpage['Webpage']['content'] = $this->userRoleId == 1 ? '<div id="webpage'.$id.'" class="edit-box" pageid="'.$id.'">'.$webpage['Webpage']['content'].'</div>' : $webpage['Webpage']['content'];
 		}
-		
+
+		if (!empty($this->request->params['requested'])) {
+            return $webpage['Webpage']['content'];
+        }
+
 		if ($_SERVER['REDIRECT_URL'] == '/app/webroot/error') {
 			$webpage = $this->Webpage->handleError($webpage, $this->request);
 		}
@@ -311,9 +313,8 @@ class WebpagesController extends WebpagesAppController {
 		
 		// required to have per page permissions
 		$userRoles = $this->Webpage->Creator->UserRole->find('list');
-		unset($userRoles[1]);
+		
 		$types = $this->Webpage->types();
-		$this->set(compact('userRoles', 'types'));
 
 		if ($this->request->data['Webpage']['type'] == 'template') {
 			if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
@@ -327,11 +328,14 @@ class WebpagesController extends WebpagesAppController {
 				'buttons' => array('Source')
 				));
 		} else {
+			unset($userRoles[1]);
 			$this->set('ckeSettings', null);
 		}
 		// 1/6/2012 rk - $this->set('templateUrls', $this->Webpage->templateUrls($this->request->data));
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
-		
+
+		$this->set(compact('userRoles', 'types'));
+
 		$type = $this->request->data['Webpage']['type'];
 		$this->view = $this->_fileExistsCheck('edit_' . $type . $this->ext) ? 'edit_' . $type : 'edit_content';
         $this->layout = 'default';
