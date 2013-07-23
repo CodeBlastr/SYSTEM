@@ -155,8 +155,8 @@ class AppController extends Controller {
         $this->set('_view', $this->view);
 		// do a final permission check on the user field
 		$modelName = Inflector::singularize($this->name);
-		$this->set('_layout', $this->$modelName->data);
-		$this->Acl->check(array('permission' => true), $this->$modelName->data);
+		$this->set('_layout', $this->$modelName->theme); // set in the themeable behavior
+		$this->Acl->check(array('permission' => true), $this->$modelName->permissionData);
 	}
 	
 
