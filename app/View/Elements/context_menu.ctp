@@ -8,6 +8,7 @@ if (!empty($menus) || !empty($before) || !empty($after)) {
 			$menu .= '<li class="nav-header">' . $menugroup['heading'] . '</li>';
 			if (!empty($menugroup['items'])) {
 				foreach ($menugroup['items'] as $item) {
+					$item = str_replace('">', '" data-permissions="true">', $item); // add check access attribute
 					$menu .= '<li class="nav-item">' . $item . '</li>';
 				}
 			}
