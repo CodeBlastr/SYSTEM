@@ -401,7 +401,10 @@ class _UsersController extends UsersAppController {
  */
 	protected function _forcePwdChange() {
 		if (!empty($this->User->user['User']['pwd_change'])) { // gets set in _loginMeta
-			debug('Must change password : '. $this->User->user['User']['username']);
+			// Uh oh, had a brainstorm...
+			// put this into the app controller and check the session for a positive pwd_change value
+			// and if its set, don't let them visit any page but the password change page.
+			debug('Must change password (read code comments): '. $this->User->user['User']['username']);
 			break;
 		}; 
 	}
