@@ -1,11 +1,11 @@
 <?php
 class ContactAddress extends ContactsAppModel {
-	var $name = 'ContactAddress';
-	var $displayField = 'street1';
-	var $validate = array();
+	public $name = 'ContactAddress';
+	public $displayField = 'street1';
+	public $validate = array();
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
-	var $belongsTo = array(
+	public $belongsTo = array(
 		'ContactAddressType' => array(
 			'className' => 'Enumeration',
 			'foreignKey' => 'contact_address_type',

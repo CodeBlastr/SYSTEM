@@ -211,7 +211,7 @@ class Webpage extends WebpagesAppModel {
  * @param string
  * @param object
  * @return string
- * @todo This really needs to be redone, and cleaned.
+ * @todo This really needs to be redone, and cleaned. (like what is the alias stuff for???)
  */
     public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
         $requestUrl = $request->url;
@@ -258,9 +258,10 @@ class Webpage extends WebpagesAppModel {
 				'fields' => array(
 					'Webpage.id',
 					'Webpage.content',
-					)
+					),
+				'callbacks' => false
 				));
-			/** @todo Find out WTF this was for **/
+			// @todo Find out WTF this is for (Comment your damn code)
 			if (empty($webpage2) || !is_array($webpage2)) {
 				continue;
 			}
@@ -277,6 +278,7 @@ class Webpage extends WebpagesAppModel {
 								$webpage2['Webpage'] = $child;
 								break;
 							}
+							// could someone please friggin comment why this is put here????
 							if(!empty($aliasName)) {
 								if($aliasName[strlen($aliasName)-1] !== '/') {
 									$aliasName .= '/';
@@ -527,6 +529,7 @@ class Webpage extends WebpagesAppModel {
                 ), 
             'fields' => array(
                 'Webpage.id',
+                'Webpage.name',
                 'Webpage.is_default',
                 'Webpage.template_urls',
                 'Webpage.user_roles'
@@ -537,7 +540,8 @@ class Webpage extends WebpagesAppModel {
         $setting['Setting']['type'] = 'App';
         $setting['Setting']['name'] = 'TEMPLATES';
         foreach ($templates as $template) {
-            $value = array('templateId' => $template['Webpage']['id'], 'isDefault' => $template['Webpage']['is_default'], 'urls' => $this->templateUrls($template), 'userRoles' => $template['Webpage']['user_roles']);
+            $value = array('templateName' => $template['Webpage']['name'], 'templateId' => $template['Webpage']['id'], 'isDefault' => $template['Webpage']['is_default'], 'urls' => $this->templateUrls($template), 'userRoles' => $template['Webpage']['user_roles']);
+            // deprecated this line in favor of the line right after (so that we can pull the file instead of a db call) 7/22/2013 RK
             $setting['Setting']['value'] .= 'template['.$template['Webpage']['id'].'] = "' . base64_encode(gzcompress(serialize($value))) . '"' . PHP_EOL;
             $i++;
         }
