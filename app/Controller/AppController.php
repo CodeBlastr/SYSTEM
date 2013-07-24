@@ -147,7 +147,7 @@ class AppController extends Controller {
 		$this->_writeStats();
 		$this->_configEditor();
 		$this->_configAuth();
-		//$this->_forcePwdChange(); /** @todo **/
+		//$this->_forcePwdChange(); /** @todo After creating a user from UserGroups/add, it logged me in as that user. **/
 		$this->_rememberMe();
 		$this->_userAttributes();
 		$this->_checkGuestAccess();
