@@ -331,6 +331,9 @@ class _User extends UsersAppModel {
 		unset($contactData['User']); // we will save this in the user model not from the contact model
 		if ($this->Contact->saveAll($contactData)) {
 			unset($data['Contact']);
+			if ( $this->Contact->id ) {
+				$data['Contact']['id'] = $this->Contact->id;
+			}
 		}
 		return $data;
 	}
