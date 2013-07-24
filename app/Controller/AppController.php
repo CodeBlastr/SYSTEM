@@ -85,6 +85,23 @@ class AppController extends Controller {
 		$this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(' ' . $this->name . ' '));
 	}
 
+/**
+ * Force password change method
+ * 
+ * @param void
+ */
+	protected function _forcePwdChange() {
+		if ($this->Session->read('Auth.User.pwd_change')) {
+			$goodUrls[] = '/users/users/edit/'.$this->Session->read('Auth.User.id').'/pw';
+			$goodUrls[] = '/users/users/logout';
+			if (in_array($this->request->here, $goodUrls) || $this->request->params['requested'] == 1) {
+			} else {
+				$this->Session->setFlash('Please change your password.');
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'edit', $this->Session->read('Auth.User.id'), 'pw'));
+			}
+		}
+	}
+
 
 /**
  * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
@@ -126,6 +143,7 @@ class AppController extends Controller {
 		$this->_writeStats();
 		$this->_configEditor();
 		$this->_configAuth();
+		$this->_forcePwdChange();
 		$this->_rememberMe();
 		$this->_userAttributes();
 		$this->_checkGuestAccess();
