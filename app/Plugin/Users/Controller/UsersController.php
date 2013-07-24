@@ -359,6 +359,8 @@ class _UsersController extends UsersAppController {
 				$this->User->checkEmailVerification($this->request->data);
 				// save the login meta data
 				$this->User->loginMeta($this->request->data);
+				// see if a password change is necessary
+				$this->_forcePwdChange();
 				
 				if (in_array('Connections', CakePlugin::loaded())) {
 					$this->User->Connection->afterLogin($user['User']['id']);
@@ -390,6 +392,18 @@ class _UsersController extends UsersAppController {
 	    } else {
 	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
 	    }
+	}
+
+/**
+ * Force password change method
+ * 
+ * @param void
+ */
+	protected function _forcePwdChange() {
+		if (!empty($this->User->user['User']['pwd_change'])) { // gets set in _loginMeta
+			debug('Must change password : '. $this->User->user['User']['username']);
+			break;
+		}; 
 	}
 
 /**
