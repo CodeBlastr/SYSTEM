@@ -1,5 +1,5 @@
 <?php
-//App::uses('UsersAppController', 'Users.Controller');
+App::uses('UsersAppController', 'Users.Controller');
 /**
  * Users Controller
  *
@@ -251,26 +251,29 @@ class _UsersController extends UsersAppController {
 
 
 /**
- * @todo	Not sure I like the use of contact in the url being possible.  My guess is that you could change the id and register as a different contact, and probably gain access to things you shouldn't.  Maybe switch to some kind of Security::cipher thing.  (on second thought, the database having a unique index on contact_id might keep this from happening)
+ * Register method
  */
 	public function register() {
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
 
 		if (!empty($this->request->data)) {
-			try {
-				$this->User->add($this->request->data);
-				$this->Session->setFlash(__d('users', 'Successful Registration'));
-				$this->_login();
-			} catch (Exception $e) {
-				// if registration verification is required the model will return this code
-				$this->Session->setFlash($e->getMessage());
+			if ($this->User->saveAll($this->request->data)) {
+				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
+					$this->Session->setFlash(__('Success, please check your email'));
+					$this->Auth->logout();
+				} else {
+					$this->Session->setFlash(__('Successful Registration'));
+					$this->_login();
+				}
+			} else {
+				$this->Session->setFlash(ZuhaInflector::flatten($this->User->validationErrors));
 				$this->Auth->logout();
 			}
 
 
 		}
-
+		// view vars
 		$userRoles = $this->User->UserRole->find('list');
 		unset($userRoles[1]); // remove the administrators group by default - too insecure
 		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : 3;
@@ -280,34 +283,49 @@ class _UsersController extends UsersAppController {
 		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
 	}
 
-
+/**
+ * Delete method
+ */
 	public function delete($id) {
 		$this->__delete('User', $id);
 	}
 
-
+/**
+ * Dashboard method
+ */
 	public function dashboard() {
 	}
 
 /**
+ * Restricted method
+ *
  * A page to stop infinite redirect loops when there are errors.
  */
 	public function restricted() {
 	}
 
-
+/**
+ * My method
+ * 
+ * Redirects to the users/view function for the logged in user.
+ */
 	public function my() {
 		$userId = $this->Session->read('Auth.User.id');
+		if($userId == null || $userId == __SYSTEM_GUESTS_USER_ROLE_ID) {
+			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+		}
 		if (!empty($userId)) {
 			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $userId));
 		} else {
-			$this->Session->setFlash('No Session');
-			$this->redirect('/');
+			$this->Session->setFlash('Please Login');
+			$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 		}
 	}
 
 
 /**
+ * Login method
+ * 
  * Public login function to verify access to restricted areas.
  */
 	public function login() {
@@ -330,11 +348,13 @@ class _UsersController extends UsersAppController {
  * Protected Login method
  * 
  * @param array $user
+ * @param bool $forceUrl forces login redirect url
  */
-	protected function _login($user = null) {		
+	protected function _login($user = null, $forceUrl = false) {		
 		// log user in
 		if ($this->Auth->login($user)) {
 			try {
+				$cookieData = $this->request->data;
 				// make sure you don't need to verify your email first
 				$this->User->checkEmailVerification($this->request->data);
 				// save the login meta data
@@ -352,12 +372,16 @@ class _UsersController extends UsersAppController {
 				    unset($this->request->data['User']['rememberMe']);
 				                 
 				    // hash the user's password
-				    $this->request->data['User']['password'] = $this->Auth->password($this->request->data['User']['password']);
+				    $cookieData['User']['password'] = $this->Auth->password($cookieData['User']['password']);
 				                 
 				    // write the cookie
-				    $this->Cookie->write('rememberMe', $this->request->data['User'], true, $cookieTime);
+				    $this->Cookie->write('rememberMe', $cookieData['User'], true, $cookieTime);
 				}
-		        $this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
+				if($forceUrl) {
+					$this->redirect($this->User->loginRedirectUrl('/'));
+				}else {
+					$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
+				}
 			} catch (Exception $e) {
 				$this->Auth->logout();
 				$this->Session->setFlash($e->getMessage());
@@ -385,6 +409,8 @@ class _UsersController extends UsersAppController {
 
 
 /**
+ * Check login method
+ *
  * Used in the ajax-login element to return whether the user is logged in.
  */
 	public function checkLogin() {
@@ -401,7 +427,9 @@ class _UsersController extends UsersAppController {
 
 
 /**
- * Used for Zuha Desktop integration.
+ * Desktop Login method
+ * 
+ * Login method used for desktop app integration.
  *
  * @todo 		This should be updated to some kind of API login (maybe REST) so that any apps can authenticate.
  */
@@ -420,7 +448,7 @@ class _UsersController extends UsersAppController {
 
 
 /**
- * Resend verification
+ * Resend verification method
  *
  * @return void
  */
@@ -438,6 +466,8 @@ class _UsersController extends UsersAppController {
 
 
 /**
+ * Verify method
+ * 
  * Used same column `forgot_key` for storing key. It starts with W for activation, F for forget
  *
  * @todo 	change the column name from forgot_key to something better, like maybe just "key"
@@ -489,7 +519,7 @@ class _UsersController extends UsersAppController {
 
 
 /**
- * Forgot Password
+ * Forgot Password method
  * Used to send a password reset key to the user's email address on file.
  *
  * @todo			This message needs to be configurable.

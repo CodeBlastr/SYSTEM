@@ -12,15 +12,10 @@ class UserRoleTestCase extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'app.transaction_address',
-		'app.transaction',
-		'app.user',
-		'app.transaction_item',
-		'app.customer', 
-		'app.contact',
-		'app.assignee',
-		'app.creator',
-		'app.modifier'
+		'plugin.Users.UserRole',
+		'app.Aro',
+		'app.ArosAco',
+		'app.Setting',
 		);
 
 /**
@@ -31,6 +26,7 @@ class UserRoleTestCase extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->UserRole = ClassRegistry::init('Users.UserRole');
+		$this->ArosAco = ClassRegistry::init('ArosAco');
 	}
 
 /**
@@ -40,7 +36,6 @@ class UserRoleTestCase extends CakeTestCase {
  */
 	public function tearDown() {
 		unset($this->UserRole);
-
 		parent::tearDown();
 	}
     
@@ -50,13 +45,11 @@ class UserRoleTestCase extends CakeTestCase {
  * @return void
  */
     public function testAdd() {
-        
-        
     }
 	
-	/**
-	 * If your app is configured, THIS WILL SUBMIT A REQUEST TO YOUR PAYMENT PROCESSOR
-	 */
+/**
+ * If your app is configured, THIS WILL SUBMIT A REQUEST TO YOUR PAYMENT PROCESSOR
+ */
 	public function testAfterSuccessfulPayment() {
 		$submittedTransaction = array(
 			'TransactionAddress' => array(

@@ -48,7 +48,7 @@ class SectionsController extends PrivilegesAppController {
 					'fields' => array(
 						'id'
 						)
-					)
+					),
 				), 
 			'order' => array(
 				'Section.alias', 
@@ -57,7 +57,6 @@ class SectionsController extends PrivilegesAppController {
 			));
 		$sections = $this->_modelUserFields($sections);
 		$this->set('sections', $sections);
-
 		$this->Section->Requestor->bindModel(array('belongsTo' => array('UserRole' => array('className' => 'Users.UserRole', 'foreignKey' => 'foreign_key'))));
 
 		$groups = $this->Section->Requestor->find('all', array('conditions' => array('Requestor.model' => 'UserRole'), 'contain' => array('UserRole' => array('fields' => array('name', 'id')))));
@@ -66,6 +65,10 @@ class SectionsController extends PrivilegesAppController {
 		$this->set('page_title_for_layout', __('Manage Privileges'));
 	}
 
+/**
+ * User fields method
+ * 
+ */
 	protected function _userFields($parent, $data) {
 		$plugin = $parent['Section']['alias'];
 		$model = Inflector::classify($data[0]['Section']['alias']);
@@ -106,8 +109,8 @@ class SectionsController extends PrivilegesAppController {
 			if ($Model = ClassRegistry::init($register, true)) {
 				$belongs = $Model->belongsTo;
 				foreach ($belongs as $b) {
-					if ($b['className'] == 'Users.user') {
-						$sections[$k]['userfields'][] = $b['foreignKey'];
+					if ($b['className'] == 'Users.User') {
+						$sections[$k]['userFields'][] = $b['foreignKey'];
 					}
 				}
 			} 
@@ -115,16 +118,15 @@ class SectionsController extends PrivilegesAppController {
 		return $sections;
 	}
 	
-	public function loadElement ($name) {
+	public function loadElement($name) {
 		$params = unserialize($this->request->data['json']);
-		
 		$this->layout = null;
 		$this->Section->Requestor->bindModel(array('belongsTo' => array('UserRole' => array('className' => 'Users.UserRole', 'foreignKey' => 'foreign_key'))));
 		$groups = $this->Section->Requestor->find('all', array('conditions' => array('Requestor.model' => 'UserRole'), 'contain' => array('UserRole' => array('fields' => array('name', 'id')))));
 		
 		$this->set(compact('name', 'groups'));
 		$this->set('data', $params['sdata']);
-		$this->set('userfields', $params['userfields']);
+		$this->set('userFields', $params['userFields']);
     }
 
 }
