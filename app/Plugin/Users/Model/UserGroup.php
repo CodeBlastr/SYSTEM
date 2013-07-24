@@ -88,19 +88,6 @@ class UserGroup extends UsersAppModel {
  * @param array $data
  */
 	public function user($data) {
-		$randompassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'),0,3);
-		$randompassword .= substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,3);
-		$randompassword .= substr(str_shuffle('0123456789'),0,3);
-		$randompassword = substr(str_shuffle($randompassword),0,8);
-		$data['User']['password'] = $randompassword;
-		$data['User']['confirm_password'] = $randompassword;
-		$data['User']['pwd_change'] = 1;
-		if ($this->User->saveAll($data)) {
-			$site = defined('SITE_NAME') ? SITE_NAME : 'New';
-			$url = 'http://' . $_SERVER['HTTP_HOST'] . '/users/users/login';
-			$message = __('You have a new user account. <br /><br /> username : %s<br />password : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $data['User']['password'], $url, $url);
-			$this->__sendMail($data['User']['username'], __('%s User Account Created', $site), $message);
-			return true;
-		}
+		return $this->User->procreate($data);
 	}
 }

@@ -261,11 +261,10 @@ class _User extends UsersAppModel {
  * @param bool $created
  */
 	public function afterSave($created) {
-		// add the user to a group if the data for the group exists
-		// DEPRECATED : You should just set the data right and use saveAll() for this!  7/23/2013 RK
-		// if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
-		//	$this->UserGroup->UsersUserGroup->add($this->data);
-		//}
+		// add the user to a group if the data for the group exists (can't use saveAll() because of extra fields)
+		if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
+			$this->UserGroup->UsersUserGroup->add($this->data);
+		}
 		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 			$this->welcome($data[$this->alias]['username']);
 		}
@@ -634,8 +633,10 @@ class _User extends UsersAppModel {
 		}
 
 		// setup a verification key
-		$data[$this->alias]['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null;
-		$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
+		if (empty($data[$this->alias]['forgot_key']) && defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
+			$data[$this->alias]['forgot_key'] = $this->__uuid('W', array('User' => 'forgot_key'));
+			$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
+		}
 		
 		$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
 		if (isset($data[$this->alias]['parent_id']) && empty($data[$this->alias]['parent_id'])) {
@@ -756,6 +757,31 @@ class _User extends UsersAppModel {
 			throw new Exception(__('Credits not Saved'));
 		}
 	}
+	
+/**
+ * Procreate method
+ * Used when you are creating a user for someone else. 
+ * 
+ * @param array $data
+ * @return boolean
+ */
+	public function procreate($data = array()) {
+		$randompassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'),0,3);
+		$randompassword .= substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,3);
+		$randompassword .= substr(str_shuffle('0123456789'),0,3);
+		$randompassword = substr(str_shuffle($randompassword),0,8);
+		$data['User']['password'] = $randompassword;
+		$data['User']['confirm_password'] = $randompassword;
+		$data['User']['forgot_key'] = $this->__uuid('F');
+		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+		if ($this->saveAll($data)) {
+			$site = defined('SITE_NAME') ? SITE_NAME : 'New';
+			$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
+			$message = __('You have a new user account. <br /><br /> username : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $url, $url);
+			$this->__sendMail($data['User']['username'], __('%s User Account Created', $site), $message);
+			return true;
+		}
+	}
 
 
 /*
@@ -783,20 +809,14 @@ class _User extends UsersAppModel {
 	}
 
 /**
+ * Check email verification method
  * Used same column `forgot_key` for storing key. It starts with W for activation, F for forget
  *
  * @todo 	change the column name from forgot_key to something better, like maybe just "key"
  */
 	public function checkEmailVerification($data) {
 		if(!empty($data['User']['username'])) {
-			$user = $this->find('first', array(
-				'conditions' => array(
-					'User.username' => $data['User']['username'],
-					),
-				'fields' => array(
-					'User.forgot_key',
-					),
-				));
+			$user = $this->field('User.forgot_key', array('User.username' => $data['User']['username']));
 			// W at the start of the key tells us the account needs to be verified still.
 			if ($user['User']['forgot_key'][0] != 'W') {
 				return $user;
@@ -820,13 +840,14 @@ class _User extends UsersAppModel {
 	public function welcome($username) {
 		$user = $this->find('first', array('conditions' => array('User.username' => $username)));
 		if (!empty($user)) {
-			$this->set('name', $user['User']['full_name']);
-			$this->set('key', $user['User']['forgot_key']);
+			// don't set variables in the model (seems like the set() function would be available here)
+			//$this->set('name', $user['User']['full_name']);
+			//$this->set('key', $user['User']['forgot_key']);
 			// todo: temp change for error in swift mailer
 			$url =   Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $user['User']['forgot_key']), true);
 			$message ="Dear {$user['User']['full_name']}, <br></br>
 Congratulations! You have created an account with us.<br><br>
-To complete the registration please activate your account by following the link below or by copying it to your browser:</br>			{$url}<br></br>
+To complete the registration please activate your account by following the link below or by copying it to your browser:</br>{$url}<br></br>
 If you have received this message in error please ignore, the link will be unusable in three days.<br></br>
 Thank you for registering with us and welcome to the community.";
 			if ($this->__sendMail($user['User']['email'], 'Welcome', $message)) {
@@ -847,15 +868,15 @@ Thank you for registering with us and welcome to the community.";
  */
 	public function resetPassword($userid) {
 		$user = $this->find('first', array('conditions' => array('id' => $userid)));
-		unset($this->request->data['User']['username']);
-		$this->request->data['User']['id'] = $userid;
-		$this->request->data['User']['forgot_key'] = $this->__uuid('F');
-		$this->request->data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
-		$this->request->data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
-		$this->request->data['User']['user_role_id'] = $user['User']['user_role_id'];
+		unset($user['User']['username']);
+		$data['User']['id'] = $userid;
+		$data['User']['forgot_key'] = $this->__uuid('F');
+		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+		$data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
+		$data['User']['user_role_id'] = $user['User']['user_role_id'];
 		$this->Behaviors->detach('Translate');
-		if ($this->save($this->request->data, array('validate' => false))) {
-			return $this->request->data['User']['forgot_key'];
+		if ($this->save($data, array('validate' => false))) {
+			return $data['User']['forgot_key'];
 		} else {
 			return false;
 		}
