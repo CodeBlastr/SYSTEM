@@ -11,6 +11,7 @@ class _User extends UsersAppModel {
 		'Galleries.Mediable',
 		);
 	public $order = array('last_name', 'full_name', 'first_name');
+	public $user = array();
 
 
 	public $validate = array(
@@ -424,11 +425,12 @@ class _User extends UsersAppModel {
 				if (empty($user['User']['forgot_key']) || $user['User']['forgot_key'][0] != 'W') {
 					unset($data['User']['password']);
 					if($this->save($data, array('validate' => false))) {
-						return $user;
+						
+						return $this->user = $user;;
 					} else {
 						// we should log errors like this
 						// an error which shouldn't stop functionality, but nevertheless is an error
-						return $user;
+						return $this->user = $user;;
 					}
 				} else {
 					throw new Exception(__d('users', 'Please check your email to verify your account.'));
