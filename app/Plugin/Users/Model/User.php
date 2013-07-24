@@ -4,14 +4,16 @@ App::uses('UsersAppModel', 'Users.Model');
 class _User extends UsersAppModel {
 
 	public $name = 'User';
+	
 	public $displayField = 'full_name';
+	
 	public $actsAs = array(
 		'Acl' => array('type' => 'requester'),
 		'Users.Usable' => array('defaultRole' => 'friend'),
 		'Galleries.Mediable',
 		);
+		
 	public $order = array('last_name', 'full_name', 'first_name');
-	public $user = array();
 
 
 	public $validate = array(
@@ -425,12 +427,11 @@ class _User extends UsersAppModel {
 				if (empty($user['User']['forgot_key']) || $user['User']['forgot_key'][0] != 'W') {
 					unset($data['User']['password']);
 					if($this->save($data, array('validate' => false))) {
-						
-						return $this->user = $user;;
+						return $user;
 					} else {
 						// we should log errors like this
 						// an error which shouldn't stop functionality, but nevertheless is an error
-						return $this->user = $user;;
+						return $$user;
 					}
 				} else {
 					throw new Exception(__d('users', 'Please check your email to verify your account.'));
