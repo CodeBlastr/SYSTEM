@@ -39,8 +39,22 @@ class AppModel extends Model {
  * @var boolean|array 
  */
 	public $metaConditions = array();
+
+/**
+ * Theme
+ *
+ * @var array
+ */
+  	public $theme = array();
+	
+/**
+ * Permission Data
+ *
+ * @var array
+ */
+  	public $permissionData = array();
     
-   /**
+/**
  * Constructor
  */
 	public function __construct($id = false, $table = null, $ds = null) {
@@ -185,6 +199,7 @@ class AppModel extends Model {
 		
 		// used so that the app controller can pass all data to elements and components in a consistent way
 		//$this->data = !empty($this->data) ? $this->data : $results;
+		$this->permissionData = $results;
 		return $results;
 	}
 

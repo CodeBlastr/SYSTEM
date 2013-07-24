@@ -22,9 +22,10 @@
 		<td><?php echo $userGroup['UserGroup']['description']; ?>&nbsp;</td>
 		<td><?php echo $userGroup['Creator']['username']; ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $userGroup['UserGroup']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $userGroup['UserGroup']['id'])); ?>
-			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $userGroup['UserGroup']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $userGroup['UserGroup']['id'])); ?>
+			<?php echo $this->Html->link(__('View'), array('action' => 'view', $userGroup['UserGroup']['id'])); ?>
+			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $userGroup['UserGroup']['id'])); ?>
+			<?php echo $this->Html->link(__('Add User'), array('action' => 'user', $userGroup['UserGroup']['id'])); ?>
+			<?php echo $this->Html->link(__('Delete'), array('action' => 'delete', $userGroup['UserGroup']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $userGroup['UserGroup']['id'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>

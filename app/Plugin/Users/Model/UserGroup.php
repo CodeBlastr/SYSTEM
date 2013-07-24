@@ -79,5 +79,15 @@ class UserGroup extends UsersAppModel {
 		$params['conditions']['UserGroup.model'] = $model;
 		return $this->find($type, $params);
 	}
+	
+/**
+ * User method
+ * 
+ * Create a user and add to the provided group id
+ * 
+ * @param array $data
+ */
+	public function user($data) {
+		return $this->User->procreate($data);
+	}
 }
-?>
