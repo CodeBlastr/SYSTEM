@@ -96,6 +96,10 @@ class AppController extends Controller {
 			$goodUrls[] = '/users/users/logout';
 			if (in_array($this->request->here, $goodUrls) || $this->request->params['requested'] == 1) {
 			} else {
+				debug($this->request->here);
+				debug($goodUrls);
+				debug($this->request);
+				break;
 				$this->Session->setFlash('Please change your password.');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'edit', $this->Session->read('Auth.User.id'), 'pw'));
 			}

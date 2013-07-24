@@ -219,8 +219,10 @@ class _UsersController extends UsersAppController {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
+			debug($this->request->data);
+			break;
 			try {
-				$this->User->update($this->request->data);
+				$this->User->save($this->request->data);
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
 			} catch(Exception $e){
