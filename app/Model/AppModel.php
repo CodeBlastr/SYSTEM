@@ -165,36 +165,14 @@ class AppModel extends Model {
 
 
 /**
- * With this function our total_count now appears with the rest of the fields in the resulting data array.
- * http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
+ * After find callback
  * 
  * afterFind method
  */
-	public function afterFind($results, $primary = false) {
-			 
-		//This is a permission check for record level permissions.
-		//userfields are ACO records from the controller
-		if ( isset($this->acoRecords[0]['Aco']['user_fields']) && !empty($this->acoRecords[0]['Aco']['user_fields']) && CakeSession::read('Auth.User.id') !== 1 ) {
-		  $userFields = explode(',', $this->acoRecords[0]['Aco']['user_fields']);	
-		  foreach ($results as $k => $result) {
-			  foreach($userFields as $u) {
-			  		if ($result[$u] !== null && $result[$u] == CakeSession::read('Auth.User.id')) {
-			  			$userAccess = true;
-			  		}
-			  }
-		  }
-			// What we do with users that don't have record level user access
-		  if ( !isset($userAccess) ) {
-			  SessionComponent::setFlash($this->acoRecords[0]['Aco']);
-			  header('Location: /users/users/restricted');
-			  break;
-				//$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'restricted'));
-		  } 
-		  
-		}
-
-		
-		
+	public function afterFind($results, $primary = false) {		 
+		/* Deprecated : Not sure if removing broke anything 7/21/13 RK
+ 		// With this function our total_count now appears with the rest of the fields in the resulting data array.
+		// http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
     	if($primary == true) {
         	if(Set::check($results, '0.0')) {
             	$fieldName = key($results[0][0]);
@@ -203,11 +181,19 @@ class AppModel extends Model {
 	                unset($results[$key][0]);
 	             }
 			}
-		}
-		return parent::afterFind($results, $primary);
+		} */
+		
+		// used so that the app controller can pass all data to elements and components in a consistent way
+		//$this->data = !empty($this->data) ? $this->data : $results;
+		return $results;
 	}
 
-
+/**
+ * List Plugins method
+ * 
+ * Deprecated (but not removed)
+ * @todo remove all references and delete this function
+ */
 	public function listPlugins($remove = array(), $merge = true) {
 	    $defaultRemove = array('Acl Extras', 'Api Generator', 'Recaptcha', 'Favorites.needs.upgrade', 'Forum.needs.upgrade');
 	    $remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
@@ -219,6 +205,12 @@ class AppModel extends Model {
 	}
 
 
+/**
+ * List Plugins method
+ * 
+ * Deprecated (but not removed)
+ * @todo remove all references and delete this function
+ */
 	public function listModels($pluginPath = null, $remove = array(), $merge = true) {
 	    // defaultRemove originally done for this page : /admin/categories/categories/add/
 	    // if you add items for removal from this list make sure that they should also be removed from there
@@ -244,6 +236,7 @@ class AppModel extends Model {
 /**
  * Don't know what this is for, I'd like to see a comment placed. OLD
  * Update... parentNode has something to do with ACL and how they are saved using the Behavior.  Not sure exactly how this one is used though.  1/2/2012 RK
+ * Update... parentNode() appears in the UserRole Model and is tied to the update of Aro records when a UserRole is created 7/21/2013 RK
  */
 	public function parentNode() {
 		$this->name;
