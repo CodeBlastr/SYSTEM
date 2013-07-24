@@ -5,7 +5,8 @@
 	echo $this->Form->create('User', array('enctype'=>'multipart/form-data'));
     echo $this->Form->input('User.id');
 	echo $this->Form->input('User.pwd_change', array('type' => 'hidden', 'value' => 0));
-	echo $this->Form->input('User.password', array('value' => ''));
+	echo $this->Form->input('User.current_password', array('value' => '', 'type' => 'password'));
+	echo $this->Form->input('User.password', array('value' => '', 'label' => 'New Password'));
 	echo $this->Form->input('User.confirm_password', array('value' => '', 'type' => 'password'));
     echo $this->Form->end('Submit');
     ?>

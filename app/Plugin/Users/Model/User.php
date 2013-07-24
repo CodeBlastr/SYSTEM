@@ -15,7 +15,6 @@ class _User extends UsersAppModel {
 		
 	public $order = array('last_name', 'full_name', 'first_name');
 
-
 	public $validate = array(
 		'password' => array(
 			'notempty' => array(
@@ -33,6 +32,11 @@ class _User extends UsersAppModel {
 				'rule' => array('_strongPassword'),
 				'allowEmpty' => false, 
 				'message' => 'Password should be six characters, contain numbers and capital and lowercase letters.',
+				),
+        	'newPassword' => array(
+				'rule' => array('_newPassword'),
+				'allowEmpty' => false, 
+				'message' => 'Your old password is incorrect.',
 				),
 			),
 		'username' => array(
@@ -183,6 +187,20 @@ class _User extends UsersAppModel {
     protected function _strongPassword() {
         return preg_match('/^((?=.*[^a-zA-Z])(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,})$/', $this->data['User']['password']);
     }
+    
+/**
+ * New Password
+ * 
+ * Confirm old password before allowing a password change
+ * @return bool
+ */
+    protected function _newPassword() {
+		if (!empty($this->data[$this->alias]['current_password'])) {
+			$user = $this->find('count', array('callbacks' => false, 'conditions' => array('User.id' => $this->_getUserId($this->data['User']), 'User.password' => AuthComponent::password($this->data[$this->alias]['current_password']))));
+			return $user === 1 ? true : false;
+		}
+		return true;
+    }
 
 /**
  * Email Required
@@ -226,7 +244,7 @@ class _User extends UsersAppModel {
  * 
  * @todo move all of the items in beforeSave() into _cleanData() and put $this->data = $this->_cleanData($this->data) here. Then we can get rid of the add() function all together.
  */
-	public function beforeSave($options = array()) {		
+	public function beforeSave($options = array()) {
 		if (!empty($this->data[$this->alias]['password'])) {
 			App::uses('AuthComponent', 'Controller/Component');
 	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
@@ -244,12 +262,17 @@ class _User extends UsersAppModel {
  */
 	public function afterSave($created) {
 		// add the user to a group if the data for the group exists
-		if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
-			$this->UserGroup->UsersUserGroup->add($this->data);
-		}
+		// DEPRECATED : You should just set the data right and use saveAll() for this!  7/23/2013 RK
+		// if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
+		//	$this->UserGroup->UsersUserGroup->add($this->data);
+		//}
 		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 			$this->welcome($data[$this->alias]['username']);
 		}
+		unset($this->data[$this->alias]['password']);
+		unset($this->data[$this->alias]['current_password']);
+		unset($this->data[$this->alias]['confirm_password']);
+		CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
 		return parent::afterSave($created);
 	}
 	
@@ -280,32 +303,6 @@ class _User extends UsersAppModel {
 	public function add($data = null, $options = array()) {
 		return $this->saveAll($data, $options);
 	}
-
-
-/**
- * Handles a user update
- *
- * @param {array}		An array in the array(model => array(field)) format
- * @todo		 		Not sure the rollback for user_id works in all cases (Line 66)
- */
-	public function update($data) {
-		$data = $this->_cleanAddData($data);
-
-		if ($this->saveAll($data)) {
-			return true;
-		} else {
-			$exceptionMessage = '';
-			$invalidFields = $this->invalidFields();
-			if ( !empty($invalidFields) ) {
-				$exceptionMessage .= implode(', ', $invalidFields) . ' ';
-			}
-			if ( !empty($this->validationErrors) ) {
-				$exceptionMessage .= implode(', ', Set::flatten($this->validationErrors));
-			}
-			throw new Exception(__d('users', 'Invalid user data.' . $exceptionMessage ));
-		}
-	}
-
 
 /**
  * Add contact to the $data var if it exists, if it doesn't setup contact data for save.
