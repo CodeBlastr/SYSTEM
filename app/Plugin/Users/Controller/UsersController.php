@@ -187,7 +187,10 @@ class _UsersController extends UsersAppController {
 /**
  * edit method
  */
-	public function edit($id = null) {
+	public function edit($id = null, $forcePw = null) {
+		if ($forcePw > 0) {
+			$this->view = 'edit_pwd';
+		}
 		// looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
 			$conditions = array('User.id' => $this->request->params['named']['user_id']);
@@ -200,26 +203,6 @@ class _UsersController extends UsersAppController {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
 				));
-
-/* This should not be here RK Dec 1, 2012 (user is not related to transaction shipment in the model)
-			if (in_array('Transactions', CakePlugin::loaded())) {
-				$userShippingAddress = $this->User->TransactionShipment->find('first',array(
-					'conditions' => array(
-						'TransactionShipment.user_id' => $id,
-						'TransactionShipment.transaction_id is null'
-						)
-					));
-				$user['TransactionShipment'] = $userShippingAddress['TransactionShipment'];
-				$userBillingAddress = $this->User->OrderPayment->find('first',array(
-					'conditions' => array(
-						'OrderPayment.user_id' => $id,
-						'OrderPayment.order_transaction_id is null'
-						)
-					));
-				$user['OrderPayment'] = $userBillingAddress['OrderPayment'];
-			}
-*/
-
 			if(isset($user['User'])) {
 				$this->request->data = $user;
 			} else {
@@ -359,8 +342,6 @@ class _UsersController extends UsersAppController {
 				$this->User->checkEmailVerification($this->request->data);
 				// save the login meta data
 				$this->User->loginMeta($this->request->data);
-				// see if a password change is necessary
-				$this->_forcePwdChange();
 				
 				if (in_array('Connections', CakePlugin::loaded())) {
 					$this->User->Connection->afterLogin($user['User']['id']);
@@ -392,21 +373,6 @@ class _UsersController extends UsersAppController {
 	    } else {
 	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
 	    }
-	}
-
-/**
- * Force password change method
- * 
- * @param void
- */
-	protected function _forcePwdChange() {
-		if (!empty($this->User->user['User']['pwd_change'])) { // gets set in _loginMeta
-			// Uh oh, had a brainstorm...
-			// put this into the app controller and check the session for a positive pwd_change value
-			// and if its set, don't let them visit any page but the password change page.
-			debug('Must change password (read code comments): '. $this->User->user['User']['username']);
-			break;
-		}; 
 	}
 
 /**
