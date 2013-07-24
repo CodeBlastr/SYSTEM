@@ -147,7 +147,7 @@ class AppController extends Controller {
 		$this->_writeStats();
 		$this->_configEditor();
 		$this->_configAuth();
-		$this->_forcePwdChange();
+		//$this->_forcePwdChange(); /** @todo After creating a user from UserGroups/add, it logged me in as that user. **/
 		$this->_rememberMe();
 		$this->_userAttributes();
 		$this->_checkGuestAccess();
@@ -190,8 +190,13 @@ class AppController extends Controller {
         // order is important for these
 		$this->userId = $this->Session->read('Auth.User.id');
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
-		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
-		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
+		/**
+		 * @todo This is not working. Fix it.
+		 * @since 7/24/2013
+		 * @author Joel Byrnes <joel@buildrr.com>
+		 */
+//		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
+//		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
 	}
 
