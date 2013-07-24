@@ -70,7 +70,7 @@ class _UserGroupsController extends UsersAppController {
 			$this->request->data["UserGroup"]["creator"] = $this->Auth->user('id');
 			$this->UserGroup->create();
 			if ($this->UserGroup->save($this->request->data)) {
-				# Set the data for the join table the creator has to be the moderator.
+				// Set the data for the join table the creator has to be the moderator.
 				$pg_data = array(
 					'UsersUserGroup' => array(
 						'user_id' => $this->Auth->user('id'),
@@ -79,7 +79,7 @@ class _UserGroupsController extends UsersAppController {
 						'is_moderator' => 1,
 						)
 					);
-				# save the users user role data 
+				// save the users user role data 
 				$this->UserGroup->UsersUserGroup->save($pg_data);
 				$this->Session->setFlash(__('Group has been saved', true));
 				$this->redirect(array('plugin'=>'users','controller'=>'user_groups' , 'action'=>'index'));
@@ -139,6 +139,9 @@ class _UserGroupsController extends UsersAppController {
 		}
 	}
 
+/**
+ * Delete method
+ */
 	public function delete($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for group', true));
@@ -151,6 +154,23 @@ class _UserGroupsController extends UsersAppController {
 		$this->Session->setFlash(__('Group was not deleted', true));
 		$this->redirect(array('action' => 'index'));
 	}
+
+/**
+ * User method
+ *
+ */
+ 	public function user($groupId) {
+ 		if ($this->request->is('post')) {
+ 			if ($this->UserGroup->user($this->request->data)) {
+ 				$this->Session->setFlash(__('User created, and added to group.'));
+				$this->redirect(array('plugin' => 'users', 'controller' => 'user_groups', 'action' => 'view', $groupId));
+ 			} else {
+ 				$this->Session->setFlash(__('Could not create user.'));
+ 			}
+ 		}
+ 		$this->set('userGroup', $this->UserGroup->read(null, $groupId));
+ 		$this->request->data['UserGroup']['UserGroup'][] = $groupId;
+ 	}
 }
 
 if (!isset($refuseInit)) {
