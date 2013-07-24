@@ -187,7 +187,10 @@ class _UsersController extends UsersAppController {
 /**
  * edit method
  */
-	public function edit($id = null) {
+	public function edit($id = null, $forcePw = null) {
+		if ($forcePw > 0) {
+			$this->view = 'edit_pwd';
+		}
 		// looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
 			$conditions = array('User.id' => $this->request->params['named']['user_id']);
@@ -200,26 +203,6 @@ class _UsersController extends UsersAppController {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
 				));
-
-/* This should not be here RK Dec 1, 2012 (user is not related to transaction shipment in the model)
-			if (in_array('Transactions', CakePlugin::loaded())) {
-				$userShippingAddress = $this->User->TransactionShipment->find('first',array(
-					'conditions' => array(
-						'TransactionShipment.user_id' => $id,
-						'TransactionShipment.transaction_id is null'
-						)
-					));
-				$user['TransactionShipment'] = $userShippingAddress['TransactionShipment'];
-				$userBillingAddress = $this->User->OrderPayment->find('first',array(
-					'conditions' => array(
-						'OrderPayment.user_id' => $id,
-						'OrderPayment.order_transaction_id is null'
-						)
-					));
-				$user['OrderPayment'] = $userBillingAddress['OrderPayment'];
-			}
-*/
-
 			if(isset($user['User'])) {
 				$this->request->data = $user;
 			} else {
@@ -236,8 +219,10 @@ class _UsersController extends UsersAppController {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
+			debug($this->request->data);
+			break;
 			try {
-				$this->User->update($this->request->data);
+				$this->User->save($this->request->data);
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
 			} catch(Exception $e){

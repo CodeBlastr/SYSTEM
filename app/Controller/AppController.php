@@ -85,6 +85,27 @@ class AppController extends Controller {
 		$this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(' ' . $this->name . ' '));
 	}
 
+/**
+ * Force password change method
+ * 
+ * @param void
+ */
+	protected function _forcePwdChange() {
+		if ($this->Session->read('Auth.User.pwd_change')) {
+			$goodUrls[] = '/users/users/edit/'.$this->Session->read('Auth.User.id').'/pw';
+			$goodUrls[] = '/users/users/logout';
+			if (in_array($this->request->here, $goodUrls) || $this->request->params['requested'] == 1) {
+			} else {
+				debug($this->request->here);
+				debug($goodUrls);
+				debug($this->request);
+				break;
+				$this->Session->setFlash('Please change your password.');
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'edit', $this->Session->read('Auth.User.id'), 'pw'));
+			}
+		}
+	}
+
 
 /**
  * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
@@ -126,6 +147,7 @@ class AppController extends Controller {
 		$this->_writeStats();
 		$this->_configEditor();
 		$this->_configAuth();
+		$this->_forcePwdChange(); 
 		$this->_rememberMe();
 		$this->_userAttributes();
 		$this->_checkGuestAccess();
@@ -155,8 +177,8 @@ class AppController extends Controller {
         $this->set('_view', $this->view);
 		// do a final permission check on the user field
 		$modelName = Inflector::singularize($this->name);
-		$this->set('_layout', $this->$modelName->data);
-		$this->Acl->check(array('permission' => true), $this->$modelName->data);
+		$this->set('_layout', $this->$modelName->theme); // set in the themeable behavior
+		$this->Acl->check(array('permission' => true), $this->$modelName->permissionData);
 	}
 	
 
@@ -168,8 +190,13 @@ class AppController extends Controller {
         // order is important for these
 		$this->userId = $this->Session->read('Auth.User.id');
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
-		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
-		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
+		/**
+		 * @todo This is not working. Fix it.
+		 * @since 7/24/2013
+		 * @author Joel Byrnes <joel@buildrr.com>
+		 */
+//		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
+//		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
 	}
 
@@ -893,8 +920,11 @@ class AppController extends Controller {
 
 				if ($message) {
               		$this->SwiftMailer->content = $message;
-					if($message['html'] && is_array($message)) $this->SwiftMailer->content = $message['html'];
-					$message['html'] = $message;
+					if(is_array($message) && isset($message['html'])) {
+						$this->SwiftMailer->content = $message['html'];
+					} else {
+						$message = array('html' => $message);
+					}
 					$this->set('message', $message);
 				}
 

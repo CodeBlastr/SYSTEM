@@ -68,8 +68,8 @@ class ThemeableBehavior extends ModelBehavior {
 			if (!empty($template)) {
 				for ($i = 0; $i < count($results); ++$i) {
 					if (key($results[$i]) == $template['Template']['model'] && $results[$i][$Model->alias]['id'] == $template['Template']['foreign_key']) {
-						$results[$i][$Model->alias]['_layout'] = $template['Template']['layout'];
-						$results[$i][$Model->alias]['_layoutSettings'] = $template['Template']['settings'];
+						$Model->theme[$Model->alias]['_layout'] = $template['Template']['layout'];
+						$Model->theme[$Model->alias]['_layoutSettings'] = $template['Template']['settings'];
 					}
 				}
 			}
