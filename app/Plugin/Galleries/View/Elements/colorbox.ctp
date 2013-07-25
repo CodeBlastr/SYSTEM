@@ -9,7 +9,7 @@ if(!empty($instance) && defined('__ELEMENT_GALLERIES_COLORBOX_'.$instance)) {
 
 if (!empty($gallery['GalleryImage'][0])) { 
 	// put default variable setups here
-	debug($thumbLink);
+
     // additional files needed for gallery display
 	echo $this->Html->css('/galleries/css/colorbox/colorbox', '', array('inline' => 0));
 	echo $this->Html->script('/galleries/js/colorbox/jquery.colorbox-min', array('inline' => 0));		
