@@ -255,10 +255,10 @@ class PrivilegesAppController extends AppController {
  * @param int $parentId
  * @return array Aco Node array
  */
-	function _checkNode(/*$type = 'controller', */$path, $alias, $parentId = null) {
+	function _checkNode($path, $alias, $parentId = null) {
 		$node = $this->Aco->node($path);
 		if (empty($node)) {
-			$this->Aco->create(array('parent_id' => $parentId, 'model' => null, 'alias' => $alias, /*'type' => $type*/));
+			$this->Aco->create(array('parent_id' => $parentId, 'model' => null, 'alias' => $alias));
 			$node = $this->Aco->save();
 			$node['Aco']['id'] = $this->Aco->id;
 			$this->out(__('Created Aco node: %s', $path));
@@ -286,13 +286,7 @@ class PrivilegesAppController extends AppController {
 				continue;
 			}
 			$path = $this->rootNode . '/' . $pluginPath . $controllerName . '/' . $action;
-			// zuha add for types
-			/*if (!empty($pluginPath)) {
-				$type = 'paction';
-			} else {
-				$type = 'action';
-			}*/
-			$this->_checkNode(/*$type, */$path, $action, $node['Aco']['id']);
+			$this->_checkNode($path, $action, $node['Aco']['id']);
 		}
 
 		if ($this->_clean) {

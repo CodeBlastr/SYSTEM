@@ -32,6 +32,7 @@ class TestInstall extends CakeTestModel {
 class Request {
 	
 	public $controller = 'install';
+	
 	public $action = 'site';
 }
 
@@ -46,9 +47,9 @@ class InstallControllerTestCase extends ControllerTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'app.aco',
-		'app.aro',
-		'app.aros_aco',
+		'app.Aco',
+		'app.Aro',
+		'app.ArosAco'
 		);
 /**
  * setUp method
