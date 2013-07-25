@@ -282,6 +282,30 @@ class _UsersController extends UsersAppController {
 	}
 
 /**
+ * Settings method
+ * 
+ * @todo this is site specific (apca), it is left in the core app so that we can easily refer to it
+ * @todo if we choose to expand on and use this idea. Just make sure to copy the funciton and view file, as is, to the site first.
+ */
+ 	public function settings() {
+ 		$methods = array(
+ 			'racApply' => 'racApply',
+ 			'articleSubmissionForm' => 'articleSubmissionForm',
+			'awardNominationForm' => 'awardNominationForm',
+			'showcaseApplication' => 'showcaseApplication',
+			'conferenceRegistration' => 'conferenceRegistration',
+			'buyerEventRegistration' => 'buyerEventRegistration',
+			'militaryConferenceRegistration' => 'militaryConferenceRegistration',
+			);
+		$this->set(compact('methods'));
+ 		// data gets submitted to /settings/add
+ 		if (defined('__USERS_EMAILS')) {
+			$emails = json_decode(stripcslashes(json_encode(unserialize(__USERS_EMAILS))), true);
+ 			$this->request->data['Setting']['value'] = $emails;
+ 		}
+ 	}
+
+/**
  * Restricted method
  *
  * A page to stop infinite redirect loops when there are errors.
