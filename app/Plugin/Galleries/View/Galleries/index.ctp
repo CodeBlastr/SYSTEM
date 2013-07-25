@@ -1,11 +1,19 @@
-<?php
-echo $this->Element('scaffolds/index', array(
-	'data' => $galleries, 
-	'actions' => false/*array(
-		$this->Html->link('View', array('action' => 'view', '{model}', '{foreign_key}')), 
-		$this->Html->link('Edit', array('action' => 'edit', '{model}', '{foreign_key}')), 
-		$this->Html->link('Delete', array('action' => 'delete', '{id}'), array(), 'Are you sure you want to permanently delete?'),
-		),*/
-	)); 
-	
-	?>
+<div class="galleries index row-fluid">
+	<?php foreach ($galleries as $gallery) { ?>
+		<div class="media span3 pull-left well">
+		<?php
+		debug($gallery);
+		$foreignKey = !empty($gallery['Gallery']['foreign_key']) ? $gallery['Gallery']['foreign_key'] : $gallery['Gallery']['id'];
+		$model = !empty($gallery['Gallery']['model']) ? $gallery['Gallery']['model'] : 'Gallery';
+		echo $this->Html->link($this->Element('Galleries.thumb', array('model' => $model, 'foreignKey' => $foreignKey)), array('action' => 'view', $model, $foreignKey), array('escape' => false)); ?>
+		<div class="media-body">
+			<h4 class="media-heading"><?php echo $gallery['Gallery']['name']; ?></h4>
+		</div>
+	</div>
+	<?php } ?>
+</div>
+<style>
+	.media img {
+		width: 100%;
+	}
+</style>
