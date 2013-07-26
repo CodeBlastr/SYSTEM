@@ -324,6 +324,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'CourseUser' => 'Courses',
 				'CourseGradeAnswer' => 'Courses',
 				'CourseGrade' => 'Courses',
+				'CourseGradeDetail' => 'Courses',
 				'CourseLesson' => 'Courses',
 				'CourseSeries' => 'Courses',
 				'Coupon' => 'Coupons',
