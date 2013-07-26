@@ -78,6 +78,9 @@ class CakePlugin {
 		if (empty($config['path'])) {
 			foreach (App::path('plugins') as $path) {
 				if (is_dir($path . $plugin)) {
+					if (file_exists($path.$plugin.DS.'Config'.DS.'routes.php')) {
+						$config['routes'] = true;
+					}
 					self::$_plugins[$plugin] = $config + array('path' => $path . $plugin . DS);
 					break;
 				}
