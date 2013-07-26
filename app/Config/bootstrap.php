@@ -362,6 +362,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Location' => 'Locations',
 				'Map' => 'Maps',
 				'Media' => 'Media',
+				'MediaAttachment' => 'Media',
+				'MediaGallery' => 'Media',
 				'Menu' => 'Menus',
 				'Message' => 'Messages',
 				'Meta' => false,
