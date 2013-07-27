@@ -58,9 +58,6 @@
 [submodule "app/Plugin/Timesheets"]
 	path = app/Plugin/Timesheets
 	url = git@github.com:zuha/Timesheets-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugin/Utils"]
-	path = app/Plugin/Utils
-	url = git@github.com:zuha/Utils-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Workflows"]
 	path = app/Plugin/Workflows
 	url = git@github.com:zuha/Workflows-Zuha-Cakephp-Plugin.git

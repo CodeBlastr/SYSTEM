@@ -49,7 +49,7 @@ class WebpagesController extends WebpagesAppController {
  * 
  * @var array 
  */
-    public $helpers = array('Cke', 'Webpages.Tree'); 
+    public $helpers = array('Cke'); 
 	
 		
 /**
