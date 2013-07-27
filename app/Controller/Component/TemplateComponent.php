@@ -11,6 +11,13 @@
 class TemplateComponent extends Component {
     
     public $Controller = null;
+    
+    public function initialize(Controller $Controller) {
+    	//The initialize method is called before the controller’s beforeFilter method.
+        if (end($Controller->request->params['pass']) == 'template') {
+			return $this->template($Controller);
+        }
+    }
 	
 /**
  * Var defaults
@@ -42,5 +49,26 @@ class TemplateComponent extends Component {
     public function shutdown(Controller $Controller) {
     	// The shutdown method is called before output is sent to browser.
     }
+	
+	public function template(Controller $Controller) {
+		if (!empty($Controller->request->pass[0])) {
+			$model = $Controller->modelClass;
+			$foreignKey = $Controller->request->pass[0];
+			$Template = ClassRegistry::init('Template');
+			//$Template->bindModel(array('belongsTo' => array($model => array('foreignKey' => 'foreign_key'))));
+			$template = $Template->find('count', array('conditions' => array('Template.model' => $model, 'Template.foreign_key' => $foreignKey)));
+			if (!empty($template)) {
+				$Controller->set('templateEditing', 1);
+			} else {
+				debug('Template was not found');
+				break;
+				throw new NotFoundException();
+			}
+		} else {
+			debug('Template was not found');
+			break;
+			throw new NotFoundException();
+		}
+	}
 	
 }
