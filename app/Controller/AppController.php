@@ -44,8 +44,9 @@ class AppController extends Controller {
 		'Text', 
 		'Form', 
 		'Js', 
-		'Time', 
-		'Html'
+		'Time',
+		'Html',
+		'Utils.Tree'
 		);
 	public $components = array(
 		'Auth' => array(
