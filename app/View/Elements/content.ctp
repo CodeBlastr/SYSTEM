@@ -57,9 +57,7 @@ if (!empty($defaultTemplate)) {
 	
 	// skipping the parsing of text area content with this check	
 	preg_match_all ("/(<textarea[^>]+>)(.*)(<\/textarea>)/isU", $defaultTemplate['Webpage']['content'], $matchesEditable);
-	
 	$nonParseable = array();
-	
 	$i = 0;
 	foreach($matchesEditable[2] as $matchEditable)	{
 		if(trim($matchEditable))	{
@@ -87,48 +85,6 @@ if (!empty($defaultTemplate)) {
 		$replacement = !empty($templateEditing) ? sprintf('<div data-template-tag="element: %s">%s</div>', $element, $this->element($element, $elementVars)) : $this->element($element, $elementVars);
 		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $replacement, $defaultTemplate['Webpage']['content']); 
 		$i++;
-		
-		
-		
-		
-	//preg_match_all ("/(\{element: ([az_]*)([^\}\{]*)\})/", $defaultTemplate['Webpage']['content'], $matches);
-		// DEPRECATED.  We haven't used instances in a long time.  7/27/2013 - RK
-		// if (preg_match('/([a-zA-Z0-9_\.]+)([a-zA-Z0-9_]+\.[0-9]+)/', $element)) {
-			// // means there is an instance number at the end
-			// $element = explode('.', $element);
-			// // these account for the possibility of a plugin or no plugin
-			// $instance = !empty($element[2]) ? $element[2] : $element[1]; 
-			// $plugin = !empty($element[2]) ? $element[0] : null;
-			// $element = !empty($element[2]) ? $element[1] : $element[0];
-		//} else if (preg_match('/([a-zA-Z0-9_\.]+)([a-zA-Z0-9_]+\.[a-zA-Z0-9_,=]+)/', $element)) { 
-		// if (strpos($element, '=')) {
-			// // means we have named variables at the end, {element: webpages.types type=portfolio,id=something}
-			// $vars = explode(' ', $element);	$element = $vars[0]; $vars = explode(',', $vars[1]);
-			// foreach ($vars as $var) {
-				// $option = explode('=', $var);
-				// $elementVars[$option[0]] = $option[1];
-			// }
-			// $defaultTemplate['Webpage']['content'] = str_replace($elementMatch, $this->element($element, $elementVars), $defaultTemplate['Webpage']['content']); 
-		// }
-		// else if (strpos($element, '.')) {
-			// // this is used to handle non plugin elements with no instance number in the tag
-			// $element = explode('.', $element);  
-			// $plugin = $element[0];
-			// $element = $element[1];  
-		// }
-		// removed cache for forms, because you can't set it based on form inputs
-		// $elementCfg['cache'] = (!empty($userId) ? array('key' => $userId.$element, 'time' => '+2 days') : null);
-		// $elementPlugin['plugin'] = (!empty($plugin) ? $plugin : null);
-		// $elementCfg['instance'] = (!empty($instance) ? $instance : null);
-		// debug($elementCfg);
-		// $defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg, $elementPlugin), $defaultTemplate['Webpage']['content']); 
-		// $i++;
-		
-		
-		
-		
-		
-		
 	}
 	
 	// matches form template tags {form: Id/type} for example {form: 1/edit}
