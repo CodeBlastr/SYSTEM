@@ -322,11 +322,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'ContactsContact' => 'Contacts',
 				'Course' => 'Courses',
 				'CourseUser' => 'Courses',
-				'Grade' => 'Courses',//removable??
+				'CourseGradeAnswer' => 'Courses',
 				'CourseGrade' => 'Courses',
-				'Lesson' => 'Courses',//removable??
+				'CourseGradeDetail' => 'Courses',
 				'CourseLesson' => 'Courses',
-				'Series' => 'Courses',//removable??
 				'CourseSeries' => 'Courses',
 				'Coupon' => 'Coupons',
 				'Credit' => 'Credits',
@@ -363,6 +362,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Location' => 'Locations',
 				'Map' => 'Maps',
 				'Media' => 'Media',
+				'MediaAttachment' => 'Media',
+				'MediaGallery' => 'Media',
 				'Menu' => 'Menus',
 				'Message' => 'Messages',
 				'Meta' => false,

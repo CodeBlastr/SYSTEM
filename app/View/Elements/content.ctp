@@ -27,8 +27,8 @@ if (!empty($defaultTemplate)) {
 				?>
 				*/
 				$settings = !empty($settings['elements']) ? $settings : parse_ini_string(trim(str_replace($searches, '', $templateContents[0])));
-				$defaultTemplate["Webpage"]["content"] = trim($templateContents[1]);
-				preg_match_all ("/(\{config: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $configMatches);
+				$defaultTemplate['Webpage']['content'] = trim($templateContents[1]);
+				preg_match_all ("/(\{config: ([az_]*)([^\}\{]*)\})/", $defaultTemplate['Webpage']['content'], $configMatches);
 				$i = 0;
 				foreach ($configMatches[0] as $configMatch) {
 					$replacement = $settings['elements'][trim($configMatches[3][$i])];
@@ -39,15 +39,19 @@ if (!empty($defaultTemplate)) {
 				}
 			}
 		}
+		// add the drag and drop javascript
+		if (!empty($templateEditing)) { // this variable is set in the TemplateComponent
+			$defaultTemplate['Webpage']['content'] = str_replace('</head>', "    {element: templates/edit}".PHP_EOL."</head>", $defaultTemplate['Webpage']['content']);
+		}
 	}
 	
 	
 	// matches helper template tags like {helper: content_for_layout}
-	preg_match_all ("/\{helper: (.*?)\}/", $defaultTemplate["Webpage"]["content"], $matches);
+	preg_match_all ("/\{helper: (.*?)\}/", $defaultTemplate['Webpage']['content'], $matches);
 	$i = 0;
 	foreach ($matches[0] as $helperMatch) {
 		$helper = trim($matches[1][$i]);
-		$defaultTemplate["Webpage"]["content"] = str_replace($helperMatch, $$helper, $defaultTemplate['Webpage']['content']);
+		$defaultTemplate['Webpage']['content'] = str_replace($helperMatch, $$helper, $defaultTemplate['Webpage']['content']);
 		$i++;
 	}
 	
@@ -60,13 +64,13 @@ if (!empty($defaultTemplate)) {
 	foreach($matchesEditable[2] as $matchEditable)	{
 		if(trim($matchEditable))	{
 			$nonParseable['[PLACEHOLDER:'.$i.']'] = $matchEditable;
-			$defaultTemplate["Webpage"]["content"] = str_replace($matchEditable, '[PLACEHOLDER:'.$i.']', $defaultTemplate['Webpage']['content']);
+			$defaultTemplate['Webpage']['content'] = str_replace($matchEditable, '[PLACEHOLDER:'.$i.']', $defaultTemplate['Webpage']['content']);
 			$i++;
 		}		
 	}
 	
 	// matches element template tags like {element: plugin.name.instance} for example {element: contacts.recent.2}
-	preg_match_all ("/(\{element: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	preg_match_all ("/(\{element: ([az_]*)([^\}\{]*)\})/", $defaultTemplate['Webpage']['content'], $matches);
 
 
 	$i=0; 
@@ -89,7 +93,7 @@ if (!empty($defaultTemplate)) {
 				$option = explode('=', $var);
 				$elementCfg[$option[0]] = $option[1];
 			}
-			$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $this->element($element, $elementCfg), $defaultTemplate['Webpage']['content']); 
+			$defaultTemplate['Webpage']['content'] = str_replace($elementMatch, $this->element($element, $elementCfg), $defaultTemplate['Webpage']['content']); 
 		} else if (strpos($element, '.')) {
 			// this is used to handle non plugin elements with no instance number in the tag
 			$element = explode('.', $element);  
