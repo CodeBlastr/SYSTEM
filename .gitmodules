@@ -61,12 +61,6 @@
 [submodule "app/Plugin/Workflows"]
 	path = app/Plugin/Workflows
 	url = git@github.com:zuha/Workflows-Zuha-Cakephp-Plugin.git
-[submodule "app/webroot/js/ckeditor"]
-	path = app/webroot/js/ckeditor
-	url = git@github.com:zuha/ckeditor.git
-[submodule "app/webroot/js/kcfinder"]
-	path = app/webroot/js/kcfinder
-	url = git@github.com:zuha/kcfinder.git
 [submodule "vendors/swift_mailer"]
 	path = vendors/swift_mailer
 	url = git@github.com:zuha/swift-mailer.git
