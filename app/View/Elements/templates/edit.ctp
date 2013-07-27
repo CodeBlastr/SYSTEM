@@ -7,7 +7,7 @@
 <script type="text/javascript">
 $(function() {
 	$('[data-template-tag*="config"]').css('border', '4px solid red');
-	$('[data-template-tag*="element"]').css('border', '4px solid blue');
+	$('[data-template-tag*="config"] [data-template-tag*="element"]').css('border', '4px solid blue');
     // // maybe this is for editing item values???
 	// $('.sortableMenu a').click(function(e) {
 		// e.preventDefault();
