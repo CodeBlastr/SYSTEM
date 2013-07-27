@@ -15,12 +15,12 @@ if (defined('SITE_DIR')) {
 	// OR using the cake console
 	if (php_sapi_name() !== 'cli') {
 	    if ($_SERVER['REQUEST_URI'] != '/install/site') {
-	        //header('Location: /install/site'); // switch with line below to allow installs at a catchall
-	        header('Location: http://buildrr.com/');
+	        header('Location: /install/site'); // switch with line below to allow installs at a catchall
+	        //header('Location: http://buildrr.com/');
 	        break;
 		}
-		//Configure::write('Install', true); // switch with line below to allow installs at a catchall
-		Configure::write('Install', false);
+		Configure::write('Install', true); // switch with line below to allow installs at a catchall
+		//Configure::write('Install', false);
 	}
 	require_once(ROOT . DS . 'sites' . DS . 'example.com' . DS . 'Config' . DS . 'core.php');
   	$debugger = !empty($_GET['debugger']) ? $_GET['debugger'] : 2;
