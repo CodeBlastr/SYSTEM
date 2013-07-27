@@ -1,8 +1,38 @@
 <?php
+/**
+ * @todo might need to move this tagElement function for organization reasons
+ * @todo turn other tags into functions too
+ */
+function tagElement($View, $content, $options = array()) {
+	// matches element template tags like {element: plugin.name}
+	preg_match_all ("/(\{element: ([az_]*)([^\}]*)\})/", $content, $matches); // a little shorter
+	$i=0; 
+	foreach ($matches[0] as $elementMatch) {
+		$element = trim($matches[3][$i]);
+		$elementVars = array();
+		if (strpos($elementMatch, '=')) {
+			// means we have named variables at the end, {element: webpages.types type=portfolio,id=something}
+			$vars = explode(' ', $element);	$element = $vars[0]; $vars = explode(',', $vars[1]);
+			foreach ($vars as $var) {
+				$option = explode('=', $var);
+				$elementVars[$option[0]] = $option[1];
+			}
+		}
+		$replacement = !empty($options['templateEditing']) ? sprintf('<div data-template-tag="element: %s">%s</div>', $element, $View->element($element, $elementVars)) : $View->element($element, $elementVars);
+		$content = str_replace($elementMatch, $replacement, $content); 
+		$i++;
+	}
+	return $content;
+}
+
+	
 $flash_for_layout = $this->Session->flash();
 $flash_auth_for_layout = $this->Session->flash('auth');
 if (!empty($defaultTemplate)) {
 	
+	// just shortening the variable name
+	$content = $defaultTemplate["Webpage"]["contednt"];
+		
 	// configurable template settings ex. {config: 0}
 	$modelName = Inflector::classify($this->request->controller);
 	$_layout = !empty($_layout[0]) ? $_layout[0] : $_layout; // takes care of $Model->data results which are set in AppModel afterfind()
@@ -27,96 +57,80 @@ if (!empty($defaultTemplate)) {
 				?>
 				*/
 				$settings = !empty($settings['elements']) ? $settings : parse_ini_string(trim(str_replace($searches, '', $templateContents[0])));
-				$defaultTemplate['Webpage']['content'] = trim($templateContents[1]);
-				preg_match_all ("/(\{config: ([az_]*)([^\}\{]*)\})/", $defaultTemplate['Webpage']['content'], $configMatches);
+				// first pass a {element x} template tags so that non {config: x} get replaced first (required for editing config)
+				$content = tagElement($this, trim($templateContents[1]));
+				preg_match_all("/(\{config: ([az_]*)([^\}\{]*)\})/", $content, $configMatches);
 				$i = 0;
 				foreach ($configMatches[0] as $configMatch) {
 					$replacement = $settings['elements'][trim($configMatches[3][$i])];
 					$replacement = !empty($templateEditing) ?  sprintf('<div data-template-tag="config: %s">%s</div>', $i, $replacement) : $replacement;
-					$defaultTemplate["Webpage"]["content"] = str_replace($configMatch, $replacement, $defaultTemplate['Webpage']['content']);
+					$content = str_replace($configMatch, $replacement, $content);
 					unset($replacement);
 					$i++;
 				}
 			}
 		}
-		// add the drag and drop javascript
-		if (!empty($templateEditing)) { // this variable is set in the TemplateComponent
-			$defaultTemplate['Webpage']['content'] = str_replace('</head>', "    {element: templates/edit}".PHP_EOL."</head>", $defaultTemplate['Webpage']['content']);
-		}
 	}
+
+	// add the drag and drop javascript
+	$content = !empty($templateEditing) ? str_replace('</head>', "    {element: templates/edit}".PHP_EOL."</head>", $content) : $content;
+
+	// replace the element tags again (if templateEditing is on it's a configurable template, and has already the old {element: x} tags replaced)
+	$elementOptions = !empty($templateEditing) ? array('templateEditing' => true) : null;
+	$content = tagElement($this, $content, $elementOptions);
 	
 	
 	// matches helper template tags like {helper: content_for_layout}
-	preg_match_all ("/\{helper: (.*?)\}/", $defaultTemplate['Webpage']['content'], $matches);
+	preg_match_all ("/\{helper: (.*?)\}/", $content, $matches);
 	$i = 0;
 	foreach ($matches[0] as $helperMatch) {
 		$helper = trim($matches[1][$i]);
-		$defaultTemplate['Webpage']['content'] = str_replace($helperMatch, $$helper, $defaultTemplate['Webpage']['content']);
+		$content = str_replace($helperMatch, $$helper, $content);
 		$i++;
 	}
 	
 	// skipping the parsing of text area content with this check	
-	preg_match_all ("/(<textarea[^>]+>)(.*)(<\/textarea>)/isU", $defaultTemplate['Webpage']['content'], $matchesEditable);
+	preg_match_all ("/(<textarea[^>]+>)(.*)(<\/textarea>)/isU", $content, $matchesEditable);
 	$nonParseable = array();
 	$i = 0;
 	foreach($matchesEditable[2] as $matchEditable)	{
 		if(trim($matchEditable))	{
 			$nonParseable['[PLACEHOLDER:'.$i.']'] = $matchEditable;
-			$defaultTemplate['Webpage']['content'] = str_replace($matchEditable, '[PLACEHOLDER:'.$i.']', $defaultTemplate['Webpage']['content']);
+			$content = str_replace($matchEditable, '[PLACEHOLDER:'.$i.']', $content);
 			$i++;
 		}		
 	}
 	
-	// matches element template tags like {element: plugin.name}
-	preg_match_all ("/(\{element: ([az_]*)([^\}]*)\})/", $defaultTemplate['Webpage']['content'], $matches); // a little shorter
-	$i=0; 
-	foreach ($matches[0] as $elementMatch) {
-		$element = trim($matches[3][$i]);
-		$elementVars = array();
-		if (strpos($elementMatch, '=')) {
-			// means we have named variables at the end, {element: webpages.types type=portfolio,id=something}
-			$vars = explode(' ', $element);	$element = $vars[0]; $vars = explode(',', $vars[1]);
-			foreach ($vars as $var) {
-				$option = explode('=', $var);
-				$elementVars[$option[0]] = $option[1];
-			}
-		}
-
-		$replacement = !empty($templateEditing) ? sprintf('<div data-template-tag="element: %s">%s</div>', $element, $this->element($element, $elementVars)) : $this->element($element, $elementVars);
-		$defaultTemplate["Webpage"]["content"] = str_replace($elementMatch, $replacement, $defaultTemplate['Webpage']['content']); 
-		$i++;
-	}
-	
 	// matches form template tags {form: Id/type} for example {form: 1/edit}
-	preg_match_all ("/(\{form: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	preg_match_all ("/(\{form: ([az_]*)([^\}\{]*)\})/", $content, $matches);
 	$i = 0;
 	foreach ($matches[0] as $formMatch) {
 		$formCfg['id'] = trim($matches[3][$i]);
 		// removed cache for forms, because you can't set it based on form inputs
 		// $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
-		$defaultTemplate["Webpage"]["content"] = str_replace($formMatch, $this->element('Forms.forms', $formCfg), $defaultTemplate['Webpage']['content']);
+		$content = str_replace($formMatch, $this->element('Forms.forms', $formCfg), $content);
 		$i++;
 	}
 	
 	// matches form template tags {answer: Id} for example {answer: 1}
-	preg_match_all ("/(\{answer: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	preg_match_all ("/(\{answer: ([az_]*)([^\}\{]*)\})/", $content, $matches);
 	$i = 0;
 	foreach ($matches[0] as $answerMatch) {
 		$answerCfg['id'] = trim($matches[3][$i]);
 		// removed cache for forms, because you can't set it based on form inputs
 		// $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
-		$defaultTemplate["Webpage"]["content"] = str_replace($answerMatch, $this->element('Answers.answer', $answerCfg), $defaultTemplate['Webpage']['content']);
+		$content = str_replace($answerMatch, $this->element('Answers.answer', $answerCfg), $content);
 		$i++;
 	}
 	
 	// matches gallery template tags {gallery: Id} for example {gallery: 28749283}
-	preg_match_all ("/(\{gallery: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
+	preg_match_all ("/(\{gallery: ([az_]*)([^\}\{]*)\})/", $content, $matches);
 	$i = 0;
 	foreach ($matches[0] as $galleryMatch) {
 		$galleryCfg['foreignKey'] = trim($matches[3][$i]);
 		// removed cache for forms, because you can't set it based on form inputs
 		// $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
-		$defaultTemplate["Webpage"]["content"] = str_replace($galleryMatch, $this->element('gallery', $galleryCfg, array('plugin' => 'galleries')), $defaultTemplate['Webpage']['content']);
+		$content = str_replace($galleryMatch, $this->element('gallery', $galleryCfg, array('plugin' => 'galleries')), $content);
 		$i++;
 	}
 	
@@ -124,29 +138,30 @@ if (!empty($defaultTemplate)) {
 	// This mysteriously broke. I replaced it with what seems to be a good regex.
 	// For some reason, the old regex started chopping off the first letter of the match.
 	// If other regex's in this file start acting up, try using this new regex. ^JB
-	//preg_match_all ("/(\{menu: ([az_]*)([^\}\{]*)\})/", $defaultTemplate["Webpage"]["content"], $matches);
-	preg_match_all ("/\{menu: (.*?)\}/", $defaultTemplate["Webpage"]["content"], $matches2);
+	//preg_match_all ("/(\{menu: ([az_]*)([^\}\{]*)\})/", $content, $matches);
+	preg_match_all ("/\{menu: (.*?)\}/", $content, $matches2);
 	$i = 0;
 	foreach ($matches2[0] as $menuMatch) {
 		$menuCfg['id'] = trim($matches2[1][$i]);
 		// removed cache temporarily
 		// $menuCfg['cache'] = array('key' => 'menu-'.$menuCfg['id'], 'time' => '+999 days');
 		$menuCfg['plugin'] = 'menus';
-		$defaultTemplate['Webpage']['content'] = str_replace($menuMatch, $this->element('Webpages.menus', $menuCfg), $defaultTemplate['Webpage']['content']);
+		$content = str_replace($menuMatch, $this->element('Webpages.menus', $menuCfg), $content);
 		$i++;
 	}
 
 	// checking for the textarea content placeholders	
 	foreach($nonParseable as $placeHolder=>$holdingContent)	{
-		$defaultTemplate["Webpage"]["content"] = str_replace($placeHolder, $holdingContent, $defaultTemplate['Webpage']['content']);
+		$content = str_replace($placeHolder, $holdingContent, $content);
 	}
 	
 	// display the database driven default template
-	echo $defaultTemplate['Webpage']['content'];
+	echo $content;
 } else {
+	// need a comment about when we ever get to this
 	echo $this->Session->flash(); 
     echo $this->Session->flash('auth');
 	echo $content_for_layout;
 }
 
-echo $this->Element('editor', array(), array('plugin' => 'webpages')); ?>
+echo $this->Element('Webpages.editor', array()); ?>
