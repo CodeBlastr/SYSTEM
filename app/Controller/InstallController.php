@@ -688,7 +688,7 @@ class InstallController extends Controller {
  * Install Sql Data
  */
     protected function _getInstallSqlData() {
-        $installedPlugins = 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges\r\nplugins[] = Utils';
+        $installedPlugins = 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges';
         if (!empty($this->installPlugins)) {
             foreach ($this->installPlugins as $pluginName) {
                 $installedPlugins .= '\r\nplugins[] = ' . $pluginName;
