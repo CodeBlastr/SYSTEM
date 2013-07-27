@@ -49,10 +49,8 @@ class WebpagesController extends WebpagesAppController {
  * 
  * @var array 
  */
-    public $helpers = array('Cke'); 
-
-	// This is part of the search plugin : Removed 11/11/12 RK
-    // public $presetVars = array(array('field' => 'name', 'type' => 'value'));
+    public $helpers = array('Cke', 'Webpages.Tree'); 
+	
 		
 /**
  * Before filter

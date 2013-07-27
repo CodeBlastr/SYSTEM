@@ -20,7 +20,7 @@
     <script type="text/javascript" src="/js/system.js"></script>
     <script type="text/javascript" src="/js/plugins/modernizr-2.6.1-respond-1.1.0.min.js"></script>
     {element: javascript}
-    {element: webpages.analytics}
+    {element: Webpages.analytics}
 </head>
 <body {element: body_attributes}>
 <!--[if lt IE 7]><p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p><![endif]-->
