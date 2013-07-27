@@ -22,7 +22,11 @@ if (defined('SITE_DIR')) {
 		Configure::write('Install', true); // switch with line below to allow installs at a catchall
 		//Configure::write('Install', false);
 	}
-	require_once(ROOT . DS . 'sites' . DS . 'example.com' . DS . 'Config' . DS . 'core.php');
+	if (file_exists(ROOT . DS . 'sites' . DS . 'example.com' . DS . 'Config' . DS . 'core.php')) {
+		require_once(ROOT . DS . 'sites' . DS . 'example.com' . DS . 'Config' . DS . 'core.php');
+	} else {
+		require_once(ROOT . DS . 'sites.default' . DS . 'example.com' . DS . 'Config' . DS . 'core.php');
+	}
   	$debugger = !empty($_GET['debugger']) ? $_GET['debugger'] : 2;
   	Configure::write('debug', $debugger);
   	Configure::write('Config.language', 'en');
