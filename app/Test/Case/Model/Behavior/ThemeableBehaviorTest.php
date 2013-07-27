@@ -107,8 +107,11 @@ class ThemeableBehaviorTestCase extends CakeTestCase {
 		$this->assertEqual(1, $this->Template->find('count', array('conditions' => array('Template.layout' => $data['Template']['layout'], 'Template.model' => $this->Article->name, 'Template.foreign_key' => $this->Article->id))));
 		
 		// make sure the theme variable is set for the article model
-		$this->Article->find('first', array('conditions' => array('Article.id' => $this->Article->id)));
+		$results = $this->Article->find('first', array('conditions' => array('Article.id' => $this->Article->id)));
 		$this->assertEqual($data['Template']['layout'], $this->Article->theme['Article']['_layout']);
+		
+		// make sure the theme variable is set for the data too (used on edit pages)
+		$this->assertEqual($data['Template']['layout'], $results['Template']['layout']);
 	}
 	
 	
