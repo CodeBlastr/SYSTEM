@@ -28,7 +28,6 @@ class AcoFixture extends CakeTestFixture {
 			'alias' => 'controllers',
 			'lft' => 1,
 			'rght' => 4,
-			'type' => 'controller',
 		),
 		array(
 			'id' => 2,
@@ -38,7 +37,6 @@ class AcoFixture extends CakeTestFixture {
 			'alias' => 'Admin',
 			'lft' => 2,
 			'rght' => 3,
-			'type' => 'controller',
 		),
 	);
 }
