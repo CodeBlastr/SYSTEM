@@ -45,27 +45,20 @@ if (!empty($defaultTemplate)) {
 	$modelName = Inflector::classify($this->request->controller);
 	$_layout = !empty($_layout[0]) ? $_layout[0] : $_layout; // takes care of $Model->data results which are set in AppModel afterfind()
 	if (!empty($_layout[$modelName]['_layout'])) {
-		$settings = !empty($_layout[$modelName]['_layoutSettings']) ? unserialize($_layout[$modelName]['_layoutSettings']) : array('settings' => array('actions' => array('view')));
-		$actionMatch = in_array($this->request->action, $settings['settings']['actions']);
-		$settings = $settings['settings'];
-
-		if ($actionMatch === true) { // test if we're in a good action to apply the template to
-			$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$_layout[$modelName]['_layout'].'.ctp';
-			if (file_exists($templateFile)) {
-				// split up the template contents into settings and content
-				$templateContents = preg_split('/\?>/s', file_get_contents($templateFile));
-				$searches = array('<?php', '/**', 'Settings', ' * ', ' */');
-				/** get default settings from the top of the template file.  Ex.
-				<?php
-				/**
-				 * Settings
-				 * elements[] = "config 0"
-				 * elements[] = "config 1"
-				 * elements[] = "config 2"
-				 * / (remove space between * / and delete this paranthesis)
-				?>
-				*/
-				$settings = !empty($settings['elements']) ? $settings : parse_ini_string(trim(str_replace($searches, '', $templateContents[0])));
+		$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$_layout[$modelName]['_layout'].'.ctp';
+		if (file_exists($templateFile)) {
+			// split up the template contents into settings and content
+			$templateContents = preg_split('/\?>/s', file_get_contents($templateFile));
+			$searches = array('<?php', '/**', 'Default Settings', ' * ', ' */');
+			// get default settings from the top of the template file.  Example settings format in ThemeableBehavior
+			$fileDefaults = parse_ini_string(trim(str_replace($searches, '', $templateContents[0])));
+			$fileDefaults['actions'] = !empty($fileDefaults['actions']) ? $fileDefaults['actions'] : array('view');
+			// default override settings from the database are set here	
+			$settings = !empty($_layout[$modelName]['_layoutSettings']) ? unserialize($_layout[$modelName]['_layoutSettings']) : array('actions' => array('view'));
+			$settings['elements'] = !empty($settings['elements']) ? $settings['elements'] + $fileDefaults['elements'] : $fileDefaults['elements'];
+			$settings['actions'] = !empty($settings['actions']) ? $settings['actions'] + $fileDefaults['actions'] : $fileDefaults['actions'];
+			$actionMatch = in_array($this->request->action, $settings['actions']);
+			if ($actionMatch === true) { // test if we're in a good action to apply the template to
 				// add the drag and drop javascript (order is important)
 				$content = !empty($templateEditing) ? str_replace('</head>', "    {element: templates/edit}".PHP_EOL."</head>", trim($templateContents[1])) : trim($templateContents[1]);
 				// first pass a {element x} template tags so that non {config: x} get replaced first (required for editing config)
@@ -74,7 +67,7 @@ if (!empty($defaultTemplate)) {
 				$i = 0;
 				foreach ($configMatches[0] as $configMatch) {
 					$replacement = $settings['elements'][trim($configMatches[3][$i])];
-					$replacement = !empty($templateEditing) ?  sprintf('<ul id="config%s" data-template-tag="config: %s">%s</ul>', $i, $i, $replacement) : $replacement;
+					$replacement = !empty($templateEditing) ?  sprintf('<ul id="config%s" data-template-tag="config: %s"> %s </ul>', $i, $i, $replacement) : $replacement;
 					$content = str_replace($configMatch, $replacement, $content);
 					unset($replacement);
 					$i++;
