@@ -5,6 +5,8 @@
 	[data-template-tag*="config"] {
 		min-height: 1em;
 		min-width: 1em;
+		padding: 0;
+		margin: 0;
 	}
 	[data-template-tag*="element"], .handle {
 		cursor: move;
