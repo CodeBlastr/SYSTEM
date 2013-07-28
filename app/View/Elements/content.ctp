@@ -1,37 +1,45 @@
 <?php
 /**
- * @todo might need to move this tagElement function for organization reasons
+ * Content element
+ * Handles template tag parsing. 
+ * 
+ * Note: for configurable templates, you have to expect that config and element tags should be block elements.  (Inline elements make a mess)
+ * 
+ * @todo might need to move the tagElement function for organization reasons
  * @todo turn other tags into functions too
  */
-function tagElement($View, $content, $options = array()) {
-	// matches element template tags like {element: plugin.name}
-	preg_match_all ("/(\{element: ([az_]*)([^\}]*)\})/", $content, $matches); // a little shorter
-	$i=0; 
-	foreach ($matches[0] as $elementMatch) {
-		$element = trim($matches[3][$i]);
-		$elementVars = array();
-		if (strpos($elementMatch, '=')) {
-			// means we have named variables at the end, {element: webpages.types type=portfolio,id=something}
-			$vars = explode(' ', $element);	$element = $vars[0]; $vars = explode(',', $vars[1]);
-			foreach ($vars as $var) {
-				$option = explode('=', $var);
-				$elementVars[$option[0]] = $option[1];
-			}
-		}
-		$replacement = !empty($options['templateEditing']) ? sprintf('<div data-template-tag="element: %s">%s</div>', $element, $View->element($element, $elementVars)) : $View->element($element, $elementVars);
-		$content = str_replace($elementMatch, $replacement, $content); 
-		$i++;
-	}
-	return $content;
-}
 
 	
 $flash_for_layout = $this->Session->flash();
 $flash_auth_for_layout = $this->Session->flash('auth');
+
 if (!empty($defaultTemplate)) {
+ 
+	function tagElement($View, $content, $options = array()) {
+		
+		// matches element template tags like {element: plugin.name}
+		preg_match_all ("/(\{element: ([az_]*)([^\}]*)\})/", $content, $matches); // a little shorter
+		$i=0; 
+		foreach ($matches[0] as $elementMatch) {
+			$element = trim($matches[3][$i]);
+			$elementVars = array();
+			if (strpos($elementMatch, '=')) {
+				// means we have named variables at the end, {element: webpages.types type=portfolio,id=something}
+				$vars = explode(' ', $element);	$element = $vars[0]; $vars = explode(',', $vars[1]);
+				foreach ($vars as $var) {
+					$option = explode('=', $var);
+					$elementVars[$option[0]] = $option[1];
+				}
+			}
+			$replacement = !empty($options['templateEditing']) ? sprintf('<li data-template-tag="element: %s">%s</li>', $element, $View->element($element, $elementVars)) : $View->element($element, $elementVars);
+			$content = str_replace($elementMatch, $replacement, $content); 
+			$i++;
+		}
+		return $content;
+	}
 	
 	// just shortening the variable name
-	$content = $defaultTemplate["Webpage"]["contednt"];
+	$content = $defaultTemplate["Webpage"]["content"];
 		
 	// configurable template settings ex. {config: 0}
 	$modelName = Inflector::classify($this->request->controller);
@@ -44,6 +52,7 @@ if (!empty($defaultTemplate)) {
 		if ($actionMatch === true) { // test if we're in a good action to apply the template to
 			$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$_layout[$modelName]['_layout'].'.ctp';
 			if (file_exists($templateFile)) {
+				// split up the template contents into settings and content
 				$templateContents = preg_split('/\?>/s', file_get_contents($templateFile));
 				$searches = array('<?php', '/**', 'Settings', ' * ', ' */');
 				/** get default settings from the top of the template file.  Ex.
@@ -57,13 +66,15 @@ if (!empty($defaultTemplate)) {
 				?>
 				*/
 				$settings = !empty($settings['elements']) ? $settings : parse_ini_string(trim(str_replace($searches, '', $templateContents[0])));
+				// add the drag and drop javascript (order is important)
+				$content = !empty($templateEditing) ? str_replace('</head>', "    {element: templates/edit}".PHP_EOL."</head>", trim($templateContents[1])) : trim($templateContents[1]);
 				// first pass a {element x} template tags so that non {config: x} get replaced first (required for editing config)
-				$content = tagElement($this, trim($templateContents[1]));
+				$content = tagElement($this, $content);
 				preg_match_all("/(\{config: ([az_]*)([^\}\{]*)\})/", $content, $configMatches);
 				$i = 0;
 				foreach ($configMatches[0] as $configMatch) {
 					$replacement = $settings['elements'][trim($configMatches[3][$i])];
-					$replacement = !empty($templateEditing) ?  sprintf('<div data-template-tag="config: %s">%s</div>', $i, $replacement) : $replacement;
+					$replacement = !empty($templateEditing) ?  sprintf('<ul id="config%s" data-template-tag="config: %s">%s</ul>', $i, $i, $replacement) : $replacement;
 					$content = str_replace($configMatch, $replacement, $content);
 					unset($replacement);
 					$i++;
@@ -72,8 +83,6 @@ if (!empty($defaultTemplate)) {
 		}
 	}
 
-	// add the drag and drop javascript
-	$content = !empty($templateEditing) ? str_replace('</head>', "    {element: templates/edit}".PHP_EOL."</head>", $content) : $content;
 
 	// replace the element tags again (if templateEditing is on it's a configurable template, and has already the old {element: x} tags replaced)
 	$elementOptions = !empty($templateEditing) ? array('templateEditing' => true) : null;

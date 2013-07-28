@@ -17,6 +17,20 @@ class TemplateComponent extends Component {
         if (end($Controller->request->params['pass']) == 'template') {
 			return $this->template($Controller);
         }
+		$boxes = json_decode($Controller->request->query['data']); 
+		debug($boxes);
+		foreach ($boxes as $box) {
+			$data['Tempalte']['id'] = 'asldkjf';
+		}
+
+		$Template = ClassRegistry::init('Template');
+		$template = $Template->find('first', array('conditions' => array('Template.model' => $Controller->modelClass, 'Template.foreign_key' => $Controller->request->params['pass'][0])));
+		
+		
+		
+		debug($template);
+		debug($Controller->request);
+		break;
     }
 	
 /**
