@@ -17,20 +17,10 @@ class TemplateComponent extends Component {
         if (end($Controller->request->params['pass']) == 'template') {
 			return $this->template($Controller);
         }
-		$boxes = json_decode($Controller->request->query['data']); 
-		debug($boxes);
-		foreach ($boxes as $box) {
-			$data['Tempalte']['id'] = 'asldkjf';
-		}
-
-		$Template = ClassRegistry::init('Template');
-		$template = $Template->find('first', array('conditions' => array('Template.model' => $Controller->modelClass, 'Template.foreign_key' => $Controller->request->params['pass'][0])));
 		
-		
-		
-		debug($template);
-		debug($Controller->request);
-		break;
+        if ($Controller->request->action == 'template') {
+			return $this->templateEdit($Controller);
+        }
     }
 	
 /**
@@ -82,6 +72,30 @@ class TemplateComponent extends Component {
 			debug('Template was not found');
 			break;
 			throw new NotFoundException();
+		}
+	}
+	
+	public function templateEdit(Controller $Controller) {
+		$Controller->render(false);
+		$Controller->layout = false;
+		$boxes = json_decode($Controller->request->data);
+		if (!empty($boxes) && is_array($boxes)) {
+			$Template = ClassRegistry::init('Template');
+			$template = $Template->find('first', array('conditions' => array('Template.model' => $Controller->modelClass, 'Template.foreign_key' => $Controller->request->params['pass'][0])));
+			$settings = unserialize($template['Template']['settings']);
+			$settings['elements'] = $boxes;
+			$data['Template']['id'] = $template['Template']['id'];
+			$data['Template']['settings'] = serialize($settings);
+			if ($Template->save($data)) {
+				echo 'true';
+				die;
+			} else {
+				echo 'false';
+				die;
+			}
+		} else {
+			echo 'false';
+			die;
 		}
 	}
 	

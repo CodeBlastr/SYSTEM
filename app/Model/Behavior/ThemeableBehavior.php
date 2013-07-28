@@ -6,6 +6,13 @@ App::uses('ModelBehavior', 'Model');
  * 
  * Allows you to attach a layout to any primary record. 
  * 
+ * Settings
+ * elements[] = "config 0"
+ * elements[] = "config 1"
+ * elements[] = "config 2"
+ * actions[] = 'view'
+ * actions[] = 'edit'
+ * 
  */
 class ThemeableBehavior extends ModelBehavior {
 
