@@ -116,7 +116,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 			<div class="span11 pull-left">
    				<a href="http://buildrr.com/" class="brand active"><span class="name">build<span class="rr">r</span>r</span><span class="tagline"><span class="green">revenue</span> through results</span></a>
 				<h1>Install <?php echo $_SERVER['HTTP_HOST']; ?></h1>
-				<p>Requires : MySQL version 5.X+, PHP version 5.3, Apache mod_rewrite</p>
+				<p>Requires : MySQL version 5.X+, PHP version 5.3+, Apache mod_rewrite</p>
 			</div>
 		</div>
 		

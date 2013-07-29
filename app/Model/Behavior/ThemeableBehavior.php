@@ -31,13 +31,18 @@ class ThemeableBehavior extends ModelBehavior {
  * 
  * @param Model $Model
  * @param boolean $created The value of $created will be true if a new record was created (rather than an update).
-
+ */
 	public function afterSave(Model $Model, $created) {
-		return parent::afterSave($Model, $created);
-	} */
+		if (!empty($Model->data['Template']['layout'])) {
+			$data['Template']['layout'] = $Model->data['Template']['layout'];
+			$data['Template']['model'] = $Model->name;
+			$data['Template']['foreign_key'] = $Model->id;
+			$Template = ClassRegistry::init('Template');
+			$Template->save($data);
+		}
+		return true; // not really needed, but what the hey
+	}
     
-   
-	
   
 /**
  * Before find callback
@@ -63,13 +68,14 @@ class ThemeableBehavior extends ModelBehavior {
  */
     public function afterFind(Model $Model, $results, $primary = false) {
     	if (!empty($Model->name) && !empty($Model->id)) {
-			$this->Template = ClassRegistry::init('Template');
-			$template = $this->Template->find('first', array('Template.model' => $Model->name, 'Template.foreign_key' => $Model->id));
+			$Template = ClassRegistry::init('Template');
+			$template = $Template->find('first', array('Template.model' => $Model->name, 'Template.foreign_key' => $Model->id));
 			if (!empty($template)) {
 				for ($i = 0; $i < count($results); ++$i) {
 					if (key($results[$i]) == $template['Template']['model'] && $results[$i][$Model->alias]['id'] == $template['Template']['foreign_key']) {
 						$Model->theme[$Model->alias]['_layout'] = $template['Template']['layout'];
 						$Model->theme[$Model->alias]['_layoutSettings'] = $template['Template']['settings'];
+						$results[$i]['Template']['layout'] = $template['Template']['layout'];
 					}
 				}
 			}

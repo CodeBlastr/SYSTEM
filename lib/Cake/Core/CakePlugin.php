@@ -78,11 +78,6 @@ class CakePlugin {
 		if (empty($config['path'])) {
 			foreach (App::path('plugins') as $path) {
 				if (is_dir($path . $plugin)) {
-						
-					//ZUHA - CORE HACK added for Zuha plugin routing
-					if (file_exists($path.$plugin.DS.'Config'.DS.'routes.php')) {
-						$config['routes'] = true;
-					}
 					self::$_plugins[$plugin] = $config + array('path' => $path . $plugin . DS);
 					break;
 				}
@@ -90,10 +85,6 @@ class CakePlugin {
 				//Backwards compatibility to make easier to migrate to 2.0
 				$underscored = Inflector::underscore($plugin);
 				if (is_dir($path . $underscored)) {
-					//ZUHA - CORE HACK added for Zuha plugin routing
-					if (file_exists($path.$plugin.DS.'Config'.DS.'routes.php')) {
-						$config['routes'] = true;
-					}
 					self::$_plugins[$plugin] = $config + array('path' => $path . $underscored . DS);
 					break;
 				}
