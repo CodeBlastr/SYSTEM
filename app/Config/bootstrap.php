@@ -360,6 +360,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'InvoiceTime' => 'Invoices',
 				'Invoice' => 'Invoices',
 				'Location' => 'Locations',
+				'Mail' => 'Mail',
 				'Map' => 'Maps',
 				'Media' => 'Media',
 				'MediaAttachment' => 'Media',
