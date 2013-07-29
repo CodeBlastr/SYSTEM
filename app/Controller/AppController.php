@@ -44,8 +44,9 @@ class AppController extends Controller {
 		'Text', 
 		'Form', 
 		'Js', 
-		'Time', 
-		'Html'
+		'Time',
+		'Html',
+		'Utils.Tree'
 		);
 	public $components = array(
 		'Auth' => array(
@@ -769,14 +770,6 @@ class AppController extends Controller {
  * Loads helpers dynamically system wide, and per controller loading abilities.
  */
 	private function _getHelpers() {
-		if (in_array('Utils', CakePlugin::loaded())) {
-			$this->helpers[] = 'Utils.Tree';
-		}
-		
-		if (in_array('Media', CakePlugin::loaded())) {
-			$this->helpers[] = 'Media.Media';
-		}
-
 		if(defined('__APP_LOAD_APP_HELPERS')) {
 			$settings = __APP_LOAD_APP_HELPERS;
 			if ($helpers = @unserialize($settings)) {
@@ -800,9 +793,15 @@ class AppController extends Controller {
 			}
 		}
 
-		// not really loving it but it has to be here because it is in the construct and for logins to work
+		// not really loving these helpers here
+		
+		// this one has to be here because it is in the construct and for logins to work
 		if (in_array('Facebook', CakePlugin::loaded())) {
 			$this->helpers[] = 'Facebook.Facebook';
+		}
+		// please leave a comment about why this would have to be here
+		if (in_array('Media', CakePlugin::loaded())) {
+			$this->helpers[] = 'Media.Media';
 		}
 	}
 

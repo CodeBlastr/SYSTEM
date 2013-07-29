@@ -6,11 +6,17 @@ class SslComponent extends Component {
     public $Controller = null;
     
     public function initialize(Controller $Controller) {
+    	//The initialize method is called before the controller’s beforeFilter method.
         $this->Controller = $Controller;
     }
 	
-    public function startup(Controller $Controller) { }
-    public function beforeRender(Controller $Controller) { }
+    public function startup(Controller $Controller) {
+    	//The startup method is called after the controller’s beforeFilter method but before the controller executes the current action handler.
+    }
+    public function beforeRender(Controller $Controller) {
+		// The beforeRender method is called after the controller executes the requested action’s logic but before the controller’s renders views and layout.
+    }
+	
     public function shutdown(Controller $Controller) { }
     
     public function force() {
