@@ -27,11 +27,13 @@ class UserGroup extends UsersAppModel {
 	public $hasMany = array(
 		'UsersUserGroup'=>array(
 			'className'     => 'Users.UsersUserGroup',
-            'foreignKey'    => 'user_group_id'
+            'foreignKey'    => 'user_group_id',
+			'dependent'		=> true
 		),
 		'UserGroupWallPost'=>array(
 			'className'     => 'Users.UserGroupWallPost',
-            'foreignKey'    => 'user_group_id'
+            'foreignKey'    => 'user_group_id',
+			'dependent'		=> true
 		)
 	);
 	
