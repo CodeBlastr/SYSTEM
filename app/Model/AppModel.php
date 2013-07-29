@@ -59,6 +59,8 @@ class AppModel extends Model {
  */
 	public function __construct($id = false, $table = null, $ds = null) {
 		$this->actsAs[] = 'Containable'; // moved here because it was being triggered too late 
+		// Let's have a "global" variable for userId available to Models too
+		$this->userId = ( class_exists('CakeSession') ) ? CakeSession::read('Auth.User.id') : null;
 		parent::__construct($id, $table, $ds);
 	}
 
