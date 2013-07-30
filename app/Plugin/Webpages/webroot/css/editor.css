@@ -39,6 +39,7 @@
 #adminNavFloManagr.navbar .brand {
 	font-size: 20px;
 	font-weight: normal;
+	width: auto;
 }
 #adminNavFloManagr.navbar .brand span {
 	font-size: 20px;
@@ -763,6 +764,13 @@ https://github.com/ghinda/css-toggle-switch
     vertical-align: text-top;
     width: 14px;
 }
+#adminNavFloManagr .icon-bar {
+    height: 2px;
+	float: left;
+	clear: left;
+	display: block;
+	margin-top: 4px !important;
+}
 #adminNavFloManagr .icon-eye-open {
     background-position: -96px -120px;
 }
@@ -822,8 +830,11 @@ div.edit-message {
     }
     #adminNavFloManagr .btn-navbar {
         display: block;
-        margin-right: 10px;
-        margin-top: 14px;
+		margin-right: 10px;
+		margin-top: 8px;
+		width: 14px;
+		height: 22px;
+		padding: 0 5px;
     }
     #adminNavFloManagr ul li {
         display: block;
@@ -849,9 +860,12 @@ div.edit-message {
         width: 280px;
     }
     #adminNavFloManagr .btn-navbar {
-        display: block;
-        margin-right: 10px;
-        margin-top: 14px;
+        display: inline-block;
+		margin-right: 10px;
+		margin-top: 9px;
+		height: 23px;
+		width: 15px;
+		padding: 0 7px;
     }
     #adminNavFloManagr ul li {
         display: block;
