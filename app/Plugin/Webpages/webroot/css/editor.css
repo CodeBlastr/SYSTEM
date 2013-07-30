@@ -39,6 +39,7 @@
 #adminNavFloManagr.navbar .brand {
 	font-size: 20px;
 	font-weight: normal;
+	width: auto;
 }
 #adminNavFloManagr.navbar .brand span {
 	font-size: 20px;
