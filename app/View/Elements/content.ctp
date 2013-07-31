@@ -40,7 +40,17 @@ if (!empty($defaultTemplate)) {
 	
 	// just shortening the variable name
 	$content = $defaultTemplate["Webpage"]["content"];
-		
+	
+	
+	// matches helper template tags like {helper: content_for_layout}
+	preg_match_all ("/\{helper: (.*?)\}/", $content, $matches);
+	$i = 0;
+	foreach ($matches[0] as $helperMatch) {
+		$helper = trim($matches[1][$i]);
+		$content = str_replace($helperMatch, $$helper, $content);
+		$i++;
+	}
+	
 	// configurable template settings ex. {config: 0}
 	$modelName = Inflector::classify($this->request->controller);
 	$_layout = !empty($_layout[0]) ? $_layout[0] : $_layout; // takes care of $Model->data results which are set in AppModel afterfind()
@@ -80,16 +90,6 @@ if (!empty($defaultTemplate)) {
 	// replace the element tags again (if templateEditing is on it's a configurable template, and has already the old {element: x} tags replaced)
 	$elementOptions = !empty($templateEditing) ? array('templateEditing' => true) : null;
 	$content = tagElement($this, $content, $elementOptions);
-	
-	
-	// matches helper template tags like {helper: content_for_layout}
-	preg_match_all ("/\{helper: (.*?)\}/", $content, $matches);
-	$i = 0;
-	foreach ($matches[0] as $helperMatch) {
-		$helper = trim($matches[1][$i]);
-		$content = str_replace($helperMatch, $$helper, $content);
-		$i++;
-	}
 	
 	// skipping the parsing of text area content with this check	
 	preg_match_all ("/(<textarea[^>]+>)(.*)(<\/textarea>)/isU", $content, $matchesEditable);

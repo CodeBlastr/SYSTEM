@@ -126,7 +126,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	} elseif (SITE_DIR === NULL){
     	CakePlugin::loadAll(); // Loads all plugins at once
     } else {
-    	CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages')); // required plugins    
+    	CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages', 'Utils')); // required plugins    
 	}
 	
 	
