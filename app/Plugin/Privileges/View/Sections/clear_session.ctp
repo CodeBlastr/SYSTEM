@@ -1,10 +1,10 @@
 <div class="privileges">
-    <p class="alert alert-error"> IMPORTANT : This could take a long time, and cannot be interrupted.</p> 
+    <p class="alert alert-error"><strong>IMPORTANT : </strong>This could take a long time, and cannot be interrupted.</p>
     
-   	<p class="alert alert-info"> For your information, these are your currently enabled plugin(s) : 
+   	<p class="well"> For your information, these are your currently enabled plugins :<br />
     <?php
     foreach (CakePlugin::loaded() as $plugin) { 
-        echo $this->Html->link(__('%s ', $plugin), array('plugin' => Inflector::underscore(ZuhaInflector::pluginize($plugin)), 'controller' => ' ', 'action' => null)); 
+        echo $this->Html->link(__('%s ', $plugin), array('plugin' => Inflector::underscore(ZuhaInflector::pluginize($plugin)), 'controller' => ' ', 'action' => null), array('class' => 'label label-info')) . ' ';
     } ?>
     </p>
     

@@ -3,7 +3,7 @@
 $userGroup = $this->requestAction("/users/userGroups/groupActivity/$id");
 $output = '';
 
-if ( !empty($userGroup) ) {
+if ( !empty($userGroup['UserGroupWallPost']) ) {
 	//debug($userGroup);break;
 	foreach ( $userGroup['UserGroupWallPost'] as $message ) {
 
