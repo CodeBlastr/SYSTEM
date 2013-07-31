@@ -308,7 +308,14 @@ https://github.com/ghinda/css-toggle-switch
     line-height: 20px;
 }
 
-
+.edit-box:before, .edit-box:after {
+	display: table;
+	line-height: 0;
+	content: "";
+}
+.edit-box:after {
+	clear: both;
+}
 
 .edit-box-active {
 	position: relative;

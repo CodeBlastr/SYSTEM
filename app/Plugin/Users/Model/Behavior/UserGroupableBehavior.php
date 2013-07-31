@@ -32,7 +32,7 @@ class UserGroupableBehavior extends ModelBehavior {
 						'conditions' => array('UserGroup.model' => $Model->alias),
 						'dependent' => true
 					)
-				))
+				)), false
 			);
 		}
 

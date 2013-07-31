@@ -822,7 +822,7 @@ class AppController extends Controller {
 
 		// not really loving it but it has to be here because it is in the construct and for logins to work
 		if (in_array('Facebook', CakePlugin::loaded())) {
-			$this->uses[] = 'Facebook.Facebook';
+			$this->uses = ( is_array($this->uses) ) ? array_merge($this->uses, array('Facebook.Facebook')) : array($this->uses, 'Facebook.Facebook');
 		}
 	}
 
