@@ -10,6 +10,49 @@ class _UserGroupsController extends UsersAppController {
 		
 	}
 
+/**
+ * This action returns data for an element
+ *
+ * @todo make a proper settings array merge
+ */
+	public function groupActivity ($id = null, $options = array()) {
+
+		if ( !isset($options['limit']) ) {
+			$options['limit'] = 3;
+		}
+
+		$userGroup  = $this->UserGroup->find('first', array(
+			'conditions'=>array(
+				'UserGroup.id' => $id
+				),
+			'contain'=>array(
+				'Creator'=>array(
+					'fields'=>array(
+						'id',
+						'username',
+						'full_name',
+						)
+					),
+				'User'=>array(
+					'fields'=>array(
+						'id',
+						'username',
+						'full_name',
+						)
+					),
+				'UserGroupWallPost' => array(
+					'order' => array('UserGroupWallPost.created' => 'DESC'),
+					'Creator',
+					'Comment'
+				)
+			),
+			'limit' => $options['limit']
+		));
+
+		return $userGroup;
+
+	}
+
 	public function view($id = null) {
 		$this->UserGroup->id = $id;
 		if (!$this->UserGroup->exists()) {
