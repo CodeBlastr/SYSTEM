@@ -95,7 +95,6 @@
 	  }
 	  ?>
 	</table>
-	
 
 	<?php echo $this->Html->link('Post To Group Wall' , array('plugin'=>'users','controller'=>'user_group_wall_posts' , 'action'=>'add', $this->request->params['pass'][0]),  array('class' => 'btn'))?>
 	<?php #echo $this->Html->link('Join This Group' , array('plugin'=>'users','controller'=>'users_user_groups' , 'action'=>'add', $userGroup['UserGroup']['id'] , $userId ));?>

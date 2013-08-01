@@ -94,30 +94,25 @@ class AdminController extends AppController {
 		
 		
 		// Turn on to debug 
-//		debug($lastTable);
-//		debug($nextTable);
-//		debug($nextPlugin); // if false, means its not a plugin
-//		debug($endTable);
-//		debug($allTables);
-//		debug($this->Session->read());
-//		break;
-		
-		if (!$this->Session->read('Updates.upgrade')) {
-			// there are some upgrades that have to be hard coded
-			$this->_upgrade();
-			$this->Session->write('Updates.upgrade', true);
-		}
+		// debug($lastTable);
+		// debug($nextTable);
+		// debug($nextPlugin); // if false, means its not a plugin
+		// debug($endTable);
+		// debug($allTables);
+		// debug($this->Session->read());
+		// break;
 		
 		if (!empty($nextPlugin) && !in_array($nextPlugin, CakePlugin::loaded())) { 
 			// plugin is not loaded so downgrade
-			$this->Session->write('Updates.last', !empty($lastTableWithPlugin) ? array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) : $this->_downgrade($nextTable, $lastTable));
+			$last = !empty($lastTableWithPlugin) ? array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) : $this->_downgrade($nextTable, $lastTable);
+			$this->Session->write('Updates.last', $last);
 			// more debugging
-//			if ( !empty($lastTableWithPlugin) ) {
-//				debug($lastTableWithPlugin);
-//				debug($this->_downgrade($nextTable, $lastTable));
-//				debug( array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) );
-//				die();
-//			}
+			// if ( !empty($lastTableWithPlugin) ) {
+			//	 debug($lastTableWithPlugin);
+			//	 debug($this->_downgrade($nextTable, $lastTable));
+			//	 debug( array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) );
+			//	 die();
+			// }
 			return true;
 		} elseif ($endTable == $lastTable) {
 			// if last TABLE run equals the end then quit and set a session Updates.complete = true and quit
@@ -218,6 +213,10 @@ class AdminController extends AppController {
 			} 
 			
 			try {
+				debug($table);
+				break;
+				$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;'); // back it up first
+				$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
 				$db->query('DROP TABLE `' . $table . '`;'); 
 				// need the last table, because the table just removed will no longer exist in the tables array
 				return array($lastTable => __('AND %s removed', $table));
@@ -251,9 +250,21 @@ class AdminController extends AppController {
 			$options['models'] = false;
 		}
 		
-		$Old = $this->Schema->read($options);
+		try {
+			$Old = $this->Schema->read($options);
+		} catch (Exception $e) {
+			if (get_class($e) == 'MissingTableException' && in_array($table, array_keys($Schema->tables))) {
+				// missing table create it
+				$tableName = explode(' ', $e->getMessage()); // string like Table table_name for model TableName was not found in ...'
+				$this->_run($db->createSchema($Schema, $tableName[1]), 'create', $Schema);
+			} else {
+				debug('Hopefully we do not reach this spot.');
+				debug($e->getMessage());
+				break;
+			}
+		}
 		$compare = $this->Schema->compare($Old, $Schema);
-
+		
 		$contents = array();
 
 		if (empty($table)) {
@@ -283,6 +294,7 @@ class AdminController extends AppController {
 				return $this->_run($contents, 'update', $Schema);
 			} catch (Exception $e) {
 				debug($e->getMessage());
+				debug($contents);
 				debug('You need to run this update manually.  Probably an unrecognized column type, like enum.');
 				break;
 			}
@@ -307,6 +319,16 @@ class AdminController extends AppController {
 		
 		Configure::write('debug', 2);
 		$db = ConnectionManager::getDataSource($this->Schema->connection);
+		if (is_string($contents)) {
+			// its a string if we're creating a new table, execute single query
+			try {
+				$db->execute($contents);
+				return array($Schema->name => ' updated table'); // create is run
+			} catch (PDOException $e) {
+				$error = $e->getMessage();
+				throw new Exception($error);
+			}
+		}
 		foreach ($contents as $table => $sql) {
 			if (empty($sql)) {
 				return array($table => 'up to date');
@@ -347,7 +369,11 @@ class AdminController extends AppController {
 		$db = ConnectionManager::getDataSource('default');
 		foreach ($db->listSources() as $table) {
 			if (strpos($table, 'zbk_') === false) {
-				$tables[$table] = ZuhaInflector::pluginize($table);
+				$plugin = ZuhaInflector::pluginize($table);
+				if (ctype_lower($plugin)) {
+					throw new Exception(__('I bet someone added a db table (%s), without noting it in bootstrap::ZuhaInflector::pluginize. Please check.', $table));
+				}
+				$tables[$table] = $plugin;
 			}
 		}
 		return $tables;
@@ -383,57 +409,19 @@ class AdminController extends AppController {
 		$db = ConnectionManager::getDataSource('default');
 		$tables = $db->listSources();
 		
-		// automatic upgrade the categories table 5/8/2012
-		if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0192) {
-			if (array_search('category_options', $tables)) {
-				$db->query('ALTER TABLE `category_options` CHANGE `type` `type` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT \'Attribute Group\' COMMENT \'\'\'Attribute Group\'\',\'\'Attribute Type\'\',\'\'Option Group\'\',\'\'Option Type\'\'\';');
-			}
-			if (array_search('form_inputs', $tables)) {
-				$db->query('ALTER TABLE `form_inputs` CHANGE `system_default_value` `system_default_value` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT \'was enum with \'\'current user\'\' as the only option\';');
-			}
-			if (array_search('form_inputs', $tables)) {
-				$db->query('ALTER TABLE `form_inputs` CHANGE `validation` `validation` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT \'was enum with \'\'email\'\',\'\'number\'\' as values\';');
-			}
-			if (array_search('order_transactions', $tables)) {
-				$db->query('ALTER TABLE `order_transactions` CHANGE `status` `status` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT \'was enum with \'\'failed\'\',\'\'success\'\',\'\'paid\'\',\'\'pending\'\',\'\'shipped\'\',\'\'frozen\'\',\'\'cancelled\'\' as values\';');
-			}
-			if (array_search('user_followers', $tables)) {
-				$db->query('ALTER TABLE `user_followers` CHANGE `approved` `approved` BOOLEAN NULL DEFAULT NULL COMMENT \'was enum with \'\'0\'\',\'\'1\'\' as values\';');
-			}
-			if (array_search('webpage_css', $tables)) {
-				$db->query('ALTER TABLE `webpage_css` CHANGE `type` `type` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT \'all\' COMMENT \'was enum with \'\'all\'\',\'\'screen\'\',\'\'print\'\',\'\'handheld\'\',\'\'braille\'\',\'\'embossed\'\',\'\'projection\'\',\'\'speech\'\',\'\'tty\'\',\'\'tv\'\' as values\';');
-			}
-			if (array_search('webpages', $tables)) {
-				$db->query('ALTER TABLE `webpages` CHANGE `type` `type` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT \'content\' COMMENT \'\'\'template\'\',\'\'element\'\',\'\'content\'\'\';');
-			}
-		}
-		
-		if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0192) {
-			// eliminate used table duplicates so that the index can be added
-			if (array_search('used', $tables)) {
-				$db->query('DELETE FROM `used` WHERE `used`.`user_id` IS NULL;');
-				$totals = $db->query('SELECT `user_id`, `model`, `foreign_key`, COUNT(*) AS total FROM `used` GROUP BY `user_id`, `foreign_key`, `model` ORDER BY `total` DESC;');
-				foreach ($totals as $total) {
-					if ($total[0]['total'] > 1) {
-						$limit = $total[0]['total'] - 1;
-						$db->query('DELETE FROM `used` WHERE `used`.`user_id` = \''.$total['used']['user_id'].'\' AND `used`.`model` = \''.$total['used']['model'].'\' AND `used`.`foreign_key` = \''.$total['used']['foreign_key'].'\'   LIMIT '.$limit.';');
-					}
-				}
-			}
-		}	
-		
-		if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0192) {
-			// eliminate used table duplicates so that the index can be added
-			if (array_search('user_followers', $tables)) {
-				$totals = $db->query('SELECT `id`, COUNT(*) AS total FROM `user_followers` GROUP BY `id` ORDER BY `total` DESC;');
-				foreach ($totals as $total) {
-					if ($total[0]['total'] > 1) {
-						$limit = $total[0]['total'] - 1;
-						$db->query('DELETE FROM `user_followers` WHERE `user_followers`.`id` = \''.$total['user_followers']['id'].'\'  LIMIT '.$limit.';');
-					}
-				}
-			}
-		}	
+		// left as an example, but we don't use that setting anymore, so not much use
+		// if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0192) {
+			// // eliminate used table duplicates so that the index can be added
+			// if (array_search('user_followers', $tables)) {
+				// $totals = $db->query('SELECT `id`, COUNT(*) AS total FROM `user_followers` GROUP BY `id` ORDER BY `total` DESC;');
+				// foreach ($totals as $total) {
+					// if ($total[0]['total'] > 1) {
+						// $limit = $total[0]['total'] - 1;
+						// $db->query('DELETE FROM `user_followers` WHERE `user_followers`.`id` = \''.$total['user_followers']['id'].'\'  LIMIT '.$limit.';');
+					// }
+				// }
+			// }
+		// }	
 	}
 	
 	protected function _saveFavicon() {
