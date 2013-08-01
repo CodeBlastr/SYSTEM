@@ -76,7 +76,9 @@ class ThemeableBehavior extends ModelBehavior {
     public function afterFind(Model $Model, $results, $primary = false) {
     	if (!empty($Model->name) && !empty($Model->id)) {
 			$Template = ClassRegistry::init('Template');
-			$template = $Template->find('first', array('Template.model' => $Model->name, 'Template.foreign_key' => $Model->id));
+			$template = $Template->find('first', array(
+				'conditions' => array('Template.model' => $Model->name, 'Template.foreign_key' => $Model->id)
+			));
 			if (!empty($template)) {
 				for ($i = 0; $i < count($results); ++$i) {
 					if (key($results[$i]) == $template['Template']['model'] && $results[$i][$Model->alias]['id'] == $template['Template']['foreign_key']) {
