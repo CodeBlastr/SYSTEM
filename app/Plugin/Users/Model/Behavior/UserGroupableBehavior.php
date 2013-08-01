@@ -12,6 +12,7 @@ app::uses('UserGroup', 'Users.Model');
 class UserGroupableBehavior extends ModelBehavior {
 
 	public $settings = array();
+	public $foreignKeyToDeleteFrom = null;
 
 /**
  *
@@ -52,6 +53,13 @@ class UserGroupableBehavior extends ModelBehavior {
 		}
 	}
 
+	public function beforeDelete(Model $Model, $cascade = true) {
+		if ( isset($this->settings[$Model->alias]['hasMany']) ) {
+			$this->_mainModelBeforeDelete($Model);
+		} else {
+			$this->_groupMembersModelBeforeDelete($Model);
+		}
+	}
 	public function afterDelete(Model $Model) {
 		if ( isset($this->settings[$Model->alias]['hasMany']) ) {
 			$this->_mainModelAfterDelete($Model);
@@ -108,15 +116,26 @@ class UserGroupableBehavior extends ModelBehavior {
 			));
 			$userGroupId = $userGroupId['UserGroup']['id'];
 
-			// add our user to this group
-			$UserGroup->UsersUserGroup->add(array(
-				'UsersUserGroup' => array(
-					'user_id' => $Model->userId,
-					'user_group_id' => $userGroupId,
-					'is_approved' => 1
-				)
-			));
+			try {
+				// add our user to this group
+				$UserGroup->UsersUserGroup->create();
+				$UserGroup->UsersUserGroup->add(array(
+					'UsersUserGroup' => array(
+						'user_id' => $Model->userId,
+						'user_group_id' => $userGroupId,
+						'is_approved' => 1
+					)
+				));
+			} catch (Exception $e) {
+				debug($e->getMessage());
+				break;
+			}
+			
 		}
+	}
+
+	private function _mainModelBeforeDelete(Model $Model, $cascade = true) {
+		return true;
 	}
 
 	private function _mainModelAfterDelete(Model $Model) {
@@ -133,14 +152,25 @@ class UserGroupableBehavior extends ModelBehavior {
 		$UserGroup->delete($userGroupId['UserGroup']['id']);
 		// the UserGroup's members and wallPosts will be deleted through cascading
 	}
-	
+
+	private function _groupMembersModelBeforeDelete(Model $Model, $cascade = true) {
+		// before a Group Member gets deleted from the hasMany, we need.. stuff.
+		$foreignModel = $this->settings[$Model->alias]['belongsTo'];
+		$foreignKey = $Model->belongsTo[$foreignModel]['foreignKey'];
+		$foreignKeyValue = $Model->find('first', array(
+			'conditions' => array('id' => $Model->id),
+		));
+		$this->foreignKeyToDeleteFrom = $foreignKeyValue[$Model->alias][$foreignKey];
+		return true;
+	}
+
 	private function _groupMembersModelAfterDelete(Model $Model) {
 		$UserGroup = new UserGroup;
 		// find the UserGroup for the Model that this User was just removed from
 		$userGroupId = $UserGroup->find('first', array(
 			'conditions' => array(
 				'UserGroup.model' => $this->settings[$Model->alias]['belongsTo'],
-				'UserGroup.foreign_key' => $Model->{$this->settings[$Model->alias]['belongsTo']}->id
+				'UserGroup.foreign_key' => $this->foreignKeyToDeleteFrom
 			),
 			'fields' => array('id')
 		));
@@ -149,6 +179,7 @@ class UserGroupableBehavior extends ModelBehavior {
 			'user_id' => $Model->userId,
 			'user_group_id' => $userGroupId['UserGroup']['id']
 		));
+		#debug($userGroupId);break;
 	}
 
 
