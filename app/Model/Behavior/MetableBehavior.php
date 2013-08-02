@@ -330,10 +330,9 @@ class MetableBehavior extends ModelBehavior {
  * @return type
  */
 	protected function _checkOriginalSearchType(Model $Model, $results) {
-		if ($Model->metaType == 'first' && !empty($results[0])) {
+		if ($Model->findType == 'first' && !empty($results[0])) {
 			$results = $results[0];
 		}
-//		debug( $results );
 		return $results;
 	}
 
