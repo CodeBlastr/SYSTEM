@@ -201,7 +201,9 @@ class AppModel extends Model {
 		
 		// used so that the app controller can pass all data to elements and components in a consistent way
 		//$this->data = !empty($this->data) ? $this->data : $results;
-		$this->permissionData = $results;
+
+		// this solves some problems, like: not being able to use find('list')... but probably isn't a final solution.
+		$this->permissionData = ( $this->findType == 'first' ) ? $results : null;
 		return $results;
 	}
 
