@@ -155,12 +155,12 @@ class AppModel extends Model {
  * @param array $query
  */
 	public function find($type = 'first', $query = array()) {
-		$type = $this->_metaType($type, $query);
+		$type = $this->_findType($type, $query);
 		return parent::find($type, $query);
 	}
 
 /**
- * Meta Type
+ * Find Type
  * Unfortunately, we cannot get the find() type from a behavior.
  * So we have to change the type here if it is a type of first.
  * That is because for the MetableBehavior to work we need more 
@@ -169,8 +169,8 @@ class AppModel extends Model {
  * @param string $type
  * @return type
  */
-	protected function _metaType($type, $query) {
-		$this->metaType = $type; // we'll need this to reformat an all into a first data array format
+	protected function _findType($type, $query) {
+		$this->findType = $type; // we'll need this to reformat an all into a first data array format
 		//$continue = isset($query['fields']) && strpos($query['fields'], '(') ? false : true; // don't do this if there is a function in the fields
 		if((!isset($query['callbacks']) || (isset($query['callbacks']) && $query['callbacks'] !== false)) && is_a($this->Behaviors->Metable, 'MetableBehavior')) {
 			$type = $type == 'first' ? 'all' : $type;
@@ -185,7 +185,7 @@ class AppModel extends Model {
  * 
  * afterFind method
  */
-	public function afterFind($results, $primary = false) {		 
+	public function afterFind($results, $primary = false) {
 		/* Deprecated : Not sure if removing broke anything 7/21/13 RK
  		// With this function our total_count now appears with the rest of the fields in the resulting data array.
 		// http://nuts-and-bolts-of-cakephp.com/2008/09/29/dealing-with-calculated-fields-in-cakephps-find/
