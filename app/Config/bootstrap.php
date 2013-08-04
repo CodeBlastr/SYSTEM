@@ -394,10 +394,12 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Searchable' => 'Searchable',
 				'Setting' => false,
 				'Subscriber' => 'Subscribers',
+				'SubscriberMail' => 'Subscribers',
 				'Tagged' => 'Tags',
 				'Tag' => 'Tags',
 				'Task' => 'Tasks',
 				'TaskAttachment' => 'Tasks',
+				'Template' => false,
 				'TicketDepartmentsAssignee' => 'Tickets',
 				'Ticket' => 'Tickets',
 				'TimesheetTime' => 'Timesheets',
@@ -442,20 +444,15 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Workflow' => 'Workflows',
 				'Region' => false,
                 'Regional' => false,
-				// 
-				
 				'Question' => 'Questions',
 				'QuestionAnswer' => 'Questions',
 				);
-            
-         
-            
+    
              
 			if (!empty($name) && $allowed[$name] !== null) {
 				return $allowed[$name];
 			} else {
-              
-				return Inflector::tableize($name);
+              	return Inflector::tableize($name);
 			}
 		}
         

@@ -778,7 +778,7 @@ class HtmlHelper extends AppHelper {
 
 		$image = sprintf($this->_tags['image'], $path, $this->_parseAttributes($options, null, '', ' '));
 		$image = $this->_resize($image, $path, $options, $extOptions); // zuha added
-
+		
 		if ($url) {
 			return sprintf($this->_tags['link'], $this->url($url), null, $image);
 		}
