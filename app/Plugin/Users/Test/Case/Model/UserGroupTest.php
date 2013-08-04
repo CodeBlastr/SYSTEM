@@ -48,24 +48,26 @@ class UserGroupTestCase extends CakeTestCase {
 	}
     
 	public function testUser() {
-		$userGroupId = '3091823';
-		$this->UserGroup->save(array('UserGroup' => array('id' => $userGroupId, 'title' => 'Test User Group')));
-		//debug($this->UserGroup->User->find('all'));
-		$data = array(
-			'UserGroup' => array(
-				'UserGroup' => array(
-					(int) 0 => $userGroupId
-					)
-				),
-			'User' => array(
-				'first_name' => 'Joe',
-				'last_name' => 'Montana',
-				'username' => 'joe-montana@example.com',
-				)
-			);
-		$this->UserGroup->user($data); // add user
-		$result = $this->UserGroup->User->find('first', array('conditions' => array('User.id' => $this->UserGroup->User->id), 'contain' => array('UserGroup')));
-		$this->assertEqual($result['UserGroup'][0]['id'], $userGroupId);
+		// commented out because it is actually emailing, and it caused us to get blocked on gmail with our smtp server
+		//
+		// $userGroupId = '3091823';
+		// $this->UserGroup->save(array('UserGroup' => array('id' => $userGroupId, 'title' => 'Test User Group')));
+		// //debug($this->UserGroup->User->find('all'));
+		// $data = array(
+			// 'UserGroup' => array(
+				// 'UserGroup' => array(
+					// (int) 0 => $userGroupId
+					// )
+				// ),
+			// 'User' => array(
+				// 'first_name' => 'Joe',
+				// 'last_name' => 'Montana',
+				// 'username' => 'joe-montana@example.com',
+				// )
+			// );
+		// $this->UserGroup->user($data); // add user
+		// $result = $this->UserGroup->User->find('first', array('conditions' => array('User.id' => $this->UserGroup->User->id), 'contain' => array('UserGroup')));
+		// $this->assertEqual($result['UserGroup'][0]['id'], $userGroupId);
 	}
 	
 }
