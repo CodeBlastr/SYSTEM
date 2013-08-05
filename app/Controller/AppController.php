@@ -69,7 +69,8 @@ class AppController extends Controller {
 			),
 		'Session', 
 		'RequestHandler', 
-		'Cookie'
+		'Cookie',
+		'FormSecurity'
 		);
 
 /**
@@ -79,6 +80,7 @@ class AppController extends Controller {
  * @param
  */
 	public function __construct($request = null, $response = null) {
+		
 		parent::__construct($request, $response);
 		$this->_getComponents();
 		$this->_getHelpers();
