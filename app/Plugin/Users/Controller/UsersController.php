@@ -64,6 +64,11 @@ class _UsersController extends UsersAppController {
 			'User.id',
 			'User.first_name',
 			);
+		$this->paginate['conditions'] = array(
+			'not' => array(
+				'User.id' => '1'
+			)
+		);
 		$this->set('users', $this->paginate());
 		$this->set('displayName', 'first_name');
 		$this->set('displayDescription', '');
