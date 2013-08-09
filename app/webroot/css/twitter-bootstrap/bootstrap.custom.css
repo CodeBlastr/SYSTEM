@@ -26,10 +26,10 @@
     margin: 0 2px 2px 0;
 }
 
-
-i {
+/** Why was this here? ^JB **/
+/*i {
     text-indent: -5000px;
-}
+}*/
 .first {
 	margin-left: 0 !important;
 }
