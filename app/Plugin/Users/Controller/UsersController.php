@@ -1,6 +1,12 @@
 <?php
 App::uses('UsersAppController', 'Users.Controller');
 /**
+ * To Extend use code
+ * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Controller'.DS.'UsersController.php');
+ */
+ 
+ 
+/**
  * Users Controller
  *
  * Handles variables supplied from the Model, to be sent to the view for users.
