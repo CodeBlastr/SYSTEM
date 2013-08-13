@@ -11,14 +11,15 @@ if (!empty($gallery['GalleryImage'][0])) {
 	// put default variable setups here
 
     // additional files needed for gallery display
-	echo $this->Html->css('/galleries/css/colorbox/colorbox', '', array('inline' => 0));
-	echo $this->Html->script('/galleries/js/colorbox/jquery.colorbox-min', array('inline' => 0));		
+	echo $this->Html->css('/galleries/css/colorbox/colorbox');
+	echo $this->Html->script('/galleries/js/colorbox/jquery.colorbox-min');
 	echo $this->Html->scriptBlock('
 		$(document).ready(function(){
 			$("a[rel=\'example4\']").colorbox({
 				slideshow:true,
 			});
-		});', array('inline' => 0)); ?>
+		});');
+	?>
         
     <div class="colorboxGallery">  
         <?php 
