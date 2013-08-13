@@ -402,6 +402,11 @@ class Setting extends AppModel {
 /**
  * Handles the saving of settings data to the settings.ini file
  *
+ * necessary $data value examples
+ * $data['Setting']['type'] = Plugin
+ * $data['Setting']['name'] = RATINGS_SETTINGS
+ * $data['Setting']['value'] = some string
+ * 
  * @param {data}    An array contain the setting data
  * @param {bool}    If set to true, it will add to the value instead of replace.
  * @return {bool}    True if the settings were saved and the file was created.
@@ -516,11 +521,20 @@ class Setting extends AppModel {
 		if (is_array($data['Setting']['value'])) {
 			$settingValue = '';
 			foreach ($data['Setting']['value'] as $key => $value) {
-				$settingValue .= __('%s = "%s"%s', $key, Sanitize::escape($value), PHP_EOL);
+				if (is_array($value)) {
+					// Form->input('Setting.value.variable.key')
+					// turns into variable[key] = value
+					foreach ($value as $index => $val) {
+						$settingValue .= __('%s[%s] = "%s"%s', $key, $index, Sanitize::escape($val), PHP_EOL);
+					}
+				} else {
+					// Form->input('Setting.value.variable)
+					// turns into variable = value
+					$settingValue .= __('%s = "%s"%s', $key, Sanitize::escape($value), PHP_EOL);
+				}
 			}
 			$data['Setting']['value'] = $settingValue;
 		}
-
 		if (!empty($data['Setting'][0])) {
 			$i = 0;
 			foreach ($data['Setting'] as $setting) {

@@ -27,11 +27,13 @@ class UserGroup extends UsersAppModel {
 	public $hasMany = array(
 		'UsersUserGroup'=>array(
 			'className'     => 'Users.UsersUserGroup',
-            'foreignKey'    => 'user_group_id'
+            'foreignKey'    => 'user_group_id',
+			'dependent'		=> true
 		),
 		'UserGroupWallPost'=>array(
 			'className'     => 'Users.UserGroupWallPost',
-            'foreignKey'    => 'user_group_id'
+            'foreignKey'    => 'user_group_id',
+			'dependent'		=> true
 		)
 	);
 	
@@ -79,5 +81,15 @@ class UserGroup extends UsersAppModel {
 		$params['conditions']['UserGroup.model'] = $model;
 		return $this->find($type, $params);
 	}
+	
+/**
+ * User method
+ * 
+ * Create a user and add to the provided group id
+ * 
+ * @param array $data
+ */
+	public function user($data) {
+		return $this->User->procreate($data);
+	}
 }
-?>

@@ -126,7 +126,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	} elseif (SITE_DIR === NULL){
     	CakePlugin::loadAll(); // Loads all plugins at once
     } else {
-    	CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages')); // required plugins    
+    	CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages', 'Utils')); // required plugins    
 	}
 	
 	
@@ -196,20 +196,20 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 */
 	class ZuhaInflector {
     
-    /**
-     * String to ASCII
-     * Converts the given string to a no spaces, no special characters, no cases string, like a url
-     * 
-     * Tänk efter nu – förr'n vi föser dig bort BECOMES tank-efter-nu-forrn-vi-foser-dig-bort
-	 * 
-	 * Usage : ZuhaInflector::asciify('some string');
-     * 
-     * @param string $str
-     * @param array $replace
-     * @param string $delimiter
-     * @return string
-     */
-        public static function asciify($str, $replace = array(), $delimiter = '-') {
+	    /**
+	     * String to ASCII
+	     * Converts the given string to a no spaces, no special characters, no cases string, like a url
+	     * 
+	     * Tänk efter nu – förr'n vi föser dig bort BECOMES tank-efter-nu-forrn-vi-foser-dig-bort
+		 * 
+		 * Usage : ZuhaInflector::asciify('some string');
+	     * 
+	     * @param string $str
+	     * @param array $replace
+	     * @param string $delimiter
+	     * @return string
+	     */
+        public function asciify($str, $replace = array(), $delimiter = '-') {
             if(!empty($replace)) {
             	$str = str_replace((array)$replace, ' ', $str);
         	}
@@ -221,24 +221,25 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
         
         	return $clean;
         }
-	/**
-	 * Flatten a multidimensional array to a single string
-	 * 
-	 * @param array $array
-	 */
-	function flatten($array = array()) {
-		$json  = json_encode($array); // converts an object to an array
-		$array = json_decode($json, true);
-	    $return = array();
-	    @array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
-	    return implode(',', $return);
-	}
+		/**
+		 * Flatten a multidimensional array to a single string
+		 * 
+		 * @param array $array
+		 * @param array $options
+		 */
+		public function flatten($array = array(), $options = array('separator' => ',')) {
+			$json  = json_encode($array); // converts an object to an array
+			$array = json_decode($json, true);
+		    $return = array();
+		    @array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+		    return implode($options['separator'], $return);
+		}
 	
-	/**
-	 * Function for formatting the pricing of an item.
-	 *
-	 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
-	 */
+		/**
+		 * Function for formatting the pricing of an item.
+		 *
+		 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
+		 */
 		public function pricify($price) {
 			if($price === NULL) {
 				return NULL;
@@ -247,11 +248,11 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			}
 		}
 	
-	/**
-	 * Function for formatting the pricing of an item.
-	 *
-	 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
-	 */
+		/**
+		 * Function for formatting the pricing of an item.
+		 *
+		 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
+		 */
 		public function datify($date) {
 			if($date === NULL) {
 				return NULL;
@@ -260,22 +261,22 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			}
 		}
 	
-	/**
-	 * Function for formatting dates (yes I know about the Time helper, and I don't like it.
-	 * But mainly this will alos allow a default time format on a per site need (using a setting).
-	 *
-	 * @todo	Have options for the time, like timeAgo and/or date format string.
-	 */
+		/**
+		 * Function for formatting dates (yes I know about the Time helper, and I don't like it.
+		 * But mainly this will alos allow a default time format on a per site need (using a setting).
+		 *
+		 * @todo	Have options for the time, like timeAgo and/or date format string.
+		 */
 		public function dateize($date, $options = null) {
 			return date('M j, Y', strtotime($date));
 		}
 	
 	
-	/**
-	 * return a plugin name from a controller name
-	 *
-	 * @todo There must be a better way...
-	 */
+		/**
+		 * return a plugin name from a controller name
+		 *
+		 * @todo There must be a better way...
+		 */
 		public static function pluginize($name) {
              
             if($name == "1s")
@@ -294,6 +295,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Answer' => 'Answers',
 				'AnswerAnswer' => 'Answers',
 				'AnswerSubmission' => 'Answers',
+				'AnswerStep' => 'Answers',
 				'Aro' => false,
 				'ArosAco' => false,
 				'Banner' => 'Banners',
@@ -320,11 +322,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'ContactsContact' => 'Contacts',
 				'Course' => 'Courses',
 				'CourseUser' => 'Courses',
-				'Grade' => 'Courses',//removable??
+				'CourseGradeAnswer' => 'Courses',
 				'CourseGrade' => 'Courses',
-				'Lesson' => 'Courses',//removable??
+				'CourseGradeDetail' => 'Courses',
 				'CourseLesson' => 'Courses',
-				'Series' => 'Courses',//removable??
 				'CourseSeries' => 'Courses',
 				'Coupon' => 'Coupons',
 				'Credit' => 'Credits',
@@ -340,6 +341,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Event' => 'Events',
 				'EventsGuest' => 'Events',
 				'Facebook' => 'Facebook',
+				'Favorite' => 'Favorites',
 				'Faq' => 'Faqs',
 				'Favorite' => 'Favorites',
 				'FeedCJ' => 'Feeds',
@@ -360,6 +362,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Location' => 'Locations',
 				'Map' => 'Maps',
 				'Media' => 'Media',
+				'MediaAttachment' => 'Media',
+				'MediaGallery' => 'Media',
 				'Menu' => 'Menus',
 				'Message' => 'Messages',
 				'Meta' => false,
@@ -389,9 +393,13 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Record' => 'Records',
 				'Searchable' => 'Searchable',
 				'Setting' => false,
+				'Subscriber' => 'Subscribers',
+				'SubscriberMail' => 'Subscribers',
 				'Tagged' => 'Tags',
 				'Tag' => 'Tags',
 				'Task' => 'Tasks',
+				'TaskAttachment' => 'Tasks',
+				'Template' => false,
 				'TicketDepartmentsAssignee' => 'Tickets',
 				'Ticket' => 'Tickets',
 				'TimesheetTime' => 'Timesheets',
@@ -436,20 +444,15 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Workflow' => 'Workflows',
 				'Region' => false,
                 'Regional' => false,
-				// 
-				
 				'Question' => 'Questions',
 				'QuestionAnswer' => 'Questions',
 				);
-            
-         
-            
+    
              
 			if (!empty($name) && $allowed[$name] !== null) {
 				return $allowed[$name];
 			} else {
-              
-				return Inflector::tableize($name);
+              	return Inflector::tableize($name);
 			}
 		}
         
