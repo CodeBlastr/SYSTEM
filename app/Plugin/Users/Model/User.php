@@ -4,40 +4,46 @@ App::uses('UsersAppModel', 'Users.Model');
 class _User extends UsersAppModel {
 
 	public $name = 'User';
+	
 	public $displayField = 'full_name';
+	
 	public $actsAs = array(
 		'Acl' => array('type' => 'requester'),
-		'Users.Usable' => array('defaultRole' => 'friend')
+		'Users.Usable' => array('defaultRole' => 'friend'),
+		'Galleries.Mediable',
 		);
+		
 	public $order = array('last_name', 'full_name', 'first_name');
-
 
 	public $validate = array(
 		'password' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => true,
+				'allowEmpty' => false, 
 				'message' => 'Please enter a value for password',
-				'required' => true
+				'required' => 'create'
 				),
 			'comparePassword' => array(
 				'rule' => array('_comparePassword'),
-				'allowEmpty' => true,
+				'allowEmpty' => false, 
 				'message' => 'Password, and confirm password fields do not match.',
-				'required' => true
 				),
         	'strongPassword' => array(
 				'rule' => array('_strongPassword'),
-				'allowEmpty' => false,
+				'allowEmpty' => false, 
 				'message' => 'Password should be six characters, contain numbers and capital and lowercase letters.',
-				'required' => true
+				),
+        	'newPassword' => array(
+				'rule' => array('_newPassword'),
+				'allowEmpty' => false, 
+				'message' => 'Your old password is incorrect.',
 				),
 			),
 		'username' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
 				'allowEmpty' => false, // must have a value
-				'message' => 'Please enter a value for username',
+				'message' => 'Please enter a value for username/email',
 				'required' => 'create' // field key User.username must be present during User::create
 				),
 			'isUnique' => array(
@@ -51,6 +57,10 @@ class _User extends UsersAppModel {
 				'message' => 'Email required for registration, Please try again.'
 				),
 			),
+			'email' => array(
+        		'rule'    => array('email', true),
+        		'message' => 'Please supply a valid email address.'
+    		)
 		);
 
 	// this seems to break things because of nesting if I put Users.UserRole for the className
@@ -177,6 +187,20 @@ class _User extends UsersAppModel {
     protected function _strongPassword() {
         return preg_match('/^((?=.*[^a-zA-Z])(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,})$/', $this->data['User']['password']);
     }
+    
+/**
+ * New Password
+ * 
+ * Confirm old password before allowing a password change
+ * @return bool
+ */
+    protected function _newPassword() {
+		if (!empty($this->data[$this->alias]['current_password'])) {
+			$user = $this->find('count', array('callbacks' => false, 'conditions' => array('User.id' => $this->_getUserId($this->data['User']), 'User.password' => AuthComponent::password($this->data[$this->alias]['current_password']))));
+			return $user === 1 ? true : false;
+		}
+		return true;
+    }
 
 /**
  * Email Required
@@ -193,6 +217,8 @@ class _User extends UsersAppModel {
 	}
 
 /**
+ * Parent Node method
+ * 
  * For relating the user to the correct parent user role in the aros table.
  */
 	function parentNode() {
@@ -228,92 +254,57 @@ class _User extends UsersAppModel {
 		}
         return true;
     }
-
+	
+/**
+ * Aftersave method
+ * 
+ * @param bool $created
+ */
+	public function afterSave($created) {
+		// add the user to a group if the data for the group exists (can't use saveAll() because of extra fields)
+		if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
+			$this->UserGroup->UsersUserGroup->add($this->data);
+		}
+		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
+			$this->welcome($data[$this->alias]['username']);
+		}
+		unset($this->data[$this->alias]['password']);
+		unset($this->data[$this->alias]['current_password']);
+		unset($this->data[$this->alias]['confirm_password']);
+		CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
+		return parent::afterSave($created);
+	}
+	
+/**
+ * Save method
+ */
+ 	public function save($data = null, $validate = true, $fieldList = array()) {
+		$data = $this->_cleanAddData($data);
+		return parent::save($data, $validate, $fieldList); 		
+ 	}
+	
+/**
+ * Save all method
+ */
+ 	public function saveAll($data = null, $options = array()) {
+		$data = $this->_cleanAddData($data);
+		$data = $this->_userContact($data);
+ 		return parent::saveAll($data, $options);
+ 	}
+	
 
 /**
- * Handles the data of adding of a user
+ * Handles the data of adding of a user // DEPRECATED WILL BE REMOVED 07/18/2013 RK
  *
  * @param {array}		An array in the array(model => array(field)) format
  * @todo		 		Not sure the rollback for user_id works in all cases (Line 66)
  */
-	public function add($data) {
-		$data = $this->_cleanAddData($data);
-		if ($data = $this->_userContact($data)) {
-			// setup a verification key
-			$data[$this->alias]['forgot_key'] = defined('__APP_REGISTRATION_EMAIL_VERIFICATION') ? $this->__uuid('W', array('User' => 'forgot_key')) : null;
-			$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
-
-			$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
-			$data[$this->alias]['reference_code'] = $this->generateRandomCode();
-			// the contact model calls back to the User model when using save all
-			// and saves the recursive data of contact person / contact company this way.
-			if ($this->Contact->add($data)) {
-
-				// add the user to a group if the data for the group exists
-				if (!empty($data['UserGroup']['UserGroup']['id'])) {
-					$this->UserGroup->UsersUserGroup->add($data);
-				}
-
-				// create a gallery for this user.
-				if (!empty($data[$this->alias]['avatar']['name'])) {
-					$data['Gallery']['model'] = 'User';
-					$data['Gallery']['foreign_key'] = $this->id;
-					$data['GalleryImage']['filename'] = $data[$this->alias]['avatar'];
-					if ($this->Gallery->GalleryImage->add($data, 'filename')) {
-						//return true;
-					} else if (!empty($data['GalleryImage']['filename'])) {
-						//return true;
-						// gallery image wasn't saved but I'll leave this error message as a todo,
-						// because I don't have a decision on whether we should roll back the user
-						// if that happens, or just create the user anyway.
-					}
-				}
-				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-					if ($this->welcome($data[$this->alias]['username'])) {
-						throw new Exception(__d('users', 'Thank you, please check your email to verify your account.'), 834726476);
-					} else {
-					}
-//				} elseif (defined('__APP_REGISTRATION_EMAIL_WELCOME')) {
-//                    $user = $this->find('first', array('conditions' => array('User.username' => $data['User']['username'])));
-//                    $this->__sendMail($user['User']['email'], '$subject', '$message', 'userAdd', '$from');
-				} else {
-					return true;
-				}
-			} else {
-				throw new Exception(__d('users', 'Error, user could not be saved, Please try again.'));
-			}
-		} else {
-			throw new Exception(__d('users', 'Invalid user data.'));
-		}
+	public function add($data = null, $options = array()) {
+		return $this->saveAll($data, $options);
 	}
 
-
 /**
- * Handles a user update
- *
- * @param {array}		An array in the array(model => array(field)) format
- * @todo		 		Not sure the rollback for user_id works in all cases (Line 66)
- */
-	public function update($data) {
-		$data = $this->_cleanAddData($data);
-
-		if ($this->saveAll($data)) {
-			return true;
-		} else {
-			$exceptionMessage = '';
-			if ( !empty($this->invalidFields) ) {
-				$exceptionMessage .= implode(', ', $this->invalidFields) . ' ';
-			}
-			if ( !empty($this->validationErrors) ) {
-				$exceptionMessage .= implode(', ', Set::flatten($this->validationErrors));
-			}
-			throw new Exception(__d('users', 'Invalid user data.' . $exceptionMessage ));
-		}
-	}
-
-
-/**
- * Add contact data to the $data var if it exists, if it doesn't setup contact data for save.
+ * Add contact to the $data var if it exists, if it doesn't setup contact data for save.
  *
  * @todo	Finish the contact adding in the case where the data field exists.
  * @todo	We need to have be able to specify default contact details, like status, industry settings.
@@ -329,17 +320,20 @@ class _User extends UsersAppModel {
 				$data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : $contact['Contact']['name'];
 			} else {
 				$data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'N/A';
-//				// create a Contact
-//				$contact = $this->Contact->create(array(
-//					'name' => $data['User']['full_name']
-//				));
-//				$data['Contact'] = set::merge($data['Contact'], $contact['Contact']);
 			}
 		} else if (!empty($data['Contact']['user_id'])) {
 			debug($this->Contact->findByUserId($data['Contact']['user_id']));
 			break;
 		} else {
 			$data['Contact']['name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'Not Provided';
+		}
+		$contactData = $data;
+		unset($contactData['User']); // we will save this in the user model not from the contact model
+		if ($this->Contact->saveAll($contactData)) {
+			unset($data['Contact']);
+			if ( $this->Contact->id ) {
+				$data['Contact']['id'] = $this->Contact->id;
+			}
 		}
 		return $data;
 	}
@@ -436,7 +430,7 @@ class _User extends UsersAppModel {
 					} else {
 						// we should log errors like this
 						// an error which shouldn't stop functionality, but nevertheless is an error
-						return $user;
+						return $$user;
 					}
 				} else {
 					throw new Exception(__d('users', 'Please check your email to verify your account.'));
@@ -454,7 +448,7 @@ class _User extends UsersAppModel {
  */
 	public function loginRedirectUrl($redirect) {
 		# this handles redirects where a url was called that redirected you to the login page
-
+		
 		if ($redirect == '/') {
 			# default login location
 			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
@@ -615,6 +609,9 @@ class _User extends UsersAppModel {
  * @return {array}		Parsed form input data.
  */
 	protected function _cleanAddData($data) {
+		if (!isset($data[$this->alias])) {
+			return $data;
+		}
 		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@')) {
 			$data[$this->alias]['email'] = $data[$this->alias]['username'];
 		}
@@ -637,6 +634,22 @@ class _User extends UsersAppModel {
 		if (!empty($data[$this->alias]['first_name']) && !empty($data[$this->alias]['last_name']) && empty($data[$this->alias]['full_name'])) {
 			$data[$this->alias]['full_name'] = $data[$this->alias]['first_name'] . ' ' . $data[$this->alias]['last_name'];
 		}
+
+		// setup a verification key
+		if (empty($data[$this->alias]['forgot_key']) && defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
+			$data[$this->alias]['forgot_key'] = $this->__uuid('W', array('User' => 'forgot_key'));
+			$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
+		}
+		
+		$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
+		if (isset($data[$this->alias]['parent_id']) && empty($data[$this->alias]['parent_id'])) {
+			unset($data[$this->alias]['parent_id']);
+		} 
+
+		// this is deprecated and will be changed to an affiliates plugin
+		// this cannot be done like this, because it would change the code on every save
+		// and it should be in an affiliates plugin 
+		$data[$this->alias]['reference_code'] = $this->generateRandomCode();
 
 		return $data;
 	}
@@ -747,6 +760,31 @@ class _User extends UsersAppModel {
 			throw new Exception(__('Credits not Saved'));
 		}
 	}
+	
+/**
+ * Procreate method
+ * Used when you are creating a user for someone else. 
+ * 
+ * @param array $data
+ * @return boolean
+ */
+	public function procreate($data = array()) {
+		$randompassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'),0,3);
+		$randompassword .= substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,3);
+		$randompassword .= substr(str_shuffle('0123456789'),0,3);
+		$randompassword = substr(str_shuffle($randompassword),0,8);
+		$data['User']['password'] = $randompassword;
+		$data['User']['confirm_password'] = $randompassword;
+		$data['User']['forgot_key'] = $this->__uuid('F');
+		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+		if ($this->saveAll($data)) {
+			$site = defined('SITE_NAME') ? SITE_NAME : 'New';
+			$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
+			$message = __('You have a new user account. <br /><br /> username : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $url, $url);
+			$this->__sendMail($data['User']['username'], __('%s User Account Created', $site), $message);
+			return true;
+		}
+	}
 
 
 /*
@@ -774,21 +812,15 @@ class _User extends UsersAppModel {
 	}
 
 /**
+ * Check email verification method
  * Used same column `forgot_key` for storing key. It starts with W for activation, F for forget
  *
  * @todo 	change the column name from forgot_key to something better, like maybe just "key"
  */
 	public function checkEmailVerification($data) {
 		if(!empty($data['User']['username'])) {
-			$user = $this->find('first', array(
-				'conditions' => array(
-					'User.username' => $data['User']['username'],
-					),
-				'fields' => array(
-					'User.forgot_key',
-					),
-				));
-			# W at the start of the key tells us the account needs to be verified still.
+			$user = $this->field('User.forgot_key', array('User.username' => $data['User']['username']));
+			// W at the start of the key tells us the account needs to be verified still.
 			if ($user['User']['forgot_key'][0] != 'W') {
 				return $user;
 			} else {
@@ -811,13 +843,14 @@ class _User extends UsersAppModel {
 	public function welcome($username) {
 		$user = $this->find('first', array('conditions' => array('User.username' => $username)));
 		if (!empty($user)) {
-			$this->set('name', $user['User']['full_name']);
-			$this->set('key', $user['User']['forgot_key']);
+			// don't set variables in the model (seems like the set() function would be available here)
+			//$this->set('name', $user['User']['full_name']);
+			//$this->set('key', $user['User']['forgot_key']);
 			// todo: temp change for error in swift mailer
 			$url =   Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $user['User']['forgot_key']), true);
 			$message ="Dear {$user['User']['full_name']}, <br></br>
 Congratulations! You have created an account with us.<br><br>
-To complete the registration please activate your account by following the link below or by copying it to your browser:</br>			{$url}<br></br>
+To complete the registration please activate your account by following the link below or by copying it to your browser:</br>{$url}<br></br>
 If you have received this message in error please ignore, the link will be unusable in three days.<br></br>
 Thank you for registering with us and welcome to the community.";
 			if ($this->__sendMail($user['User']['email'], 'Welcome', $message)) {
@@ -838,15 +871,15 @@ Thank you for registering with us and welcome to the community.";
  */
 	public function resetPassword($userid) {
 		$user = $this->find('first', array('conditions' => array('id' => $userid)));
-		unset($this->request->data['User']['username']);
-		$this->request->data['User']['id'] = $userid;
-		$this->request->data['User']['forgot_key'] = $this->__uuid('F');
-		$this->request->data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
-		$this->request->data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
-		$this->request->data['User']['user_role_id'] = $user['User']['user_role_id'];
+		unset($user['User']['username']);
+		$data['User']['id'] = $userid;
+		$data['User']['forgot_key'] = $this->__uuid('F');
+		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+		$data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
+		$data['User']['user_role_id'] = $user['User']['user_role_id'];
 		$this->Behaviors->detach('Translate');
-		if ($this->save($this->request->data, array('validate' => false))) {
-			return $this->request->data['User']['forgot_key'];
+		if ($this->save($data, array('validate' => false))) {
+			return $data['User']['forgot_key'];
 		} else {
 			return false;
 		}

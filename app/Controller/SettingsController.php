@@ -30,56 +30,56 @@ class SettingsController extends AppController {
 	public $allowedActions = array('install');
 
 	public function update_defaults() {
-		if ($this -> Setting -> writeDefaultsIniData()) {
-			$this -> Session -> setFlash(__('Defaults update successful.', true));
-			$this -> redirect($this -> referer());
+		if ($this->Setting->writeDefaultsIniData()) {
+			$this->Session->setFlash(__('Defaults update successful.', true));
+			$this->redirect($this->referer());
 		} else {
-			$this -> Session -> setFlash(__('Defaults update failed. Please, try again.'));
+			$this->Session->setFlash(__('Defaults update failed. Please, try again.'));
 		}
 	}
 
 	public function update_settings() {
-		if ($this -> Setting -> writeSettingsIniData()) {
-			$this -> Session -> setFlash(__('Settings update successful.'));
-			$this -> redirect($this -> referer());
+		if ($this->Setting->writeSettingsIniData()) {
+			$this->Session->setFlash(__('Settings update successful.'));
+			$this->redirect($this->referer());
 		} else {
-			$this -> Session -> setFlash(__('Settings update failed. Please, try again.'));
+			$this->Session->setFlash(__('Settings update failed. Please, try again.'));
 		}
 	}
 
 	public function index() {
-		$this -> paginate['fields'] = array('id', 'displayName', 'description');
-		$this -> paginate['order'] = array('Setting.type' => 'asc', 'Setting.name' => 'asc');
-		$this -> set('settings', $this -> paginate());
-		$this -> set('displayName', 'displayName');
-		$this -> set('displayDescription', 'description');
-		$this -> layout = 'default';
+		$this->paginate['fields'] = array('id', 'displayName', 'description');
+		$this->paginate['order'] = array('Setting.type' => 'asc', 'Setting.name' => 'asc');
+		$this->set('settings', $this->paginate());
+		$this->set('displayName', 'displayName');
+		$this->set('displayDescription', 'description');
+		$this->layout = 'default';
 	}
 
 	public function view($id = null) {
 		if (!$id) {
-			$this -> Session -> setFlash(__('Invalid Setting.', true));
-			$this -> redirect(array('action' => 'index'));
+			$this->Session->setFlash(__('Invalid Setting.', true));
+			$this->redirect(array('action' => 'index'));
 		}
-		$this -> set('setting', $this -> Setting -> read(null, $id));
-		$this -> layout = 'default';
+		$this->set('setting', $this->Setting->read(null, $id));
+		$this->layout = 'default';
 	}
 
 /**
  * Add method
  */
 	public function add() {
-		if ($this -> request -> is('post')) {
-			if ($this -> Setting -> add($this -> request -> data)) {
-				$this -> Session -> setFlash(__('The Setting has been saved', true));
-				$this -> redirect(array('action' => 'index'));
+		if ($this->request->is('post')) {
+			if ($this->Setting->add($this->request->data)) {
+				$this->Session->setFlash(__('The Setting has been saved', true));
+				$this->redirect(array('action' => 'index'));
 			} else {
-				$this -> Session -> setFlash(__('The Setting could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true));
 			}
 		}
-		$types = $this -> Setting -> types();
-		$this -> set(compact('types'));
-		$this -> layout = 'default';
+		$types = $this->Setting->types();
+		$this->set(compact('types'));
+		$this->layout = 'default';
 	}
 
 /**
@@ -88,46 +88,46 @@ class SettingsController extends AppController {
  * @param string $typeName
  */
 	public function names($typeName = null) {
-		$settings = $this -> Setting -> getNames($typeName);
-		$this -> set(compact('settings'));
+		$settings = $this->Setting->getNames($typeName);
+		$this->set(compact('settings'));
 	}
 
 	public function edit($id = null) {
-		if (!$id && empty($this -> request -> data) && empty($this -> request -> params['named'])) {
-			$this -> Session -> setFlash(__('Invalid Setting', true));
-			$this -> redirect(array('action' => 'index'));
+		if (!$id && empty($this->request->data) && empty($this->request->params['named'])) {
+			$this->Session->setFlash(__('Invalid Setting', true));
+			$this->redirect(array('action' => 'index'));
 		}
-		if (!empty($this -> request -> data)) {
-			if ($this -> Setting -> add($this -> request -> data)) {
-				$this -> Session -> setFlash(__('The Setting has been saved', true));
-				$this -> redirect($this -> referer());
+		if (!empty($this->request->data)) {
+			if ($this->Setting->add($this->request->data)) {
+				$this->Session->setFlash(__('The Setting has been saved', true));
+				$this->redirect($this->referer());
 			} else {
-				$this -> Session -> setFlash(__('The Setting could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true));
 			}
 		}
-		if (!empty($this -> request -> params['named'])) {
-			$this -> request -> data = $this -> Setting -> find('first', array('conditions' => array('type_id' => Zuha::enum(null, $this -> request -> params['named']['type']), 'name' => $this -> request -> params['named']['name'], ), ));
-			$this -> set('typeId', Zuha::enum(null, $this -> request -> params['named']['type']));
-			$this -> request -> data['Setting']['name'] = $this -> request -> params['named']['name'];
-			$this -> request -> data['Setting']['description'] = $this -> Setting -> getDescription($this -> request -> params['named']['type'], $this -> request -> params['named']['name']);
+		if (!empty($this->request->params['named'])) {
+			$this->request->data = $this->Setting->find('first', array('conditions' => array('type_id' => Zuha::enum(null, $this->request->params['named']['type']), 'name' => $this->request->params['named']['name'], ), ));
+			$this->set('typeId', Zuha::enum(null, $this->request->params['named']['type']));
+			$this->request->data['Setting']['name'] = $this->request->params['named']['name'];
+			$this->request->data['Setting']['description'] = $this->Setting->getDescription($this->request->params['named']['type'], $this->request->params['named']['name']);
 		}
-		if (empty($this -> request -> data)) {
-			$this -> request -> data = $this -> Setting -> read(null, $id);
+		if (empty($this->request->data)) {
+			$this->request->data = $this->Setting->read(null, $id);
 		}
-		$types = $this -> Setting -> types();
-		$this -> set(compact('types'));
-		$this -> layout = 'default';
+		$types = $this->Setting->types();
+		$this->set(compact('types'));
+		$this->layout = 'default';
 	}
 
 	public function delete($id = null) {
 		if (!$id) {
-			$this -> Session -> setFlash(__('Invalid id for Setting', true));
-			$this -> redirect(array('action' => 'index'));
+			$this->Session->setFlash(__('Invalid id for Setting', true));
+			$this->redirect(array('action' => 'index'));
 		}
-		if ($this -> Setting -> delete($id)) {
-			if ($this -> Setting -> writeSettingsIniData()) {
-				$this -> Session -> setFlash(__('Setting deleted', true));
-				$this -> redirect(array('action' => 'index'));
+		if ($this->Setting->delete($id)) {
+			if ($this->Setting->writeSettingsIniData()) {
+				$this->Session->setFlash(__('Setting deleted', true));
+				$this->redirect(array('action' => 'index'));
 			}
 		}
 	}
@@ -139,7 +139,7 @@ class SettingsController extends AppController {
 		$conditions = array_merge($type, $name);
 
 		//@ note if you use 'all', then we'll need to update the
-		$settings = $this -> Setting -> getFormSettings('all', array('conditions' => $conditions, ));
+		$settings = $this->Setting->getFormSettings('all', array('conditions' => $conditions, ));
 		return $settings;
 	}
 
@@ -150,14 +150,14 @@ class SettingsController extends AppController {
  */
 	public function install() {
 		try {
-			$this -> Setting -> writeSettingsIniData();
-			$this -> Session -> setFlash(__('Success! Your site is ready to go.'));
+			$this->Setting->writeSettingsIniData();
+			$this->Session->setFlash(__('Success! Your site is ready to go.'));
 		} catch (Exception $e) {
-			$this -> Session -> setFlash($e -> getMessage());
+			$this->Session->setFlash($e->getMessage());
 		}
-		$this -> redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+		$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 	}
-	
+
 	public function test() {
 		if ($this->request->is('post') || $this->request->is('push')) {
 			$to = $this->request->data['Setting']['to'];
