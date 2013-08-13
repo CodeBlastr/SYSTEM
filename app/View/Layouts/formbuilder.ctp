@@ -19,7 +19,11 @@
     <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
     <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<<<<<<< HEAD
     
+=======
+    <?php echo $scripts_for_layout; ?>
+>>>>>>> 6da844a6cc67a3035c8343902d752c742d4f10b2
   </head>
 
  <body class="<?php echo __('%s %s %s', $this->request->params['controller'], $this->request->params['action'], ($this->Session->read('Auth.User') ? __(' authorized') : __(' restricted'))); ?>" id="<?php echo !empty($this->request->params['pass'][0]) ? strtolower($this->request->params['controller'].'_'.$this->request->params['action'].'_'.$this->request->params['pass'][0]) : strtolower($this->request->params['controller'].'_'.$this->request->params['action']); ?>" lang="<?php echo Configure::read('Config.language'); ?>">

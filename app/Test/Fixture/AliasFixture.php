@@ -10,7 +10,7 @@ class AliasFixture extends CakeTestFixture {
  *
  * @var string
  */
-	public $name = 'Condition';
+	public $name = 'Alias';
 	
 /**
  * Import

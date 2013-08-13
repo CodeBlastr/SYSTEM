@@ -34,6 +34,7 @@ $showEmpty = isset($showEmpty) ? $showEmpty : true;
 $indexWidth = !empty($galleryThumb['GallerySettings']['indexImageWidth']) ? $galleryThumb['GallerySettings']['indexImageWidth'] : 24;
 $indexHeight = !empty($galleryThumb['GallerySettings']['indexImageHeight']) ? $galleryThumb['GallerySettings']['indexImageHeight'] : 24;
 
+
 $title = isset($title) ? array('title' => $title) : array();
 $thumbWidth = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageWidth']) ? $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'] : $indexWidth;
 $thumbHeight = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageHeight']) ? $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'] : $indexHeight;

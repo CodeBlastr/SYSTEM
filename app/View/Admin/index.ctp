@@ -260,7 +260,17 @@ if (empty($runUpdates)) { ?>
             </ul>
         </div>
         <?php } ?>
-		
+
+        <?php if (in_array('Wizards', CakePlugin::loaded())) { ?>
+        <div class="masonryBox dashboardBox">
+            <h3 class="title"><i class="icon-info-sign"></i> <?php echo $this->Html->link('Wizards', array('plugin' => 'wizards', 'controller' => 'wizards')); ?> </h3>
+            <p>Create and edit Pop Up Help alerts.</p>
+            <ul>
+                <li><?php echo $this->Html->link('Create Wizard', array('plugin' => 'wizards', 'controller' => 'wizards', 'action' => 'add')); ?></li>
+            </ul>
+        </div>
+        <?php } ?>
+
     </div>
 <?php
 } else { ?>

@@ -26,6 +26,7 @@ class AppController extends Controller {
 
 	public $uses = array();
 	public $userId = '';
+	public $acoPath = '';
 	public $viewClass = 'Theme';
 	public $theme = 'Default';
 	public $userRoleId = 5;
@@ -43,8 +44,9 @@ class AppController extends Controller {
 		'Text', 
 		'Form', 
 		'Js', 
-		'Time', 
-		'Html'
+		'Time',
+		'Html',
+		'Utils.Tree'
 		);
 	public $components = array(
 		'Auth' => array(
@@ -58,11 +60,17 @@ class AppController extends Controller {
 						)
 					)
 				),
-			'authorize' => 'Controller'
+			'authorize' => 'Controller',
+			'loginAction' => array(
+				'plugin' => 'users',
+				'controller' => 'users',
+				'action' => 'login'
+				)
 			),
-			'Session', 
-			'RequestHandler', 
-			'Cookie'
+		'Session', 
+		'RequestHandler', 
+		'Cookie',
+		'FormSecurity'
 		);
 
 /**
@@ -72,11 +80,33 @@ class AppController extends Controller {
  * @param
  */
 	public function __construct($request = null, $response = null) {
+		
 		parent::__construct($request, $response);
 		$this->_getComponents();
 		$this->_getHelpers();
 		$this->_getUses();
 		$this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(' ' . $this->name . ' '));
+	}
+
+/**
+ * Force password change method
+ * 
+ * @param void
+ */
+	protected function _forcePwdChange() {
+		if ($this->Session->read('Auth.User.pwd_change')) {
+			$goodUrls[] = '/users/users/edit/'.$this->Session->read('Auth.User.id').'/pw';
+			$goodUrls[] = '/users/users/logout';
+			if (in_array($this->request->here, $goodUrls) || $this->request->params['requested'] == 1) {
+			} else {
+				debug($this->request->here);
+				debug($goodUrls);
+				debug($this->request);
+				break;
+				$this->Session->setFlash('Please change your password.');
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'edit', $this->Session->read('Auth.User.id'), 'pw'));
+			}
+		}
 	}
 
 
@@ -120,9 +150,10 @@ class AppController extends Controller {
 		$this->_writeStats();
 		$this->_configEditor();
 		$this->_configAuth();
+		$this->_forcePwdChange(); 
 		$this->_rememberMe();
-		$this->_checkAccess();
 		$this->_userAttributes();
+		$this->_checkGuestAccess();
 		
 		// move these and other request handlers in this file to Theme class
 		$this->RequestHandler->ajaxLayout = 'default';
@@ -132,7 +163,8 @@ class AppController extends Controller {
 		// order is important for these automatic view vars
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout()); 
 		$this->set('title_for_layout', $this->_titleForLayout()); 
-		$this->set('userRoleId', $this->userRoleId); 
+		$this->set('userRoleId', $this->userRoleId); // deprecated (use the one below) // 07/19/2013 RK
+		$this->set('__userRoleId', $this->userRoleId);
 	}
 	
 	
@@ -146,6 +178,10 @@ class AppController extends Controller {
 		$this->set('referer', $this->referer()); // used for back button links, could be useful for breadcrumbs possibly
 		$this->set('_serialize', array_keys($this->viewVars));
         $this->set('_view', $this->view);
+		// do a final permission check on the user field
+		$modelName = Inflector::singularize($this->name);
+		$this->set('_layout', $this->$modelName->theme); // set in the themeable behavior
+		$this->Acl->check(array('permission' => true), $this->$modelName->permissionData);
 	}
 	
 
@@ -155,36 +191,16 @@ class AppController extends Controller {
  */
 	protected function _userAttributes() {
         // order is important for these
+		$this->userId = $this->Session->read('Auth.User.id');
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
-		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
-		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
+		/**
+		 * @todo This is not working. Fix it.
+		 * @since 7/24/2013
+		 * @author Joel Byrnes <joel@buildrr.com>
+		 */
+//		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
+//		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName : 'guests';
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ?  __SYSTEM_GUESTS_USER_ROLE_ID : 5);
-	}
-	
-	
-/**
- * Check Access Method
- * 
- * Where the rubber meets the road in ACL
- */
-	protected function _checkAccess() {
-		$this->userId = $this->Session->read('Auth.User.id');   // check permissions
-		$allowed = array_search($this->request->params['action'], $this->Auth->allowedActions);
-		
-		if ($allowed === 0 || $allowed > 0 ) {
-			$this->Auth->allow('*');
-			
-		} else if (empty($this->userId) && empty($allowed)) {
-			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
-			$aco = $this->_getAcoPath(); // get controller and action
-			// this first one checks record level if record level exists
-			// which it can exist and guests could still have access
-			// @todo Auth->action() didn't work, but we can get the actual action mapping at some point
-			$action = $this->request->action == 'view' ? 'read' : 'update';
-			if ($this->Acl->check($aro, $aco, $action)) {
-				$this->Auth->allow();
-			}
-		}
 	}
 
 
@@ -625,7 +641,7 @@ class AppController extends Controller {
 			if (!empty($templates) && empty($this->templateId)) {
 				foreach ($templates as $key => $template) {
 					if (!empty($template['isDefault'])) {
-						$this->templateId = $template['templateId'];
+						$this->templateId = $template['templateName'];
 						$this->templateId = !empty($template['userRoles']) ? $this->_userTemplate($template) : $this->templateId;
 					}
 					if (!empty($this->templateId)) {
@@ -635,20 +651,22 @@ class AppController extends Controller {
 				} // end loop
 			}
 		}
+		// getting rid of the template in the navbar (no one uses it) 7/22/2013 RK
 		// this is because the Webpage model is not loaded for the install site page, and 'all' so that we can pass all templates to the navbar
-		$templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('all', array('conditions' => array('Webpage.type' => 'template'), 'order' => array('FIND_IN_SET(`Webpage`.`id`, \''.$this->templateId.'\')' => 'DESC')));
-        $this->set('templates', Set::combine($templated, '{n}.Webpage.id', '{n}.Webpage.name')); // for the admin navbar
-        $templated = !empty($this->templateId) ? Set::extract('/Webpage[id=' . $this->templateId . ']', $templated) : null; // getting it back to 'first' type results
-        $templated = !empty($templated[0]) ? $templated[0] : null; // getting it back to 'first' type results
-        
-		$userRoleId = $this->Session->read('Auth.User.user_role_id');
-        $this->Webpage->parseIncludedPages($templated, null, null, $userRoleId, $this->request);
+		// $templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('all', array('conditions' => array('Webpage.type' => 'template'), 'order' => array('FIND_IN_SET(`Webpage`.`id`, \''.$this->templateId.'\')' => 'DESC')));
+		$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$this->templateId;
+		$templated['Webpage']['content'] = file_exists($templateFile) ? file_get_contents($templateFile) : '';
+		// $templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $this->templateId), 'callbacks' => false));
+        // $this->set('templates', Set::combine($templated, '{n}.Webpage.id', '{n}.Webpage.name')); // for the admin navbar
+        // $templated = !empty($this->templateId) ? Set::extract('/Webpage[id=' . $this->templateId . ']', $templated) : null; // getting it back to 'first' type results
+        // $templated = !empty($templated[0]) ? $templated[0] : null; // getting it back to 'first' type results
+        $this->Webpage->parseIncludedPages($templated, null, null, $this->userRoleId, $this->request);
         $this->set('defaultTemplate', $templated);
         
 		if (!empty($this->templateId)) {
             $this->set('templateId', $this->templateId); // for the admin navbar
 			$this->layout = 'custom';
-		} 
+		}
 	}
 
 
@@ -666,11 +684,11 @@ class AppController extends Controller {
 		if (!empty($data['userRoles'])) {
 			foreach ($data['userRoles'] as $userRole) {
 				if ($userRole == $currentUserRole) {
-					$templateId = $data['templateId'];
+					$templateId = $data['templateName'];
 				}
 			} // end userRole loop
-		} elseif (!empty($data['templateId'])) {
-			$templateId = $data['templateId'];
+		} elseif (!empty($data['templateName'])) {
+			$templateId = $data['templateName'];
 		}
 
 		if (!empty($templateId)) {
@@ -696,7 +714,7 @@ class AppController extends Controller {
 				$url = $this->request->action == 'index' ? $this->request->plugin . '/' . $this->request->controller . '/' . $this->request->action . '/' : $this->request->url . '/';
 				$urlCompare = strpos($url, '/') === 0 ? substr($url, 1) : $url;
 				if (preg_match($urlRegEx, $urlCompare)) {
-					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateId'];
+					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateName'];
 				}
 			$i++;
 			}
@@ -754,10 +772,6 @@ class AppController extends Controller {
  * Loads helpers dynamically system wide, and per controller loading abilities.
  */
 	private function _getHelpers() {
-		if (in_array('Utils', CakePlugin::loaded())) {
-			$this->helpers[] = 'Utils.Tree';
-		}
-
 		if(defined('__APP_LOAD_APP_HELPERS')) {
 			$settings = __APP_LOAD_APP_HELPERS;
 			if ($helpers = @unserialize($settings)) {
@@ -781,9 +795,15 @@ class AppController extends Controller {
 			}
 		}
 
-		// not really loving it but it has to be here because it is in the construct and for logins to work
+		// not really loving these helpers here
+		
+		// this one has to be here because it is in the construct and for logins to work
 		if (in_array('Facebook', CakePlugin::loaded())) {
 			$this->helpers[] = 'Facebook.Facebook';
+		}
+		// please leave a comment about why this would have to be here
+		if (in_array('Media', CakePlugin::loaded())) {
+			$this->helpers[] = 'Media.Media';
 		}
 	}
 
@@ -804,17 +824,15 @@ class AppController extends Controller {
 
 		// not really loving it but it has to be here because it is in the construct and for logins to work
 		if (in_array('Facebook', CakePlugin::loaded())) {
-			$this->uses[] = 'Facebook.Facebook';
+			$this->uses = ( is_array($this->uses) ) ? array_merge($this->uses, array('Facebook.Facebook')) : array($this->uses, 'Facebook.Facebook');
 		}
 	}
 
 
 /**
- * Checks whether the settings are synced up between defaults and the current settings file.
- * The idea is, if they aren't in sync then your database is out of date and you need a warning message.
+ * Site status
  *
- * @todo	I think we need to put $uses = 'Setting' into the app model.  (please communicate whether you agree)
- * @todo 	We're now loading these settings files two times on every page load (or more).  This needs to be optimized.
+ * @todo	Deprecated, remove references and delete this function OR Upgrade to a new versioning system.
  */
 	private function _siteStatus() {
 		if ($this->userRoleId == 1) {
@@ -903,15 +921,17 @@ class AppController extends Controller {
 
 				if ($message) {
               		$this->SwiftMailer->content = $message;
-					if($message['html'] && is_array($message)) $this->SwiftMailer->content = $message['html'];
-					$message['html'] = $message;
+					if(is_array($message) && isset($message['html'])) {
+						$this->SwiftMailer->content = $message['html'];
+					} else {
+						$message = array('html' => $message);
+					}
 					$this->set('message', $message);
 				}
 
 				if (!$subject) {
 					$subject = 'No Subject';
 				}
-
 				//Set view variables as normal
 				return $this->SwiftMailer->send($template, $subject);
 			} else {
@@ -933,6 +953,34 @@ class AppController extends Controller {
 ##############################################################*/
 
 
+	
+/**
+ * Check Guest Access method
+ * 
+ * Where the rubber meets the road in ACL
+ * 
+ * @todo Auth->action() didn't work, but we can get the actual action mapping at some point
+ */
+	protected function _checkGuestAccess() {
+		$allowed = array_search($this->request->params['action'], $this->Auth->allowedActions);
+		
+		if ($allowed === 0 || $allowed > 0 ) {
+			$this->Auth->allow('*');	
+		} else if (empty($this->userId) && empty($allowed)) {
+			$aro = $this->_guestsAro(); // guests group aro model and foreign_key
+			$this->acoPath = $this->_getAcoPath(); // get controller and action
+			// this first one checks record level if record level exists
+			// which it can exist and guests could still have access
+			// @todo Auth->action() didn't work, but we can get the actual action mapping at some point
+			$action = $this->request->action == 'view' ? 'read' : 'update';
+			if ($this->Acl->check($aro, $this->acoPath, $action)) {
+				$this->Auth->allow();
+			}
+		}
+		// we get here and do nothing if you are logged in
+	}
+	
+
 /**
  * This function is called by $this->Auth->authorize('controller') and only fires when the user is logged in.
  *
@@ -940,60 +988,59 @@ class AppController extends Controller {
  * @todo		Optimize this somehow, someway.
  */
 	public function isAuthorized($user) {
-		//debug($user);
 		// this allows all users in the administrators group access to everything
-		// using user_role_id is deprecated and will be removed in future versions
 		if (!empty($user['view_prefix']) && ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1)) { return true; }
+		
+	/**
+	 * We don't need to check guest access because this function is only called if we're logged in. 
+	 * Also there is already a check in another function that fires before this to check guest access
+	 * 
+	 * 
 		// check guest access
 		$aro = $this->_guestsAro(); // guest aro model and foreign_key
 		$aco = $this->_getAcoPath(); // get aco
-
+		debug($aro);
 		if ($this->Acl->check($aro, $aco)) {
 			//echo 'guest access passed';
 			//return array('passed' => 1, 'message' => 'guest access passed');
 			return true;
 		} else {
-			//check user access
-			$aro = $this->_userAro($user['id']); // user aro model and foreign_key
-			$aco = $this->_getAcoPath(); // get aco
+			// the stuff after this coment block was in this else previously
+		} 
+	 */
+			
+		// get paths
+		$aro = $this->_userAro($user['id']); // user aro model and foreign_key
+		$aco = $this->_getAcoPath(); // get aco
 
-			/**
-			 * The 3rd parameter for Acl->check() defaults to '*'.
-			 * When '*', it checks ALL 4 types: _create, _read, _update, _delete
-			 * In our use case, webpages/webpages/view/X, we only want to assign _read
-			 * To check for that, we must specify 'read' when doing Acl->check().
-			 * There is kinda supposed to be internal mapping of 'view' => 'read' in Auth,
-			 * but it's not happening here.
-			 *
-			 * Here is a quick and dirty fix:
-			 */
-			$aclCheckAction = ( $this->request->action == 'view' ) ? 'read' : '*';
-
-			if ($this->Acl->check($aro, $aco, $aclCheckAction)) {
-				#echo 'user access passed';
-				#return array('passed' => 1, 'message' => 'user access passed');
-				//Gets Model name
-				$modelname = Inflector::singularize($this->name);
-				//assigns the Aco record to the acoRecords property in the model of the controller
-				//This is used in the afterfind method of the app controller for record level
-				//access checks
-				$this->$modelname->acoRecords = $this->Acl->Aco->node($this->_getAcoPath());
-				return true;
-			} else {
-				// debug($this->Acl->Aco->node($this->_getAcoPath()));
-				// debug($this->Acl->Aro->node($this->_userAro($user['id'])));
-				// debug($this->Acl->check($aro, $aco));
-				// debug($user);
-				// debug($this->Session->read());
-				// debug($aro);
-				// debug($aco);
-				// break;
-				$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
-				$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
-				$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';
-				$this->Session->setFlash(__('%s %s %s.', $requestor, $message, $requested));
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'restricted'));
-			}
+		/**
+		 * The 3rd parameter for Acl->check() defaults to '*'.
+		 * When '*', it checks ALL 4 types: _create, _read, _update, _delete
+		 * In our use case, webpages/webpages/view/X, we only want to assign _read
+		 * To check for that, we must specify 'read' when doing Acl->check().
+		 * There is kinda supposed to be internal mapping of 'view' => 'read' in Auth,
+		 * but it's not happening here.
+		 *
+		 * Here is a quick and dirty fix:
+		 */
+		$aclCheckAction = ($this->request->action == 'view') ? 'read' : '*';
+		
+		if ($this->Acl->check($aro, $aco, $aclCheckAction)) {
+			return true;
+		} else {
+			// debug($this->Acl->Aco->node($this->_getAcoPath()));
+			// debug($this->Acl->Aro->node($this->_userAro($user['id'])));
+			// debug($this->Acl->check($aro, $aco));
+			// debug($user);
+			// debug($this->Session->read());
+			// debug($aro);
+			// debug($aco);
+			// break;
+			$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
+			$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
+			$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';
+			$this->Session->setFlash(__('%s %s %s.', $requestor, $message, $requested));
+			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'restricted'));
 		}
 	}
 
@@ -1006,7 +1053,7 @@ class AppController extends Controller {
 	private function _getAcoPath() {
 		if (!empty($this->request->params['pass'][0])) {
 			// check if the record level aco exists first
-			$aco = $this->Acl->Aco->find('first', array(
+			$aco = $this->Acl->Aco->find('count', array(
 				'conditions' => array(
 					'model' => $this->modelClass,
 					'foreign_key' => $this->request->params['pass'][0]
@@ -1023,16 +1070,6 @@ class AppController extends Controller {
 		}
 	}
 
-
-/**
- * Gets the variables used for the lookup of the aro id
- */
-	private function _userAro($userId) {
-		$guestsAro = array('model' => 'User', 'foreign_key' => $userId);
-		return $guestsAro;
-	}
-
-
 /**
  * Gets the variables used for the lookup of the guest aro id
  */
@@ -1044,7 +1081,20 @@ class AppController extends Controller {
 		return $guestsAro;
 	}
 
+/**
+ * Gets the variables used for the lookup of the aro id
+ */
+	private function _userAro($userId) {
+		$guestsAro = array('model' => 'User', 'foreign_key' => $userId);
+		return $guestsAro;
+	}
 
+/**
+ * Authentication method
+ * 
+ * @todo needs comments about why this function is here. Especially because it's not called in this controller.
+ * @todo otherwise deprecate, remove references and delete this function.
+ */
 	public function authentication(){
 		$this->layout = false;
 		$this->autoRender = false;
@@ -1062,7 +1112,10 @@ class AppController extends Controller {
 
 
 /**
+ * Run cron method
+ * 
  * Supposedly makes it so that any plugin can tie into the cron job that is run, but haven't tested 1/11/2012 RK
+ * @todo remove references and delete this function 7/21/2013
  */
 	public function runcron()	{
 		$this->render(false);
