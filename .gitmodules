@@ -126,4 +126,4 @@
 	url = git@github.com:lyga17/Classifieds-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Phonebooks"]
 	path = app/Plugin/Phonebooks
-	url = git@github.com:lyga17/Phonebooks-Zuha-Cakephp-Plugin.git
+	url = git@github.com:lyga17/Classifieds-Zuha-Cakephp-Plugin.git
