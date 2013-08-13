@@ -8,9 +8,9 @@ if(!empty($instance) && defined('__ELEMENT_GALLERIES_COLORBOX_'.$instance)) {
 }
 
 if (!empty($gallery['GalleryImage'][0])) { 
-	# put default variable setups here
-	
-	# additional files needed for gallery display
+	// put default variable setups here
+
+    // additional files needed for gallery display
 	echo $this->Html->css('/galleries/css/colorbox/colorbox', '', array('inline' => 0));
 	echo $this->Html->script('/galleries/js/colorbox/jquery.colorbox-min', array('inline' => 0));		
 	echo $this->Html->scriptBlock('
@@ -25,7 +25,7 @@ if (!empty($gallery['GalleryImage'][0])) {
         foreach ($gallery['GalleryImage'] as $slide) { ?>
             <div id="galleryImage<?php echo $slide['id']; ?>" class="colorBoxGallerImage colorbox galleryImage">
             <?php 
-            # uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+            // uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
             $largeImage = $slide['dir'].'thumb/large/'.$slide['filename'];
             $image = $this->Html->image($largeImage,
                 array(
@@ -38,7 +38,7 @@ if (!empty($gallery['GalleryImage'][0])) {
                     'quality' => 75,
                     ));	
           echo $this->Html->link($image,
-                array('plugin' => 'users', 'controller' => 'users', 'action' => 'view',$gallery['Gallery']['foreign_key']), 
+                "#", 
                 array(
                     'escape' => false,
                     'id' => 'galleryImage' . $slide['id'],

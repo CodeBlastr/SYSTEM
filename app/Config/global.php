@@ -265,7 +265,6 @@ class ZuhaSet {
 		$options['betweenItem'] = empty($options['betweenItem']) ? ' : ' : $options['betweenItem'];
 		$options['endItem'] = empty($options['endItem']) ? '</li>' : $options['endItem'];
 		$options['end'] = empty($options['end']) ? '</ul>' : $options['end'];
-		
 		if (is_array($data)) {
 			// then send it back
 			foreach ($data as $key => $value) {
@@ -304,5 +303,29 @@ class ZuhaSet {
 		$path = str_replace('theme'.DS.'default'.DS, '', $path); // get webroot directory
 		return $path;
 	}
+	
+/**
+ * Replaces the values in array_b with array_a
+ * Different from PHP's array_replace_recursive because it checks to see if the values are equal.
+ * 
+ * @param $array_a array replacing values
+ * @param $array_b array being merged with
+ * 
+ * @return $array_b with all the values from array_a
+ */
+    public function array_replace_r($array_a, $array_b) {
+
+		foreach($array_b as $k => $v) {
+			if($array_b[$k] != $array_a[$k]) {
+				if(is_array($array_a[$k])) {
+					ZuhaSet::array_replace_r($array_a[$k], $array_b[$k]);
+				}else {
+					$array_b[$k] = $v;
+				}
+			}
+		}
+
+		return $array_b;
+    }
 
 }

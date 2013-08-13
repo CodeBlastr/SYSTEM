@@ -19,10 +19,102 @@ class FormHelper extends CakeFormHelper {
  * @param array $settings Configuration settings for the helper.
  */
 	public function __construct(View $View, $settings = array()) {
-		$this->View = $View;
 		parent::__construct($View, $settings);
+		$this->View = $View;
 	}
-	
+
+/** 
+ * Add a form key after two seconds to help secure the form.
+ */
+	public function create($model = null, $options = array()) {
+		if ($options['secure'] === true) {
+			// this piece is copied from the parent function, because we need the id earlier
+			if (!isset($options['id'])) {
+				$domId = isset($options['action']) ? $options['action'] : $this->request['action'];
+				$options['id'] = $this->domId($domId . 'Form');
+			}
+			
+			// hash the form action to write into settings, as a form that must be checked
+			$settingValue = 'c' . Security::hash($this->url($this->_getAction($options)), 'md5', Configure::read('Security.salt'));
+			
+			// this is how we know which forms have to be checked on the catch side
+			if (defined('__APP_SECURE_FORMS')) {
+				// read settings
+				$values = unserialize(__APP_SECURE_FORMS);
+				$saveNewForm = false;
+				if (!in_array($settingValue, $values['form'])) {
+					// add to settings if it isn't in there already
+					array_push($values['form'], $settingValue);
+					$value = '';
+					foreach ($values['form'] as $formId) {
+						$value .= 'form[] = ' . $formId . PHP_EOL;
+					}
+					$saveNewForm = true;
+				}
+			} else {
+				// add setting value
+				$value = 'form[] = ' . $settingValue;
+				$saveNewForm = true;
+			}
+		
+			if (!empty($saveNewForm)) {
+				$Setting = ClassRegistry::init('Setting');
+				$data['Setting']['type'] = 'App';
+				$data['Setting']['name'] = 'SECURE_FORMS';			
+				$data['Setting']['value'] = $value;
+				$Setting->add($data);
+			}
+			$json = json_decode(file_get_contents('http://'.$_SERVER['HTTP_HOST'].'/forms/forms/secure.json')); 
+			echo '<script type="text/javascript">
+				jQuery(document).ready(function() {
+					var timeOut = window.setTimeout(function() { jQuery("#'.$options['id'].'").prepend("<input type=\"hidden\" name=\"data[FormKey][id]\" value=\"' . $json->key .'\" />"); }, 10000);
+				});
+			</script>';
+		}
+		return parent::create($model, $options);
+	}	
+
+/**
+ * get action (taken from original form helper)
+ */
+ 	protected function _getAction($options) {
+		if ($options['action'] === null && $options['url'] === null) {
+			$options['action'] = $this->request->here(false);
+		} elseif (empty($options['url']) || is_array($options['url'])) {
+			if (empty($options['url']['controller'])) {
+				if (!empty($model) && $model != $this->defaultModel) {
+					$options['url']['controller'] = Inflector::underscore(Inflector::pluralize($model));
+				} elseif (!empty($this->request->params['controller'])) {
+					$options['url']['controller'] = Inflector::underscore($this->request->params['controller']);
+				}
+			}
+			if (empty($options['action'])) {
+				$options['action'] = $this->request->params['action'];
+			}
+
+			$plugin = null;
+			if ($this->plugin) {
+				$plugin = Inflector::underscore($this->plugin);
+			}
+			$actionDefaults = array(
+				'plugin' => $plugin,
+				'controller' => $this->_View->viewPath,
+				'action' => $options['action'],
+			);
+			$options['action'] = array_merge($actionDefaults, (array)$options['url']);
+			if (empty($options['action'][0]) && !empty($id)) {
+				$options['action'][0] = $id;
+			}
+		} elseif (is_string($options['url'])) {
+			$options['action'] = $options['url'];
+		}
+		return $options['action'];
+ 	}
+ 
+ 
+ /**
+  *  Added by Zuha to parse extra fields needed for ajax
+  */
 	public function select($fieldName, $options = array(), $attributes = array()) {
 		// Added by Zuha to parse extra fields needed for ajax
 		if (isset($attributes['ajax'])) {
