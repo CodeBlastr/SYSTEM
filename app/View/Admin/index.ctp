@@ -253,10 +253,10 @@ if (empty($runUpdates)) { ?>
 
         <?php if (in_array('Events', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox">
-            <h3 class="title"><i class="icon-th-list"></i> <?php echo $this->Html->link('Events', array('plugin' => 'events')); ?> </h3>
+            <h3 class="title"><i class="icon-th-list"></i> <?php echo $this->Html->link('Events', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'index')); ?> </h3>
             <p>See and manage event listings.</p>
             <ul>
-                <li><?php echo $this->Html->link('Add Event', array('plugin' => 'events', 'controller' => 'events', 'action' => 'add')); ?></li>
+                <li><?php echo $this->Html->link('Add Event', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'add')); ?></li>
             </ul>
         </div>
         <?php } ?>
@@ -282,14 +282,26 @@ if (empty($runUpdates)) { ?>
        echo $this->Form->hidden('Upgrade.all', array('value' => true));
        //echo $this->Form->submit('Check for Updates');
        echo $this->Form->end(); ?>
-    <ul>
+    <table class="table table-bordered">
       <?php
     if (CakeSession::read('Updates.last')) {
       foreach (CakeSession::read('Updates.last') as $table => $action) {
-        echo __('<li>Table %s is %s</li>', $table, $action);
+        #echo __('<li>Table %s is %s</li>', $table, $action);
+		switch ( $action ) {
+			case ('up to date'):
+				$class = '';
+				break;
+			case ('updated'):
+				$class = ' label-success';
+				break;
+			default:
+				$class = ' label-important';
+				break;
+		}
+		echo '<tr><td>`'.$table.'`</td><td><span class="label'.$class.'">'.$action.'</span></td></tr>';
       }
     }?>
-    </ul>
+    </table>
   </div>
 
   <?php
