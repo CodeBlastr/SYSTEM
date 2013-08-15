@@ -16,15 +16,10 @@
 			));
 		echo $this->Form->input('Setting.name', array('type' => 'select', 'empty' => 'Select Type First'));
 		echo $this->Form->input('Setting.value');
-		echo $this->Form->input('Setting.description');
+		echo $this->Form->input('Setting.description', array('disabled' => 'disabled', 'class' => 'span12', 'rows' => 10));
 	?>
 	</fieldset>
 <?php echo $this->Form->end('Submit');?>
-</div>
-<div class="actions">
-	<ul>
-		<li><?php echo $this->Html->link(__('List Settings', true), array('action' => 'index'));?></li>
-	</ul>
 </div>
 
 
@@ -50,3 +45,14 @@ $(function() {
 	});
 });
 </script>
+
+<?php
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	array(
+		'heading' => 'Settings',
+		'items' => array(
+			$this->Html->link(__('Show Current Settings', true), array('action' => 'index'))
+			)
+		),
+	)));
