@@ -224,7 +224,7 @@ class Gallery extends GalleriesAppModel {
  */
 	public function types() {
 		return array(
-			'slier' => 'Slider',
+			'slider' => 'Slider',
 			'colorbox' => 'Colorbox',
 			'fancybox' => 'Fancybox',
 			'gallerific' => 'Gallerific',

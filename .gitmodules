@@ -121,3 +121,12 @@
 [submodule "app/Plugin/Subscribers"]
 	path = app/Plugin/Subscribers
 	url = git@github.com:zuha/Subscribers-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Classifieds"]
+	path = app/Plugin/Classifieds
+	
+	url = git@github.com:lyga17/Classifieds-Zuha-Cakephp-Plugin.git
+
+[submodule "app/Plugin/Phonebooks"]
+	path = app/Plugin/Phonebooks
+	
+	url = git@github.com:lyga17/Phonebooks-Zuha-Cakephp-Plugin.git

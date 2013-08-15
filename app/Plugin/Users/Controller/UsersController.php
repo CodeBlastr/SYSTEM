@@ -1,6 +1,12 @@
 <?php
 App::uses('UsersAppController', 'Users.Controller');
 /**
+ * To Extend use code
+ * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Controller'.DS.'UsersController.php');
+ */
+ 
+ 
+/**
  * Users Controller
  *
  * Handles variables supplied from the Model, to be sent to the view for users.
@@ -224,8 +230,8 @@ class _UsersController extends UsersAppController {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
-			debug($this->request->data);
-			break;
+//			debug($this->request->data);
+//			break;
 			try {
 				$this->User->save($this->request->data);
 				$this->Session->setFlash('User Updated!');
