@@ -285,7 +285,7 @@ if (empty($runUpdates)) { ?>
     <table class="table table-bordered">
       <?php
     if (CakeSession::read('Updates.last')) {
-      foreach (CakeSession::read('Updates.last') as $table => $action) {
+      foreach (array_reverse(CakeSession::read('Updates.last')) as $table => $action) {
         #echo __('<li>Table %s is %s</li>', $table, $action);
 		switch ( $action ) {
 			case ('up to date'):
