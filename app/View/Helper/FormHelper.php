@@ -122,6 +122,7 @@ class FormHelper extends CakeFormHelper {
 		}
 		return parent::select($fieldName, $options, $attributes);
 	}
+
 	
 /**
  * Overwrite the default input() function to make date fields use javascript date pickers by default

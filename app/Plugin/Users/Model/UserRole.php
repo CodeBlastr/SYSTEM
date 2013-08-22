@@ -1,7 +1,7 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
 
-class UserRole extends UsersAppModel {
+class _UserRole extends UsersAppModel {
 
 	public $name = 'UserRole';
 	
@@ -128,4 +128,8 @@ class UserRole extends UsersAppModel {
 		return null;
 	}
 	
+}
+
+if (!isset($refuseInit)) {
+    class UserRole extends _UserRole {}
 }
