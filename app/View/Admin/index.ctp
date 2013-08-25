@@ -1,5 +1,5 @@
 <?php
-echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false)); 
+echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false));
 /**
  * Admin Dashboard Index View
  *
@@ -19,10 +19,10 @@ echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false))
  * @subpackage    zuha.app.views.admin
  * @since         Zuha(tm) v 0.0009
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
- */ 
+ */
 
 if (empty($runUpdates)) { ?>
-	
+
 	<?php /* this should only show on dev branch until done
 	<div class="row-fluid">
 		<ul class="thumbnails">
@@ -81,8 +81,8 @@ if (empty($runUpdates)) { ?>
         <a href="#tagThemes" class="filterClick btn">Themes</a>
         <a href="#tagAdmin" class="filterClick btn">Settings</a>
     </div>
-    
-    
+
+
     <div class="masonry dashboard">
         <div class="masonryBox dashboardBox tagPages">
             <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
@@ -96,7 +96,7 @@ if (empty($runUpdates)) { ?>
 				} ?>
             </ul>
         </div>
-        
+
         <div class="masonryBox dashboardBox tagThemes tagElements">
             <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('Widget Elements', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'element')); ?></h3>
             <p>Edit, delete, and create pages and multi-page elements. </p>
@@ -105,7 +105,7 @@ if (empty($runUpdates)) { ?>
                 <li><?php echo $this->Html->link('Menus', array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'index')); ?></li>
             </ul>
         </div>
-        
+
         <?php if (in_array('Media', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagMedia tagThemes">
             <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
@@ -116,8 +116,8 @@ if (empty($runUpdates)) { ?>
                 <li><?php echo $this->Html->link('Document Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
             </ul>
         </div>
-        <?php } ?> 
-        
+        <?php } ?>
+
         <div class="masonryBox dashboardBox tagThemes">
             <h3 class="title"><i class="icon-file"></i> <?php echo $this->Html->link('Appearance', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'template')); ?></h3>
             <p>Manage the look and feel of your site.</p>
@@ -133,7 +133,7 @@ if (empty($runUpdates)) { ?>
                 <?php } ?>
             </ul>
         </div>
-		
+
 		<?php if (in_array('Blogs', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagBlogs tagPages">
             <h3 class="title"><i class="icon-file"></i> <?php echo $this->Html->link('Blogs', array('admin' => true, 'plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'index')); ?></h3>
@@ -148,21 +148,21 @@ if (empty($runUpdates)) { ?>
             </ul>
         </div>
         <?php } ?>
-		
+
 		<?php if (in_array('Comments', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagComments tagDiscussion">
             <h3 class="title"><i class="icon-comment"></i> <?php echo $this->Html->link('Comments', array('admin' => true, 'plugin' => 'comments', 'controller' => 'comments', 'action' => 'index')); ?></h3>
             <p>See and manage the discussions going on.</p>
         </div>
         <?php } ?>
-		
-		<?php if (in_array('Galleries', CakePlugin::loaded())) { ?>        
+
+		<?php if (in_array('Galleries', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagGalleries tagMedia">
             <h3 class="title"><i class="icon-picture"></i> <?php echo $this->Html->link('Galleries', array('admin' => true, 'plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'dashboard', 'admin' => 'true')); ?></h3>
             <p>Add and edit image and video galleries</p>
         </div>
         <?php } ?>
-		      
+
         <div class="masonryBox dashboardBox tagMedia">
             <h3 class="title"><i class="icon-picture"></i> Favicon</h3>
             <p>Add the little icon that appears in browser title bars. </p>
@@ -171,69 +171,70 @@ if (empty($runUpdates)) { ?>
 			echo $this->Form->input('icon', array('type' => 'file', 'label' => false));
 			echo $this->Form->end('Upload'); ?>
         </div>
-		
-		<?php if (in_array('Categories', CakePlugin::loaded())) { ?>  
+
+		<?php if (in_array('Categories', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagText tagAdmin">
             <h3 class="title"><i class="icon-tasks"></i> <?php echo $this->Html->link('Categories', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'index')); ?></h3>
             <p>Categorize anything.  Move, reorder, add, edit categories.</p>
         </div>
         <?php } ?>
-		
-		<?php if (in_array('Tags', CakePlugin::loaded())) { ?>          
+
+		<?php if (in_array('Tags', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagTags tagAdmin">
             <h3 class="title"><i class="icon-tags"></i> <?php echo $this->Html->link('Tags', array('plugin' => 'tags', 'controller' => 'tags', 'action' => 'index')); ?></h3>
             <p>Tag anything.  Move, reorder, add, edit tags.</p>
         </div>
         <?php } ?>
-        
+
         <div class="masonryBox dashboardBox tagPrivileges tagAdmin">
             <h3 class="title"><i class="icon-signal"></i> <?php echo $this->Html->link('Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index')); ?></h3>
             <p>Control what content your different user roles can see.</p>
         </div>
-         
+
         <div class="masonryBox dashboardBox tagSettings tagAdmin">
             <h3 class="title"><i class="icon-wrench"></i> <?php echo $this->Html->link('Settings', array('plugin' => null, 'controller' => 'settings', 'action' => 'index')); ?></h3>
             <p>Configure your system with customizable variables.</p>
         </div>
-        
-		<?php if (in_array('Forms', CakePlugin::loaded())) { ?>  
+
+		<?php if (in_array('Forms', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagForms tagPages">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Custom Forms', array('plugin' => 'forms', 'controller' => 'forms', 'action' => 'index')); ?></h3>
             <p>Create custom forms, so users can interact with your site how you want them to..</p>
         </div>
         <?php } ?>
-        
-        <?php if (in_array('Answers', CakePlugin::loaded())) { ?>  
+
+        <?php if (in_array('Answers', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagForms tagPages">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Custom Forms', array('plugin' => 'answers', 'controller' => 'answers', 'action' => 'index')); ?></h3>
-            <p>Create custom forms using the Answers Plugin, Allows Drag and Drop Form Building</p>
+            <p>Create custom forms using the Drag and Drop Form Buildrr.</p>
+            <li><?php echo $this->Html->link('View Form Submissions', array('plugin' => 'answers', 'controller' => 'answerSubmissions')) ?></li>
         </div>
         <?php } ?>
-        
+
         <div class="masonryBox dashboardBox tagConditions tagAdmin">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Conditions', array('plugin' => null, 'controller' => 'conditions', 'action' => 'index')); ?></h3>
             <p>Create customized actions for use in workflows.</p>
         </div>
-        
-		<?php if (in_array('Workflows', CakePlugin::loaded())) { ?>  
+
+		<?php if (in_array('Workflows', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagWorkflows tagAdmin">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Workflows', array('plugin' => 'workflows', 'controller' => 'workflows', 'action' => 'index')); ?></h3>
             <p>Automate what happens after a condition is met.</p>
         </div>
         <?php } ?>
-        
+
         <div class="masonryBox dashboardBox tagAdmin">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Enumerations', array('plugin' => null, 'controller' => 'enumerations', 'action' => 'index')); ?></h3>
             <p>Manage the labels that appear in system drop downs.</p>
         </div>
-        
+
         <div class="masonryBox dashboardBox tagUpdates tagAdmin">
             <h3 class="title"><i class="icon-download-alt"></i> Install Updates </h3>
             <p>Check for updates, install plugins, and  generally improve your site system.
             <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index')); ?></p>
 			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Update.index', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
         </div>
-        
+
         <?php if (in_array('Projects', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagProjects tagTimesheets">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Projects', array('plugin' => 'projects', 'controller' => 'projects', 'action' => 'index')); ?> </h3>
@@ -243,7 +244,7 @@ if (empty($runUpdates)) { ?>
             </ul>
         </div>
         <?php } ?>
-        
+
         <?php if (in_array('Tasks', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagProjects tagTasks">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Tasks', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'my')); ?> </h3>
@@ -276,9 +277,9 @@ if (empty($runUpdates)) { ?>
 } else { ?>
 
   <div id="databaseUpgrades">
-      <?php 
+      <?php
        $complete = CakeSession::read('Updates.complete');
-       echo $this->Form->create('', array('id' => 'autoUpdateForm')); 
+       echo $this->Form->create('', array('id' => 'autoUpdateForm'));
        echo $this->Form->hidden('Upgrade.all', array('value' => true));
        //echo $this->Form->submit('Check for Updates');
        echo $this->Form->end(); ?>
@@ -315,6 +316,6 @@ if (empty($runUpdates)) { ?>
        $("#autoUpdateForm").submit();
         });
         </script>
-<?php 
-    } 
+<?php
+    }
 } ?>
