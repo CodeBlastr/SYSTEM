@@ -322,6 +322,7 @@ class _UsersController extends UsersAppController {
  * A page to stop infinite redirect loops when there are errors.
  */
 	public function restricted() {
+		
 	}
 
 /**
