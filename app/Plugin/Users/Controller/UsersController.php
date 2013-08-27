@@ -1,6 +1,12 @@
 <?php
 App::uses('UsersAppController', 'Users.Controller');
 /**
+ * To Extend use code
+ * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Controller'.DS.'UsersController.php');
+ */
+ 
+ 
+/**
  * Users Controller
  *
  * Handles variables supplied from the Model, to be sent to the view for users.
@@ -64,6 +70,11 @@ class _UsersController extends UsersAppController {
 			'User.id',
 			'User.first_name',
 			);
+		$this->paginate['conditions'] = array(
+			'not' => array(
+				'User.id' => '1'
+			)
+		);
 		$this->set('users', $this->paginate());
 		$this->set('displayName', 'first_name');
 		$this->set('displayDescription', '');
@@ -237,6 +248,8 @@ class _UsersController extends UsersAppController {
  * Register method
  */
 	public function register() {
+		debug($this->request->data);
+		
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
 		
@@ -309,6 +322,7 @@ class _UsersController extends UsersAppController {
  * A page to stop infinite redirect loops when there are errors.
  */
 	public function restricted() {
+		
 	}
 
 /**
@@ -567,6 +581,21 @@ If you have received this message in error please ignore, the link will be unusa
 				$this->Session->setFlash('Invalid user.');
 			}
 		}
+	}
+
+	public function searchUsers () {
+		if(isset($this->request->query['search'])) {
+			$this->set('users', $this->User->find('all' , array(
+				'conditions' => array(
+					'OR' => array(
+						'username LIKE' => $this->request->query['search'].'%',
+						'email LIKE' => $this->request->query['search'].'%',
+				)),
+				'fields' => array('User.id', 'User.username'),
+				'limit' => 10,
+				)));	
+		}
+		
 	}
 }
 
