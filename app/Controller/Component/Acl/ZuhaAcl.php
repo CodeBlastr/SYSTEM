@@ -14,7 +14,6 @@ class ZuhaAcl extends DbAcl {
  * Taken almost directly from DbAcl (changed the return true pieces & made aroPath & acoPath a higher scope variable
  */
 	public function check($aro, $aco, $action = "*") {
-
 		// a very special case of aro aco settings
 		if (!empty($aro['permission']) && $aro['permission'] === true) {
 			return $this->permission($aco); // $aco actually equals a data array if permission is true
