@@ -582,6 +582,21 @@ If you have received this message in error please ignore, the link will be unusa
 			}
 		}
 	}
+
+	public function searchUsers () {
+		if(isset($this->request->query['search'])) {
+			$this->set('users', $this->User->find('all' , array(
+				'conditions' => array(
+					'OR' => array(
+						'username LIKE' => $this->request->query['search'].'%',
+						'email LIKE' => $this->request->query['search'].'%',
+				)),
+				'fields' => array('User.id', 'User.username'),
+				'limit' => 10,
+				)));	
+		}
+		
+	}
 }
 
 if (!isset($refuseInit)) {

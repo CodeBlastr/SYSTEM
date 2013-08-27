@@ -100,8 +100,10 @@ class WkHtmlToPdfComponent extends Component
             If you want to do something on download abort/finish, 
             register_shutdown_function('function_name'); 
         */ 
-       
-        if (!is_readable($file)) die('File not found or inaccessible!'); 
+
+        if ( !is_readable($file) ) {
+			throw new Exception('PDF file cannot found or is inaccessible!', 1);
+		}
 
         $size = filesize($file); 
         $name = rawurldecode($name); 
@@ -201,4 +203,3 @@ class WkHtmlToPdfComponent extends Component
         } 
     } 
 } 
-?>
