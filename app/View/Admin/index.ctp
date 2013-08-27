@@ -203,10 +203,11 @@ if (empty($runUpdates)) { ?>
         </div>
         <?php } ?>
         
-        <?php if (in_array('Answers', CakePlugin::loaded())) { ?>  
+        <?php if (in_array('Answers', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagForms tagPages">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Custom Forms', array('plugin' => 'answers', 'controller' => 'answers', 'action' => 'index')); ?></h3>
-            <p>Create custom forms using the Answers Plugin, Allows Drag and Drop Form Building</p>
+            <p>Create custom forms using the Drag and Drop Form Buildrr.</p>
+            <li><?php echo $this->Html->link('View Form Submissions', array('plugin' => 'answers', 'controller' => 'answerSubmissions')) ?></li>
         </div>
         <?php } ?>
         
