@@ -66,16 +66,9 @@ class GalleriesController extends GalleriesAppController {
 				));	
 		}
 		
-		if (!empty($gallery)) {
-			# This is here, because we have an element doing a request action on it.
-			if (isset($this->request->params['requested'])) {
-				return $gallery;
-	        } else {
-				$this->set('gallery', $gallery);
-			}
-		} else {
-			return false;
-		}
+		$this->set('gallery', $gallery);
+		// This is here, because we have an element doing a request action on it.
+		return !empty($gallery) ? $gallery : false;
 	}
 
 
@@ -137,6 +130,8 @@ class GalleriesController extends GalleriesAppController {
 		$types = $this->Gallery->types();
 		$conversionTypes = $this->Gallery->conversionTypes();
 		$this->set(compact('model', 'foreignKey', 'gallery', 'types', 'conversionTypes'));
+		$this->set('page_title_for_layout', __('Edit Gallery <small>w/ preview</small>'));
+		$this->set('title_for_layout', __('Edit Gallery'));
 	}
 	
 	
