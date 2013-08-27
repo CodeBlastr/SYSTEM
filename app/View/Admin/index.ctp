@@ -174,7 +174,7 @@ if (empty($runUpdates)) { ?>
 		
 		<?php if (in_array('Categories', CakePlugin::loaded())) { ?>  
         <div class="masonryBox dashboardBox tagText tagAdmin">
-            <h3 class="title"><i class="icon-tasks"></i> <?php echo $this->Html->link('Categories', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="icon-tasks"></i> <?php echo $this->Html->link('Categories', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'index')); ?></h3>
             <p>Categorize anything.  Move, reorder, add, edit categories.</p>
         </div>
         <?php } ?>

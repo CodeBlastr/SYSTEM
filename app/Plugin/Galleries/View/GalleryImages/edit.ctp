@@ -10,7 +10,6 @@
 		echo $this->Form->input('GalleryImage.filename', array('type' => 'file'));
 		echo $this->Form->input('GalleryImage.caption', array('type' => 'text'));
 		echo $this->Form->input('GalleryImage.description', array('type' => 'richtext'));
-		#echo $this->Form->input('GalleryImage.alt');
 		echo $this->Form->input('dir', array('type' => 'hidden'));
 	    echo $this->Form->input('mimetype', array('type' => 'hidden'));
 	    echo $this->Form->input('filesize', array('type' => 'hidden'));
@@ -19,13 +18,14 @@
     </fieldset>
 </div>
 
-<?php 
+<?php
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Galleries',
 		'items' => array(
-			$this->Html->link(__('List Galleries', true), array('controller' => 'galleries', 'action' => 'index')),
+			$this->Html->link(__('Gallery', true), array('controller' => 'galleries', 'action' => 'view', $this->request->data['Gallery']['model'], $this->request->data['Gallery']['foreign_key'])),
+			$this->Html->link(__('Galleries', true), array('controller' => 'galleries', 'action' => 'index')),
 			)
 		),
 	)));
