@@ -1037,6 +1037,11 @@ class AppController extends Controller {
 			// debug($aro);
 			// debug($aco);
 			// break;
+			
+			//Sets the response status code to 401 needed for ajax calls
+			//Otherwise it will return 200 calling any success callback
+			$this->response->statusCode(401);
+			
 			$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
 			$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
 			$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';
