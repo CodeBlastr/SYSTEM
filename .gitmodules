@@ -127,3 +127,6 @@
 [submodule "app/Plugin/Phonebooks"]
 	path = app/Plugin/Phonebooks
 	url = git@github.com:lyga17/Phonebooks-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Properties"]
+	path = app/Plugin/Properties
+	url = git@github.com:zuha/Properties-Zuha-Cakephp-Plugin.git
