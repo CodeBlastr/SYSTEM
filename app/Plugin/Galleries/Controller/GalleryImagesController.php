@@ -44,6 +44,7 @@ class GalleryImagesController extends GalleriesAppController {
 			}
 		}
 		if (empty($this->request->data)) {
+			$this->GalleryImage->contain(array('Gallery'));
 			$this->request->data = $this->GalleryImage->read(null, $id);
 		}
 	}
