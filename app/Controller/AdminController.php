@@ -92,7 +92,6 @@ class AdminController extends AppController {
         $keysOfAllTables = array_keys($allTables);
 		$endTable = array_pop($keysOfAllTables); // check the session for the last TABLE run  
 		
-		
 		// Turn on to debug 
 		// debug($lastTable);
 		// debug($nextTable);
