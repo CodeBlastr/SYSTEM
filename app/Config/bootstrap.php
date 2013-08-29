@@ -386,6 +386,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
                 'ProductsProductOption' => 'Products',
                 'ProductStore' => 'Products',
                 'Product' => 'Products',
+                'Property' => 'Properties',
                 'Job' => 'Jobs', 
 				'ProjectIssue' => 'Projects',
 				'Project' => 'Projects',
