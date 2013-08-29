@@ -265,33 +265,51 @@ class _User extends UsersAppModel {
 		if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
 			$this->UserGroup->UsersUserGroup->add($this->data);
 		}
-		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-			$this->welcome($data[$this->alias]['username']);
+		
+		if ($created) {
+			$this->data = $this->__afterCreation($this->data);
 		}
+
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
 		CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
 		return parent::afterSave($created);
 	}
-	
+
+
 /**
- * Save method
+ * Functions to be ran after a User has been created on the site, during User::afterSave()
+ * @param array $data
+ * @return array $data
  */
- 	public function save($data = null, $validate = true, $fieldList = array()) {
+	private function __afterCreation($data) {
+		// Send a Welcome Email
+		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
+			$this->welcome($this->data[$this->alias]['username']);
+		}
+		// Initialize some fields
 		$data = $this->_cleanAddData($data);
-		return parent::save($data, $validate, $fieldList); 		
- 	}
+
+		return $data;
+	}
+
 	
 /**
  * Save all method
+ *
+ * @todo should probably be declared deprecated, as saveUserAndContact() seems more appropriate than overriding the saveAll ^JB
  */
  	public function saveAll($data = null, $options = array()) {
-		$data = $this->_cleanAddData($data);
 		$data = $this->_userContact($data);
  		return parent::saveAll($data, $options);
  	}
-	
+
+	public function saveUserAndContact($data) {
+		$data = $this->_userContact($data);
+		$data = $this->save($data['User']);
+		return $data;
+	}
 
 /**
  * Handles the data of adding of a user // DEPRECATED WILL BE REMOVED 07/18/2013 RK
@@ -303,6 +321,23 @@ class _User extends UsersAppModel {
 		return $this->saveAll($data, $options);
 	}
 
+
+/**
+ * Moves ContactAddress's up to the root so that we can easily add/edit them from User::edit()
+ * @todo Should this be in the afterFind? ^JB
+ * 
+ * @param string $type
+ * @param array $query
+ * @return mixed
+ */
+	public function find($type = 'first', $query = array()) {
+		$user = parent::find($type, $query);
+		if (isset($user['Contact']['ContactAddress'][0])) {
+			$user['ContactAddress'] = $user['Contact']['ContactAddress'];
+		}
+		return $user;
+	}
+
 /**
  * Add contact to the $data var if it exists, if it doesn't setup contact data for save.
  *
@@ -312,7 +347,7 @@ class _User extends UsersAppModel {
 	protected function _userContact($data) {
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->Contact->findById($data['Contact']['id']);
-			$data['Contact'] = $contact['Contact'];
+			$data['Contact'] = Set::merge($data['Contact'], $contact['Contact']);
 		} else if (!empty($data[$this->alias]['id'])) {
 			$contact = $this->Contact->findByUserId($data[$this->alias]['id']);
 			if (!empty($contact)) {

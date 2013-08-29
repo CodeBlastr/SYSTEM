@@ -213,7 +213,10 @@ class _UsersController extends UsersAppController {
 		if (empty($this->request->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
-				));
+				'contain' => array(
+					'Contact' => array('ContactAddress')
+				)
+			));
 			if(isset($user['User'])) {
 				$this->request->data = $user;
 			} else {
@@ -221,7 +224,7 @@ class _UsersController extends UsersAppController {
 			}
 		// saving a user which was edited
 		} else if(!empty($this->request->data)) {
-			$this->request->data['User']['user_id'] = $this->Auth->user('id');
+			$this->request->data['User']['id'] = $this->Auth->user('id');
 			//getting password issue when saving ; so unsetting in this case
 			if(!isset($this->request->data['User']['password']))	{
 				unset($this->User->validate['password']);
@@ -231,9 +234,10 @@ class _UsersController extends UsersAppController {
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
 			try {
-				$this->User->save($this->request->data);
+				//debug($this->request->data['User']); break;
+				$this->User->saveUserAndContact($this->request->data);
 				$this->Session->setFlash('User Updated!');
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->request->data['User']['id']), true);
 			} catch(Exception $e){
 				$this->Session->setFlash('There was an error updating user' . $e);
 			}
