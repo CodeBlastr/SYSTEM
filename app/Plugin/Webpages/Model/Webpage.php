@@ -250,7 +250,11 @@ class Webpage extends WebpagesAppModel {
 			$include = $this->_includeChildren($include, $request->url); // check the include to see if we overwrite with a child
 			
 			// where the replacement of the template tag happens
-			$tagReplace = $includeContainer['start'] . $include['Webpage']['content'] . $includeContainer['end'];
+			if ( CakeSession::read('Auth.User.user_role_id') == '1' ) {
+				$tagReplace = $includeContainer['start'] . $include['Webpage']['content'] . $includeContainer['end'];
+			} else {
+				$tagReplace = $include['Webpage']['content'];
+			}
 			$webpage['Webpage']['content'] = str_replace($includeTag, $tagReplace, $webpage['Webpage']['content']);
 		}
 	}
