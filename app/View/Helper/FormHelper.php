@@ -465,5 +465,63 @@ class FormHelper extends CakeFormHelper {
 		
 		return $ckeSettings;
 	}
+	
+	
+	protected function dateTimePicker($fieldName, $dateFormat = 'DMY', $timeFormat = '12', $attributes = array()) {
+		$attributes += array('empty' => true, 'value' => null);
+		$year = $month = $day = $hour = $min = $meridian = null;
+
+		if (empty($attributes['value'])) {
+			$attributes = $this->value($attributes, $fieldName);
+		}
+
+		if ($attributes['value'] === null && $attributes['empty'] != true) {
+			$attributes['value'] = time();
+		}
+
+		if (!empty($attributes['value'])) {
+			if (is_array($attributes['value'])) {
+				extract($attributes['value']);
+			} else {
+				if (is_numeric($attributes['value'])) {
+					$attributes['value'] = strftime('%Y-%m-%d %H:%M:%S', $attributes['value']);
+				}
+				$meridian = 'am';
+				$pos = strpos($attributes['value'], '-');
+				if ($pos !== false) {
+					$date = explode('-', $attributes['value']);
+					$days = explode(' ', $date[2]);
+					$day = $days[0];
+					$month = $date[1];
+					$year = $date[0];
+				} else {
+					$days[1] = $attributes['value'];
+				}
+
+				if (!empty($timeFormat)) {
+					$time = explode(':', $days[1]);
+
+					if (($time[0] > 12) && $timeFormat == '12') {
+						$time[0] = $time[0] - 12;
+						$meridian = 'pm';
+					} elseif ($time[0] == '12' && $timeFormat == '12') {
+						$meridian = 'pm';
+					} elseif ($time[0] == '00' && $timeFormat == '12') {
+						$time[0] = 12;
+					} elseif ($time[0] >= 12) {
+						$meridian = 'pm';
+					}
+					if ($time[0] == 0 && $timeFormat == '12') {
+						$time[0] = 12;
+					}
+					$hour = $min = null;
+					if (isset($time[1])) {
+						$hour = $time[0];
+						$min = $time[1];
+					}
+				}
+			}
+		}
+	}
 
 }

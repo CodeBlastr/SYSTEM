@@ -92,7 +92,6 @@ class AdminController extends AppController {
         $keysOfAllTables = array_keys($allTables);
 		$endTable = array_pop($keysOfAllTables); // check the session for the last TABLE run  
 		
-		
 		// Turn on to debug 
 		// debug($lastTable);
 		// debug($nextTable);
@@ -213,8 +212,8 @@ class AdminController extends AppController {
 			} 
 			
 			try {
-				debug($table);
-				break;
+				//debug($table);
+				//break;
 				$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;'); // back it up first
 				$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
 				$db->query('DROP TABLE `' . $table . '`;'); 
@@ -224,8 +223,8 @@ class AdminController extends AppController {
 				throw new Exception($table . ': ' . $e->getMessage());
 			}
 		} else {
-			// the table doesn't exist so its already downgrade
-			return array($table => __('AND %s was already gone'));
+			// the table doesn't exist so its already downgraded
+			return array($table => __('AND %s was already gone', $table));
 		}
 	}
 	
