@@ -231,7 +231,8 @@ if (empty($runUpdates)) { ?>
         <div class="masonryBox dashboardBox tagUpdates tagAdmin">
             <h3 class="title"><i class="icon-download-alt"></i> Install Updates </h3>
             <p>Check for updates, install plugins, and  generally improve your site system.
-            <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index')); ?></p>
+            <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index'), array('class' => 'btn')); ?></p>
+            <p><?php echo $this->Html->link('Uninstall Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'uninstall'), array('class' => 'btn btn-danger')); ?></p>
 			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Update.index', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
         </div>
         
