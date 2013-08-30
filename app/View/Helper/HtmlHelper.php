@@ -511,7 +511,7 @@ class HtmlHelper extends CakeHtmlHelper {
 		}
 	}
 
-	function image_type_to_extension($imagetype) {
+	public function image_type_to_extension($imagetype) {
 		if (empty($imagetype)) {
 			return false;
 		}
@@ -535,5 +535,29 @@ class HtmlHelper extends CakeHtmlHelper {
 			default : return false;
 		}
 	}
+
+
+	public function tagElement($View, $content, $options = array()) {
+		// matches element template tags like {element: plugin.name}
+		preg_match_all ("/(\{element: (.*?)([^\}]*)\})/", $content, $matches); // a little shorter
+		$i=0;
+		foreach ($matches[0] as $elementMatch) {
+			$element = trim($matches[3][$i]);
+			$elementVars = array();
+			if (strpos($elementMatch, '=')) {
+				// means we have named variables at the end, {element: webpages.types type=portfolio,id=something}
+				$vars = explode(' ', $element);	$element = $vars[0]; $vars = explode(',', $vars[1]);
+				foreach ($vars as $var) {
+					$option = explode('=', $var);
+					$elementVars[$option[0]] = $option[1];
+				}
+			}
+			$replacement = !empty($options['templateEditing']) ? sprintf('<li data-template-tag="element: %s">%s</li>', $element, $View->element($element, $elementVars)) : $View->element($element, $elementVars);
+			$content = str_replace($elementMatch, $replacement, $content);
+			$i++;
+		}
+		return $content;
+	}
+
 
 }
