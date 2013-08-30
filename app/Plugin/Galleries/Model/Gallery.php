@@ -15,7 +15,7 @@ class Gallery extends GalleriesAppModel {
  * 
  * @var string $galleryType
  */
-	public $galleryType = 'colorbox';
+	public $galleryType = 'carousel';
 	
 /**
  * Display Field
@@ -224,6 +224,7 @@ class Gallery extends GalleriesAppModel {
  */
 	public function types() {
 		return array(
+			'carousel' => 'Carousel',
 			'slider' => 'Slider',
 			'colorbox' => 'Colorbox',
 			'fancybox' => 'Fancybox',

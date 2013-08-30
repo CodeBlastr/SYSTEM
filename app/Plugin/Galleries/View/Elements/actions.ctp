@@ -1,5 +1,5 @@
 <?php
-# if its edit page we add a few actions
+// if its edit page we add a few actions
 if (strpos($this->request->url, 'edit/')) { ?>
 	<ul class="actions gallerySlideActions">
     	<li><?php echo  $this->Html->link(__('Make Thumb', true), array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'make_thumb', $galleryId, $slideId), array('class' => 'action', 'title' => 'Make this image the thumbnail for this gallery.'));?></li>

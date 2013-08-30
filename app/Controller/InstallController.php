@@ -128,6 +128,34 @@ class InstallController extends Controller {
         }
     }
 
+/**
+ * Uninstall method
+ */
+	public function uninstall($plugin = null) {
+        $this->set('plugins', $plugins = CakePlugin::loaded());
+		if ($this->request->is('post')) {
+			$loadedPlugins = unserialize(__SYSTEM_LOAD_PLUGINS);
+			// get rid of the unstall plugin value
+			unset($loadedPlugins['plugins'][array_search($plugin, $loadedPlugins['plugins'])]);
+            $sqlData = '';
+            foreach ($loadedPlugins['plugins'] as $sql) {
+                $sqlData .= 'plugins[] = ' . $sql . PHP_EOL;
+            }
+			// now save the new setting value
+			App::uses('Setting', 'Model');
+            $Setting = new Setting;
+            $data['Setting']['type'] = 'System';
+            $data['Setting']['name'] = 'LOAD_PLUGINS';
+            $data['Setting']['value'] = $sqlData;
+            if ($Setting->add($data)) {
+                $this->message[] = __('Plugin successfully uninstalled.');
+                $this->_redirect(array('action' => 'index'));
+            } else {
+                $this->message[] = __('Settings update failed.');
+            }
+		}
+	}
+	
     public function index() {
         $this->_handleSecurity();
         $currentlyLoadedPlugins = CakePlugin::loaded();
