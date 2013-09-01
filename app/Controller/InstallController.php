@@ -19,6 +19,8 @@ class InstallController extends Controller {
     public $installPlugins = array();
     public $message = '';
     public $allowedActions = array('index', 'site', 'login', 'plugin');
+	public $local = false;
+	public $installFile = '';
 
 /**
  * Schema class being used.
@@ -27,6 +29,10 @@ class InstallController extends Controller {
  */
     public $Schema;
 
+/**
+ * Constructor
+ * 
+ */
     public function __construct($request = null, $response = null) {
         parent::__construct($request, $response);
 
@@ -85,7 +91,7 @@ class InstallController extends Controller {
 /**
  * write the class vars that are used through out the functions in this class
  */
-    protected function _handleInputVars($data) {
+    protected function _handleInputVars($data) {		
         $this->options['siteName'] = Inflector::camelize(Inflector::underscore(str_replace(' ', '', $this->request->data['Install']['site_name'])));
         if (strpos($this->request->data['Install']['site_domain'], ',')) {
             // comma separated domain handler
@@ -97,11 +103,15 @@ class InstallController extends Controller {
 
         $this->options['key'] = !empty($this->request->data['Install']['key']) ? $this->request->data['Install']['key'] : null;
 
-        $this->config['datasource'] = 'Database/Mysql';
-        $this->config['host'] = $data['Database']['host'];
-        $this->config['login'] = $data['Database']['username'];
-        $this->config['password'] = $data['Database']['password'];
-        $this->config['database'] = $data['Database']['name'];
+    	if (empty($data['Database']['host']) && $this->local === true) {
+			$this->_createDatabase();
+    	} else {
+	        $this->config['datasource'] = 'Database/Mysql';
+	        $this->config['host'] = $data['Database']['host'];
+	        $this->config['login'] = $data['Database']['username'];
+	        $this->config['password'] = $data['Database']['password'];
+	        $this->config['database'] = $data['Database']['name'];
+    	}
         $this->newDir = ROOT . DS . 'sites' . DS . $this->options['siteDomain'];
 
         $this->options['first_name'] = !empty($this->request->data['User']['first_name']) ? $this->request->data['User']['first_name'] : $this->options['siteName'];
@@ -127,6 +137,38 @@ class InstallController extends Controller {
             $this->_redirect($this->referer());
         }
     }
+
+/**
+ * Create database method
+ * 
+ */
+ 	protected function _createDatabase() {
+		require($this->installFile);
+		$Install = new INSTALL_CONFIG;
+		
+	    $this->config['datasource'] = 'Database/Mysql';
+	    $this->config['host'] = $Install->default['host'];
+	    $this->config['login'] = $Install->default['login'];
+	    $this->config['password'] = $Install->default['password'];
+	    $this->config['database'] = $Install->default['prefix'].str_replace($Install->default['postfix'], '', $this->request->data['Install']['site_domain']);
+		
+		// create the db here
+		$connection = mysqli_connect($this->config['host'], $this->config['login'], $this->config['password']);
+		
+		// Check connection
+		if (mysqli_connect_errno()) {
+			echo "Failed to connect to MySQL: " . mysqli_connect_error();
+		}
+		
+		// Create database
+		$sql = 'CREATE DATABASE `' . $this->config['database'] . '` COLLATE `utf8_general_ci`';
+		if (mysqli_query($connection, $sql)) {
+			return true;
+		} else {
+			throw new Exception('Error creating database');
+		}
+	}
+	
 
 /**
  * Uninstall method
@@ -222,6 +264,8 @@ class InstallController extends Controller {
  */
     public function site() {
         $this->_handleSecurity();
+        $this->set('local', $this->_local());
+		
         if (!empty($this->request->data)) {
             // move everything here down to its own function
             $this->_handleInputVars($this->request->data);
@@ -298,9 +342,23 @@ class InstallController extends Controller {
                 $this->_redirect($this->referer());
             }
         } // end request data check
-
         $this->layout = false;
     }
+
+/**
+ * Local method
+ * Checks for .install.php file and if exists, returns true
+ * 
+ */
+ 	protected function _local() {
+ 		$file = ROOT . DS . APP_DIR . DS . 'Config' . DS . '.install.php';
+ 		if (file_exists($file)) {
+ 			$this->installFile = $file;
+ 			$this->local = true;
+ 			$this->view = 'local';
+ 			return true;
+ 		}
+ 	}
 
 /**
  * Copies example.com, creates the database.php, and core.php files.
@@ -697,7 +755,7 @@ class InstallController extends Controller {
     	//this is here to handle post install redirect (so that it wouldn't come back to the install page)
     	if (defined('SITE_DIR') && SITE_DIR == 'sites/'.$_SERVER['HTTP_HOST'] && $this->request->action != 'index' && $this->request->action != 'plugin') {
 			$this->Session->setFlash(__('Site installed successfully.')); 
-			$this->redirect('/');
+			$this->redirect('/install/build');
 		}
 		
     	if (Configure::read('Install') === true) {
@@ -715,7 +773,7 @@ class InstallController extends Controller {
  * Install Sql Data
  */
     protected function _getInstallSqlData() {
-        $installedPlugins = 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges';
+        $installedPlugins = 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges\r\nplugins[] = Utils';
         if (!empty($this->installPlugins)) {
             foreach ($this->installPlugins as $pluginName) {
                 $installedPlugins .= '\r\nplugins[] = ' . $pluginName;
@@ -818,5 +876,18 @@ class InstallController extends Controller {
             $this->redirect($url);
         }
     }
+
+/**
+ * Build method
+ * 
+ */
+ 	public function build() {
+ 		$this->layout = 'default';
+		debug(CakePlugin::loaded());
+		
+		App::uses('UserRole', 'Users.Model');
+		$UserRole = new UserRole;
+		debug($UserRole->find('all'));
+ 	}
 
 }
