@@ -613,16 +613,7 @@ class AppController extends Controller {
  */
 	public function _getTemplate() {
 		if (defined('__APP_TEMPLATES')) {
-			$settings = unserialize(__APP_TEMPLATES);
-			$i = 0;
-			if (!empty($settings['template'])) {
-				foreach ($settings['template'] as $setting) {
-					$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
-					$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
-					$templates[$i]['urls'] = empty($templates[$i]['urls']) || $templates[$i]['urls'] == '""'  ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
-					$i++;
-				}
-			}
+			$templates = templateSettings();
 			// check urls first so that we don't accidentally use a default template before a template that was set for this url.
 			if (!empty($templates)) {
 				foreach ($templates as $key => $template) {

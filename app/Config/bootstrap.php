@@ -129,6 +129,20 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
     	CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages', 'Utils')); // required plugins    
 	}
 	
+	function templateSettings() {
+		$settings = unserialize(__APP_TEMPLATES);
+		$i = 0;
+		if (!empty($settings['template'])) {
+			foreach ($settings['template'] as $setting) {
+				$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
+				$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
+				$templates[$i]['urls'] = empty($templates[$i]['urls']) || $templates[$i]['urls'] == '""'  ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
+				$i++;
+			}
+		}
+		return $templates;
+	}
+	
 	
 	/**
 	 * temporary convenience function for states options
