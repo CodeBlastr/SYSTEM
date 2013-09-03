@@ -5,7 +5,6 @@
  * 
  * Note: for configurable templates, you have to expect that config and element tags should be block elements.  (Inline elements make a mess)
  * 
- * @todo might need to move the tagElement function for organization reasons
  * @todo turn other tags into functions too
  */
 
@@ -14,29 +13,6 @@ $flash_for_layout = $this->Session->flash();
 $flash_auth_for_layout = $this->Session->flash('auth');
 
 if (!empty($defaultTemplate)) {
- 
-	function tagElement($View, $content, $options = array()) {
-		
-		// matches element template tags like {element: plugin.name}
-		preg_match_all ("/(\{element: (.*?)([^\}]*)\})/", $content, $matches); // a little shorter
-		$i=0; 
-		foreach ($matches[0] as $elementMatch) {
-			$element = trim($matches[3][$i]);
-			$elementVars = array();
-			if (strpos($elementMatch, '=')) {
-				// means we have named variables at the end, {element: webpages.types type=portfolio,id=something}
-				$vars = explode(' ', $element);	$element = $vars[0]; $vars = explode(',', $vars[1]);
-				foreach ($vars as $var) {
-					$option = explode('=', $var);
-					$elementVars[$option[0]] = $option[1];
-				}
-			}
-			$replacement = !empty($options['templateEditing']) ? sprintf('<li data-template-tag="element: %s">%s</li>', $element, $View->element($element, $elementVars)) : $View->element($element, $elementVars);
-			$content = str_replace($elementMatch, $replacement, $content); 
-			$i++;
-		}
-		return $content;
-	}
 	
 	// just shortening the variable name
 	$content = $defaultTemplate["Webpage"]["content"];
@@ -72,7 +48,7 @@ if (!empty($defaultTemplate)) {
 				// add the drag and drop javascript (order is important)
 				$content = !empty($templateEditing) ? str_replace('</head>', "    {element: templates/edit}".PHP_EOL."</head>", trim($templateContents[1])) : trim($templateContents[1]);
 				// first pass a {element x} template tags so that non {config: x} get replaced first (required for editing config)
-				$content = tagElement($this, $content);
+				$content = $this->Html->tagElement($this, $content);
 				preg_match_all("/(\{config: ([az_]*)([^\}\{]*)\})/", $content, $configMatches);
 				$i = 0;
 				foreach ($configMatches[0] as $configMatch) {
@@ -89,7 +65,7 @@ if (!empty($defaultTemplate)) {
 
 	// replace the element tags again (if templateEditing is on it's a configurable template, and has already the old {element: x} tags replaced)
 	$elementOptions = !empty($templateEditing) ? array('templateEditing' => true) : null;
-	$content = tagElement($this, $content, $elementOptions);
+	$content = $this->Html->tagElement($this, $content, $elementOptions);
 	
 	// skipping the parsing of text area content with this check	
 	preg_match_all ("/(<textarea[^>]+>)(.*)(<\/textarea>)/isU", $content, $matchesEditable);

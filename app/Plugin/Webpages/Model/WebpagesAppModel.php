@@ -31,6 +31,8 @@ class WebpagesAppModel extends AppModel {
 		
 		$this->jsDirectory = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'webroot'.DS.'js'.DS;
 		
+		$this->elementsDirectory = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Elements'.DS;
+		
 		parent::__construct($id, $table, $ds);
 	}
 	
