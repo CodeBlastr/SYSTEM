@@ -212,8 +212,6 @@ class AdminController extends AppController {
 			} 
 			
 			try {
-				//debug($table);
-				//break;
 				$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;'); // back it up first
 				$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
 				$db->query('DROP TABLE `' . $table . '`;'); 
