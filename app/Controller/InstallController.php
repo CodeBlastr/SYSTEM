@@ -877,6 +877,8 @@ class InstallController extends Controller {
 		$templates = Set::combine(templateSettings(), '{n}.isDefault', '{n}.templateName');
 		$this->set('defaultTemplateName', $templates[1]);
 		
+		$Menu = ClassRegistry::init('Webpages.WebpageMenu');
+		$this->set('menus', $menus = $Menu->find('all', array('conditions' => array('OR' => array(array('WebpageMenu.parent_id' => null), array('WebpageMenu.parent_id' => ''))))));
  	}
 
 /**

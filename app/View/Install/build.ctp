@@ -34,11 +34,10 @@
  
     
 			<blockquote>
-				<legend class="lead"><?php echo __('Site settings'); ?></legend>
-				<p>we could put the favicon form here too</p>
+				<legend class="lead"><?php echo __('Site settings'); ?> <small>we could put the favicon form here too</small></legend>
 			  	<fieldset>
 			        <?php
-					echo $this->Form->create('Setting', array('url' => array('controller' => 'settings', 'action' => 'edit')));
+					echo $this->Form->create('Setting', array('class' => 'form-inline', 'url' => array('controller' => 'settings', 'action' => 'edit')));
 					echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden'));
 					echo $this->Form->input('Setting.type', array('value' => 'System', 'type' => 'hidden'));
 					echo $this->Form->input('Setting.name', array('value' => 'SITE_NAME', 'type' => 'hidden'));
@@ -65,17 +64,35 @@
 			        <?php endforeach; ?>
 			        
 			        <?php 
-					echo $this->Form->create('UserRole', array('url' => array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'add')));
+					echo $this->Form->create('UserRole', array('class' => 'form-inline', 'url' => array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'add')));
 					echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden'));
-					echo $this->Form->input('UserRole.name', array('label' => 'Add user type'));
+					echo $this->Form->input('UserRole.name', array('label' => false, 'placeholder' => 'Add user type'));
 					echo $this->Form->end('Add'); ?>
 				</fieldset>
 			</blockquote>
+			
+			
+			<?php foreach ($userRoles as $userRole) : ?>
+			<div class="progress">
+			    <div class="bar bar-info" style="width: 25%;"></div>
+			    <div class="bar bar-success" style="width: 25%;"></div>
+			    <div class="bar bar-warning" style="width: 25%;"></div>
+			    <div class="bar bar-danger" style="width: 25%;"></div>
+		    </div>
+		    
+			<blockquote>
+				<legend class="lead"><?php echo __('Add page'); ?></legend>
+				<legend class="lead"><?php echo __('Add section'); ?></legend>
+				<legend class="lead"><?php echo __('Add foundation'); ?></legend>
+				<legend class="lead"><?php echo __('Add custom'); ?> <small>(could be a custom page type, or a custom plugin)</small></legend>
+			</blockquote>
+			<?php endforeach; ?>
 			
 		</div>
 	</div>
 	
 
+<?php debug($menus); ?>
 
 <?php /*
  some nice html for the icon
