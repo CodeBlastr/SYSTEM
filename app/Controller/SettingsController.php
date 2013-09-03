@@ -93,17 +93,17 @@ class SettingsController extends AppController {
 	}
 
 	public function edit($id = null) {
-		if (!$id && empty($this->request->data) && empty($this->request->params['named'])) {
-			$this->Session->setFlash(__('Invalid Setting', true));
-			$this->redirect(array('action' => 'index'));
-		}
-		if (!empty($this->request->data)) {
+		if ($this->request->is('post')) {
 			if ($this->Setting->add($this->request->data)) {
 				$this->Session->setFlash(__('The Setting has been saved', true));
 				$this->redirect($this->referer());
 			} else {
 				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true));
 			}
+		}
+		if (!$id && empty($this->request->data) && empty($this->request->params['named'])) {
+			$this->Session->setFlash(__('Invalid Setting', true));
+			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->params['named'])) {
 			$this->request->data = $this->Setting->find('first', array('conditions' => array('type_id' => Zuha::enum(null, $this->request->params['named']['type']), 'name' => $this->request->params['named']['name'], ), ));
