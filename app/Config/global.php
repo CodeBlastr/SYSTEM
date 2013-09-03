@@ -186,7 +186,10 @@ class ZuhaSet {
  * Remove a value from an array and reindex
  */
 	public function devalue($array, $unwantedValue) {
+		debug($unwantedValue);
+		
 		foreach($array as $key => $value) {
+			debug($value);
 			if ($value != $unwantedValue) {
 				$newArray[$key] = $value;
 			} 
