@@ -874,6 +874,9 @@ class InstallController extends Controller {
 		$this->set('page_title_for_layout', 'SITE buildrr');
 		$this->set('title_for_layout', 'SITE buildrr');
 		
+		$templates = Set::combine(templateSettings(), '{n}.isDefault', '{n}.templateName');
+		$this->set('defaultTemplateName', $templates[1]);
+		
  	}
 
 /**
