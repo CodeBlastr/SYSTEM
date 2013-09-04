@@ -16,8 +16,32 @@ class WebpageMenusController extends WebpagesAppController {
  * @param mixed $id
  * @return array $data
  */
-	public function element($id = null) {
+	public function element($id = null, $userRoleId = null) {
+		// id can be the code field or the id field, this checks to see which field we look up
         $field =  Zuha::is_uuid($id) || is_numeric($id) ? 'id' : 'code';
+		
+		if (!empty($userRoleId)) {
+			// check to see if we have a menu for a specific user role
+			$menuId = $this->WebpageMenu->field('id', array('WebpageMenu.' . $field => $id, 'WebpageMenu.user_role_id' => $userRoleId));
+		} elseif ($userRoleId === false) {
+			// there might be a logged in user, but we want the menu which has a blank user_role_id field anyway
+			$menuId = false;
+		} else {
+			// check a logged in user if it exists
+			$userRoleId = $this->Session->read('Auth.User.id');
+			if (!empty($userRoleId)) {
+				$menuId = $this->WebpageMenu->field('id', array('WebpageMenu.' . $field => $id, 'WebpageMenu.user_role_id' => $userRoleId));
+			}
+		}
+		
+		if (!empty($menuId)) {
+			// we have an exact menu id (from the user role checks above)
+			$conditions = array('WebpageMenu.id' => $menuId);
+		} else {
+			// standard menu look up (with the id or the code field)
+			$conditions = array('WebpageMenu.' . $field => $id, 'WebpageMenu.user_role_id' => null);
+		}
+		
         $read = $this->WebpageMenu->find('first', array('conditions' => array('WebpageMenu.' . $field => $id), 'fields' => array('WebpageMenu.lft', 'WebpageMenu.rght')));
         $menu = $this->WebpageMenu->find('threaded', array('conditions' => array('WebpageMenu.lft >=' => $read['WebpageMenu']['lft'], 'WebpageMenu.rght <=' => $read['WebpageMenu']['rght'])));
         $menu = $menu[0]; // we can only edit one menu at a time.

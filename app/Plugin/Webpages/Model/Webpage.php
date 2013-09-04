@@ -430,7 +430,8 @@ class Webpage extends WebpagesAppModel {
 		}
         
 		if (empty($data['RecordLevelAccess']['UserRole'])) {
-			$data['Webpage']['user_roles'] = '';
+			// deprecated, because this function is called with saveAll(), not save()
+			// $data['Webpage']['user_roles'] = '';
 			unset($data['RecordLevelAccess']);
 		} else {
 			$data['Webpage']['user_roles'] = serialize($data['RecordLevelAccess']['UserRole']);
@@ -837,4 +838,28 @@ class Webpage extends WebpagesAppModel {
 	    	return $this->types;
 		}
 	}
+	
+/**
+ * Add demo page
+ * Creates a page with some prefilled data.
+ * 
+ * @param array $data
+ * @param array $options : ex. array('template' => 'some-template-name.ctp')
+ */
+ 	public function demoPage($data = array(), $options = array()) {
+ 		$data['Webpage']['title'];
+ 	}
+	
+/**
+ * Add demo section
+ * Creates a section with some prefilled data and sub-pages.
+ * 
+ * @param array $data
+ * @param array $options : ex. array('template' => 'some-template-name.ctp')
+ */
+ 	public function demoSection($data = array(), $options = array()) {
+ 		$data['Webpage']['title'];
+ 	}
+	
+	
 }
