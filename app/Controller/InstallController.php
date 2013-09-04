@@ -34,6 +34,9 @@ class InstallController extends Controller {
  * 
  */
     public function __construct($request = null, $response = null) {
+    	
+    	$this->helpers[] = 'Utils.Tree';
+		
         parent::__construct($request, $response);
 
         $this->_handleSitesDirectory();
@@ -91,7 +94,8 @@ class InstallController extends Controller {
 /**
  * write the class vars that are used through out the functions in this class
  */
-    protected function _handleInputVars($data) {		
+    protected function _handleInputVars($data) {
+    	
         $this->options['siteName'] = Inflector::camelize(Inflector::underscore(str_replace(' ', '', $this->request->data['Install']['site_name'])));
         if (strpos($this->request->data['Install']['site_domain'], ',')) {
             // comma separated domain handler
@@ -104,7 +108,7 @@ class InstallController extends Controller {
         $this->options['key'] = !empty($this->request->data['Install']['key']) ? $this->request->data['Install']['key'] : null;
 
     	if (empty($data['Database']['host']) && $this->local === true) {
-			$this->_createDatabase();
+    		$this->_createDatabase();
     	} else {
 	        $this->config['datasource'] = 'Database/Mysql';
 	        $this->config['host'] = $data['Database']['host'];
@@ -160,12 +164,19 @@ class InstallController extends Controller {
 			echo "Failed to connect to MySQL: " . mysqli_connect_error();
 		}
 		
-		// Create database
-		$sql = 'CREATE DATABASE `' . $this->config['database'] . '` COLLATE `utf8_general_ci`';
-		if (mysqli_query($connection, $sql)) {
-			return true;
+		// See if database exists
+		$dbTest = mysqli_select_db($connection, $this->config['database']);
+		if ($dbTest) {
+			$this->Session->setFlash(__('Cannot use db name : %s', $this->config['database']));
+			$this->redirect('/install/site');
 		} else {
-			throw new Exception('Error creating database');
+			// Create database
+			$sql = 'CREATE DATABASE `' . $this->config['database'] . '` COLLATE `utf8_general_ci`';
+			if (mysqli_query($connection, $sql)) {
+				return true;
+			} else {
+				throw new Exception('Error creating database');
+			}
 		}
 	}
 	
@@ -267,9 +278,8 @@ class InstallController extends Controller {
         $this->set('local', $this->_local());
 		
         if (!empty($this->request->data)) {
+          	$this->_handleInputVars($this->request->data);
             // move everything here down to its own function
-            $this->_handleInputVars($this->request->data);
-
             try {
             	CakePlugin::loadAll(); // needed to make sure we don't get some stupid error
                 $db = ConnectionManager::create('default', $this->config);
@@ -330,6 +340,10 @@ class InstallController extends Controller {
 				                Galleries: {$galleries},
                                 Extras: {$extras}"));
                         }
+                    } else {
+                    	debug($this->lastTableName);
+						debug($this->progress);
+						break;
                     }
                 } catch (PDOException $e) {
                     $error = $e->getMessage();
@@ -491,8 +505,7 @@ class InstallController extends Controller {
     }
 
 /**
- * Create database from Schema object
- * Should be called via the run method
+ * Create database tables from Schema object
  *
  * @param CakeSchema $Schema
  * @param string $table
@@ -520,7 +533,6 @@ class InstallController extends Controller {
             $this->_run($drop, 'drop', $Schema);
             $this->_run($create, 'create', $Schema);
         } else {
-
             $this->message[] = __('( schema  )');
             debug($this->message);
             break;
@@ -634,8 +646,7 @@ class InstallController extends Controller {
             try {
                 $db->query($sql);
             } catch (PDOException $e) {
-                $error = $e->getMessage();
-                throw new Exception($error);
+                throw new Exception($e->getMessage());
             }
         }
         return true;

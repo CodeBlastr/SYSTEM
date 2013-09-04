@@ -71,7 +71,7 @@
 				</fieldset>
 			</blockquote>
 			
-			
+		    
 			<?php foreach ($userRoles as $userRole) : ?>
 			<div class="progress">
 			    <div class="bar bar-info" style="width: 25%;"></div>
@@ -80,19 +80,36 @@
 			    <div class="bar bar-danger" style="width: 25%;"></div>
 		    </div>
 		    
+		    
 			<blockquote>
-				<legend class="lead"><?php echo __('Add page'); ?></legend>
-				<legend class="lead"><?php echo __('Add section'); ?></legend>
-				<legend class="lead"><?php echo __('Add foundation'); ?></legend>
-				<legend class="lead"><?php echo __('Add custom'); ?> <small>(could be a custom page type, or a custom plugin)</small></legend>
+				<legend class="lead"><?php echo $userRole['UserRole']['name']; ?></legend>
+				<?php $myMenus = Set::extract('/WebpageMenu[user_role_id=' . $userRole['UserRole']['id'] . ']', $menus); ?>
+				<?php if (!empty($myMenus)) : ?>
+					<?php foreach ($myMenus as $mine) : ?>
+						<div class="primary page">
+							<div class="primary name well">
+								<?php echo $mine['WebpageMenu']['name']; ?>
+							</div>
+							<?php echo $this->Element('Webpages.menus', array('id' => $mine['WebpageMenu']['id'])); ?>
+						</div>
+					<?php endforeach; ?>
+				<?php endif; ?>
+				
+				<p><?php echo __('Add page'); ?></p>
+				<p><?php echo __('Add section'); ?></p>
+				<p><?php echo __('Add plugin'); ?></p>
+				<p><?php echo __('Add custom'); ?> <small>(could be a custom page type, or a custom plugin)</small></p>
 			</blockquote>
 			<?php endforeach; ?>
 			
 		</div>
 	</div>
-	
 
-<?php debug($menus); ?>
+<style type="text/css">
+	.primary.name {
+		float: left;
+	}
+</style>
 
 <?php /*
  some nice html for the icon
