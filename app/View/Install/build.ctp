@@ -90,7 +90,7 @@
 							<div class="primary name well">
 								<?php echo $mine['WebpageMenu']['name']; ?>
 							</div>
-							<?php echo $this->Element('Webpages.menus', array('id' => $mine['WebpageMenu']['id'])); ?>
+							<?php echo $this->Element('Webpages.menus', array('menuType' => 'no-style', 'id' => $mine['WebpageMenu']['id'])); ?>
 						</div>
 					<?php endforeach; ?>
 				<?php endif; ?>
@@ -99,6 +99,16 @@
 				<p><?php echo __('Add section'); ?></p>
 				<p><?php echo __('Add plugin'); ?></p>
 				<p><?php echo __('Add custom'); ?> <small>(could be a custom page type, or a custom plugin)</small></p>
+				
+				
+    			<?php 
+    			$menusList = Set::combine($menus, '{n}.WebpageMenu.id', '{n}.WebpageMenu.name');
+    			echo $this->Form->create('WebpageMenuItem', array('url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'add')));
+				echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden'));
+    			echo $this->Form->input('WebpageMenuItem.item_text', array('label' => 'Link Text'));
+				echo $this->Form->input('WebpageMenuItem.item_url', array('label' => 'Url'));
+		    	echo $this->Form->input('WebpageMenuItem.menu_id', array('empty' => '-- New Link --', 'options' => $menusList));
+		        echo $this->Form->end(__('Add Link'));?>
 			</blockquote>
 			<?php endforeach; ?>
 			

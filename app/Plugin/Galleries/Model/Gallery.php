@@ -67,6 +67,11 @@ class Gallery extends GalleriesAppModel {
 			'fields' => '',
 			'order' => ''
 		),
+		'GalleryThumb' => array(
+			'className' => 'Galleries.GalleryImage',
+			'foreignKey' => 'gallery_thumb_id',
+			'dependent' => false,
+		),
 	);
 
 
