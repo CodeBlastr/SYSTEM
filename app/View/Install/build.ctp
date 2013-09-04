@@ -34,11 +34,10 @@
  
     
 			<blockquote>
-				<legend class="lead"><?php echo __('Site settings'); ?></legend>
-				<p>we could put the favicon form here too</p>
+				<legend class="lead"><?php echo __('Site settings'); ?> <small>we could put the favicon form here too</small></legend>
 			  	<fieldset>
 			        <?php
-					echo $this->Form->create('Setting', array('url' => array('controller' => 'settings', 'action' => 'edit')));
+					echo $this->Form->create('Setting', array('class' => 'form-inline', 'url' => array('controller' => 'settings', 'action' => 'edit')));
 					echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden'));
 					echo $this->Form->input('Setting.type', array('value' => 'System', 'type' => 'hidden'));
 					echo $this->Form->input('Setting.name', array('value' => 'SITE_NAME', 'type' => 'hidden'));
@@ -65,17 +64,62 @@
 			        <?php endforeach; ?>
 			        
 			        <?php 
-					echo $this->Form->create('UserRole', array('url' => array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'add')));
+					echo $this->Form->create('UserRole', array('class' => 'form-inline', 'url' => array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'add')));
 					echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden'));
-					echo $this->Form->input('UserRole.name', array('label' => 'Add user type'));
+					echo $this->Form->input('UserRole.name', array('label' => false, 'placeholder' => 'Add user type'));
 					echo $this->Form->end('Add'); ?>
 				</fieldset>
 			</blockquote>
 			
+		    
+			<?php foreach ($userRoles as $userRole) : ?>
+			<div class="progress">
+			    <div class="bar bar-info" style="width: 25%;"></div>
+			    <div class="bar bar-success" style="width: 25%;"></div>
+			    <div class="bar bar-warning" style="width: 25%;"></div>
+			    <div class="bar bar-danger" style="width: 25%;"></div>
+		    </div>
+		    
+		    
+			<blockquote>
+				<legend class="lead"><?php echo $userRole['UserRole']['name']; ?></legend>
+				<?php $myMenus = Set::extract('/WebpageMenu[user_role_id=' . $userRole['UserRole']['id'] . ']', $menus); ?>
+				<?php if (!empty($myMenus)) : ?>
+					<?php foreach ($myMenus as $mine) : ?>
+						<div class="primary page">
+							<div class="primary name well">
+								<?php echo $mine['WebpageMenu']['name']; ?>
+							</div>
+							<?php echo $this->Element('Webpages.menus', array('menuType' => 'no-style', 'id' => $mine['WebpageMenu']['id'])); ?>
+						</div>
+					<?php endforeach; ?>
+				<?php endif; ?>
+				
+				<p><?php echo __('Add page'); ?></p>
+				<p><?php echo __('Add section'); ?></p>
+				<p><?php echo __('Add plugin'); ?></p>
+				<p><?php echo __('Add custom'); ?> <small>(could be a custom page type, or a custom plugin)</small></p>
+				
+				
+    			<?php 
+    			$menusList = Set::combine($menus, '{n}.WebpageMenu.id', '{n}.WebpageMenu.name');
+    			echo $this->Form->create('WebpageMenuItem', array('url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'add')));
+				echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden'));
+    			echo $this->Form->input('WebpageMenuItem.item_text', array('label' => 'Link Text'));
+				echo $this->Form->input('WebpageMenuItem.item_url', array('label' => 'Url'));
+		    	echo $this->Form->input('WebpageMenuItem.menu_id', array('empty' => '-- New Link --', 'options' => $menusList));
+		        echo $this->Form->end(__('Add Link'));?>
+			</blockquote>
+			<?php endforeach; ?>
+			
 		</div>
 	</div>
-	
 
+<style type="text/css">
+	.primary.name {
+		float: left;
+	}
+</style>
 
 <?php /*
  some nice html for the icon

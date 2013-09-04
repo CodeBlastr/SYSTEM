@@ -42,7 +42,7 @@ class WebpageMenuItem extends WebpagesAppModel {
 		'ParentMenuItem' => array(
 			'className' => 'Webpages.WebpageMenuItem',
 			'foreignKey' => 'parent_id',
-			'conditions' => array('ParentMenuItem.menu_id' => 1),
+			'conditions' => '',
 			'fields' => '',
 			'order' => 'ParentMenuItem.order'
 		    )
@@ -63,24 +63,38 @@ class WebpageMenuItem extends WebpagesAppModel {
 			'counterQuery' => ''
 		    )
 	    );
-	
-	public function add($data) {
-        $data = $this->_cleanData($data);
-        
-		if ($this->save($data)) {
-			return true;
-		} else {
-			throw new Exception(__d('menus', 'Item could not be saved. Please, try again.', true));
-		}
+		
+/**
+ * Save override
+ */
+	public function save($data = null, $validate = true, $fieldList = array()) {
+		$data = $this->_cleanData($data);
+		return parent::save($data, $validate, $fieldList);
 	}
 	
+/**
+ * Item targets method
+ * 
+ * @return array 	list of target types for the href tags
+ */
 	public function itemTargets() {
 		return array('_blank' => '_blank', '_self' => '_self', '_parent' => '_parent', '_top' => '_top');
 	}
     
+/**
+ * Clean data method
+ * 
+ * @param array $data
+ * @return array $data 
+ */
     protected function _cleanData($data) {
+    	// handle beforeSave() type data
         if (empty($data['WebpageMenuItem']['parent_id']) && !empty($data['WebpageMenuItem']['menu_id'])) {
             $data['WebpageMenuItem']['parent_id'] = $data['WebpageMenuItem']['menu_id'];
+        }
+		// handle save() type data
+        if (empty($data['parent_id']) && !empty($data['menu_id'])) {
+            $data['parent_id'] = $data['menu_id'];
         }
         return $data;    
     }

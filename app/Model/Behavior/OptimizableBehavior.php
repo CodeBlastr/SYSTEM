@@ -104,8 +104,7 @@ class OptimizableBehavior extends ModelBehavior {
 	public function beforeValidate(Model $Model) {
 		if (!empty($Model->data['Alias']['name'])) {
             $this->data['Alias'] = $Model->data['Alias'];
-            $this->makeUniqueSlug($Model);
-            //unset($Model->data['Alias']); // commented out 11/28/2012 RK remove if webpage adding / editing still works
+            $this->aliasName = $this->makeUniqueSlug($Model, $Model->data['Alias']['name']);
         }
 		return true;
 	}
@@ -121,7 +120,10 @@ class OptimizableBehavior extends ModelBehavior {
 		$oldAlias = $this->Alias->find('first', array('conditions' => array('id' => $this->data['Alias']['id'])));
 		$newAlias = $Model->data['Alias']['name'];
 		
-		$this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
+		// not sure what removing this will do (2013-09-04 RK)
+		// if it doesn't break anything, remove this trigger=true thing, and remove it from afterSave() as well
+		// $this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
+		$this->trigger = true;
 		
 		//Added check for the alias won't save if they match
 		if($oldAlias['Alias']['name'] == $newAlias) {
@@ -148,14 +150,17 @@ class OptimizableBehavior extends ModelBehavior {
     public function afterSave(Model $Model, $created) {
         if (!empty($this->data['Alias']['name']) && $this->trigger) {
             $settings = $this->settings[$Model->alias];
-            $this->Alias = ClassRegistry::init('Alias');
-            $this->data['Alias']['value'] = $Model->data[$Model->alias][$settings['foreignKey']];
-            $this->data['Alias']['name'] = $this->aliasName;
-			$this->data['Alias']['plugin'] = $settings['plugin'];
-			$this->data['Alias']['controller'] = $settings['controller'];
-			$this->data['Alias']['action'] = $settings['action'];
-            if ($this->Alias->save($this->data)) {
-                // nothing just continue through
+            $Alias = ClassRegistry::init('Alias');
+            $data['Alias']['value'] = $Model->data[$Model->alias][$settings['foreignKey']];
+            $data['Alias']['name'] = $this->makeUniqueSlug($Model, $Model->data['Alias']['name']);
+			$data['Alias']['plugin'] = $settings['plugin'];
+			$data['Alias']['controller'] = $settings['controller'];
+			$data['Alias']['action'] = $settings['action'];
+			$Alias->create();
+            if ($Alias->save($data)) {
+            	debug($data);
+				
+                return true;
             } else {
                 throw new Exception(__('Alias save failed after %s was saved.', $Model->alias));
             }
@@ -169,16 +174,16 @@ class OptimizableBehavior extends ModelBehavior {
  * @param Model $Model
  * @return int
  */
-    public function makeUniqueSlug(Model $Model) {
+    public function makeUniqueSlug(Model $Model, $name) {
 		$this->Alias = ClassRegistry::init('Alias');
-        $names[] = $Model->data['Alias']['name'];
+        $names[] = $name;
         for($i = 0; $i < 10; $i++){
-            $names[] = $Model->data['Alias']['name'] . $i;
+            $names[] = $name . $i;
         }
 		
         $count = $this->Alias->find('count', array('conditions' => array('Alias.name' => $names), 'fields' => 'Alias.id'));
         
-        return !empty($count) ? $this->aliasName = $Model->data['Alias']['name'] . $count : $this->aliasName = $Model->data['Alias']['name'];
+        return !empty($count) ? $Model->data['Alias']['name'] . $count : $Model->data['Alias']['name'];
     }
     
 }
