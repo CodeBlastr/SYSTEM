@@ -30,7 +30,7 @@ class Gallery extends GalleriesAppModel {
  * @var array $belongsTo
  */
 	public $belongsTo = array(
-		'GalleryThumb' => array(
+		'GalleryThumbnail' => array(
 			'className' => 'Galleries.GalleryImage',
 			'foreignKey' => 'gallery_thumb_id',
 			'conditions' => '',
@@ -67,9 +67,10 @@ class Gallery extends GalleriesAppModel {
 			'fields' => '',
 			'order' => ''
 		),
-		'GalleryThumb' => array(
+		'GalleryThumbnail' => array(
 			'className' => 'Galleries.GalleryImage',
-			'foreignKey' => 'gallery_thumb_id',
+			'foreignKey' => null,
+			'conditions' => array('GalleryThumbnail.id' => 'Gallery.gallery_thumb_id'),
 			'dependent' => false,
 		),
 	);
