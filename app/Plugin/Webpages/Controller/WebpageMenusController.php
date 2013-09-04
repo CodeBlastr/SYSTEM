@@ -25,7 +25,7 @@ class WebpageMenusController extends WebpagesAppController {
 			$menuId = $this->WebpageMenu->field('id', array('WebpageMenu.' . $field => $id, 'WebpageMenu.user_role_id' => $userRoleId));
 		} elseif ($userRoleId === false) {
 			// there might be a logged in user, but we want the menu which has a blank user_role_id field anyway
-			$menuId = $this->WebpageMenu->field('id', array('WebpageMenu.' . $field => $id, 'WebpageMenu.user_role_id' => null));
+			$menuId = false;
 		} else {
 			// check a logged in user if it exists
 			$userRoleId = $this->Session->read('Auth.User.id');
@@ -39,7 +39,7 @@ class WebpageMenusController extends WebpagesAppController {
 			$conditions = array('WebpageMenu.id' => $menuId);
 		} else {
 			// standard menu look up (with the id or the code field)
-			$conditions = array('WebpageMenu.' . $field => $id);
+			$conditions = array('WebpageMenu.' . $field => $id, 'WebpageMenu.user_role_id' => null);
 		}
 		
         $read = $this->WebpageMenu->find('first', array('conditions' => array('WebpageMenu.' . $field => $id), 'fields' => array('WebpageMenu.lft', 'WebpageMenu.rght')));

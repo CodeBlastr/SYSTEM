@@ -44,6 +44,22 @@ class WebpageMenu extends WebpagesAppModel {
         $this->data = $this->_cleanData($this->data);
         return true;
     }
+	
+/**
+ * After find callback
+ * Set user_role_id to the guest user_role_id after find (instead of during save or beforeSave)
+ * because we don't want to force a user_role_id to be set.  We'd rather that null means it is
+ * a menu available to, but not necessarily the one returned to everyone.
+ * 
+ */
+	public function afterFind($results) {
+		for ($i = 0; $i < count($results); $i++) {
+			if ($results[$i][$this->alias]['user_role_id'] === null) {
+				$results[$i][$this->alias]['user_role_id'] = __SYSTEM_GUESTS_USER_ROLE_ID;
+			}
+		}
+		return $results;
+	}
     
     public function _cleanData($data = null) {
         if (empty($data['WebpageMenu']['code']) && !empty($data['WebpageMenu']['name'])) {
