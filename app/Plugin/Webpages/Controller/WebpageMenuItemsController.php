@@ -69,9 +69,7 @@ class WebpageMenuItemsController extends WebpagesAppController {
 	public function add($menuId = null) {
 		if (!empty($this->request->data)) {
 			try {
-				debug($this->request->data);
-				break;
-				$this->WebpageMenuItem->add($this->request->data);
+				$this->WebpageMenuItem->save($this->request->data);
 				$this->Session->setFlash(__d('menus', 'Menu item added.', true));
 				$this->redirect(array('controller' => 'webpage_menus', 'action' => 'edit', $this->request->data['WebpageMenuItem']['menu_id']));
 			} catch (Exception $e) {

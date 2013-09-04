@@ -890,6 +890,7 @@ class InstallController extends Controller {
 		
 		$Menu = ClassRegistry::init('Webpages.WebpageMenu');
 		$this->set('menus', $menus = $Menu->find('all', array('conditions' => array('OR' => array(array('WebpageMenu.parent_id' => null), array('WebpageMenu.parent_id' => ''))))));
+
  	}
 
 /**

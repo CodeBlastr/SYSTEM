@@ -31,8 +31,12 @@ class WebpageMenu extends WebpagesAppModel {
 		)
 	);
 	
-	
-	public function types() {
+/**
+ * Types method
+ * 
+ * @return array
+ */
+ 	public function types() {
 		return array(
 			'superfish' => 'Superfish', 
 			'superfish sf-horizontal' => 'Superfish Horizontal', 
@@ -40,6 +44,11 @@ class WebpageMenu extends WebpagesAppModel {
 			);
 	}
     
+/**
+ * Before save callback
+ * 
+ * @return boolean
+ */
     public function beforeSave($options = array()){
         $this->data = $this->_cleanData($this->data);
         return true;
@@ -51,6 +60,7 @@ class WebpageMenu extends WebpagesAppModel {
  * because we don't want to force a user_role_id to be set.  We'd rather that null means it is
  * a menu available to, but not necessarily the one returned to everyone.
  * 
+ * @return array
  */
 	public function afterFind($results) {
 		for ($i = 0; $i < count($results); $i++) {
@@ -61,6 +71,11 @@ class WebpageMenu extends WebpagesAppModel {
 		return $results;
 	}
     
+/**
+ * Clean data method
+ * 
+ * @param array $data
+ */
     public function _cleanData($data = null) {
         if (empty($data['WebpageMenu']['code']) && !empty($data['WebpageMenu']['name'])) {
             $data['WebpageMenu']['code'] = ZuhaInflector::asciify($data['WebpageMenu']['name']);
