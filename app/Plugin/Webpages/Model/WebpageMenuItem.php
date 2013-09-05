@@ -96,6 +96,15 @@ class WebpageMenuItem extends WebpagesAppModel {
         if (empty($data['parent_id']) && !empty($data['menu_id'])) {
             $data['parent_id'] = $data['menu_id'];
         }
+
+    	// handle beforeSave() type data
+        if (empty($data['WebpageMenuItem']['name']) && !empty($data['WebpageMenuItem']['item_text'])) {
+            $data['WebpageMenuItem']['name'] = $data['WebpageMenuItem']['item_text'];
+        }
+		// handle save() type data
+        if (empty($data['name']) && !empty($data['item_text'])) {
+            $data['name'] = $data['item_text'];
+        }
         return $data;    
     }
 

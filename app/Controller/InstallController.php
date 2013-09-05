@@ -877,19 +877,35 @@ class InstallController extends Controller {
 		
 		App::uses('UserRole', 'Users.Model');
 		$UserRole = new UserRole;
-		$this->set('userRoles', $UserRole->find('all'));
+		$this->set('userRoles', $userRoles = $UserRole->find('all'));
 		
 		$Template = ClassRegistry::init('Template');
-		$this->set('templates', $Template->find('all', array('conditions' => array('Template.install NOT' => null))));
+		$this->set('templates', $templates = $Template->find('all', array('conditions' => array('Template.install NOT' => null))));
 		
 		$this->set('page_title_for_layout', 'SITE buildrr');
 		$this->set('title_for_layout', 'SITE buildrr');
 		
-		$templates = Set::combine(templateSettings(), '{n}.isDefault', '{n}.templateName');
-		$this->set('defaultTemplateName', $templates[1]);
+		$defaultTemplate = Set::combine(templateSettings(), '{n}.isDefault', '{n}');
+		$this->set('defaultTemplate', Set::extract('/Template[layout='.$defaultTemplate[1]['templateName'].']', $templates));
 		
 		$Menu = ClassRegistry::init('Webpages.WebpageMenu');
-		$this->set('menus', $menus = $Menu->find('all', array('conditions' => array('OR' => array(array('WebpageMenu.parent_id' => null), array('WebpageMenu.parent_id' => ''))))));
+		foreach ($userRoles as $userRole) {
+			$varName = $userRole['UserRole']['name'] . 'Sections';
+			$conditions = $userRole['UserRole']['id'] == __SYSTEM_GUESTS_USER_ROLE_ID ? array('OR' => array(array('WebpageMenu.user_role_id' => ''), array('WebpageMenu.user_role_id' => null))) : array('WebpageMenu.user_role_id' => $userRole['UserRole']['id']);
+        	$this->set($varName, $Menu->find('threaded', array('conditions' => $conditions)));
+		}
+        //$this->set('sections', $Menu->find('threaded', array('conditions' => array('WebpageMenu.lft >=' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <=' => $menu['WebpageMenu']['rght']))));
+        // used for re-ordering items $this->request->data['WebpageMenu']['children'] = $this->WebpageMenu->find('count', array('conditions' => array('WebpageMenu.lft >' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <' => $menu['WebpageMenu']['rght'])));
+		
+		//$this->set('sections', $sections = $Menu->find('all', array('conditions' => array('OR' => array(array('WebpageMenu.parent_id' => null), array('WebpageMenu.parent_id' => ''))))));
+		$menus = $Menu->generateTreeList(null, null, null, '--');
+		foreach ($menus as $menu) {
+			if (strpos($menu, '-') !== 0) {
+				// this key should be removed, because if there is a link to the same page as the menu name
+				$menus = ZuhaSet::devalue($menus, '--'.$menu, true);
+			}
+		}
+		$this->set(compact('menus'));
 
  	}
 
