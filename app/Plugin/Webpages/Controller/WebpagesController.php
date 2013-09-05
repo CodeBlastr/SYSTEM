@@ -298,7 +298,7 @@ class WebpagesController extends WebpagesAppController {
 			try {
 				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'));
-				$this->redirect(array('action' => 'view', $this->Webpage->id));
+				$this->request->data['Webpage']['type'] == 'template' ? null : $this->redirect(array('action' => 'view', $this->Webpage->id));
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}

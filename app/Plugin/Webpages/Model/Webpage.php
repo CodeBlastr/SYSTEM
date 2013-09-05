@@ -129,16 +129,13 @@ class Webpage extends WebpagesAppModel {
  * Constructor
  */
 	public function __construct($id = false, $table = null, $ds = null) {
-        
 		if (CakePlugin::loaded('Search')) { 
 			$this->actsAs[] = 'Search.Searchable';
 		}
 		if (CakePlugin::loaded('Drafts')) {
 			$this->actsAs['Drafts.Draftable'] = array('conditions' => array('type' => 'content'));
 		}
-				
 		parent::__construct($id, $table, $ds);
-		
 	}
 
 /**
@@ -755,7 +752,11 @@ class Webpage extends WebpagesAppModel {
 				$templates = ZuhaSet::devalue($templates, $defaultTemplates[$i]);
 				// then save the default template again to take away the default setting
 				$defaultTemplates[$i]['Webpage']['is_default'] = 0;
+				$defaultTemplates[$i]['Webpage']['type'] = 'template'; // database default is content, so this must be set
+				$prevId = $this->id;
+				$this->create();
 				$this->save($defaultTemplates[$i], array('callbacks' => false)); // no callbacks so that it doesn't come back here in an endless loop
+				$this->id = $prevId;
 			}
 			$defaultTemplates = array_values($defaultTemplates); // reset the key index
 		}
