@@ -235,6 +235,30 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
         
         	return $clean;
         }
+    
+	    /**
+	     * String to Url
+	     * Converts the given string to a no spaces, no special characters, no cases string, like a url. 
+		 * Unlike the asciify function it changes + (plus signs) to / (slashes)
+	     * 
+	     * Tänk efter nu – förr'n vi föser dig b+ort BECOMES tank-efter-nu-forrn-vi-foser-dig-b/ort
+		 * 
+		 * Usage : ZuhaInflector::urlify('some string');
+	     * 
+	     * @param string $str
+	     * @param array $replace
+	     * @param string $delimiter
+	     * @return string
+	     */
+        public function urlify($str, $delimiter = '-') {
+        	$strs = explode('+', $str);
+			$string = '';
+			for ($i = 0; $i < count($strs); $i++) {
+				$parts[] = ZuhaInflector::asciify(trim($strs[$i]));
+			}        
+        	return implode('/', $parts);
+        }
+		
 		/**
 		 * Flatten a multidimensional array to a single string
 		 * 
