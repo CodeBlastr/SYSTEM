@@ -78,5 +78,41 @@ class Alias extends AppModel {
 		}
 		return $return;
  	}
+	
+/**
+ * Get new alias method
+ * 
+ * @param mixed $name
+ * @todo $name could also be an array in some future case I'm imagining
+ */
+	public function getNewAlias($name = null) {
+        $names[] = ZuhaInflector::urlify($name);
+        for($i = 0; $i < 10; $i++){
+            $names[] = ZuhaInflector::urlify($name) . $i;
+        }
+		$alias = $this->find('count', array('conditions' => array('Alias.name' => $names)));
+		if ($alias > 0) {
+			return $names[0] . $alias;
+		} else {
+			return $names[0];
+		}
+	}
+	
+/**
+ * Get Alias method
+ * Finds existing alias and returns it if it exists (else returns a url ready string)
+ * 
+ * @param mixed $name
+ * @return array 
+ * @todo $name could also be an array in some future case I'm imagining
+ */
+	public function getAlias($name = null) {
+		$alias = $this->find('first', array('conditions' => array('Alias.name' => ZuhaInflector::urlify($name))));
+		if (!empty($alias)) {
+			return array('old' => $alias['Alias']['name']);
+		} else {
+			return array('new' => ZuhaInflector::urlify($name));
+		}
+	}
 
 }

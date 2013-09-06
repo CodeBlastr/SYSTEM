@@ -15,9 +15,6 @@
 	.menus.edit {
 		margin-top: 9em;
 	}
-	.menus.edit.form {
-		padding-right: 10em;
-	}
 	.menus.edit.form .canvas.medium {
 		transform: scale(0.8, 0.8);
 		-ms-transform: scale(0.8, 0.8);
@@ -34,14 +31,14 @@
 		margin-top: -7.3em;
 		box-sizing: border-box;
 		list-style-type: none;
-		background: #eaeaea;
-		background: #ffffff;
-		background: -moz-linear-gradient(top,  #ffffff 0%, #ffffff 26%, #A9F5A9 48%, #ffffff 72%, #ffffff 100%);
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(26%,#ffffff), color-stop(48%,#A9F5A9), color-stop(72%,#ffffff), color-stop(100%,#ffffff));
-		background: -webkit-linear-gradient(top,  #ffffff 0%,#ffffff 26%,#A9F5A9 48%,#ffffff 72%,#ffffff 100%);
-		background: -o-linear-gradient(top,  #ffffff 0%,#ffffff 26%,#A9F5A9 48%,#ffffff 72%,#ffffff 100%);
-		background: -ms-linear-gradient(top,  #ffffff 0%,#ffffff 26%,#A9F5A9 48%,#ffffff 72%,#ffffff 100%);
-		background: linear-gradient(to bottom,  #ffffff 0%,#ffffff 26%,#A9F5A9 48%,#ffffff 72%,#ffffff 100%);
+		background: -moz-linear-gradient(top,  rgba(143,200,0,0) 0%, rgba(143,200,0,0) 24%, rgba(143,200,0,1) 52%, rgba(143,200,0,0) 81%, rgba(143,200,0,0) 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(143,200,0,0)), color-stop(24%,rgba(143,200,0,0)), color-stop(52%,rgba(143,200,0,1)), color-stop(81%,rgba(143,200,0,0)), color-stop(100%,rgba(143,200,0,0)));
+		background: -webkit-linear-gradient(top,  rgba(143,200,0,0) 0%,rgba(143,200,0,0) 24%,rgba(143,200,0,1) 52%,rgba(143,200,0,0) 81%,rgba(143,200,0,0) 100%);
+		background: -o-linear-gradient(top,  rgba(143,200,0,0) 0%,rgba(143,200,0,0) 24%,rgba(143,200,0,1) 52%,rgba(143,200,0,0) 81%,rgba(143,200,0,0) 100%);
+		background: -ms-linear-gradient(top,  rgba(143,200,0,0) 0%,rgba(143,200,0,0) 24%,rgba(143,200,0,1) 52%,rgba(143,200,0,0) 81%,rgba(143,200,0,0) 100%);
+		background: linear-gradient(to bottom,  rgba(143,200,0,0) 0%,rgba(143,200,0,0) 24%,rgba(143,200,0,1) 52%,rgba(143,200,0,0) 81%,rgba(143,200,0,0) 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#008fc800', endColorstr='#008fc800',GradientType=0 );
+
 	}
 	.menus.edit.form .btn-danger {
 		margin-bottom: 4px;
@@ -140,7 +137,6 @@
 				
 		<blockquote>
 			<legend class="lead">Choose a default layout.</legend>
-			<p> don't forget to make layouts work with themeable / drag / drop </p>
 		  	<fieldset>			        	
 		        <?php foreach ($templates as $template) : ?>
 		        	<?php if ($defaultTemplate[0]['Template']['layout'] == $template['Template']['layout']) : // default template will get reset if you click this so, show warning ?>
@@ -229,7 +225,7 @@
 	    
 	    
 				<blockquote class="clearfix">
-						<legend class="lead">
+						<legend class="lead row-fluid clearfix">
 							<?php 
 							// sucks to put this here, but unless we make a function in the ZuhaSet class it stays (because we're in a loop which wouldn't work well in the controller)
 							$continue = false;
@@ -246,19 +242,22 @@
 									}
 								}
 							} ?>
-							<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'add'))); ?>
-							<?php echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden')); ?>
-							<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
-							After  
-							<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown)); ?>
-							<?php echo $userRole['UserRole']['name']; ?> should go to the 
-							<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'placeholder' => '(name)')); ?>
-							page.
-							<?php // auto-generate this in the model... echo $this->Form->input('WebpageMenuItem.item_url', array('label' => false, 'placeholder' => 'Page Url')); ?>
-							<?php echo $this->Form->end(__('Save')); ?>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<?php echo $this->Html->link('<i class="icon-minus"></i>', '#', array('class' => 'shrink', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
-							<?php echo $this->Html->link('<i class="icon-plus"></i>', '#', array('class' => 'grow', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
+							<div class="span10 pull-left">
+								<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'add'))); ?>
+								<?php echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden')); ?>
+								<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
+								After  
+								<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium')); ?>
+								<?php echo $userRole['UserRole']['name']; ?> should go to the 
+								<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'class' => 'input-small')); ?>
+								<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'placeholder' => 'called', 'class' => 'input-small')); ?>
+								<?php // auto-generate this in the model... echo $this->Form->input('WebpageMenuItem.item_url', array('label' => false, 'placeholder' => 'Page Url')); ?>
+								<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small')); ?>
+							</div>
+							<div class="span1 pull-right">
+								<?php echo $this->Html->link('<i class="icon-minus"></i>', '#', array('class' => 'shrink', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
+								<?php echo $this->Html->link('<i class="icon-plus"></i>', '#', array('class' => 'grow', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
+							</div>
 						</legend>
 						<div class="menus edit">
 							 <div class="menus edit form">
@@ -289,11 +288,6 @@
 								</div>
 						    </div>						
 						</div>
-					
-					<!--p><?php echo __('Add page'); ?></p>
-					<p><?php echo __('Add section'); ?></p>
-					<p><?php echo __('Add plugin'); ?></p>
-					<p><?php echo __('Add custom'); ?> <small>(could be a custom page type, or a custom plugin)</small></p-->
 					
 				</blockquote>
 			<?php endforeach; ?>
