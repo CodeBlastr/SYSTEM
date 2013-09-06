@@ -79,13 +79,13 @@ class WebpagesSchema extends CakeSchema {
 		'item_auto_authorize' => array('type' => 'boolean', 'null' => true, 'default' => NULL, 'comment' => 'if true check authorization for link display'),
 		'order' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 3, 'comment' => 'order to display in'),
 		'user_role_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'webpage_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'creator_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'modifier_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array(
-			'PRIMARY' => array('column' => 'id', 'unique' => 1),
-			'name' => array('column' => 'name', 'unique' => 1)
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 			),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
