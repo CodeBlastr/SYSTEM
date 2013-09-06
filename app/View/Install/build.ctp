@@ -1,4 +1,4 @@
-<style type="text/css">
+ <style type="text/css">
 	legend .form-inline {
 		position: relative;
 		top: -5px;
@@ -193,17 +193,26 @@
 		<blockquote>
 			<legend class="lead"><?php echo __('User types'); ?></legend>
 			<!--p>User usually fall into groups.  By grouping users we can control what parts of the site they have access to. </p-->
-		  	<fieldset>
-		        <?php foreach ($userRoles as $userRole) : ?>
-		        	<span class="label label-info"><?php echo $userRole['UserRole']['name']; ?></span> 
-		        <?php endforeach; ?>
-		        
-		        <?php
-				echo $this->Form->create('UserRole', array('class' => 'form-inline', 'url' => array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'add')));
-				echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden'));
-				echo $this->Form->input('UserRole.name', array('label' => false, 'placeholder' => 'Add user type'));
-				echo $this->Form->end('Add');
- 				?>
+		  	<fieldset class="row-fluid clearfix">
+		  		<div class="span5 pull-left">
+			        <?php foreach ($userRoles as $userRole) : ?>
+			        	<span class="label label-info"><?php echo $userRole['UserRole']['name']; ?></span> 
+			        <?php endforeach; ?>
+			        
+			        <?php echo $this->Form->create('UserRole', array('class' => 'form-inline', 'url' => array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'add'))); ?>
+					<?php echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden')); ?>
+					<?php echo $this->Form->input('UserRole.name', array('label' => false, 'placeholder' => 'Add user type')); ?>
+					<?php echo $this->Form->end('Add'); ?>
+				</div>
+ 				
+		  		<div class="span5 pull-right">
+	 				<?php echo $this->Form->create('WebpageMenu', array('class' => 'form-inline', 'url' => array('plugin' => false, 'controller' => 'install', 'action' => 'menu'), 'class' => 'form-inline')); ?>
+					<?php echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden')); ?>
+					<?php echo $this->Form->input('WebpageMenu.user_role_id', array('options' => $userRoleOptions, 'label' => 'New flow for', 'value' => $mine['WebpageMenu']['user_role_id'], 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput', 'between' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;</i></span>')); ?>
+					<?php //echo $this->Form->input('WebpageMenu.template', array('options' => array('0' => 'fill this with template names'), 'label' => false, 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-eye-open"></i>&nbsp;</span>')); ?>
+					<?php echo $this->Form->submit('Save', array('div' => false, 'class' => 'btn btn-success btn-small')); ?>
+					<?php echo $this->Form->end(); ?>
+				</div>
 			</fieldset>
 		</blockquote>
 		
@@ -239,6 +248,7 @@
 							} ?>
 							<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'add'))); ?>
 							<?php echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden')); ?>
+							<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
 							After  
 							<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown)); ?>
 							<?php echo $userRole['UserRole']['name']; ?> should go to the 
@@ -258,15 +268,13 @@
 						    				<div class="item">
 												<?php echo $this->Html->link(__('<span class="icon"> %s </span> <span class="link"> %s </span>', $defaultTemplate[0]['Template']['icon'], $mine['WebpageMenu']['name']), '#', array('class' => 'toggleClick toggle', 'data-target' => '#form' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
 												<div id="form<?php echo $mine['WebpageMenu']['id']; ?>">
-													<?php
-													echo $this->Form->create('WebpageMenu', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'edit'), 'class' => 'form-inline'));
-													echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden'));
-													echo $this->Form->input('WebpageMenu.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id']));
-													echo $this->Form->input('WebpageMenu.user_role_id', array('options' => array('0' => 'fill this with user role names'), 'label' => false, 'value' => $mine['WebpageMenu']['user_role_id'], 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;</i></span>'));
-													echo $this->Form->input('WebpageMenu.template', array('options' => array('0' => 'fill this with template names'), 'label' => false, 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-eye-open"></i>&nbsp;</span>'));
-													echo $this->Form->submit('Save', array('div' => false, 'class' => 'btn btn-success btn-small'));
-													echo $this->Form->end();
-													?>
+													<?php echo $this->Form->create('WebpageMenu', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'edit'), 'class' => 'form-inline')); ?>
+													<?php echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden')); ?>
+													<?php echo $this->Form->input('WebpageMenu.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
+													<?php echo $this->Form->input('WebpageMenu.user_role_id', array('options' => array('0' => 'fill this with user role names'), 'label' => false, 'value' => $mine['WebpageMenu']['user_role_id'], 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;</i></span>')); ?>
+													<?php echo $this->Form->input('WebpageMenu.template', array('options' => array('0' => 'fill this with template names'), 'label' => false, 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-eye-open"></i>&nbsp;</span>')); ?>
+													<?php echo $this->Form->submit('Save', array('div' => false, 'class' => 'btn btn-success btn-small')); ?>
+													<?php echo $this->Form->end(); ?>
 												</div>
 						    				</div>
 						    			</li>

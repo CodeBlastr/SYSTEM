@@ -1,4 +1,6 @@
 <?php
+App::uses('WebpagesAppModel', 'Webpages.Model');
+
 class WebpageMenu extends WebpagesAppModel {
     
 	public $name = 'WebpageMenu';
