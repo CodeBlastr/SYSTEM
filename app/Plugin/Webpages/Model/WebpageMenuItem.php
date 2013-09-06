@@ -73,6 +73,18 @@ class WebpageMenuItem extends WebpagesAppModel {
 	}
 	
 /**
+ * Save all override
+ */
+    public function saveAll($data = null, $options = array()) {
+		$data = $this->_cleanData($data);
+        if (parent::saveAll($data, $options)) {
+            return true;
+        } else {
+            throw new Exception(ZuhaInflector::invalidate($this->invalidFields()));
+        }
+    }
+	
+/**
  * Item targets method
  * 
  * @return array 	list of target types for the href tags
@@ -105,7 +117,26 @@ class WebpageMenuItem extends WebpagesAppModel {
         if (empty($data['name']) && !empty($data['item_text'])) {
             $data['name'] = $data['item_text'];
         }
+		
+		// put data in, to create a webpage during the saveAll() 
+		//debug($data);
+		//debug($this->Webpage->placeholder());
+		// check the page type 
+			// if content || section
+				// if link_url is blank, set the link_url from the name (asciifyy)
+				
+				
+				// if link_url starts with http do nothing
+				// else see if the page already exists
+				   // if it does we don't need create page data
+				   // if not then get page data (depending on page type)
+			// if plugin, install plugin and create crud links
+			// if custom, create page with different content to simulate a section (maybe crud links)
+		//break;
+        
         return $data;    
     }
+	
+
 
 }
