@@ -29,7 +29,7 @@
         echo $this->Form->end(__('Add Link'));?>
     </fieldset>
 
-    <?php echo $this->Form->create('WebpagMenu');?>
+    <?php echo $this->Form->create('WebpageMenu');?>
 	<fieldset>
  		<legend class="toggleClick"><?php echo __('Configure %s Options', $this->request->data['WebpageMenu']['name']); ?></legend>
 	    <?php

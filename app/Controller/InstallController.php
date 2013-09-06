@@ -877,19 +877,37 @@ class InstallController extends Controller {
 		
 		App::uses('UserRole', 'Users.Model');
 		$UserRole = new UserRole;
-		$this->set('userRoles', $UserRole->find('all'));
+		$this->set('userRoles', $userRoles = $UserRole->find('all'));
+		$this->set('userRoleOptions', Set::combine($userRoles, '{n}.UserRole.session_user_role_id', '{n}.UserRole.name'));
 		
 		$Template = ClassRegistry::init('Template');
-		$this->set('templates', $Template->find('all', array('conditions' => array('Template.install NOT' => null))));
+		$this->set('templates', $templates = $Template->find('all', array('conditions' => array('Template.install NOT' => null))));
 		
 		$this->set('page_title_for_layout', 'SITE buildrr');
 		$this->set('title_for_layout', 'SITE buildrr');
 		
-		$templates = Set::combine(templateSettings(), '{n}.isDefault', '{n}.templateName');
-		$this->set('defaultTemplateName', $templates[1]);
+		$defaultTemplate = Set::combine(templateSettings(), '{n}.isDefault', '{n}');
+		$defaultTemplate = Set::extract('/Template[layout='.$defaultTemplate[1]['templateName'].']', $templates);
+		$this->set(compact('defaultTemplate'));
 		
 		$Menu = ClassRegistry::init('Webpages.WebpageMenu');
-		$this->set('menus', $menus = $Menu->find('all', array('conditions' => array('OR' => array(array('WebpageMenu.parent_id' => null), array('WebpageMenu.parent_id' => ''))))));
+		foreach ($userRoles as $userRole) {
+			$varName = $userRole['UserRole']['name'] . 'Sections';
+			$conditions = $userRole['UserRole']['id'] == __SYSTEM_GUESTS_USER_ROLE_ID ? array('OR' => array(array('WebpageMenu.user_role_id' => ''), array('WebpageMenu.user_role_id' => null))) : array('WebpageMenu.user_role_id' => $userRole['UserRole']['id']);
+        	$this->set($varName, $Menu->find('threaded', array('conditions' => $conditions)));
+		}
+        //$this->set('sections', $Menu->find('threaded', array('conditions' => array('WebpageMenu.lft >=' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <=' => $menu['WebpageMenu']['rght']))));
+        // used for re-ordering items $this->request->data['WebpageMenu']['children'] = $this->WebpageMenu->find('count', array('conditions' => array('WebpageMenu.lft >' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <' => $menu['WebpageMenu']['rght'])));
+		
+		//$this->set('sections', $sections = $Menu->find('all', array('conditions' => array('OR' => array(array('WebpageMenu.parent_id' => null), array('WebpageMenu.parent_id' => ''))))));
+		$menus = $Menu->generateTreeList(null, null, null, '--');
+		foreach ($menus as $menu) {
+			if (strpos($menu, '-') !== 0) {
+				// this key should be removed, because if there is a link to the same page as the menu name
+				$menus = ZuhaSet::devalue($menus, '--'.$menu, true);
+			}
+		}
+		$this->set(compact('menus'));
 
  	}
 
@@ -913,6 +931,33 @@ class InstallController extends Controller {
 			$this->Session->setFlash(__('%s, please try again. <br /> ', $e->getMessage()));
 			$this->redirect(array('controller' => 'install', 'action' => 'build'));
         }
+ 	}
+	
+/**
+ * Menu method
+ * Create a new menu for a user specific case for menu creation during build
+ * 
+ */
+ 	public function menu() {
+		App::uses('UserRole', 'Users.Model');
+		$UserRole = new UserRole;
+		$userRoles = $UserRole->find('list');
+		
+		$text = __('%s Dashboard', Inflector::humanize($userRoles[$this->request->data['WebpageMenu']['user_role_id']]));
+ 		$this->request->data['WebpageMenu']['name'] = $text;
+ 		$this->request->data['WebpageMenu']['parent_id'] = null;
+ 		$this->request->data['WebpageMenu']['item_text'] = $text;		
+		
+		App::uses('WebpageMenu', 'Webpages.Model');
+		$WebpageMenu = new WebpageMenu;
+		$WebpageMenu->create();
+		if ($WebpageMenu->save($this->request->data)) {
+			$this->Session->setFlash(__('New flow started'));
+			$this->redirect(array('controller' => 'install', 'action' => 'build'));
+		} else {
+			$this->Session->setFlash(__('Save failure. Please, try again.'));
+			$this->redirect(array('controller' => 'install', 'action' => 'build'));
+		}
  	}
 
 }

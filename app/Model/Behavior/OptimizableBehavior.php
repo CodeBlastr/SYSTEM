@@ -158,8 +158,6 @@ class OptimizableBehavior extends ModelBehavior {
 			$data['Alias']['action'] = $settings['action'];
 			$Alias->create();
             if ($Alias->save($data)) {
-            	debug($data);
-				
                 return true;
             } else {
                 throw new Exception(__('Alias save failed after %s was saved.', $Model->alias));

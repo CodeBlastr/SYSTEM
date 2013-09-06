@@ -30,7 +30,7 @@ class Gallery extends GalleriesAppModel {
  * @var array $belongsTo
  */
 	public $belongsTo = array(
-		'GalleryThumbnail' => array(
+		'GalleryThumb' => array(
 			'className' => 'Galleries.GalleryImage',
 			'foreignKey' => 'gallery_thumb_id',
 			'conditions' => '',

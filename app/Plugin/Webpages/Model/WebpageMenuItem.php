@@ -45,6 +45,13 @@ class WebpageMenuItem extends WebpagesAppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => 'ParentMenuItem.order'
+		    ),
+		'Webpage' => array(
+			'className' => 'Webpages.Webpage',
+			'foreignKey' => 'webpage_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
 		    )
 	    );
 	
@@ -73,6 +80,19 @@ class WebpageMenuItem extends WebpagesAppModel {
 	}
 	
 /**
+ * Save all override
+ */
+    public function saveAll($data = null, $options = array()) {
+		$data = $this->_cleanData($data);
+		$this->create();
+        if (parent::saveAll($data, $options)) {
+            return true;
+        } else {
+            throw new Exception(ZuhaInflector::invalidate($this->invalidFields()));
+        }
+    }
+	
+/**
  * Item targets method
  * 
  * @return array 	list of target types for the href tags
@@ -96,7 +116,59 @@ class WebpageMenuItem extends WebpagesAppModel {
         if (empty($data['parent_id']) && !empty($data['menu_id'])) {
             $data['parent_id'] = $data['menu_id'];
         }
+
+    	// handle beforeSave() type data
+        if (empty($data['WebpageMenuItem']['name']) && !empty($data['WebpageMenuItem']['item_text'])) {
+            $data['WebpageMenuItem']['name'] = $data['WebpageMenuItem']['item_text'];
+        }
+		// handle save() type data
+        if (empty($data['name']) && !empty($data['item_text'])) {
+            $data['name'] = $data['item_text'];
+        }
+		
+		// put data in, to create a check data for whether to create page or not() 
+		// it is in the cleanData function because we add some data to the save depending on creation of a page
+		// make sure this gets fired last after all other $data updates
+		
+		if (!empty($data['WebpageMenuItem']['item_url']) && strpos($data['WebpageMenuItem']['item_url'], 'http') !== 0) {
+			// if link_url starts with http do nothing
+		} else {
+			App::uses('Alias', 'Model');
+			$Alias = new Alias;
+			// else see if the page already exists
+			$url = strpos($data['WebpageMenuItem']['item_url'], '/') === 0 ? substr($data['WebpageMenuItem']['item_url'], 1) : $data['WebpageMenuItem']['item_url'];
+			$urlAlias = $Alias->getAlias($url);
+			$textAlias = $Alias->getAlias($data['WebpageMenuItem']['item_text']);
+			if (!empty($urlAlias['old']) || !empty($textAlias['old'])) {
+				// if it does we don't need create a page, just move on ignoring the rest
+				$data['WebpageMenuItem']['item_url'] = !empty($data['WebpageMenuItem']['item_url']) ? $data['WebpageMenuItem']['item_url'] : '/' . $textAlias['old'];
+			} elseif ($data['WebpageMenuItem']['page_type'] == 'content' || $data['WebpageMenuItem']['page_type'] == 'section') {
+				// if not then create page (depending on page type)
+				$this->set($data);
+				if ($this->validates()) {
+					// map menu data to webpage data
+			  		$webpage['Alias']['name'] = empty($data['WebpageMenuItem']['item_url']) ? $Alias->getNewAlias($data['WebpageMenuItem']['item_text']) : null;// if link_url is blank, set the link_url from the name (asciifyy)
+			  		$webpage['Webpage']['name'] = $data['WebpageMenuItem']['item_text'];
+			  		$webpage['Webpage']['title'] = $data['WebpageMenuItem']['item_text'];
+					debug($webpage);
+					break;
+					$this->Webpage->placeholder($webpage, array('create' => true, 'type' => $data['WebpageMenuItem']['page_type']));
+				} else {
+					// it isn't going to save anyway, it didn't validate so do nothing, data should be resubmitted
+				}
+			} elseif ($data['WebpageMenuItem']['page_type'] == 'plugin') {
+				// if non-existing plugin, create page with different content to simulate a plugin (maybe with simulated crud links)
+				
+				// else install plugin and create crud links
+				debug($data);
+				debug('put code to install plugin and create additional sub links for this menu (crud links)');
+				break;
+			}
+		}
+        
         return $data;    
     }
+	
+
 
 }
