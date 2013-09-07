@@ -2,10 +2,11 @@
 <?php echo $this->Form->create('WebpageJs', array('url' => array('controller' => 'webpage_jses')));?>
 	<fieldset>
 	<?php
-		echo $this->Form->input('id');
-		echo $this->Form->input('webpage_id', array('label' => 'Template <small>(if empty, used with all templates)</small>.', 'empty' => true));
-		echo $this->Form->input('name');
-		echo $this->Form->input('content');
+		echo $this->Form->input('WebpageJs.id');
+		echo $this->Form->input('WebpageJs.webpage_id', array('label' => 'Template <small>(if empty, used with all templates)</small>.', 'empty' => true));
+		echo $this->Form->input('WebpageJs.name');
+		echo $this->Form->input('WebpageJs.is_requested', array('label' => 'Load manually? (advanced users)'));
+		echo $this->Form->input('WebpageJs.content');
 	?>
 	</fieldset>
 <?php echo $this->Form->end(__('Submit', true));?>

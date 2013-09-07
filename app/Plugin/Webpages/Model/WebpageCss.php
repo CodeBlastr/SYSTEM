@@ -18,6 +18,21 @@ class WebpageCss extends WebpagesAppModel {
 	
 	public $displayField = 'name';
 	
+	public $theme = 'Default';
+	
+	public $types = array(
+		'all' => 'all',
+		'screen' => 'screen',
+		'print' => 'print',
+		'handheld' => 'handheld',
+		'braile' => 'braille',
+		'embossed' => 'embossed',
+		'projection' => 'projection',
+		'speech' => 'speech',
+		'tty' => 'tty',
+		'tv' => 'tv'
+		);
+	
 	public $validate = array(
 		'type' => array(
 			'alphanumeric' => array(
@@ -86,39 +101,62 @@ class WebpageCss extends WebpagesAppModel {
 		return $this->_cssContentResults($results);
 	}
 	
-	public function add($data, $theme=null) {
-		$data = $this->_cleanData($data);
-		
-		if ($this->save($data)) {
-			$webpageCssId = $this->id;
-			// then write the css file here.
-			if ($this->_cssFile($data['WebpageCss']['name'], $data['WebpageCss']['content'], $theme)) {
-				// then write it to settings for easy retrieval by the default layout
-				if ($this->_updateSettings()) {
-					return true;
-				} else {
-					throw new Exception(__('Css file save failed'));
-				}
+/**
+ * Before save callback
+ * 
+ */
+ 	public function beforeSave($options = array()) {
+		$this->data = $this->_cleanData();
+ 		return parent::beforeSave($options);
+ 	}
+	
+/**
+ * After save callback
+ * 
+ */
+ 	public function afterSave($created) {
+		// then write the css file here.
+		if ($this->_cssFile($this->data['WebpageCss']['name'], $this->data['WebpageCss']['content'])) {
+			// then write it to settings for easy retrieval by the default layout
+			if ($this->_updateSettings()) {
+				return true;
 			} else {
-				// roll back, there was a problem
-				throw new Exception(__('Css file write failed.'));
-			}			
+				throw new Exception(__('Css file save failed'));
+			}
 		} else {
-			return false;
+			// roll back, there was a problem
+			throw new Exception(__('Css file write failed.'));
 		}
+ 		return parent::afterSave($created);
+ 	}
+	
+/**
+ * Add method
+ * 
+ * @todo  Deprecated and will be removed in future versions 9/7/2013 RK
+ */
+	public function add($data = null, $validate = true, $fieldList = array()) {
+		return $this->save($data, $validate, $fieldList);
 	}
 	
-	public function update($data, $theme=null) {
-		if ($this->add($data, $theme)) {
-			return true;		
-		} else {
-			return false;
-		}
+/**
+ * Update method
+ * 
+ * @todo  Deprecated and will be removed in future versions 9/7/2013 RK
+ */
+	public function update($data = null, $validate = true, $fieldList = array()) {
+		return $this->save($data, $validate, $fieldList);
 	}
 	
-	
-	protected function _cssFile($fileName = 'all.css', $content, $theme=null) {
-		$filePath = $this->_getCssFilePath($theme) . $fileName;
+/**
+ * Css file method
+ * 
+ * writes a css file
+ * @param string $fileName
+ * @param string $content
+ */
+	protected function _cssFile($fileName = 'all.css', $content) {
+		$filePath = $this->_getCssFilePath() . $fileName;
 		// file helper
 		App::uses('File', 'Utility');
 		$file = new File($filePath);
@@ -130,50 +168,48 @@ class WebpageCss extends WebpagesAppModel {
 			throw new Exception('Css File Not Saved');
 		}
 	}
-	
-	protected function _getCssFilePath($theme=null)	{
-		$themePath = null;
-		if($theme)	{
-			$themePath = App::themePath($theme);
-		}
+
+/**
+ * Get Css File Path method
+ * 
+ */
+	protected function _getCssFilePath()	{
+		//$themePath = App::themePath($this->theme);
+		$themePath = App::path('View');
 		// check whether this is multi-sites
-		if (file_exists($themePath.WEBROOT_DIR)) {
-			return $themePath.WEBROOT_DIR.DS.CSS_URL;
-		} else {
-			return ROOT.DS.APP_DIR.DS.WEBROOT_DIR.DS.CSS_URL;
+		if (file_exists($themePath[2].WEBROOT_DIR)) {
+			return $themePath[2].WEBROOT_DIR.DS.CSS_URL;
 		}
+		throw new Exception(__('Theme path does not exist'));
 	}
 	
-	
-	public function getCssFileContents($filename, $theme = null)	{
-		$filePath = $this->_getCssFilePath($theme);			
+/**
+ * Get Css File Contents method
+ * 
+ * @param string $filename
+ */
+	public function getCssFileContents($filename)	{
+		$filePath = $this->_getCssFilePath($this->theme);			
 		if(file_exists($filePath.DS.$filename))	{
 			return file_get_contents($filePath.DS.$filename);
 		}
 	}
 	
+/**
+ * Types method
+ */
 	public function types() {
-		return array(
-			'all' => 'all',
-			'screen' => 'screen',
-			'print' => 'print',
-			'handheld' => 'handheld',
-			'braile' => 'braille',
-			'embossed' => 'embossed',
-			'projection' => 'projection',
-			'speech' => 'speech',
-			'tty' => 'tty',
-			'tv' => 'tv'
-			);
+		return $this->types;
 	}
 	
-	
-	public function remove($id, $theme=null) {
+/**
+ * Remove method
+ */
+	public function remove($id) {
 		// find the css file being deleted
 		$webpageCss = $this->find('first', array('conditions' => array('WebpageCss.id' => $id)));
 		// Get file path
-		$filePath = $this->_getCssFilePath($theme) . $webpageCss['WebpageCss']['name'];
-		
+		$filePath = $this->_getCssFilePath($this->theme) . $webpageCss['WebpageCss']['name'];
 		// import the file helper
 		App::uses('File', 'Utility');
 		$file = new File($filePath);
@@ -187,7 +223,11 @@ class WebpageCss extends WebpagesAppModel {
 					return false;
 				}
 			} else {
-				# the file was deleted.  but we're not re-creating it at this point, because it would introduce a whole 'nother set of ifs that have to go here, to check whether the file was recreated.  Until we start switching to the "try" and "throw" exceptions methods, that won't be very easy here.  And it shouldn't be a big deal because it won't be called anymore, and it would just be over written if you created a css file with the same name.
+				// the file was deleted.  but we're not re-creating it at this point, because it would introduce 
+				// a whole 'nother set of ifs that have to go here, to check whether the file was recreated.  
+				// Until we start switching to the "try" and "throw" exceptions methods, that won't be very easy here.  
+				// And it shouldn't be a big deal because it won't be called anymore, and it would just be over 
+				// written if you created a css file with the same name.
 				return false;
 			}
 		} else {
@@ -199,14 +239,14 @@ class WebpageCss extends WebpagesAppModel {
 /**
  * Removes the setting for webpage css
  * 
- * @todo		Need to write some regex (system wide though) that will remove settings within settings, so that this will support multiple css files.  Adding multiple css files works.  Deleting one, deletes all. 
+ * @todo Need to write some regex (system wide though) that will remove settings within settings, so that this will support multiple css files.  Adding multiple css files works.  Deleting one, deletes all. 
  */
 	public function deleteSetting() {
 		App::import('Model', 'Setting');
-		$this->Setting = new Setting;
-		$setting = $this->Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_CSS_FILENAMES')));
-		if ($this->Setting->delete($setting['Setting']['id'])) {
-			if ($this->Setting->writeSettingsIniData()) {
+		$Setting = new Setting;
+		$setting = $Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_CSS_FILENAMES')));
+		if ($Setting->delete($setting['Setting']['id'])) {
+			if ($Setting->writeSettingsIniData()) {
 				return true;
 			} else {
 				return false;
@@ -216,12 +256,16 @@ class WebpageCss extends WebpagesAppModel {
 		}
 	}
 	
+/**
+ * Update settings method
+ * 
+ */
 	protected function _updateSettings() {
 		App::import('Model', 'Setting');
-		$this->Setting = new Setting;
+		$Setting = new Setting;
 		
-		// find all of the css files that have been created
-		$cssFiles = $this->find('all');
+		// find all of the dynamic css files 
+		$cssFiles = $this->find('all', array('conditions' => array('WebpageCss.is_requested' => 0)));
 		if (!empty($cssFiles)) {
 			// write the settings using all css files in existence
 			$data['Setting']['type'] = 'Webpages';
@@ -234,16 +278,16 @@ class WebpageCss extends WebpagesAppModel {
 					$data['Setting']['value'] .= $css['WebpageCss']['type'].'[] = '.$css['WebpageCss']['name'].PHP_EOL;
 				}
 			}
-			if ($this->Setting->add($data)) {
+			if ($Setting->add($data)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else {
 			// if its empty then just delete the setting
-			$setting = $this->Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_CSS_FILENAMES')));
-			if ($this->Setting->delete($setting['Setting']['id'])) {
-				if ($this->Setting->writeSettingsIniData()) {
+			$setting = $Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_CSS_FILENAMES')));
+			if ($Setting->delete($setting['Setting']['id'])) {
+				if ($Setting->writeSettingsIniData()) {
 					return true;
 				} else {
 					return false;
@@ -254,10 +298,14 @@ class WebpageCss extends WebpagesAppModel {
 		}
 	}
 	
-	protected function _cleanData($data) {
+/**
+ * Clean data method
+ */
+	protected function _cleanData($data = null) {
+		$data = !empty($data) ? $data : $this->data;
 		if(!strpos($data['WebpageCss']['name'], '.css')) {
 			$data['WebpageCss']['name'] = $data['WebpageCss']['name'].'.css';
-                }
+		}
 			
 		return $data;
 	}

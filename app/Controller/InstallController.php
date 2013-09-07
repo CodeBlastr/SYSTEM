@@ -923,7 +923,8 @@ class InstallController extends Controller {
 		$template = $Template->find('first', array('conditions' => array('Template.id' => $id)));
 		$data = unserialize($template['Template']['install']);
 		
-		$Webpage = ClassRegistry::init('Webpages.Webpage');
+		App::uses('Webpage', 'Webpages.Model');
+		$Webpage = new Webpage;
 		try {
 			$Webpage->installTemplate($data, array('type' => 'default'));
 			$this->Session->setFlash(__('Template installed'));

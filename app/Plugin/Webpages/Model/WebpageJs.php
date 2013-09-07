@@ -174,10 +174,10 @@ class WebpageJs extends WebpagesAppModel {
  */
 	public function deleteSetting() {
 		App::import('Model', 'Setting');
-		$this->Setting = new Setting;
-		$setting = $this->Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_JS_FILENAMES')));
-		if ($this->Setting->delete($setting['Setting']['id'])) {
-			if ($this->Setting->writeSettingsIniData()) {
+		$Setting = new Setting;
+		$setting = $Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_JS_FILENAMES')));
+		if ($Setting->delete($setting['Setting']['id'])) {
+			if ($Setting->writeSettingsIniData()) {
 				return true;
 			} else {
 				return false;
@@ -189,10 +189,10 @@ class WebpageJs extends WebpagesAppModel {
 	
 	protected function _updateSettings() {
 		App::import('Model', 'Setting');
-		$this->Setting = new Setting;
+		$Setting = new Setting;
 		
-		// find all of the js files that have been created
-		$jsFiles = $this->find('all');
+		// find all of the dynamic js files 
+		$jsFiles = $this->find('all', array('conditions' => array('WebpageJs.is_requested' => 0)));
 		if (!empty($jsFiles)) {
 			// write the settings using all js files in existence
 			$data['Setting']['type'] = 'Webpages';
@@ -205,16 +205,16 @@ class WebpageJs extends WebpagesAppModel {
 					$data['Setting']['value'] .= 'text/javascript[] = '.$js['WebpageJs']['name'].PHP_EOL;
 				}
 			}
-			if ($this->Setting->add($data)) {
+			if ($Setting->add($data)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else {
 			// if its empty then just delete the setting
-			$setting = $this->Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_JS_FILENAMES')));
-			if ($this->Setting->delete($setting['Setting']['id'])) {
-				if ($this->Setting->writeSettingsIniData()) {
+			$setting = $Setting->find('first', array('conditions' => array('Setting.name' => 'DEFAULT_JS_FILENAMES')));
+			if ($Setting->delete($setting['Setting']['id'])) {
+				if ($Setting->writeSettingsIniData()) {
 					return true;
 				} else {
 					return false;
