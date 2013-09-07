@@ -5,6 +5,12 @@ class WebpageMenuItemsController extends WebpagesAppController {
     
 	public $uses = array('Webpages.WebpageMenuItem');
 	
+/**
+ * Sort method
+ * 
+ * Takes an array of menu items and their orders and saves them. Re-ordering many at once.
+ * @todo bulk of this belongs in the model
+ */
 	public function sort() {
 		// Configure::write('debug', 0);
         if (!empty($this->request->data['order'][1])) {
@@ -35,6 +41,11 @@ class WebpageMenuItemsController extends WebpagesAppController {
 		$this->render(false);
 	}
 	
+/**
+ * Index method
+ * 
+ * @param string $menuId
+ */
 	public function index($menuId = null) {
 		if (!empty($menuId)) {
 			$this->paginate['conditions']['WebpageMenuItem.parent_id'] = $menuId;
@@ -46,6 +57,11 @@ class WebpageMenuItemsController extends WebpagesAppController {
 		}
 	}
 
+/**
+ * View method
+ * 
+ * @param string $id
+ */
 	public function view($id = null) {
     	$this->WebpageMenuItem->id = $id;
 		if (!$this->WebpageMenuItem->exists()) {
@@ -65,6 +81,7 @@ class WebpageMenuItemsController extends WebpagesAppController {
 /**
  * Add a menu item
  * 
+ * @param string
  */
 	public function add($menuId = null) {
 		if (!empty($this->request->data)) {
@@ -86,6 +103,11 @@ class WebpageMenuItemsController extends WebpagesAppController {
 		$this->request->data['WebpageMenuItem']['item_url'] = base64_decode($linkUrl);
 	}
 
+/**
+ * Edit method
+ * 
+ * @param string
+ */
 	public function edit($id = null) {
 		if (!empty($this->request->data)) {
 			if ($this->WebpageMenuItem->save($this->request->data)) {
@@ -106,6 +128,10 @@ class WebpageMenuItemsController extends WebpagesAppController {
 		$this->set(compact('menus', 'parents', 'itemTargets'));
 	}
 
+/**
+ * Delete method
+ * 
+ */
 	public function delete($id = null) {
         $this->WebpageMenuItem->id = $id;
 		if (!$this->WebpageMenuItem->exists()) {

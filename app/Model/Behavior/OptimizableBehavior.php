@@ -118,7 +118,7 @@ class OptimizableBehavior extends ModelBehavior {
 	public function beforeSave(Model $Model, $options = array()) {
 		$this->Alias = ClassRegistry::init('Alias');	
 		$oldAlias = $this->Alias->find('first', array('conditions' => array('id' => $this->data['Alias']['id'])));
-		$newAlias = $Model->data['Alias']['name'];
+		$newAlias = !empty($Model->data['Alias']['name']) ? $Model->data['Alias']['name'] : $Model->data[$Model->alias]['alias'];
 		
 		// not sure what removing this will do (2013-09-04 RK)
 		// if it doesn't break anything, remove this trigger=true thing, and remove it from afterSave() as well
@@ -130,11 +130,10 @@ class OptimizableBehavior extends ModelBehavior {
 			$this->trigger = false;
 		}
 		
-		if (!empty($Model->data['Alias']['name'])) {
-            $this->data['Alias'] = $Model->data['Alias'];
-            $this->data[$Model->alias]['alias'] = $Model->data['Alias']['name'];
-        }
-		
+		$this->data['Alias'] = $Model->data['Alias'];
+        $this->data['Alias']['name'] = $newAlias;
+        $this->data[$Model->alias]['alias'] = $newAlias;
+        		
 		return parent::beforeSave($Model, $options);
 	}
 
@@ -152,7 +151,7 @@ class OptimizableBehavior extends ModelBehavior {
             $settings = $this->settings[$Model->alias];
             $Alias = ClassRegistry::init('Alias');
             $data['Alias']['value'] = $Model->data[$Model->alias][$settings['foreignKey']];
-            $data['Alias']['name'] = $this->makeUniqueSlug($Model, $Model->data['Alias']['name']);
+            $data['Alias']['name'] = $this->makeUniqueSlug($Model, $this->data['Alias']['name']);
 			$data['Alias']['plugin'] = $settings['plugin'];
 			$data['Alias']['controller'] = $settings['controller'];
 			$data['Alias']['action'] = $settings['action'];
@@ -181,7 +180,7 @@ class OptimizableBehavior extends ModelBehavior {
 		
         $count = $this->Alias->find('count', array('conditions' => array('Alias.name' => $names), 'fields' => 'Alias.id'));
         
-        return !empty($count) ? $Model->data['Alias']['name'] . $count : $Model->data['Alias']['name'];
+        return !empty($count) ? $name . $count : $name;
     }
     
 }

@@ -268,7 +268,7 @@
 								<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
 								After  
 								<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium')); ?>
-								<?php echo $userRole['UserRole']['name']; ?> should go to the 
+								<?php echo $userRole['UserRole']['name']; ?> should go to a 
 								<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'class' => 'input-small')); ?>
 								<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'placeholder' => 'called', 'class' => 'input-small')); ?>
 								<?php // auto-generate this in the model... echo $this->Form->input('WebpageMenuItem.item_url', array('label' => false, 'placeholder' => 'Page Url')); ?>
