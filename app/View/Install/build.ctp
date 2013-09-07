@@ -53,6 +53,7 @@
 	}
 	.menus.edit.form button.btn, .menus.edit.form input.btn[type="submit"] {
 		padding: 3px 9px;
+		margin: 0;
 	}
 	.menus.edit.form ul li div.item {
 		position: absolute;

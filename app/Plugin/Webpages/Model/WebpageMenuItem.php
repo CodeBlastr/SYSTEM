@@ -31,7 +31,6 @@ class WebpageMenuItem extends WebpagesAppModel {
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 	public $belongsTo = array(
-		// this would not work with the className as 'Menus.Menu'
 		'WebpageMenu' => array(
 			'className' => 'Webpages.WebpageMenu',
 			'foreignKey' => 'menu_id',
@@ -46,13 +45,15 @@ class WebpageMenuItem extends WebpagesAppModel {
 			'fields' => '',
 			'order' => 'ParentMenuItem.order'
 		    ),
-		'Webpage' => array(
-			'className' => 'Webpages.Webpage',
-			'foreignKey' => 'webpage_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		    )
+		// site install fails with this set and we aren't using it so it's commented out 
+		// fyi, the fail has something to do with the schema after event
+		// 'Webpage' => array(
+			// 'className' => 'Webpages.Webpage',
+			// 'foreignKey' => 'webpage_id',
+			// 'conditions' => '',
+			// 'fields' => '',
+			// 'order' => ''
+		    // )
 	    );
 	
 	public $hasMany = array(
@@ -132,7 +133,8 @@ class WebpageMenuItem extends WebpagesAppModel {
 		
 		if (!empty($data['WebpageMenuItem']['item_url']) && strpos($data['WebpageMenuItem']['item_url'], 'http') !== 0) {
 			// if link_url starts with http do nothing
-		} else {
+		} elseif ($data['WebpageMenuItem']['page_type'] == 'content' || $data['WebpageMenuItem']['page_type'] == 'section') {
+			// NOTE : don't change this if above, if you do installing a new site fails
 			App::uses('Alias', 'Model');
 			$Alias = new Alias;
 			// else see if the page already exists
@@ -150,7 +152,9 @@ class WebpageMenuItem extends WebpagesAppModel {
 			  		$webpage['Alias']['name'] = empty($data['WebpageMenuItem']['item_url']) ? $Alias->getNewAlias($data['WebpageMenuItem']['item_text']) : null;// if link_url is blank, set the link_url from the name (asciifyy)
 			  		$webpage['Webpage']['name'] = $data['WebpageMenuItem']['item_text'];
 			  		$webpage['Webpage']['title'] = $data['WebpageMenuItem']['item_text'];
-					$webpage = $this->Webpage->placeholder($webpage, array('create' => true, 'type' => $data['WebpageMenuItem']['page_type']));
+					App::uses('Webpage', 'Webpages.Model');
+					$Webpage = new Webpage;
+					$webpage = $Webpage->placeholder($webpage, array('create' => true, 'type' => $data['WebpageMenuItem']['page_type']));
 					unset($webpage['Webpage']); // don't want returned data to save again
 					unset($webpage['Child']); // don't want returned data to save again
 					unset($webpage['Alias']); // don't want returned data to save again
@@ -167,6 +171,7 @@ class WebpageMenuItem extends WebpagesAppModel {
 				break;
 			}
 		}
+
         return $data;    
     }
 	

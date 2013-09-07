@@ -888,6 +888,7 @@ class InstallController extends Controller {
 		
 		$defaultTemplate = Set::combine(templateSettings(), '{n}.isDefault', '{n}');
 		$defaultTemplate = Set::extract('/Template[layout='.$defaultTemplate[1]['templateName'].']', $templates);
+		$defaultTemplate = !empty($defaultTemplate) ? $defaultTemplate : $Template->placeholder();
 		$this->set(compact('defaultTemplate'));
 		
 		$Menu = ClassRegistry::init('Webpages.WebpageMenu');

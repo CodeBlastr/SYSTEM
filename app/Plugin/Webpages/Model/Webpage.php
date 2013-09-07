@@ -220,11 +220,10 @@ class Webpage extends WebpagesAppModel {
         preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage['Webpage']['content'], $matches);
         for ($i = 0; $i < sizeof($matches[2]); $i++) {
         	$includeTag = $matches[0][$i];
-        	$includeId = trim($matches[2][$i]);
-			$includeContainer = array('start' => __('<div id="webpage%s" pageid="%s" class="edit-box global-edit-box">', $includeId, $includeId), 'end' => '</div>');
-
+			$conditions = is_numeric(trim($matches[2][$i])) ? array('Webpage.id' => $includeId) : array('Webpage.name' => trim($matches[2][$i]));
+			
 			$include = $this->find("first", array(
-				'conditions' => array('Webpage.id' => $includeId),
+				'conditions' => $conditions,
 				'contain' => array(
 					'Child' => array(
 						'fields' => array(
@@ -239,15 +238,18 @@ class Webpage extends WebpagesAppModel {
 					'Webpage.content',
 					),
 				'callbacks' => false
-				));	
+				));
 			if (empty($include) || !is_array($include)) {
 				continue; // skip everything below, go back to the top of the loop (the include was not found)
+			} else {
+				$includeId = $include['Webpage']['id'];
 			}
 			
 			$include = $this->_includeChildren($include, $request->url); // check the include to see if we overwrite with a child
 			
 			// where the replacement of the template tag happens
 			if ( CakeSession::read('Auth.User.user_role_id') == '1' ) {
+				$includeContainer = array('start' => __('<div id="webpage%s" pageid="%s" class="edit-box global-edit-box">', $includeId, $includeId), 'end' => '</div>');
 				$tagReplace = $includeContainer['start'] . $include['Webpage']['content'] . $includeContainer['end'];
 			} else {
 				$tagReplace = $include['Webpage']['content'];
