@@ -511,6 +511,7 @@ class Webpage extends WebpagesAppModel {
 					// validate first, because we may want to save even if it fails (with some updated info)
 					$this->set($data[$i]);
 					if ($this->validates()) {
+						$this->create();
 						if ($this->save($data[$i])) {
 							continue;
 						} 
@@ -531,6 +532,7 @@ class Webpage extends WebpagesAppModel {
 					// validate first, because we may want to save even if it fails (with some updated info)
 					$WebpageCss->set($data[$i]);
 					if ($WebpageCss->validates()) {
+						$WebpageCss->create();
 						if ($WebpageCss->save($data[$i])) {
 							continue;
 						}
@@ -551,6 +553,7 @@ class Webpage extends WebpagesAppModel {
 					// validate first, because we may want to save even if it fails (with some updated info)
 					$WebpageJs->set($data[$i]);
 					if ($WebpageJs->validates()) {
+						$WebpageJs->create();
 						if ($WebpageJs->save($data[$i])) {
 							continue;
 						}
