@@ -220,39 +220,46 @@ class Webpage extends WebpagesAppModel {
         preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage['Webpage']['content'], $matches);
         for ($i = 0; $i < sizeof($matches[2]); $i++) {
         	$includeTag = $matches[0][$i];
-			$conditions = is_numeric(trim($matches[2][$i])) ? array('Webpage.id' => $includeId) : array('Webpage.name' => trim($matches[2][$i]));
-			
-			$include = $this->find("first", array(
-				'conditions' => $conditions,
-				'contain' => array(
-					'Child' => array(
-						'fields' => array(
-							'Child.id',
-							'Child.template_urls',
-							'Child.content'
-						)
-					)
-				),
-				'fields' => array(
-					'Webpage.id',
-					'Webpage.content',
-					),
-				'callbacks' => false
-				));
-			if (empty($include) || !is_array($include)) {
-				continue; // skip everything below, go back to the top of the loop (the include was not found)
+			$paths = App::path('View');
+			$file = $paths[2].'Elements'.DS.trim($matches[2][$i]).'.ctp'; // we could support other paths in the future
+			if ($content = file_get_contents($file)) {
+				// a lighter call (no children possible, so no contains), but I'd still like to get rid of it somehow
+				$includeId = $this->field('id', array('Webpage.name' => trim($matches[2][$i])));
 			} else {
-				$includeId = $include['Webpage']['id'];
+				$conditions = is_numeric(trim($matches[2][$i])) ? array('Webpage.id' => $includeId) : array('Webpage.name' => trim($matches[2][$i]));
+				$include = $this->find('first', array(
+					'conditions' => $conditions,
+					'contain' => array(
+						'Child' => array(
+							'fields' => array(
+								'Child.id',
+								'Child.template_urls',
+								'Child.content'
+							)
+						)
+					),
+					'fields' => array(
+						'Webpage.id',
+						'Webpage.content',
+						),
+					'callbacks' => false
+					));
+					
+				if (empty($include) || !is_array($include)) {
+					continue; // skip everything below, go back to the top of the loop (the include was not found)
+				} else {
+					$include = $this->_includeChildren($include, $request->url); // check the include to see if we overwrite with a child
+					$includeId = $include['Webpage']['id'];
+					$content = $include['Webpage']['content'];
+				}
 			}
-			
-			$include = $this->_includeChildren($include, $request->url); // check the include to see if we overwrite with a child
-			
+				
 			// where the replacement of the template tag happens
 			if ( CakeSession::read('Auth.User.user_role_id') == '1' ) {
 				$includeContainer = array('start' => __('<div id="webpage%s" pageid="%s" class="edit-box global-edit-box">', $includeId, $includeId), 'end' => '</div>');
-				$tagReplace = $includeContainer['start'] . $include['Webpage']['content'] . $includeContainer['end'];
+				$tagReplace = $includeContainer['start'] . $content . $includeContainer['end'];
 			} else {
-				$tagReplace = $include['Webpage']['content'];
+				$tagReplace = $content;
 			}
 			$webpage['Webpage']['content'] = str_replace($includeTag, $tagReplace, $webpage['Webpage']['content']);
 		}
