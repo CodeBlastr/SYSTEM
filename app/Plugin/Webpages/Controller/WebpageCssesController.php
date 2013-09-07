@@ -61,6 +61,8 @@ class WebpageCssesController extends WebpagesAppController {
 		$webpageCss = $this->WebpageCss->read(null, $id);
 		$this->set('webpageCss', $webpageCss);
 		$this->set('page_title_for_layout', $webpageCss['WebpageCss']['name']);	
+		$this->set('title_for_layout', $webpageCss['WebpageCss']['name']);	
+		$this->layout = 'default';
 	}
 
 /**
@@ -69,14 +71,17 @@ class WebpageCssesController extends WebpagesAppController {
  * @return void
  */
 	public function add() {
-		if (!empty($this->request->data)) {
+		if ($this->request->is('post') || $this->request->is('put')) {
 			$this->WebpageCss->create();
 			try {
-				$this->WebpageCss->theme = $this->theme;
-				$this->WebpageCss->save($this->request->data);
-				header("Pragma: no-cache"); 
-				$this->Session->setFlash(__('The webpage css has been saved', true));
-				$this->redirect(array('action' => 'index'));
+				$this->WebpageCss->theme = $this->theme;				
+				if ($this->WebpageCss->save($this->request->data)) {
+					header("Pragma: no-cache"); 
+					$this->Session->setFlash(__('Css file created.'));
+					$this->redirect(array('action' => 'index'));
+				} else {
+					$this->Session->setFlash('Error, please try again.');
+				}
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}
@@ -99,12 +104,15 @@ class WebpageCssesController extends WebpagesAppController {
 			throw new NotFoundException(__('Css file not found'));
 		}
 		
-		if (!empty($this->request->data)) {
+		if ($this->request->is('post') || $this->request->is('put')) {
 			try {
 				$this->WebpageCss->theme = $this->theme;
-				$this->WebpageCss->save($this->request->data);
-				$this->Session->setFlash(__('The webpage css has been saved'));
-				$this->redirect(array('action' => 'index'));
+				if ($this->WebpageCss->save($this->request->data)) {
+					$this->Session->setFlash(__('Css file saved'));
+					$this->redirect(array('action' => 'index'));
+				} else {
+					$this->Session->setFlash('Error, please try again.');
+				}
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}

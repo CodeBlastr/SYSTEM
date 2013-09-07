@@ -10,7 +10,7 @@
 		<div class="row-fluid block">
 			<?php echo $this->Form->input('content', array('label' => false, 'default' => '/* New Css File */' . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL)); ?>
 		</div>
-		<?php echo $this->Form->end(__('Submit', true));?>
+		<?php echo $this->Form->end(__('Create'));?>
 	</fieldset>
 </div>
 
