@@ -2,12 +2,7 @@
 App::uses('WebpagesAppModel', 'Webpages.Model');
 /**
  * WebpageCss Model
- * 
  *
- * @todo 		Add copyright, and notes.
- * @todo		We have not yet finished making this available for "multi-templates" within a single site.  So right now all css files will be loaded for every template.
- * @todo		Create a simple interface for adding all of the template files at once. (css, js, and put html into a template)
- * @todo		We need to make webpage_css belongTo the webpages table and show template webpages in a drop down, that way we tie the js to particular templates, and don't have to load js on every page if its not needed theoretically.
  * @todo		Add url as a field and let us load remote css instead of local css if needed. (ie. googlecode.com css)
  */
 class WebpageCss extends WebpagesAppModel {
@@ -180,7 +175,7 @@ class WebpageCss extends WebpagesAppModel {
 		if (file_exists($themePath[2].WEBROOT_DIR)) {
 			return $themePath[2].WEBROOT_DIR.DS.CSS_URL;
 		}
-		throw new Exception(__('Theme path does not exist'));
+		throw new Exception(__('Theme path does not exist for css.'));
 	}
 	
 /**
@@ -189,7 +184,7 @@ class WebpageCss extends WebpagesAppModel {
  * @param string $filename
  */
 	public function getCssFileContents($filename)	{
-		$filePath = $this->_getCssFilePath($this->theme);			
+		$filePath = $this->_getCssFilePath();			
 		if(file_exists($filePath.DS.$filename))	{
 			return file_get_contents($filePath.DS.$filename);
 		}
@@ -209,7 +204,7 @@ class WebpageCss extends WebpagesAppModel {
 		// find the css file being deleted
 		$webpageCss = $this->find('first', array('conditions' => array('WebpageCss.id' => $id)));
 		// Get file path
-		$filePath = $this->_getCssFilePath($this->theme) . $webpageCss['WebpageCss']['name'];
+		$filePath = $this->_getCssFilePath() . $webpageCss['WebpageCss']['name'];
 		// import the file helper
 		App::uses('File', 'Utility');
 		$file = new File($filePath);

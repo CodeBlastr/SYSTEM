@@ -11,7 +11,7 @@
 		<div class="row-fluid block">
 			<?php echo $this->Form->input('content', array('label' => false)); ?>
 		</div>
-		<?php echo $this->Form->end(__('Submit', true));?>
+		<?php echo $this->Form->end(__('Edit'));?>
 	</fieldset>
 </div>
 
