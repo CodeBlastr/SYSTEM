@@ -72,7 +72,8 @@ class WebpageCssesController extends WebpagesAppController {
 		if (!empty($this->request->data)) {
 			$this->WebpageCss->create();
 			try {
-				$this->WebpageCss->add($this->request->data, $this->theme);
+				$this->WebpageCss->theme = $this->theme;
+				$this->WebpageCss->save($this->request->data);
 				header("Pragma: no-cache"); 
 				$this->Session->setFlash(__('The webpage css has been saved', true));
 				$this->redirect(array('action' => 'index'));
@@ -83,6 +84,7 @@ class WebpageCssesController extends WebpagesAppController {
 		$types = $this->WebpageCss->types();
 		$webpages = $this->WebpageCss->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
 		$this->set(compact('types', 'webpages'));
+		$this->layout = 'default';
 	}
 
 /**
@@ -94,12 +96,13 @@ class WebpageCssesController extends WebpagesAppController {
 	public function edit($id = null) {
 		$this->WebpageCss->id = $id;
 		if (!$this->WebpageCss->exists()) {
-			throw new NotFoundException(__('Css not found'));
+			throw new NotFoundException(__('Css file not found'));
 		}
 		
 		if (!empty($this->request->data)) {
 			try {
-				$this->WebpageCss->update($this->request->data, $this->theme);
+				$this->WebpageCss->theme = $this->theme;
+				$this->WebpageCss->save($this->request->data);
 				$this->Session->setFlash(__('The webpage css has been saved'));
 				$this->redirect(array('action' => 'index'));
 			} catch (Exception $e) {
@@ -117,7 +120,8 @@ class WebpageCssesController extends WebpagesAppController {
 		
 		$this->set('types', $this->WebpageCss->types());
 		$this->set('webpages', $this->WebpageCss->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template'))));
-		$this->set('page_title_for_layout', $this->request->data['WebpageCss']['name']);
+		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['WebpageCss']['name']));
+		$this->set('title_for_layout', __('Edit %s', $this->request->data['WebpageCss']['name']));
 		$this->layout = 'default';
 	}
 
@@ -131,7 +135,7 @@ class WebpageCssesController extends WebpagesAppController {
 	public function delete($id = null) {
 		$this->WebpageCss->id = $id;
 		if (!$this->WebpageCss->exists()) {
-			throw new NotFoundException(__('Page not found'));
+			throw new NotFoundException(__('Css file not found'));
 		}
 		
 		if ($this->WebpageCss->remove($id, $this->theme)) {
