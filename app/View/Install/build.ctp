@@ -31,14 +31,20 @@
 		margin-top: -7.3em;
 		box-sizing: border-box;
 		list-style-type: none;
-		background: -moz-linear-gradient(top,  rgba(143,200,0,0) 0%, rgba(143,200,0,0) 24%, rgba(143,200,0,1) 52%, rgba(143,200,0,0) 81%, rgba(143,200,0,0) 100%);
+		
+		/*background: -moz-linear-gradient(top,  rgba(143,200,0,0) 0%, rgba(143,200,0,0) 24%, rgba(143,200,0,1) 52%, rgba(143,200,0,0) 81%, rgba(143,200,0,0) 100%);
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(143,200,0,0)), color-stop(24%,rgba(143,200,0,0)), color-stop(52%,rgba(143,200,0,1)), color-stop(81%,rgba(143,200,0,0)), color-stop(100%,rgba(143,200,0,0)));
 		background: -webkit-linear-gradient(top,  rgba(143,200,0,0) 0%,rgba(143,200,0,0) 24%,rgba(143,200,0,1) 52%,rgba(143,200,0,0) 81%,rgba(143,200,0,0) 100%);
 		background: -o-linear-gradient(top,  rgba(143,200,0,0) 0%,rgba(143,200,0,0) 24%,rgba(143,200,0,1) 52%,rgba(143,200,0,0) 81%,rgba(143,200,0,0) 100%);
 		background: -ms-linear-gradient(top,  rgba(143,200,0,0) 0%,rgba(143,200,0,0) 24%,rgba(143,200,0,1) 52%,rgba(143,200,0,0) 81%,rgba(143,200,0,0) 100%);
 		background: linear-gradient(to bottom,  rgba(143,200,0,0) 0%,rgba(143,200,0,0) 24%,rgba(143,200,0,1) 52%,rgba(143,200,0,0) 81%,rgba(143,200,0,0) 100%);
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#008fc800', endColorstr='#008fc800',GradientType=0 );
-
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#008fc800', endColorstr='#008fc800',GradientType=0 );*/
+	}
+	.menus.edit.form ul ul ul {
+		background: url("/img/flow.png") repeat-y scroll -100% center / 100px 117% transparent;
+	}
+	.menus.edit.form ul ul li {
+		background: #4EC748;
 	}
 	.menus.edit.form .btn-danger {
 		margin-bottom: 4px;
@@ -48,12 +54,19 @@
 	.menus.edit.form button.btn, .menus.edit.form input.btn[type="submit"] {
 		padding: 3px 9px;
 	}
-	.menus.edit.form li div.item {
+	.menus.edit.form ul li div.item {
+		position: absolute;
+		top: 4.5em;
+		width: 7.6em
+	}
+	.menus.edit.form ul ul li div.item {
+		position: relative;
+		top: auto;
+	}
+	.menus.edit.form ul li div.item {
 		box-shadow: 1px 1px 1px #000000;
-		margin-top: -4.5em !important;
 		min-height: 6em;
 		padding: 6px;
-		position: relative;
 		-moz-border-bottom-colors: none;
 		-moz-border-left-colors: none;
 		-moz-border-right-colors: none;
@@ -65,10 +78,10 @@
 		border-style: solid;
 		border-width: 1px;
 		cursor: move;
-		margin: 0;
+		margin: -4.5em 0 0 0;
 	}
 	.menus.edit.form:hover ul li div.item {
-		margin-top: 0em !important;
+		margin-top: 0;
 	}
 	.menus.edit.form .placeholder {
 		max-height: 100px;
@@ -164,16 +177,23 @@
  
     
 			<blockquote>
-			<legend class="lead"><?php echo __('Site settings'); ?> <small>we could put the favicon form here too</small></legend>
-		  	<fieldset>
-		        <?php
-				echo $this->Form->create('Setting', array('class' => 'form-inline', 'url' => array('controller' => 'settings', 'action' => 'edit')));
-				echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden'));
-				echo $this->Form->input('Setting.type', array('value' => 'System', 'type' => 'hidden'));
-				echo $this->Form->input('Setting.name', array('value' => 'SITE_NAME', 'type' => 'hidden'));
-				echo $this->Form->input('Setting.value', array('label' => 'Company Name', 'value' => __SYSTEM_SITE_NAME, 'type' => 'text'));
-				echo $this->Form->end('Change');
- 				?>
+			<legend class="lead"><?php echo __('Site settings'); ?></legend>
+		  	<fieldset class="row-fluid clearfix">
+		        <div class="span5 pull-left">
+		        	<?php echo $this->Form->create('Setting', array('class' => 'form-inline', 'url' => array('controller' => 'settings', 'action' => 'edit'))); ?>
+			        <?php echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden')); ?>
+			        <?php echo $this->Form->input('Setting.type', array('value' => 'System', 'type' => 'hidden')); ?>
+			        <?php echo $this->Form->input('Setting.name', array('value' => 'SITE_NAME', 'type' => 'hidden')); ?>
+			        <?php echo $this->Form->input('Setting.value', array('label' => 'Company Name', 'value' => __SYSTEM_SITE_NAME, 'type' => 'text')); ?>
+			        <?php echo $this->Form->end('Change'); ?>
+			    </div>
+
+		        <div class="span5 pull-right">
+		          	<?php echo $this->Form->create('Admin', array('class' => 'form-inline', 'url' => array('controller' => 'admin', 'action' => 'index'), 'type' => 'file')); ?>
+					<?php echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden')); ?>
+			        <?php echo $this->Form->input('icon', array('type' => 'file', 'label' => 'Favicon')); ?>
+					<?php echo $this->Form->end('Upload'); ?>
+				</div>
 			</fieldset>
 		</blockquote>
 		
@@ -262,9 +282,9 @@
 						<div class="menus edit">
 							 <div class="menus edit form">
 						    	<div class="canvas" id="canvas<?php echo $mine['WebpageMenu']['id']; ?>">
-						    		<ul style="margin-left: 0em;padding-left: 28px;">
+						    		<ul style="margin-left: 0em; padding-left: 28px; background: url('/img/flow.png') repeat-y scroll -70% center / 220px 117% transparent;">
 						    			<li style="position: relative; left: -2em;">
-						    				<div class="item">
+						    				<div class="item home">
 												<?php echo $this->Html->link(__('<span class="icon"> %s </span> <span class="link"> %s </span>', $defaultTemplate[0]['Template']['icon'], $mine['WebpageMenu']['name']), '#', array('class' => 'toggleClick toggle', 'data-target' => '#form' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
 												<div id="form<?php echo $mine['WebpageMenu']['id']; ?>">
 													<?php echo $this->Form->create('WebpageMenu', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'edit'), 'class' => 'form-inline')); ?>
@@ -341,12 +361,56 @@
 	// });
 // });
 
-$(function() {
+$(document).ready(function() {
+	// some calculated styles needed
+	var timer = false;
+	$('.menus.edit.form').hover( 
+		function () {
+			var obj = $('.item.home', this);
+			if(timer) {
+				clearTimeout(timer);
+				timer = null
+			}
+			timer = setTimeout(function() {
+				positionHome(obj, false);
+			}, 50);
+		},
+		function () {
+			var obj = $('.item.home', this);
+			if(timer) {
+				clearTimeout(timer);
+				timer = null
+			}
+			timer = setTimeout(function() {
+				positionHome(obj, true);
+			}, 50);
+		}
+	);
+	function positionHome(obj, diff) {
+		var height = obj.parent().parent().height();
+		if (diff) {
+			var top = (height / 2);
+		} else {
+			var top = (height / 2) - (obj.height() / 1.3);
+		}
+		console.log('help' + parseInt(top));
+		console.log(obj);
+		console.log(parseInt(obj.height()));
+		if (parseInt(top) > parseInt(obj.height())) {
+			obj.css('top', top + 'px');
+		} else {
+			obj.css('margin-top', '-4.4em');
+		}
+	}
+	
     <?php foreach ($remove as $li) : ?>
+    	<?php if (!empty($li[0]['WebpageMenu']['id'])) : ?>
     // remove a link that has the same name as the menu (eg. Home menu links to Homepage) and we don't need it on the build page
     $('#li_<?php echo $li[0]['WebpageMenu']['id']; ?>').hide();
-    	<?php endforeach; ?>
-			$('.sortableMenu a').click(function(e) {
+    	<?php endif; ?>
+    <?php endforeach; ?>
+    
+	$('.sortableMenu a').click(function(e) {
 		e.preventDefault();
 	});
 	

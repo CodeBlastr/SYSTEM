@@ -424,7 +424,8 @@ class AdminController extends AppController {
 	protected function _saveFavicon() {
 		$upload = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . WEBROOT_DIR . DS . 'favicon.ico';
 		if(move_uploaded_file($this->request->data['Admin']['icon']['tmp_name'], $upload)){
-			$this->Session->setFlash('Favicon Updated. NOTE ( You may need to clear browser histry and refresh to see it. )');
+			$this->Session->setFlash('Favicon Updated. NOTE ( You may need to clear browser history and refresh to see it. )');
+			!empty($this->request->data['Override']) ? $this->redirect('/admin') : null; // not needed, but we get here through /install/build so this is a quick and dirty fix
 		}
 	}
 	

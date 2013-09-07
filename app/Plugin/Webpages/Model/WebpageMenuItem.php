@@ -150,8 +150,6 @@ class WebpageMenuItem extends WebpagesAppModel {
 			  		$webpage['Alias']['name'] = empty($data['WebpageMenuItem']['item_url']) ? $Alias->getNewAlias($data['WebpageMenuItem']['item_text']) : null;// if link_url is blank, set the link_url from the name (asciifyy)
 			  		$webpage['Webpage']['name'] = $data['WebpageMenuItem']['item_text'];
 			  		$webpage['Webpage']['title'] = $data['WebpageMenuItem']['item_text'];
-					debug($webpage);
-					break;
 					$this->Webpage->placeholder($webpage, array('create' => true, 'type' => $data['WebpageMenuItem']['page_type']));
 				} else {
 					// it isn't going to save anyway, it didn't validate so do nothing, data should be resubmitted
