@@ -5,6 +5,21 @@ class Template extends AppModel {
 	public $name = 'Template';
 	
 /**
+ * Before save callback
+ * 
+ * @todo check template for well formatted content
+ * @todo template name should be unique (between here, and the webpages table)
+ * @todo css and js files must have the full file name (with .css and .js on the end)
+ * @todo all element names, css names, and js names should be pre-fixed with the template name (eg. sidebar-footer, sidebar-custom.css)
+ * @todo all {page: anything} should be wrapped in a div of some kind (should not be <div>{page: something} <div> more html </div></div>)
+ * @todo bonus points for running the html through a validator :)
+ * 
+	public function beforeSave($options = array()) {
+		return parent::beforeSave($options);
+	}
+ */
+	
+/**
  * After find callback
  * 
  * @param array
