@@ -1118,17 +1118,22 @@ class Webpage extends WebpagesAppModel {
 			} 
 		} 
 		
-		return array(
-			'Template' => array(
-				'layout' => $template['Webpage']['name'],
-				'is_usable' => 0,
-				'install' => serialize($output),
-				'icon' => '<div style="height: 0px; padding-bottom: 80%; position:relative; width: 100%; float: left;"><div style="width: 100%; height: 100%; padding: 0; top: 0; position: absolute; background: url(put image data string here) no-repeat;  background-size: cover; border: 1px solid #E3E3E3; border-radius: 1em; overflow: hidden;"></div></div>',
-				'description' => 'put a template description here',
-				'demo' => 'put demonstration link here',
-				'_install' => $output
-			)
-		);
+		$install = serialize($output);
+		if (unserialize($install)) {
+			return array(
+				'Template' => array(
+					'layout' => $template['Webpage']['name'],
+					'is_usable' => 0,
+					'install' => serialize($output),
+					'icon' => '<div style="height: 0px; padding-bottom: 80%; position:relative; width: 100%; float: left;"><div style="width: 100%; height: 100%; padding: 0; top: 0; position: absolute; background: url(put image data string here) no-repeat;  background-size: cover; border: 1px solid #E3E3E3; border-radius: 1em; overflow: hidden;"></div></div>',
+					'description' => 'put a template description here',
+					'demo' => 'put demonstration link here',
+					'_install' => $output
+				)
+			);
+		} else {
+			throw new Exception(__('Content serialization error occurred'));
+		}
 	}
 
 	
