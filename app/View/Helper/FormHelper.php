@@ -120,7 +120,33 @@ class FormHelper extends CakeFormHelper {
 		if (isset($attributes['ajax'])) {
 			$attributes = $this->ajaxElement($attributes);
 		}
-		return parent::select($fieldName, $options, $attributes);
+
+		$selectElement = parent::select($fieldName, $options, $attributes);
+
+		if (isset($attributes['limit']) && $attributes['multiple'] == 'checkbox') {
+
+			$matches = explode('.', $fieldName);
+			$name = 'data';
+			foreach ($matches as $match) {
+				$name .= '[' . $match . ']';
+			}
+			$name .= '[]';
+
+			$selectElement .= '
+<script type="text/javascript">
+$(document).ready(function() {
+	$("input[name=\''.$name.'\'").click(function() {
+		if ( $("input[name=\''.$name.'\']:checked").length > '.$attributes['limit'].' ) {
+			alert("You may only choose a maximum of '.$attributes['limit'].'");
+			$(this).prop("checked", false);
+		}
+	});
+});
+</script>
+';
+		}
+
+		return $selectElement;
 	}
 
 	
