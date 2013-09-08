@@ -424,8 +424,8 @@ class WebpagesController extends WebpagesAppController {
 				break;
  			}
 			$this->request->data['Template']['install'] = $data['Template']['install'];
- 			debug('We can push this to the templates table.  Just not sure if that is a great idea. This export is really for the app/Config/Schema/schema.php file');
- 			debug($this->request->data);
+			debug('Copy and paste this into the app/Config/Schema/schema.php file in the appropriate spot.');
+			debug($this->request->data);
 			break;
  		}
 		$this->request->data = $form;
