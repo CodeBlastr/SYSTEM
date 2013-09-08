@@ -154,6 +154,7 @@ class InstallController extends Controller {
 	    $this->config['host'] = $Install->default['host'];
 	    $this->config['login'] = $Install->default['login'];
 	    $this->config['password'] = $Install->default['password'];
+		// add db prefix and remove postfix from the db name (eg. domain.localhost might become the db name prefix_domain instead of prefix_domain.localhost)
 	    $this->config['database'] = $Install->default['prefix'].str_replace($Install->default['postfix'], '', $this->request->data['Install']['site_domain']);
 		
 		// create the db here
