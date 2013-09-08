@@ -442,9 +442,10 @@ $(document).ready(function() {
 		} else {
 			var top = (height / 2) - (obj.height() / 1.3);
 		}
-		console.log('help' + parseInt(top));
-		console.log(obj);
-		console.log(parseInt(obj.height()));
+		//still doesn't work perfectly
+		//console.log('help' + parseInt(top));
+		//console.log(obj);
+		//console.log(parseInt(obj.height()));
 		if (parseInt(top) > parseInt(obj.height())) {
 			obj.css('top', top + 'px');
 		} else {
