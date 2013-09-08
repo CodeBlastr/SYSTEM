@@ -120,11 +120,11 @@ if (!empty($defaultTemplate)) {
 	preg_match_all ("/\{menu: (.*?)\}/", $content, $matches2);
 	$i = 0;
 	foreach ($matches2[0] as $menuMatch) {
-		$menuCfg['id'] = trim($matches2[1][$i]);
+		$menu = $this->Html->parseTag(trim($matches2[1][$i]));
+		$vars = array('id' => $menu['name']) + $menu['variables'];
 		// removed cache temporarily
 		// $menuCfg['cache'] = array('key' => 'menu-'.$menuCfg['id'], 'time' => '+999 days');
-		$menuCfg['plugin'] = 'menus';
-		$content = str_replace($menuMatch, $this->element('Webpages.menus', $menuCfg), $content);
+		$content = str_replace($menuMatch, $this->Element('Webpages.menus', $vars), $content);
 		$i++;
 	}
 

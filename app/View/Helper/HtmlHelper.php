@@ -536,27 +536,47 @@ class HtmlHelper extends CakeHtmlHelper {
 		}
 	}
 
-
+/**
+ * Tag element function
+ * 
+ * Replaces {element: Plugin.folder/element-name var1=x,var2=y} with the tag php code : $this->Element('Plugin.folder/element-name', array('var1' => 'x', 'var2' => 'y'));
+ * 
+ * @param object $View
+ * @param string $content
+ * @param array $options
+ */
 	public function tagElement($View, $content, $options = array()) {
 		// matches element template tags like {element: plugin.name}
 		preg_match_all ("/(\{element: (.*?)([^\}]*)\})/", $content, $matches); // a little shorter
 		$i=0;
 		foreach ($matches[0] as $elementMatch) {
-			$element = trim($matches[3][$i]);
-			$elementVars = array();
-			if (strpos($elementMatch, '=')) {
-				// means we have named variables at the end, {element: webpages.types type=portfolio,id=something}
-				$vars = explode(' ', $element);	$element = $vars[0]; $vars = explode(',', $vars[1]);
-				foreach ($vars as $var) {
-					$option = explode('=', $var);
-					$elementVars[$option[0]] = $option[1];
-				}
-			}
-			$replacement = !empty($options['templateEditing']) ? sprintf('<li data-template-tag="element: %s">%s</li>', $element, $View->element($element, $elementVars)) : $View->element($element, $elementVars);
+			$element = $this->parseTag(trim($matches[3][$i]));
+			$replacement = !empty($options['templateEditing']) ? sprintf('<li data-template-tag="element: %s">%s</li>', $element, $View->element($element['name'], $element['variables'])) : $View->element($element['name'], $element['variables']);
 			$content = str_replace($elementMatch, $replacement, $content);
 			$i++;
 		}
 		return $content;
+	}
+	
+/**
+ * Parse tag function
+ * 
+ * parses a string {element: some-name var1="x x",var2=y} into array('element' => 'some-name', 'variables' => array('var1' => 'x x', 'var2' => 'y'));
+ * 
+ * @param string $tag
+ */
+	public function parseTag($tag) {
+		$variables = array();
+		$vars = explode(' ', $tag, 2);	// limit to two
+		$name = $vars[0];
+		if (strpos($tag, '=')) {
+			$vars = explode(',', $vars[1]);
+			foreach ($vars as $var) {
+				$option = explode('=', $var);
+				$variables[$option[0]] = str_replace('"', '', $option[1]); // remove quotes
+			}
+		}
+		return array('name' => $name, 'variables' => $variables);
 	}
 
 

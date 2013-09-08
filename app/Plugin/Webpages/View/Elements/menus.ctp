@@ -1,7 +1,8 @@
 <?php
 $data = $this->requestAction(array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'element', $id));
 $type = !empty($menuType) ? $menuType : str_replace(' ', '-', $data['WebpageMenu']['type']);
-$cssClass = !empty($data['WebpageMenu']['css_class']) ? $data['WebpageMenu']['css_class'] : ' nav nav-pills ';
+$cssClass = !empty($class) ? $class : ' nav nav-pills ';
+$cssClass = !empty($data['WebpageMenu']['css_class']) ? $data['WebpageMenu']['css_class'] : $cssClass;
 $cssId = !empty($data['WebpageMenu']['css_id']) ? $data['WebpageMenu']['css_id'] : 'nav-' . $data['WebpageMenu']['code'];
 if (empty($type)) {
     $this->Tree->addTypeAttribute('data-identifier', $data['WebpageMenu']['id'], null, 'previous');
