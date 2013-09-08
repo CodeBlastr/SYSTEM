@@ -618,12 +618,13 @@ class AppController extends Controller {
 			if (!empty($templates)) {
 				foreach ($templates as $key => $template) {
 					if (!empty($template['urls'])) {
-						// note : this over rides isDefault, so if its truly a default template, don't set urls
+						// this over rides isDefault, so if its truly a default template, don't set urls
 						$this->templateId = $this->_urlTemplate($template);
 						// get rid of template values so we don't have to check them twice
 						unset($templates[$key]);
 					}
 					if (!empty($this->templateId)) {
+						$templated['Webpage']['id'] = $template['templateId']; // used in javascript.ctp and css.ctp elements
 						// as soon as we have the first template that matches, end this loop
 						break;
 					}
@@ -637,6 +638,7 @@ class AppController extends Controller {
 						$this->templateId = !empty($template['userRoles']) ? $this->_userTemplate($template) : $this->templateId;
 					}
 					if (!empty($this->templateId)) {
+						$templated['Webpage']['id'] = $template['templateId']; // used in javascript.ctp and css.ctp elements
 						// as soon as we have the first template that matches, end this loop
 						break;
 					}
@@ -647,14 +649,13 @@ class AppController extends Controller {
 		// this is because the Webpage model is not loaded for the install site page, and 'all' so that we can pass all templates to the navbar
 		// $templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('all', array('conditions' => array('Webpage.type' => 'template'), 'order' => array('FIND_IN_SET(`Webpage`.`id`, \''.$this->templateId.'\')' => 'DESC')));
 		$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$this->templateId;
-		$templated['Webpage']['content'] = file_exists($templateFile) ? file_get_contents($templateFile) : '';
+		$templated['Webpage']['content'] = file_get_contents($templateFile);
 		// $templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $this->templateId), 'callbacks' => false));
         // $this->set('templates', Set::combine($templated, '{n}.Webpage.id', '{n}.Webpage.name')); // for the admin navbar
         // $templated = !empty($this->templateId) ? Set::extract('/Webpage[id=' . $this->templateId . ']', $templated) : null; // getting it back to 'first' type results
         // $templated = !empty($templated[0]) ? $templated[0] : null; // getting it back to 'first' type results
         $this->Webpage->parseIncludedPages($templated, null, null, $this->userRoleId, $this->request);
         $this->set('defaultTemplate', $templated);
-        
 		if (!empty($this->templateId)) {
             $this->set('templateId', $this->templateId); // for the admin navbar
 			$this->layout = 'custom';

@@ -6,6 +6,7 @@ $cssClass = !empty($data['WebpageMenu']['css_class']) ? $data['WebpageMenu']['cs
 $cssId = !empty($data['WebpageMenu']['css_id']) ? $data['WebpageMenu']['css_id'] : 'nav-' . $data['WebpageMenu']['code'];
 if (empty($type)) {
     $this->Tree->addTypeAttribute('data-identifier', $data['WebpageMenu']['id'], null, 'previous');
+	$this->Tree->addTypeAttribute('role', 'navigation', null, 'previous'); // accessibility
     echo $this->Tree->generate($data['children'], array(
             'model' => 'WebpageMenu', 
     		'alias' => 'item_text', 
