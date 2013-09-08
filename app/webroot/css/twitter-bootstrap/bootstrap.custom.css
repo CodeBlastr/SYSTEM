@@ -56,6 +56,7 @@ small {
 }
 .navbar-fixed-bottom {
     position: fixed;
+    background: #222;
 }
 /* getting rid of the negative margins bootstrap uses */
 .row {

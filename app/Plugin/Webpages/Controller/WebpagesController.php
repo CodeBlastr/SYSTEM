@@ -410,12 +410,25 @@ class WebpagesController extends WebpagesAppController {
  * @param int $id
  */
  	public function export($id) {
+ 		$data = $form = $this->Webpage->export($id);
+		$form['Template']['install'] = substr($form['Template']['install'], 0, 500);
+		if (!unserialize($data['Template']['install'])) {
+			debug('data not serialized properly');
+			break;
+		}
+		
  		if ($this->request->is('post') || $this->request->is('push')) {
+ 			if (!unserialize($data['Template']['install'])) {
+ 				debug('serialization error');
+				debug($data['Template']['install']);
+				break;
+ 			}
+			$this->request->data['Template']['install'] = $data['Template']['install'];
  			debug('We can push this to the templates table.  Just not sure if that is a great idea. This export is really for the app/Config/Schema/schema.php file');
  			debug($this->request->data);
 			break;
  		}
-		$this->request->data = $this->Webpage->export($id);
+		$this->request->data = $form;
 		$this->set('page_title_for_layout', __('Export %s', $this->request->data['Template']['layout']));
 		$this->set('title_for_layout', __('Export %s', $this->request->data['Template']['layout']));
  	}

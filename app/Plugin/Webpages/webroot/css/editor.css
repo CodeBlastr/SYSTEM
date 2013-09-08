@@ -96,7 +96,7 @@
 	position: relative;
 	top: 20px;
 }
-#adminNavFloManagr.navbar-fixed-bottom {
+#adminNavFloManagr.navbar-fixed-bottom, #headerNavFloManagr.navbar-fixed-bottom {
 	position: fixed;
 	bottom: 0;
 	top: auto;

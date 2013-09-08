@@ -154,15 +154,25 @@
 		  	<fieldset>			        	
 		        <?php foreach ($templates as $template) : ?>
 		        	<?php if ($defaultTemplate[0]['Template']['layout'] == $template['Template']['layout']) : // default template will get reset if you click this so, show warning ?>
-		        		<a href="/install/template/<?php echo $template['Template']['id']; ?>" class="pull-left span2 text-center" title="Your current default template. Clicking here will reset this template back to it's original format, erasing any customizations to the template." onclick="return confirm('This is your currently used default template. Please confirm that you want to reset this template to the original version. It will erase any customizations made to this template.');">
-			        		<?php echo $template['Template']['icon']; ?>
-			        		<p class="muted" style="font-size: 0.85em;"><?php echo __('%s (active)', $template['Template']['layout']); ?></p> 
-				        </a>
+			        	<div class="pull-left span2 text-center">
+		        			<a href="/install/template/<?php echo $template['Template']['id']; ?>" title="Your current default template. Clicking here will reset this template back to it's original format, erasing any customizations to the template." onclick="return confirm('This is your currently used default template. Please confirm that you want to reset this template to the original version. It will erase any customizations made to this template.');">
+			        			<?php echo $template['Template']['icon']; ?>
+			        			<?php echo __('%s (active)', $template['Template']['layout']); ?>
+			        		</a>
+				        	<span class="demo">
+				        		<?php echo !empty($template['Template']['demo']) ? __('(%s)', $this->Html->link('demo', $template['Template']['demo'], array('target' => '_blank'))) : null; ?>
+				        	</span>
+				        </div>
 		        	<?php else : ?>
-			        	<a href="/install/template/<?php echo $template['Template']['id']; ?>" class="pull-left span2 text-center" title="<?php echo $template['Template']['description']; ?>">
-			        		<?php echo $template['Template']['icon']; ?>
-			        		<p class="muted" style="font-size: 0.85em;"><?php echo $template['Template']['layout']; ?></p> 
-				        </a>
+			        	<div class="pull-left span2 text-center">
+			        		<a href="/install/template/<?php echo $template['Template']['id']; ?>" title="<?php echo $template['Template']['description']; ?>">
+				        		<?php echo $template['Template']['icon']; ?>
+				        		<?php echo $template['Template']['layout']; ?>
+				        	</a>
+				        	<span class="demo">
+				        		<?php echo !empty($template['Template']['demo']) ? __('(%s)', $this->Html->link('demo', $template['Template']['demo'], array('target' => '_blank'))) : null; ?>
+				        	</span>
+				        </div>
 			        <?php endif; ?>
 		        <?php endforeach; ?>
 			</fieldset>
