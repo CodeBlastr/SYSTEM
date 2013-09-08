@@ -198,7 +198,7 @@ $(function() {
     $('input[type=submit]').addClass('btn');
     $('.required').attr('required', true);
     $('label').addClass('control-label');
-    $('input:not([type=submit])').addClass('form-control').parent().addClass('form-group');
+    $('input:not([type=submit]), textarea').addClass('form-control').parent().addClass('form-group');
     $('form').attr('role', 'form');
     
 	// removing during upgrade to bootstrap 3, to see if it's even necessary to have anymore

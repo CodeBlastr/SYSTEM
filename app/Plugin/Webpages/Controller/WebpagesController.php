@@ -410,7 +410,14 @@ class WebpagesController extends WebpagesAppController {
  * @param int $id
  */
  	public function export($id) {
-		$this->Webpage->export($id);
+ 		if ($this->request->is('post') || $this->request->is('push')) {
+ 			debug('We can push this to the templates table.  Just not sure if that is a great idea. This export is really for the app/Config/Schema/schema.php file');
+ 			debug($this->request->data);
+			break;
+ 		}
+		$this->request->data = $this->Webpage->export($id);
+		$this->set('page_title_for_layout', __('Export %s', $this->request->data['Template']['layout']));
+		$this->set('title_for_layout', __('Export %s', $this->request->data['Template']['layout']));
  	}
 
  
