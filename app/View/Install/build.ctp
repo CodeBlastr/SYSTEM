@@ -387,6 +387,30 @@
 // });
 
 $(document).ready(function() {
+	// switching menu item form between content/section vs plugin form type
+	$('.create-menu-item form:last-child').hide();
+	$('.create-menu-item form select[name="data\[WebpageMenuItem\]\[page_type\]"]').change( function() {
+		handleFormDisplay();
+	});
+	function handleFormDisplay() {
+		$.each($('.create-menu-item'), function() {
+			if ($('form:first-child select[name="data\[WebpageMenuItem\]\[page_type\]"]', this).val() == 'plugin') {
+				$('form:first-child select[name="data\[WebpageMenuItem\]\[page_type\]"]', this).val('content');
+				$('form:first-child', this).hide();
+				$('form:last-child select[name="data\[WebpageMenuItem\]\[page_type\]"]', this).val('plugin');
+				$('form:last-child', this).show();
+			} else {
+				if($('form:last-child select[name="data\[WebpageMenuItem\]\[page_type\]"]', this).is(":visible")) {
+					$('form:first-child select[name="data\[WebpageMenuItem\]\[page_type\]"]', this).val($('form:last-child select[name="data\[WebpageMenuItem\]\[page_type\]"]', this).val());
+				}
+				$('form:first-child', this).show();
+				$('form:last-child select[name="data\[WebpageMenuItem\]\[page_type\]"]', this).val('plugin');
+				$('form:last-child', this).hide();
+			}
+		});
+	}
+	
+	
 	// some calculated styles needed
 	var timer = false;
 	$('.menus.edit.form').hover( 
