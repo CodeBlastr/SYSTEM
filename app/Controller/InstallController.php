@@ -254,18 +254,15 @@ class InstallController extends Controller {
                 $data['Setting']['value'] = $sqlData;
                 if ($Setting->add($data)) {
                     $this->message[] = __('Plugin successfully installed.');
-                    $this->_redirect(array('action' => 'index'));
+					return true;
                 } else {
                     $this->message[] = __('Settings update failed.');
-                    $this->_redirect(array('action' => 'index'));
                 }
             } else {
                 $this->message[] = __('Plugin install failed.');
-                $this->_redirect(array('action' => 'index'));
             }
         } else {
             $this->message[] = __('Current plugin setup not valid.');
-            $this->_redirect(array('action' => 'index'));
         }
     }
 
@@ -765,7 +762,7 @@ class InstallController extends Controller {
  */
     protected function _handleSecurity() {
     	//this is here to handle post install redirect (so that it wouldn't come back to the install page)
-    	if (defined('SITE_DIR') && SITE_DIR == 'sites/'.$_SERVER['HTTP_HOST'] && $this->request->action != 'index' && $this->request->action != 'plugin') {
+    	if (defined('SITE_DIR') && SITE_DIR == 'sites/'.$_SERVER['HTTP_HOST'] && $this->request->action != 'index' && $this->request->action != 'plugin' && $this->request->action != 'build') {
 			$this->Session->setFlash(__('Site installed successfully.')); 
 			$this->redirect('/install/build');
 		}
@@ -773,6 +770,7 @@ class InstallController extends Controller {
     	if (Configure::read('Install') === true) {
     		return true;
     	}
+		
         $userRoleId = !empty($userRoleId) ? $userRoleId : $this->Session->read('Auth.User.id');
         if ((defined('SITE_DIR') && SITE_DIR && $userRoleId != 1) || Configure::read('Install') === false) {
             $this->message[] = __('Install access restricted.');
@@ -873,8 +871,31 @@ class InstallController extends Controller {
  * 
  */
  	public function build() {
+        $currentlyLoadedPlugins = CakePlugin::loaded();
+        CakePlugin::loadAll();
+        $this->set('plugins', $plugins = array_diff(CakePlugin::loaded(), array('Activities', 'Answers', 'Categories', 'Connections', 'Contacts', 'Courses', 'Drafts', 'Facebook', 'Feeds', 'Forms', 'Media', 'Privileges', 'Recaptcha', 'Searchable', 'Subscribers', 'Tags', 'Twitter', 'Utils', 'Webpages', 'Wizards', 'Workflows')));
+ 		
+		// create some links to, and install the plugin if it isn't already
+ 		if (($this->request->is('post') || $this->request->is('put')) && $this->request->data['WebpageMenuItem']['page_type'] == 'plugin') {
+			$this->request->data['WebpageMenuItem']['item_text'] = $plugins[$this->request->data['WebpageMenuItem']['item_text']];
+			 // if not already installed, then install the plugin		
+			if (!in_array($this->request->data['WebpageMenuItem']['item_text'], $currentlyLoadedPlugins)) {
+				if ($this->plugin($this->request->data['WebpageMenuItem']['item_text'])) {
+					// nothing needed it's been installed move on to the creating the menu
+				} else {
+					throw new Exception(explode(', ', $this->message));
+				}
+			}
+			// create the menu (independent of the plugin - we can always install later)
+			$MenuItem = ClassRegistry::init('Webpages.WebpageMenuItem');
+			if ($MenuItem->saveAll($this->request->data)) {
+				$this->Session->setFlash(__('Flow updated.'));
+			} else {
+				$this->Session->setFlash(__('Error occurred, please try again.'));
+			}
+ 		}
+
  		$this->layout = 'default';
-		$this->set('plugins', CakePlugin::loaded());
 		
 		App::uses('UserRole', 'Users.Model');
 		$UserRole = new UserRole;

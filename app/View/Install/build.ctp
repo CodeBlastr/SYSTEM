@@ -273,7 +273,8 @@
 									}
 								}
 							} ?>
-							<div class="span10 pull-left">
+							<div class="span10 pull-left create-menu-item">
+								<!-- page or section form -->
 								<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'add'))); ?>
 								<?php echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden')); ?>
 								<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
@@ -282,9 +283,22 @@
 								<?php echo $userRole['UserRole']['name']; ?> should go to a 
 								<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'class' => 'input-small')); ?>
 								<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'placeholder' => 'called', 'class' => 'input-small')); ?>
-								<?php // auto-generate this in the model... echo $this->Form->input('WebpageMenuItem.item_url', array('label' => false, 'placeholder' => 'Page Url')); ?>
+								<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small')); ?>
+								
+								<!-- plugin form -->
+								<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => false, 'controller' => 'install', 'action' => 'build'))); ?>
+								<?php echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden')); ?>
+								<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
+								After  
+								<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium')); ?>
+								<?php echo $userRole['UserRole']['name']; ?> should go to a 
+								<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'value' => 'plugin', 'class' => 'input-small')); ?>
+								<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'type' => 'select', 'options' => $plugins, 'class' => 'input-small')); ?>
 								<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small')); ?>
 							</div>
+							
+							
+							
 							<div class="span1 pull-right">
 								<?php echo $this->Html->link('<i class="icon-minus"></i>', '#', array('class' => 'shrink', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
 								<?php echo $this->Html->link('<i class="icon-plus"></i>', '#', array('class' => 'grow', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>

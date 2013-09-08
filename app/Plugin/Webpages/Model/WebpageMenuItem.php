@@ -133,7 +133,7 @@ class WebpageMenuItem extends WebpagesAppModel {
 		
 		if (!empty($data['WebpageMenuItem']['item_url']) && strpos($data['WebpageMenuItem']['item_url'], 'http') !== 0) {
 			// if link_url starts with http do nothing
-		} elseif ($data['WebpageMenuItem']['page_type'] == 'content' || $data['WebpageMenuItem']['page_type'] == 'section') {
+		} elseif ($data['WebpageMenuItem']['page_type'] == 'content' || $data['WebpageMenuItem']['page_type'] == 'section' || $data['WebpageMenuItem']['page_type'] == 'plugin') {
 			// NOTE : don't change this if above, if you do installing a new site fails
 			App::uses('Alias', 'Model');
 			$Alias = new Alias;
@@ -163,15 +163,47 @@ class WebpageMenuItem extends WebpagesAppModel {
 					// it isn't going to save anyway, it didn't validate so do nothing, data should be resubmitted
 				}
 			} elseif ($data['WebpageMenuItem']['page_type'] == 'plugin') {
-				// if non-existing plugin, create page with different content to simulate a plugin (maybe with simulated crud links)
+				$plugin = ZuhaInflector::pluginize($data['WebpageMenuItem']['item_text']);
+				App::uses($plugin.'AppModel', $plugin.'.Model'); $className = $plugin.'AppModel';
+				$Model = new $className;
+				if (method_exists($Model, 'menuInit')) {
+					// see if the plugin model has a function to generate starting links (note : handle test data in the schema)
+					$data = $Model->menuInit($data);
+				} else {
+					// create crud links
+					$name = DS . Inflector::tableize(ZuhaInflector::pluginize($data['WebpageMenuItem']['item_text']));
+					$url =  $name . $name;
+					$data['WebpageMenuItem']['item_url'] = $name;
+					$data['WebpageMenuItem']['item_text'] = $plugin;
+					$data['WebpageMenuItem']['name'] = $plugin;
+					$data['ChildMenuItem'] = array(
+						array(
+							'name' => 'View ' . Inflector::singularize($plugin),
+							'item_text' => 'View ' . Inflector::singularize($plugin),
+							'item_url' => $url . '/view/{id}'
+						),
+						array(
+							'name' => 'Edit ' . Inflector::singularize($plugin),
+							'item_text' => 'Edit ' . Inflector::singularize($plugin),
+							'item_url' => $url . '/edit/{id}'
+						),
+						array(
+							'name' => 'Add ' . Inflector::singularize($plugin),
+							'item_text' => 'Add ' . Inflector::singularize($plugin),
+							'item_url' => $url . '/add'
+						),
+						array(
+							'name' => 'Delete ' . Inflector::singularize($plugin),
+							'item_text' => 'Delete ' . Inflector::singularize($plugin),
+							'item_url' => $url . '/delete/{id}'
+						)
+					);					
+				}
 				
-				// else install plugin and create crud links
-				debug($data);
-				debug('put code to install plugin and create additional sub links for this menu (crud links)');
-				break;
+				// if non-existing plugin, create page with different content to 
+				// simulate a plugin (maybe with simulated crud links)
 			}
 		}
-
         return $data;    
     }
 	
