@@ -226,7 +226,7 @@ class Webpage extends WebpagesAppModel {
 				// a lighter call (no children possible, so no contains), but I'd still like to get rid of it somehow
 				$includeId = $this->field('id', array('Webpage.name' => trim($matches[2][$i])));
 			} else {
-				$conditions = is_numeric(trim($matches[2][$i])) ? array('Webpage.id' => $includeId) : array('Webpage.name' => trim($matches[2][$i]));
+				$conditions = is_numeric(trim($matches[2][$i])) ? array('Webpage.id' => trim($matches[2][$i])) : array('Webpage.name' => trim($matches[2][$i]));
 				$include = $this->find('first', array(
 					'conditions' => $conditions,
 					'contain' => array(
