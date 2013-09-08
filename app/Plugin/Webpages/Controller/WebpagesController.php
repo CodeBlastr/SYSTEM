@@ -401,20 +401,18 @@ class WebpagesController extends WebpagesAppController {
     		}
         }
 	}
-	
 
 /**
- * Parse included elements method
+ * Export method
  * 
- * @param string
- * @return void
-    public function __parseIncludedElements($content_str) {
-        $this->autoRender = $this->layout = false;
-        $this->set('content_str', $content_str);
-        $content_str = $this->render('webpages/render_content');
-        return $content_str;
-    }
+ * Export a template to an array that can be used in the templates table
+ * 
+ * @param int $id
  */
+ 	public function export($id) {
+		$this->Webpage->export($id);
+ 	}
+
  
  /**
   * Convience Function checks if files exists in sites pat.
@@ -426,23 +424,19 @@ class WebpagesController extends WebpagesAppController {
   * @return bool
   */
  
- private function _fileExistsCheck($filename) {
-	 App::uses('File', 'Utility');
-	 $return = false;
-	 if(isset($filename)) {
-	 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
-		$file = new File($path . $filename);
-		$return =  $file->exists();
-	 }
-	 
-	 if($return == false) {
-	 	$path = App::pluginPath($this->plugin) . '/View/' . $this->viewPath . '/';
-		$file = new File($path . $filename);
-		$return = $file->exists();
-	 }
-	 
-	 return $return;
-	 
- }
+	private function _fileExistsCheck($filename) {
+		App::uses('File', 'Utility');
+		$return = false;
+		if(isset($filename)) {
+		 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
+			$file = new File($path . $filename);
+			$return =  $file->exists();
+		}
+		if($return == false) {
+		 	$path = App::pluginPath($this->plugin) . '/View/' . $this->viewPath . '/';
+			$file = new File($path . $filename);
+			$return = $file->exists();
+		}
+	 	return $return;}
 
 }
