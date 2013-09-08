@@ -126,7 +126,7 @@
 	height: 0; /* put in with bootstrap 3, might need to come out if it breaks 2 */
 }
 #adminNavFloManagr .navbar-inner {
-	background: #333;
+	background: #222;
     border: 0;
 }
 #adminNavFloManagr ul {
