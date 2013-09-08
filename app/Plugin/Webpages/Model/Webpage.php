@@ -1023,7 +1023,6 @@ class Webpage extends WebpagesAppModel {
 		if (empty($template)) {
  			throw new NotFoundException(__('Page not found'));
 		}
-
 		$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$template['Webpage']['name'];
 		
 		if ($templateContent = file_get_contents($templateFile)) {
@@ -1034,8 +1033,6 @@ class Webpage extends WebpagesAppModel {
 					'content' => str_replace(array("\r", "\n"), "", $templateContent)
 					),
 				);
-			unset($templateContent);
-			unset($template['Webpage']['name']);
 		} else {
 			throw new Exception(__('Missing %s template file', $template['Webpage']['name']));
 		}
@@ -1052,8 +1049,6 @@ class Webpage extends WebpagesAppModel {
 						'content' => str_replace(array("\r", "\n"), "", $elementContent)
 						)
 					);
-				unset($elementContent);
-				unset($matches[2][$i]);
 			} else {
 				throw new Exception(__('Missing %s element file', trim($matches[2][$i])));
 			}
@@ -1081,7 +1076,6 @@ class Webpage extends WebpagesAppModel {
 									'order' => $i
 									)
 								);
-							unset($cssContent);
 							unset($name);
 						} else {
 							throw new Exception(__('Css file %s doesn\'t exist.', $name));
@@ -1097,8 +1091,8 @@ class Webpage extends WebpagesAppModel {
 			foreach (unserialize(__WEBPAGES_DEFAULT_JS_FILENAMES) as $media => $files) { 
 				foreach ($files as $file) {
 					if (strpos($file, ',')) {
-						if (strpos($file, $defaultTemplate['Webpage']['id'].',') === 0) {
-							$file = str_replace($defaultTemplate['Webpage']['id'].',', '', $file);
+						if (strpos($file, $template['Webpage']['id'].',') === 0) {
+							$file = str_replace($template['Webpage']['id'].',', '', $file);
 							$name = $file;
 						}
 					} else {
@@ -1114,7 +1108,6 @@ class Webpage extends WebpagesAppModel {
 									'order' => $i
 									)
 								);
-							unset($jsContent);
 							unset($name);
 						} else {
 							throw new Exception(__('Js file %s doesn\'t exist.', $name));
@@ -1124,11 +1117,18 @@ class Webpage extends WebpagesAppModel {
 				$i++;
 			} 
 		} 
-			
-		debug(serialize(str_replace(PHP_EOL, '', $output)));
-		debug('From here down is just for code reading purposes.');
-		debug($output);
-		break;
+		
+		return array(
+			'Template' => array(
+				'layout' => $template['Webpage']['name'],
+				'is_usable' => 0,
+				'install' => serialize($output),
+				'icon' => '<div style="height: 0px; padding-bottom: 80%; position:relative; width: 100%; float: left;"><div style="width: 100%; height: 100%; padding: 0; top: 0; position: absolute; background: url(put image data string here) no-repeat;  background-size: cover; border: 1px solid #E3E3E3; border-radius: 1em; overflow: hidden;"></div></div>',
+				'description' => 'put a template description here',
+				'demo' => 'put demonstration link here',
+				'_install' => $output
+			)
+		);
 	}
 
 	
