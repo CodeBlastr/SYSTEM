@@ -149,7 +149,7 @@
 <div class="install form">
 	<div class="container">
 				
-		<blockquote>
+		<div class="row-fluid">
 			<legend class="lead">Choose a default layout.</legend>
 		  	<fieldset>			        	
 		        <?php foreach ($templates as $template) : ?>
@@ -176,18 +176,12 @@
 			        <?php endif; ?>
 		        <?php endforeach; ?>
 			</fieldset>
-		</blockquote>
+		</div>
 		
-		
-	    <div class="progress">
-		    <div class="bar bar-info" style="width: 25%;"></div>
-		    <div class="bar bar-success" style="width: 25%;"></div>
-		    <div class="bar bar-warning" style="width: 25%;"></div>
-		    <div class="bar bar-danger" style="width: 25%;"></div>
-	    </div>
+		<hr />
  
     
-			<blockquote>
+		<div class="row-fluid">
 			<legend class="lead"><?php echo __('Site settings'); ?></legend>
 		  	<fieldset class="row-fluid clearfix">
 		        <div class="span5 pull-left">
@@ -206,18 +200,11 @@
 					<?php echo $this->Form->end('Upload'); ?>
 				</div>
 			</fieldset>
-		</blockquote>
+		</div>
 		
+		<hr />
 		
-	    <div class="progress">
-		    <div class="bar bar-info" style="width: 25%;"></div>
-		    <div class="bar bar-success" style="width: 25%;"></div>
-		    <div class="bar bar-warning" style="width: 25%;"></div>
-		    <div class="bar bar-danger" style="width: 25%;"></div>
-	    </div>
-		
-		
-		<blockquote>
+		<div class="row-fluid">
 			<legend class="lead"><?php echo __('User types'); ?></legend>
 			<!--p>User usually fall into groups.  By grouping users we can control what parts of the site they have access to. </p-->
 		  	<fieldset class="row-fluid clearfix">
@@ -241,21 +228,16 @@
 					<?php echo $this->Form->end(); ?>
 				</div>
 			</fieldset>
-		</blockquote>
+		</div>
 		
 	    
 		<?php foreach ($userRoles as $userRole) : ?>
 			<?php $var = $userRole['UserRole']['name'] . 'Sections'; $myMenus = $$var; ?>
 			<?php foreach ($myMenus as $mine) : ?>
-				<div class="progress">
-				    <div class="bar bar-info" style="width: 25%;"></div>
-				    <div class="bar bar-success" style="width: 25%;"></div>
-				    <div class="bar bar-warning" style="width: 25%;"></div>
-				    <div class="bar bar-danger" style="width: 25%;"></div>
-			    </div>
+				<hr />
 	    
 	    
-				<blockquote class="clearfix">
+				<div class="row-fluid clearfix">
 						<legend class="lead row-fluid clearfix">
 							<?php 
 							// sucks to put this here, but unless we make a function in the ZuhaSet class it stays (because we're in a loop which wouldn't work well in the controller)
@@ -334,18 +316,12 @@
 						    </div>						
 						</div>
 					
-				</blockquote>
+				</div>
 			<?php endforeach; ?>
 				
 		<?php endforeach; ?>
 		
-		
-		<div class="progress">
-		    <div class="bar bar-info" style="width: 25%;"></div>
-		    <div class="bar bar-success" style="width: 25%;"></div>
-		    <div class="bar bar-warning" style="width: 25%;"></div>
-		    <div class="bar bar-danger" style="width: 25%;"></div>
-	    </div>
+		<hr />
 		
 	</div>
 </div>
