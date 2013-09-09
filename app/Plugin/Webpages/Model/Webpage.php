@@ -222,7 +222,7 @@ class Webpage extends WebpagesAppModel {
         	$includeTag = $matches[0][$i];
 			$paths = App::path('View');
 			$file = $paths[2].'Elements'.DS.trim($matches[2][$i]).'.ctp'; // we could support other paths in the future
-			if ($content = file_get_contents($file)) {
+			if ($content = @file_get_contents($file)) {
 				// a lighter call (no children possible, so no contains), but I'd still like to get rid of it somehow
 				$includeId = $this->field('id', array('Webpage.name' => trim($matches[2][$i])));
 			} else {
@@ -589,10 +589,11 @@ class Webpage extends WebpagesAppModel {
 		// save template
 		if (!empty($this->data['Webpage']['name']) && $this->data['Webpage']['type'] == 'template') {
 			// if the name is empty that should mean that its coming from the file sync method and should not use this function
+			$filename = $this->data['Webpage']['name'] = strtolower(trim(preg_replace('/[^a-zA-Z0-9.]+/', '-', $this->data['Webpage']['name']), '-'));
 			App::uses('Folder', 'Utility');
 			App::uses('File', 'Utility');
 			$dir = new Folder($this->templateDirectories[0], true, 0755);
-			$file = new File($this->templateDirectories[0] . $this->data['Webpage']['name'], true, 0644);
+			$file = new File($this->templateDirectories[0] . $filename, true, 0644);
 			try {
 				$file->write($this->data['Webpage']['content'], 'w', true);
 				$file->close(); // Be sure to close the file when you're done
@@ -604,10 +605,11 @@ class Webpage extends WebpagesAppModel {
 		
 		if (!empty($this->data['Webpage']['name']) && $this->data['Webpage']['type'] == 'element') {
 			// create files for elements too
+			$filename = $this->data['Webpage']['name'] = strtolower(trim(preg_replace('/[^a-zA-Z0-9.]+/', '-', $this->data['Webpage']['name']), '-'));
 			App::uses('Folder', 'Utility');
 			App::uses('File', 'Utility');
 			$dir = new Folder($this->elementsDirectory, true, 0755);
-			$file = new File($this->elementsDirectory . $this->data['Webpage']['name'] . '.ctp', true, 0644);
+			$file = new File($this->elementsDirectory . $filename . '.ctp', true, 0644);
 			try {
 				$file->write($this->data['Webpage']['content'], 'w', true);
 				$file->close(); // Be sure to close the file when you're done
