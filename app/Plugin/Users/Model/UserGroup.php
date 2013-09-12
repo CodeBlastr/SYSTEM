@@ -1,7 +1,12 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
 
-class UserGroup extends UsersAppModel {
+/**
+ * Extension Code
+ * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Model'.DS.'UserGroup.php');
+ */
+
+class _UserGroup extends UsersAppModel {
 	public $name = 'UserGroup';
 	public $displayField = 'title';
 	
@@ -92,4 +97,8 @@ class UserGroup extends UsersAppModel {
 	public function user($data) {
 		return $this->User->procreate($data);
 	}
+}
+
+if (!isset($refuseInit)) {
+	class UserGroup extends _UserGroup {}
 }
