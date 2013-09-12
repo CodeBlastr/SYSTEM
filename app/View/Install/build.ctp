@@ -40,12 +40,12 @@
 		background: linear-gradient(to bottom,  rgba(143,200,0,0) 0%,rgba(143,200,0,0) 24%,rgba(143,200,0,1) 52%,rgba(143,200,0,0) 81%,rgba(143,200,0,0) 100%);
 		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#008fc800', endColorstr='#008fc800',GradientType=0 );*/
 	}
-	.menus.edit.form ul ul ul {
+	/*.menus.edit.form ul ul ul {
 		background: url("/img/flow.png") repeat-y scroll -100% center / 100px 117% transparent;
 	}
 	.menus.edit.form ul ul li {
 		background: #4EC748;
-	}
+	}*/
 	.menus.edit.form .btn-danger {
 		margin-bottom: 4px;
 		margin-top: -22px;
@@ -59,6 +59,13 @@
 		position: absolute;
 		top: 4.5em;
 		width: 7.6em
+	}
+	.menus.edit.form ul li div.item a {
+		color: #000;
+	}
+	.menus.edit.form ul li div.item a:hover {
+		color: #000;
+		text-decoration:none;
 	}
 	.menus.edit.form ul ul li div.item {
 		position: relative;
@@ -81,7 +88,7 @@
 		cursor: move;
 		margin: -4.5em 0 0 0;
 	}
-	.menus.edit.form:hover ul li div.item {
+	.menus.edit.form .expand ul li div.item {
 		margin-top: 0;
 	}
 	.menus.edit.form .placeholder {
@@ -124,8 +131,14 @@
 	.menus.edit.form li div.item:hover {
 		z-index: 10;
 	}
+	.menus.edit.form .expand li div.item a span.icon {
+	 	opacity: 0.7;
+	}
 	.menus.edit.form li div.item a:hover span.icon {
-		opacity: 0.7;
+		opacity: 0.9;
+	}
+	.menus.edit.form .expand li div.item a span.link {
+	 	color: #777;
 	}
 	.menus.edit.form li div.item a:hover span.link {
 		color: #000;

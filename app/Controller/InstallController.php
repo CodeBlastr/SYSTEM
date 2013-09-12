@@ -155,7 +155,7 @@ class InstallController extends Controller {
 	    $this->config['login'] = $Install->default['login'];
 	    $this->config['password'] = $Install->default['password'];
 		// add db prefix and remove postfix from the db name (eg. domain.localhost might become the db name prefix_domain instead of prefix_domain.localhost)
-	    $this->config['database'] = $Install->default['prefix'].str_replace($Install->default['postfix'], '', $this->request->data['Install']['site_domain']);
+	    $this->config['database'] = $Install->default['prefix'] . preg_replace("/[^A-Za-z]/", '', str_replace($Install->default['postfix'], '', $this->request->data['Install']['site_domain']));
 		
 		// create the db here
 		$connection = mysqli_connect($this->config['host'], $this->config['login'], $this->config['password']);
@@ -762,9 +762,13 @@ class InstallController extends Controller {
  */
     protected function _handleSecurity() {
     	//this is here to handle post install redirect (so that it wouldn't come back to the install page)
-    	if (defined('SITE_DIR') && SITE_DIR == 'sites/'.$_SERVER['HTTP_HOST'] && $this->request->action != 'index' && $this->request->action != 'plugin' && $this->request->action != 'build') {
-			$this->Session->setFlash(__('Site installed successfully.')); 
-			$this->redirect('/install/build');
+    	if (defined('SITE_DIR') && SITE_DIR == 'sites/'.$_SERVER['HTTP_HOST'] && $this->request->action != 'index' && $this->request->action != 'plugin' && $this->request->action != 'build' && $this->request->action != 'client') {
+			$this->Session->setFlash(__('Site installed successfully.'));
+			$this->_local();
+			require_once($this->installFile);
+			$Install = new INSTALL_CONFIG;
+			$url =  !empty($Install->default['redirect']) ? $Install->default['redirect'] : '/install/build';
+			$this->redirect($url);
 		}
 		
     	if (Configure::read('Install') === true) {
@@ -867,6 +871,15 @@ class InstallController extends Controller {
     }
 
 /**
+ * Client method
+ * Alias of build method, for a different view
+ * 
+ */
+ 	public function client() {
+ 		return $this->build();
+	}
+
+/**
  * Build method
  * 
  */
@@ -915,9 +928,16 @@ class InstallController extends Controller {
 		
 		$Menu = ClassRegistry::init('Webpages.WebpageMenu');
 		foreach ($userRoles as $userRole) {
-			$varName = $userRole['UserRole']['name'] . 'Sections';
+			$varName = preg_replace("/[^A-Za-z]/", '', $userRole['UserRole']['name']) . 'Sections';
 			$conditions = $userRole['UserRole']['id'] == __SYSTEM_GUESTS_USER_ROLE_ID ? array('OR' => array(array('WebpageMenu.user_role_id' => ''), array('WebpageMenu.user_role_id' => null))) : array('WebpageMenu.user_role_id' => $userRole['UserRole']['id']);
-        	$this->set($varName, $Menu->find('threaded', array('conditions' => $conditions)));
+        	$menu = $Menu->find('threaded', array('conditions' => $conditions));
+			// remove --Home from Home menu
+			for ($i = 0; $i < count($menu[0]['children']); $i++) {
+				if ($menu[0]['children'][$i]['WebpageMenu']['name'] == $menu[0]['WebpageMenu']['name']) {
+					unset($menu[0]['children'][$i]);
+				}
+			}
+			$this->set($varName, $menu);
 		}
         //$this->set('sections', $Menu->find('threaded', array('conditions' => array('WebpageMenu.lft >=' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <=' => $menu['WebpageMenu']['rght']))));
         // used for re-ordering items $this->request->data['WebpageMenu']['children'] = $this->WebpageMenu->find('count', array('conditions' => array('WebpageMenu.lft >' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <' => $menu['WebpageMenu']['rght'])));
@@ -949,10 +969,10 @@ class InstallController extends Controller {
 		try {
 			$Webpage->installTemplate($data, array('type' => 'default'));
 			$this->Session->setFlash(__('Template installed'));
-			$this->redirect(array('controller' => 'install', 'action' => 'build'));
+			$this->redirect($this->referer());
         } catch (Exception $e) {
 			$this->Session->setFlash(__('%s, please try again. <br /> ', $e->getMessage()));
-			$this->redirect(array('controller' => 'install', 'action' => 'build'));
+			$this->redirect($this->referer());
         }
  	}
 	
@@ -976,10 +996,28 @@ class InstallController extends Controller {
 		$WebpageMenu->create();
 		if ($WebpageMenu->save($this->request->data)) {
 			$this->Session->setFlash(__('New flow started'));
-			$this->redirect(array('controller' => 'install', 'action' => 'build'));
+			$this->redirect($this->referer());
 		} else {
 			$this->Session->setFlash(__('Save failure. Please, try again.'));
-			$this->redirect(array('controller' => 'install', 'action' => 'build'));
+			$this->redirect($this->referer());
+		}
+ 	}
+
+/**
+ * public function notify
+ * 
+ */
+ 	public function approve() {
+		$this->_local();
+ 		require_once($this->installFile);
+		$Install = new INSTALL_CONFIG;
+		$mail = $Install->default['notify'];
+		if ($this->Install->__sendMail('richard@buildrr.com', $_SERVER['HTTP_HOST'] . ' Approved', 'Approved project scope, check it out. http://' . $_SERVER['HTTP_HOST'])) {
+			$this->Session->setFlash(__('Approval notification sent, thank you!'));
+			$this->redirect($this->referer());
+		} else {
+			$this->Session->setFlash(__('There was a problem delivering the approval, please try again later.'));
+			$this->redirect($this->referer());
 		}
  	}
 
