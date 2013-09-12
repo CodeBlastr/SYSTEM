@@ -803,7 +803,11 @@ class _User extends UsersAppModel {
  * @param array $data
  * @return boolean
  */
-	public function procreate($data = array()) {
+	public function procreate($data = array(), $options = array()) {
+		// change this to merge of some kind for default options
+		$options['dryrun'] = !empty($options['dryrun']) ? $options['dryrun'] : false;
+		
+		// setup data
 		$randompassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'),0,3);
 		$randompassword .= substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,3);
 		$randompassword .= substr(str_shuffle('0123456789'),0,3);
@@ -812,12 +816,23 @@ class _User extends UsersAppModel {
 		$data['User']['confirm_password'] = $randompassword;
 		$data['User']['forgot_key'] = $this->__uuid('F');
 		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+		
+		// save the setup data
 		if ($this->saveAll($data)) {
-			$site = defined('SITE_NAME') ? SITE_NAME : 'New';
-			$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
-			$message = __('You have a new user account. <br /><br /> username : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $url, $url);
-			$this->__sendMail($data['User']['username'], __('%s User Account Created', $site), $message);
+			if ((!empty($data['User']['username']) || !empty($data['User']['email'])) && $options['dryrun'] == false) {
+				$data['User']['username'] = !empty($data['User']['username']) ? $data['User']['username'] : $data['User']['email']; 
+				$site = defined('SITE_NAME') ? SITE_NAME : 'New';
+				$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
+				$message = __('You have a new user account. <br /><br /> username : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $url, $url);
+				if ($this->__sendMail($data['User']['username'], __('%s User Account Created', $site), $message)) {
+					
+				} else {
+					throw new Exception(__('Failed to notify new user'));
+				}
+			}
 			return true;
+		} else {
+			return false;
 		}
 	}
 
