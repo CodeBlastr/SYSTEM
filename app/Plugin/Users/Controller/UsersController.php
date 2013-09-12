@@ -193,6 +193,8 @@ class _UsersController extends UsersAppController {
 		$this->set('does_follow' , $does_follow);
 		$this->set('user', $user);
 		$this->set('friends', $friends);
+		
+		$this->set('title_for_layout', $user['User']['full_name'] . ' | ' . __SYSTEM_SITE_NAME);
 	}
 
 /**
@@ -280,6 +282,8 @@ class _UsersController extends UsersAppController {
 
 		$this->set(compact('userRoleId', 'userRoles'));
 		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
+		
+		$this->set('title_for_layout', 'Register | ' . __SYSTEM_SITE_NAME);
 	}
 
 /**
@@ -366,6 +370,7 @@ class _UsersController extends UsersAppController {
 		if (empty($this->templateId)) {
 			 $this->layout = 'login'; 
 		}
+		$this->set('title_for_layout', 'Login | ' . __SYSTEM_SITE_NAME);
 	}
 
 /**
@@ -539,6 +544,8 @@ class _UsersController extends UsersAppController {
 			$this->Session->setFlash('Invalid User Key');
 			$this->redirect(array('action' => 'forgot_password'));
 		}
+		
+		$this->set('title_for_layout', 'Change Password | ' . __SYSTEM_SITE_NAME);
 	}
 
 
