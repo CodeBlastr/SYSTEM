@@ -183,7 +183,7 @@ class ZuhaSet {
 	}
 	
 /**
- * Remove a value from an array and reindex
+ * Remove a value from an array and reindex (if keepKeys is false)
  */
 	public function devalue($array, $unwantedValue, $keepKeys = false) {
 		foreach($array as $key => $value) {
