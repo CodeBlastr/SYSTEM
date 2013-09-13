@@ -7,7 +7,7 @@
 		echo $this->Form->input('type');
 		echo $this->Form->input('name');
 		echo $this->Form->input('value');
-		echo $this->Form->input('description');
+		echo $this->Form->input('description', array('disabled' => 'disabled', 'class' => 'span12', 'rows' => 10));
 		echo $this->Form->end('Submit');
 		?>
 	</fieldset>

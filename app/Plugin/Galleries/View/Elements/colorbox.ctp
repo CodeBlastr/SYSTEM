@@ -1,6 +1,6 @@
 <?php
-# this should be at the top of every element created with format __ELEMENT_PLUGIN_ELEMENTNAME_instanceNumber.
-# it allows a database driven way of configuring elements, and having multiple instances of that configuration.
+// this should be at the top of every element created with format __ELEMENT_PLUGIN_ELEMENTNAME_instanceNumber.
+// it allows a database driven way of configuring elements, and having multiple instances of that configuration.
 if(!empty($instance) && defined('__ELEMENT_GALLERIES_COLORBOX_'.$instance)) {
 	extract(unserialize(constant('__ELEMENT_GALLERIES_COLORBOX_'.$instance)));
 } else if (defined('__ELEMENT_GALLERIES_COLORBOX')) {
@@ -48,8 +48,8 @@ if (!empty($gallery['GalleryImage'][0])) {
                     'rel' => 'example4',
                     ));   
     
-                    
-            echo $this->Element('actions', array('galleryId' => $gallery['Gallery']['id'], 'slideId' => $slide['id']), array('plugin' => 'galleries')); ?>
+            // deprecated (options are available in the right column in admin now)       
+            // echo $this->Element('actions', array('galleryId' => $gallery['Gallery']['id'], 'slideId' => $slide['id']), array('plugin' => 'galleries')); ?>
             </div>
         <?php 
         } // end images loop ?>

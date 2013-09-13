@@ -213,7 +213,10 @@ class _UsersController extends UsersAppController {
 		if (empty($this->request->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
-				));
+				'contain' => array(
+					'Contact' => array('ContactAddress')
+				)
+			));
 			if(isset($user['User'])) {
 				$this->request->data = $user;
 			} else {
@@ -221,7 +224,7 @@ class _UsersController extends UsersAppController {
 			}
 		// saving a user which was edited
 		} else if(!empty($this->request->data)) {
-			$this->request->data['User']['user_id'] = $this->Auth->user('id');
+			$this->request->data['User']['id'] = $this->Auth->user('id');
 			//getting password issue when saving ; so unsetting in this case
 			if(!isset($this->request->data['User']['password']))	{
 				unset($this->User->validate['password']);
@@ -230,12 +233,11 @@ class _UsersController extends UsersAppController {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
-//			debug($this->request->data);
-//			break;
 			try {
-				$this->User->save($this->request->data);
+				//debug($this->request->data['User']); break;
+				$this->User->saveUserAndContact($this->request->data);
 				$this->Session->setFlash('User Updated!');
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->request->data['User']['id']), true);
 			} catch(Exception $e){
 				$this->Session->setFlash('There was an error updating user' . $e);
 			}
@@ -250,9 +252,10 @@ class _UsersController extends UsersAppController {
  * Register method
  */
 	public function register() {
+		
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
-
+		
 		if (!empty($this->request->data)) {
 			if ($this->User->saveAll($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
@@ -322,6 +325,7 @@ class _UsersController extends UsersAppController {
  * A page to stop infinite redirect loops when there are errors.
  */
 	public function restricted() {
+		
 	}
 
 /**
@@ -580,6 +584,21 @@ If you have received this message in error please ignore, the link will be unusa
 				$this->Session->setFlash('Invalid user.');
 			}
 		}
+	}
+
+	public function searchUsers () {
+		if(isset($this->request->query['search'])) {
+			$this->set('users', $this->User->find('all' , array(
+				'conditions' => array(
+					'OR' => array(
+						'username LIKE' => $this->request->query['search'].'%',
+						'email LIKE' => $this->request->query['search'].'%',
+				)),
+				'fields' => array('User.id', 'User.username'),
+				'limit' => 10,
+				)));	
+		}
+		
 	}
 }
 

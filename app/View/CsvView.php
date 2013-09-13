@@ -11,8 +11,6 @@ class CsvView extends View {
 		$csv = $this->_array_to_csv($this->viewVars[$path]);
 		//debug($this->viewVars);
 		//break;
-		//debug($csv);
-		//break;
 		return $csv; 
     }
 	
@@ -38,18 +36,22 @@ class CsvView extends View {
 				//debug(array_search($header, $csvString['headers']));
 				if(array_search($header, $csvString['headers']) === false) {
 					//debug(array_search(key($line), $csvString['headers']));
-					$csvString['headers'][] = $header; 
+					if(!empty($header)){
+						$csvString['headers'][] = $header; 
+					}
+				
 				}
 			}
 		}
-		
 		//Create the values this will also check for commas in the values
 		foreach($csv as $c => $lines) {
 			$csvString['values'][$c] = '';
 			foreach($csvString['headers'] as $h) {
-				$h = str_replace('_', '.', $h);
+				if(strpos($h, '.') > 0) {
+					$h = str_replace('_', '.', $h);
+				}
+				
 				if(isset($lines[$h])) {
-					
 					$csvString['values'][$c] .= is_int($lines[$h]) ? $lines[$h] . ',' : '"' . str_replace(',', '' , $lines[$h]) . '",'; 
 				}else {
 					$csvString['values'][$c] .= ',';

@@ -56,6 +56,7 @@ small {
 }
 .navbar-fixed-bottom {
     position: fixed;
+    background: #222;
 }
 /* getting rid of the negative margins bootstrap uses */
 .row {
@@ -280,6 +281,10 @@ button.btn, input.btn[type="submit"] {
 	display: inline-block;
 	margin-right: 8px;
 }
+.form-inline .block, .form-inline .block div { /* block row within a form-inline */
+	display: block;
+	margin-right: auto;
+}
 .form-inline label, .form-inline input[type=submit], .form-inline a {
     vertical-align: middle;
     margin: 0 8px;
@@ -352,7 +357,6 @@ button.btn, input.btn[type="submit"] {
 -------------------------------------------------- */
 
 .bs-docs-sidenav {
-  width: 228px;
   margin: 0;
   padding: 0;
   background-color: #fff;

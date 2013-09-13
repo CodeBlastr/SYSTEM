@@ -298,7 +298,7 @@ class WebpagesController extends WebpagesAppController {
 			try {
 				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'));
-				$this->redirect(array('action' => 'view', $this->Webpage->id));
+				$this->request->data['Webpage']['type'] == 'template' ? null : $this->redirect(array('action' => 'view', $this->Webpage->id));
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}
@@ -401,20 +401,38 @@ class WebpagesController extends WebpagesAppController {
     		}
         }
 	}
-	
 
 /**
- * Parse included elements method
+ * Export method
  * 
- * @param string
- * @return void
-    public function __parseIncludedElements($content_str) {
-        $this->autoRender = $this->layout = false;
-        $this->set('content_str', $content_str);
-        $content_str = $this->render('webpages/render_content');
-        return $content_str;
-    }
+ * Export a template to an array that can be used in the templates table
+ * 
+ * @param int $id
  */
+ 	public function export($id) {
+ 		$data = $form = $this->Webpage->export($id);
+		$form['Template']['install'] = substr($form['Template']['install'], 0, 500);
+		if (!unserialize($data['Template']['install'])) {
+			debug('data not serialized properly');
+			break;
+		}
+		
+ 		if ($this->request->is('post') || $this->request->is('push')) {
+ 			if (!unserialize($data['Template']['install'])) {
+ 				debug('serialization error');
+				debug($data['Template']['install']);
+				break;
+ 			}
+			$this->request->data['Template']['install'] = $data['Template']['install'];
+			debug('Copy and paste this into the app/Config/Schema/schema.php file in the appropriate spot.');
+			debug($this->request->data);
+			break;
+ 		}
+		$this->request->data = $form;
+		$this->set('page_title_for_layout', __('Export %s', $this->request->data['Template']['layout']));
+		$this->set('title_for_layout', __('Export %s', $this->request->data['Template']['layout']));
+ 	}
+
  
  /**
   * Convience Function checks if files exists in sites pat.
@@ -426,23 +444,19 @@ class WebpagesController extends WebpagesAppController {
   * @return bool
   */
  
- private function _fileExistsCheck($filename) {
-	 App::uses('File', 'Utility');
-	 $return = false;
-	 if(isset($filename)) {
-	 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
-		$file = new File($path . $filename);
-		$return =  $file->exists();
-	 }
-	 
-	 if($return == false) {
-	 	$path = App::pluginPath($this->plugin) . '/View/' . $this->viewPath . '/';
-		$file = new File($path . $filename);
-		$return = $file->exists();
-	 }
-	 
-	 return $return;
-	 
- }
+	private function _fileExistsCheck($filename) {
+		App::uses('File', 'Utility');
+		$return = false;
+		if(isset($filename)) {
+		 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
+			$file = new File($path . $filename);
+			$return =  $file->exists();
+		}
+		if($return == false) {
+		 	$path = App::pluginPath($this->plugin) . '/View/' . $this->viewPath . '/';
+			$file = new File($path . $filename);
+			$return = $file->exists();
+		}
+	 	return $return;}
 
 }
