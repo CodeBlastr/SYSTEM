@@ -60,14 +60,14 @@ class ContactsSchema extends CakeSchema {
 		'contact_source' => array('type' => 'string', 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'null' => true, 'default' => NULL),
 		'contact_industry' => array('type' => 'string', 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'null' => true, 'default' => NULL),
 		'contact_rating' => array('type' => 'string', 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'null' => true, 'default' => NULL),
-		'user_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'key' => 'unique', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'assignee_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'key' => 'unique', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'user_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'assignee_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'is_company' => array('type' => 'boolean', 'null' => true, 'default' => '0'),
 		'creator_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'modifier_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'USER_ID' => array('column' => 'user_id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 	public $contacts_contacts = array(

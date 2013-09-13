@@ -1,4 +1,5 @@
 <?php
+
 class _UserGroupsController extends UsersAppController {
 
 	public $name = 'UserGroups';

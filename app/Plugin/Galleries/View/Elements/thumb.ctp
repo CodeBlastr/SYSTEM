@@ -53,11 +53,16 @@ $thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; // to a
 if (!empty($galleryThumb['GalleryThumb']['filename'])) {
     $imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'. $thumbSize .'/'.$galleryThumb['GalleryThumb']['filename'];
 	$conversionType = !empty($conversionType) ? $conversionType : $galleryThumb['GallerySettings']['conversionType'];
-    $image = $this->Html->image($imagePath, $thumbImageOptions,	array(
-    	'conversion' => $conversionType,
-		'quality' => 75,
-		'alt' => 'thumbnail',
-		));	
+	
+	$image = !empty($galleryThumb['GalleryThumb']['_embed']) ? 
+		// video support
+		'<iframe height="' . $galleryThumb['GallerySettings'][$thumbSize . 'ImageHeight'] . '" width="' . $galleryThumb['GallerySettings'][$thumbSize . 'ImageWidth'] . '" src="' . $galleryThumb['GalleryThumb']['_embed'] . '?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe>' : 
+		
+		$this->Html->image($imagePath, $thumbImageOptions,	array(
+	    	'conversion' => $conversionType,
+			'quality' => 75,
+			'alt' => 'thumbnail',
+			));	
 } else if (!empty($showEmpty)) {
 	$imagePath = '/img/noImage.jpg';
     $image = $this->Html->image($imagePath, array(

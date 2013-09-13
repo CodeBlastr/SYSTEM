@@ -31,6 +31,8 @@ class WebpagesAppModel extends AppModel {
 		
 		$this->jsDirectory = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'webroot'.DS.'js'.DS;
 		
+		$this->elementsDirectory = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Elements'.DS;
+		
 		parent::__construct($id, $table, $ds);
 	}
 	
@@ -96,24 +98,24 @@ class WebpagesAppModel extends AppModel {
 			if (!empty($files)) {
 				foreach ($files as $file) {
 					$file = new File($dir->pwd() . DS . $file);
-					$csses[] = array('webpage_id' => 2147483647, 'type' => 'all', 'name' => str_replace($this->cssDirectory, '', $file->path), 'content' => $file->read(), 'modified' => date('Y-m-d h:i:s', $file->lastChange()));
+					$csses[] = array('name' => str_replace($this->cssDirectory, '', $file->path), 'content' => $file->read(), 'modified' => date('Y-m-d h:i:s', $file->lastChange()));
 					$file->close(); // Be sure to close the file when you're done
 				}
 			}
 			if (!empty($csses)) {
 				foreach ($csses as $css) {
-					$id = $this->find('first', array('conditions' => array('name' => $css['name']), 'fields' => 'id'));
-					
+					$id = $this->field('id', array('WebpageCss.name' => $css['name']));
 					if (!empty($id)) {
-						$this->id = $id['WebpageCss']['id'];
 						try {
-							$this->saveField('content', $css['content']);
+							$this->id = $id;
+							$this->saveField('content', $css['content'], array('callbacks' => false));
 						} catch (Exception $e) {
 							debug($e->getMessage());
 							break;
 						}
 					} else {
 						try {
+							$css['is_requested'] = 1;
 							$this->create();
 							$this->save($css);
 						} catch (Exception $e) {
@@ -132,23 +134,24 @@ class WebpagesAppModel extends AppModel {
 			if (!empty($files)) {
 				foreach ($files as $file) {
 					$file = new File($dir->pwd() . DS . $file);
-					$jses[] = array('webpage_id' => 2147483647, 'name' => str_replace($this->jsDirectory, '', $file->path), 'content' => $file->read(), 'modified' => date('Y-m-d h:i:s', $file->lastChange()));
+					$jses[] = array('name' => str_replace($this->jsDirectory, '', $file->path), 'content' => $file->read(), 'modified' => date('Y-m-d h:i:s', $file->lastChange()));
 					$file->close(); // Be sure to close the file when you're done
 				}
 			}
 			if (!empty($jses)) {
 				foreach ($jses as $js) {
-					$id = $this->find('first', array('conditions' => array('name' => $js['name']), 'fields' => 'id'));	
+					$id = $this->field('id', array('WebpageJs.name' => $js['name']));
 					if (!empty($id)) {
-						$this->id = $id['WebpageJs']['id'];
 						try {
-							$this->saveField('content', $js['content']);
+							$this->id = $id;
+							$this->saveField('content', $js['content'], array('callbacks' => false));
 						} catch (Exception $e) {
 							debug($e->getMessage());
 							break;
 						}
 					} else {
 						try {
+							$js['is_requested'] = 1;
 							$this->create();
 							$this->save($js);
 						} catch (Exception $e) {

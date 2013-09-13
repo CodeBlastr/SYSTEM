@@ -174,7 +174,7 @@ if (empty($runUpdates)) { ?>
 		
 		<?php if (in_array('Categories', CakePlugin::loaded())) { ?>  
         <div class="masonryBox dashboardBox tagText tagAdmin">
-            <h3 class="title"><i class="icon-tasks"></i> <?php echo $this->Html->link('Categories', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="icon-tasks"></i> <?php echo $this->Html->link('Categories', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'index')); ?></h3>
             <p>Categorize anything.  Move, reorder, add, edit categories.</p>
         </div>
         <?php } ?>
@@ -203,10 +203,11 @@ if (empty($runUpdates)) { ?>
         </div>
         <?php } ?>
         
-        <?php if (in_array('Answers', CakePlugin::loaded())) { ?>  
+        <?php if (in_array('Answers', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagForms tagPages">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Custom Forms', array('plugin' => 'answers', 'controller' => 'answers', 'action' => 'index')); ?></h3>
-            <p>Create custom forms using the Answers Plugin, Allows Drag and Drop Form Building</p>
+            <p>Create custom forms using the Drag and Drop Form Buildrr.</p>
+            <li><?php echo $this->Html->link('View Form Submissions', array('plugin' => 'answers', 'controller' => 'answerSubmissions')) ?></li>
         </div>
         <?php } ?>
         
@@ -230,7 +231,8 @@ if (empty($runUpdates)) { ?>
         <div class="masonryBox dashboardBox tagUpdates tagAdmin">
             <h3 class="title"><i class="icon-download-alt"></i> Install Updates </h3>
             <p>Check for updates, install plugins, and  generally improve your site system.
-            <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index')); ?></p>
+            <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index'), array('class' => 'btn')); ?></p>
+            <p><?php echo $this->Html->link('Uninstall Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'uninstall'), array('class' => 'btn btn-danger')); ?></p>
 			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Update.index', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
         </div>
         

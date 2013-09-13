@@ -17,15 +17,18 @@
 	padding: 0;
     vertical-align: middle;
 }
-#adminNavFloManagr .btn {
+#adminNavFloManagr.navbar-inverse .btn {
     border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.25);
     background-color: #F5F5F5;
-    background-image: -moz-linear-gradient(center top , #FFFFFF, #E6E6E6);
+    background-image: -moz-linear-gradient(center top, #FFFFFF, #E6E6E6);
+    background-image: linear-gradient(to bottom, #FFFFFF, #E6E6E6);
     background-repeat: repeat-x;
     border-style: solid;
     border-width: 1px;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
     border-radius: 4px 4px 4px 4px;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
 }
 #adminNavFloManagr .btn-mini {
     border-radius: 3px 3px 3px 3px;
@@ -72,6 +75,7 @@
   overflow: visible;
   width: 100%;
   z-index: 1000;
+  min-height: 0;
 }
 #adminNavFlomanagr.navbar-inverse .nav li.dropdown > .dropdown-toggle .caret {
 	border-bottom-color: #999999;
@@ -92,17 +96,17 @@
 	position: relative;
 	top: 20px;
 }
-#adminNavFloManagr.navbar-fixed-bottom {
+#adminNavFloManagr.navbar-fixed-bottom, #headerNavFloManagr.navbar-fixed-bottom {
 	position: fixed;
 	bottom: 0;
 	top: auto;
 	margin: 0;
-    background: #333;
+    background: #222222;
 }
 #adminNavFloManagr .btn-navbar {
 	display: none;
 }
-#adminNavFloManagr .navbar-inner, #adminNavFloManagr .navbar-inner .container {
+#adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
 	margin: 0 auto;
     width: 1170px;
     font-size: 15px;
@@ -111,16 +115,18 @@
     height: auto;
     background: transparent;
     min-height: auto;
+    display: block;
 } 
-#adminNavFloManagr .navbar-inner div {
+#adminNavFloManagr div {
 	display: inline-block;
 }
-#adminNavFloManagr .navbar-inner .nav-collapse {
+#adminNavFloManagr .nav-collapse {
 	float: left;
 	width: 1020px;
+	height: 0; /* put in with bootstrap 3, might need to come out if it breaks 2 */
 }
 #adminNavFloManagr .navbar-inner {
-	background: #333;
+	background: #222;
     border: 0;
 }
 #adminNavFloManagr ul {
@@ -131,6 +137,7 @@
 	display: inline-block;
 	margin-right: 15px;
     vertical-align: top;
+    float: left;
 }
 #adminNavFloManagr ul li a {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
@@ -225,8 +232,8 @@
     background-image: linear-gradient(to bottom, #0088CC, #0077B3);
     background-repeat: repeat-x;
 }
-#adminNavFloManagr [data-target=".floManagrNav .nav-collapse"] [class^="icon-"] {
-    background: #FFF;
+#adminNavFloManagr [data-target=".nav-collapse"] [class^="icon-"] {
+    background-color: #777;
     margin-top: 3px;
 }
 
@@ -236,6 +243,7 @@
 }
 #adminNavFloManagr #edit-mode {
     cursor: pointer;
+    padding: 0 8px;
 }
 #adminNavFloManagr #edit-mode:hover {
     color: #fff;
@@ -820,34 +828,39 @@ div.edit-message {
 
 /* tablet wide */
 @media (max-width:1200px){
-	#adminNavFloManagr .navbar-inner, #adminNavFloManagr .navbar-inner .container {
+	#adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
         width: 959px;
     }
-    #adminNavFloManagr .navbar-inner .nav-collapse {
+    #adminNavFloManagr .nav-collapse {
         width: 820px;
     }
 }
 /* tablet tall */
 @media (min-width:768px) and (max-width:979px) {
-    #adminNavFloManagr .navbar-inner, #adminNavFloManagr .navbar-inner .container {
+	
+    #adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
         width: 737px;
     }
-    #adminNavFloManagr .navbar-inner .nav-collapse {
+    #adminNavFloManagr .nav-collapse {
         width: 740px;
+		overflow: hidden;
     }
     #adminNavFloManagr .btn-navbar {
         display: block;
 		margin-right: 10px;
 		margin-top: 8px;
-		width: 14px;
+		width: 34px;
 		height: 22px;
-		padding: 0 5px;
+		padding: 0 10px;
+		float: right;
     }
     #adminNavFloManagr ul li {
         display: block;
+        float: left;
+        clear: left;
     }
     #adminNavFloManagr ul.pull-right {
-        float: left;
+        float: left !important;
         clear: both;
     }
     body {
@@ -860,25 +873,31 @@ div.edit-message {
     #adminNavFloManagr.navbar {
         width: auto;
     }
-    #adminNavFloManagr .navbar-inner, #adminNavFloManagr .navbar-inner .container {
-        width: 300px;
+    #adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
+        width: 460px;
     }
-    #adminNavFloManagr .navbar-inner .nav-collapse {
+    #adminNavFloManagr .nav-collapse {
         width: 280px;
+		overflow: hidden;
+		clear: left;
+    }
+    #adminNavFloManagr #edit-mode {
+    	padding: 0;
     }
     #adminNavFloManagr .btn-navbar {
         display: inline-block;
 		margin-right: 10px;
 		margin-top: 9px;
 		height: 23px;
-		width: 15px;
+		width: 30px;
 		padding: 0 7px;
     }
     #adminNavFloManagr ul li {
         display: block;
+        clear: left;
     }
     #adminNavFloManagr ul.pull-right {
-        float: left;
+        float: left !important;
         clear: both;
     }
     #adminNavFloManagr.navbar .nav > li > a {
@@ -894,5 +913,8 @@ div.edit-message {
     }
 }
 /* mobile tall */
-@media (max-width:480px) and (max-width: 767px) {
+@media (max-width: 480px) {
+	#adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
+        width: 300px;
+	}
 }
