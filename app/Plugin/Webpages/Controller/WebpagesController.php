@@ -462,6 +462,5 @@ class _WebpagesController extends WebpagesAppController {
 }
 
 if(!isset($refuseInit)) {
-	debug($refuseInit);break;
 	class WebpagesController extends _WebpagesController {}
 }
