@@ -7,6 +7,7 @@ class _UserGroupsController extends UsersAppController {
 
 	public function index() {
 		$this->UserGroup->recursive = 0;
+		$this->paginate['contain'][] = 'Creator';
 		$this->set('userGroups', $this->paginate());
 		
 	}
