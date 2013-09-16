@@ -93,7 +93,7 @@ class SettingsController extends AppController {
 	}
 
 	public function edit($id = null) {
-		if ($this->request->is('post')) {
+		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->Setting->add($this->request->data)) {
 				$this->Session->setFlash(__('The Setting has been saved', true));
 				$this->redirect($this->referer());
