@@ -887,7 +887,9 @@ class InstallController extends Controller {
         $currentlyLoadedPlugins = CakePlugin::loaded();
         CakePlugin::loadAll();
         $this->set('plugins', $plugins = array_diff(CakePlugin::loaded(), array('Activities', 'Answers', 'Categories', 'Connections', 'Contacts', 'Courses', 'Drafts', 'Facebook', 'Feeds', 'Forms', 'Media', 'Privileges', 'Recaptcha', 'Searchable', 'Subscribers', 'Tags', 'Twitter', 'Utils', 'Webpages', 'Wizards', 'Workflows')));
- 		
+ 		CakePlugin::unload();
+		CakePlugin::load($currentlyLoadedPlugins);
+		
 		// create some links to, and install the plugin if it isn't already
  		if (($this->request->is('post') || $this->request->is('put')) && $this->request->data['WebpageMenuItem']['page_type'] == 'plugin') {
 			$this->request->data['WebpageMenuItem']['item_text'] = $plugins[$this->request->data['WebpageMenuItem']['item_text']];
