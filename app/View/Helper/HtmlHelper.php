@@ -279,7 +279,27 @@ class HtmlHelper extends CakeHtmlHelper {
 					$fileName = substr(strrchr($path, '/'), 1);
 					$themeFolder = str_replace(strtolower('/theme/' . $this->theme . '/'), '', $path);
 					$themeFolder = str_replace('/' . $fileName, '', $themeFolder);
-					if ($convertedFile = $this->_resizeImage($extOptions['conversion'], urldecode($fileName), ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . 'webroot' . DS . $themeFolder . DS, 'tmp_' . $options['width'] . $options['height'] . $extOptions['conversion'], $options['width'], $options['height'], $extOptions['quality'])) {
+					
+					if ($extOptions['caller'] === 'Media') {
+						$fileName = str_replace('images\\', '', $fileName);
+						$id = urldecode(str_replace('images\\', '', $fileName));
+						$imgFolder = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . 'webroot' . DS . $themeFolder . DS . 'images' . DS;
+					} else {
+						$id = urldecode($fileName);
+						$imgFolder = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . 'webroot' . DS . $themeFolder . DS;
+					}
+					
+					$convertedFile = $this->_resizeImage(
+							$extOptions['conversion'],
+							$id,
+							$imgFolder,
+							'tmp_' . $options['width'] . $options['height'] . $extOptions['conversion'],
+							$options['width'],
+							$options['height'],
+							$extOptions['quality']
+					);
+
+					if ($convertedFile) {
 						$htmlTag = str_replace($fileName, $convertedFile['path'], $image);
 						$htmlTag = preg_replace('/\width=".*?"/', 'width="' . $convertedFile['width'] . '"', $htmlTag);
 						$htmlTag = preg_replace('/height=".*?"/', 'height="' . $convertedFile['height'] . '"', $htmlTag);
@@ -337,7 +357,8 @@ class HtmlHelper extends CakeHtmlHelper {
 				if ($newName) {
 					$dest = $cachePath . DS . $newName . '.' . $id;
 				} else {
-					$dest = $cachePath . DS . 'tmp_' . $id;
+					$newName = 'tmp_' . $id;
+					$dest = $cachePath . DS . $newName;
 				}
 			} else {
 				//if not let developer know
