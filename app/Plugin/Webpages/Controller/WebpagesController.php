@@ -19,7 +19,7 @@
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  */
-class WebpagesController extends WebpagesAppController {
+class _WebpagesController extends WebpagesAppController {
 
 /**
  * Name
@@ -459,4 +459,9 @@ class WebpagesController extends WebpagesAppController {
 		}
 	 	return $return;}
 
+}
+
+if(!isset($refuseInit)) {
+	debug($refuseInit);break;
+	class WebpagesController extends _WebpagesController {}
 }
