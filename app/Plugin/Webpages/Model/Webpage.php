@@ -124,6 +124,12 @@ class Webpage extends WebpagesAppModel {
         array('name' => 'name', 'type' => 'like'),
         array('name' => 'filter', 'type' => 'query', 'method' => 'orConditions'),
    		);
+    
+/**
+ *  Holder for tokens
+ */
+    
+    public $tokens = array();
 	
 /**
  * Constructor
@@ -1136,6 +1142,77 @@ class Webpage extends WebpagesAppModel {
 		} else {
 			throw new Exception(__('Content serialization error occurred'));
 		}
+	}
+	
+	/**
+	 * This Builds the tokens that can be replaced in a string.
+	 * @param unknown $models
+	 * @return multitype:
+	 */
+	
+	public function buildTokens($models = array(), $assoc = false) {
+		
+		foreach($models as $model) {
+			App::uses($model, ZuhaInflector::pluginize($model).'.Model');
+			$Model = new $model();
+			$this->tokens[$Model->name] = array_keys($Model->schema());
+			if($assoc) {
+				$associated = $Model->listAssociatedModels();
+				foreach($associated as $assocModel) {
+					$this->tokens[$Model->name][$assocModel] = array_keys($Model->$assocModel->schema());
+				}
+			}
+		}
+		return $this->tokens;
+	}
+	
+	/**
+	 * Token Replacement function. This will search a string from "tokens" and replace them with the 
+	 * data provided
+	 * 
+	 * @param string $string
+	 * @param array $data
+	 * @throws Exception
+	 * @return $string with all the tokens replaced
+	 */
+	
+	public function replaceTokens($string, $data = array()) {
+		if(!empty($tokens)) {
+			$this->tokens = $tokens;
+		}
+		if(empty($data)) {
+			throw new Exception('No Data Defined');
+		}
+		
+		foreach($data as $model => $dat) {
+			$this->count = '';
+			$string = $this->_replaceTokens($string, $dat, $model);
+		}
+		return $string;
+	}
+	
+	/**
+	 * helper function replaceTokens
+	 * @param string $string
+	 * @param array $data
+	 */
+	private function _replaceTokens($string, $data, $prefix = '', $prev = '') {
+		$prev = $prefix;
+		foreach ($data as $k => $v) {
+			if(is_int($k)) {
+				$this->count = $k;
+			}
+			
+			if(is_array($v)) {
+				$count = empty($this->count) ? '' : '.'.$this->count;
+				$prefix = !empty($prefix) ? $prefix.'.'.$k.$count : '';
+				$string = $this->_replaceTokens($string, $v, $prefix, $prev);
+			}else {
+				$pattern = '/\*\|( )('.$prev.'.'.$k.')( )\|\*/is';
+				$string = preg_replace ( $pattern , $data[$k] , $string);
+			}
+		}
+		return $string;
 	}
 
 	
