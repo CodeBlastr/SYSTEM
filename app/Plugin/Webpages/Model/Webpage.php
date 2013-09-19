@@ -32,6 +32,8 @@ class Webpage extends WebpagesAppModel {
 	public $urlRegEx = '';
 	
 	public $urlCompare = '';
+	
+	private $_deleteFile = '';
         
  /**
   * Acts as
@@ -166,13 +168,27 @@ class Webpage extends WebpagesAppModel {
 	}
 
 /**
- * After Find
+ * After Find callback
  * 
  */
  	public function afterFind($results, $primary = false) {
 		$results = $this->_templateContentResults($results);
 		$results = parent::afterFind($results, $primary);
 		return $results;
+	}
+	
+/**
+ * Before delete callback
+ * Used to get file name for the after Delete callback
+ * 
+ * @param boolean
+ */
+	public function beforeDelete($cascade = true) {
+		$page = $this->read(null, $this->id);
+		if ($page['Webpage']['type'] == 'template') {
+			$this->_deleteFile = $page['Webpage']['name'];
+		}
+		return parent::beforeDelete($cascade);
 	}
 
 	
@@ -182,9 +198,12 @@ class Webpage extends WebpagesAppModel {
 	public function afterDelete() {
 		// delete template settings
 		$this->_syncTemplateSettings($this->id, null, true);
+		// delete file 
+		$this->_deleteFile();
 		return parent::afterDelete();
 	}
-
+	
+	
 /**
  * Save All
  * 
@@ -1135,6 +1154,27 @@ class Webpage extends WebpagesAppModel {
 			);
 		} else {
 			throw new Exception(__('Content serialization error occurred'));
+		}
+	}
+	
+/**
+ * Delete File
+ * Used to delete files of templates and elements
+ * 
+ * @param mixed $id
+ */
+	public function _deleteFile($id) {
+		if (!empty($this->_deleteFile)) {
+			App::uses('File', 'Utility');
+			$file = new File($this->templateDirectories[0] . $this->_deleteFile, true, 0644);
+			// Deleting this file
+			if ($file->delete()) {
+    			$file->close(); // Be sure to close the file when you're done
+				return true;
+			} else {
+    			$file->close(); // Be sure to close the file when you're done
+				throw new Exception(__('Template file was not deleted, but db record was, (it will return).'));
+			} 
 		}
 	}
 
