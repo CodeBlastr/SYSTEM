@@ -417,6 +417,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'OrderTransaction' => 'Orders',
 				'Phonebook' => 'Phonebooks',
 				'PhonebookService' => 'Phonebooks',
+				'PhonebooksService' => 'Phonebooks',
                 'Privilege' => 'Privilege',
                 'ProductBrand' => 'Products',
                 'ProductPrice' => 'Products',
