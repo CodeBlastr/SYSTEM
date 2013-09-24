@@ -170,6 +170,73 @@ class Zuha {
 class ZuhaSet {
 	
 /**
+ * manyize method
+ * 
+ * converts an array from
+ * array (
+ * 		0 => array(
+ * 			Model => array(
+ * 				field1 => xyz,
+ * 				field2 => abc
+ * 			)
+ *		)
+ * ) 
+ * 
+ * to 
+ * 
+ * array(
+ * 		Model => array(
+ * 			0 => array(
+ * 				field1 => xyz,
+ * 				field2 => abc
+ * 			)
+ * 		)
+ * )
+ */
+	public function manyize($array) {
+		// test data... left here, because it needs to be moved into a unit test
+		// $array = array(
+			// 0 => array(
+				// 'Transaction' => array(
+					// 'id' => '5241b49d-25b0-45b5-8822-44830ad25527',
+					// 'name' => 'ONE',
+					// 'transaction_id' => 'a043572d-9040-43c9-85b1-22d400000002',
+					// 'quantity' => '1',
+					// 'price' => '10',
+				// ),
+			// ),
+			// 1 => array(
+				// 'TransactionItem' => array(
+					// 'id' => '5241b49d-25b0-45b5-8822-44830ad25527',
+					// 'name' => 'TWO',
+					// 'transaction_id' => 'a043572d-9040-43c9-85b1-22d400000002',
+					// 'quantity' => '1',
+					// 'price' => '10',
+				// ),
+			// ),
+			// 2 => array(
+				// 'TransactionItem' => array(
+					// 'id' => '5241b49d-25b0-45b5-8822-44830ad25527',
+					// 'name' => 'THREE',
+					// 'transaction_id' => 'a043572d-9040-43c9-85b1-22d400000002',
+					// 'quantity' => '1',
+					// 'price' => '10',
+					// 'myadd-on-field' => 'nothing'
+				// ),
+			// )
+		// );
+		
+		if (!empty($array[0])) {
+			$output = array();
+			for ($i = 0; $i < count($array); $i++) {
+				$output[key($array[$i])][] = $array[$i][key($array[$i])];
+			}
+			$array = $output;
+		}
+		return $array;
+	}
+	
+/**
  * Recursive removal of a key from an array
  */
 	public function remove(&$array, $unwantedKey) {
