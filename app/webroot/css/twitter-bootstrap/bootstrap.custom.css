@@ -479,16 +479,17 @@ fieldset div.input.richtext {
 
 
 /* date picker */
-.datepicker { 
+/* this doesn't look good on some sites, so it shouldn't be here, as this is a multi-site file (eg. bakken/classifieds/classifieds/post)
+ * .datepicker { 
  	top: 0; 
  	left: 0; 
  	padding: 4px; 
  	margin-top: 1px; 
  	-webkit-border-radius: 4px; 
  	-moz-border-radius: 4px; 
- 	border-radius: 4px; 
- 	/*.dow { border-top: 1px solid #ddd !important; }*/ 
-} 
+ 	border-radius: 4px;.
+ 	.do.w { border-top: 1px solid #ddd !important; } 
+} */
  
 .datepicker:before { 
 	content: ''; 
