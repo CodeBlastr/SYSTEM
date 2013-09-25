@@ -251,6 +251,11 @@ footer .socialmedia img:hover {
 	left: 10px;
 }
 
+/* icons */
+[class^="icon-"], [class*=" icon-"] {
+	text-indent: -5000px;
+}
+
 
 /* buttons */
 .btn-group + .btn-group {
