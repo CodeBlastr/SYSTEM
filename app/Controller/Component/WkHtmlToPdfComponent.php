@@ -21,7 +21,7 @@ class WkHtmlToPdfComponent extends Component {
 		$this->viewFile = new File($this->siteFolder->pwd() . DS . $fileName);
 	}
 
-	public function createPdf() {
+	public function createPdf($autoDownload = true) {
 		// prevent view from rendering normally
 		$this->controller->autoRender = false;
 		// $this->controller->output = '';
@@ -56,11 +56,15 @@ class WkHtmlToPdfComponent extends Component {
 			exec($cmd);
 		}
 		
-		// send file to browser and trigger download dialogue box
-		$this->returnFile($output, "document{$this->randomNumber}.pdf");
-		
-		// remove files
-		$this->cleanUp();
+		if ($autoDownload) {
+			// send file to browser and trigger download dialogue box
+			$this->returnFile($output, "document{$this->randomNumber}.pdf");
+			// delete the PDF from the server
+			$this->cleanUp();
+		} else {
+			// keep the PDF on the server and return it's location
+			return $output;
+		}
 	}
 
 	public function getViewDump($fileName) {
