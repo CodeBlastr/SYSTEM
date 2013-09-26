@@ -451,12 +451,6 @@ footer {
 .table-hover td:first-child {
 	color: #999;
 }
-.table-hover td a.edit {
-	display: none;
-}
-.table-hover td:hover a.edit {
-	display: inline;
-}
 td input {
     margin-bottom: 0 !important;
 }
@@ -475,6 +469,9 @@ fieldset div.input:last-child {
 }
 fieldset div.input.richtext {
     margin-bottom: 20px;
+}
+div.input.text .btn, div.input.select .btn {
+	margin-bottom: 10px; /* used in a case where btn was in the 'after' of a form input - /admin/products/products/add/membership */
 }
 
 
