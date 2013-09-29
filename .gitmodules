@@ -99,19 +99,13 @@
 	url = git@github.com:zuha/Forums-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Favorites"]
 	path = app/Plugin/Favorites
-	url = https://github.com/zuha/Favorites-Zuha-Cakephp-Plugin.git
+	url = git@github.com:zuha/Favorites-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Feeds"]
 	path = app/Plugin/Feeds
 	url = git@github.com:zuha/Feeds-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Answers"]
 	path = app/Plugin/Answers
 	url = git@github.com:zuha/Answers-Zuha-Cakephp-Plugin.git
-[submodule "Chats-Zuha-Cakephp-Plugin"]
-	path = Chats-Zuha-Cakephp-Plugin
-	url = git@github.com:zuha/Chats-Zuha-Cakephp-Plugin.git
-[submodule "app/Plugins/Chats"]
-	path = app/Plugins/Chats
-	url = git@github.com:zuha/Chats-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Chats"]
 	path = app/Plugin/Chats
 	url = git@github.com:zuha/Chats-Zuha-Cakephp-Plugin.git
