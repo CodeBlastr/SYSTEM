@@ -1,8 +1,13 @@
 <?php
+/**
+ * Extension Code
+ * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Contacts'.DS.'Model'.DS.'Contact.php');
+ */
+
 
 App::uses('ContactsAppModel', 'Contacts.Model');
 
-class Contact extends ContactsAppModel {
+class _Contact extends ContactsAppModel {
 
 /**
  * Name
@@ -772,3 +777,8 @@ class Contact extends ContactsAppModel {
     }
 
 }
+
+if (!isset($refuseInit)) {
+	class Contact extends _Contact {}
+}
+
