@@ -30,6 +30,7 @@
 /sites/**/Locale/View/webroot/files/*
 /sites/**/Locale/View/webroot/media/*
 settings.ini
+desktop.ini
 \.*
 \_*
 *\~
