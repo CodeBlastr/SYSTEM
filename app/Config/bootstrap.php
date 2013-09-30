@@ -522,6 +522,17 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
             
             return __('%s %s', $return, $four);
         }
+		
+		/**
+		 * numerate method
+		 * 
+		 * take a string and return just the numbers in it
+		 * 
+		 * @param string
+		 */
+		 public function numerate($string) {
+		 	return preg_replace("/[^0-9]/","",$string);;
+		 }
         
 	} // end ZuhaInflector class
 
