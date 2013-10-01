@@ -93,6 +93,7 @@ if (empty($runUpdates)) { ?>
             	<?php
             	foreach (Zuha::enum('WEBPAGES_PAGE_TYPE') as $type) {
 					echo __('<li>%s</li>', $this->Html->link(__('Add %s Page', $type), array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', Inflector::underscore($type))));
+					echo __('<li>%s</li>', $this->Html->link(__('View %s Pages', $type), array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', Inflector::underscore($type))));
 				} ?>
             </ul>
         </div>
