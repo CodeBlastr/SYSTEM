@@ -199,6 +199,17 @@ class _UserGroupsController extends UsersAppController {
 		$this->Session->setFlash(__('Group was not deleted', true));
 		$this->redirect(array('action' => 'index'));
 	}
+	
+/**
+ *  Only show groups that a user is the moderator for
+ */
+	public function mygroups() {
+		$uid = $this->userId;
+		$this->paginate['contain'] = array('UserGroup', 'Moderator');
+		$this->paginate['conditions'] = array('UsersUserGroup.user_id' => $uid, 'UsersUserGroup.is_moderator' => 1);
+		$this->set('userGroups', $this->paginate('UsersUserGroup'));
+		$this->view = 'index';
+	}
 
 /**
  * User method
