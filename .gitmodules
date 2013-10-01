@@ -1,6 +1,6 @@
 [submodule "sites"]
 	path = sites
-	url = git@razorit.beanstalkapp.com:/razorit/zuha-sites.git
+	url = git@buildrr.beanstalkapp.com:/zuha-sites.git
 [submodule "app/Plugin/Twitter"]
 	path = app/Plugin/Twitter
 	url = git@github.com:zuha/Twitter-Zuha-Cakephp-Plugin.git
@@ -117,10 +117,10 @@
 	url = git@github.com:zuha/Subscribers-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Classifieds"]
 	path = app/Plugin/Classifieds
-	url = git@github.com:lyga17/Classifieds-Zuha-Cakephp-Plugin.git
+	url = git@github.com:zuha/Classifieds-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Phonebooks"]
 	path = app/Plugin/Phonebooks
-	url = git@github.com:lyga17/Phonebooks-Zuha-Cakephp-Plugin.git
+	url = git@github.com:zuha/Phonebooks-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Properties"]
 	path = app/Plugin/Properties
 	url = git@github.com:zuha/Properties-Zuha-Cakephp-Plugin.git
