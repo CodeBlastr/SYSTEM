@@ -25,6 +25,12 @@ class _UsersUserGroup extends UsersAppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
+		),
+		'Moderator' => array(
+				'className'     => 'Users.User',
+				'foreignKey'    => 'user_id',
+				'conditions'	=> array('UsersUserGroup.is_moderator' => true),
+				'dependent'		=> false
 		)
 	);
 	
