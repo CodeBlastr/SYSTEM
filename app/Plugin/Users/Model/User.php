@@ -127,32 +127,44 @@ class _User extends UsersAppModel {
 
 	public function __construct($id = false, $table = null, $ds = null) {
 
-		if (in_array('Transactions', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Transactions')) {
 			$this->hasMany['TransactionAddress'] = array(
 				'className' => 'Transactions.TransactionAddress',
 				'foreign_key' => 'user_id'
 				);
 		}
-		if (in_array('Products', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Products')) {
 			$this->hasMany['ProductBrand'] = array(
 				'className' => 'Products.ProductBrand',
 				'foreignKey' => 'owner_id',
-				'dependent' => false,
+				'dependent' => false
 				);
 		}
-		if (in_array('Connections', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Connections')) {
 			$this->hasMany['Connection'] = array(
 				'className' => 'Connections.Connection',
 				'foreignKey' => 'user_id',
-				'dependent' => true,
+				'dependent' => true
 				);
 		}
-		
-		if (in_array('Estimates', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Estimates')) {
 			$this->hasMany['Estimates'] = array(
 				'className' => 'Estimates.Estimate',
 				'foreignKey' => 'user_id',
-				'dependent' => true,
+				'dependent' => true
+				);
+		}
+		if (CakePlugin::loaded('Ratings')) {
+			$this->hasMany['RatingsByUser'] = array(
+				'className' => 'Ratings.Rating',
+				'foreignKey' => 'user_id',
+				'dependent' => false
+				);
+			$this->hasMany['RatingsOfUser'] = array(
+				'className' => 'Ratings.Rating',
+				'foreignKey' => 'foreign_key',
+				'conditions' => array('model' => 'User'),
+				'dependent' => false
 				);
 		}
 		

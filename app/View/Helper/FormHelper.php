@@ -550,4 +550,47 @@ $(document).ready(function() {
 		}
 	}
 
+/**
+ * radio method override for purchasable option
+ * 
+ * ex. 
+ * echo $this->Form->input('Category.Category', array(
+ * 		'type' => 'radio',
+ * 		'purchasable' => true, // must be set to true
+ * 		'combine' => array('{n}.Category.id', '{n}.Category.name'), // what the list should look like
+ * 		'options' => $categories  // a full data array from find "all", not a normal find "list" type 
+ * 		));
+ * 	
+ */
+	public function radio($fieldName, $options = array(), $attributes = array()) {
+		if ($attributes['purchasable'] === true && !empty($attributes['combine'])) {
+			$combine = explode('.', $attributes['combine'][0]);
+			$key = $combine[2];
+			$combine = explode('.', $attributes['combine'][1]);
+			$model = $combine[1];
+			$value = $combine[2];
+			unset($attributes['purchasable']);
+			unset($attributes['combine']);
+			$out = '';
+			for ($i = 0; $i < count($options); $i++) {
+				$id = $options[$i][$model][$key];
+				$label = $options[$i][$model][$value];
+				if ($i > 0) {
+					$attributes['hiddenField'] = false; // because we're doing individual radio buttons we need to remove all but the first hidden field as it would be normally
+				}
+				if (!empty($options[$i]['Product']) && empty($options[$i]['TransactionItem'])) {
+					// must be purchased, and hasn't been yet (in the Products/Model/Behavior/PurchasableBehavior)
+					$out .= parent::radio($fieldName, array($id => __('<span style="text-decoration: line-through">%s</span> <a href="/products/products/view/%s" class="btn btn-mini btn-success">Buy</a>', $label, $options[$i]['Product']['id'])), $attributes + array('disabled' => 'disabled'));
+				} else {
+					$out .= parent::radio($fieldName, array($id => $label), $attributes);
+				}
+			}
+			//$options = Set::combine($options, $attributes['combine'][0], $attributes['combine'][1]);
+			return $out;
+		} else {
+			return parent::radio($fieldName, $options, $attributes); 
+		}
+		
+ 	} 
+
 }

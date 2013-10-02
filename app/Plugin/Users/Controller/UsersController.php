@@ -349,6 +349,23 @@ class _UsersController extends UsersAppController {
 			$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 		}
 	}
+	
+/**
+ * Index view of users that logged in user in parent of
+ * 
+ */
+	
+	public function children() {
+		$this->paginate['conditions'] = array(
+				'parent_id' => $this->userId,
+				'not' => array(
+						'User.id' => '1'
+				)
+		);
+		$this->view = 'index';
+		$this->index();
+		
+	}
 
 
 /**

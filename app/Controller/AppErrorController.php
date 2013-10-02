@@ -28,14 +28,6 @@ class AppErrorController extends AppController {
 		$this->constructClasses();
 		$this->Components->trigger('initialize', array(&$this));
 		$this->_set(array('cacheAction' => false, 'viewPath' => 'Errors'));
-		
-		/* VERY TEMPORARY GLOBAL UPGRADE NEEDED - 9/3/2013 - RK */
-		$db = ConnectionManager::getDataSource('default');
-		$fields = $db->describe('webpage_menus');
-		if (empty($fields['user_role_id'])) {
-			$db->execute('ALTER TABLE `webpage_menus` ADD `user_role_id` VARCHAR( 36 ) NULL AFTER `order`;');
-		}
-		/* END VERY TEMPORARY GLOBAL UPGRADE */
 	}
 
 /**
