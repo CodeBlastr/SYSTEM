@@ -72,7 +72,7 @@ if (!empty($defaultTemplate)) {
 	$nonParseable = array();
 	$i = 0;
 	foreach($matchesEditable[2] as $matchEditable)	{
-		if(trim($matchEditable))	{
+		if(!is_numeric($matchEditable))	{
 			$nonParseable['[PLACEHOLDER:'.$i.']'] = $matchEditable;
 			$content = str_replace($matchEditable, '[PLACEHOLDER:'.$i.']', $content);
 			$i++;

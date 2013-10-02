@@ -1,6 +1,11 @@
 <?php
+/**
+ * Extension Code
+ * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Contacts'.DS.'Controller'.DS.'ContactsController.php');
+ */
+
 App::uses('ContactsAppController', 'Contacts.Controller');
-class ContactsController extends ContactsAppController {
+class _ContactsController extends ContactsAppController {
 
 	public $name = 'Contacts';
 	public $uses = 'Contacts.Contact';
@@ -432,4 +437,8 @@ class ContactsController extends ContactsAppController {
 
 		$this->set('page_title_for_layout', 'CRM Dashboard');
 	}
+}
+
+if (!isset($refuseInit)) {
+	class ContactsController extends _ContactsController {}
 }
