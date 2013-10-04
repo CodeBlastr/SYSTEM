@@ -339,7 +339,8 @@ class _UsersController extends UsersAppController {
  */
 	public function my() {
 		$userId = $this->Session->read('Auth.User.id');
-		if($userId == null || $userId == __SYSTEM_GUESTS_USER_ROLE_ID) {
+		$userRoleId = $this->Session->read('Auth.User.user_role_id');
+		if($userId == null || $userRoleId == __SYSTEM_GUESTS_USER_ROLE_ID) {
 			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 		}
 		if (!empty($userId)) {
