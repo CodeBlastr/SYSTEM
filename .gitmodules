@@ -1,6 +1,6 @@
 [submodule "sites"]
 	path = sites
-	url = git@razorit.beanstalkapp.com:/razorit/zuha-sites.git
+	url = git@buildrr.beanstalkapp.com:/zuha-sites.git
 [submodule "app/Plugin/Twitter"]
 	path = app/Plugin/Twitter
 	url = git@github.com:zuha/Twitter-Zuha-Cakephp-Plugin.git
