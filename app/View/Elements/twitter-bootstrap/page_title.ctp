@@ -9,5 +9,5 @@
     echo !empty($title) ? __('<div id="pageTitle" class="first pull-left"><h1 class="page-title">%s</h1></div>', $title) : null;
     echo !empty($forms_search) ? $this->Element('forms/search', $forms_search) : null; ?>
     <div class="nav-collapse collapse"><?php echo $this->Element('twitter-bootstrap/context_menu'); ?></div>
-	<hr style="clear: both"; />
+	<hr style="clear:both" />
 </div>

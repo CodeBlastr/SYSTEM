@@ -46,7 +46,8 @@ class AppController extends Controller {
 		'Js', 
 		'Time',
 		'Html',
-		'Utils.Tree'
+		'Utils.Tree',
+		'Webpages.Webpage'
 		);
 	public $components = array(
 		'Auth' => array(
@@ -69,7 +70,8 @@ class AppController extends Controller {
 			),
 		'Session', 
 		'RequestHandler', 
-		'Cookie'
+		'Cookie',
+		'FormSecurity'
 		);
 
 /**
@@ -79,6 +81,7 @@ class AppController extends Controller {
  * @param
  */
 	public function __construct($request = null, $response = null) {
+		
 		parent::__construct($request, $response);
 		$this->_getComponents();
 		$this->_getHelpers();
@@ -610,26 +613,18 @@ class AppController extends Controller {
  */
 	public function _getTemplate() {
 		if (defined('__APP_TEMPLATES')) {
-			$settings = unserialize(__APP_TEMPLATES);
-			$i = 0;
-			if (!empty($settings['template'])) {
-				foreach ($settings['template'] as $setting) {
-					$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
-					$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
-					$templates[$i]['urls'] = empty($templates[$i]['urls']) || $templates[$i]['urls'] == '""'  ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
-					$i++;
-				}
-			}
+			$templates = templateSettings();
 			// check urls first so that we don't accidentally use a default template before a template that was set for this url.
 			if (!empty($templates)) {
 				foreach ($templates as $key => $template) {
 					if (!empty($template['urls'])) {
-						// note : this over rides isDefault, so if its truly a default template, don't set urls
+						// this over rides isDefault, so if its truly a default template, don't set urls
 						$this->templateId = $this->_urlTemplate($template);
 						// get rid of template values so we don't have to check them twice
 						unset($templates[$key]);
 					}
 					if (!empty($this->templateId)) {
+						$templated['Webpage']['id'] = $template['templateId']; // used in javascript.ctp and css.ctp elements
 						// as soon as we have the first template that matches, end this loop
 						break;
 					}
@@ -643,6 +638,7 @@ class AppController extends Controller {
 						$this->templateId = !empty($template['userRoles']) ? $this->_userTemplate($template) : $this->templateId;
 					}
 					if (!empty($this->templateId)) {
+						$templated['Webpage']['id'] = $template['templateId']; // used in javascript.ctp and css.ctp elements
 						// as soon as we have the first template that matches, end this loop
 						break;
 					}
@@ -653,14 +649,13 @@ class AppController extends Controller {
 		// this is because the Webpage model is not loaded for the install site page, and 'all' so that we can pass all templates to the navbar
 		// $templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('all', array('conditions' => array('Webpage.type' => 'template'), 'order' => array('FIND_IN_SET(`Webpage`.`id`, \''.$this->templateId.'\')' => 'DESC')));
 		$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$this->templateId;
-		$templated['Webpage']['content'] = file_exists($templateFile) ? file_get_contents($templateFile) : '';
+		$templated['Webpage']['content'] = file_get_contents($templateFile);
 		// $templated = $this->request->controller == 'install' && $this->request->action == 'site' ? null : $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $this->templateId), 'callbacks' => false));
         // $this->set('templates', Set::combine($templated, '{n}.Webpage.id', '{n}.Webpage.name')); // for the admin navbar
         // $templated = !empty($this->templateId) ? Set::extract('/Webpage[id=' . $this->templateId . ']', $templated) : null; // getting it back to 'first' type results
         // $templated = !empty($templated[0]) ? $templated[0] : null; // getting it back to 'first' type results
         $this->Webpage->parseIncludedPages($templated, null, null, $this->userRoleId, $this->request);
         $this->set('defaultTemplate', $templated);
-        
 		if (!empty($this->templateId)) {
             $this->set('templateId', $this->templateId); // for the admin navbar
 			$this->layout = 'custom';
@@ -904,8 +899,9 @@ class AppController extends Controller {
 			extract(unserialize(__SYSTEM_SMTP));
 			$smtp = base64_decode($smtp);
 			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
+			
 			if(parse_ini_string($smtp)) {
-
+				
 				if(isset($toEmail['to']) && is_array($toEmail)) $this->SwiftMailer->to = $toEmail['to'];
 				else $this->SwiftMailer->to = $toEmail;
 				if(isset($toEmail['cc']) && is_array($toEmail)) $this->SwiftMailer->cc = $toEmail['cc'];
@@ -916,7 +912,7 @@ class AppController extends Controller {
 				$this->SwiftMailer->attachments = $attachment;
 				$this->SwiftMailer->layout = 'email';
 				$this->SwiftMailer->sendAs = 'html';
-
+				
 				if ($message) {
               		$this->SwiftMailer->content = $message;
 					if(is_array($message) && isset($message['html'])) {
@@ -1034,6 +1030,11 @@ class AppController extends Controller {
 			// debug($aro);
 			// debug($aco);
 			// break;
+			
+			//Sets the response status code to 401 needed for ajax calls
+			//Otherwise it will return 200 calling any success callback
+			$this->response->statusCode(401);
+			
 			$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
 			$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
 			$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';

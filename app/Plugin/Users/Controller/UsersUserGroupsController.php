@@ -5,6 +5,7 @@ class UsersUserGroupsController extends UsersAppController {
 	
 	public $uses = 'Users.UsersUserGroup';
 
+	
 	public function index() {
 		$this->paginate['contain'] = array('User', 'UserGroup');
 		$this->set('usersUserGroups', $this->paginate());
