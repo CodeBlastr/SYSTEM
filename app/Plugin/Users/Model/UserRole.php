@@ -1,7 +1,7 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
 
-class UserRole extends UsersAppModel {
+class _UserRole extends UsersAppModel {
 
 	public $name = 'UserRole';
 	
@@ -39,6 +39,20 @@ class UserRole extends UsersAppModel {
 		}
 		return parent::afterSave($created);
 	}
+	
+/**
+ * After find callback 
+ */
+ 	public function afterFind(array $results, $primary = false) {
+		for ($i = 0; $i < count($results); $i++) {
+			if ($results[$i][$this->alias]['id'] == __SYSTEM_GUESTS_USER_ROLE_ID) {
+				$results[$i][$this->alias]['session_user_role_id'] = '';
+			} else {
+				$results[$i][$this->alias]['session_user_role_id'] = $results[$i][$this->alias]['id'];
+			}
+		}
+ 		return parent::afterFind($results, $primary);
+ 	}
 
 /**
  * Update User Roles Prefix method
@@ -128,4 +142,8 @@ class UserRole extends UsersAppModel {
 		return null;
 	}
 	
+}
+
+if (!isset($refuseInit)) {
+    class UserRole extends _UserRole {}
 }

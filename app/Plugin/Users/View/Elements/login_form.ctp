@@ -73,7 +73,7 @@
       ));  ?>
       <div class="<?php echo $columnClass; ?>">
         <div class="<?php echo $holderClass; ?>">
-          <?php echo $this->Form->input('username', array('label' => $usernameLabel, 'class' => $inputClass, 'div' => $rowClass, 'placeholder' => $usernameLabel)); ?>
+          <?php echo $this->Form->input('username', array('label' => $usernameLabel, 'class' => $inputClass, 'div' => $rowClass, 'placeholder' => $usernameLabel, 'autofocus' => 'autofocus')); ?>
         </div>
       </div>
       <div class="<?php echo $columnClass?>">

@@ -1,6 +1,12 @@
 <?php
 App::uses('UsersAppController', 'Users.Controller');
 /**
+ * To Extend use code
+ * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Controller'.DS.'UsersController.php');
+ */
+ 
+ 
+/**
  * Users Controller
  *
  * Handles variables supplied from the Model, to be sent to the view for users.
@@ -64,6 +70,11 @@ class _UsersController extends UsersAppController {
 			'User.id',
 			'User.first_name',
 			);
+		$this->paginate['conditions'] = array(
+			'not' => array(
+				'User.id' => '1'
+			)
+		);
 		$this->set('users', $this->paginate());
 		$this->set('displayName', 'first_name');
 		$this->set('displayDescription', '');
@@ -182,6 +193,8 @@ class _UsersController extends UsersAppController {
 		$this->set('does_follow' , $does_follow);
 		$this->set('user', $user);
 		$this->set('friends', $friends);
+		
+		$this->set('title_for_layout', $user['User']['full_name'] . ' | ' . __SYSTEM_SITE_NAME);
 	}
 
 /**
@@ -202,7 +215,10 @@ class _UsersController extends UsersAppController {
 		if (empty($this->request->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
-				));
+				'contain' => array(
+					'Contact' => array('ContactAddress')
+				)
+			));
 			if(isset($user['User'])) {
 				$this->request->data = $user;
 			} else {
@@ -210,7 +226,7 @@ class _UsersController extends UsersAppController {
 			}
 		// saving a user which was edited
 		} else if(!empty($this->request->data)) {
-			$this->request->data['User']['user_id'] = $this->Auth->user('id');
+			$this->request->data['User']['id'] = $this->Auth->user('id');
 			//getting password issue when saving ; so unsetting in this case
 			if(!isset($this->request->data['User']['password']))	{
 				unset($this->User->validate['password']);
@@ -219,12 +235,11 @@ class _UsersController extends UsersAppController {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
-			debug($this->request->data);
-			break;
 			try {
-				$this->User->save($this->request->data);
+				//debug($this->request->data['User']); break;
+				$this->User->saveUserAndContact($this->request->data);
 				$this->Session->setFlash('User Updated!');
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->request->data['User']['id']), true);
 			} catch(Exception $e){
 				$this->Session->setFlash('There was an error updating user' . $e);
 			}
@@ -239,9 +254,10 @@ class _UsersController extends UsersAppController {
  * Register method
  */
 	public function register() {
+		
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
-
+		
 		if (!empty($this->request->data)) {
 			if ($this->User->saveAll($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
@@ -266,6 +282,8 @@ class _UsersController extends UsersAppController {
 
 		$this->set(compact('userRoleId', 'userRoles'));
 		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
+		
+		$this->set('title_for_layout', 'Register | ' . __SYSTEM_SITE_NAME);
 	}
 
 /**
@@ -311,6 +329,7 @@ class _UsersController extends UsersAppController {
  * A page to stop infinite redirect loops when there are errors.
  */
 	public function restricted() {
+		
 	}
 
 /**
@@ -320,7 +339,8 @@ class _UsersController extends UsersAppController {
  */
 	public function my() {
 		$userId = $this->Session->read('Auth.User.id');
-		if($userId == null || $userId == __SYSTEM_GUESTS_USER_ROLE_ID) {
+		$userRoleId = $this->Session->read('Auth.User.user_role_id');
+		if($userId == null || $userRoleId == __SYSTEM_GUESTS_USER_ROLE_ID) {
 			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 		}
 		if (!empty($userId)) {
@@ -329,6 +349,23 @@ class _UsersController extends UsersAppController {
 			$this->Session->setFlash('Please Login');
 			$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 		}
+	}
+	
+/**
+ * Index view of users that logged in user in parent of
+ * 
+ */
+	
+	public function children() {
+		$this->paginate['conditions'] = array(
+				'parent_id' => $this->userId,
+				'not' => array(
+						'User.id' => '1'
+				)
+		);
+		$this->view = 'index';
+		$this->index();
+		
 	}
 
 
@@ -351,6 +388,7 @@ class _UsersController extends UsersAppController {
 		if (empty($this->templateId)) {
 			 $this->layout = 'login'; 
 		}
+		$this->set('title_for_layout', 'Login | ' . __SYSTEM_SITE_NAME);
 	}
 
 /**
@@ -524,6 +562,8 @@ class _UsersController extends UsersAppController {
 			$this->Session->setFlash('Invalid User Key');
 			$this->redirect(array('action' => 'forgot_password'));
 		}
+		
+		$this->set('title_for_layout', 'Change Password | ' . __SYSTEM_SITE_NAME);
 	}
 
 
@@ -569,6 +609,21 @@ If you have received this message in error please ignore, the link will be unusa
 				$this->Session->setFlash('Invalid user.');
 			}
 		}
+	}
+
+	public function searchUsers () {
+		if(isset($this->request->query['search'])) {
+			$this->set('users', $this->User->find('all' , array(
+				'conditions' => array(
+					'OR' => array(
+						'username LIKE' => $this->request->query['search'].'%',
+						'email LIKE' => $this->request->query['search'].'%',
+				)),
+				'fields' => array('User.id', 'User.username'),
+				'limit' => 10,
+				)));	
+		}
+		
 	}
 }
 

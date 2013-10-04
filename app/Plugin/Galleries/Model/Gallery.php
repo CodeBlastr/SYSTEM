@@ -15,7 +15,7 @@ class Gallery extends GalleriesAppModel {
  * 
  * @var string $galleryType
  */
-	public $galleryType = 'colorbox';
+	public $galleryType = 'carousel';
 	
 /**
  * Display Field
@@ -66,6 +66,12 @@ class Gallery extends GalleriesAppModel {
 			'conditions' => array('controller' => 'galleries'),
 			'fields' => '',
 			'order' => ''
+		),
+		'GalleryThumbnail' => array(
+			'className' => 'Galleries.GalleryImage',
+			'foreignKey' => null,
+			'conditions' => array('GalleryThumbnail.id' => 'Gallery.gallery_thumb_id'),
+			'dependent' => false,
 		),
 	);
 
@@ -224,7 +230,8 @@ class Gallery extends GalleriesAppModel {
  */
 	public function types() {
 		return array(
-			'slier' => 'Slider',
+			'carousel' => 'Carousel',
+			'slider' => 'Slider',
 			'colorbox' => 'Colorbox',
 			'fancybox' => 'Fancybox',
 			'gallerific' => 'Gallerific',

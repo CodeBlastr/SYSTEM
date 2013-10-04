@@ -386,5 +386,18 @@ class AppModel extends Model {
 		}
 		
 	}
+	
+	/**
+	 * Function to return a list of Associated Models keyed by Association type
+	 */
+	public function listAssociatedModels() {
+		$result = array();
+		foreach($this->associations() as $associated) {
+			foreach($this->$associated as $assocModel => $assocConfig) {
+				$result[] = $assocModel;
+			}
+		}
+		return $result;
+	}
 
 }

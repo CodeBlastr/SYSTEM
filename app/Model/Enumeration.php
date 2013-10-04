@@ -1,8 +1,8 @@
 <?php
 class Enumeration extends AppModel {
 	
-	var $name = 'Enumeration';
-	var $order = 'weight ASC';
+	public $name = 'Enumeration';
+	public $order = 'weight ASC';
 	
 	public $valdiate = array(
 		'type' => array(

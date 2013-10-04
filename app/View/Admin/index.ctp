@@ -93,6 +93,7 @@ if (empty($runUpdates)) { ?>
             	<?php
             	foreach (Zuha::enum('WEBPAGES_PAGE_TYPE') as $type) {
 					echo __('<li>%s</li>', $this->Html->link(__('Add %s Page', $type), array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', Inflector::underscore($type))));
+					echo __('<li>%s</li>', $this->Html->link(__('View %s Pages', $type), array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', Inflector::underscore($type))));
 				} ?>
             </ul>
         </div>
@@ -111,7 +112,7 @@ if (empty($runUpdates)) { ?>
             <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>Edit, delete, and create images, documents, audio and video. </p>
             <ul>
-                <li><?php echo $this->Html->link('Media Plugin', array('plugin' => 'media', 'controller' => 'media', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link('Media Plugin', array('plugin' => 'media', 'controller' => 'media', 'action' => 'filebrowser')); ?></li>
                 <li><?php echo $this->Html->link('Image Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
                 <li><?php echo $this->Html->link('Document Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
             </ul>
@@ -174,7 +175,7 @@ if (empty($runUpdates)) { ?>
 		
 		<?php if (in_array('Categories', CakePlugin::loaded())) { ?>  
         <div class="masonryBox dashboardBox tagText tagAdmin">
-            <h3 class="title"><i class="icon-tasks"></i> <?php echo $this->Html->link('Categories', array('plugin' => 'categories', 'controller' => 'categories', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="icon-tasks"></i> <?php echo $this->Html->link('Categories', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'index')); ?></h3>
             <p>Categorize anything.  Move, reorder, add, edit categories.</p>
         </div>
         <?php } ?>
@@ -203,10 +204,11 @@ if (empty($runUpdates)) { ?>
         </div>
         <?php } ?>
         
-        <?php if (in_array('Answers', CakePlugin::loaded())) { ?>  
+        <?php if (in_array('Answers', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox tagForms tagPages">
             <h3 class="title"><i class="icon-globe"></i> <?php echo $this->Html->link('Custom Forms', array('plugin' => 'answers', 'controller' => 'answers', 'action' => 'index')); ?></h3>
-            <p>Create custom forms using the Answers Plugin, Allows Drag and Drop Form Building</p>
+            <p>Create custom forms using the Drag and Drop Form Buildrr.</p>
+            <li><?php echo $this->Html->link('View Form Submissions', array('plugin' => 'answers', 'controller' => 'answerSubmissions')) ?></li>
         </div>
         <?php } ?>
         
@@ -230,7 +232,8 @@ if (empty($runUpdates)) { ?>
         <div class="masonryBox dashboardBox tagUpdates tagAdmin">
             <h3 class="title"><i class="icon-download-alt"></i> Install Updates </h3>
             <p>Check for updates, install plugins, and  generally improve your site system.
-            <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index')); ?></p>
+            <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index'), array('class' => 'btn')); ?></p>
+            <p><?php echo $this->Html->link('Uninstall Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'uninstall'), array('class' => 'btn btn-danger')); ?></p>
 			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Update.index', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
         </div>
         
@@ -253,10 +256,10 @@ if (empty($runUpdates)) { ?>
 
         <?php if (in_array('Events', CakePlugin::loaded())) { ?>
         <div class="masonryBox dashboardBox">
-            <h3 class="title"><i class="icon-th-list"></i> <?php echo $this->Html->link('Events', array('plugin' => 'events')); ?> </h3>
+            <h3 class="title"><i class="icon-th-list"></i> <?php echo $this->Html->link('Events', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'index')); ?> </h3>
             <p>See and manage event listings.</p>
             <ul>
-                <li><?php echo $this->Html->link('Add Event', array('plugin' => 'events', 'controller' => 'events', 'action' => 'add')); ?></li>
+                <li><?php echo $this->Html->link('Add Event', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'add')); ?></li>
             </ul>
         </div>
         <?php } ?>
@@ -282,14 +285,26 @@ if (empty($runUpdates)) { ?>
        echo $this->Form->hidden('Upgrade.all', array('value' => true));
        //echo $this->Form->submit('Check for Updates');
        echo $this->Form->end(); ?>
-    <ul>
+    <table class="table table-bordered">
       <?php
     if (CakeSession::read('Updates.last')) {
-      foreach (CakeSession::read('Updates.last') as $table => $action) {
-        echo __('<li>Table %s is %s</li>', $table, $action);
+      foreach (array_reverse(CakeSession::read('Updates.last')) as $table => $action) {
+        #echo __('<li>Table %s is %s</li>', $table, $action);
+		switch ( $action ) {
+			case ('up to date'):
+				$class = '';
+				break;
+			case ('updated'):
+				$class = ' label-success';
+				break;
+			default:
+				$class = ' label-important';
+				break;
+		}
+		echo '<tr><td>`'.$table.'`</td><td><span class="label'.$class.'">'.$action.'</span></td></tr>';
       }
     }?>
-    </ul>
+    </table>
   </div>
 
   <?php

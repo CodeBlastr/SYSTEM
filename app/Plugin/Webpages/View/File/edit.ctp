@@ -5,11 +5,11 @@
             <option>ambiance</option>
             <option>blackboard</option>
             <option>cobalt</option>
-            <option>eclipse</option>
+            <option selected="selected">eclipse</option>
             <option>elegant</option>
             <option>erlang-dark</option>
             <option>lesser-dark</option>
-            <option selected="selected">monokai</option>
+            <option>monokai</option>
             <option>neat</option>
             <option>night</option>
             <option>rubyblue</option>
@@ -29,8 +29,15 @@
 </div>
 
 <?php
-echo $this->Html->script('ckeditor/plugins/codemirror/js/codemirror');
-echo $this->Html->css('/js/ckeditor/plugins/codemirror/css/codemirror');
+echo $this->Html->script('ckeditor/plugins/codemirror/js/codemirror.min');
+echo $this->Html->script('ckeditor/plugins/codemirror/js/mode/matchbrackets');
+echo $this->Html->script('ckeditor/plugins/codemirror/js/mode/htmlmixed');
+echo $this->Html->script('ckeditor/plugins/codemirror/js/mode/xml');
+echo $this->Html->script('ckeditor/plugins/codemirror/js/mode/javascript');
+echo $this->Html->script('ckeditor/plugins/codemirror/js/mode/css');
+echo $this->Html->script('ckeditor/plugins/codemirror/js/mode/clike');
+echo $this->Html->script('ckeditor/plugins/codemirror/js/mode/php');
+echo $this->Html->css('/js/ckeditor/plugins/codemirror/css/codemirror.min');
 echo $this->Html->css('/js/ckeditor/plugins/codemirror/theme/neat');
 echo $this->Html->css('/js/ckeditor/plugins/codemirror/theme/elegant');
 echo $this->Html->css('/js/ckeditor/plugins/codemirror/theme/monokai');
@@ -45,16 +52,23 @@ echo $this->Html->css('/js/ckeditor/plugins/codemirror/theme/ambiance');
 echo $this->Html->css('/js/ckeditor/plugins/codemirror/theme/blackboard');
 echo $this->Html->css('/js/ckeditor/plugins/codemirror/theme/vibrant-ink');
 echo $this->Html->css('/js/ckeditor/plugins/codemirror/theme/solarized');
-echo $this->Html->css('/js/ckeditor/plugins/codemirror/theme/twilight'); 
-echo $this->Html->script('ckeditor/plugins/codemirror/js/javascript'); ?>
+echo $this->Html->css('/js/ckeditor/plugins/codemirror/theme/twilight');  ?>
 
 <script type="text/javascript">
     // code mirror config
+    var warn_on_unload = true;
     var editor = CodeMirror.fromTextArea(document.getElementById('ViewFileContents'), {
-        mode:  "javascript",
-        lineNumbers : true,
+        // mode:  "php",
+        // lineNumbers : true,
+        // indentUnit: 4,
+        // lineWrapping: true
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: "php",
         indentUnit: 4,
-        lineWrapping: true
+        indentWithTabs: true,
+        enterMode: "keep",
+        tabMode: "shift"
     });
     
     // theme chooser 
@@ -65,6 +79,10 @@ echo $this->Html->script('ckeditor/plugins/codemirror/js/javascript'); ?>
     }
     selectTheme();
 
+    $('input[type=submit], a.btn-danger').click(function(e) {
+        warn_on_unload = false;
+    });
+    
     // save vs save & continue
     $('#saveAndGo').click(function(e) {
         e.preventDefault();
@@ -84,10 +102,17 @@ echo $this->Html->script('ckeditor/plugins/codemirror/js/javascript'); ?>
         console.log(e.keyCode);
         if(e.keyCode == 83 && isCtrl == true) {
             //run code for CTRL+S -- ie, save!
-            $('#ViewFileEditForm').submit();
+            $('#ViewFileEditForm').submit(function() {
+            	warn_on_unload = false;
+            });
             return false;
         }
     }  
+    window.onbeforeunload = function() {
+    	if (warn_on_unload == true) {
+    		return "Are you sure you want to leave this page? (Any changes will be lost)";	
+    	}
+	}
 </script>
 
 <style type="text/css">
@@ -101,6 +126,22 @@ echo $this->Html->script('ckeditor/plugins/codemirror/js/javascript'); ?>
         overflow-y: hidden;
         overflow-x: auto;
     }
+    .CodeMirror-lines {
+	    background: none repeat scroll 0 0 #EFEFEF;
+	    cursor: text;
+	    font-size: 1.1em;
+	    text-shadow: 0 0 0 #FF0000, 1px 1px 0 #FFFFFF;
+	    margin-left: 10px;
+	}
+	/* control line number placement */
+	.CodeMirror-gutters {
+    	box-shadow: 11px 0 21px #808080;
+    }
+	.CodeMirror-linenumber { 
+		padding: 0 3px 0 7px;
+		margin-left: -8px;
+	    padding: 0 3px 0 0;
+	}
 </style>
 
 
@@ -110,7 +151,7 @@ $this->set('context_menu', array('menus' => array(
     array(
 		'heading' => 'Customization',
 		'items' => array(			 
-             $this->Html->link(__('Reset to Default'), array('plugin' => 'webpages', 'controller' => 'file', 'action' => 'reset', implode('/', $this->request->params['pass']), 'view' => $viewFile), array('class' => 'btn-danger'), 'Are you sure? (cannot be undone)'),
+             $this->Html->link(__('Reset to Default'), $this->request->params['pass'] + array('plugin' => 'webpages', 'controller' => 'file', 'action' => 'reset', 'view' => $viewFile), array('class' => 'btn-danger'), 'Are you sure? (cannot be undone)'),
 			 )
 		)
 	))); ?>

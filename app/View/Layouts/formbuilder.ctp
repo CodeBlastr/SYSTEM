@@ -19,6 +19,7 @@
     <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
     <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
     <?php echo $scripts_for_layout; ?>
   </head>
 
@@ -41,6 +42,8 @@
 		<?php echo $this->Element('sql_dump');  ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> 
     </div> <!-- /container -->
     
+      
     <script data-main="/Answers/js/main-built.js" src="/Answers/js/lib/require.js" ></script>
+     
   </body>
 </html>

@@ -58,6 +58,37 @@ class GalleryImage extends GalleriesAppModel {
 	}
 	
 /**
+ * Afterfind callback
+ */
+	public function afterFind($results) {
+		$results = $this->_videoOutput($results);
+		return $results;
+	}
+
+/**
+ * Video output
+ * parse video output data
+ * 
+ * @todo support youtube video urls better and easier (eg, parse multiple versions of the embed url to get the id)
+ * @todo support non-youtube videos too
+ */
+ 	protected function _videoOutput($galleryImages) {
+		if (!empty($galleryImages)) {
+			// only handles YouTube right now
+			for ($i = 0; $i < count($galleryImages); $i++) {
+				// special video case
+				if ($galleryImages[$i][$this->alias]['mimetype'] == 'video') {
+					$url = explode('/', $galleryImages[$i][$this->alias]['filename']);
+				 	$youtubeId = end($url);
+					$galleryImages[$i][$this->alias]['_thumb'] = 'http://img.youtube.com/vi/' . $youtubeId . '/0.jpg';
+					$galleryImages[$i][$this->alias]['_embed'] = '//www.youtube.com/embed/' . $youtubeId;
+				}
+			}
+		}
+		return $galleryImages;
+ 	}
+	
+/**
  * After save method
  *
  * @param bool
@@ -123,20 +154,23 @@ class GalleryImage extends GalleriesAppModel {
  */
 	protected function _add($data, $uploadFieldName) {
         $data = $this->checkForGallery($data);
-		if ( !empty($data['GalleryImage']['gallery_id']) ) {
-			if ( !empty($data['GalleryImage'][$uploadFieldName]) ) {
+		if (!empty($data['GalleryImage']['gallery_id'])) {
+			if ($data['GalleryImage']['mimetype'] == 'video') {
+				// special "video" keyword case where we just save the image data because its a video
+				return $this->save($data);
+			} else if (!empty($data['GalleryImage'][$uploadFieldName])) {
 				// existing gallery and image submitted
 				$uploadOptions[$uploadFieldName] = $this->_getImageOptions($data);
 				$this->Behaviors->attach('Galleries.MeioUpload', $uploadOptions);
 				$this->create();
-				if ( $this->save($data) ) {
+				if ($this->save($data)) {
 					return true;
 				} else {
 					throw new Exception(__('ERROR : %s', ZuhaInflector::flatten($this->invalidFields())));
 				}
 			} else {
 				// just saving an existing gallery
-				if ( $this->Gallery->save($data) ) {
+				if ($this->Gallery->save($data)) {
 					return true;
 				} else {
 					throw new Exception(__d('galleries', 'ERROR : Gallery save failed.', true));
