@@ -226,7 +226,9 @@ class _UsersController extends UsersAppController {
 			}
 		// saving a user which was edited
 		} else if(!empty($this->request->data)) {
-			$this->request->data['User']['id'] = $this->Auth->user('id');
+			if(!isset($this->request->data['User']['id'])) {
+				$this->request->data['User']['id'] = $this->Auth->user('id');
+			}
 			//getting password issue when saving ; so unsetting in this case
 			if(!isset($this->request->data['User']['password']))	{
 				unset($this->User->validate['password']);
@@ -363,7 +365,31 @@ class _UsersController extends UsersAppController {
 				)
 		);
 		$this->view = 'index';
-		$this->index();
+		$this->paginate['fields'] = array(
+			'User.id',
+			'User.first_name',
+			);
+		$this->set('users', $this->paginate());
+		$this->set('displayName', 'first_name');
+		$this->set('displayDescription', '');
+		$this->set('indexClass', '');
+		$this->set('showGallery', true);
+		$this->set('galleryForeignKey', 'id');
+		$this->set('pageActions', array(
+			array(
+				'linkText' => 'Create',
+				'linkUrl' => array(
+					'action' => 'add',
+					),
+				),
+			array(
+				'linkText' => 'Archived',
+				'linkUrl' => array(
+					'action' => 'index',
+					'archived' => 1,
+					),
+				),
+			));
 		
 	}
 
