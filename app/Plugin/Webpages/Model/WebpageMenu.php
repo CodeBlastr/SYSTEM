@@ -24,7 +24,7 @@ class WebpageMenu extends WebpagesAppModel {
 			'dependent' => true,
 			'conditions' => '',
 			'fields' => '',
-			'order' => 'WebpageMenuItem.lft',
+			'order' => 'WebpageMenuItem.order',
 			'limit' => '',
 			'offset' => '',
 			'exclusive' => '',
