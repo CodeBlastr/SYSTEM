@@ -102,10 +102,11 @@ class Setting extends AppModel {
 				),
 				array(
 					'name' => 'PAYSIMPLE',
-					'description' =>
-					'environment = sandbox' . PHP_EOL .
-					'apiUsername = APIUserXXXXX' . PHP_EOL .
-					'sharedSecret = FdNcOBCgngMkvJ...'
+					'description' => 'environment = sandbox' . PHP_EOL . 'apiUsername = APIUserXXXXX' . PHP_EOL . 'sharedSecret = FdNcOBCgngMkvJ...'
+				),
+				array(
+					'name' => 'BLUEPAY',
+					'description' => 'mode = TEST OR LIVE' . PHP_EOL . 'accountId = 99999999999' . PHP_EOL . 'secretKey = FdNcOBCgngMkvJ...'
 				),
 				array(
 					'name' => 'PAYPAL',
