@@ -112,9 +112,10 @@ if (empty($runUpdates)) { ?>
             <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>Edit, delete, and create images, documents, audio and video. </p>
             <ul>
-                <li><?php echo $this->Html->link('Media Plugin', array('plugin' => 'media', 'controller' => 'media', 'action' => 'filebrowser')); ?></li>
-                <li><?php echo $this->Html->link('Image Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
-                <li><?php echo $this->Html->link('Document Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
+                <li><?php echo $this->Html->link('Media Browser', array('plugin' => 'media', 'controller' => 'media_browser', 'action' => 'filebrowser')); ?>
+                	<br><p>Create, Edit, Delete all Media that has been uploaded to the site</p></li>
+                <li><?php echo $this->Html->link('Media Galleries', array('plugin' => 'media', 'controller' => 'media_galleries', 'action' => 'index')); ?>
+      				<br><p>Create, Edit, manage your media galleries</p></li>
             </ul>
         </div>
         <?php } ?> 
