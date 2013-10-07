@@ -34,6 +34,7 @@
 </thead>
 <tbody>
 <?php
+debug($menus);
 foreach ($menus as $menu) { ?>
 	<tr>
 		<td>
