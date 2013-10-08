@@ -110,7 +110,6 @@ class _UsersController extends UsersAppController {
 				'UserGroup',
 				),
 			));
-		debug($user);
 
 		// This is here, because we have an element doing a request action on it.
 		if (isset($this->request->params['requested'])) {
