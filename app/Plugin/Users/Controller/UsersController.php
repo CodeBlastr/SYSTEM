@@ -369,7 +369,10 @@ class _UsersController extends UsersAppController {
 		$this->paginate['fields'] = array(
 			'User.id',
 			'User.first_name',
-			);
+			'User.last_name',
+			'User.username',
+			'User.email',
+		);
 		$this->set('users', $this->paginate());
 		$this->set('displayName', 'first_name');
 		$this->set('displayDescription', '');
