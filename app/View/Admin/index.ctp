@@ -74,12 +74,13 @@ if (empty($runUpdates)) { ?>
 
     <div class="btn-group">
         <a href="#masonryBox" class="filterClick btn">All</a>
-        <?php if (in_array('Products', CakePlugin::loaded())) { ?><a href="/admin/products/products/dashboard" class="btn">Ecommerce</a><?php } ?>
-        <a href="#tagPages" class="filterClick btn">Pages</a>
-        <a href="#tagMedia" class="filterClick btn">Media</a>
-        <?php if (in_array('Comments', CakePlugin::loaded())) { ?><a href="#tagDiscussion" class="filterClick btn">Discussion</a><?php } ?>
-        <a href="#tagThemes" class="filterClick btn">Themes</a>
-        <a href="#tagAdmin" class="filterClick btn">Settings</a>
+        <?php echo CakePlugin::loaded('Classifieds') ? $this->Html->link(__('Classifieds'), array('admin' => true, 'plugin' => 'classifieds', 'controller' => 'classifieds', 'action' => 'dashboard'), array('class' => 'filterClick btn')) : null; ?>
+        <?php echo CakePlugin::loaded('Products') ? $this->Html->link(__('Ecommerce'), array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('class' => 'filterClick btn')) : null; ?>
+        <?php echo $this->Html->link(__('Pages'), '#tagPages', array('class' => 'filterClick btn')); ?>
+        <?php echo CakePlugin::loaded('Media') ? $this->Html->link(__('Media'), '#tagMedia', array('class' => 'filterClick btn')) : null; ?>
+        <?php echo CakePlugin::loaded('Comments') ? $this->Html->link(__('Discussion'), '#tagDiscussion', array('class' => 'filterClick btn')) : null; ?>
+        <?php echo $this->Html->link(__('Themes'), '#tagThemes', array('class' => 'filterClick btn')); ?>
+        <?php echo $this->Html->link(__('Settings'), '#tagAdmin', array('class' => 'filterClick btn')); ?>
     </div>
     
     
@@ -112,9 +113,10 @@ if (empty($runUpdates)) { ?>
             <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>Edit, delete, and create images, documents, audio and video. </p>
             <ul>
-                <li><?php echo $this->Html->link('Media Plugin', array('plugin' => 'media', 'controller' => 'media', 'action' => 'filebrowser')); ?></li>
-                <li><?php echo $this->Html->link('Image Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
-                <li><?php echo $this->Html->link('Document Files', array('plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
+                <li><?php echo $this->Html->link('Media Browser', array('plugin' => 'media', 'controller' => 'media_browser', 'action' => 'filebrowser')); ?>
+                	<br><p>Create, Edit, Delete all Media that has been uploaded to the site</p></li>
+                <li><?php echo $this->Html->link('Media Galleries', array('plugin' => 'media', 'controller' => 'media_galleries', 'action' => 'index')); ?>
+      				<br><p>Create, Edit, manage your media galleries</p></li>
             </ul>
         </div>
         <?php } ?> 
