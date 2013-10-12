@@ -121,6 +121,8 @@ class AppController extends Controller {
 			return parent::redirect($this->request->data['Error']['redirect'], $status, $exit);
 		} elseif (!empty($this->request->data['Override']['redirect'])) {
 			return parent::redirect($this->request->data['Override']['redirect'], $status, $exit);
+		} elseif (!empty($this->request->query['destination'])) {
+			return parent::redirect($this->request->query['destination'], $status, $exit);
 		} else {
 			return parent::redirect($url, $status, $exit);
 		}

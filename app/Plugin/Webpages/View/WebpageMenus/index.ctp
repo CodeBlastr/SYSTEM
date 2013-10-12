@@ -23,12 +23,11 @@
 
 <div class="menus index">
 
-<table cellpadding="0" cellspacing="0">
+<table cellpadding="0" cellspacing="0" class="table">
 <thead>
     <tr>
         <th><?php echo $this->Paginator->sort('code', 'Template Tag');?></th>
     	<th><?php echo $this->Paginator->sort('name');?></th>
-    	<th><?php echo $this->Paginator->sort('type');?></th>
     	<th class="actions"><?php echo __('Actions');?></th>
     </tr>
 </thead>
@@ -42,9 +41,7 @@ foreach ($menus as $menu) { ?>
 		<td>
 			<?php echo $menu['WebpageMenu']['name']; ?>
 		</td>
-		<td>
-			<?php echo $menu['WebpageMenu']['type']; ?>
-		</td>
+		
 		
 		<td class="actions">
 			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $menu['WebpageMenu']['id'])); ?>
