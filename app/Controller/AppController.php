@@ -115,7 +115,9 @@ class AppController extends Controller {
  * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
  */
 	public function redirect($url, $status = null, $exit = true) {
-		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') {
+		if ($url == 'admin') {
+			return !$this->request->admin ? parent::redirect('/admin' . $_SERVER['REQUEST_URI']) : null;
+		} elseif (!empty($this->request->data['Success']['redirect']) && $status == 'success') {
 			return parent::redirect($this->request->data['Success']['redirect'], $status, $exit);
 		} elseif (!empty($this->request->data['Error']['redirect']) && $status == 'error') {
 			return parent::redirect($this->request->data['Error']['redirect'], $status, $exit);
@@ -123,9 +125,8 @@ class AppController extends Controller {
 			return parent::redirect($this->request->data['Override']['redirect'], $status, $exit);
 		} elseif (!empty($this->request->query['destination'])) {
 			return parent::redirect($this->request->query['destination'], $status, $exit);
-		} else {
-			return parent::redirect($url, $status, $exit);
 		}
+		return parent::redirect($url, $status, $exit);
 	}
 
 /**
