@@ -138,6 +138,7 @@ class AppController extends Controller {
  * @param array
  */
 	public function paginate($object = null, $scope = array(), $whitelist = array()) {
+		$this->request->params = array_merge($this->request->params, Router::parse(urldecode($this->request->here)));
 		$this->_handlePaginatorSorting();
 		$this->_handlePaginatorFiltering($object);
 		return parent::paginate($object, $scope, $whitelist);
@@ -268,7 +269,7 @@ class AppController extends Controller {
  * @return null
  */
 	private function _handlePaginatorSorting() {
-		#debug($this->request->url.$this->request->query['contextSorter']);
+		// debug($this->request->url.$this->request->query['contextSorter']);
 		if (!empty($this->request->query['contextSorter'])) {
 			$this->redirect($this->request->query['contextSorter']);
 		}
@@ -387,7 +388,10 @@ class AppController extends Controller {
 			if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {
 				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' >'] = $options['fieldValue'];
 			} else {
-				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']][] = $options['fieldValue'];
+				// this line
+				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']] = $options['fieldValue'];
+				// was this, but the [] at the end of fielName made null not work (not sure if it broke anything to change) (works on bakkenbook homepage category_search)
+				//$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']][] = $options['fieldValue'];
 			}
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
