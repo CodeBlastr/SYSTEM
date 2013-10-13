@@ -177,8 +177,8 @@ if (empty($runUpdates)) { ?>
 		
 		<?php if (in_array('Categories', CakePlugin::loaded())) { ?>  
         <div class="masonryBox dashboardBox tagText tagAdmin">
-            <h3 class="title"><i class="icon-tasks"></i> <?php echo $this->Html->link('Categories', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'index')); ?></h3>
-            <p>Categorize anything.  Move, reorder, add, edit categories.</p>
+            <h3 class="title"><i class="icon-tasks"></i> <?php echo $this->Html->link('Categories', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'dashboard')); ?></h3>
+            <p>Categorize anything.  Move, reorder, add, edit categories. <?php echo $this->Html->link('Dashboard', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'dashboard'), array('class' => 'btn btn-mini')); ?></p>
         </div>
         <?php } ?>
 		
@@ -191,7 +191,7 @@ if (empty($runUpdates)) { ?>
         
         <div class="masonryBox dashboardBox tagPrivileges tagAdmin">
             <h3 class="title"><i class="icon-signal"></i> <?php echo $this->Html->link('Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index')); ?></h3>
-            <p>Control what content your different user roles can see.</p>
+            <p>Control what content your different user roles can see. <?php echo $this->Html->link('Manage Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index'), array('class' => 'btn btn-mini')); ?></p>
         </div>
          
         <div class="masonryBox dashboardBox tagSettings tagAdmin">
@@ -323,3 +323,11 @@ if (empty($runUpdates)) { ?>
 <?php 
     } 
 } ?>
+
+<?php 
+// set the contextual breadcrumb items
+// $this->set('context_crumbs', array(
+	// 'crumbs' => array(
+		// $page_title_for_layout
+		// )
+	// ));
