@@ -241,8 +241,13 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
 		 */
 		public function pricify($price) {
-			if($price === NULL) {
-				return NULL;
+			if ($price === null) {
+				return null;
+			} elseif ($price > 999999) {
+				$price = substr(round($price, -4), 0, -4);
+				return substr($price, 0, -2) . '.' . substr($price, -2) . 'm';
+			} elseif ($price > 99999) {
+				return substr(round($price, -3), 0, -3) . 'k';
 			} else {
 				return number_format($price, 2, '.', ',');
 			}

@@ -521,6 +521,7 @@ class Contact extends ContactsAppModel {
 				'conditions' => array(
 					'Activity.action_description' => 'lead created',
 					'Activity.model' => 'Contact',
+					'Activity.created >' => date('Y-m-d', strtotime('-6 months'))
 					),
 				'fields' => array(
 					'COUNT(Activity.created)',
@@ -598,12 +599,11 @@ class Contact extends ContactsAppModel {
 			foreach ($values as $value) {
 				$average[] = !empty($ratings[$value]) ? $ratings[$value] : 0;
 			}
-			$return['_subTotal'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)));
+			$return['_subTotal'] = array_sum(Set::extract('/Estimate/total', $return));
 			$return['_multiplier'] = !empty($average) ? array_sum($average) / count($values) : 0;
-			$return['_total'] = ZuhaInflector::pricify(array_sum(Set::extract('/Estimate/total', $return)) * ('.' . $return['_multiplier']));
+			$return['_total'] = array_sum(Set::extract('/Estimate/total', $return)) * ('.' . $return['_multiplier']);
 			$return['_conversion'] = intval(($converted / (count($return) + $converted + $dead)) * 100);
 		}
-		
 		return $return;
 	}
 	
@@ -665,18 +665,19 @@ class Contact extends ContactsAppModel {
 				));*/  // might try to fix the Model::_filterResults() function at some point and submit it back to CakePHP devs.
 				
 			!empty($conditions['foreign_key']) ? $foreignKeyQuery = "AND `Activity`.`foreign_key` = '". $conditions['foreign_key'] . "'" : $foreignKeyQuery = null;
-			$startDate = !empty($conditions['start_date']) ? $conditions['start_date'] : date('Y-m-d', strtotime('- 60 days'));
-			$result = $this->query("SELECT *, DATE_FORMAT(Activity.created, '%Y-%m-%d') AS formatted, COUNT(`Activity`.`created`) AS count FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'contact activity' AND `Activity`.`model` = 'Contact' ".$foreignKeyQuery." GROUP BY DATE(`Activity`.`created`) ORDER BY `Activity`.`created` ASC");
-			$emptyDates = Zuha::date_slice($startDate, null, array('format' => 'Y-m-d'));
-			foreach ($emptyDates as $emptyDate) {
-				$key = array_search($emptyDate, Set::extract('/0/formatted', $result));
-				if ($key === 0 || $key > 0) {
-					$return[] = $result[$key];
-				} else {
-					$return[] = array(0 => array('count' => 0), 'Activity' => array('created' => $emptyDate));
-				}
-			}
-		
+			$startDate = !empty($conditions['start_date']) ? $conditions['start_date'] : date('Y-m-d', strtotime('-26 weeks'));
+			$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'contact activity' AND `Activity`.`model` = 'Contact' ".$foreignKeyQuery." GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
+			// daily // $result = $this->query("SELECT *, DATE_FORMAT(Activity.created, '%Y-%m-%d') AS formatted, COUNT(`Activity`.`created`) AS count FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'contact activity' AND `Activity`.`model` = 'Contact' ".$foreignKeyQuery." GROUP BY DATE(`Activity`.`created`) ORDER BY `Activity`.`created` ASC");
+			//$emptyDates = Zuha::date_slice($startDate, null, array('format' => 'Y-m-d'));
+			for ($i=0; $i < count($results); $i++) {
+				$return[] = $results[$i][0];
+				// $key = array_search($emptyDate, Set::extract('/0/formatted', $result));
+				// if ($key === 0 || $key > 0) {
+					// $return[] = $result[$key];
+				// } else {
+					// $return[] = array(0 => array('count' => 0), 'Activity' => array('created' => $emptyDate));
+				// }
+			}		
 		}
 		return $return;
 	}
