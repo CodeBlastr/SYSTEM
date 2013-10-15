@@ -654,8 +654,33 @@ If you have received this message in error please ignore, the link will be unusa
 		}
 		
 	}
+/**
+ * profile method
+ * 
+ * @param mixed
+ */	
+	public function profile($id) {
+		$this->User->id = $id;
+		if (!$this->User->exists()) {
+			$this->Session->setFlash('User Does Not Exist');
+			throw new NotFoundException('User does not exist');
+		}
+		
+		$this->request->data = $this->User->find('first', array(
+				'conditions' => array('User.id' => $id),
+				'contain' => array(
+					'Rater',
+					'Ratee'
+				)
+		));
+		
+		$this->view = 'view_public';
+		
+		$this->set('title_for_layout', $this->request->data['User']['full_name'] . ' | ' . __SYSTEM_SITE_NAME);
+	}
 }
 
 if (!isset($refuseInit)) {
 	class UsersController extends _UsersController {}
 }
+
