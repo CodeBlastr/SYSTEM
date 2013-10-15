@@ -193,6 +193,8 @@ class _UsersController extends UsersAppController {
 		$this->set('does_follow' , $does_follow);
 		$this->set('user', $user);
 		$this->set('friends', $friends);
+		
+		$this->set('title_for_layout', $user['User']['full_name'] . ' | ' . __SYSTEM_SITE_NAME);
 	}
 
 /**
@@ -213,7 +215,10 @@ class _UsersController extends UsersAppController {
 		if (empty($this->request->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
-				));
+				'contain' => array(
+					'Contact' => array('ContactAddress')
+				)
+			));
 			if(isset($user['User'])) {
 				$this->request->data = $user;
 			} else {
@@ -221,7 +226,9 @@ class _UsersController extends UsersAppController {
 			}
 		// saving a user which was edited
 		} else if(!empty($this->request->data)) {
-			$this->request->data['User']['user_id'] = $this->Auth->user('id');
+			if(!isset($this->request->data['User']['id'])) {
+				$this->request->data['User']['id'] = $this->Auth->user('id');
+			}
 			//getting password issue when saving ; so unsetting in this case
 			if(!isset($this->request->data['User']['password']))	{
 				unset($this->User->validate['password']);
@@ -231,9 +238,10 @@ class _UsersController extends UsersAppController {
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
 			try {
-				$this->User->save($this->request->data);
+				//debug($this->request->data['User']); break;
+				$this->User->saveUserAndContact($this->request->data);
 				$this->Session->setFlash('User Updated!');
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id), true);
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->request->data['User']['id']), true);
 			} catch(Exception $e){
 				$this->Session->setFlash('There was an error updating user' . $e);
 			}
@@ -248,7 +256,6 @@ class _UsersController extends UsersAppController {
  * Register method
  */
 	public function register() {
-		debug($this->request->data);
 		
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
@@ -277,6 +284,8 @@ class _UsersController extends UsersAppController {
 
 		$this->set(compact('userRoleId', 'userRoles'));
 		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
+		
+		$this->set('title_for_layout', 'Register | ' . __SYSTEM_SITE_NAME);
 	}
 
 /**
@@ -332,7 +341,8 @@ class _UsersController extends UsersAppController {
  */
 	public function my() {
 		$userId = $this->Session->read('Auth.User.id');
-		if($userId == null || $userId == __SYSTEM_GUESTS_USER_ROLE_ID) {
+		$userRoleId = $this->Session->read('Auth.User.user_role_id');
+		if($userId == null || $userRoleId == __SYSTEM_GUESTS_USER_ROLE_ID) {
 			$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
 		}
 		if (!empty($userId)) {
@@ -341,6 +351,50 @@ class _UsersController extends UsersAppController {
 			$this->Session->setFlash('Please Login');
 			$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 		}
+	}
+	
+/**
+ * Index view of users that logged in user in parent of
+ * 
+ */
+	
+	public function children() {
+		$this->paginate['conditions'] = array(
+				'parent_id' => $this->userId,
+				'not' => array(
+						'User.id' => '1'
+				)
+		);
+		$this->view = 'index';
+		$this->paginate['fields'] = array(
+			'User.id',
+			'User.first_name',
+			'User.last_name',
+			'User.username',
+			'User.email',
+		);
+		$this->set('users', $this->paginate());
+		$this->set('displayName', 'first_name');
+		$this->set('displayDescription', '');
+		$this->set('indexClass', '');
+		$this->set('showGallery', true);
+		$this->set('galleryForeignKey', 'id');
+		$this->set('pageActions', array(
+			array(
+				'linkText' => 'Create',
+				'linkUrl' => array(
+					'action' => 'add',
+					),
+				),
+			array(
+				'linkText' => 'Archived',
+				'linkUrl' => array(
+					'action' => 'index',
+					'archived' => 1,
+					),
+				),
+			));
+		
 	}
 
 
@@ -363,6 +417,7 @@ class _UsersController extends UsersAppController {
 		if (empty($this->templateId)) {
 			 $this->layout = 'login'; 
 		}
+		$this->set('title_for_layout', 'Login | ' . __SYSTEM_SITE_NAME);
 	}
 
 /**
@@ -536,6 +591,8 @@ class _UsersController extends UsersAppController {
 			$this->Session->setFlash('Invalid User Key');
 			$this->redirect(array('action' => 'forgot_password'));
 		}
+		
+		$this->set('title_for_layout', 'Change Password | ' . __SYSTEM_SITE_NAME);
 	}
 
 

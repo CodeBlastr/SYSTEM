@@ -4,8 +4,10 @@
  * If we are on an index page, it will use that index.
  * If we are not on an index it will use the url variable (default /webpages/webpages/index)
  */
-if (!empty($forms_search)) {
-	extract($forms_search);
+$formsSearch = !empty($forms_search) ? $forms_search : $formsSearch; // deprecated var name 2013-08-31 RK
+
+if (!empty($formsSearch)) {
+	extract($formsSearch);
 	$url = !empty($url) ? $url : '/webpages/webpages/index/';
 	$inputs = !empty($inputs) ? $inputs : array();
 	$inputs = Set::merge(array(array('name' => 'contains:name', 'options' => array('class' => 'search-query pull-left', 'label' => false, 'placeholder' => 'Type Your Search and Hit Enter'))), $inputs);

@@ -19,6 +19,8 @@ class InstallController extends Controller {
     public $installPlugins = array();
     public $message = '';
     public $allowedActions = array('index', 'site', 'login', 'plugin');
+	public $local = false;
+	public $installFile = '';
 
 /**
  * Schema class being used.
@@ -27,7 +29,14 @@ class InstallController extends Controller {
  */
     public $Schema;
 
+/**
+ * Constructor
+ * 
+ */
     public function __construct($request = null, $response = null) {
+    	
+    	$this->helpers[] = 'Utils.Tree';
+		
         parent::__construct($request, $response);
 
         $this->_handleSitesDirectory();
@@ -86,6 +95,7 @@ class InstallController extends Controller {
  * write the class vars that are used through out the functions in this class
  */
     protected function _handleInputVars($data) {
+    	
         $this->options['siteName'] = Inflector::camelize(Inflector::underscore(str_replace(' ', '', $this->request->data['Install']['site_name'])));
         if (strpos($this->request->data['Install']['site_domain'], ',')) {
             // comma separated domain handler
@@ -97,11 +107,15 @@ class InstallController extends Controller {
 
         $this->options['key'] = !empty($this->request->data['Install']['key']) ? $this->request->data['Install']['key'] : null;
 
-        $this->config['datasource'] = 'Database/Mysql';
-        $this->config['host'] = $data['Database']['host'];
-        $this->config['login'] = $data['Database']['username'];
-        $this->config['password'] = $data['Database']['password'];
-        $this->config['database'] = $data['Database']['name'];
+    	if (empty($data['Database']['host']) && $this->local === true) {
+    		$this->_createDatabase();
+    	} else {
+	        $this->config['datasource'] = 'Database/Mysql';
+	        $this->config['host'] = $data['Database']['host'];
+	        $this->config['login'] = $data['Database']['username'];
+	        $this->config['password'] = $data['Database']['password'];
+	        $this->config['database'] = $data['Database']['name'];
+    	}
         $this->newDir = ROOT . DS . 'sites' . DS . $this->options['siteDomain'];
 
         $this->options['first_name'] = !empty($this->request->data['User']['first_name']) ? $this->request->data['User']['first_name'] : $this->options['siteName'];
@@ -128,6 +142,74 @@ class InstallController extends Controller {
         }
     }
 
+/**
+ * Create database method
+ * 
+ */
+ 	protected function _createDatabase() {
+		require($this->installFile);
+		$Install = new INSTALL_CONFIG;
+		
+	    $this->config['datasource'] = 'Database/Mysql';
+	    $this->config['host'] = $Install->default['host'];
+	    $this->config['login'] = $Install->default['login'];
+	    $this->config['password'] = $Install->default['password'];
+		// add db prefix and remove postfix from the db name (eg. domain.localhost might become the db name prefix_domain instead of prefix_domain.localhost)
+	    $this->config['database'] = $Install->default['prefix'] . preg_replace("/[^A-Za-z]/", '', str_replace($Install->default['postfix'], '', $this->request->data['Install']['site_domain']));
+		
+		// create the db here
+		$connection = mysqli_connect($this->config['host'], $this->config['login'], $this->config['password']);
+		
+		// Check connection
+		if (mysqli_connect_errno()) {
+			echo "Failed to connect to MySQL: " . mysqli_connect_error();
+		}
+		
+		// See if database exists
+		$dbTest = mysqli_select_db($connection, $this->config['database']);
+		if ($dbTest) {
+			$this->Session->setFlash(__('Cannot use db name : %s', $this->config['database']));
+			$this->redirect('/install/site');
+		} else {
+			// Create database
+			$sql = 'CREATE DATABASE `' . $this->config['database'] . '` COLLATE `utf8_general_ci`';
+			if (mysqli_query($connection, $sql)) {
+				return true;
+			} else {
+				throw new Exception('Error creating database');
+			}
+		}
+	}
+	
+
+/**
+ * Uninstall method
+ */
+	public function uninstall($plugin = null) {
+        $this->set('plugins', $plugins = CakePlugin::loaded());
+		if ($this->request->is('post')) {
+			$loadedPlugins = unserialize(__SYSTEM_LOAD_PLUGINS);
+			// get rid of the unstall plugin value
+			unset($loadedPlugins['plugins'][array_search($plugin, $loadedPlugins['plugins'])]);
+            $sqlData = '';
+            foreach ($loadedPlugins['plugins'] as $sql) {
+                $sqlData .= 'plugins[] = ' . $sql . PHP_EOL;
+            }
+			// now save the new setting value
+			App::uses('Setting', 'Model');
+            $Setting = new Setting;
+            $data['Setting']['type'] = 'System';
+            $data['Setting']['name'] = 'LOAD_PLUGINS';
+            $data['Setting']['value'] = $sqlData;
+            if ($Setting->add($data)) {
+                $this->message[] = __('Plugin successfully uninstalled.');
+                $this->_redirect(array('action' => 'index'));
+            } else {
+                $this->message[] = __('Settings update failed.');
+            }
+		}
+	}
+	
     public function index() {
         $this->_handleSecurity();
         $currentlyLoadedPlugins = CakePlugin::loaded();
@@ -172,18 +254,15 @@ class InstallController extends Controller {
                 $data['Setting']['value'] = $sqlData;
                 if ($Setting->add($data)) {
                     $this->message[] = __('Plugin successfully installed.');
-                    $this->_redirect(array('action' => 'index'));
+					return true;
                 } else {
                     $this->message[] = __('Settings update failed.');
-                    $this->_redirect(array('action' => 'index'));
                 }
             } else {
                 $this->message[] = __('Plugin install failed.');
-                $this->_redirect(array('action' => 'index'));
             }
         } else {
             $this->message[] = __('Current plugin setup not valid.');
-            $this->_redirect(array('action' => 'index'));
         }
     }
 
@@ -194,10 +273,11 @@ class InstallController extends Controller {
  */
     public function site() {
         $this->_handleSecurity();
+        $this->set('local', $this->_local());
+		
         if (!empty($this->request->data)) {
+          	$this->_handleInputVars($this->request->data);
             // move everything here down to its own function
-            $this->_handleInputVars($this->request->data);
-
             try {
             	CakePlugin::loadAll(); // needed to make sure we don't get some stupid error
                 $db = ConnectionManager::create('default', $this->config);
@@ -258,6 +338,10 @@ class InstallController extends Controller {
 				                Galleries: {$galleries},
                                 Extras: {$extras}"));
                         }
+                    } else {
+                    	debug($this->lastTableName);
+						debug($this->progress);
+						break;
                     }
                 } catch (PDOException $e) {
                     $error = $e->getMessage();
@@ -270,9 +354,23 @@ class InstallController extends Controller {
                 $this->_redirect($this->referer());
             }
         } // end request data check
-
         $this->layout = false;
     }
+
+/**
+ * Local method
+ * Checks for .install.php file and if exists, returns true
+ * 
+ */
+ 	protected function _local() {
+ 		$file = ROOT . DS . APP_DIR . DS . 'Config' . DS . '.install.php';
+ 		if (file_exists($file)) {
+ 			$this->installFile = $file;
+ 			$this->local = true;
+ 			$this->view = 'local';
+ 			return true;
+ 		}
+ 	}
 
 /**
  * Copies example.com, creates the database.php, and core.php files.
@@ -405,8 +503,7 @@ class InstallController extends Controller {
     }
 
 /**
- * Create database from Schema object
- * Should be called via the run method
+ * Create database tables from Schema object
  *
  * @param CakeSchema $Schema
  * @param string $table
@@ -434,7 +531,6 @@ class InstallController extends Controller {
             $this->_run($drop, 'drop', $Schema);
             $this->_run($create, 'create', $Schema);
         } else {
-
             $this->message[] = __('( schema  )');
             debug($this->message);
             break;
@@ -548,8 +644,7 @@ class InstallController extends Controller {
             try {
                 $db->query($sql);
             } catch (PDOException $e) {
-                $error = $e->getMessage();
-                throw new Exception($error);
+                throw new Exception($e->getMessage());
             }
         }
         return true;
@@ -667,14 +762,19 @@ class InstallController extends Controller {
  */
     protected function _handleSecurity() {
     	//this is here to handle post install redirect (so that it wouldn't come back to the install page)
-    	if (defined('SITE_DIR') && SITE_DIR == 'sites/'.$_SERVER['HTTP_HOST'] && $this->request->action != 'index' && $this->request->action != 'plugin') {
-			$this->Session->setFlash(__('Site installed successfully.')); 
-			$this->redirect('/');
+    	if (defined('SITE_DIR') && SITE_DIR == 'sites/'.$_SERVER['HTTP_HOST'] && $this->request->action != 'index' && $this->request->action != 'plugin' && $this->request->action != 'build' && $this->request->action != 'client') {
+			$this->Session->setFlash(__('Site installed successfully.'));
+			$this->_local();
+			require_once($this->installFile);
+			$Install = new INSTALL_CONFIG;
+			$url =  !empty($Install->default['redirect']) ? $Install->default['redirect'] : '/install/build';
+			$this->redirect($url);
 		}
 		
     	if (Configure::read('Install') === true) {
     		return true;
     	}
+		
         $userRoleId = !empty($userRoleId) ? $userRoleId : $this->Session->read('Auth.User.id');
         if ((defined('SITE_DIR') && SITE_DIR && $userRoleId != 1) || Configure::read('Install') === false) {
             $this->message[] = __('Install access restricted.');
@@ -687,7 +787,7 @@ class InstallController extends Controller {
  * Install Sql Data
  */
     protected function _getInstallSqlData() {
-        $installedPlugins = 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges';
+        $installedPlugins = 'plugins[] = Users\r\nplugins[] = Webpages\r\nplugins[] = Contacts\r\nplugins[] = Galleries\r\nplugins[] = Privileges\r\nplugins[] = Utils';
         if (!empty($this->installPlugins)) {
             foreach ($this->installPlugins as $pluginName) {
                 $installedPlugins .= '\r\nplugins[] = ' . $pluginName;
@@ -695,13 +795,10 @@ class InstallController extends Controller {
         }
         $options['siteName'] = !empty($this->options['siteName']) ? $this->options['siteName'] : 'My Site';
 
-        $dataStrings[] = "INSERT INTO `aliases` (`id`, `plugin`, `controller`, `action`, `value`, `name`, `creator_id`, `modifier_id`, `created`, `modified`) VALUES
-('50dfa6c9-e59c-3306-969c-031c45a3a949', 'webpages', 'webpages', 'view', '1', 'home', '1', '1', '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'),
-('50dfa6c9-e59c-4406-969c-031c45a3a949', 'webpages', 'webpages', 'view', '6', 'error', '1', '1', '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'),
-('50dfa7e4-2e18-47da-b770-031c45a3a949', 'webpages', 'webpages', 'view', '7', 'about', '1', '1', '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'),
-('50e132bc-7a20-4102-9b84-102245a3a949', 'webpages', 'webpages', 'view', '11', 'contact', '1', '1', '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "');";
-
-        $dataStrings[] = "INSERT INTO `aros` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `rght`) VALUES (1, NULL, 'UserRole', 1, NULL, 1, 4), (2, NULL, 'UserRole', 2, NULL, 5, 6), (3, NULL, 'UserRole', 3, NULL, 7, 8), (6, 1, 'User', 1, NULL, 2, 3), (5, NULL, 'UserRole', 5, NULL, 9, 10);";
+        $dataStrings[] = "INSERT INTO `aros` (`id`, `parent_id`, `model`, `foreign_key`, `alias`, `lft`, `rght`) VALUES 
+(1, NULL, 'UserRole', 1, NULL, 1, 4), 
+(5, NULL, 'UserRole', 5, NULL, 5, 6),
+(6, 1, 'User', 1, NULL, 2, 3);";
 
         $dataStrings[] = "INSERT INTO `contacts` (`id`, `name`, `user_id`, `is_company`, `created`, `modified`) VALUES
 ('1', 'Administrator', 1, 0, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "');";
@@ -710,32 +807,14 @@ class InstallController extends Controller {
 ('50dd24cc-2c50-50c0-a96b-4cf745a3a949', 'System', 'GUESTS_USER_ROLE_ID', '5', '', NULL, NULL, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'),
 ('50dd24cc-2c50-51c0-a96b-4cf745a3a949', 'System', 'LOAD_PLUGINS', '" . $installedPlugins . "', '', NULL, NULL, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'),
 ('50dd24cc-2c50-52c0-a96b-4cf745a3a949', 'System', 'SITE_NAME', '" . $options['siteName'] . "', '', NULL, NULL, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'),
-('50dd24cc-2c50-49c0-a96b-4cf745a3a949', 'App', 'TEMPLATES', 'template[3] = \"eJxLtDK1qi62MjSyUipJzS3ISSxJ9UvMTVWyLrYyMrBSyszLLMlMzNGFyekllxSA5AwNEOo9U8AiVkrGINoSqKnYJTUtsTSnRMk6ycoQKGZipVRalFMMkgbqg6oqLU4tCsrPSUUI1wIAlYUsKg==\"\n', '', NULL, NULL, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'),
 ('50e08ff5-d88c-42d3-9c99-726745a3a949', 'System', 'SMTP', 'smtp = \"K7qTTLH17Ja5XTUiHLtnNiY2i8kg0XnVvnYli5MYtZJViOL7lvlfNyoxjDQ1Myi0hiuXOIj0PGfZx3q/0RnO1bCJ6h5VTU/rMygPN5eTeNlvlOssN8qANbaOUMrl5onaNisqSPYXNzUsxNp40HnSi1Ihlog199ociufni/lEbXEOvmk6KCykhS2NI4P0KmmHiDXa7VqW6eSqtlE9ZwGmZRoyMYiDKpZvqucxK8Y=\"', 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.\r\n\r\nExample value : \r\nsmtpUsername = xyz@example.com\r\nsmtpPassword = \"XXXXXXX\"\r\nsmtpHost = smtp.example.com\r\nsmtpPort = XXX\r\nfrom = myemail@example.com\r\nfromName = \"My Name\"', NULL, NULL, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "');";
 
         $dataStrings[] = "INSERT INTO `users` (`id`, `full_name`, `first_name`, `last_name`, `username`, `password`, `email`, `view_prefix`, `user_role_id`, `created`, `modified`) VALUES
 ('1', '" . $this->options['siteName'] . "', '" . $this->options['first_name'] . "', '" . $this->options['last_name'] . "', '" . $this->options['username'] . "', '" . $this->options['password'] . "', 'admin@example.com', 'admin', 1, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "');";
 
-        $dataStrings[] = "INSERT INTO `user_roles` (`id`, `parent_id`, `name`, `lft`, `rght`, `view_prefix`, `is_system`, `created`, `modified`) VALUES (1, NULL, 'admin', 1, 2, 'admin', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:24'), (2, NULL, 'managers', 3, 4, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:41'), (3, NULL, 'users', 5, 6, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:55:50'), (5, NULL, 'guests', 7, 8, '', 0, '0000-00-00 00:00:00', '2011-12-15 22:56:05');";
-
-        $dataStrings[] = "INSERT INTO `webpages` (`id`, `parent_id`, `name`, `lft`, `rght`, `title`, `content`, `start_date`, `end_date`, `published`, `keywords`, `description`, `type`, `is_default`, `template_urls`, `user_roles`, `creator_id`, `modifier_id`, `created`, `modified`) VALUES (1, 0, 'Homepage', 1, 2, '', '<h1>Congratulations!</h1><p>A brand new site, for a brand new day.  What will you give the world today?</p>', NULL, NULL, NULL, '', '', 'content', NULL, NULL, NULL, NULL, '1', '0000-00-00 00:00:00', '2012-12-29 17:38:58'),
-(3, 0, 'initial-template.ctp', 3, 4, NULL, '<!DOCTYPE html>\r\n<html lang=\"en\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\r\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\r\n<title></title>\r\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n<meta name=\"author\" content=\"\">\r\n<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->\r\n<!--[if lt IE 9]>\r\n      <script src=\"http://html5shim.googlecode.com/svn/trunk/html5.js\"></script>\r\n    <![endif]-->\r\n{element: favicon}\r\n<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/system.css\" />\r\n<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/twitter-bootstrap/bootstrap.min.css\" />\r\n<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/twitter-bootstrap/bootstrap.custom.css\" />\r\n{element: css}\r\n<script type=\"text/javascript\" src=\"http://code.jquery.com/jquery-latest.js\"></script>\r\n<script type=\"text/javascript\" src=\"/js/twitter-bootstrap/bootstrap.min.js\"></script>\r\n<script type=\"text/javascript\" src=\"/js/system.js\"></script>\r\n<script type=\"text/javascript\" src=\"/js/plugins/modernizr-2.6.1-respond-1.1.0.min.js\"></script>\r\n{element: javascript}\r\n{element: Webpages.analytics}\r\n</head>\r\n<body {element: body_attributes}>\r\n<!--[if lt IE 7]>\r\n    <p class=\"chromeframe\">You are using an outdated browser. <a href=\"http://browsehappy.com/\">Upgrade your browser today</a> or <a href=\"http://www.google.com/chromeframe/?redirect=true\">install Google Chrome Frame</a> to better experience this site.</p>\r\n<![endif]-->\r\n<div class=\"container\">\r\n    {element: twitter-bootstrap/page_title}\r\n    {helper: flash_for_layout}\r\n    {helper: flash_auth_for_layout} \r\n    {menu: test-menu} \r\n    {page: 5}\r\n    {helper: content_for_layout}\r\n    <footer>\r\n        <hr />\r\n        <p>&copy; Company 2012</p>\r\n    </footer>\r\n    {element: sql_dump}\r\n</div>\r\n\r\n</body>\r\n</html>\r\n', NULL, NULL, NULL, NULL, NULL, 'template', 1, '', 'a:4:{i:0;s:1:\"1\";i:1;s:1:\"2\";i:2;s:1:\"3\";i:3;s:1:\"5\";}', NULL, NULL, '2012-12-27 17:51:40', '2012-12-29 11:42:37'),
-(5, 0, 'Sidebar', 5, 6, NULL, '<h4>EXAMPLE SIDEBAR</h4>\r\n\r\n<blockquote>\r\n<p>A great product from a great store! Glad I was able to purchase and get it so easily.</p>\r\n<small>Thomas Edison <cite title=\"Source Title\">Wardenclyffe Tower</cite></small></blockquote>\r\n\r\n<blockquote>\r\n<p>It feels great to get customer service and a great product. Can&#39;t wait to come back for more.</p>\r\n<small>Galileo Galilei <cite title=\"Source Title\">Vatican City</cite></small></blockquote>\r\n', NULL, NULL, NULL, NULL, NULL, 'element', NULL, NULL, NULL, '1', '1', '2012-12-27 21:08:58', '2012-12-29 20:19:35'),
-(6, 0, 'Error Page', 7, 8, '', '<h1>Page Not Found</h1>\r\n', NULL, NULL, NULL, '', '', 'content', NULL, NULL, NULL, '1', '1', '2012-12-29 18:28:25', '2012-12-29 18:28:25'),
-(7, 0, 'About Us', 9, 10, 'About Us', '<p>Your <strong>About Us</strong> page is vital because it&rsquo;s where users go when first trying to determine a level of trust. It&rsquo;s a good idea to give people a fair amount information about yourself and your business. Here are a few things you should touch on:</p>\r\n\r\n<ul>\r\n    <li>Who you are</li>\r\n  <li>Why you do what you do</li>\r\n  <li>Where you are located</li>\r\n  <li>How long you have been in business</li>\r\n  <li>Who are the people on your team</li>\r\n</ul>\r\n\r\n<p>To edit this information turn on edit mode from the admin menu.</p>\r\n', NULL, NULL, NULL, 'about us', 'about us', 'content', NULL, NULL, NULL, '1', '1', '2012-12-29 18:33:08', '2012-12-29 18:33:08'),
-(8, 0, 'Footer-Left', 11, 12, NULL, '<p>&copy; 2013 <a data-cke-saved-href=\"/\" href=\"/\">" . $this->options['siteName'] . "</a>. All Rights Reserved.<br><a data-cke-saved-href=\"http://buildrr.com\" href=\"http://buildrr.com\" target=\"_blank\" title=\"Create your own online store with Buildrr.com hosted ecommerce\">Ecommerce Software</a> by Buildrr</p>', NULL, NULL, NULL, NULL, NULL, 'element', NULL, NULL, NULL, '1', '1', '2012-12-29 19:20:53', '2012-12-29 19:20:53'),
-(9, 0, 'Footer-Right', 13, 14, NULL, '<p class=\"socialmedia\"><a href=\"http://www.youtube.com\" target=\"_blank\"><img height=\"48\" src=\"/img/icon/icon-social-youtube.png\" width=\"48\" /></a> <a href=\"http://www.twitter.com\" target=\"_blank\"><img height=\"48\" src=\"/img/icon/icon-social-twitter.png\" width=\"48\" /></a> <a href=\"http://www.facebook.com\" target=\"_blank\"><img height=\"48\" src=\"/img/icon/icon-social-facebook.png\" width=\"48\" /></a></p>\r\n', NULL, NULL, NULL, NULL, NULL, 'element', NULL, NULL, NULL, '1', '1', '2012-12-29 20:01:23', '2012-12-29 20:04:43'),
-(10, 0, 'Typography', 15, 16, 'Typography', '<p>This is the default homepage.  Complete with default html tags displayed for easy theme styling.  Have fun!!</p><hr /><h1>Heading One <small>small wrapper</small></h1><h2>Heading Two <small>small wrapper</small></h2><h3>Heading Three <small>small wrapper</small></h3><h4>Heading Four <small>small wrapper</small></h4><h5>Heading Five <small>small wrapper</small></h5><h6>Heading Six <small>small wrapper</small></h6><p class=\"muted\">Fusce dapibus, tellus ac cursus commodo, tortor mauris nibh.</p><p class=\"text-warning\">Etiam porta sem malesuada magna mollis euismod.</p><p class=\"text-error\">Donec ullamcorper nulla non metus auctor fringilla.</p><p class=\"text-info\">Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis.</p><p class=\"text-success\">Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p><p>An abbreviation of the word attribute is <abbr title=\"attribute\">attr</abbr></p><address><strong>Acme, Inc.</strong><br>9210 Jetsam Ave, Suite 400<br>San Francisco, CA 90210<br><abbr title=\"Phone\">P:</abbr> (123) 456-7890</address><blockquote>  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>  <small>Someone famous <cite title=\"Source Title\">Source Title</cite></small> </blockquote><blockquote class=\"pull-right\">  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>  <small>Someone famous <cite title=\"Source Title\">Source Title</cite></small> </blockquote><div class=\"clearfix\"></div><dl class=\"dl-horizontal\">  <dt>Description lists</dt>  <dd>A description list is perfect for defining terms.</dd>  <dt>Euismod</dt>  <dd>Vestibulum id ligula porta felis euismod semper eget lacinia odio sem nec elit.</dd>  <dd>Donec id elit non mi porta gravida at eget metus.</dd>  <dt>Malesuada porta</dt>  <dd>Etiam porta sem malesuada magna mollis euismod.</dd>  <dt>Felis euismod semper eget lacinia</dt>  <dd>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</dd></dl><h2>Various Default Table Classes</h2><table class=\"table\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td>Larry</td>      <td>the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-striped\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td>Larry</td>      <td>the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-bordered\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td rowspan=\"2\">1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>Mark</td>      <td>Otto</td>      <td>@TwBootstrap</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td colspan=\"2\">Larry the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-hover\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td colspan=\"2\">Larry the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table table-condensed\">  <thead>    <tr>      <th>#</th>      <th>First Name</th>      <th>Last Name</th>      <th>Username</th>    </tr>  </thead>  <tbody>    <tr>      <td>1</td>      <td>Mark</td>      <td>Otto</td>      <td>@mdo</td>    </tr>    <tr>      <td>2</td>      <td>Jacob</td>      <td>Thornton</td>      <td>@fat</td>    </tr>    <tr>      <td>3</td>      <td colspan=\"2\">Larry the Bird</td>      <td>@twitter</td>    </tr>  </tbody></table><table class=\"table\">  <thead>    <tr>      <th>#</th>      <th>Product</th>      <th>Payment Taken</th>      <th>Status</th>    </tr>  </thead>  <tbody>    <tr class=\"success\">      <td>1</td>      <td>TB - Monthly</td>      <td>01/04/2012</td>      <td>Approved</td>    </tr>    <tr class=\"error\">      <td>2</td>      <td>TB - Monthly</td>      <td>02/04/2012</td>      <td>Declined</td>    </tr>    <tr class=\"warning\">      <td>3</td>      <td>TB - Monthly</td>      <td>03/04/2012</td>      <td>Pending</td>    </tr>    <tr class=\"info\">      <td>4</td>      <td>TB - Monthly</td>      <td>04/04/2012</td>      <td>Call in to confirm</td>    </tr>  </tbody></table><h2>Form Styles</h2><form action=\"/webpages/webpages/view/1?url=webpages%2Fwebpages%2Fview%2F1\" id=\"WebpageViewForm\" method=\"post\" accept-charset=\"utf-8\">  <div style=\"display:none;\">    <input type=\"hidden\" name=\"_method\" value=\"POST\"/>  </div>  <fieldset>  <legend>Some Legend</legend>  <div class=\"input text\" data-role=\"fieldcontain\">    <label for=\"WebpageLabelName\">Label Name</label>    <input name=\"data[Webpage][labelName]\" placeholder=\"Type something...\" type=\"text\" id=\"WebpageLabelName\"/>    <span class=\"help-block\">Some text in the after index</span></div>  <div class=\"input checkbox\" data-role=\"fieldcontain\">    <input type=\"hidden\" name=\"data[Webpage][singleCheckBox]\" id=\"WebpageSingleCheckBox_\" value=\"0\"/>    <input type=\"checkbox\" name=\"data[Webpage][singleCheckBox]\"  value=\"1\" id=\"WebpageSingleCheckBox\"/>    <label for=\"WebpageSingleCheckBox\">Single Check Box</label>  </div>  <div class=\"input radio\" data-role=\"fieldcontain\">    <input type=\"hidden\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons_\" value=\"\"/>    <input type=\"radio\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons0\"  value=\"0\" />    <label for=\"WebpageRadio2Buttons0\">radio option one</label>    <input type=\"radio\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons1\"  value=\"1\" />    <label for=\"WebpageRadio2Buttons1\">radio option two</label>    <input type=\"radio\" name=\"data[Webpage][radio2Buttons]\" id=\"WebpageRadio2Buttons2\"  value=\"2\" />    <label for=\"WebpageRadio2Buttons2\">radio option three</label>  </div>  <div class=\"input radio\" data-role=\"fieldcontain\">    <fieldset>      <legend>radio set with legend</legend>      <input type=\"hidden\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons_\" value=\"\"/>      <input type=\"radio\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons0\"  value=\"0\" />      <label for=\"WebpageRadioButtons0\">option one</label>      <input type=\"radio\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons1\"  value=\"1\" />      <label for=\"WebpageRadioButtons1\">option two</label>      <input type=\"radio\" name=\"data[Webpage][radioButtons]\" id=\"WebpageRadioButtons2\"  value=\"2\" />      <label for=\"WebpageRadioButtons2\">option three</label>    </fieldset>  </div>  <div class=\"input select\" data-role=\"fieldcontain\">    <label for=\"WebpageSelectButtons\">Select One</label>    <select name=\"data[Webpage][selectButtons]\" id=\"WebpageSelectButtons\">      <option value=\"0\">option one</option>      <option value=\"1\">option two</option>      <option value=\"2\">option three</option>    </select>  </div>  <div class=\"input select\" data-role=\"fieldcontain\">    <label for=\"WebpageSelectButtons\">Select Multiple</label>    <input type=\"hidden\" name=\"data[Webpage][selectButtons]\" value=\"\" id=\"WebpageSelectButtons_\"/>    <select name=\"data[Webpage][selectButtons][]\" multiple=\"multiple\" id=\"WebpageSelectButtons\">      <option value=\"0\">option one</option>      <option value=\"1\">option two</option>      <option value=\"2\">option three</option>    </select>  </div>  <div class=\"input select\" data-role=\"fieldcontain\">    <label for=\"WebpageSelectButtons\">Select Multiple</label>    <input type=\"hidden\" name=\"data[Webpage][selectButtons]\" value=\"\" id=\"WebpageSelectButtons\"/>    <div class=\"checkbox\">      <input type=\"checkbox\" name=\"data[Webpage][selectButtons][]\" value=\"0\" id=\"WebpageSelectButtons0\" />      <label for=\"WebpageSelectButtons0\">option one</label>    </div>    <div class=\"checkbox\">      <input type=\"checkbox\" name=\"data[Webpage][selectButtons][]\" value=\"1\" id=\"WebpageSelectButtons1\" />      <label for=\"WebpageSelectButtons1\">option two</label>    </div>    <div class=\"checkbox\">      <input type=\"checkbox\" name=\"data[Webpage][selectButtons][]\" value=\"2\" id=\"WebpageSelectButtons2\" />      <label for=\"WebpageSelectButtons2\">option three</label>    </div>  </div>  <div class=\"input textarea\" data-role=\"fieldcontain\">    <label for=\"WebpageTextArea\">Text Area</label>    <textarea name=\"data[Webpage][textArea]\" cols=\"30\" rows=\"6\" id=\"WebpageTextArea\"></textarea>  </div>  <div class=\"submit\">    <input  type=\"submit\" value=\"Submit\"/>  </div></form></fieldset><h2>Unordered List Styles</h2><ul>  <li>List Item One</li>  <li>List Item Two    <ul>      <li>Sub Item One        <ul>          <li>Sub sub item one</li>        </ul>      </li>      <li>Sub Item Two</li>      <li>Sub Item Three</li>    </ul>  </li>  <li>List Item Three</li></ul><h2>Ordered List Styles</h2><ol>  <li>List Item One</li>  <li>List Item Two    <ol>      <li>Sub Item One        <ol>          <li>Sub sub item one</li>        </ol>      </li>      <li>Sub Item Two</li>      <li>Sub Item Three</li>    </ol>  </li>  <li>List Item Three</li></ol><!-- Example row of columns --><div class=\"row\">  <div class=\"span4\">    <h2>Heading</h2>    <p class=\"lead\">Make a paragraph stand out by adding class called .lead.</p>    <p>Donec id elit non mi porta <strong>strong bold <em>text</strong> at eget metus. Fusce</em> dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>  </div>  <div class=\"span4\">    <h2>Heading</h2>    <p class=\"lead\">Make a paragraph stand out by adding class called .lead.</p>    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>  </div>  <div class=\"span4\">    <h2>Heading</h2>    <p class=\"lead\">Make a paragraph stand out by adding class called .lead.</p>    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>    <p><a class=\"btn\" href=\"#\">View details &raquo;</a></p>  </div></div><hr /><h2>Live grid example</h2><p>The default grid system utilizes <strong>12 columns</strong>, responsive columns become fluid and stack vertically.</p><div class=\"row\">  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div>  <div class=\"span1\">.span1</div></div><div class=\"row show-grid\">  <div class=\"span2\">.span2</div>  <div class=\"span3\">.span3</div>  <div class=\"span4\">.span4</div>  <div class=\"span2\">.span2</div>  <div class=\"span1\">.span1</div></div><div class=\"row show-grid\">  <div class=\"span9\">.span9</div>  <div class=\"span3\">.span3</div></div><hr /><h3>This is a pre tag with the class .prettyprint & .linenums</h3><pre class=\"prettyprint linenums\"><div class=\"row\"&gt;  <div class=\"span4\"&gt;...</div&gt;  <div class=\"span8\"&gt;...</div&gt;</div&gt;</pre>', NULL, NULL, NULL, NULL, NULL, 'content', NULL, NULL, NULL, NULL, NULL, '2012-12-31 01:10:12', '2012-12-31 01:10:16'),
-(11, 0, 'Contact Us', 17, 18, 'Contact Us', '<h1>Contact Us</h1>\r\n\r\n<p>{form: 50e1325f-1750-4bea-bfc5-102245a3a949}</p>\r\n', NULL, NULL, NULL, '', '', 'content', NULL, NULL, NULL, '1', '1', '2012-12-30 22:37:48', '2012-12-30 22:37:48');";
-
-        $dataStrings[] = "INSERT INTO `webpage_menus` (`id`, `parent_id`, `lft`, `rght`, `name`, `code`, `type`, `params`, `css_id`, `css_class`, `menu_id`, `item_url`, `item_text`, `item_before`, `item_after`, `item_css_class`, `item_css_id`, `item_target`, `item_title`, `item_attributes`, `item_auto_authorize`, `order`, `creator_id`, `modifier_id`, `created`, `modified`) VALUES
-('50dd2c0b-3904-4100-9076-627145a3a949', '', 1, 14, 'Main Menu', 'main-menu', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2012-12-27 21:20:11', '2012-12-27 21:20:11'),
-('50dd2c18-6250-49ed-8baf-627145a3a949', '50dd2c0b-3904-4100-9076-627145a3a949', 4, 5, NULL, NULL, NULL, NULL, NULL, NULL, '50dd2c0b-3904-4100-9076-627145a3a949', '/products', 'Products', '', '', '', '', '', '', '', 0, 2, '1', '1', '2012-12-27 21:20:24', '2012-12-29 18:58:42'),
-('50dfa428-75ac-4050-95b6-031c45a3a949', '50dfa43d-2f7c-46b2-a955-031c45a3a949', 9, 10, NULL, NULL, NULL, NULL, NULL, NULL, '50dd2c0b-3904-4100-9076-627145a3a949', '/blogs', 'Blog', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 5, '1', '1', '2012-12-29 18:17:12', '2012-12-29 18:58:42'),
-('50dfa43d-2f7c-46b2-a955-031c45a3a949', '50dd2c0b-3904-4100-9076-627145a3a949', 6, 11, NULL, NULL, NULL, NULL, NULL, NULL, '50dd2c0b-3904-4100-9076-627145a3a949', '/about', 'About Us', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, '1', '1', '2012-12-29 18:17:33', '2012-12-29 18:58:42'),
-('50dfa444-9630-4a04-9190-031c45a3a949', '50dd2c0b-3904-4100-9076-627145a3a949', 2, 3, NULL, NULL, NULL, NULL, NULL, NULL, '50dd2c0b-3904-4100-9076-627145a3a949', '/', 'Home', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '1', '1', '2012-12-29 18:17:40', '2012-12-29 18:58:42'),
-('50dfaddd-8dcc-4ed3-9d4a-6faa45a3a949', '50dfa43d-2f7c-46b2-a955-031c45a3a949', 7, 8, NULL, NULL, NULL, NULL, NULL, NULL, '50dd2c0b-3904-4100-9076-627145a3a949', '/about', 'About Us', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, '1', '1', '2012-12-29 18:58:37', '2012-12-29 18:58:42'),
-('50e1a9ae-a174-4f55-9583-1fd745a3a949', '50dd2c0b-3904-4100-9076-627145a3a949', 12, 13, NULL, NULL, NULL, NULL, NULL, NULL, '50dd2c0b-3904-4100-9076-627145a3a949', '/contact', 'Contact Us', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '1', '2012-12-31 07:05:18', '2012-12-31 07:05:18');";
+        $dataStrings[] = "INSERT INTO `user_roles` (`id`, `parent_id`, `name`, `lft`, `rght`, `view_prefix`, `is_system`, `created`, `modified`) VALUES 
+(1, NULL, 'admin', 1, 2, 'admin', 0, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'), 
+(5, NULL, 'guests', 7, 8, '', 0, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "');";
 
         $dataStrings = array_merge($dataStrings, $this->_insertExtraData());
 
@@ -790,5 +869,158 @@ class InstallController extends Controller {
             $this->redirect($url);
         }
     }
+
+/**
+ * Client method
+ * Alias of build method, for a different view
+ * 
+ */
+ 	public function client() {
+ 		return $this->build();
+	}
+
+/**
+ * Build method
+ * 
+ */
+ 	public function build() {
+        $currentlyLoadedPlugins = CakePlugin::loaded();
+        CakePlugin::loadAll();
+        $this->set('plugins', $plugins = array_diff(CakePlugin::loaded(), array('Activities', 'Answers', 'Categories', 'Connections', 'Contacts', 'Courses', 'Drafts', 'Facebook', 'Feeds', 'Forms', 'Media', 'Privileges', 'Recaptcha', 'Searchable', 'Subscribers', 'Tags', 'Twitter', 'Utils', 'Webpages', 'Wizards', 'Workflows')));
+ 		CakePlugin::unload();
+		CakePlugin::load($currentlyLoadedPlugins);
+		
+		// create some links to, and install the plugin if it isn't already
+ 		if (($this->request->is('post') || $this->request->is('put')) && $this->request->data['WebpageMenuItem']['page_type'] == 'plugin') {
+			$this->request->data['WebpageMenuItem']['item_text'] = $plugins[$this->request->data['WebpageMenuItem']['item_text']];
+			 // if not already installed, then install the plugin		
+			if (!in_array($this->request->data['WebpageMenuItem']['item_text'], $currentlyLoadedPlugins)) {
+				if ($this->plugin($this->request->data['WebpageMenuItem']['item_text'])) {
+					// nothing needed it's been installed move on to the creating the menu
+				} else {
+					throw new Exception(explode(', ', $this->message));
+				}
+			}
+			// create the menu (independent of the plugin - we can always install later)
+			$MenuItem = ClassRegistry::init('Webpages.WebpageMenuItem');
+			if ($MenuItem->saveAll($this->request->data)) {
+				$this->Session->setFlash(__('Flow updated.'));
+			} else {
+				$this->Session->setFlash(__('Error occurred, please try again.'));
+			}
+ 		}
+
+ 		$this->layout = 'default';
+		
+		App::uses('UserRole', 'Users.Model');
+		$UserRole = new UserRole;
+		$this->set('userRoles', $userRoles = $UserRole->find('all'));
+		$this->set('userRoleOptions', Set::combine($userRoles, '{n}.UserRole.session_user_role_id', '{n}.UserRole.name'));
+		
+		App::uses('Template', 'Model');
+		$Template = new Template;
+		$this->set('templates', $templates = $Template->find('all', array('conditions' => array('Template.install NOT' => null))));
+		$this->set('page_title_for_layout', 'SITE buildrr');
+		$this->set('title_for_layout', 'SITE buildrr');
+		
+		$defaultTemplate = Set::combine(templateSettings(), '{n}.isDefault', '{n}');
+		$defaultTemplate = Set::extract('/Template[layout='.$defaultTemplate[1]['templateName'].']', $templates);
+		$defaultTemplate = !empty($defaultTemplate) ? $defaultTemplate : $Template->placeholder();
+		$this->set(compact('defaultTemplate'));
+		
+		$Menu = ClassRegistry::init('Webpages.WebpageMenu');
+		foreach ($userRoles as $userRole) {
+			$varName = preg_replace("/[^A-Za-z]/", '', $userRole['UserRole']['name']) . 'Sections';
+			$conditions = $userRole['UserRole']['id'] == __SYSTEM_GUESTS_USER_ROLE_ID ? array('OR' => array(array('WebpageMenu.user_role_id' => ''), array('WebpageMenu.user_role_id' => null))) : array('WebpageMenu.user_role_id' => $userRole['UserRole']['id']);
+        	$menu = $Menu->find('threaded', array('conditions' => $conditions));
+			// remove --Home from Home menu
+			for ($i = 0; $i < count($menu[0]['children']); $i++) {
+				if ($menu[0]['children'][$i]['WebpageMenu']['name'] == $menu[0]['WebpageMenu']['name']) {
+					unset($menu[0]['children'][$i]);
+				}
+			}
+			$this->set($varName, $menu);
+		}
+        //$this->set('sections', $Menu->find('threaded', array('conditions' => array('WebpageMenu.lft >=' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <=' => $menu['WebpageMenu']['rght']))));
+        // used for re-ordering items $this->request->data['WebpageMenu']['children'] = $this->WebpageMenu->find('count', array('conditions' => array('WebpageMenu.lft >' => $menu['WebpageMenu']['lft'], 'WebpageMenu.rght <' => $menu['WebpageMenu']['rght'])));
+		
+		//$this->set('sections', $sections = $Menu->find('all', array('conditions' => array('OR' => array(array('WebpageMenu.parent_id' => null), array('WebpageMenu.parent_id' => ''))))));
+		$menus = $Menu->generateTreeList(null, null, null, '--');
+		foreach ($menus as $menu) {
+			if (strpos($menu, '-') !== 0) {
+				// this key should be removed, because if there is a link to the same page as the menu name
+				$menus = ZuhaSet::devalue($menus, '--'.$menu, true);
+			}
+		}
+		$this->set(compact('menus'));
+
+ 	}
+
+/**
+ * Template method
+ * Installs a template as the default template for the site
+ * 
+ * @param string $id
+ */
+ 	public function template($id) {		
+		$Template = ClassRegistry::init('Template');
+		$template = $Template->find('first', array('conditions' => array('Template.id' => $id)));
+		$data = unserialize($template['Template']['install']);
+		App::uses('Webpage', 'Webpages.Model');
+		$Webpage = new Webpage;
+		try {
+			$Webpage->installTemplate($data, array('type' => 'default'));
+			$this->Session->setFlash(__('Template installed'));
+			$this->redirect($this->referer());
+        } catch (Exception $e) {
+			$this->Session->setFlash(__('%s, please try again. <br /> ', $e->getMessage()));
+			$this->redirect($this->referer());
+        }
+ 	}
+	
+/**
+ * Menu method
+ * Create a new menu for a user specific case for menu creation during build
+ * 
+ */
+ 	public function menu() {
+		App::uses('UserRole', 'Users.Model');
+		$UserRole = new UserRole;
+		$userRoles = $UserRole->find('list');
+		
+		$text = __('%s Dashboard', Inflector::humanize($userRoles[$this->request->data['WebpageMenu']['user_role_id']]));
+ 		$this->request->data['WebpageMenu']['name'] = $text;
+ 		$this->request->data['WebpageMenu']['parent_id'] = null;
+ 		$this->request->data['WebpageMenu']['item_text'] = $text;		
+		
+		App::uses('WebpageMenu', 'Webpages.Model');
+		$WebpageMenu = new WebpageMenu;
+		$WebpageMenu->create();
+		if ($WebpageMenu->save($this->request->data)) {
+			$this->Session->setFlash(__('New flow started'));
+			$this->redirect($this->referer());
+		} else {
+			$this->Session->setFlash(__('Save failure. Please, try again.'));
+			$this->redirect($this->referer());
+		}
+ 	}
+
+/**
+ * public function notify
+ * 
+ */
+ 	public function approve() {
+		$this->_local();
+ 		require_once($this->installFile);
+		$Install = new INSTALL_CONFIG;
+		$mail = $Install->default['notify'];
+		if ($this->Install->__sendMail('richard@buildrr.com', $_SERVER['HTTP_HOST'] . ' Approved', 'Approved project scope, check it out. http://' . $_SERVER['HTTP_HOST'])) {
+			$this->Session->setFlash(__('Approval notification sent, thank you!'));
+			$this->redirect($this->referer());
+		} else {
+			$this->Session->setFlash(__('There was a problem delivering the approval, please try again later.'));
+			$this->redirect($this->referer());
+		}
+ 	}
 
 }

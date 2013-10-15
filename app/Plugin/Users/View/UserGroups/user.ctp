@@ -1,6 +1,6 @@
 <div id="user-add" class="users form">
     
-<?php echo $this->Form->create('User');?>
+<?php echo $this->Form->create(array('plugin' => 'users', 'controller' => 'user_groups', 'action' => 'user', $userGroup['UserGroup']['id']));?>
 	<fieldset>
  		<legend><?php echo __('Create User in %s', $userGroup['UserGroup']['title']);?></legend>
 		<?php

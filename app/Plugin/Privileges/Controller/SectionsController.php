@@ -100,20 +100,27 @@ class SectionsController extends PrivilegesAppController {
 		}
 	}
 
-
+/**
+ * Model User Fields
+ * 
+ * checks a model for which relationships are with the user model
+ * @param array $sections
+ */
 	protected function _modelUserFields($sections) {
 		foreach ($sections as $k => $parent) {
 			$modelName = Inflector::classify($parent['Section']['alias']);
-			$plugin = ZuhaInflector::pluginize($modelName);
-			$register = !empty($plugin) ? $plugin . '.' . $modelName : $modelName;
-			if ($Model = ClassRegistry::init($register, true)) {
-				$belongs = $Model->belongsTo;
-				foreach ($belongs as $b) {
-					if ($b['className'] == 'Users.User') {
-						$sections[$k]['userFields'][] = $b['foreignKey'];
+			$plugin = ZuhaInflector::pluginize($modelName);			
+			if (in_array($plugin, CakePlugin::loaded())) {	
+				$register = !empty($plugin) ? $plugin . '.' . $modelName : $modelName;
+				if ($Model = ClassRegistry::init($register, true)) {
+					$belongs = $Model->belongsTo;
+					foreach ($belongs as $b) {
+						if ($b['className'] == 'Users.User') {
+							$sections[$k]['userFields'][] = $b['foreignKey'];
+						}
 					}
-				}
-			} 
+				} 
+			}
 		}
 		return $sections;
 	}

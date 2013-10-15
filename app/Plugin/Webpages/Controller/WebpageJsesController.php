@@ -24,6 +24,10 @@ class WebpageJsesController extends WebpagesAppController {
 	public $name = 'WebpageJses';
 	public $uses = array('Webpages.WebpageJs');
 
+/**
+ * Index method
+ * 
+ */
 	public function index() {
 		$this->WebpageJs->syncFiles('js');
 		$this->WebpageJs->recursive = 0;
@@ -34,9 +38,15 @@ class WebpageJsesController extends WebpagesAppController {
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Javascript Files');
+		$this->set('title_for_layout', 'Javascript Files');
         $this->layout = 'default';
 	}
 
+/**
+ * View method
+ * 
+ * @param uuid $id
+ */
 	public function view($id = null) {
 		$this->WebpageJs->id = $id;
 		if (!$this->WebpageJs->exists()) {
@@ -44,37 +54,59 @@ class WebpageJsesController extends WebpagesAppController {
 		}
 		
 		$this->WebpageJs->syncFiles('js');
-		$webpageJs = $this->WebpageJs->read(null, $id);
-		$this->set('webpageJs', $webpageJs);
-		$this->set('page_title_for_layout', $webpageJs['WebpageJs']['name']);	
+		$this->set('webpageJs', $webpageJs = $this->WebpageJs->read(null, $id));
+		$this->set('page_title_for_layout', $webpageJs['WebpageJs']['name']);
+		$this->set('title_for_layout', $webpageJs['WebpageJs']['name']);
+		$this->layout = 'default';
 	}
 
+/**
+ * Add method
+ * 
+ */
 	public function add() {
-		if (!empty($this->request->data)) {
+		if ($this->request->is('post') || $this->request->is('put')) {
 			try {
-				$this->WebpageJs->add($this->request->data, $this->theme);
-				$this->redirect(array('action' => 'index'));
+				$this->WebpageJs->theme = $this->theme;
+				if ($this->WebpageJs->save($this->request->data)) {
+					$this->Session->setFlash('Javascript file created.');
+					$this->redirect(array('action' => 'index'));
+				} else {
+					$this->Session->setFlash('Error, please try again.');
+				}
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
 			}
 		}
-		$webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
-		$this->set(compact('webpages'));
+		
+		$this->set('webpages', $webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template'))));
 		$this->set('page_title_for_layout', 'Create Javascript File');
+		$this->set('title_for_layout', 'Create Javascript File');
+		$this->layout = 'default';
 	}
 
+/**
+ * Edit method
+ * 
+ * @param uuid $id
+ */
 	public function edit($id = null) {
 		$this->WebpageJs->id = $id;
 		if (!$this->WebpageJs->exists()) {
 			throw new NotFoundException(__('Js not found'));
 		}
 		
-		if (!empty($this->request->data)) {
-			if ($this->WebpageJs->update($this->request->data, $this->theme)) {
-				$this->Session->setFlash(__('The webpage js has been saved', true));
-				$this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The javascript could not be saved. Please, try again.'));
+		if ($this->request->is('post') || $this->request->is('put')) {
+			try {
+				$this->WebpageJs->theme = $this->theme;
+				if ($this->WebpageJs->save($this->request->data)) {
+					$this->Session->setFlash('Javascript file saved.');
+					$this->redirect(array('action' => 'index'));
+				} else {
+					$this->Session->setFlash('Error, please try again.');
+				}
+			} catch (Exception $e) {
+				$this->Session->setFlash($e->getMessage());
 			}
 		}
 		
@@ -84,12 +116,17 @@ class WebpageJsesController extends WebpagesAppController {
 		if($jsFileContents)	{
 			$this->request->data['WebpageJs']['content'] = $jsFileContents; 
 		}
-		$webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template')));
-		$this->set(compact('webpages'));
-		
-		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['WebpageJs']['name']));	
+		$this->set('webpages', $webpages = $this->WebpageJs->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template'))));
+		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['WebpageJs']['name']));
+		$this->set('title_for_layout', __('Edit %s', $this->request->data['WebpageJs']['name']));
+		$this->layout = 'default';
 	}
 
+/**
+ * Delete method
+ * 
+ * @param uuid $id
+ */
 	public function delete($id = null) {
 		$this->WebpageJs->id = $id;
 		if (!$this->WebpageJs->exists()) {

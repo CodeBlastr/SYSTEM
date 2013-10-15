@@ -127,32 +127,44 @@ class _User extends UsersAppModel {
 
 	public function __construct($id = false, $table = null, $ds = null) {
 
-		if (in_array('Transactions', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Transactions')) {
 			$this->hasMany['TransactionAddress'] = array(
 				'className' => 'Transactions.TransactionAddress',
 				'foreign_key' => 'user_id'
 				);
 		}
-		if (in_array('Products', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Products')) {
 			$this->hasMany['ProductBrand'] = array(
 				'className' => 'Products.ProductBrand',
 				'foreignKey' => 'owner_id',
-				'dependent' => false,
+				'dependent' => false
 				);
 		}
-		if (in_array('Connections', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Connections')) {
 			$this->hasMany['Connection'] = array(
 				'className' => 'Connections.Connection',
 				'foreignKey' => 'user_id',
-				'dependent' => true,
+				'dependent' => true
 				);
 		}
-		
-		if (in_array('Estimates', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Estimates')) {
 			$this->hasMany['Estimates'] = array(
 				'className' => 'Estimates.Estimate',
 				'foreignKey' => 'user_id',
-				'dependent' => true,
+				'dependent' => true
+				);
+		}
+		if (CakePlugin::loaded('Ratings')) {
+			$this->hasMany['RatingsByUser'] = array(
+				'className' => 'Ratings.Rating',
+				'foreignKey' => 'user_id',
+				'dependent' => false
+				);
+			$this->hasMany['RatingsOfUser'] = array(
+				'className' => 'Ratings.Rating',
+				'foreignKey' => 'foreign_key',
+				'conditions' => array('model' => 'User'),
+				'dependent' => false
 				);
 		}
 		
@@ -265,33 +277,51 @@ class _User extends UsersAppModel {
 		if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
 			$this->UserGroup->UsersUserGroup->add($this->data);
 		}
-		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-			$this->welcome($data[$this->alias]['username']);
+		
+		if ($created) {
+			$this->data = $this->__afterCreation($this->data);
 		}
+
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
 		CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
 		return parent::afterSave($created);
 	}
-	
+
+
 /**
- * Save method
+ * Functions to be ran after a User has been created on the site, during User::afterSave()
+ * @param array $data
+ * @return array $data
  */
- 	public function save($data = null, $validate = true, $fieldList = array()) {
+	private function __afterCreation($data) {
+		// Send a Welcome Email
+		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
+			$this->welcome($this->data[$this->alias]['username']);
+		}
+		// Initialize some fields
 		$data = $this->_cleanAddData($data);
-		return parent::save($data, $validate, $fieldList); 		
- 	}
+
+		return $data;
+	}
+
 	
 /**
  * Save all method
+ *
+ * @todo should probably be declared deprecated, as saveUserAndContact() seems more appropriate than overriding the saveAll ^JB
  */
  	public function saveAll($data = null, $options = array()) {
-		$data = $this->_cleanAddData($data);
 		$data = $this->_userContact($data);
  		return parent::saveAll($data, $options);
  	}
-	
+
+	public function saveUserAndContact($data) {
+		$data = $this->_userContact($data);
+		$data = $this->save($data['User']);
+		return $data;
+	}
 
 /**
  * Handles the data of adding of a user // DEPRECATED WILL BE REMOVED 07/18/2013 RK
@@ -303,6 +333,23 @@ class _User extends UsersAppModel {
 		return $this->saveAll($data, $options);
 	}
 
+
+/**
+ * Moves ContactAddress's up to the root so that we can easily add/edit them from User::edit()
+ * @todo Should this be in the afterFind? ^JB
+ * 
+ * @param string $type
+ * @param array $query
+ * @return mixed
+ */
+	public function find($type = 'first', $query = array()) {
+		$user = parent::find($type, $query);
+		if (isset($user['Contact']['ContactAddress'][0])) {
+			$user['ContactAddress'] = $user['Contact']['ContactAddress'];
+		}
+		return $user;
+	}
+
 /**
  * Add contact to the $data var if it exists, if it doesn't setup contact data for save.
  *
@@ -312,7 +359,7 @@ class _User extends UsersAppModel {
 	protected function _userContact($data) {
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->Contact->findById($data['Contact']['id']);
-			$data['Contact'] = $contact['Contact'];
+			$data['Contact'] = Set::merge($data['Contact'], $contact['Contact']);
 		} else if (!empty($data[$this->alias]['id'])) {
 			$contact = $this->Contact->findByUserId($data[$this->alias]['id']);
 			if (!empty($contact)) {
@@ -768,7 +815,11 @@ class _User extends UsersAppModel {
  * @param array $data
  * @return boolean
  */
-	public function procreate($data = array()) {
+	public function procreate($data = array(), $options = array()) {
+		// change this to merge of some kind for default options
+		$options['dryrun'] = !empty($options['dryrun']) ? $options['dryrun'] : false;
+		
+		// setup data
 		$randompassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'),0,3);
 		$randompassword .= substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,3);
 		$randompassword .= substr(str_shuffle('0123456789'),0,3);
@@ -777,12 +828,23 @@ class _User extends UsersAppModel {
 		$data['User']['confirm_password'] = $randompassword;
 		$data['User']['forgot_key'] = $this->__uuid('F');
 		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+		
+		// save the setup data
 		if ($this->saveAll($data)) {
-			$site = defined('SITE_NAME') ? SITE_NAME : 'New';
-			$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
-			$message = __('You have a new user account. <br /><br /> username : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $url, $url);
-			$this->__sendMail($data['User']['username'], __('%s User Account Created', $site), $message);
+			if ((!empty($data['User']['username']) || !empty($data['User']['email'])) && $options['dryrun'] == false) {
+				$data['User']['username'] = !empty($data['User']['username']) ? $data['User']['username'] : $data['User']['email']; 
+				$site = defined('SITE_NAME') ? SITE_NAME : 'New';
+				$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
+				$message = __('You have a new user account. <br /><br /> username : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $url, $url);
+				if ($this->__sendMail($data['User']['username'], __('%s User Account Created', $site), $message)) {
+					
+				} else {
+					throw new Exception(__('Failed to notify new user'));
+				}
+			}
 			return true;
+		} else {
+			return false;
 		}
 	}
 
