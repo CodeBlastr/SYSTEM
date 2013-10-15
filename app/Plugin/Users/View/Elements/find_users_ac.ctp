@@ -13,9 +13,11 @@
 	        $.get(url , { search: $('#userSearchAC').val() })
 				.done(function(data) {
 					response( $.map( data.users, function( item ) {
+			               $('#userSearchAC').val(item.User.username);
 			              return {
 			                label: item.User.username,
-			                value: item.User.id
+			                uid: item.User.id,
+			                value: item.User.username
 			              }
 			            }));
 				});
@@ -23,7 +25,8 @@
 	      minLength: 2,
 	      select: function( event, ui ) {
 	      	console.log(ui);
-	      	window.location = userurl+'/'+ui.item.value;
+	      	$('#userSearchAC').val(ui.item.label);
+	      	window.location = userurl+'/'+ui.item.uid;
 	      },
 	      open: function() {
 	        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );

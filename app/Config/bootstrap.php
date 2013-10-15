@@ -129,6 +129,20 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
     	CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages', 'Utils')); // required plugins    
 	}
 	
+	function templateSettings() {
+		$settings = unserialize(__APP_TEMPLATES);
+		$i = 0;
+		if (!empty($settings['template'])) {
+			foreach ($settings['template'] as $setting) {
+				$templates[$i] = unserialize(gzuncompress(base64_decode($setting)));
+				$templates[$i]['userRoles'] = unserialize($templates[$i]['userRoles']);
+				$templates[$i]['urls'] = empty($templates[$i]['urls']) || $templates[$i]['urls'] == '""'  ? null : unserialize(gzuncompress(base64_decode($templates[$i]['urls'])));
+				$i++;
+			}
+		}
+		return $templates;
+	}
+	
 	
 	/**
 	 * temporary convenience function for states options
@@ -221,6 +235,30 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
         
         	return $clean;
         }
+    
+	    /**
+	     * String to Url
+	     * Converts the given string to a no spaces, no special characters, no cases string, like a url. 
+		 * Unlike the asciify function it changes + (plus signs) to / (slashes)
+	     * 
+	     * Tänk efter nu – förr'n vi föser dig b+ort BECOMES tank-efter-nu-forrn-vi-foser-dig-b/ort
+		 * 
+		 * Usage : ZuhaInflector::urlify('some string');
+	     * 
+	     * @param string $str
+	     * @param array $replace
+	     * @param string $delimiter
+	     * @return string
+	     */
+        public function urlify($str, $delimiter = '-') {
+        	$strs = explode('+', $str);
+			$string = '';
+			for ($i = 0; $i < count($strs); $i++) {
+				$parts[] = ZuhaInflector::asciify(trim($strs[$i]));
+			}        
+        	return implode('/', $parts);
+        }
+		
 		/**
 		 * Flatten a multidimensional array to a single string
 		 * 
@@ -384,6 +422,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'OrderTransaction' => 'Orders',
 				'Phonebook' => 'Phonebooks',
 				'PhonebookService' => 'Phonebooks',
+				'PhonebooksService' => 'Phonebooks',
                 'Privilege' => 'Privilege',
                 'ProductBrand' => 'Products',
                 'ProductPrice' => 'Products',
@@ -391,6 +430,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
                 'ProductsProductOption' => 'Products',
                 'ProductStore' => 'Products',
                 'Product' => 'Products',
+                'Property' => 'Properties',
                 'Job' => 'Jobs', 
 				'ProjectIssue' => 'Projects',
 				'Project' => 'Projects',
@@ -487,6 +527,17 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
             
             return __('%s %s', $return, $four);
         }
+		
+		/**
+		 * numerate method
+		 * 
+		 * take a string and return just the numbers in it
+		 * 
+		 * @param string
+		 */
+		 public function numerate($string) {
+		 	return preg_replace("/[^0-9]/","",$string);;
+		 }
         
 	} // end ZuhaInflector class
 

@@ -25,11 +25,11 @@
     	echo $this->Form->input('WebpageMenuItem.item_text', array('label' => 'Link Text'));
 		echo $this->Form->input('WebpageMenuItem.item_url', array('label' => 'Url'));
     	echo $this->Form->input('WebpageMenuItem.menu_id', array('type' => 'hidden', 'value' => $this->request->data['WebpageMenu']['id']));
-		echo $this->Form->input('WebpageMenu.Item.order', array('type' => 'hidden', 'value' => $this->request->data['WebpageMenu']['children'] + 1)); 
+		echo $this->Form->input('WebpageMenuItem.order', array('type' => 'hidden', 'value' => $this->request->data['WebpageMenu']['children'] + 1)); 
         echo $this->Form->end(__('Add Link'));?>
     </fieldset>
 
-    <?php echo $this->Form->create('WebpagMenu');?>
+    <?php echo $this->Form->create('WebpageMenu');?>
 	<fieldset>
  		<legend class="toggleClick"><?php echo __('Configure %s Options', $this->request->data['WebpageMenu']['name']); ?></legend>
 	    <?php

@@ -51,7 +51,6 @@ class GalleryTestCase extends CakeTestCase {
  * @return void
  */
 	public function testMakeThumb() {
-
         $firstResult = $this->Gallery->find('first', array('Conditions' => array('Gallery.id' => 1)));
         $this->assertTrue(!empty($firstResult['Gallery']['gallery_thumb_id'])); // test that gallery exists to edit
 

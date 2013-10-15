@@ -30,6 +30,8 @@ if (!empty($model) && !empty($foreignKey)) {
 $thumbLink = !empty($thumbLink) ? $thumbLink : null;
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
 $showEmpty = isset($showEmpty) ? $showEmpty : true;
+$defaultImage = !empty($defaultImage) ? $defaultImage : '/img/noImage.jpg';
+
 // default sizes
 $indexWidth = !empty($galleryThumb['GallerySettings']['indexImageWidth']) ? $galleryThumb['GallerySettings']['indexImageWidth'] : 24;
 $indexHeight = !empty($galleryThumb['GallerySettings']['indexImageHeight']) ? $galleryThumb['GallerySettings']['indexImageHeight'] : 24;
@@ -53,13 +55,18 @@ $thumbLinkAppend = !empty($thumbLinkAppend) ? ' '.$thumbLinkAppend : ''; // to a
 if (!empty($galleryThumb['GalleryThumb']['filename'])) {
     $imagePath = $galleryThumb['GalleryThumb']['dir'].'thumb/'. $thumbSize .'/'.$galleryThumb['GalleryThumb']['filename'];
 	$conversionType = !empty($conversionType) ? $conversionType : $galleryThumb['GallerySettings']['conversionType'];
-    $image = $this->Html->image($imagePath, $thumbImageOptions,	array(
-    	'conversion' => $conversionType,
-		'quality' => 75,
-		'alt' => 'thumbnail',
-		));	
+	
+	$image = !empty($galleryThumb['GalleryThumb']['_embed']) ? 
+		// video support
+		'<iframe height="' . $galleryThumb['GallerySettings'][$thumbSize . 'ImageHeight'] . '" width="' . $galleryThumb['GallerySettings'][$thumbSize . 'ImageWidth'] . '" src="' . $galleryThumb['GalleryThumb']['_embed'] . '?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe>' : 
+		
+		$this->Html->image($imagePath, $thumbImageOptions,	array(
+	    	'conversion' => $conversionType,
+			'quality' => 75,
+			'alt' => 'thumbnail',
+			));	
 } else if (!empty($showEmpty)) {
-	$imagePath = '/img/noImage.jpg';
+	$imagePath = $defaultImage;
     $image = $this->Html->image($imagePath, array(
         'class' => $thumbImageOptions['class'],
         'title' => $thumbImageOptions['title']

@@ -212,6 +212,8 @@ class CakeTestFixture {
 			$db->execute($db->createSchema($this->Schema), array('log' => false));
 			$this->created[] = $db->configKeyName;
 		} catch (Exception $e) {
+			debug($e->getMessage()); // zuha update because this is hard to find (NOTE THIS IS FIXED IN THE LATEST VERSION)
+			break; // zuha update because this error is hard to find (NOTE THIS IS FIXED IN THE LATEST VERSION)
 			return false;
 		}
 		return true;

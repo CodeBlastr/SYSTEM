@@ -65,8 +65,7 @@ class GalleriesController extends GalleriesAppController {
 					),
 				));	
 		}
-		
-		$this->set('gallery', $gallery);
+		$this->set(compact('gallery'));
 		// This is here, because we have an element doing a request action on it.
 		return !empty($gallery) ? $gallery : false;
 	}
