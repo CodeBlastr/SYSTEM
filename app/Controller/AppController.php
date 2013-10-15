@@ -115,15 +115,18 @@ class AppController extends Controller {
  * Over ride a controllers default redirect action by adding a form field which specifies the redirect.
  */
 	public function redirect($url, $status = null, $exit = true) {
-		if (!empty($this->request->data['Success']['redirect']) && $status == 'success') {
+		if ($url == 'admin') {
+			return !$this->request->admin ? parent::redirect('/admin' . $_SERVER['REQUEST_URI']) : null;
+		} elseif (!empty($this->request->data['Success']['redirect']) && $status == 'success') {
 			return parent::redirect($this->request->data['Success']['redirect'], $status, $exit);
 		} elseif (!empty($this->request->data['Error']['redirect']) && $status == 'error') {
 			return parent::redirect($this->request->data['Error']['redirect'], $status, $exit);
 		} elseif (!empty($this->request->data['Override']['redirect'])) {
 			return parent::redirect($this->request->data['Override']['redirect'], $status, $exit);
-		} else {
-			return parent::redirect($url, $status, $exit);
+		} elseif (!empty($this->request->query['destination'])) {
+			return parent::redirect($this->request->query['destination'], $status, $exit);
 		}
+		return parent::redirect($url, $status, $exit);
 	}
 
 /**
@@ -135,6 +138,7 @@ class AppController extends Controller {
  * @param array
  */
 	public function paginate($object = null, $scope = array(), $whitelist = array()) {
+		$this->request->params = array_merge($this->request->params, Router::parse(urldecode($this->request->here)));
 		$this->_handlePaginatorSorting();
 		$this->_handlePaginatorFiltering($object);
 		return parent::paginate($object, $scope, $whitelist);
@@ -265,7 +269,7 @@ class AppController extends Controller {
  * @return null
  */
 	private function _handlePaginatorSorting() {
-		#debug($this->request->url.$this->request->query['contextSorter']);
+		// debug($this->request->url.$this->request->query['contextSorter']);
 		if (!empty($this->request->query['contextSorter'])) {
 			$this->redirect($this->request->query['contextSorter']);
 		}
@@ -384,7 +388,10 @@ class AppController extends Controller {
 			if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {
 				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName'].' >'] = $options['fieldValue'];
 			} else {
-				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']][] = $options['fieldValue'];
+				// this line
+				$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']] = $options['fieldValue'];
+				// was this, but the [] at the end of fielName made null not work (not sure if it broke anything to change) (works on bakkenbook homepage category_search)
+				//$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']][] = $options['fieldValue'];
 			}
 			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 		} else {
