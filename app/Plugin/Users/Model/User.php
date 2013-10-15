@@ -126,6 +126,8 @@ class _User extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
+		
+		
 
 		if (CakePlugin::loaded('Transactions')) {
 			$this->hasMany['TransactionAddress'] = array(
@@ -155,17 +157,19 @@ class _User extends UsersAppModel {
 				);
 		}
 		if (CakePlugin::loaded('Ratings')) {
-			$this->hasMany['RatingsByUser'] = array(
+			$this->hasMany['Rater'] = array(
 				'className' => 'Ratings.Rating',
 				'foreignKey' => 'user_id',
 				'dependent' => false
 				);
-			$this->hasMany['RatingsOfUser'] = array(
+			$this->hasMany['Ratee'] = array(
 				'className' => 'Ratings.Rating',
 				'foreignKey' => 'foreign_key',
 				'conditions' => array('model' => 'User'),
 				'dependent' => false
 				);
+				
+				$this->actsAs[] = 'Ratable';
 		}
 		
 		parent::__construct($id, $table, $ds);
