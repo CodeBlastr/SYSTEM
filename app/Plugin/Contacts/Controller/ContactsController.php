@@ -3,7 +3,11 @@ App::uses('ContactsAppController', 'Contacts.Controller');
 class ContactsController extends ContactsAppController {
 
 	public $name = 'Contacts';
+	
 	public $uses = 'Contacts.Contact';
+	
+	public $helpers = array('Contacts.Chart');
+	
 	public $allowedActions = array();
 	
 	
@@ -425,7 +429,7 @@ class ContactsController extends ContactsAppController {
 		$this->set('estimateActivities', $this->Contact->estimateActivities());
 		
 		// list of activities
-		$this->set('activities', $this->Contact->activities());
+		$this->set('activities', $activities = $this->Contact->activities());
 		
 		// list of activities
 		$this->set('myContacts', $this->Contact->find('all', array('conditions' => array('Contact.assignee_id' => $this->Session->read('Auth.User.id')), 'limit' => 5, 'order' => 'Contact.created DESC')));
