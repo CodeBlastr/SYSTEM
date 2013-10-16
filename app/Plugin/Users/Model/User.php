@@ -14,6 +14,14 @@ class _User extends UsersAppModel {
 		);
 		
 	public $order = array('last_name', 'full_name', 'first_name');
+	
+	
+
+	/**
+	 * Auto Login setting, used to skip session write in aftersave 
+	 */
+	 
+	public $autoLogin = true; 
 
 	public $validate = array(
 		'password' => array(
@@ -289,7 +297,9 @@ class _User extends UsersAppModel {
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
-		CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
+		if($this->autoLogin) {
+			CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
+		}
 		return parent::afterSave($created);
 	}
 
