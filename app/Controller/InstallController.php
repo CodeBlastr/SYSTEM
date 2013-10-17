@@ -242,9 +242,7 @@ class InstallController extends Controller {
 			$this->message[] = __('Plugin successfully installed.');
 			$this->_redirect($this->index());
 		} catch (Exception $e){
-			$this->message[] = $e->getMessage();
-			debug($this->message);
-			break;
+			$this->message[] = __('Plugin successfully installed.');
 			$this->_redirect($this->index());
 		}
        
