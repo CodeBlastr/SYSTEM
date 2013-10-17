@@ -164,21 +164,21 @@ class _User extends UsersAppModel {
 				'dependent' => true
 				);
 		}
-		if (CakePlugin::loaded('Ratings')) {
-			$this->hasMany['Rater'] = array(
-				'className' => 'Ratings.Rating',
-				'foreignKey' => 'user_id',
-				'dependent' => false
-				);
-			$this->hasMany['Ratee'] = array(
-				'className' => 'Ratings.Rating',
-				'foreignKey' => 'foreign_key',
-				'conditions' => array('model' => 'User'),
-				'dependent' => false
-				);
-				
-				$this->actsAs[] = 'Ratable';
-		}
+		// these should not be needed anymore 1016/2013 RK
+		// if (CakePlugin::loaded('Ratings')) {
+			// $this->hasMany['Rater'] = array(
+				// 'className' => 'Ratings.Rating',
+				// 'foreignKey' => 'user_id',
+				// 'dependent' => false
+				// );
+			// $this->hasMany['Ratee'] = array(
+				// 'className' => 'Ratings.Rating',
+				// 'foreignKey' => 'foreign_key',
+				// 'conditions' => array('model' => 'User'),
+				// 'dependent' => false
+				// );
+			// $this->actsAs[] = 'Ratable';
+		// }
 		
 		parent::__construct($id, $table, $ds);
 	}
