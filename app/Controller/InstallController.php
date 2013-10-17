@@ -240,10 +240,10 @@ class InstallController extends Controller {
 		try{
 			$this->_plugin($plugin);
 			$this->message[] = __('Plugin successfully installed.');
-			$this->_redirect($this->index());
+			$this->_redirect($this->referer());
 		} catch (Exception $e){
-			$this->message[] = __('Plugin successfully installed.');
-			$this->_redirect($this->index());
+			$this->message[] = $e->getMessage();
+			$this->_redirect($this->referer());
 		}
        
     }
