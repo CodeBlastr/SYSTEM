@@ -212,6 +212,7 @@ class _UsersController extends UsersAppController {
 		} else {
 			$conditions = array('User.id' => $this->Session->read('Auth.User.id'));
 		}
+		
 		if (empty($this->request->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
@@ -237,13 +238,11 @@ class _UsersController extends UsersAppController {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
-			try {
-				//debug($this->request->data['User']); break;
-				$this->User->saveUserAndContact($this->request->data);
+			if($this->User->saveAll($this->request->data)) {
 				$this->Session->setFlash('User Updated!');
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->request->data['User']['id']), true);
-			} catch(Exception $e){
-				$this->Session->setFlash('There was an error updating user' . $e);
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id));
+			} else {
+				$this->Session->setFlash('There was an error updating user');
 			}
 		} else {
 			$this->Session->setFlash('Invalid user');
