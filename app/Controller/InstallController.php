@@ -243,8 +243,6 @@ class InstallController extends Controller {
 			$this->_redirect($this->referer());
 		} catch (Exception $e){
 			$this->message[] = $e->getMessage();
-			debug($this->message);
-			break;
 			$this->_redirect($this->referer());
 		}
        
