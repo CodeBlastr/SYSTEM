@@ -1,0 +1,79 @@
+Qt: Untested Windows version 6.2 detected!
+You need to specify atleast one input file, and exactly one output file
+Use - for stdin or stdout
+
+Name:
+  wkhtmltopdf 0.11.0 rc2
+
+Synopsis:
+  wkhtmltopdf [GLOBAL OPTION]... [OBJECT]... <output file>
+
+Document objects:
+  wkhtmltopdf is able to put several objects into the output file, an object is
+  either a single webpage, a cover webpage or a table of content.  The objects
+  are put into the output document in the order they are specified on the
+  command line, options can be specified on a per object basis or in the global
+  options area. Options from the Global Options section can only be placed in
+  the global options area
+
+  A page objects puts the content of a singe webpage into the output document.
+
+  (page)? <input url/file name> [PAGE OPTION]...
+  Options for the page object can be placed in the global options and the page
+  options areas. The applicable options can be found in the Page Options and
+  Headers And Footer Options sections.
+
+  A cover objects puts the content of a singe webpage into the output document,
+  the page does not appear in the table of content, and does not have headers
+  and footers.
+
+  cover <input url/file name> [PAGE OPTION]...
+  All options that can be specified for a page object can also be specified for
+  a cover.
+
+  A table of content object inserts a table of content into the output document.
+
+
+  toc [TOC OPTION]...
+  All options that can be specified for a page object can also be specified for
+  a toc, further more the options from the TOC Options section can also be
+  applied. The table of content is generated via XSLT which means that it can be
+
+  styled to look however you want it to look. To get an aide of how to do this
+  you can dump the default xslt document by supplying the
+  --dump-default-toc-xsl, and the outline it works on by supplying
+  --dump-outline, see the Outline Options section.
+
+Description:
+  Converts one or more HTML pages into a PDF document, using wkhtmltopdf patched
+
+  qt.
+
+Global Options:
+      --collate                       Collate when printing multiple copies
+                                 (default)
+      --no-collate                    Do not collate when printing multiple
+                                 copies
+      --copies <number>               Number of copies to print into the pdf
+                                  file (default 1)
+  -H, --extended-help                 Display more extensive help, detailing
+                                  less common command switches
+  -g, --grayscale                     PDF will be generated in grayscale
+  -h, --help                          Display help
+  -l, --lowquality                    Generates lower quality pdf/ps. Useful to
+                                     shrink the result document space
+  -O, --orientation <orientation>     Set orientation to Landscape or Portrait
+                                    (default Portrait)
+  -s, --page-size <Size>              Set paper size to: A4, Letter, etc.
+                               (default A4)
+  -q, --quiet                         Be less verbose
+      --read-args-from-stdin          Read command line arguments from stdin
+      --title <text>                  The title of the generated pdf file (The
+                                    title of the first document is used if not
+                                    specified)
+  -V, --version                       Output version information an exit
+Contact:
+  If you experience bugs or want to request new features please visit
+  <http://code.google.com/p/wkhtmltopdf/issues/list>, if you have any problems
+  or comments please feel free to contact me: see
+  <http://www.madalgo.au.dk/~jakobt/#about>
