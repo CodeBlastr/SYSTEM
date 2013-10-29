@@ -166,7 +166,7 @@ class _User extends UsersAppModel {
 		}
 		// these should not be needed anymore 1016/2013 RK
 		// if (CakePlugin::loaded('Ratings')) {
-			// $this->hasMany['Rater'] = array(
+			//$this->actsAs[] = 'Ratings.Ratable';
 				// 'className' => 'Ratings.Rating',
 				// 'foreignKey' => 'user_id',
 				// 'dependent' => false
@@ -960,6 +960,21 @@ Thank you for registering with us and welcome to the community.";
 			return false;
 		}
 	}
+	
+	
+/**
+ * 
+ */	
+ 
+	 public function rate($data){
+		 App::uses('Rating', 'Ratings.Model'); // load Ratings Model
+		 $Rating = new Rating; //create Object $Rating
+		 return $Rating->save($data); //return data and save
+	 
+	 
+	 
+	}
+
 }
 
 if (!isset($refuseInit)) {
