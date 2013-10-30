@@ -153,6 +153,7 @@ $(document).ready(function() {
 /**
  * Overwrite the default input() function to make date fields use javascript date pickers by default
  */
+ 
 	public function input($fieldName, $options = array()) {
 		$this->setEntity($fieldName);
 
@@ -289,10 +290,10 @@ $(document).ready(function() {
 			$options['type'] = 'textarea';
 		}
 
-		if ($options['type'] === 'datetime' || $options['type'] === 'date' || $options['type'] === 'time' || $options['type'] === 'select') {
+		if ($options['type'] === 'datetime' || $options['type'] === 'date' || $options['type'] === 'time' || $options['type'] === 'select' || $options['type'] === 'datetimepicker' || $options['type'] === 'datepicker' || $options['type'] === 'timepicker') {
 			$options += array('empty' => false);
 		}
-		if ($options['type'] === 'datetime' || $options['type'] === 'date' || $options['type'] === 'time') {
+		if ($options['type'] === 'datetime' || $options['type'] === 'date' || $options['type'] === 'time' || $options['type'] === 'datetimepicker' || $options['type'] === 'datepicker' || $options['type'] === 'timepicker') {
 			$dateFormat = $this->_extractOption('dateFormat', $options, 'MDY');
 			$timeFormat = $this->_extractOption('timeFormat', $options, 12);
 			unset($options['dateFormat'], $options['timeFormat']);
@@ -351,27 +352,32 @@ $(document).ready(function() {
 				$options['class'] = !empty($options['class']) ?  $options['class'] : ''; // zuha specific
 				$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // original cakephp call
 			break;
-			// popup date/time pickers
+			// javascript popup date/time pickers
 			case 'timepicker':
 				$options['value'] = $selected;
 				$options['class'] = !empty($options['class']) ?  $options['class'] . ' timepicker' : 'timepicker'; // zuha specific
 				$type = 'text'; // zuha specific
+				debug('NOTE: Probably an error here because I don\'t see a $this->timepicker() function');
+				break;
 				$input = $this->{$type}($fieldName, $options); // zuha specific
 				//$input = $this->dateTime($fieldName, null, $timeFormat, $options); // cakephp specific
 			break;
 			case 'datepicker':
 				$options['value'] = $selected;
 				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datepicker' : 'datepicker'; // zuha specific
-				$type = 'text'; // zuha specific
+				debug('NOTE: Probably an error here because I don\'t see a $this->datepicker() function');
+				break;
+				//$type = 'text'; // zuha specific
 				$input = $this->{$type}($fieldName, $options); // zuha specific
 				//$input = $this->dateTime($fieldName, $dateFormat, null, $options); // cakephp specific
 			break;
 			case 'datetimepicker':
 				$options['value'] = $selected;
-				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datetimepicker' : 'datetimepicker'; // zuha specific
-				$type = 'text'; // displaying this datetime as a text input because we are using the popup datepicker
+				$options['class'] = !empty($options['class']) ?  $options['class'] . ' datepicker' : 'datepicker'; // zuha specific
+				//$type = 'text'; // zuha specific
 				$input = $this->{$type}($fieldName, $options); // zuha specific
-				//$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // original cakephp call
+				$input .= $this->hidden($fieldName, array('id' => str_replace('.', '', $fieldName).'_')); // catch the form in app controller and format the date
+				//$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); // cakephp specific
 			break;
 			case 'richtext': // zuha specific
 				$input = '';
@@ -493,61 +499,42 @@ $(document).ready(function() {
 	}
 	
 	
-	protected function dateTimePicker($fieldName, $dateFormat = 'DMY', $timeFormat = '12', $attributes = array()) {
+	public function datetimepicker($fieldName, $attributes = array(),  $dateFormat = 'm/d/Y h:i a', $timeFormat = '24') {
+		$this->setEntity($fieldName);
 		$attributes += array('empty' => true, 'value' => null);
-		$year = $month = $day = $hour = $min = $meridian = null;
-
+		
 		if (empty($attributes['value'])) {
 			$attributes = $this->value($attributes, $fieldName);
 		}
 
-		if ($attributes['value'] === null && $attributes['empty'] != true) {
-			$attributes['value'] = time();
+		if(!empty($attributes['value'])) {
+			$attributes['value'] = date ( $dateFormat, strtotime($attributes['value']));
+		}else {
+			$attributes['value'] = date ( $dateFormat );
 		}
+		$this->View->Html->css('http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
+		$this->View->Html->css('jquery-ui/jquery-ui-timepicker-addon', null, array('inline' => false));
+		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false));
+		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false));
+		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : 'hh:mm tt';
+		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
+		$code = '$(document).ready(function() {
+			$(".date-time-picker").next().val("'.date('Y-m-d h:i:s', strtotime($attributes['value'])).'");
+			$(".date-time-picker").datetimepicker({
+				timeFormat: "'.$jsTime.'", 
+				dateFormat: "'.$jsDate.'",
+				altField: "#' . str_replace('.', '', $fieldName) . '_",
+				altFieldTimeOnly: false,
+				altFormat: "yy-mm-dd",
+				altTimeFormat: "hh:mm:ss",
+				altSeparator: " "
+				});
+			});';
+		
+		
+		$this->View->Html->scriptBlock($code, array('inline' => false, 'once' => true));
 
-		if (!empty($attributes['value'])) {
-			if (is_array($attributes['value'])) {
-				extract($attributes['value']);
-			} else {
-				if (is_numeric($attributes['value'])) {
-					$attributes['value'] = strftime('%Y-%m-%d %H:%M:%S', $attributes['value']);
-				}
-				$meridian = 'am';
-				$pos = strpos($attributes['value'], '-');
-				if ($pos !== false) {
-					$date = explode('-', $attributes['value']);
-					$days = explode(' ', $date[2]);
-					$day = $days[0];
-					$month = $date[1];
-					$year = $date[0];
-				} else {
-					$days[1] = $attributes['value'];
-				}
-
-				if (!empty($timeFormat)) {
-					$time = explode(':', $days[1]);
-
-					if (($time[0] > 12) && $timeFormat == '12') {
-						$time[0] = $time[0] - 12;
-						$meridian = 'pm';
-					} elseif ($time[0] == '12' && $timeFormat == '12') {
-						$meridian = 'pm';
-					} elseif ($time[0] == '00' && $timeFormat == '12') {
-						$time[0] = 12;
-					} elseif ($time[0] >= 12) {
-						$meridian = 'pm';
-					}
-					if ($time[0] == 0 && $timeFormat == '12') {
-						$time[0] = 12;
-					}
-					$hour = $min = null;
-					if (isset($time[1])) {
-						$hour = $time[0];
-						$min = $time[1];
-					}
-				}
-			}
-		}
+		return $this->text($fieldName, array('type' => 'text', 'class' => 'date-time-picker') + $attributes);
 	}
 
 /**
