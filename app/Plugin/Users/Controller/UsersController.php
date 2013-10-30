@@ -27,7 +27,7 @@ App::uses('UsersAppController', 'Users.Controller');
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and Future Versions
  * @todo		  The "view" method needs a requestAction fix so that requestAction works for all requestAction type calls, without the if params['requested'] thing being necessary everyhwere we want to do that.
  */
-class _UsersController extends UsersAppController {
+class AppUsersController extends UsersAppController {
 
 	public $name = 'Users';
 	public $uses = 'Users.User';
@@ -50,13 +50,10 @@ class _UsersController extends UsersAppController {
 
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
-		if (in_array('Invite', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Invite')) {
 			$this->components[] = 'Invite.InviteHandler';
 		}
-		if (in_array('Recaptcha', CakePlugin::loaded())) {
-			$this->helpers[] = 'Recaptcha.Recaptcha';
-		}
-		if (in_array('Facebook', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Facebook')) {
 			$this->helpers[] = 'Facebook.Facebook';
 			$this->uses[] = 'Facebook.Facebook';
 		}
@@ -350,6 +347,32 @@ class _UsersController extends UsersAppController {
 			$this->Session->setFlash('Please Login');
 			$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 		}
+	}
+	
+/**
+ * Rate the user for paid transactions
+ */	
+	
+	public function rate($userId){
+		
+		if($this->request->is('post')){
+			$this->request->data['Rating']['model'] = 'User';
+			$this->request->data['Rating']['foreign_key'] = $userId;
+			if($this->User->rate($this->request->data)){
+				$this->Session->setFlash('Your rating was submited successfully.');
+				$this->redirect(array('plugin' => 'transactions', 'controller' => 'transactions', 'action' => 'my'));
+			} else {
+				$this->Session->setFlash('There was an error with your feedback, please try again.');
+			}
+			
+			
+		}
+		$this->User->id = $userId;
+		$this->set('user', $user = $this->User->read());
+	
+		$this->set('page_title_for_layout', __('Rate %s', $user['User']['full_name']));
+		$this->set('title_for_layout', __('Rate %s', $user['User']['full_name']));
+			
 	}
 	
 /**
@@ -680,6 +703,6 @@ If you have received this message in error please ignore, the link will be unusa
 }
 
 if (!isset($refuseInit)) {
-	class UsersController extends _UsersController {}
+	class UsersController extends AppUsersController {}
 }
 
