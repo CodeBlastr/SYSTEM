@@ -214,6 +214,7 @@ class _Contact extends ContactsAppModel {
  * Before save
  */
 	public function beforeSave($options = array()) {
+		$this->data = $this->_cleanContactData($this->data); // don't like this in two places, but put this quick fix in because duplicate user_id's were getting passed when the user_id is blank.  For some reason that $this->data doesn't transfer to the beforeSave()
 		if (in_array('Activities', CakePlugin::loaded()) && !empty($this->data['Contact']['contact_type']) && $this->data['Contact']['contact_type'] == 'lead') {
 			// log when leads are created
 			$this->Behaviors->attach('Activities.Loggable', array(
@@ -422,6 +423,9 @@ class _Contact extends ContactsAppModel {
 			}
 		}
 		
+		if ($data['Contact']['user_id'] == '') {
+			unset($data['Contact']['user_id']);
+		}
 		return $data;
 	}
 
