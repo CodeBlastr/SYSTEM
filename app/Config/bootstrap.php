@@ -321,11 +321,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * @todo There must be a better way...
 		 */
 		public static function pluginize($name) {
-             
-            if($name == "1s")
-            debug(debug_backtrace());
-          
-			# list of models and controllers to rename to the corresponding plugin
+			
+			// list of models and controllers to rename to the corresponding plugin
 			$name = Inflector::singularize(Inflector::camelize($name));
 			
 			$allowed = array(
@@ -425,6 +422,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'PhonebooksService' => 'Phonebooks',
                 'Privilege' => 'Privilege',
                 'ProductBrand' => 'Products',
+                'ProductBid' => 'Products',
                 'ProductPrice' => 'Products',
                 'ProductOption' => 'Products',
                 'ProductsProductOption' => 'Products',
