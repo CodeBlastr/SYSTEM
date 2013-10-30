@@ -17,7 +17,9 @@
         }
     
         if (!empty($leadActivities)) { 
-            echo '<h4>Leads over time</h4>'; ?>
+            echo '<h4>Leads over time</h4>'; 
+           // echo $this->Chart->time(); ?>
+            
             <script type="text/javascript">
             // leads chart @todo, once you have daily data convert this to zoomable too (like the above)
             var chart;
@@ -75,22 +77,47 @@
     </div>
     
     <?php 
-    if (!empty($estimates)) { ?>
-    <div class="masonryBox dashboardBox tagOpportunities">
-        <h3 class="title"><i class="icon-th-large"></i>Opportunities </h3>
-        <?php
-        echo '<div class="alert alert-success clearfix"><div class="pull-left">' . round($estimates['_subTotal'], 3) . 'k Out<h1> $'. round($estimates['_total'], 3) . 'k </h1></div><div class="pull-right">Est. Conversion<h1>' . intval($estimates['_multiplier']) . '%</h1></div></div>';
-        echo '<div class="alert alert-info clearfix"><div class="pull-left"> ' . round($estimates['_subTotal'], 3) . 'k Out<h1> $'. intval(round(($estimates['_subTotal'] * ($estimates['_conversion'] / 100)), 3)) . 'k </h1></div><div class="pull-right">Act. Conversion<h1>' . $estimates['_conversion'] . '%</h1></div></div>';
-        //echo '<p> Calculated by taking the total, <strong> $'. $estimates['_subTotal'] . '</strong> and multiplying by the average likelihood of closing, <strong> ' . $estimates['_multiplier'] . '%</strong></p>';
-		echo '<table>';
-        unset($estimates['_subTotal']);
-        unset($estimates['_multiplier']);
-        unset($estimates['_total']);
-        foreach ($estimates as $estimate) {
-            echo '<tr><td>' . $this->Html->link('Close', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'edit', $estimate['Estimate']['id']), array('class' => 'btn btn-mini btn-primary')) . '</td><td>' . $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $estimate['Estimate']['foreign_key']), array('escape' => false)) . '</td></tr>';
-        }
-            echo '</table><hr />';
-        } 
+    if (!empty($estimates)) : ?>
+	    <div class="masonryBox dashboardBox tagOpportunities">
+	        <h3 class="title"><i class="icon-th-large"></i>Opportunities </h3>
+	       	<div class="alert alert-success clearfix">
+	       		<div class="pull-left"> 
+	       			<?php echo ZuhaInflector::pricify($estimates['_subTotal']); ?> Out
+	       			<h1> $<?php echo ZuhaInflector::pricify($estimates['_total']); ?></h1>
+	       		</div>
+	       	<div class="pull-right">
+	       		Est. Conversion 
+	       		<h1> <?php echo intval($estimates['_multiplier']); ?>%</h1>
+	       	</div>
+		</div>
+		<div class="alert alert-info clearfix">
+			<div class="pull-left">
+				<?php echo ZuhaInflector::pricify($estimates['_subTotal']); ?> Out
+				<h1> $<?php echo ZuhaInflector::pricify(round(($estimates['_subTotal'] * ($estimates['_conversion'] / 100)), 3)); ?></h1>
+			</div>
+			<div class="pull-right">
+				Act. Conversion
+				<h1><?php echo $estimates['_conversion']; ?>%</h1>
+			</div>
+		</div>
+		<div style="max-height: 200px; overflow: scroll;">
+	        <?php
+	        unset($estimates['_subTotal']);
+	        unset($estimates['_multiplier']);
+	        unset($estimates['_total']);
+	        foreach ($estimates as $estimate) :
+	        	if (!empty($estimate['Estimate'])) : ?>
+	        		<div class="media">
+	        			<?php echo $this->Html->link('Close', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'edit', $estimate['Estimate']['id']), array('class' => 'btn btn-mini btn-primary pull-left')); ?>
+	        			<div class="media-body">
+	        				<?php echo $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $estimate['Estimate']['foreign_key']), array('escape' => false)); ?>
+	        			</div>
+	        		</div>
+				<?php endif; ?>
+			<?php endforeach; ?>
+        </div><hr />
+	<?php endif; ?>
+	<?php
         if (!empty($estimateActivities)) { 
             echo '<h4>Opportunities over time</h4>'; ?>
             <div id="estimates_over_time"></div>
@@ -200,99 +227,18 @@
   } ?>
     
     
-    <?php     
-  if (!empty($activities)) { ?>
-  <div class="masonryBox dashboardBox tagActivities">
-      <h3 class="title"><i class="icon-th-large"></i> Activity </h3>
-      <?php
-      $rActivities = array_reverse($activities);
-      for ($i = 0; $i <= 4; $i++) {
-        echo !empty($rActivities[$i]['Activity']['name']) ? '<p>' . $this->Html->link($rActivities[$i]['Activity']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $rActivities[$i]['Activity']['foreign_key'])) . '</p>' : null;
-      } ?> 
-        <script type="text/javascript">
-
-        // activity over time chart
-        var chart;
-        $(document).ready(function() {
-            chart = new Highcharts.Chart({
-                chart: {
-                    renderTo: 'activityTime',
-                    zoomType: 'x',
-                    spacingRight: 20
-                },
-                credits: {
-                    enabled: false
-                },
-                title: false,
-                subtitle: false,
-                xAxis: {
-                    type: 'datetime',
-                    maxZoom: 14 * 24 * 3600000, // fourteen days
-                    title: {
-                        text: null
-                    }
-                },
-                yAxis: {
-                    title: false,
-                    showFirstLabel: false
-                },
-                tooltip: {
-                    shared: true
-                },
-                legend: {
-                    enabled: false
-                },
-                plotOptions: {
-                    area: {
-                        fillColor: {
-                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
-                            stops: [
-                                [0, Highcharts.getOptions().colors[0]],
-                                [1, 'rgba(0,132,240,0)']
-                            ]
-                        },
-                        lineWidth: 1,
-                        marker: {
-                            enabled: false,
-                            states: {
-                                hover: {
-                                    enabled: true,
-                                    radius: 5
-                                }
-                            }
-                        },
-                        shadow: false,
-                        states: {
-                            hover: {
-                                lineWidth: 1
-                            }
-                        },
-                        threshold: null
-                    }
-                },
-
-                series: [{
-                    type: 'area',
-                    name: 'Incoming Leads',
-                    pointInterval: 24 * 3600 * 1000,
-                    pointStart: Date.UTC(2012, 19, 10),
-                    data: [
-                    <?php 
-                    foreach ($activities as $activity) { ?>
-                        <?php echo $activity[0]['count']; ?>,
-                    <?php } ?>
-                    ]
-                }]
-            });
-        });
-        </script>
-        
-    <h4>Activities for last 60 days</h4>
-    <div id="activityTime" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
-    <p class="pull-right"><?php echo $this->Html->link(__('All of Today\'s Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activities', 'contains' => 'created:' . date('Y-m-d'))); ?></p>
-  <?php
-    } ?>
-  </div>
+    <?php if (!empty($activities)) : ?>
+	<div class="masonryBox dashboardBox tagActivities">
+		<h3 class="title"><i class="icon-th-large"></i> Weekly Activity <small>(26 weeks)</small> </h3>
+		<?php $rActivities = array_reverse($activities); ?>
+		<?php for ($i = 0; $i <= 4; $i++) : ?>
+			<?php echo !empty($rActivities[$i]['Activity']['name']) ? '<p>' . $this->Html->link($rActivities[$i]['Activity']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $rActivities[$i]['Activity']['foreign_key'])) . '</p>' : null; ?>
+		<?php endfor; ?>
+      	<?php echo $this->Chart->time($activities, array('dataTarget' => 'activityTime')); ?>
+    	<div id="activityTime" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
+    	<p class="pull-right"><?php echo $this->Html->link(__('All of Today\'s Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activities', 'contains' => 'created:' . date('Y-m-d'))); ?></p>
+	<?php endif; ?>
+	</div>
     
 </div>
 
