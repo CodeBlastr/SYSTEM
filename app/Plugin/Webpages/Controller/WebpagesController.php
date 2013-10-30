@@ -332,7 +332,6 @@ class _WebpagesController extends WebpagesAppController {
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
 
 		$this->set(compact('userRoles', 'types'));
-
 		$type = $this->request->data['Webpage']['type'];
 		$this->view = $this->_fileExistsCheck('edit_' . $type . $this->ext) ? 'edit_' . $type : 'edit_content';
         $this->layout = 'default';
