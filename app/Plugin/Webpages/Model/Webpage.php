@@ -1197,7 +1197,7 @@ class Webpage extends WebpagesAppModel {
 			if($assoc) {
 				$associated = $Model->listAssociatedModels();
 				foreach($associated as $assocModel) {
-					$this->tokens[$Model->name][$assocModel] = array_keys($Model->$assocModel->schema());
+					$this->tokens[$assocModel] = array_keys($Model->$assocModel->schema());
 				}
 			}
 		}
