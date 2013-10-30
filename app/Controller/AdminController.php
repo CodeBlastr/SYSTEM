@@ -96,6 +96,7 @@ class AdminController extends AppController {
 		// debug($lastTable);
 		// debug($nextTable);
 		// debug($nextPlugin); // if false, means its not a plugin
+		//debug(CakePlugin::loaded());
 		// debug($endTable);
 		// debug($allTables);
 		// debug($this->Session->read());
@@ -269,6 +270,12 @@ class AdminController extends AppController {
 				$contents[$table] = $db->alterSchema(array($table => $changes), $table);
 			}
 		} else if (isset($compare[$table])) {
+			// turn on to see what the change is
+			// debug('old : table -> field -> parameters');
+			// debug(array($table => array(key($compare[key($compare)]['change']) => $Old['tables'][key($compare)][key($compare[key($compare)]['change'])])));
+			// debug('new');
+			// debug($compare);
+			// break;
 			$contents[$table] = $db->alterSchema(array($table => $compare[$table]), $table);
 		}
 
@@ -292,6 +299,7 @@ class AdminController extends AppController {
 			} catch (Exception $e) {
 				debug($e->getMessage());
 				debug($contents);
+				debug($compare);
 				debug('You need to run this update manually.  Probably an unrecognized column type, like enum.');
 				break;
 			}
