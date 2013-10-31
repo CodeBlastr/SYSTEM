@@ -21,7 +21,7 @@ class WkHtmlToPdfComponent extends Component {
 		$this->viewFile = new File($this->siteFolder->pwd() . DS . $fileName);
 	}
 
-	public function createPdf($autoDownload = true) {
+	public function createPdf($autoDownload = true, $pagesize='Letter') {
 		// prevent view from rendering normally
 		$this->controller->autoRender = false;
 		// $this->controller->output = '';
@@ -41,16 +41,26 @@ class WkHtmlToPdfComponent extends Component {
 			$url = 'http://' . $_SERVER ['HTTP_HOST'] . '/theme/Default/upload/pdf/' . $this->viewFile->name;
 			
 			$output = $this->filepath . DS . "output{$this->randomNumber}.pdf";
-			switch (PHP_INT_SIZE) {
-				case 4 :
-					$cmd = VENDORS . 'wkhtmltopdf/32bit/wkhtmltopdf ' . $url . ' ' . $output;
-					break;
-				case 8 :
-					$cmd = VENDORS . 'wkhtmltopdf/64bit/wkhtmltopdf ' . $url . ' ' . $output;
-					break;
-				default :
-					throw new Exception('32/64? no found', 1);
-					break;
+			
+			$commands = '-s '.$pagesize . ' ';
+			
+			//For windows debugging on localhost
+			//For this to work install 
+			//https://code.google.com/p/wkhtmltopdf/downloads/detail?name=libwkhtmltox-0.11.0_rc1.zip&can=2&q=
+			if(PHP_OS == 'WINNT') {
+				$cmd = 'C:\"Program Files (x86)"\wkhtmltopdf\wkhtmltopdf.exe '. $commands . $url . ' ' . $output;
+			}else {
+				switch (PHP_INT_SIZE) {
+					case 4 :
+						$cmd = VENDORS . 'wkhtmltopdf/32bit/wkhtmltopdf '. $commands . $url . ' ' . $output;
+						break;
+					case 8 :
+						$cmd = VENDORS . 'wkhtmltopdf/64bit/wkhtmltopdf '. $commands . $url . ' ' . $output;
+						break;
+					default :
+						throw new Exception('32/64? no found', 1);
+						break;
+				}
 			}
 			
 			exec($cmd);

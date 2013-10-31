@@ -1570,7 +1570,7 @@ class Model extends Object implements CakeEventListener {
  * @link http://book.cakephp.org/2.0/en/models/saving-your-data.html
  */
 	public function save($data = null, $validate = true, $fieldList = array()) {
-		$defaults = array('validate' => true, 'fieldList' => array(), 'callbacks' => true);
+		$defaults = array('validate' => true, 'fieldList' => array(), 'callbacks' => true, 'counterCache' => true);
 		$_whitelist = $this->whitelist;
 		$fields = array();
 
@@ -1579,7 +1579,7 @@ class Model extends Object implements CakeEventListener {
 		} else {
 			$options = array_merge($defaults, $validate);
 		}
-
+		
 		if (!empty($options['fieldList'])) {
 			if (!empty($options['fieldList'][$this->alias]) && is_array($options['fieldList'][$this->alias])) {
 				$this->whitelist = $options['fieldList'][$this->alias];
@@ -1590,7 +1590,7 @@ class Model extends Object implements CakeEventListener {
 			$this->whitelist = array();
 		}
 		$this->set($data);
-
+		
 		if (empty($this->data) && !$this->hasField(array('created', 'updated', 'modified'))) {
 			return false;
 		}
@@ -1680,18 +1680,20 @@ class Model extends Object implements CakeEventListener {
 		if (!$exists && $count > 0) {
 			$this->id = false;
 		}
+		
 		$success = true;
 		$created = false;
-
+		
 		if ($count > 0) {
 			$cache = $this->_prepareUpdateFields(array_combine($fields, $values));
-
+		
 			if (!empty($this->id)) {
 				$success = (bool)$db->update($this, $fields, $values);
+				
 			} else {
 				$fInfo = $this->schema($this->primaryKey);
 				$isUUID = ($fInfo['length'] == 36 &&
-					($fInfo['type'] === 'string' || $fInfo['type'] === 'binary')
+					($fInfo['type'] === 'string' || $fInfo['type'] === 'binary') 
 				);
 				if (empty($this->data[$this->alias][$this->primaryKey]) && $isUUID) {
 					if (array_key_exists($this->primaryKey, $this->data[$this->alias])) {
@@ -1700,7 +1702,7 @@ class Model extends Object implements CakeEventListener {
 					} else {
 						list($fields[], $values[]) = array($this->primaryKey, String::uuid());
 					}
-				}
+				}				
 
 				if (!$db->create($this, $fields, $values)) {
 					$success = $created = false;
@@ -1708,12 +1710,13 @@ class Model extends Object implements CakeEventListener {
 					$created = true;
 				}
 			}
-
+			
 			if ($success && !empty($this->belongsTo)) {
 				$this->updateCounterCache($cache, $created);
 			}
+			
 		}
-
+		
 		if (!empty($joined) && $success === true) {
 			$this->_saveMulti($joined, $this->id, $db);
 		}
@@ -1874,7 +1877,7 @@ class Model extends Object implements CakeEventListener {
 	public function updateCounterCache($keys = array(), $created = false) {
 		$keys = empty($keys) ? $this->data[$this->alias] : $keys;
 		$keys['old'] = isset($keys['old']) ? $keys['old'] : array();
-
+		
 		foreach ($this->belongsTo as $parent => $assoc) {
 			if (!empty($assoc['counterCache'])) {
 				if (!is_array($assoc['counterCache'])) {
