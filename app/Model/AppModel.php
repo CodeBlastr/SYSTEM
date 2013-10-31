@@ -284,6 +284,7 @@ class AppModel extends Model {
 
 /**
  * Make sending email available to models (as well as controllers)
+ * Subject and message have duel meanigns if it starts with webpages. we are using the db to genetrate the message were the subject is the recored we are using
  *
  * @param string		String - address to send email to
  * @param sring			$subject: subject of email.
@@ -296,6 +297,22 @@ class AppModel extends Model {
 	public function __sendMail($toEmail = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
 		App::uses('AppController', 'Controller');
 		$Controller = new AppController;
+		
+		if(strpos($subject, 'Webpages.') === 0){
+			$name = str_replace('Webpages.', '', $subject);
+			App::uses('Webpage', 'Webpages.Model');
+			$Webpage = new Webpage();
+			$webpage = $Webpage->findByName($name);
+			if(!empty($webpage)){
+				$message = $Webpage->replaceTokens($webpage['Webpage']['content'], $message);	
+					
+				$subject = $webpage['Webpage']['title'];
+			} else {
+				//Should we auto gen instead of throwing exception????
+				throw new NotFoundException(__('Please create a email template named %s', $name));
+			}			
+		} 		
+
 		return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
 	}
 	

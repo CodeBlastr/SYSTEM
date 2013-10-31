@@ -176,103 +176,103 @@ span.icon {
 			<?php foreach ($myMenus as $mine) : $jsMenus[] = $mine; ?>
 
 				<div class="row-fluid clearfix">
-						<div class="lead row-fluid clearfix">
-							<?php 
-							// sucks to put this here, but unless we make a function in the ZuhaSet class it stays (because we're in a loop which wouldn't work well in the controller)
-							// used for removing values from the drop down (eg. --Home, because Home is the name of the menu), and turning it into a 'list' format
-							$continue = false;
-							unset($dropdown);
-							foreach ($menus as $id => $menu) {
-								if ($id == $mine['WebpageMenu']['id']) {
+					<div class="lead row-fluid clearfix">
+						<?php 
+						// sucks to put this here, but unless we make a function in the ZuhaSet class it stays (because we're in a loop which wouldn't work well in the controller)
+						// used for removing values from the drop down (eg. --Home, because Home is the name of the menu), and turning it into a 'list' format
+						$continue = false;
+						unset($dropdown);
+						foreach ($menus as $id => $menu) {
+							if ($id == $mine['WebpageMenu']['id']) {
+								$dropdown[$id] = $menu;
+								$continue = true;
+							} else {
+								if ($continue === true && strpos($menu, '-') === 0) {
 									$dropdown[$id] = $menu;
-									$continue = true;
 								} else {
-									if ($continue === true && strpos($menu, '-') === 0) {
-										$dropdown[$id] = $menu;
-									} else {
-										$continue = false;
-									}
+									$continue = false;
 								}
-							} ?>
-						</div>
+							}
+						} ?>
+					</div>
 						
 						
-						<h5>
-							<?php echo Inflector::humanize($userRole['UserRole']['name']); ?> Experience Visualizer (
-							<?php echo $this->Html->link('<i class="icon-resize-small"></i>', '#', array('class' => 'shrink', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
-							<?php echo $this->Html->link('<i class="icon-resize-full"></i>', '#', array('class' => 'grow', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
-							<?php echo $this->Html->link('<i class="icon-resize-vertical"></i>', '#', array('class' => 'reorder', 'rel' => 'tooltip', 'title' => 'Re-order easier with a drag and drop list.', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
-							)
-						</h5>
-						<div class="menus edit">
-							 <div class="menus edit form">
-						    	<div class="canvas tree" id="canvas<?php echo $mine['WebpageMenu']['id']; ?>">
-						    		<div class="for-centering">
-							    		<ul>
-							    			<li>
-							    				<div class="item home">
-													<?php echo $this->Html->link(__('<span class="icon"> %s </span> <span class="link"> %s </span>', $defaultTemplate[0]['Template']['icon'], $mine['WebpageMenu']['name']), '#', array('class' => 'toggleClick toggle', 'data-target' => '#form' . $mine['WebpageMenu']['id'], 'escape' => false,  'rel' =>'tooltip', 'title' => $mine['WebpageMenu']['notes'])); ?>
-													<div id="form<?php echo $mine['WebpageMenu']['id']; ?>">
-														<?php echo $this->Html->link('Notes', '#', array('data-toggle' => 'modal', 'data-target' => '#menuNote'.$mine['WebpageMenu']['id'], 'class' => 'btn btn-info btn-mini')); ?>
-														<div id="menuNote<?php echo $mine['WebpageMenu']['id']; ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-															<div class="modal-body">
-																<?php echo $this->Form->create('WebpageMenuItem', array('url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'edit', $mine['WebpageMenu']['id']))); ?>
-																<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
-																<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
-																<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
-																<?php echo $this->Form->input('WebpageMenuItem.notes', array('type' => 'textarea', 'label' => $mine['WebpageMenu']['name'] . ' Notes', 'value' => $mine['WebpageMenu']['notes'])); ?>
-																<?php echo $this->Form->end('Save'); ?> 
-															</div>
+					<h5>
+						<?php echo Inflector::humanize($userRole['UserRole']['name']); ?> Experience Visualizer (
+						<?php echo $this->Html->link('<i class="icon-resize-small"></i>', '#', array('class' => 'shrink', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
+						<?php echo $this->Html->link('<i class="icon-resize-full"></i>', '#', array('class' => 'grow', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
+						<?php echo $this->Html->link('<i class="icon-resize-vertical"></i>', '#', array('class' => 'reorder', 'rel' => 'tooltip', 'title' => 'Re-order easier with a drag and drop list.', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
+						)
+					</h5>
+					<div class="menus edit">
+						 <div class="menus edit form">
+					    	<div class="canvas tree" id="canvas<?php echo $mine['WebpageMenu']['id']; ?>">
+					    		<div class="for-centering">
+						    		<ul>
+						    			<li>
+						    				<div class="item home">
+												<?php echo $this->Html->link(__('<span class="icon"> %s </span> <span class="link"> %s </span>', $defaultTemplate[0]['Template']['icon'], $mine['WebpageMenu']['name']), '#', array('class' => 'toggleClick toggle', 'data-target' => '#form' . $mine['WebpageMenu']['id'], 'escape' => false,  'rel' =>'tooltip', 'title' => $mine['WebpageMenu']['notes'])); ?>
+												<div id="form<?php echo $mine['WebpageMenu']['id']; ?>">
+													<?php echo $this->Html->link('Notes', '#', array('data-toggle' => 'modal', 'data-target' => '#menuNote'.$mine['WebpageMenu']['id'], 'class' => 'btn btn-info btn-mini')); ?>
+													<div id="menuNote<?php echo $mine['WebpageMenu']['id']; ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+														<div class="modal-body">
+															<?php echo $this->Form->create('WebpageMenuItem', array('url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'edit', $mine['WebpageMenu']['id']))); ?>
+															<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
+															<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+															<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
+															<?php echo $this->Form->input('WebpageMenuItem.notes', array('type' => 'textarea', 'label' => $mine['WebpageMenu']['name'] . ' Notes', 'value' => $mine['WebpageMenu']['notes'])); ?>
+															<?php echo $this->Form->end('Save'); ?> 
 														</div>
-														<?php //echo $this->Form->create('WebpageMenu', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'edit'), 'class' => 'form-inline')); ?>
-														<?php //echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
-														<?php //echo $this->Form->input('WebpageMenu.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
-														<?php //echo $this->Form->input('WebpageMenu.user_role_id', array('options' => array('0' => 'fill this with user role names'), 'label' => false, 'value' => $mine['WebpageMenu']['user_role_id'], 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;</i></span>')); ?>
-														<?php //echo $this->Form->input('WebpageMenu.template', array('options' => array('0' => 'fill this with template names'), 'label' => false, 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-eye-open"></i>&nbsp;</span>')); ?>
-														<?php //echo $this->Form->submit('Save', array('div' => false, 'class' => 'btn btn-success btn-small')); ?>
-														<?php //echo $this->Form->end(); ?>
 													</div>
-							    				</div>
-							    			
-										        <?php $this->Tree->addTypeAttribute('data-identifier', $mine['WebpageMenu']['id'], null, 'previous'); ?>
-												<?php $remove = Set::extract('/WebpageMenu[name=' . $mine['WebpageMenu']['name'] . ']', $mine['children']); // used in js below ?>
-												<?php $mine['children'] == ZuhaSet::devalue($mine['children'], $remove, true); ?>
-												<?php echo $this->Tree->generate($mine['children'], array('model' => 'WebpageMenu', 'alias' => 'item_text', 'class' => 'sortable sortableMenu', 'id' => 'menu' . $mine['WebpageMenu']['id'], 'element' => 'Webpages.menus/links/client')); ?>
-							    			</li>
-										</ul>
-									</div>
+													<?php //echo $this->Form->create('WebpageMenu', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'edit'), 'class' => 'form-inline')); ?>
+													<?php //echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+													<?php //echo $this->Form->input('WebpageMenu.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
+													<?php //echo $this->Form->input('WebpageMenu.user_role_id', array('options' => array('0' => 'fill this with user role names'), 'label' => false, 'value' => $mine['WebpageMenu']['user_role_id'], 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;</i></span>')); ?>
+													<?php //echo $this->Form->input('WebpageMenu.template', array('options' => array('0' => 'fill this with template names'), 'label' => false, 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-eye-open"></i>&nbsp;</span>')); ?>
+													<?php //echo $this->Form->submit('Save', array('div' => false, 'class' => 'btn btn-success btn-small')); ?>
+													<?php //echo $this->Form->end(); ?>
+												</div>
+						    				</div>
+						    			
+									        <?php $this->Tree->addTypeAttribute('data-identifier', $mine['WebpageMenu']['id'], null, 'previous'); ?>
+											<?php $remove = Set::extract('/WebpageMenu[name=' . $mine['WebpageMenu']['name'] . ']', $mine['children']); // used in js below ?>
+											<?php $mine['children'] == ZuhaSet::devalue($mine['children'], $remove, true); ?>
+											<?php echo $this->Tree->generate($mine['children'], array('model' => 'WebpageMenu', 'alias' => 'item_text', 'class' => 'sortable sortableMenu', 'id' => 'menu' . $mine['WebpageMenu']['id'], 'element' => 'Webpages.menus/links/client')); ?>
+						    			</li>
+									</ul>
 								</div>
-						    </div>						
-						</div>
+							</div>
+					    </div>						
+					</div>
 		
 		<hr />
 		
 						
-						<div class="row-fluid create-menu-item">
-							<!-- page or section form -->
-							<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'add'))); ?>
-							<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
-							<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
-							After  
-							<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium')); ?>
-							<?php echo $userRole['UserRole']['name']; ?> should go to a 
-							<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'class' => 'input-small')); ?>
-							<a href="#" rel="tooltip" title="Pages are just one page static content (like about us), a Section is when you have multiple articles under one page (like news), a Plugin is when you have dynamically generated content based on user interaction."><i class="icon-question-sign"></i></a>
-							<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'placeholder' => 'called', 'class' => 'input-small')); ?>
-							<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small')); ?>
-							
-							<!-- plugin form -->
-							<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => false, 'controller' => 'install', 'action' => 'client'))); ?>
-							<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
-							<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
-							After  
-							<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium')); ?>
-							<?php echo $userRole['UserRole']['name']; ?> should go to a 
-							<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'value' => 'plugin', 'class' => 'input-small')); ?>
-							<a href="#" rel="tooltip" title="Pages are just one page static content (like about us), a Section is when you have multiple articles under one page (like news), a Plugin is when you have dynamically generated content based on user interaction."><i class="icon-question-sign"></i></a>
-							<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'type' => 'select', 'options' => $plugins, 'class' => 'input-small')); ?>
-							<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small')); ?>
-						</div>
+					<div class="row-fluid create-menu-item">
+						<!-- page or section form -->
+						<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'add'))); ?>
+						<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
+						After  
+						<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium')); ?>
+						<?php echo $userRole['UserRole']['name']; ?> should go to a 
+						<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'class' => 'input-small')); ?>
+						<a href="#" rel="tooltip" title="Pages are just one page static content (like about us), a Section is when you have multiple articles under one page (like news), a Plugin is when you have dynamically generated content based on user interaction."><i class="icon-question-sign"></i></a>
+						<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'placeholder' => 'called', 'class' => 'input-small')); ?>
+						<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small')); ?>
+						
+						<!-- plugin form -->
+						<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => false, 'controller' => 'install', 'action' => 'client'))); ?>
+						<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
+						After  
+						<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium')); ?>
+						<?php echo $userRole['UserRole']['name']; ?> should go to a 
+						<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'value' => 'plugin', 'class' => 'input-small')); ?>
+						<a href="#" rel="tooltip" title="Pages are just one page static content (like about us), a Section is when you have multiple articles under one page (like news), a Plugin is when you have dynamically generated content based on user interaction."><i class="icon-question-sign"></i></a>
+						<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'type' => 'select', 'options' => $plugins, 'class' => 'input-small')); ?>
+						<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small')); ?>
+					</div>
 					
 				</div>
 			<?php endforeach; ?>
