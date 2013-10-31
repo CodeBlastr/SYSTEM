@@ -321,11 +321,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * @todo There must be a better way...
 		 */
 		public static function pluginize($name) {
-             
-            if($name == "1s")
-            debug(debug_backtrace());
-          
-			# list of models and controllers to rename to the corresponding plugin
+            // if you put something like this here, comment as to why
+            //if($name == "1s") { debug(debug_backtrace()); }
+            
+			// list of models and controllers to rename to the corresponding plugin
 			$name = Inflector::singularize(Inflector::camelize($name));
 			
 			$allowed = array(
@@ -355,11 +354,14 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Categorized' => 'Categories',
 				'CategorizedOption' => 'Categories',
 				'CategoryOption' => 'Categories',
+				'Canvas' => 'Media',
+				'Canva' => 'Media',
 				'Chat' => 'Chats',
 				'Classified' => 'Classifieds',
 				'Comment' => 'Comments',
 				'Condition' => false,
 				'Connection' => 'Connections',
+				'ConnectionPaypal' => 'Connections',
 				'ContactAddress' => 'Contacts',
 				'ContactDetail' => 'Contacts',
 				'Contact' => 'Contacts',
@@ -412,21 +414,20 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Menu' => 'Menus',
 				'Message' => 'Messages',
 				'Meta' => false,
+				'Metum' => false,
 				'News' => 'News',
 				'NotificationTemplate' => 'Notifications',
 				'Notification' => 'Notifications',
-				'OrderCoupon' => 'Orders',
-				'OrderItem' => 'Orders',
-				'OrderPayment' => 'Orders',
-				'OrderShipment' => 'Orders',
-				'OrderTransaction' => 'Orders',
+				'Option' => 'Products',
 				'Phonebook' => 'Phonebooks',
 				'PhonebookService' => 'Phonebooks',
 				'PhonebooksService' => 'Phonebooks',
-                'Privilege' => 'Privilege',
+                'Privilege' => 'Privileges',
+                'ProductBid' => 'Products',
                 'ProductBrand' => 'Products',
+                'ProductBid' => 'Products',
                 'ProductPrice' => 'Products',
-                'ProductOption' => 'Products',
+                'ProductsOption' => 'Products',
                 'ProductsProductOption' => 'Products',
                 'ProductStore' => 'Products',
                 'Product' => 'Products',
@@ -438,9 +439,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'ProjectsWatcher' => 'Projects',
 				'ProjectsWiki' => 'Projects',
 				'Rating' => 'Ratings',
-				'Recaptcha' => 'Recaptcha',
 				'Record' => 'Records',
+                'Requestor' => 'Privileges',
 				'Searchable' => 'Searchable',
+                'Section' => 'Privileges',
 				'Setting' => false,
 				'Subscriber' => 'Subscribers',
 				'SubscriberMail' => 'Subscribers',
@@ -462,6 +464,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'TransactionShipment' => 'Transactions',
     			'TransactionTax' => 'Transactions',
 				'Twitter' => 'Twitter',
+				'UpdateSchema' => false,				
 				'Used' => 'Users',
 				'UserConnect' => 'Users',
 				'UserFollower' => 'Users',
@@ -495,9 +498,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
                 'Regional' => false,
 				'Question' => 'Questions',
 				'QuestionAnswer' => 'Questions',
+				'ZuhaSchema' => false,
 				);
-    
-             
+				
 			if (!empty($name) && $allowed[$name] !== null) {
 				return $allowed[$name];
 			} else {

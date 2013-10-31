@@ -237,7 +237,19 @@ class InstallController extends Controller {
  */
     public function plugin($plugin = null) {
         $this->_handleSecurity();
-        if (!empty($plugin) && defined('__SYSTEM_LOAD_PLUGINS')) {
+		try{
+			$this->_plugin($plugin);
+			$this->message[] = __('Plugin successfully installed.');
+			$this->_redirect($this->referer());
+		} catch (Exception $e){
+			$this->message[] = $e->getMessage();
+			$this->_redirect($this->referer());
+		}
+       
+    }
+	
+	protected function _plugin($plugin){
+		 if (!empty($plugin) && defined('__SYSTEM_LOAD_PLUGINS')) {
             CakePlugin::load($plugin);
             if ($this->_installPluginSchema($plugin, $plugin)) {
                 $plugins = unserialize(__SYSTEM_LOAD_PLUGINS);
@@ -252,19 +264,19 @@ class InstallController extends Controller {
                 $data['Setting']['type'] = 'System';
                 $data['Setting']['name'] = 'LOAD_PLUGINS';
                 $data['Setting']['value'] = $sqlData;
-                if ($Setting->add($data)) {
-                    $this->message[] = __('Plugin successfully installed.');
+                if ($Setting->add($data)) {                  	        
 					return true;
                 } else {
-                    $this->message[] = __('Settings update failed.');
+                    throw new Exception('Settings update failed.');
+					
                 }
             } else {
-                $this->message[] = __('Plugin install failed.');
+                throw new Exception('Plugin install failed.');
             }
         } else {
-            $this->message[] = __('Current plugin setup not valid.');
+            throw new Exception('Current plugin setup not valid.');
         }
-    }
+	}
 
 /**
  * Install a new site
@@ -895,11 +907,7 @@ class InstallController extends Controller {
 			$this->request->data['WebpageMenuItem']['item_text'] = $plugins[$this->request->data['WebpageMenuItem']['item_text']];
 			 // if not already installed, then install the plugin		
 			if (!in_array($this->request->data['WebpageMenuItem']['item_text'], $currentlyLoadedPlugins)) {
-				if ($this->plugin($this->request->data['WebpageMenuItem']['item_text'])) {
-					// nothing needed it's been installed move on to the creating the menu
-				} else {
-					throw new Exception(explode(', ', $this->message));
-				}
+				$this->_plugin($this->request->data['WebpageMenuItem']['item_text']);	
 			}
 			// create the menu (independent of the plugin - we can always install later)
 			$MenuItem = ClassRegistry::init('Webpages.WebpageMenuItem');

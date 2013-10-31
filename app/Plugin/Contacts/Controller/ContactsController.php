@@ -416,7 +416,6 @@ class _ContactsController extends ContactsAppController {
  * 
  */
 	public function dashboard() {
-		$this->Contact->fixTypes(); // a temporary fix for updating some database values;
 		
 		// the needs attention, new leads box
 		$this->set('leads', $this->Contact->leads());

@@ -14,52 +14,63 @@ class _User extends UsersAppModel {
 		);
 		
 	public $order = array('last_name', 'full_name', 'first_name');
+	
+	
+
+	/**
+	 * Auto Login setting, used to skip session write in aftersave 
+	 */
+	 
+	public $autoLogin = true; 
 
 	public $validate = array(
 		'password' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => false, 
+				'allowEmpty' => true, 
 				'message' => 'Please enter a value for password',
 				'required' => 'create'
 				),
 			'comparePassword' => array(
 				'rule' => array('_comparePassword'),
-				'allowEmpty' => false, 
+				'allowEmpty' => true, 
 				'message' => 'Password, and confirm password fields do not match.',
 				),
         	'strongPassword' => array(
 				'rule' => array('_strongPassword'),
-				'allowEmpty' => false, 
+				'allowEmpty' => true, 
 				'message' => 'Password should be six characters, contain numbers and capital and lowercase letters.',
 				),
         	'newPassword' => array(
 				'rule' => array('_newPassword'),
-				'allowEmpty' => false, 
-				'message' => 'Your old password is incorrect.',
+				'allowEmpty' => true, 
+				'message' => 'Your old password is incorrect.'
 				),
 			),
 		'username' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => false, // must have a value
+				'allowEmpty' => true,
 				'message' => 'Please enter a value for username/email',
 				'required' => 'create' // field key User.username must be present during User::create
 				),
 			'isUnique' => array(
 				'rule' => 'isUnique',
-				'message' => 'This username belongs to someone else. Please try again.'
+				'message' => 'This username belongs to someone else. Please try again.',
+				'allowEmpty' => true
 				),
 			),
 		'email' => array(
 			'emailRequired' => array(
 				'rule' => array('_emailRequired'),
-				'message' => 'Email required for registration, Please try again.'
+				'message' => 'Email required for registration, Please try again.',
+				'allowEmpty' => true
 				),
 			),
 			'email' => array(
         		'rule'    => array('email', true),
-        		'message' => 'Please supply a valid email address.'
+        		'message' => 'Please supply a valid email address.',
+				'allowEmpty' => true
     		)
 		);
 
@@ -126,6 +137,8 @@ class _User extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
+		
+		
 
 		if (CakePlugin::loaded('Transactions')) {
 			$this->hasMany['TransactionAddress'] = array(
@@ -154,19 +167,21 @@ class _User extends UsersAppModel {
 				'dependent' => true
 				);
 		}
-		if (CakePlugin::loaded('Ratings')) {
-			$this->hasMany['RatingsByUser'] = array(
-				'className' => 'Ratings.Rating',
-				'foreignKey' => 'user_id',
-				'dependent' => false
-				);
-			$this->hasMany['RatingsOfUser'] = array(
-				'className' => 'Ratings.Rating',
-				'foreignKey' => 'foreign_key',
-				'conditions' => array('model' => 'User'),
-				'dependent' => false
-				);
-		}
+		// these should not be needed anymore 1016/2013 RK
+		// if (CakePlugin::loaded('Ratings')) {
+			//$this->actsAs[] = 'Ratings.Ratable';
+				// 'className' => 'Ratings.Rating',
+				// 'foreignKey' => 'user_id',
+				// 'dependent' => false
+				// );
+			// $this->hasMany['Ratee'] = array(
+				// 'className' => 'Ratings.Rating',
+				// 'foreignKey' => 'foreign_key',
+				// 'conditions' => array('model' => 'User'),
+				// 'dependent' => false
+				// );
+			// $this->actsAs[] = 'Ratable';
+		// }
 		
 		parent::__construct($id, $table, $ds);
 	}
@@ -286,7 +301,9 @@ class _User extends UsersAppModel {
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
-		CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
+		if($this->autoLogin) {
+			CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
+		}
 		return parent::afterSave($created);
 	}
 
@@ -947,6 +964,21 @@ Thank you for registering with us and welcome to the community.";
 			return false;
 		}
 	}
+	
+	
+/**
+ * 
+ */	
+ 
+	 public function rate($data){
+		 App::uses('Rating', 'Ratings.Model'); // load Ratings Model
+		 $Rating = new Rating; //create Object $Rating
+		 return $Rating->save($data); //return data and save
+	 
+	 
+	 
+	}
+
 }
 
 if (!isset($refuseInit)) {
