@@ -75,7 +75,7 @@ echo $this->Html->css('/js/ckeditor/plugins/codemirror/css/codemirror.min');
         border: 1px solid #ccc;
         margin: 0 0 10px 0;
         border-radius: 0.4em;
-        height: auto;
+        height: 1000px;
     }
     .CodeMirror-scroll {
         overflow-y: hidden;
