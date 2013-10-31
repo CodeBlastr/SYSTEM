@@ -14,6 +14,10 @@ echo __dn('domain', 'You deleted %d message (domain).', 'You deleted %d messages
 echo __('Editing this Page');
 echo __('You have %d new message.');
 
+// Contains quotes
+echo __('double "quoted"');
+echo __("single 'quoted'");
+
 // Multiline
 __('Hot features!'
 	. "\n - No Configuration:"
@@ -22,3 +26,6 @@ __('Hot features!'
 		. ' Just look at the name...It\'s Cake'
 	. "\n - Active, Friendly Community:"
 		. ' Join us #cakephp on IRC. We\'d love to help you get started');
+
+// Category
+echo __c('You have a new message (category: LC_TIME).', 5);
