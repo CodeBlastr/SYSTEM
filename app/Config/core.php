@@ -68,7 +68,7 @@ Configure::write('Acl.classname', 'ZuhaAcl');
  * If running via cli - apc is disabled by default. ensure it's available and enabled in this case
  *
  */
-//$engine = 'Memcache';
+$engine = 'Memcache';
 if (extension_loaded('apc') && (php_sapi_name() !== 'cli' || ini_get('apc.enable_cli'))) {
 	$engine = 'Apc';
 }
