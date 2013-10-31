@@ -235,18 +235,11 @@ class AppUsersController extends UsersAppController {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
-<<<<<<< HEAD
-		
-			if($this->User->saveUserAndContact($this->request->data)) {		
-				$this->Session->setFlash('User Updated!');
-				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->request->data['User']['id']), true);
-			} else{
-=======
+
 			if($this->User->saveAll($this->request->data)) {
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id));
 			} else {
->>>>>>> 2f5d77fd13a2995d50d0a48b49532e7086022dd6
 				$this->Session->setFlash('There was an error updating user');
 			}
 		} else {
