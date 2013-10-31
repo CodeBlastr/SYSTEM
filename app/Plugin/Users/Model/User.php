@@ -27,47 +27,50 @@ class _User extends UsersAppModel {
 		'password' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => false, 
+				'allowEmpty' => true, 
 				'message' => 'Please enter a value for password',
 				'required' => 'create'
 				),
 			'comparePassword' => array(
 				'rule' => array('_comparePassword'),
-				'allowEmpty' => false, 
+				'allowEmpty' => true, 
 				'message' => 'Password, and confirm password fields do not match.',
 				),
         	'strongPassword' => array(
 				'rule' => array('_strongPassword'),
-				'allowEmpty' => false, 
+				'allowEmpty' => true, 
 				'message' => 'Password should be six characters, contain numbers and capital and lowercase letters.',
 				),
         	'newPassword' => array(
 				'rule' => array('_newPassword'),
-				'allowEmpty' => false, 
-				'message' => 'Your old password is incorrect.',
+				'allowEmpty' => true, 
+				'message' => 'Your old password is incorrect.'
 				),
 			),
 		'username' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => false, // must have a value
+				'allowEmpty' => true,
 				'message' => 'Please enter a value for username/email',
 				'required' => 'create' // field key User.username must be present during User::create
 				),
 			'isUnique' => array(
 				'rule' => 'isUnique',
-				'message' => 'This username belongs to someone else. Please try again.'
+				'message' => 'This username belongs to someone else. Please try again.',
+				'allowEmpty' => true
 				),
 			),
 		'email' => array(
 			'emailRequired' => array(
 				'rule' => array('_emailRequired'),
-				'message' => 'Email required for registration, Please try again.'
+				'message' => 'Email required for registration, Please try again.',
+				'allowEmpty' => true
 				),
 			),
 			'email' => array(
         		'rule'    => array('email', true),
-        		'message' => 'Please supply a valid email address.'
+        		'message' => 'Please supply a valid email address.',
+				'allowEmpty' => true
     		)
 		);
 
@@ -166,7 +169,7 @@ class _User extends UsersAppModel {
 		}
 		// these should not be needed anymore 1016/2013 RK
 		// if (CakePlugin::loaded('Ratings')) {
-			// $this->hasMany['Rater'] = array(
+			//$this->actsAs[] = 'Ratings.Ratable';
 				// 'className' => 'Ratings.Rating',
 				// 'foreignKey' => 'user_id',
 				// 'dependent' => false
@@ -960,6 +963,21 @@ Thank you for registering with us and welcome to the community.";
 			return false;
 		}
 	}
+	
+	
+/**
+ * 
+ */	
+ 
+	 public function rate($data){
+		 App::uses('Rating', 'Ratings.Model'); // load Ratings Model
+		 $Rating = new Rating; //create Object $Rating
+		 return $Rating->save($data); //return data and save
+	 
+	 
+	 
+	}
+
 }
 
 if (!isset($refuseInit)) {
