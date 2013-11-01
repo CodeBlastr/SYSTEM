@@ -1,27 +1,26 @@
 <?php
-
 App::uses('HtmlHelper', 'View/Helper');
 
 class ZuhaHtmlHelper extends HtmlHelper {
 
 /**
-   * html tags used by this helper.
-   *
-   * @var array
-   */
-  protected $_tags = array(
-    'meta' => '<meta%s/>',
-    'metalink' => '<link href="%s"%s/>',
-    'link' => '<a href="%s"%s>%s</a>',
-    'mailto' => '<a href="mailto:%s" %s>%s</a>',
-    'form' => '<form action="%s"%s>',
-    'formend' => '</form>',
-    'input' => '<input name="%s"%s/>',
-    'textarea' => '<textarea name="%s"%s>%s</textarea>',
-    'richtext' => '<div class="richtextarea"><textarea name="%s" %s>%s</textarea></div>%s%s', //zuha
-    'hidden' => '<input type="hidden" name="%s"%s/>',
-    'checkbox' => '<input type="checkbox" name="%s" %s/>',
-    'checkboxmultiple' => '<input type="checkbox" name="%s[]"%s />',
+ * html tags used by this helper.
+ *
+ * @var array
+ */
+	protected $_tags = array(
+		'meta' => '<meta%s/>',
+		'metalink' => '<link href="%s"%s/>',
+		'link' => '<a href="%s"%s>%s</a>',
+		'mailto' => '<a href="mailto:%s" %s>%s</a>',
+		'form' => '<form action="%s"%s>',
+		'formend' => '</form>',
+		'input' => '<input name="%s"%s/>',
+		'textarea' => '<textarea name="%s"%s>%s</textarea>',
+		'richtext' => '<div class="richtextarea"><textarea name="%s" %s>%s</textarea></div>%s%s', //zuha
+		'hidden' => '<input type="hidden" name="%s"%s/>',
+		'checkbox' => '<input type="checkbox" name="%s" %s/>',
+		'checkboxmultiple' => '<input type="checkbox" name="%s[]"%s />',
     'radio' => '<input type="radio" name="%s" id="%s"%s />%s',
     'selectstart' => '<select name="%s"%s>',
     'selectmultiplestart' => '<select name="%s[]"%s>',
@@ -46,13 +45,13 @@ class ZuhaHtmlHelper extends HtmlHelper {
     'block' => '<div%s>%s</div>',
     'blockstart' => '<div%s>',
     'blockend' => '</div>',
-    'tag' => '<%s%s>%s</%s>',
-    'tagstart' => '<%s%s>',
-    'tagend' => '</%s>',
-    'tagselfclosing' => '<%s%s/>',
-    'para' => '<p%s>%s</p>',
-    'parastart' => '<p%s>',
-    'label' => '<label for="%s"%s>%s</label>',
+		'tag' => '<%s%s>%s</%s>',
+		'tagstart' => '<%s%s>',
+		'tagend' => '</%s>',
+		'tagselfclosing' => '<%s%s/>',
+		'para' => '<p%s>%s</p>',
+		'parastart' => '<p%s>',
+		'label' => '<label for="%s"%s>%s</label>',
     'fieldset' => '<fieldset%s>%s</fieldset>',
     'fieldsetstart' => '<fieldset><legend>%s</legend>',
     'fieldsetend' => '</fieldset>',

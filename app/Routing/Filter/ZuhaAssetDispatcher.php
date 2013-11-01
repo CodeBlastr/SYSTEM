@@ -18,6 +18,17 @@ class ZuhaAssetDispatcher extends AssetDispatcher {
 		if (file_exists($path . $fileFragment)) {
 			return $path . $fileFragment;
 		}
+		
+		// copied directly from Cake/Routing/Filter/AssetDispatcher.php
+		$parts = explode('/', $url);
+		if ($parts[0] === 'theme') {
+			$themeName = $parts[1];
+			unset($parts[0], $parts[1]);
+			$fileFragment = implode(DS, $parts);
+			$path = App::themePath($themeName) . 'webroot' . DS;
+			return str_replace('//', '/', $path . $fileFragment); // and added this one fix
+		}
+		
 		return parent::_getAssetFile($url);
 	}
 
