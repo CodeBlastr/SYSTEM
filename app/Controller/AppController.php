@@ -42,10 +42,14 @@ class AppController extends Controller {
 	public $helpers = array(
 		'Session', 
 		'Text', 
-		'Form', 
+		'Form' => array(
+			'className' => 'ZuhaForm'
+			), 
 		'Js', 
 		'Time',
-		'Html',
+		'Html' => array(
+			'className' => 'ZuhaHtml'
+			),
 		'Utils.Tree',
 		'Webpages.Webpage'
 		);
@@ -185,8 +189,10 @@ class AppController extends Controller {
         $this->set('_view', $this->view);
 		// do a final permission check on the user field
 		$modelName = Inflector::singularize($this->name);
-		$this->set('_layout', $this->$modelName->theme); // set in the themeable behavior
-		$this->Acl->check(array('permission' => true), $this->$modelName->permissionData);
+		if (!empty($this->$modelName)) {
+			$this->set('_layout', $this->$modelName->theme); // set in the themeable behavior
+			$this->Acl->check(array('permission' => true), $this->$modelName->permissionData);
+		}
 	}
 	
 
@@ -241,7 +247,7 @@ class AppController extends Controller {
 			 $this->Session->write('Stats.entry', base64_encode(time()));  
 		}		
 		$referral = $this->Session->read('Stats.referer');
-		if (empty($referral)) {
+		if (empty($referral) && !empty($_SERVER['HTTP_REFERER'])) {
 			$this->Session->write('Stats.referer', $_SERVER['HTTP_REFERER']);
 		}
 	}

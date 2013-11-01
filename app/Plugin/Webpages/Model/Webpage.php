@@ -165,12 +165,12 @@ class Webpage extends WebpagesAppModel {
  * @return boolean
  * @access public
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
         if ($this->data['Webpage']['type'] == 'template') {
             // template settings are special
             $this->_syncTemplateSettings($this->id, $this->data);
         }
-		return parent::afterSave($created);
+		return parent::afterSave($created, $options);
 	}
 
 /**

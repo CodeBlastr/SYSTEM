@@ -4,17 +4,18 @@
  *
  * PHP 5
  *
- * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
- * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/2.0/en/development/testing.html>
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.View
  * @since         CakePHP(tm) v 2.1.0
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('Controller', 'Controller');
@@ -28,6 +29,11 @@ App::uses('XmlView', 'View');
  * @package       Cake.Test.Case.View
  */
 class XmlViewTest extends CakeTestCase {
+
+	public function setUp() {
+		parent::setUp();
+		Configure::write('debug', 0);
+	}
 
 /**
  * testRenderWithoutView method
@@ -43,9 +49,53 @@ class XmlViewTest extends CakeTestCase {
 		$View = new XmlView($Controller);
 		$output = $View->render(false);
 
-		$expected = '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<users><user>user1</user><user>user2</user></users>';
-		$this->assertTextEquals($expected, trim($output));
-		$this->assertIdentical('application/xml', $Response->type());
+		$this->assertSame(Xml::build($data)->asXML(), $output);
+		$this->assertSame('application/xml', $Response->type());
+
+		$data = array(
+			array(
+				'User' => array(
+					'username' => 'user1'
+				)
+			),
+			array(
+				'User' => array(
+					'username' => 'user2'
+				)
+			)
+		);
+		$Controller->set(array('users' => $data, '_serialize' => 'users'));
+		$View = new XmlView($Controller);
+		$output = $View->render(false);
+
+		$expected = Xml::build(array('response' => array('users' => $data)))->asXML();
+		$this->assertSame($expected, $output);
+
+		$Controller->set('_rootNode', 'custom_name');
+		$View = new XmlView($Controller);
+		$output = $View->render(false);
+
+		$expected = Xml::build(array('custom_name' => array('users' => $data)))->asXML();
+		$this->assertSame($expected, $output);
+	}
+
+/**
+ * Test that rendering with _serialize does not load helpers
+ *
+ * @return void
+ */
+	public function testRenderSerializeNoHelpers() {
+		$Request = new CakeRequest();
+		$Response = new CakeResponse();
+		$Controller = new Controller($Request, $Response);
+		$Controller->helpers = array('Html');
+		$Controller->set(array(
+			'_serialize' => 'tags',
+			'tags' => array('cakephp', 'framework')
+		));
+		$View = new XmlView($Controller);
+		$View->render();
+		$this->assertFalse(isset($View->Html), 'No helper loaded.');
 	}
 
 /**
@@ -61,13 +111,49 @@ class XmlViewTest extends CakeTestCase {
 		$Controller->set($data);
 		$Controller->set('_serialize', array('no', 'user'));
 		$View = new XmlView($Controller);
+		$this->assertSame('application/xml', $Response->type());
 		$output = $View->render(false);
-
 		$expected = array(
 			'response' => array('no' => $data['no'], 'user' => $data['user'])
 		);
-		$this->assertIdentical(Xml::build($expected)->asXML(), $output);
-		$this->assertIdentical('application/xml', $Response->type());
+		$this->assertSame(Xml::build($expected)->asXML(), $output);
+
+		$Controller->set('_rootNode', 'custom_name');
+		$View = new XmlView($Controller);
+		$output = $View->render(false);
+		$expected = array(
+			'custom_name' => array('no' => $data['no'], 'user' => $data['user'])
+		);
+		$this->assertSame(Xml::build($expected)->asXML(), $output);
+	}
+
+/**
+ * Test render with an array in _serialize and alias
+ *
+ * @return void
+ */
+	public function testRenderWithoutViewMultipleAndAlias() {
+		$Request = new CakeRequest();
+		$Response = new CakeResponse();
+		$Controller = new Controller($Request, $Response);
+		$data = array('original_name' => 'my epic name', 'user' => 'fake', 'list' => array('item1', 'item2'));
+		$Controller->set($data);
+		$Controller->set('_serialize', array('new_name' => 'original_name', 'user'));
+		$View = new XmlView($Controller);
+		$this->assertSame('application/xml', $Response->type());
+		$output = $View->render(false);
+		$expected = array(
+			'response' => array('new_name' => $data['original_name'], 'user' => $data['user'])
+		);
+		$this->assertSame(Xml::build($expected)->asXML(), $output);
+
+		$Controller->set('_rootNode', 'custom_name');
+		$View = new XmlView($Controller);
+		$output = $View->render(false);
+		$expected = array(
+			'custom_name' => array('new_name' => $data['original_name'], 'user' => $data['user'])
+		);
+		$this->assertSame(Xml::build($expected)->asXML(), $output);
 	}
 
 /**
@@ -100,9 +186,12 @@ class XmlViewTest extends CakeTestCase {
 		$View = new XmlView($Controller);
 		$output = $View->render('index');
 
-		$expected = '<?xml version="1.0" encoding="UTF-8"?><users><user>user1</user><user>user2</user></users>';
-		$this->assertIdentical($expected, str_replace(array("\r", "\n"), '', $output));
-		$this->assertIdentical('application/xml', $Response->type());
+		$expected = array(
+			'users' => array('user' => array('user1', 'user2'))
+		);
+		$expected = Xml::build($expected)->asXML();
+		$this->assertSame($expected, $output);
+		$this->assertSame('application/xml', $Response->type());
 		$this->assertInstanceOf('HelperCollection', $View->Helpers);
 	}
 
