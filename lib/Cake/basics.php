@@ -73,7 +73,7 @@ if (!function_exists('debug')) {
  * @link http://book.cakephp.org/2.0/en/core-libraries/global-constants-and-functions.html#debug
  */
 	function debug($var, $showHtml = null, $showFrom = true) {
-		if (Configure::read('debug') > 0) {
+		//if (Configure::read('debug') > 0) { zuha comment out
 			App::uses('Debugger', 'Utility');
 			$file = '';
 			$line = '';
@@ -118,7 +118,7 @@ TEXT;
 			}
 			printf($template, $lineInfo, $var);
 		}
-	}
+	// } zuha comment out
 
 }
 

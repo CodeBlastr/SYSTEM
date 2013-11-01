@@ -19,7 +19,7 @@ class UsableBehavior extends ModelBehavior {
 	}
 
 
-	public function beforeSave(Model $Model) {
+	public function beforeSave(Model $Model, $options = array()) {
 		// remove habtm user data and give it to the afterSave() function
 		if (!empty($Model->data['User']['User'])) {
 			$this->userData = $Model->data;
@@ -146,7 +146,7 @@ class UsableBehavior extends ModelBehavior {
  * @param {class} 		Model class triggering this callback
  * @param {array}		The data returned from the find query
  */
-	public function afterFind(Model $Model, $results, $primary) {
+	public function afterFind(Model $Model, $results, $primary = false) {
 		if(empty($results) && str_replace('/', '', $_SERVER['REQUEST_URI']) != 'usersusersrestricted' && $this->restrictRedirect) { 
 			header("Location: /users/users/restricted");
 			break;
@@ -181,7 +181,7 @@ class UsableBehavior extends ModelBehavior {
 /**
  * Callback used to save related users, into the used table, with the proper relationship.
  */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
 		// get current users using, so that we can merge and keep duplicates out later
 		$currentUsers = $this->findUsedUsers($Model, $Model->data[$Model->alias]['id'], 'all');
 		
