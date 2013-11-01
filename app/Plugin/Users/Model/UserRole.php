@@ -1,7 +1,7 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
 
-class _UserRole extends UsersAppModel {
+class AppUserRole extends UsersAppModel {
 
 	public $name = 'UserRole';
 	
@@ -30,7 +30,7 @@ class _UserRole extends UsersAppModel {
  * 
  * @param boolean $created
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		$this->updateUserRolesViewPrefix();
 		if (!empty($this->data['UserRole']['duplicate'])) {
 			App::uses('Privilege', 'Privileges.Model');
@@ -43,7 +43,7 @@ class _UserRole extends UsersAppModel {
 /**
  * After find callback 
  */
- 	public function afterFind(array $results, $primary = false) {
+ 	public function afterFind($results, $primary = false) {
 		for ($i = 0; $i < count($results); $i++) {
 			if ($results[$i][$this->alias]['id'] == __SYSTEM_GUESTS_USER_ROLE_ID) {
 				$results[$i][$this->alias]['session_user_role_id'] = '';
@@ -145,5 +145,5 @@ class _UserRole extends UsersAppModel {
 }
 
 if (!isset($refuseInit)) {
-    class UserRole extends _UserRole {}
+    class UserRole extends AppUserRole {}
 }

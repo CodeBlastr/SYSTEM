@@ -1,6 +1,6 @@
 <?php
 
-class _UserGroupsController extends UsersAppController {
+class AppUserGroupsController extends UsersAppController {
 
 	public $name = 'UserGroups';
 	public $uses = 'Users.UserGroup';
@@ -230,5 +230,5 @@ class _UserGroupsController extends UsersAppController {
 }
 
 if (!isset($refuseInit)) {
-	class UserGroupsController extends _UserGroupsController {}
+	class UserGroupsController extends AppUserGroupsController {}
 }

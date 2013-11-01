@@ -5,7 +5,7 @@
  */
 
 App::uses('ContactsAppController', 'Contacts.Controller');
-class _ContactsController extends ContactsAppController {
+class AppContactsController extends ContactsAppController {
 
 	public $name = 'Contacts';
 	
@@ -443,5 +443,5 @@ class _ContactsController extends ContactsAppController {
 }
 
 if (!isset($refuseInit)) {
-	class ContactsController extends _ContactsController {}
+	class ContactsController extends AppContactsController {}
 }
