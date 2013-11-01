@@ -114,7 +114,6 @@ class AssetDispatcher extends DispatcherFilter {
  * @return string Absolute path for asset file
  */
 	protected function _getAssetFile($url) {
-		debug($url);
 		$parts = explode('/', $url);
 		if ($parts[0] === 'theme') {
 			$themeName = $parts[1];
