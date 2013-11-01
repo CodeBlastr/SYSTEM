@@ -81,7 +81,7 @@ class OptimizableBehavior extends ModelBehavior {
  * @param object $Model
  * @param mixed $results
  */
- 	public function afterFind(Model $Model, $results, $primary) {
+ 	public function afterFind(Model $Model, $results, $primary = false) {
  		if (!empty($results[0][$Model->alias]) && !isset($results[0]['Alias'])) {
  			for($i = 0, $count = count($results); $i < $count; ++$i) {
  				$alias = $Model->Alias->find('first', array('conditions' => array(
@@ -101,7 +101,7 @@ class OptimizableBehavior extends ModelBehavior {
  *
  * @param object $Model
  */
-	public function beforeValidate(Model $Model) {
+	public function beforeValidate(Model $Model, $options = array()) {
 		if (!empty($Model->data['Alias']['name'])) {
             $this->data['Alias'] = $Model->data['Alias'];
             $this->aliasName = $this->makeUniqueSlug($Model, $Model->data['Alias']['name']);
@@ -146,7 +146,7 @@ class OptimizableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param bool $created
  */
-    public function afterSave(Model $Model, $created) {
+    public function afterSave(Model $Model, $created, $options = array()) {
         if (!empty($this->data['Alias']['name']) && $this->trigger) {
             $settings = $this->settings[$Model->alias];
             $Alias = ClassRegistry::init('Alias');
