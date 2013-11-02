@@ -325,7 +325,14 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 *
 		 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
 		 */
-		public function pricify($price) {
+		public function pricify($price, $options = array()) {
+			// currency add ons
+			$start = null;
+			$end = null;
+			if ($options['currency'] == 'USD') {
+				 $start = '$';
+			}
+			// returns
 			if ($price === null) {
 				return null;
 			} elseif ($price > 999999) {
@@ -334,7 +341,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			} elseif ($price > 99999) {
 				return substr(round($price, -3), 0, -3) . 'k';
 			} else {
-				return number_format($price, 2, '.', ',');
+				return $start . number_format($price, 2, '.', ',') . $end;
 			}
 		}
 	
@@ -387,6 +394,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'AnswerStep' => 'Answers',
 				'Aro' => false,
 				'ArosAco' => false,
+				'Auction' => 'Auctions',
+				'AuctionBid' => 'Auctions',
 				'Banner' => 'Banners',
 				'BannerView' => 'Banners',
 				'BannerPosition' => 'Banners',
