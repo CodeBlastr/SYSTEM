@@ -66,10 +66,15 @@ class ZuhaFormHelper extends FormHelper {
 			}
 			$json = json_decode(file_get_contents('http://' . $_SERVER['HTTP_HOST'] . '/forms/forms/secure.json'));
 			echo '<script type="text/javascript">
-        jQuery(document).ready(function() {
-          var timeOut = window.setTimeout(function() { jQuery("#' . $options['id'] . '").prepend("<input type=\"hidden\" name=\"data[FormKey][id]\" value=\"' . $json->key . '\" />"); }, 10000);
-        });
-      </script>';
+			        jQuery(document).ready(function() {
+			          var timeOut = window.setTimeout(function() { jQuery("#' . $options['id'] . '").prepend("<input type=\"hidden\" name=\"data[FormKey][id]\" value=\"' . $json->key . '\" />"); }, 10000);
+			        });
+			      </script>';
+		}
+
+		if ($options['action'] === null && $options['url'] === null) {
+			// zuha over writes the the action if it isn't specified to preserve the prefix and query string (cake < 2.4 did for us)
+			$options['url'] = $_SERVER['REQUEST_URI'];
 		}
 		return parent::create($model, $options);
 	}
