@@ -10,21 +10,28 @@
 	<?php echo $this->Html->css('system'); ?>
 	<?php echo $this->Html->css('twitter-bootstrap.3/bootstrap.min'); ?>
 	<?php echo $this->Html->css('twitter-bootstrap.3/bootstrap.custom'); ?>
+	<?php echo $this->Html->css('twitter-bootstrap.3/bootstrap.switch'); ?>
 	<?php echo $this->Html->script('http://code.jquery.com/jquery-latest.js'); ?>
 	<?php //echo $this->Html->script('//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'); ?>
 	<?php echo $this->Html->script('plugins/modernizr-2.6.1-respond-1.1.0.min'); ?>
 	<?php echo $this->Html->script('system'); ?>
 	<?php echo $this->Html->script('twitter-bootstrap.3/bootstrap.min'); ?>
 	<?php echo $this->Html->script('twitter-bootstrap.3/bootstrap.custom'); ?>
+	<?php echo $this->Html->script('twitter-bootstrap.3/bootstrap.switch.min'); ?>
 	<?php echo $scripts_for_layout; ?>
 	<?php echo defined('__REPORTS_ANALYTICS') ? $this->Element('analytics', array(), array('plugin' => 'webpages')) : null; ?>
+	<style type="text/css">
+		body {
+			padding: 70px 0;
+		}
+	</style>
 </head>
 <body <?php echo $this->element('body_attributes'); ?>>
 	<?php echo $this->Element('twitter-bootstrap/header'); ?>
+	<?php echo $this->Element('twitter-bootstrap/page_title'); ?>
     <div class="container">
         <?php echo $this->Session->flash(); ?>
 		<?php echo $this->Session->flash('auth'); ?>
-		<?php echo $this->Element('twitter-bootstrap/page_title'); ?>
 		<?php echo $this->Element('breadcrumbs'); ?>
         <?php echo $content_for_layout; ?>
         <footer>

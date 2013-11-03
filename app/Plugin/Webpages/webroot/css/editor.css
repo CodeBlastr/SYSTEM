@@ -17,6 +17,12 @@
 	padding: 0;
     vertical-align: middle;
 }
+
+#adminNavFloManagr .switch-mini {
+	padding: 1px 0px;
+	line-height: 14px;
+	font-size: 10px;
+}
 #adminNavFloManagr.navbar-inverse .btn {
     border-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.25);
     background-color: #F5F5F5;

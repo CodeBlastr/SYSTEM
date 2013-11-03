@@ -7,7 +7,7 @@
 <div class="privileges index row">
     <?php
     // navigation links
-    echo '<div class="span3 bs-docs-sidebar"><ul class="nav nav-list bs-docs-sidenav">';
+    echo '<div class="span3 col-md-3 bs-docs-sidebar"><ul class="nav nav-list bs-docs-sidenav">';
     foreach ($sections as $section) {
         echo __('<li class="dropdown">');
         if (!empty($section['children'][0]['children'])) {
@@ -53,7 +53,7 @@
     echo __('</ul></div>'); ?>
 
 
-    <div class="span9">
+    <div class="span9 col-md-9">
         <p>Each section listed below contains rows of <a rel="tooltip" title="Things like view, add, edit, delete.  Typically they correspond to an actual page url you can visit.">Actions</a> that a user can take with columns of what the <a rel="tooltip" title="Groups that you put users into to control their access to actions.">User Roles</a> are.  To give a User Role access to an action, simply click the check box under the role, and then the save button at the bottom of that section. By default all actions are restricted to admins, and must be purposely granted. </p>
         <div id="privilegesTables"></div>
     </div>

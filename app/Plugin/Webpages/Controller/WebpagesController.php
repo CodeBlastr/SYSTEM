@@ -69,12 +69,13 @@ class AppWebpagesController extends WebpagesAppController {
 /**
  * Index method
  *
- * @param string
+ * @param string $type content|section|template|sub
+ * @param string|int UUID or Int
  * @return void
  */
-	public function index($type = 'content') {
+	public function index($type = 'content', $id = null) {
         $index = method_exists($this, '_index' . ucfirst($type)) ? '_index' . ucfirst($type) : '_indexContent';
-        return $this->$index($type);
+        return $this->$index($type, $id);
 	}
 	
 /**
@@ -82,22 +83,40 @@ class AppWebpagesController extends WebpagesAppController {
  * 
  * @param type $id
  * @return void
- * @throws NotFoundException
  */
     protected function _indexContent($type) {        
 		$this->paginate['conditions']['Webpage.type'] = $type;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
-		$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
+		//$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
+		$this->paginate['contain'][] = 'Child';
 		//$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
 		$this->set('webpages', $webpages = $this->paginate());
-		
 		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content'); 
 		$this->set('page_title_for_layout', 'Pages');
 		$this->set('page_types', $this->Webpage->types());
 		$this->view = $this->_fileExistsCheck('index_' . $type . $this->ext) ? 'index_' . $type : 'index_content';
+		return $webpages;
+    }
+	
+/**
+ * Index of type Section
+ * 
+ * @param type $id
+ * @return void
+ */
+    protected function _indexSection($type, $id) {
+		$this->paginate['conditions']['Webpage.parent_id'] = $id;
+		//$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
+		//$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
+		$this->set('webpage', $webpage = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id))));
+		$this->set('webpages', $webpages = $this->paginate());
+		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
+		$this->set('displayName', 'title');
+		$this->set('page_title_for_layout', __('%s Section', $webpage['Webpage']['name']));
+		$this->view = 'index_section';
 		return $webpages;
     }
     
