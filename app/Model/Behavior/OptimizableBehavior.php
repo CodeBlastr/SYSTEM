@@ -82,6 +82,7 @@ class OptimizableBehavior extends ModelBehavior {
  * @param mixed $results
  */
  	public function afterFind(Model $Model, $results, $primary = false) {
+ 		// look up the alias if it isn't set already
  		if (!empty($results[0][$Model->alias]) && !isset($results[0]['Alias'])) {
  			for($i = 0, $count = count($results); $i < $count; ++$i) {
  				$alias = $Model->Alias->find('first', array('conditions' => array(
@@ -93,6 +94,14 @@ class OptimizableBehavior extends ModelBehavior {
 				}
 			}
  		}
+		// map the alias to a virtual field
+		for($i = 0, $count = count($results); $i < $count; ++$i) {
+			if (!empty($results[$i]['Alias'])) {
+				$results[$i][$Model->alias]['_alias'] = '/' . $results[$i]['Alias']['name']; // not dead set on adding the slash
+			} else {
+				$results[$i][$Model->alias]['_alias'] = '/' . strtolower(ZuhaInflector::pluginize($Model->name)) . '/' . Inflector::tableize($Model->name) . '/view/' . $results[$i][$Model->alias]['id']; 
+			}
+		}
 		return $results;
  	}
 

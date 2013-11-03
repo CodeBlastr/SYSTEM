@@ -110,6 +110,7 @@ window.prettyPrint && prettyPrint();
 
 
 $(function() {
+	
     // Default tooltip selector 
     $("a[rel=tooltip]").tooltip();
     
@@ -123,41 +124,14 @@ $(function() {
         $(this).before('<span class="input-group-addon">$</span>');
         //$(this).parent().addClass('input-prepend');
     });
-    
-	// removing during upgrade to bootstrap 3, to see if it's even necessary to have anymore
-	
-	// $(".indexRow").each(function(index) {
-		// $(".metaCell", this).detach().appendTo($(".indexData", this));
-		// $(".metaCell", this).addClass("nav-collapse");
-		// $(".metaCell", this).addClass("nav-collapse" + index);
-        // $(".actionCell", this).addClass("nav-collapse").addClass("nav-collapse" + index);
-	// }).after('<hr />').addClass('row-fluid');
-    
-	// $(".actionCell ul").addClass("nav nav-pills");
-	// $(".titleCell").addClass("brand");
-	// $(".indexCell").each(function(index) {
-		// titleCell = $(".actionCell", this).detach();
-		// titleCell.insertAfter($(".titleCell", this));
-	// });
-	
-	// $(".imageCell").each(function(index) {
-		// if (!$("img", this).length) {
-			// $(this).hide();
-		// }
-	// });
-	
-	// context menu
-	// $('.btn-toolbar .btn-group a').addClass('btn');
-	// $('.btn-toolbar .btn-group a.delete').addClass('btn-danger');
-	// $('.btn-toolbar .btn-group a.add, .contacts.view .estimate.btn, .contacts.view .activity.btn, .contacts.view .task.btn').prepend('<i class="icon-plus"></i>').addClass('btn-success');
-	// $('.btn-toolbar .btn-group a.dashboard').prepend('<i class=\"icon-leaf icon-white\"></i>').addClass('btn-primary');
 	
 	// pagination 
-	$(".paging").addClass("pagination");
 	$(".paging span:first-child").addClass("previous");
 	$(".paging span:last-child").addClass("next");
 	$(".paging span").wrapAll("<ul />");
 	$(".paging ul span").wrap("<li />");
+	$(".paging").addClass("panel panel-default").wrapInner('<div class="panel-body"></div>');
+	$(".paging ul").addClass("pagination");
 	
 	// messages
 	$("#flashMessage, #authMessage").addClass("alert alert-info").prepend("<button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>");
@@ -165,7 +139,7 @@ $(function() {
     $("*[data-toggle=collapse]").css('cursor', 'pointer');
     
     /* forms */
-    $('input[type=submit]').addClass('btn');
+    $('input[type=submit]').addClass('btn btn-primary');
     $('.required').attr('required', true);
     $('label').addClass('control-label');
     $('input:not([type=submit]), textarea').addClass('form-control').parent().addClass('form-group');

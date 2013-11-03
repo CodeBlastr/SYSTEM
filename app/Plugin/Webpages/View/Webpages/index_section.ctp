@@ -1,42 +1,42 @@
 <div class="webpages index list-group">
-	<?php foreach ($webpages as $webpage) : ?>
+	<div class="list-group-item clearfix">
+		<div class="media clearfix">
+			<div class="media-body">
+				<h4>
+					<?php echo $this->Html->link($webpage['Webpage']['name'], $webpage['Webpage']['_alias']); ?>
+					<?php echo $this->Html->link('Edit', array('action' => 'edit', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+					<?php echo $this->Html->link('Add Sub Page', array('action' => 'add', 'sub', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+				</h4>
+				<p>
+					<span class="label label-primary"><span class="glyphicon glyphicon-qrcode"></span> <?php echo $webpage['Webpage']['id']; ?></span>
+					<span class="label label-primary"><span class="glyphicon glyphicon-th"></span> <?php echo $webpage['Webpage']['type']; ?></span>
+					<span class="label label-primary"><span class="glyphicon glyphicon-time"></span> <?php echo ZuhaInflector::datify($webpage['Webpage']['created']); ?></span>
+				</p>
+			</div>
+		</div>
+				
+		<?php foreach ($webpages as $child) : ?>
 		<div class="list-group-item clearfix">
 			<div class="media">
-				<?php echo $this->element('Galleries.thumb', array('thumbClass' => 'pull-left', 'model' => 'Webpage', 'foreignKey' => $webpage['Webpage']['id'])); ?>
+				<?php echo $this->element('Galleries.thumb', array('thumbClass' => 'pull-left', 'model' => 'Webpage', 'foreignKey' => $child['Webpage']['id'])); ?>
 				<div class="media-body">
 					<h4>
-						<?php echo $this->Html->link($webpage['Webpage']['name'], $webpage['Webpage']['_alias']); ?>
-						<?php echo $this->Html->link('Edit', array('action' => 'edit', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
-						<?php echo $this->Html->link('Add Sub Page', array('action' => 'add', 'sub', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
-						<?php if (!empty($webpage['Child'][0])) : ?>
-							<div class="btn-group">
-								<?php echo $this->Html->link('Subpages', array('action' => 'index', 'section', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
-								<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-									<span class="caret"></span>
-									<span class="sr-only">Toggle Dropdown</span>
-								</button>
-								<ul class="dropdown-menu" role="menu">
-									<?php foreach ($webpage['Child'] as $child) : ?>
-										<li>
-											<?php echo $this->Html->link($child['name'], array('admin' => false, 'action' => 'view', $child['id'])); ?>
-										</li>
-									<?php endforeach; ?>
-								</ul>
-							</div>
-						<?php endif; ?>
+						<?php echo $this->Html->link($child['Webpage']['name'], array('admin' => false, 'action' => 'view', $child['Webpage']['id'])); ?>
+						<?php echo $this->Html->link('Edit', array('action' => 'edit', $child['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
 					</h4>
 					<p class="truncate">
-						<?php echo strip_tags($webpage['Webpage']['content']); ?>
+						<?php echo strip_tags($child['Webpage']['content']); ?>
 					</p>
 					<p>
-						<span class="label label-primary"><span class="glyphicon glyphicon-qrcode"></span> <?php echo $webpage['Webpage']['id']; ?></span>
-						<span class="label label-primary"><span class="glyphicon glyphicon-th"></span> <?php echo $webpage['Webpage']['type']; ?></span>
-						<span class="label label-primary"><span class="glyphicon glyphicon-time"></span> <?php echo ZuhaInflector::datify($webpage['Webpage']['created']); ?></span>
+						<span class="label label-primary"><span class="glyphicon glyphicon-qrcode"></span> <?php echo $child['Webpage']['id']; ?></span>
+						<span class="label label-primary"><span class="glyphicon glyphicon-th"></span> <?php echo $child['Webpage']['type']; ?></span>
+						<span class="label label-primary"><span class="glyphicon glyphicon-time"></span> <?php echo ZuhaInflector::datify($child['Webpage']['created']); ?></span>
 					</p>
 				</div>
 			</div>
 		</div>
-	<?php endforeach; ?>
+		<?php endforeach; ?>
+	</div>
 	<?php echo $this->element('paging'); ?>
 </div>
 
@@ -45,6 +45,7 @@
 // set the contextual breadcrumb items
 $this->set('context_crumbs', array('crumbs' => array(
 	$this->Html->link(__('Admin Dashboard'), '/admin'),
+	$this->Html->link(__('All Pages'), array('action' => 'index', 'content')),
 	$page_title_for_layout,
 )));
 

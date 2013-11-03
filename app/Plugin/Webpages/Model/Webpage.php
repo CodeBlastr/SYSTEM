@@ -179,8 +179,12 @@ class Webpage extends WebpagesAppModel {
  */
  	public function afterFind($results, $primary = false) {
 		$results = $this->_templateContentResults($results);
-		$results = parent::afterFind($results, $primary);
-		return $results;
+		for ($i = 0; $i < count($results); ++$i) {
+			if (!empty($results[$i]['Child'][0])) {
+				$results[$i]['Webpage']['type'] = 'section';
+			}
+		}
+		return parent::afterFind($results, $primary);
 	}
 	
 /**
