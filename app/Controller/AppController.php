@@ -46,7 +46,10 @@ class AppController extends Controller {
 		'Form' => array('className' => 'ZuhaForm'),
 		'Js',
 		'Time',
-		'Html' => array('className' => 'ZuhaHtml'),
+		'Html' => array(
+			'className' => 'ZuhaHtml',
+			'configFile' => 'html.php'
+			),
 		'Utils.Tree',
 		'Webpages.Webpage'
 	);
