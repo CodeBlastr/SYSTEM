@@ -142,4 +142,7 @@ if (!empty($defaultTemplate)) {
 	echo $content_for_layout;
 }
 
-echo $this->Element('Webpages.editor', array());
+if($adminbar) {
+	echo $this->Element('Webpages.editor', array());
+}
+
