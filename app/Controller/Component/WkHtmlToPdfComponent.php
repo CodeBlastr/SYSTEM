@@ -21,7 +21,18 @@ class WkHtmlToPdfComponent extends Component {
 		$this->viewFile = new File($this->siteFolder->pwd() . DS . $fileName);
 	}
 
-	public function createPdf($autoDownload = true, $pagesize='Letter') {
+	public function createPdf($autoDownload = true, $options = array()) {
+		
+		$defaults = array(
+			'grayscale' => false, // boolean
+			'lowquality' => false, // boolean
+			'orientation' => 'Portrait', // Landscape
+			'pagesize' => 'Letter', // Letter, Legal, A3, A4, etc
+			'javascriptdelay' => 200,
+			'windowstatus' => false // if provided, it will wait until window.status = 'someString' to generate the PDF
+		);
+		$options = array_merge($defaults, $options);
+		
 		// prevent view from rendering normally
 		$this->controller->autoRender = false;
 		// $this->controller->output = '';
@@ -42,14 +53,31 @@ class WkHtmlToPdfComponent extends Component {
 			
 			$output = $this->filepath . DS . "output{$this->randomNumber}.pdf";
 			
-			$commands = '-s '.$pagesize . ' ';
+			$commands = '';
+			$commands .= '-s '.$options['pagesize'] . ' ';
+			$commands .= '-O '.$options['orientation'] . ' ';
+			if ($options['grayscale']) {
+				$commands .= '-g ';
+			}
+			if ($options['lowquality']) {
+				$commands .= '-l ';
+			}
+			if ($options['javascriptdelay']) {
+				$commands .= '--javascript-delay ' . $options['javascriptdelay'] . ' ';
+			}
+			if ($options['windowstatus']) {
+				$commands .= '--window-status "' . $options['javascriptdelay'] . '" ';
+			}
+			
 			
 			//For windows debugging on localhost
 			//For this to work install 
 			//https://code.google.com/p/wkhtmltopdf/downloads/detail?name=libwkhtmltox-0.11.0_rc1.zip&can=2&q=
-			if(PHP_OS == 'WINNT') {
+			if (PHP_OS === 'WINNT') {
 				$cmd = 'C:\"Program Files (x86)"\wkhtmltopdf\wkhtmltopdf.exe '. $commands . $url . ' ' . $output;
-			}else {
+			} elseif (PHP_OS === 'Darwin') {
+				$cmd = VENDORS . 'wkhtmltopdf/MacOS/wkhtmltopdf.app/Contents/MacOS/wkhtmltopdf '. $commands . $url . ' ' . $output;
+			} else {
 				switch (PHP_INT_SIZE) {
 					case 4 :
 						$cmd = VENDORS . 'wkhtmltopdf/32bit/wkhtmltopdf '. $commands . $url . ' ' . $output;
@@ -98,6 +126,15 @@ class WkHtmlToPdfComponent extends Component {
 		/*
 		 * This function takes a path to a file to output ($file), the filename that the browser will see ($name) and the MIME type of the file ($mime_type, optional). If you want to do something on download abort/finish, register_shutdown_function('function_name');
 		 */
+		 
+		 $i = 0;
+		 while (!file_exists($file)) {
+		 	++$i;
+			 if ($i > 10000000) {
+			 	throw new Exception('I can\'t find the generated PDF file.', 1);
+			 }
+		 }
+		 
 		if (!is_readable($file)) {
 			throw new Exception('PDF file cannot found or is inaccessible!', 1);
 		}
