@@ -80,16 +80,6 @@ class ZuhaFormHelper extends FormHelper {
 	}
 
 /**
- * Input method
- * over written to add twitter bootstrap to the div from-group 
- * to the div class, and form-control to the input
- */
-	public function input($fieldName, $options = array()) {
-		!empty($options['class']) ? $options['class'] = $options['class'] . ' form-control' : $options['class'] = 'form-control';
-		return str_replace('class="', 'class="form-group ', parent::input($fieldName, $options)); // add form-group
-	}
-
-/**
  * get action (taken from original form helper)
  */
 	protected function _getAction($options) {
@@ -246,7 +236,7 @@ class ZuhaFormHelper extends FormHelper {
 		
 		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
 		
-		
+		$firstId = !empty($attributes['id']) ? $attributes['id'] : Inflector::camelize(Inflector::slug($fieldName)); // same as taken from FormHelper
 		$this->View->Html->css('http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
 		$this->View->Html->css('jquery-ui/jquery-ui-timepicker-addon', null, array('inline' => false));
 		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false));
@@ -254,8 +244,8 @@ class ZuhaFormHelper extends FormHelper {
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : 'hh:mm tt';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
 		$code = '$(document).ready(function() {
-			$(".date-time-picker").next().val("' . date('Y-m-d h:i:s', strtotime($attributes['value'])) . '");
-			$(".date-time-picker").datetimepicker({
+			$("#' . $firstId . '").next().val("' . date('Y-m-d h:i:s', strtotime($attributes['value'])) . '");
+			$("#' . $firstId . '").datetimepicker({
 		    	timeFormat: "' . $jsTime . '", 
 		        dateFormat: "' . $jsDate . '",
 		        altField: "#' . str_replace('.', '', $fieldName) . '_",
@@ -265,7 +255,7 @@ class ZuhaFormHelper extends FormHelper {
 		        altSeparator: " "
 			});
 		});';
-		$this->View->Html->scriptBlock($code, array('inline' => false, 'once' => true));
+		$this->View->Html->scriptBlock($code, array('inline' => false, 'once' => false));
 		
 		// return a text field plus a hidden field with proper Y-m-d h:i:s format
 		return $this->text($fieldName, array(
