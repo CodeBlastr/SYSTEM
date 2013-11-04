@@ -21,58 +21,105 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	if (!defined('CONFIGS')) {
 		define('CONFIGS', null);
 	}
+
+	Configure::write('Dispatcher.filters', array(
+	    'ZuhaAssetDispatcher',
+	    'CacheDispatcher'
+	));
+	
+	// Add logging configuration.
+	CakeLog::config('debug', array(
+	    'engine' => 'FileLog',
+	    'types' => array('notice', 'info', 'debug'),
+	    'file' => 'debug',
+	));
+	CakeLog::config('error', array(
+	    'engine' => 'FileLog',
+	    'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
+	    'file' => 'error',
+	));
+	// Cache::config('default', array(
+	 	// 'engine' => 'Apc', //[required]
+	 	// 'duration'=> 3600, //[optional]
+	 	// 'probability'=> 100, //[optional]
+	 	// 'prefix' => Inflector::slug(SITE_DIR) . '_', //[optional]  prefix every cache file with this string
+	// ));
+	
 	App::build(array(
-		'plugins' => array(
+		'Plugin' => array(
 			ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
 			ROOT.DS.APP_DIR.DS.'Plugin'.DS
 			),
-		'models' =>  array(
+		'Model' =>  array(
 			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'Model'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'Model'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Model'.DS,
 			ROOT.DS.APP_DIR.DS.'Model'.DS
 			),
-		'views' => array(
+		'View' => array(
 			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'View'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'View'.DS,
 			ROOT.DS.SITE_DIR.DS.'View'.DS.'locale'.DS.Configure::read('Config.language').DS, // to be deprecated soon, 2012-11-29 RK
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS,
 			ROOT.DS.APP_DIR.DS.'View'.DS,
 			),
-		'controllers' => array(
+		'Controller' => array(
 			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'Controller'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'Controller'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Controller'.DS,
 			ROOT.DS.APP_DIR.DS.'Controller'.DS
 			),
-		'datasources' => array(
+		'Model/Datasource' => array(
 			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'Datasource'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'Datasource'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Datasource'.DS,
 			ROOT.DS.APP_DIR.DS.'Model'.DS.'Datasource'.DS
 			),
-		'behaviors' => array(
+		'Model/Behavior' => array(
 			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'Model'.DS.'Behavior'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'Model'.DS.'Behavior'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Model'.DS.'Behavior',
 			ROOT.DS.APP_DIR.DS.'Model'.DS.'Behavior'.DS
 			),
-		'components' => array(
+		'Controller/Component' => array(
 			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'Controller'.DS.'Component'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'Controller'.DS.'Component'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Controller'.DS.'Component',
 			ROOT.DS.APP_DIR.DS.'Controller'.DS.'Component'.DS
 			),
-		'helpers' => array(
+		'View/Helper' => array(
 			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.Configure::read('Config.language').DS.'Plugin'.DS.'%s'.DS.'View'.DS.'Helper'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS.'%s'.DS.'View'.DS.'Helper'.DS,
 			ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Helper',
 			ROOT.DS.APP_DIR.DS.'View'.DS.'Helper'.DS
 			),
-	//   'vendors' => array('/full/path/to/vendors/', '/next/full/path/to/vendors/'),
-	//   'shells' => array('/full/path/to/shells/', '/next/full/path/to/shells/'),
-	//   'locales' => array('/full/path/to/locale/', '/next/full/path/to/locale/')
 	));
+	/**
+	 * The settings below can be used to set additional paths to models, views and controllers.
+	 *
+	 * App::build(array(
+	 *     'Model'                     => array('/path/to/models/', '/next/path/to/models/'),
+	 *     'Model/Behavior'            => array('/path/to/behaviors/', '/next/path/to/behaviors/'),
+	 *     'Model/Datasource'          => array('/path/to/datasources/', '/next/path/to/datasources/'),
+	 *     'Model/Datasource/Database' => array('/path/to/databases/', '/next/path/to/database/'),
+	 *     'Model/Datasource/Session'  => array('/path/to/sessions/', '/next/path/to/sessions/'),
+	 *     'Controller'                => array('/path/to/controllers/', '/next/path/to/controllers/'),
+	 *     'Controller/Component'      => array('/path/to/components/', '/next/path/to/components/'),
+	 *     'Controller/Component/Auth' => array('/path/to/auths/', '/next/path/to/auths/'),
+	 *     'Controller/Component/Acl'  => array('/path/to/acls/', '/next/path/to/acls/'),
+	 *     'View'                      => array('/path/to/views/', '/next/path/to/views/'),
+	 *     'View/Helper'               => array('/path/to/helpers/', '/next/path/to/helpers/'),
+	 *     'Console'                   => array('/path/to/consoles/', '/next/path/to/consoles/'),
+	 *     'Console/Command'           => array('/path/to/commands/', '/next/path/to/commands/'),
+	 *     'Console/Command/Task'      => array('/path/to/tasks/', '/next/path/to/tasks/'),
+	 *     'Lib'                       => array('/path/to/libs/', '/next/path/to/libs/'),
+	 *     'Locale'                    => array('/path/to/locales/', '/next/path/to/locales/'),
+	 *     'Vendor'                    => array('/path/to/vendors/', '/next/path/to/vendors/'),
+	 *     'Plugin'                    => array('/path/to/plugins/', '/next/path/to/plugins/'),
+	 * ));
+	 *
+	 */
+	
     Inflector::rules('singular', array('irregular' => array('webpage_jses' => 'webpage_js')));
     Inflector::rules('plural', array('irregular' => array('webpage_js' => 'webpage_jses')));
 	
@@ -278,7 +325,14 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 *
 		 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
 		 */
-		public function pricify($price) {
+		public function pricify($price, $options = array()) {
+			// currency add ons
+			$start = null;
+			$end = null;
+			if ($options['currency'] == 'USD') {
+				 $start = '$';
+			}
+			// returns
 			if ($price === null) {
 				return null;
 			} elseif ($price > 999999) {
@@ -287,7 +341,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			} elseif ($price > 99999) {
 				return substr(round($price, -3), 0, -3) . 'k';
 			} else {
-				return number_format($price, 2, '.', ',');
+				return $start . number_format($price, 2, '.', ',') . $end;
 			}
 		}
 	
@@ -340,6 +394,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'AnswerStep' => 'Answers',
 				'Aro' => false,
 				'ArosAco' => false,
+				'Auction' => 'Auctions',
+				'AuctionBid' => 'Auctions',
 				'Banner' => 'Banners',
 				'BannerView' => 'Banners',
 				'BannerPosition' => 'Banners',

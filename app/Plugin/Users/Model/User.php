@@ -1,7 +1,7 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
 
-class _User extends UsersAppModel {
+class AppUser extends UsersAppModel {
 
 	public $name = 'User';
 	
@@ -287,7 +287,7 @@ class _User extends UsersAppModel {
  * 
  * @param bool $created
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		// add the user to a group if the data for the group exists (can't use saveAll() because of extra fields)
 		if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
 			$this->UserGroup->UsersUserGroup->add($this->data);
@@ -981,5 +981,5 @@ Thank you for registering with us and welcome to the community.";
 }
 
 if (!isset($refuseInit)) {
-	class User extends _User {}
+	class User extends AppUser {}
 }

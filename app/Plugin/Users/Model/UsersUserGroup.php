@@ -6,7 +6,7 @@ App::uses('UsersAppModel', 'Users.Model');
  * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Model'.DS.'UsersUserGroup.php');
  */
 
-class _UsersUserGroup extends UsersAppModel {
+class AppUsersUserGroup extends UsersAppModel {
 	public $name = 'UsersUserGroup';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 	public $useTable = 'users_user_groups';
@@ -115,5 +115,5 @@ class _UsersUserGroup extends UsersAppModel {
 }
 
 if (!isset($refuseInit)) {
-	class UsersUserGroup extends _UsersUserGroup {}
+	class UsersUserGroup extends AppUsersUserGroup {}
 }

@@ -46,6 +46,15 @@ class AppModel extends Model {
  * @var array
  */
   	public $theme = array();
+
+/**
+ * Notifications
+ * 
+ * Used to supress notifications in the __sendMail() method by setting to false.
+ *
+ * @var array
+ */
+  	public $notifications = true;
 	
 /**
  * Permission Data
@@ -60,7 +69,7 @@ class AppModel extends Model {
 	public function __construct($id = false, $table = null, $ds = null) {
 		$this->actsAs[] = 'Containable'; // moved here because it was being triggered too late 
 		// Let's have a "global" variable for userId available to Models too
-		$this->userId = ( class_exists('CakeSession') ) ? CakeSession::read('Auth.User.id') : null;
+		$this->userId = (class_exists('CakeSession')) ? CakeSession::read('Auth.User.id') : null;
 		parent::__construct($id, $table, $ds);
 	}
 
@@ -295,25 +304,27 @@ class AppModel extends Model {
  * @return bool
  */
 	public function __sendMail($toEmail = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
-		App::uses('AppController', 'Controller');
-		$Controller = new AppController;
-		
-		if(strpos($subject, 'Webpages.') === 0){
-			$name = str_replace('Webpages.', '', $subject);
-			App::uses('Webpage', 'Webpages.Model');
-			$Webpage = new Webpage();
-			$webpage = $Webpage->findByName($name);
-			if(!empty($webpage)){
-				$message = $Webpage->replaceTokens($webpage['Webpage']['content'], $message);	
-					
-				$subject = $webpage['Webpage']['title'];
-			} else {
-				//Should we auto gen instead of throwing exception????
-				throw new NotFoundException(__('Please create a email template named %s', $name));
-			}			
-		} 		
-
-		return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
+		if ($this->notifications !== false) {
+			App::uses('AppController', 'Controller');
+			$Controller = new AppController;
+			
+			if(strpos($subject, 'Webpages.') === 0){
+				$name = str_replace('Webpages.', '', $subject);
+				App::uses('Webpage', 'Webpages.Model');
+				$Webpage = new Webpage();
+				$webpage = $Webpage->findByName($name);
+				if(!empty($webpage)){
+					$message = $Webpage->replaceTokens($webpage['Webpage']['content'], $message);	
+						
+					$subject = $webpage['Webpage']['title'];
+				} else {
+					//Should we auto gen instead of throwing exception????
+					throw new Exception(__('Please create a email template named %s', $name));
+				}			
+			} 		
+	
+			return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
+		}
 	}
 	
 	
