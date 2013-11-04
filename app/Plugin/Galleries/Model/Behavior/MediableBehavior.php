@@ -65,7 +65,7 @@ class MediableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
         if (!empty($Model->data['GalleryImage']['filename']['name'])){
             $data = $Model->data;
 			$data[$this->modelName]['id'] = $Model->id;

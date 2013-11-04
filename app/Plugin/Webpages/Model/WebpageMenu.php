@@ -64,13 +64,13 @@ class WebpageMenu extends WebpagesAppModel {
  * 
  * @return array
  */
-	public function afterFind($results) {
+	public function afterFind($results, $primary = false) {
 		for ($i = 0; $i < count($results); $i++) {
 			if ($results[$i][$this->alias]['user_role_id'] === null) {
 				$results[$i][$this->alias]['user_role_id'] = __SYSTEM_GUESTS_USER_ROLE_ID;
 			}
 		}
-		return $results;
+		return parent::afterFind($results, $primary);
 	}
     
 /**

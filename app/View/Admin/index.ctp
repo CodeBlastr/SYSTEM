@@ -73,14 +73,14 @@ if (empty($runUpdates)) { ?>
 	*/ ?>
 
     <div class="btn-group">
-        <a href="#masonryBox" class="filterClick btn">All</a>
-        <?php echo CakePlugin::loaded('Classifieds') ? $this->Html->link(__('Classifieds'), array('admin' => true, 'plugin' => 'classifieds', 'controller' => 'classifieds', 'action' => 'dashboard'), array('class' => 'filterClick btn')) : null; ?>
-        <?php echo CakePlugin::loaded('Products') ? $this->Html->link(__('Ecommerce'), array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('class' => 'filterClick btn')) : null; ?>
-        <?php echo $this->Html->link(__('Pages'), '#tagPages', array('class' => 'filterClick btn')); ?>
-        <?php echo CakePlugin::loaded('Media') ? $this->Html->link(__('Media'), '#tagMedia', array('class' => 'filterClick btn')) : null; ?>
-        <?php echo CakePlugin::loaded('Comments') ? $this->Html->link(__('Discussion'), '#tagDiscussion', array('class' => 'filterClick btn')) : null; ?>
-        <?php echo $this->Html->link(__('Themes'), '#tagThemes', array('class' => 'filterClick btn')); ?>
-        <?php echo $this->Html->link(__('Settings'), '#tagAdmin', array('class' => 'filterClick btn')); ?>
+        <a href="#masonryBox" class="filterClick btn btn-default">All</a>
+        <?php echo CakePlugin::loaded('Classifieds') ? $this->Html->link(__('Classifieds'), array('admin' => true, 'plugin' => 'classifieds', 'controller' => 'classifieds', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default')) : null; ?>
+        <?php echo CakePlugin::loaded('Products') ? $this->Html->link(__('Ecommerce'), array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default')) : null; ?>
+        <?php echo $this->Html->link(__('Pages'), '#tagPages', array('class' => 'filterClick btn btn-default')); ?>
+        <?php echo CakePlugin::loaded('Media') ? $this->Html->link(__('Media'), '#tagMedia', array('class' => 'filterClick btn btn-default')) : null; ?>
+        <?php echo CakePlugin::loaded('Comments') ? $this->Html->link(__('Discussion'), '#tagDiscussion', array('class' => 'filterClick btn btn-default')) : null; ?>
+        <?php echo $this->Html->link(__('Themes'), '#tagThemes', array('class' => 'filterClick btn btn-default')); ?>
+        <?php echo $this->Html->link(__('Settings'), '#tagAdmin', array('class' => 'filterClick btn btn-default')); ?>
     </div>
     
     
@@ -89,6 +89,7 @@ if (empty($runUpdates)) { ?>
             <h3 class="title"><i class="icon-th-large"></i> <?php echo $this->Html->link('Pages', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>View, edit, delete, and create static content pages with text, graphics, video and/or audio. </p>
             <ul>
+            	<li><?php echo $this->Html->link('List Pages', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></li>
             	<li><?php echo $this->Html->link('Add Page', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'content')); ?></li>
             	<li><?php echo $this->Html->link('Add Section', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'section')); ?> (eg. page with multiple pages)</li>
             	<?php
@@ -178,7 +179,7 @@ if (empty($runUpdates)) { ?>
 		<?php if (in_array('Categories', CakePlugin::loaded())) { ?>  
         <div class="masonryBox dashboardBox tagText tagAdmin">
             <h3 class="title"><i class="icon-tasks"></i> <?php echo $this->Html->link('Categories', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'dashboard')); ?></h3>
-            <p>Categorize anything.  Move, reorder, add, edit categories. <?php echo $this->Html->link('Dashboard', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'dashboard'), array('class' => 'btn btn-mini')); ?></p>
+            <p>Categorize anything.  Move, reorder, add, edit categories. <?php echo $this->Html->link('Dashboard', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'dashboard'), array('class' => 'btn btn-default btn-mini btn-xs')); ?></p>
         </div>
         <?php } ?>
 		
@@ -191,7 +192,7 @@ if (empty($runUpdates)) { ?>
         
         <div class="masonryBox dashboardBox tagPrivileges tagAdmin">
             <h3 class="title"><i class="icon-signal"></i> <?php echo $this->Html->link('Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index')); ?></h3>
-            <p>Control what content your different user roles can see. <?php echo $this->Html->link('Manage Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index'), array('class' => 'btn btn-mini')); ?></p>
+            <p>Control what content your different user roles can see. <?php echo $this->Html->link('Manage Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index'), array('class' => 'btn btn-default btn-mini btn-xs')); ?></p>
         </div>
          
         <div class="masonryBox dashboardBox tagSettings tagAdmin">
@@ -234,7 +235,7 @@ if (empty($runUpdates)) { ?>
         <div class="masonryBox dashboardBox tagUpdates tagAdmin">
             <h3 class="title"><i class="icon-download-alt"></i> Install Updates </h3>
             <p>Check for updates, install plugins, and  generally improve your site system.
-            <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index'), array('class' => 'btn')); ?></p>
+            <p><?php echo $this->Html->link('Install Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'index'), array('class' => 'btn btn-default')); ?></p>
             <p><?php echo $this->Html->link('Uninstall Plugins', array('plugin' => null, 'controller' => 'install', 'action' => 'uninstall'), array('class' => 'btn btn-danger')); ?></p>
 			<p><?php echo $this->Form->create('', array('id' => 'updateForm')); echo $this->Form->hidden('Update.index', array('value' => true)); echo $this->Form->submit('Check for Updates'); echo $this->Form->end(); ?></p>
         </div>

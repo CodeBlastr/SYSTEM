@@ -6,7 +6,7 @@ App::uses('UsersAppModel', 'Users.Model');
  * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Model'.DS.'UserGroup.php');
  */
 
-class _UserGroup extends UsersAppModel {
+class AppUserGroup extends UsersAppModel {
 	public $name = 'UserGroup';
 	public $displayField = 'title';
 	
@@ -100,5 +100,5 @@ class _UserGroup extends UsersAppModel {
 }
 
 if (!isset($refuseInit)) {
-	class UserGroup extends _UserGroup {}
+	class UserGroup extends AppUserGroup {}
 }

@@ -4,24 +4,28 @@
  *
  * PHP 5
  *
- * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
- * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/2.0/en/development/testing.html>
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.View.Helper
  * @since         CakePHP(tm) v 1.2.0.4206
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 App::uses('TimeHelper', 'View/Helper');
 App::uses('View', 'View');
 App::uses('CakeTime', 'Utility');
 
 /**
  * TimeHelperTestObject class
+ *
+ * @package       Cake.Test.Case.View.Helper
  */
 class TimeHelperTestObject extends TimeHelper {
 
@@ -37,6 +41,8 @@ class TimeHelperTestObject extends TimeHelper {
 
 /**
  * CakeTimeMock class
+ *
+ * @package       Cake.Test.Case.View.Helper
  */
 class CakeTimeMock {
 }
@@ -81,8 +87,8 @@ class TimeHelperTest extends CakeTestCase {
 			'nice', 'niceShort', 'daysAsSql', 'dayAsSql',
 			'isToday', 'isThisMonth', 'isThisYear', 'wasYesterday',
 			'isTomorrow', 'toQuarter', 'toUnix', 'toAtom', 'toRSS',
-			'timeAgoInWords', 'wasWithinLast', 'gmt', 'format', 'i18nFormat',
-			);
+			'wasWithinLast', 'gmt', 'format', 'i18nFormat',
+		);
 		$CakeTime = $this->getMock('CakeTimeMock', $methods);
 		$Time = new TimeHelperTestObject($this->View, array('engine' => 'CakeTimeMock'));
 		$Time->attach($CakeTime);
@@ -90,6 +96,12 @@ class TimeHelperTest extends CakeTestCase {
 			$CakeTime->expects($this->at(0))->method($method);
 			$Time->{$method}('who', 'what', 'when', 'where', 'how');
 		}
+
+		$CakeTime = $this->getMock('CakeTimeMock', array('timeAgoInWords'));
+		$Time = new TimeHelperTestObject($this->View, array('engine' => 'CakeTimeMock'));
+		$Time->attach($CakeTime);
+		$CakeTime->expects($this->at(0))->method('timeAgoInWords');
+		$Time->timeAgoInWords('who', array('what'), array('when'), array('where'), array('how'));
 	}
 
 /**
@@ -109,6 +121,62 @@ class TimeHelperTest extends CakeTestCase {
 		$Time = new TimeHelperTestObject($this->View, array('engine' => 'TestPlugin.TestPluginEngine'));
 		$this->assertInstanceOf('TestPluginEngine', $Time->engine());
 		CakePlugin::unload('TestPlugin');
+	}
+
+/**
+ * Test element wrapping in timeAgoInWords
+ *
+ * @return void
+ */
+	public function testTimeAgoInWords() {
+		$Time = new TimeHelper($this->View);
+		$timestamp = strtotime('+8 years, +4 months +2 weeks +3 days');
+		$result = $Time->timeAgoInWords($timestamp, array(
+			'end' => '1 years',
+			'element' => 'span'
+		));
+		$expected = array(
+			'span' => array(
+				'title' => $timestamp,
+				'class' => 'time-ago-in-words'
+			),
+			'on ' . date('j/n/y', $timestamp),
+			'/span'
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $Time->timeAgoInWords($timestamp, array(
+			'end' => '1 years',
+			'element' => array(
+				'title' => 'testing',
+				'rel' => 'test'
+			)
+		));
+		$expected = array(
+			'span' => array(
+				'title' => 'testing',
+				'class' => 'time-ago-in-words',
+				'rel' => 'test'
+			),
+			'on ' . date('j/n/y', $timestamp),
+			'/span'
+		);
+		$this->assertTags($result, $expected);
+
+		$timestamp = strtotime('+2 weeks');
+		$result = $Time->timeAgoInWords(
+			$timestamp,
+			array('end' => '1 years', 'element' => 'div')
+		);
+		$expected = array(
+			'div' => array(
+				'title' => $timestamp,
+				'class' => 'time-ago-in-words'
+			),
+			'2 weeks',
+			'/div'
+		);
+		$this->assertTags($result, $expected);
 	}
 
 }

@@ -7,8 +7,6 @@
  * 
  * @todo turn other tags into functions too
  */
-
-	
 $flash_for_layout = $this->Session->flash();
 $flash_auth_for_layout = $this->Session->flash('auth');
 
@@ -29,7 +27,7 @@ if (!empty($defaultTemplate)) {
 	
 	// configurable template settings ex. {config: 0}
 	$modelName = Inflector::classify($this->request->controller);
-	$_layout = !empty($_layout[0]) ? $_layout[0] : $_layout; // takes care of $Model->data results which are set in AppModel afterfind()
+	$_layout = !empty($_layout[0]) ? $_layout[0] : !empty($_layout) ? $_layout : null; // takes care of $Model->data results which are set in AppModel afterfind()
 	if (!empty($_layout[$modelName]['_layout'])) {
 		$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$_layout[$modelName]['_layout'].'.ctp';
 		if (file_exists($templateFile)) {
@@ -66,6 +64,7 @@ if (!empty($defaultTemplate)) {
 	// replace the element tags again (if templateEditing is on it's a configurable template, and has already the old {element: x} tags replaced)
 	$elementOptions = !empty($templateEditing) ? array('templateEditing' => true) : null;
 	$content = $this->Html->tagElement($this, $content, $elementOptions);
+	//$content =  $this->Html->link('incontnet');
 	
 	// skipping the parsing of text area content with this check	
 	preg_match_all ("/(<textarea[^>]+>)(.*)(<\/textarea>)/isU", $content, $matchesEditable);

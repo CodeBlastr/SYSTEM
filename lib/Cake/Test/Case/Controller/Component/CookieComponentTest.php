@@ -4,23 +4,23 @@
  *
  * PHP 5
  *
- * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
- * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/2.0/en/development/testing.html>
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.Controller.Component
  * @since         CakePHP(tm) v 1.2.0.5435
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('Component', 'Controller');
 App::uses('Controller', 'Controller');
 App::uses('CookieComponent', 'Controller/Component');
-
 
 /**
  * CookieComponentTestController class
@@ -72,6 +72,7 @@ class CookieComponentTest extends CakeTestCase {
  * @return void
  */
 	public function setUp() {
+		parent::setUp();
 		$_COOKIE = array();
 		$this->Controller = new CookieComponentTestController(new CakeRequest(), new CakeResponse());
 		$this->Controller->constructClasses();
@@ -93,6 +94,7 @@ class CookieComponentTest extends CakeTestCase {
  * @return void
  */
 	public function tearDown() {
+		parent::tearDown();
 		$this->Cookie->destroy();
 	}
 
@@ -202,6 +204,49 @@ class CookieComponentTest extends CakeTestCase {
 	}
 
 /**
+ * test that two write() calls use the expiry.
+ *
+ * @return void
+ */
+	public function testWriteMultipleShareExpiry() {
+		$this->Cookie->write('key1', 'value1', false);
+		$this->Cookie->write('key2', 'value2', false);
+
+		$name = $this->Cookie->name . '[key1]';
+		$result = $this->Controller->response->cookie($name);
+		$this->assertWithinMargin(time() + 10, $result['expire'], 2, 'Expiry time is wrong');
+
+		$name = $this->Cookie->name . '[key2]';
+		$result = $this->Controller->response->cookie($name);
+		$this->assertWithinMargin(time() + 10, $result['expire'], 2, 'Expiry time is wrong');
+	}
+
+/**
+ * test write with distant future cookies
+ *
+ * @return void
+ */
+	public function testWriteFarFuture() {
+		$this->Cookie->write('Testing', 'value', false, '+90 years');
+		$future = new DateTime('now');
+		$future->modify('+90 years');
+
+		$expected = array(
+			'name' => $this->Cookie->name . '[Testing]',
+			'value' => 'value',
+			'path' => '/',
+			'domain' => '',
+			'secure' => false,
+			'httpOnly' => false);
+		$result = $this->Controller->response->cookie($this->Cookie->name . '[Testing]');
+
+		$this->assertEquals($future->format('U'), $result['expire'], '', 3);
+		unset($result['expire']);
+
+		$this->assertEquals($expected, $result);
+	}
+
+/**
  * test write with httpOnly cookies
  *
  * @return void
@@ -271,12 +316,14 @@ class CookieComponentTest extends CakeTestCase {
 		$expected = array(
 			'name' => $this->Cookie->name . '[Testing]',
 			'value' => '[1,2,3]',
-			'expire' => time() + 10,
 			'path' => '/',
 			'domain' => '',
 			'secure' => false,
 			'httpOnly' => false);
 		$result = $this->Controller->response->cookie($this->Cookie->name . '[Testing]');
+
+		$this->assertWithinMargin($result['expire'], time() + 10, 1);
+		unset($result['expire']);
 		$this->assertEquals($expected, $result);
 	}
 
@@ -410,11 +457,11 @@ class CookieComponentTest extends CakeTestCase {
 		$this->assertNull($data);
 
 		$_COOKIE['CakeTestCookie'] = array(
-				'Encrytped_array' => $this->__encrypt(array('name' => 'CakePHP', 'version' => '1.2.0.x', 'tag' => 'CakePHP Rocks!')),
+				'Encrytped_array' => $this->_encrypt(array('name' => 'CakePHP', 'version' => '1.2.0.x', 'tag' => 'CakePHP Rocks!')),
 				'Encrytped_multi_cookies' => array(
-						'name' => $this->__encrypt('CakePHP'),
-						'version' => $this->__encrypt('1.2.0.x'),
-						'tag' => $this->__encrypt('CakePHP Rocks!')),
+						'name' => $this->_encrypt('CakePHP'),
+						'version' => $this->_encrypt('1.2.0.x'),
+						'tag' => $this->_encrypt('CakePHP Rocks!')),
 				'Plain_array' => '{"name":"CakePHP","version":"1.2.0.x","tag":"CakePHP Rocks!"}',
 				'Plain_multi_cookies' => array(
 						'name' => 'CakePHP',
@@ -465,11 +512,11 @@ class CookieComponentTest extends CakeTestCase {
 		$this->assertEquals($expected, $data);
 
 		$_COOKIE['CakeTestCookie'] = array(
-				'Encrytped_array' => $this->__encrypt(array('name' => 'CakePHP', 'version' => '1.2.0.x', 'tag' => 'CakePHP Rocks!')),
+				'Encrytped_array' => $this->_encrypt(array('name' => 'CakePHP', 'version' => '1.2.0.x', 'tag' => 'CakePHP Rocks!')),
 				'Encrytped_multi_cookies' => array(
-						'name' => $this->__encrypt('CakePHP'),
-						'version' => $this->__encrypt('1.2.0.x'),
-						'tag' => $this->__encrypt('CakePHP Rocks!')),
+						'name' => $this->_encrypt('CakePHP'),
+						'version' => $this->_encrypt('1.2.0.x'),
+						'tag' => $this->_encrypt('CakePHP Rocks!')),
 				'Plain_array' => '{"name":"CakePHP","version":"1.2.0.x","tag":"CakePHP Rocks!"}',
 				'Plain_multi_cookies' => array(
 						'name' => 'CakePHP',
@@ -514,14 +561,14 @@ class CookieComponentTest extends CakeTestCase {
  */
 	public function testReadEmpty() {
 		$_COOKIE['CakeTestCookie'] = array(
-		  'JSON' => '{"name":"value"}',
-		  'Empty' => '',
-		  'String' => '{"somewhat:"broken"}'
+			'JSON' => '{"name":"value"}',
+			'Empty' => '',
+			'String' => '{"somewhat:"broken"}'
 		);
-		$this->assertEqual(array('name' => 'value'), $this->Cookie->read('JSON'));
-		$this->assertEqual('value', $this->Cookie->read('JSON.name'));
-		$this->assertEqual('', $this->Cookie->read('Empty'));
-		$this->assertEqual('{"somewhat:"broken"}', $this->Cookie->read('String'));
+		$this->assertEquals(array('name' => 'value'), $this->Cookie->read('JSON'));
+		$this->assertEquals('value', $this->Cookie->read('JSON.name'));
+		$this->assertEquals('', $this->Cookie->read('Empty'));
+		$this->assertEquals('{"somewhat:"broken"}', $this->Cookie->read('String'));
 	}
 
 /**
@@ -534,6 +581,60 @@ class CookieComponentTest extends CakeTestCase {
 		$_COOKIE['CakeTestCookie'] = 'kaboom';
 
 		$this->assertNull($this->Cookie->read('value'));
+	}
+
+/**
+ * testCheck method
+ *
+ * @return void
+ */
+	public function testCheck() {
+		$this->Cookie->write('CookieComponentTestCase', 'value');
+		$this->assertTrue($this->Cookie->check('CookieComponentTestCase'));
+
+		$this->assertFalse($this->Cookie->check('NotExistingCookieComponentTestCase'));
+	}
+
+/**
+ * testCheckingSavedEmpty method
+ *
+ * @return void
+ */
+	public function testCheckingSavedEmpty() {
+		$this->Cookie->write('CookieComponentTestCase', 0);
+		$this->assertTrue($this->Cookie->check('CookieComponentTestCase'));
+
+		$this->Cookie->write('CookieComponentTestCase', '0');
+		$this->assertTrue($this->Cookie->check('CookieComponentTestCase'));
+
+		$this->Cookie->write('CookieComponentTestCase', false);
+		$this->assertTrue($this->Cookie->check('CookieComponentTestCase'));
+
+		$this->Cookie->write('CookieComponentTestCase', null);
+		$this->assertFalse($this->Cookie->check('CookieComponentTestCase'));
+	}
+
+/**
+ * testCheckKeyWithSpaces method
+ *
+ * @return void
+ */
+	public function testCheckKeyWithSpaces() {
+		$this->Cookie->write('CookieComponent Test', "test");
+		$this->assertTrue($this->Cookie->check('CookieComponent Test'));
+		$this->Cookie->delete('CookieComponent Test');
+
+		$this->Cookie->write('CookieComponent Test.Test Case', "test");
+		$this->assertTrue($this->Cookie->check('CookieComponent Test.Test Case'));
+	}
+
+/**
+ * testCheckEmpty
+ *
+ * @return void
+ */
+	public function testCheckEmpty() {
+		$this->assertFalse($this->Cookie->check());
 	}
 
 /**
@@ -589,10 +690,10 @@ class CookieComponentTest extends CakeTestCase {
 /**
  * encrypt method
  *
- * @param mixed $value
+ * @param array|string $value
  * @return string
  */
-	protected function __encrypt($value) {
+	protected function _encrypt($value) {
 		if (is_array($value)) {
 			$value = $this->_implode($value);
 		}

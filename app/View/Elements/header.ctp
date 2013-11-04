@@ -2,22 +2,25 @@
 $id = !empty($id) ? $id : 'headerNavFloManagr'; 
 $showEditMode = !empty($showEditMode) ? true : false;
 $showContext = !empty($showContext) ? true : false; ?>
+    
 <div class="navbar navbar-inverse navbar-fixed-bottom floManagrNav" id="<?php echo $id; ?>">
     <div class="container">
-        <a class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </a>
-        <ul class="nav">
-        	<li class="dropdown">
-        		<a class="brand dropdown-toggle" data-toggle="dropdown" href="#">buildrr<b class="caret"></b></a>
-        		<?php echo !empty($showContext) ? $this->Element('context_menu', array('before' => __('<li>%s</li><li>%s</li><li class="divider"></li>', $this->Html->link('Dashboard', '/admin/', array('title' => 'Admin Dashboard')), $this->Html->link('View Site', '/')))) : null; ?>   
-        	</li>
-        </ul>
+    	<div class="navbar-header pull-left">
+	        <a class="btn btn-navbar navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	        </a>
+	        <ul class="nav">
+	        	<li class="dropdown">
+	        		<a class="navbar-brand brand dropdown-toggle" data-toggle="dropdown" href="#">buildrr<b class="caret"></b></a>
+	        		<?php echo !empty($showContext) ? $this->Element('context_menu', array('before' => __('<li>%s</li><li>%s</li><li class="divider"></li>', $this->Html->link('Dashboard', '/admin/', array('title' => 'Admin Dashboard')), $this->Html->link('View Site', '/')))) : null; ?>   
+	        	</li>
+	        </ul>
+		</div>
         
-        <div class="nav-collapse collapse">
-            <ul class="nav">
+        <div class="collapse nav-collapse navbar-collapse">
+            <ul class="nav navbar-nav">
                 <li class="nav-mode"><?php echo $this->Html->link('Content', '/admin/#tagPages+tagMedia+tagDiscussion+tagElements', array('title' => 'Pages, Modules, Media, Categories, Tags, Enumerations', 'onclick' => 'window.location.replace(this.href);window.location.reload(true)')); // takes extra js, because of the hash tags ?></li>
                 <li class="nav-mode"><?php echo $this->Html->link('Contacts', '/admin/contacts/contacts/dashboard', array('title' => 'Leads, Opportunities')); ?></li>
 				<?php if (in_array('Transactions', CakePlugin::loaded())) { ?><li class="nav-mode"><?php echo $this->Html->link('Ecommerce', array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('title' => 'Catalogs, Orders', 'id' => 'navProducts')); ?></li><?php } ?>
@@ -28,15 +31,15 @@ $showContext = !empty($showContext) ? true : false; ?>
                 <li class="edit-mode"><?php $viewFile = !empty($_view) && $_view != $this->request->action ? $_view : 0; echo $this->Html->link(__('Html Editor (Advanced Users Only)'), array('admin' => 1, 'plugin' => 'webpages', 'controller' => 'file', 'action' => 'edit', $this->request->plugin, $this->request->controller, $this->request->action, implode('/', $this->request->params['pass']), 'view' => $viewFile)); ?></li>
   			</ul>
             
-            <ul class="nav pull-right">
+            <ul class="nav navbar-nav pull-right">
                 <li><a href="/users/users/my"><?php echo $this->Session->read('Auth.User.username'); ?></a></li>
                 <li><a href="/users/users/logout" >logout</a></li>
-                <li class="span1 last">
-                    <label class="toggle well header-toggle">
+                <li class="span1 last make-switch switch-mini">
+                    <!-- <label class="toggle header-toggle"> -->
                     <input type="checkbox" id="toggleMode">
-                    <p><span><i class="icon-off" title="Navigation"></i></span><span><i class="icon-eye-open" title="Design"></i></span></p>
-                    <a class="btn btn-mini slide-button"></a>
-                    </label>
+                    <!-- <p><span><i class="icon-off" title="Navigation"></i></span><span><i class="icon-eye-open" title="Design"></i></span></p>
+                    <a class="slide-button"></a> -->
+                    <!-- </label> -->
                 </li>
             </ul>
         </div>
@@ -63,6 +66,7 @@ $(function() {
     }
 });
 </script>
+<?php /*
 <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
 <style type="text/css" media="screen, projection">
   @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
@@ -78,4 +82,4 @@ $(function() {
       tabPosition: "Right"
     });
   }
-</script>
+</script> */

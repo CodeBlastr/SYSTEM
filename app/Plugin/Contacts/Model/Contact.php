@@ -7,7 +7,7 @@
 
 App::uses('ContactsAppModel', 'Contacts.Model');
 
-class _Contact extends ContactsAppModel {
+class AppContact extends ContactsAppModel {
 
 /**
  * Name
@@ -234,7 +234,7 @@ class _Contact extends ContactsAppModel {
  * 
  * @param bool $created
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		$this->notifyAssignee();
 		return parent::afterSave($created);
 	}
@@ -769,6 +769,6 @@ class _Contact extends ContactsAppModel {
 }
 
 if (!isset($refuseInit)) {
-	class Contact extends _Contact {}
+	class Contact extends AppContact {}
 }
 
