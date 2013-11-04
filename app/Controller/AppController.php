@@ -932,7 +932,7 @@ class AppController extends Controller {
 		if (defined('__SYSTEM_SMTP')) {
 			extract(unserialize(__SYSTEM_SMTP));
 			$smtp = base64_decode($smtp);
-			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
+			$smtp = Security::cipher($smtp, Configure::read('Security.salt'));
 			if (parse_ini_string($smtp)) {
 				if (isset($toEmail['to']) && is_array($toEmail))
 					$this->SwiftMailer->to = $toEmail['to'];
@@ -944,10 +944,10 @@ class AppController extends Controller {
 					$this->SwiftMailer->bcc = $toEmail['bcc'];
 				if (isset($toEmail['replyTo']) && is_array($toEmail))
 					$this->SwiftMailer->replyTo = $toEmail['replyTo'];
-				$this->SwiftMailer->template = $template;
-				$this->SwiftMailer->attachments = $attachment;
-				$this->SwiftMailer->layout = 'email';
-				$this->SwiftMailer->sendAs = 'html';
+					$this->SwiftMailer->template = $template;
+					$this->SwiftMailer->attachments = $attachment;
+					$this->SwiftMailer->layout = 'email';
+					$this->SwiftMailer->sendAs = 'html';
 				if ($message) {
 					$this->SwiftMailer->content = $message;
 					if (is_array($message) && isset($message['html'])) {
