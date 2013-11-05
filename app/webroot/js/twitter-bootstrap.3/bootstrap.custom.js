@@ -202,3 +202,28 @@ $(function() {
 		return false;
 	});	
 });
+
+// hmm.. only place I see this used is on the privileges page
+
+function applyCheckboxToggles () {
+    $('.checkboxToggleDiv').each(function () {
+        var c = $(this).children('input[type=checkbox]').first();
+        c.wrap('<label class="toggle well header-toggle" style="width:70px;" />');
+        c.after('<p><span class="btn-inverse disabled active">no</span><span class="btn-success disabled active">yes</span></p><a class="btn btn-mini slide-button"></a>');
+        c.change(function(e){
+        	toggleMode($(e.target));
+        });
+    	
+    	toggleMode(c);
+    	
+    });
+    
+    $('.checkboxToggle').each(function () {
+		var yes = ( $(this).data('yes') === undefined ) ? 'yes' : $(this).data('yes');
+		var no = ( $(this).data('no') === undefined ) ? 'no' : $(this).data('no');
+		var width = ( $(this).data('width') === undefined ) ? '70' : $(this).data('width');
+        $(this).wrap('<label class="toggle well header-toggle" style="width:'+width+'px;" />');
+        $(this).after('<p><span>'+no+'</span><span>'+yes+'</span></p><a class="btn btn-mini slide-button"></a>');
+    });
+}
+applyCheckboxToggles();
