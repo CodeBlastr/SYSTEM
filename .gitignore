@@ -11,7 +11,7 @@
 /app/tmp/cache/cake*
 /app/tmp/testscake*
 /app/tmp/tests/cake*
-/lib/Cake/Console/Templates/skel/tmp/*
+/lib/Cake/Console/Templates/skel/tmp/cache/persistent/myapp*
 \#*\#
 /plugins
 /sites/**/Config/database.php

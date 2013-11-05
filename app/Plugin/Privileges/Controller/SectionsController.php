@@ -130,7 +130,7 @@ class SectionsController extends PrivilegesAppController {
 		$this->layout = null;
 		$this->Section->Requestor->bindModel(array('belongsTo' => array('UserRole' => array('className' => 'Users.UserRole', 'foreignKey' => 'foreign_key'))));
 		$groups = $this->Section->Requestor->find('all', array('conditions' => array('Requestor.model' => 'UserRole'), 'contain' => array('UserRole' => array('fields' => array('name', 'id')))));
-		
+
 		$this->set(compact('name', 'groups'));
 		$this->set('data', $params['sdata']);
 		$this->set('userFields', $params['userFields']);
