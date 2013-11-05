@@ -80,6 +80,8 @@ class AppController extends Controller {
  */
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
+		//Set the adminbar view var so it can be overridden later
+		$this->set('adminbar', true);
 		$this->_getComponents();
 		$this->_getHelpers();
 		$this->_getUses();
@@ -814,7 +816,7 @@ class AppController extends Controller {
 		if (in_array('Facebook', CakePlugin::loaded())) {
 			$this->helpers[] = 'Facebook.Facebook';
 		}
-		// please leave a comment about why this would have to be here
+		// Used for media display, widely used enough to load in the appcontroller
 		if (in_array('Media', CakePlugin::loaded())) {
 			$this->helpers[] = 'Media.Media';
 		}
