@@ -577,6 +577,7 @@ class AppController extends Controller {
  * Used to show admin layout for admin pages & userRole views if they exist
  */
 	public function _siteTemplate() {
+		//debug($this->request->params);exit;
 		if (!$this->request->ext == 'csv' && !$this->request->is('ajax') && !empty($this->request->params['prefix']) && $this->request->params['prefix'] == 'admin' && strpos($this->request->params['action'], 'admin_') === 0) {
 			if ($this->request->params['prefix'] == CakeSession::read('Auth.User.view_prefix')) {
 				// this if checks to see if the user role has a specific view file
@@ -598,8 +599,9 @@ class AppController extends Controller {
 			}
 			foreach ($paths as $path) {
 				if (file_exists($path . CakeSession::read('Auth.User.view_prefix') . DS . $this->viewPath . DS . $this->request->params['action'] . '.ctp')) {
-					$this->viewPath = CakeSession::read('Auth.User.view_prefix') . DS . ucfirst($this->request->params['controller']);
-				} 
+					$this->viewPath = CakeSession::read('Auth.User.view_prefix') . DS . Inflector::camelize($this->request->params['controller']);
+					//debug($this->request->params);exit;
+				}
 			}
 			$this->layout = 'default';
 		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax') && !$this->request->ext == 'csv') {
