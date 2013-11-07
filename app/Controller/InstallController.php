@@ -304,14 +304,14 @@ class InstallController extends Controller {
                         if ($this->_installPluginSchema('Users', 'Users')) {
                             $users = true;
                         }
+                        if ($this->_installPluginSchema('Galleries', 'Galleries')) {
+                            $galleries = true;
+                        }
                         if ($this->_installPluginSchema('Webpages', 'Webpages')) {
                             $webpages = true;
                         }
                         if ($this->_installPluginSchema('Contacts', 'Contacts')) {
                             $contacts = true;
-                        }
-                        if ($this->_installPluginSchema('Galleries', 'Galleries')) {
-                            $galleries = true;
                         }
                         // extra plugins to install for this site
                         if (!empty($this->installPlugins)) {
@@ -353,7 +353,7 @@ class InstallController extends Controller {
                     } else {
                     	debug($this->lastTableName);
 						debug($this->progress);
-						break;
+						exit;
                     }
                 } catch (PDOException $e) {
                     $error = $e->getMessage();
@@ -544,8 +544,6 @@ class InstallController extends Controller {
             $this->_run($create, 'create', $Schema);
         } else {
             $this->message[] = __('( schema  )');
-            debug($this->message);
-            break;
             return false;
         }
     }
