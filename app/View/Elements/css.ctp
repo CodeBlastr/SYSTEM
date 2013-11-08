@@ -15,3 +15,5 @@ if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
 		$i++;
 	} 
 }
+
+echo $this->fetch('css');

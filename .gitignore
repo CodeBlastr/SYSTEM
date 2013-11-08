@@ -11,6 +11,7 @@
 /app/tmp/cache/cake*
 /app/tmp/testscake*
 /app/tmp/tests/cake*
+/lib/Cake/Console/Templates/skel/tmp/cache/persistent/myapp*
 \#*\#
 /plugins
 /sites/**/Config/database.php
@@ -39,3 +40,4 @@ version
 /favicon.gif
 /favicon.ico
 /nbproject/*
+/app/webroot/fonts/google

@@ -213,7 +213,7 @@ class SwiftMailerComponent extends Component {
 		if (defined('__SYSTEM_SMTP')) {
 			extract(unserialize(__SYSTEM_SMTP));
 			$smtp = base64_decode($smtp);
-			$smtp = Security::cipher($smtp, Configure::read('Security.iniSalt'));
+			$smtp = Security::cipher($smtp, Configure::read('Security.salt'));
 			if (@$smtp = parse_ini_string($smtp)) {
 				$this->smtpUsername = !empty($smtp['smtpUsername']) ? $smtp['smtpUsername'] : $this->smtpUsername;
 				$this->smtpPassword = !empty($smtp['smtpPassword']) ? $smtp['smtpPassword'] : $this->smtpPassword;

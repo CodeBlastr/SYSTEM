@@ -51,7 +51,7 @@ class AclExtraBehavior extends ModelBehavior {
 	 * @return void
 	 * @access public
 	 */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
 		parent::afterSave($Model, $created);
 
 		if ( !empty($Model->data['RecordLevelAccess']['User']) ) {
@@ -133,7 +133,7 @@ class AclExtraBehavior extends ModelBehavior {
 	 * @param type $results
 	 * @param type $primary
 	 */
-	public function afterFind(Model $Model, $results, $primary) {
+	public function afterFind(Model $Model, $results, $primary = false) {
 		parent::afterFind($Model, $results, $primary);
 
 		if ( !empty($results[0][$Model->name]['user_roles']) ) {
