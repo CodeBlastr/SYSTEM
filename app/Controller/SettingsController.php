@@ -167,8 +167,7 @@ class SettingsController extends AppController {
 				$this->Setting->__sendMail($to, $subject, $message);
 				$this->Session->setFlash(__('Message sent'));
 			} catch (Exception $e) {
-				debug($e->getMessage());
-				break;
+				$this->Session->setFlash($e->getMessage());
 			}
 		}
 		$this->set('title_for_layout', 'Test Email Settings');
