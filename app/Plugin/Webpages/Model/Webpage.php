@@ -165,12 +165,12 @@ class Webpage extends WebpagesAppModel {
  * @return boolean
  * @access public
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
         if ($this->data['Webpage']['type'] == 'template') {
             // template settings are special
             $this->_syncTemplateSettings($this->id, $this->data);
         }
-		return parent::afterSave($created);
+		return parent::afterSave($created, $options);
 	}
 
 /**
@@ -179,8 +179,12 @@ class Webpage extends WebpagesAppModel {
  */
  	public function afterFind($results, $primary = false) {
 		$results = $this->_templateContentResults($results);
-		$results = parent::afterFind($results, $primary);
-		return $results;
+		for ($i = 0; $i < count($results); ++$i) {
+			if (!empty($results[$i]['Child'][0])) {
+				$results[$i]['Webpage']['type'] = 'section';
+			}
+		}
+		return parent::afterFind($results, $primary);
 	}
 	
 /**
@@ -1197,7 +1201,7 @@ class Webpage extends WebpagesAppModel {
 			if($assoc) {
 				$associated = $Model->listAssociatedModels();
 				foreach($associated as $assocModel) {
-					$this->tokens[$Model->name][$assocModel] = array_keys($Model->$assocModel->schema());
+					$this->tokens[$assocModel] = array_keys($Model->$assocModel->schema());
 				}
 			}
 		}

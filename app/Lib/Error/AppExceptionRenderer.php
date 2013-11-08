@@ -16,7 +16,6 @@ class AppExceptionRenderer extends ExceptionRenderer {
 				debug($exception->getMessage());
 			}
 		}
-		
 		App::uses('AppErrorController', 'Controller');
 		if (!$request = Router::getRequest(false)) {
 			$request = new CakeRequest();
@@ -24,14 +23,17 @@ class AppExceptionRenderer extends ExceptionRenderer {
 		$response = new CakeResponse(array('charset' => Configure::read('App.encoding')));
 		
 		$Controller = new AppErrorController($request, $response);
-		try {
-			$Controller->handleAlias($request, $exception); // checks for alias match
-		} catch (Exception $e) {
+		//Needed to add this check to allow errors from testing to be displayed
+		if(!defined('APP_TEST_CASES')) {
 			try {
-				$Controller->handleNotFound($request, $response, $e, $exception);
+				$Controller->handleAlias($request, $exception); // checks for alias match
 			} catch (Exception $e) {
-				$Controller = new Controller($request, $response);
-				$Controller->viewPath = 'Errors';
+				try {
+					$Controller->handleNotFound($request, $response, $e, $exception);
+				} catch (Exception $e) {
+					$Controller = new Controller($request, $response);
+					$Controller->viewPath = 'Errors';
+				}
 			}
 		}
 		return $Controller;

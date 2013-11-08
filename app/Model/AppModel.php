@@ -46,6 +46,15 @@ class AppModel extends Model {
  * @var array
  */
   	public $theme = array();
+
+/**
+ * Notifications
+ * 
+ * Used to supress notifications in the __sendMail() method by setting to false.
+ *
+ * @var array
+ */
+  	public $notifications = true;
 	
 /**
  * Permission Data
@@ -60,7 +69,7 @@ class AppModel extends Model {
 	public function __construct($id = false, $table = null, $ds = null) {
 		$this->actsAs[] = 'Containable'; // moved here because it was being triggered too late 
 		// Let's have a "global" variable for userId available to Models too
-		$this->userId = ( class_exists('CakeSession') ) ? CakeSession::read('Auth.User.id') : null;
+		$this->userId = (class_exists('CakeSession')) ? CakeSession::read('Auth.User.id') : null;
 		parent::__construct($id, $table, $ds);
 	}
 
@@ -207,50 +216,6 @@ class AppModel extends Model {
 		return $results;
 	}
 
-/**
- * List Plugins method
- * 
- * Deprecated (but not removed)
- * @todo remove all references and delete this function
- */
-	public function listPlugins($remove = array(), $merge = true) {
-	    $defaultRemove = array('Acl Extras', 'Api Generator', 'Recaptcha', 'Favorites.needs.upgrade', 'Forum.needs.upgrade');
-	    $remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
-	    $plugins = CakePlugin::loaded();
-	    foreach ($plugins as $plugin) {
-			$return[$plugin] = Inflector::humanize(Inflector::underscore($plugin));
-	    }
-	    return array_diff($return, $remove);
-	}
-
-
-/**
- * List Plugins method
- * 
- * Deprecated (but not removed)
- * @todo remove all references and delete this function
- */
-	public function listModels($pluginPath = null, $remove = array(), $merge = true) {
-	    // defaultRemove originally done for this page : /admin/categories/categories/add/
-	    // if you add items for removal from this list make sure that they should also be removed from there
-	    // or customize the categories_controller so that listModels() function to not merge
-	    $defaultRemove = array('Affiliated', 'Affiliates App Model', 'Alias', 'App Model', 'Authorize', 'Blogs App Model', 'Catalog Items Catalog Category', 'Catalogs App Model', 'Categories App Model', 'Categorized Option', 'Category', 'Categorized', 'Category Option', 'Catalog Item Price', 'Comments App Model', 'Condition', 'Contacts App Model', 'Contacts Contact', 'Coupons App Model', 'Credits App Model', 'Enumeration', 'Estimates App Model', 'Events App Model', 'Estimated', 'Form', 'Form Fieldset', 'Form Input', 'Forms App Model', 'Forum', 'Forum Category', 'Galleries App Model', 'Poll', 'Poll Option', 'Poll Vote', 'Post', 'Setting', 'Topic', 'Invite', 'Invite App Model', 'Invoices Catalog Item', 'Invoices App Model', 'Invoices Timesheet', 'Maps App Model', 'Media App Model', 'Members App Model', 'Menus App Model', 'Messages App Model', 'News App Model', 'Notifications App Model', 'Notification', 'Notification Template', 'Orders App Model', 'Favorite', 'Privilege', 'Privileges App Model', 'Project Issue', 'Projects.watcher', 'Projects App Model', 'Projects Member', 'Ratings App Model', 'Records App Model', 'Reports App Model', 'Requestor', 'Section', 'Search Index', 'Searchable App Model', 'Sitemaps App Model', 'Tags App Model', 'Tasks App Model', 'Tickets App Model', 'Ticket Departments Assignee', 'Timesheets Timesheet Time', 'Timesheets App Model', 'Used', 'User Role', 'Users App Model', 'Users User Group', 'Utils App Model', 'Webpages App Model', 'Wiki Content Version', 'Wikis App Model', 'Workflows App Model', 'Workflow', 'Workflow Item', 'Workflow Event', 'Workflow Item Event', 'Zencoder');
-    	$remove = !empty($merge) ? array_merge($defaultRemove, $remove) : $remove;
-
-	    $plugins = $this->listPlugins();
-
-	    foreach ($plugins as $plugin) {
-	    	// the else here was App::objects($pluginPath . '.Model')  // not totally sure the changing to just plugin, won't break something
-			$models = !empty($models) ? array_merge($models, App::objects($plugin . '.Model')) : App::objects($plugin . '.Model');
-	    }
-    	sort($models);
-	    foreach ($models as $model) {
-			$return[$model] = Inflector::humanize(Inflector::underscore($model));
-	    }
-
-    	return array_diff($return, $remove);
-	}
-
 
 /**
  * Don't know what this is for, I'd like to see a comment placed. OLD
@@ -328,6 +293,7 @@ class AppModel extends Model {
 
 /**
  * Make sending email available to models (as well as controllers)
+ * Subject and message have duel meanigns if it starts with webpages. we are using the db to genetrate the message were the subject is the recored we are using
  *
  * @param string		String - address to send email to
  * @param sring			$subject: subject of email.
@@ -338,9 +304,27 @@ class AppModel extends Model {
  * @return bool
  */
 	public function __sendMail($toEmail = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = null) {
-		App::uses('AppController', 'Controller');
-		$Controller = new AppController;
-		return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
+		if ($this->notifications !== false) {
+			App::uses('AppController', 'Controller');
+			$Controller = new AppController;
+			
+			if(strpos($subject, 'Webpages.') === 0){
+				$name = str_replace('Webpages.', '', $subject);
+				App::uses('Webpage', 'Webpages.Model');
+				$Webpage = new Webpage();
+				$webpage = $Webpage->findByName($name);
+				if(!empty($webpage)){
+					$message = $Webpage->replaceTokens($webpage['Webpage']['content'], $message);	
+						
+					$subject = $webpage['Webpage']['title'];
+				} else {
+					//Should we auto gen instead of throwing exception????
+					throw new Exception(__('Please create a email template named %s', $name));
+				}			
+			} 		
+	
+			return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
+		}
 	}
 	
 	

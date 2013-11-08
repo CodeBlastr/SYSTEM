@@ -7,7 +7,7 @@
 
 App::uses('ContactsAppModel', 'Contacts.Model');
 
-class _Contact extends ContactsAppModel {
+class AppContact extends ContactsAppModel {
 
 /**
  * Name
@@ -234,7 +234,7 @@ class _Contact extends ContactsAppModel {
  * 
  * @param bool $created
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		$this->notifyAssignee();
 		return parent::afterSave($created);
 	}
@@ -484,21 +484,6 @@ class _Contact extends ContactsAppModel {
         return array_merge(array('hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold'), $ratings);
     }
 
-/**
- * A temporary function to fix db values
- * 10/30/2012 Rk
- */
- 	public function fixTypes() { 
-		$result = $this->query("SELECT COUNT(*) AS `count` FROM `contacts` AS `Contact` WHERE `Contact`.`contact_type` LIKE BINARY 'Lead';");
-		if ($result[0][0]['count']) {
-			$this->query("UPDATE `contacts` SET `contacts`.`contact_type` = 'lead' WHERE `contacts`.`contact_type` = 'Lead';");
-			$this->query("UPDATE `contacts` SET `contacts`.`contact_type` = 'customer' WHERE `contacts`.`contact_type` = 'Customer';");
-			$this->query("UPDATE `contacts` SET `contacts`.`contact_rating` = 'active' WHERE `contacts`.`contact_rating` = 'Active';");
-			$this->query("UPDATE `contacts` SET `contacts`.`contact_rating` = 'hot' WHERE `contacts`.`contact_rating` = 'Hot';");
-			$this->query("UPDATE `contacts` SET `contacts`.`contact_rating` = 'warm' WHERE `contacts`.`contact_rating` = 'Warm';");
-			$this->query("UPDATE `contacts` SET `contacts`.`contact_rating` = 'cold' WHERE `contacts`.`contact_rating` = 'Cold';");
-		}
-	}
 	
 /**
  * Get leads
@@ -784,6 +769,6 @@ class _Contact extends ContactsAppModel {
 }
 
 if (!isset($refuseInit)) {
-	class Contact extends _Contact {}
+	class Contact extends AppContact {}
 }
 
