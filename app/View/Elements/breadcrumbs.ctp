@@ -5,7 +5,7 @@ if (isset($context_crumbs) && !empty($context_crumbs['crumbs'])) {
 	for ($i = 0; $i < $count; $i++) {
 		echo '<li>';
 		echo $context_crumbs['crumbs'][$i];
-		echo $i+1 < $count ? '<span class="divider">/</span>' : null;
+		//echo $i+1 < $count ? '<span class="divider">/</span>' : null;
 		echo '</li>';
 	}
 	echo '</ul>';

@@ -1,7 +1,7 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
 
-class _User extends UsersAppModel {
+class AppUser extends UsersAppModel {
 
 	public $name = 'User';
 	
@@ -192,7 +192,7 @@ class _User extends UsersAppModel {
  * Matching password test.
  * @return bool
  */
-	protected function _comparePassword() {
+	public function _comparePassword() {
 		// fyi, confirm password is hashed in the beforeValidate method
 		if (isset($this->data['User']['confirm_password']) &&
 				($this->data['User']['password'] == $this->data['User']['confirm_password'])) {
@@ -211,7 +211,7 @@ class _User extends UsersAppModel {
  * Password strength test
  * @return bool
  */
-    protected function _strongPassword() {
+    public function _strongPassword() {
         return preg_match('/^((?=.*[^a-zA-Z])(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,})$/', $this->data['User']['password']);
     }
     
@@ -221,7 +221,7 @@ class _User extends UsersAppModel {
  * Confirm old password before allowing a password change
  * @return bool
  */
-    protected function _newPassword() {
+    public function _newPassword() {
 		if (!empty($this->data[$this->alias]['current_password'])) {
 			$user = $this->find('count', array('callbacks' => false, 'conditions' => array('User.id' => $this->_getUserId($this->data['User']), 'User.password' => AuthComponent::password($this->data[$this->alias]['current_password']))));
 			return $user === 1 ? true : false;
@@ -235,7 +235,7 @@ class _User extends UsersAppModel {
  * Check if email is required
  * @return bool
  */
-	protected function _emailRequired() {
+	public function _emailRequired() {
 		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION') && empty($this->data['User']['email'])) {
 			return false;
 		} else {
@@ -248,7 +248,7 @@ class _User extends UsersAppModel {
  * 
  * For relating the user to the correct parent user role in the aros table.
  */
-	function parentNode() {
+	public function parentNode() {
    		if (!$this->id && empty($this->data)) {
 	        return null;
 	    }
@@ -288,7 +288,7 @@ class _User extends UsersAppModel {
  * 
  * @param bool $created
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		// add the user to a group if the data for the group exists (can't use saveAll() because of extra fields)
 		if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
 			$this->UserGroup->UsersUserGroup->add($this->data);
@@ -400,6 +400,7 @@ class _User extends UsersAppModel {
 				$data['Contact']['id'] = $this->Contact->id;
 			}
 		}
+		$this->_cleanAddData($data);
 		return $data;
 	}
 
@@ -512,14 +513,14 @@ class _User extends UsersAppModel {
  * Set the default redirect variables, using the settings table constant.
  */
 	public function loginRedirectUrl($redirect) {
-		# this handles redirects where a url was called that redirected you to the login page
+		// this handles redirects where a url was called that redirected you to the login page
 		
 		if ($redirect == '/') {
-			# default login location
+			// default login location
 			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
 
 			if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
-				# this setting name is deprecated, will be deleted (got rid of the DEFAULT in the setting name.)
+				// this setting name is deprecated, will be deleted (got rid of the DEFAULT in the setting name.)
 				if ($urlParams = @unserialize(__APP_DEFAULT_LOGIN_REDIRECT_URL)) {
 					$redirect = $urlParams;
 				}
@@ -529,26 +530,23 @@ class _User extends UsersAppModel {
 			if (defined('__APP_LOGIN_REDIRECT_URL')) {
 				$urlParams = @unserialize(__APP_LOGIN_REDIRECT_URL);
 				if (!empty($urlParams) && is_numeric(key($urlParams)) && $this->Session->read('Auth.User.user_role_id')) {
-					# if the keys are numbers we're looking for a user role
+					// if the keys are numbers we're looking for a user role
 					if (!empty($urlParams[$this->Session->read('Auth.User.user_role_id')])) {
-						# if the user role is the index key then we have a special login redirect just for them
-						#debug($urlParams[$this->Session->read('Auth.User.user_role_id')]); break;
+						// if the user role is the index key then we have a special login redirect just for them
 						return $urlParams[$this->Session->read('Auth.User.user_role_id')];
 					} else {
-						# need a return here, to stop processing of the $redirect var
-						#debug($redirect); break;
+						// need a return here, to stop processing of the $redirect var
 						return $redirect;
 					}
 				}
 				if (!empty($urlParams) && is_string(key($urlParams))) {
-					# if the keys are strings we've just formatted the settings by plugin, controller, action, instead of a text url
+					// if the keys are strings we've just formatted the settings by plugin, controller, action, instead of a text url
 					$redirect = $urlParams;
 				}
-				# its not an array because it couldn't be unserialized
+				// its not an array because it couldn't be unserialized
 				$redirect = __APP_LOGIN_REDIRECT_URL;
 			}
 		}
-		#debug($redirect); break;
 		return $redirect;
 	}
 
@@ -982,5 +980,5 @@ Thank you for registering with us and welcome to the community.";
 }
 
 if (!isset($refuseInit)) {
-	class User extends _User {}
+	class User extends AppUser {}
 }
