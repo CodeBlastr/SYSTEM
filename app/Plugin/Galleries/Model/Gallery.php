@@ -104,7 +104,7 @@ class Gallery extends GalleriesAppModel {
  *  
  * @params bool $created
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		$gallery = $this->find('first', array('Gallery.id' => $this->id));
 		if (!empty($gallery) && empty($gallery['Gallery']['model']) && empty($gallery['Gallery']['foreign_key'])) {
 			$gallery['Gallery']['model'] = 'Gallery';
@@ -115,7 +115,7 @@ class Gallery extends GalleriesAppModel {
 				return false;
 			}
 		}
-		parent::afterSave($created);
+		parent::afterSave($created, $options);
 	}
 
 

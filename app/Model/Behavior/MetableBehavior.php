@@ -38,7 +38,7 @@ class MetableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param boolean $created The value of $created will be true if a new record was created (rather than an update).
  */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
         
 		if ( !empty($Model->data[$Model->alias]['Meta']) && is_array($Model->data[$Model->alias]['Meta']) ) {
 			$metadata = $Model->data[$Model->alias]['Meta'];
@@ -80,7 +80,7 @@ class MetableBehavior extends ModelBehavior {
 				");
 			}
 		}
-		parent::afterSave($Model, $created);
+		parent::afterSave($Model, $created, $options);
 	}
     
    

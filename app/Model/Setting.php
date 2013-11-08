@@ -66,7 +66,7 @@ class Setting extends AppModel {
 				),
 				array(
 					'name' => 'ENABLE_PAYMENT_OPTIONS',
-					'description' => 'Defines the options, in order, which will be shown in the dropdown of payment options for the app. ' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'AUTHORIZE = Authorize' . PHP_EOL . 'AUTHORIZEONLY = "Authorize Only"' . PHP_EOL . 'PAYPAL = Paypal' . PHP_EOL . 'CREDIT = Credit' . PHP_EOL . 'BLUEPAY.CC = CREDIT' . PHP_EOL . 'BLUEPAY.ACH = CHECK'
+					'description' => 'Defines the options, in order, which will be shown in the dropdown of payment options for the app. ' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'AUTHORIZE = Authorize' . PHP_EOL . 'AUTHORIZEONLY = "Authorize Only"' . PHP_EOL . 'PAYPAL.ACCOUNT = Paypal' . PHP_EOL . 'CREDIT = Credit' . PHP_EOL . 'BLUEPAY.CC = CREDIT' . PHP_EOL . 'BLUEPAY.ACH = CHECK'
 				),
 				array(
 					'name' => 'AUTHORIZENET_LOGIN_ID',
@@ -578,7 +578,7 @@ class Setting extends AppModel {
 		// so that we can specify all settings which need encryption, and reuse this instead 
 		// of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well.
 		if (!empty($data['Setting']['name']) && $data['Setting']['name'] == 'SMTP' && !parse_ini_string($data['Setting']['name'])) {
-			$data['Setting']['value'] = 'smtp = "' . base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'))) . '"';
+			$data['Setting']['value'] = 'smtp = "' . base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.salt'))) . '"';
 		}
 
 		if (!empty($data['Query']) && $data['Setting']['name'] == 'ZUHA_DB_VERSION') {
