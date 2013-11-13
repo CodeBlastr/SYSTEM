@@ -1,3 +1,52 @@
 label {
 	font-weight: normal;
 }
+
+/* navbar */
+li.switch-mini.has-switch {
+	padding-top: 16px;
+}
+#headerNavFloManagr.navbar .navbar-brand {
+	padding-top: 14px;
+}
+.navbar-inverse .nav .open>a, .nav .open>a:hover, .nav .open>a:focus {
+	background-color: #222222;
+}
+.navbar-inverse .nav .open>a, .nav .open>a:hover, .nav .open>a:focus {
+	background-color: #222222;
+}
+.page-title.navbar {
+	border-color: #ccc;
+	background: rgba(255, 255, 255, .9);
+	box-shadow: 0 0px 21px #CCC;
+}
+
+/* index page */
+.list-group-item:hover {
+	background: #f5f5f5;
+}
+.list-group-item .list-group-item:hover {
+	box-shadow: 0 0 4px #444 inset;
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top,  #ffffff 0%, #f5f5f5 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#f5f5f5)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #ffffff 0%,#f5f5f5 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #ffffff 0%,#f5f5f5 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #ffffff 0%,#f5f5f5 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #ffffff 0%,#f5f5f5 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 ); /* IE6-9 */
+
+}
+.label .glyphicon {
+	margin-top: 0.3em; /* this little tid-bit could be submitted to twitter-bootstrap if we were so motivated */
+}
+.pagination {
+	margin: 0;
+}
+.media, .media-body {
+	overflow: visible; /* /admin/webpages/webpages/index/content with a section having lots of subpages, and is showing a drop down is where this is needed */
+}
+
+.form-inline div {
+	display: inline-block; /* used on the install/client first, make sure the forms look good there if changing */
+}

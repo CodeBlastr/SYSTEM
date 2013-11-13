@@ -132,325 +132,18 @@ class ZuhaFormHelper extends FormHelper {
 			}
 			$name .= '[]';
 			$selectElement .= '
-<script type="text/javascript">
-$(document).ready(function() {
-  $("input[name=\'' . $name . '\'").click(function() {
-    if ( $("input[name=\'' . $name . '\']:checked").length > ' . $attributes['limit'] . ' ) {
-      alert("You may only choose a maximum of ' . $attributes['limit'] . '");
-      $(this).prop("checked", false);
-    }
-  });
-});
-</script>
-';
+				<script type="text/javascript">
+					$(document).ready(function() {
+					  $("input[name=\'' . $name . '\'").click(function() {
+					    if ( $("input[name=\'' . $name . '\']:checked").length > ' . $attributes['limit'] . ' ) {
+					      alert("You may only choose a maximum of ' . $attributes['limit'] . '");
+					      $(this).prop("checked", false);
+					    }
+					  });
+					});
+				</script>';
 		}
 		return $selectElement;
-	}
-
-/**
- * Overwrite the default input() function to make date fields use javascript date
- * pickers by default
- */
-	public function input($fieldName, $options = array()) {
-		$this->setEntity($fieldName);
-		$options = array_merge(array(
-			'before' => null,
-			'between' => null,
-			'after' => null,
-			'format' => null
-		), $this->_inputDefaults, $options);
-		$modelKey = $this->model();
-		$fieldKey = $this->field();
-		if (!isset($options['type'])) {
-			$magicType = true;
-			$options['type'] = 'text';
-			if (isset($options['options'])) {
-				$options['type'] = 'select';
-			} elseif (in_array($fieldKey, array(
-				'psword',
-				'passwd',
-				'password'
-			))) {
-				$options['type'] = 'password';
-			} elseif (isset($options['checked'])) {
-				$options['type'] = 'checkbox';
-			} elseif ($fieldDef = $this->_introspectModel($modelKey, 'fields', $fieldKey)) {
-				$type = $fieldDef['type'];
-				$primaryKey = $this->fieldset[$modelKey]['key'];
-			}
-			if (isset($type)) {
-				$map = array(
-					'string' => 'text',
-					'datetime' => 'datetime',
-					'boolean' => 'checkbox',
-					'timestamp' => 'datetime',
-					'text' => 'textarea',
-					'time' => 'time',
-					'date' => 'date',
-					'float' => 'number',
-					'integer' => 'number'
-				);
-				if (isset($this->map[$type])) {
-					$options['type'] = $this->map[$type];
-				} elseif (isset($map[$type])) {
-					$options['type'] = $map[$type];
-				}
-				if ($fieldKey == $primaryKey) {
-					$options['type'] = 'hidden';
-				}
-				if ($options['type'] === 'number' && $type === 'float' && !isset($options['step'])) {
-					$options['step'] = 'any';
-				}
-			}
-			if (preg_match('/_id$/', $fieldKey) && $options['type'] !== 'hidden') {
-				$options['type'] = 'select';
-			}
-			if ($modelKey === $fieldKey) {
-				$options['type'] = 'select';
-				if (!isset($options['multiple'])) {
-					$options['multiple'] = 'multiple';
-				}
-			}
-		}
-		$types = array(
-			'checkbox',
-			'radio',
-			'select'
-		);
-		if ((!isset($options['options']) && in_array($options['type'], $types)) || (isset($magicType) && $options['type'] == 'text')) {
-			$varName = Inflector::variable(Inflector::pluralize(preg_replace('/_id$/', '', $fieldKey)));
-			$varOptions = $this->_View->getVar($varName);
-			if (is_array($varOptions)) {
-				if ($options['type'] !== 'radio') {
-					$options['type'] = 'select';
-				}
-				$options['options'] = $varOptions;
-			}
-		}
-		$autoLength = (!array_key_exists('maxlength', $options) && isset($fieldDef['length']));
-		if ($autoLength && $options['type'] == 'text') {
-			$options['maxlength'] = $fieldDef['length'];
-		}
-		if ($autoLength && $fieldDef['type'] == 'float') {
-			$options['maxlength'] = array_sum(explode(',', $fieldDef['length'])) + 1;
-		}
-		$divOptions = array();
-		$div = $this->_extractOption('div', $options, true);
-		unset($options['div']);
-		if (!empty($div)) {
-			$divOptions['class'] = 'input';
-			$divOptions = $this->addClass($divOptions, $options['type']);
-			if (is_string($div)) {
-				$divOptions['class'] = $div;
-			} elseif (is_array($div)) {
-				$divOptions = array_merge($divOptions, $div);
-			}
-			if ($this->_introspectModel($modelKey, 'validates', $fieldKey)) {
-				$divOptions = $this->addClass($divOptions, 'required');
-			}
-			if (!isset($divOptions['tag'])) {
-				$divOptions['tag'] = 'div';
-			}
-		}
-		$label = null;
-		if (isset($options['label']) && $options['type'] !== 'radio') {
-			$label = $options['label'];
-			unset($options['label']);
-		}
-		if ($options['type'] === 'radio') {
-			$label = false;
-			if (isset($options['options'])) {
-				$radioOptions = (array)$options['options'];
-				unset($options['options']);
-			}
-		}
-		if ($label !== false) {
-			$label = $this->_inputLabel($fieldName, $label, $options);
-		}
-		$error = $this->_extractOption('error', $options, null);
-		unset($options['error']);
-		$selected = $this->_extractOption('selected', $options, null);
-		unset($options['selected']);
-		if (isset($options['rows']) || isset($options['cols'])) {
-			$options['type'] = 'textarea';
-		}
-		if ($options['type'] === 'datetime' || $options['type'] === 'date' || $options['type'] === 'time' || $options['type'] === 'select' || $options['type'] === 'datetimepicker' || $options['type'] === 'datepicker' || $options['type'] === 'timepicker') {
-			$options += array('empty' => false);
-		}
-		if ($options['type'] === 'datetime' || $options['type'] === 'date' || $options['type'] === 'time' || $options['type'] === 'datetimepicker' || $options['type'] === 'datepicker' || $options['type'] === 'timepicker') {
-			$dateFormat = $this->_extractOption('dateFormat', $options, 'MDY');
-			$timeFormat = $this->_extractOption('timeFormat', $options, 12);
-			unset($options['dateFormat'], $options['timeFormat']);
-		}
-		$type = $options['type'];
-		$out = array_merge(array(
-			'before' => null,
-			'label' => null,
-			'between' => null,
-			'input' => null,
-			'after' => null,
-			'error' => null
-		), array(
-			'before' => $options['before'],
-			'label' => $label,
-			'between' => $options['between'],
-			'after' => $options['after']
-		));
-		$format = null;
-		if (is_array($options['format']) && in_array('input', $options['format'])) {
-			$format = $options['format'];
-		}
-		unset($options['type'], $options['before'], $options['between'], $options['after'], $options['format']);
-		switch ($type) {
-			case 'hidden' :
-				$input = $this->hidden($fieldName, $options);
-				$format = array('input');
-				unset($divOptions);
-				break;
-			case 'checkbox' :
-				$input = $this->checkbox($fieldName, $options);
-				$format = $format ? $format : array(
-					'before',
-					'input',
-					'between',
-					'label',
-					'after',
-					'error'
-				);
-				break;
-			case 'radio' :
-				if (isset($out['between'])) {
-					$options['between'] = $out['between'];
-					$out['between'] = null;
-				}
-				$input = $this->radio($fieldName, $radioOptions, $options);
-				break;
-			case 'file' :
-				$input = $this->file($fieldName, $options);
-				break;
-			case 'select' :
-				$options += array(
-					'options' => array(),
-					'value' => $selected
-				);
-				$list = $options['options'];
-				unset($options['options']);
-				$input = $this->select($fieldName, $list, $options);
-				break;
-			// cakePHP-style date/time inputs
-			case 'time' :
-				$options['value'] = $selected;
-				$options['class'] = !empty($options['class']) ? $options['class'] : '';
-				// zuha specific
-				$input = $this->dateTime($fieldName, null, $timeFormat, $options);
-				// cakephp specific
-				break;
-			case 'date' :
-				$options['value'] = $selected;
-				$options['class'] = !empty($options['class']) ? $options['class'] : '';
-				// zuha specific
-				$input = $this->dateTime($fieldName, $dateFormat, null, $options);
-				// cakephp specific
-				break;
-			case 'datetime' :
-				$options['value'] = $selected;
-				$options['class'] = !empty($options['class']) ? $options['class'] : '';
-				// zuha specific
-				$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options);
-				// original cakephp call
-				break;
-			// javascript popup date/time pickers
-			case 'timepicker' :
-				$options['value'] = $selected;
-				$options['class'] = !empty($options['class']) ? $options['class'] . ' timepicker' : 'timepicker';
-				// zuha specific
-				$type = 'text';
-				// zuha specific
-				debug('NOTE: Probably an error here because I don\'t see a $this->timepicker() function');
-				break;
-				$input = $this->{$type}($fieldName, $options);
-				// zuha specific
-				//$input = $this->dateTime($fieldName, null, $timeFormat, $options); // cakephp
-				// specific
-				break;
-			case 'datepicker' :
-				$options['value'] = $selected;
-				$options['class'] = !empty($options['class']) ? $options['class'] . ' datepicker' : 'datepicker';
-				// zuha specific
-				debug('NOTE: Probably an error here because I don\'t see a $this->datepicker() function');
-				break;
-				//$type = 'text'; // zuha specific
-				$input = $this->{$type}($fieldName, $options);
-				// zuha specific
-				//$input = $this->dateTime($fieldName, $dateFormat, null, $options); // cakephp
-				// specific
-				break;
-			case 'datetimepicker' :
-				$options['value'] = $selected;
-				$options['class'] = !empty($options['class']) ? $options['class'] . ' datepicker' : 'datepicker';
-				// zuha specific
-				//$type = 'text'; // zuha specific
-				$input = $this->{$type}($fieldName, $options);
-				// zuha specific
-				$input .= $this->hidden($fieldName, array('id' => str_replace('.', '', $fieldName) . '_'));
-				// catch the form in app controller and format the date
-				//$input = $this->dateTime($fieldName, $dateFormat, $timeFormat, $options); //
-				// cakephp specific
-				break;
-			case 'richtext' :
-				// zuha specific
-				$input = '';
-				if ($options['hideToggleLinks'] !== true) {
-					$input = '
-          <div class="ckeditorLinks">
-            <a id="' . $fieldName . '_exec-source" class="exec-source"><i class="icon-wrench"></i> HTML</a>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a onclick="toggleExtras();" id="toggle-extras"><i class="icon-fire"></i> TOGGLE EXTRAS</a>
-          </div>';
-				}
-				$input .= $this->richtext($fieldName, $options + array('class' => 'ckeditor'));
-				// zuha specific
-				break;
-			// zuha specific
-			case 'textarea' :
-				$input = $this->textarea($fieldName, $options + array(
-					'cols' => '30',
-					'rows' => '6'
-				));
-				break;
-			case 'url' :
-				$input = $this->text($fieldName, array('type' => 'url') + $options);
-				break;
-			default :
-				$input = $this->{$type}($fieldName, $options);
-		}
-		if ($type != 'hidden' && $error !== false) {
-			$errMsg = $this->error($fieldName, $error);
-			if ($errMsg) {
-				$divOptions = $this->addClass($divOptions, 'error');
-				$out['error'] = $errMsg;
-			}
-		}
-		$out['input'] = $input;
-		$format = $format ? $format : array(
-			'before',
-			'label',
-			'between',
-			'input',
-			'after',
-			'error'
-		);
-		$output = '';
-		foreach ($format as $element) {
-			$output .= $out[$element];
-			unset($out[$element]);
-		}
-		if (!empty($divOptions['tag'])) {
-			$tag = $divOptions['tag'];
-			unset($divOptions['tag']);
-			$output = $this->Html->tag($tag, $output, $divOptions);
-		}
-		return $output;
 	}
 
 /**
@@ -469,10 +162,8 @@ $(document).ready(function() {
  *
  * ### Options:
  *
- * - `escape` - Whether or not the contents of the textarea should be escaped.
- * Defaults to true.
- * - `buttons` - An array of buttons to include in the rich editor.  Defaults to
- * simple.
+ * - `escape` - Whether or not the contents of the textarea should be escaped. Defaults to true.
+ * - `buttons` - An array of buttons to include in the rich editor.  Defaults to simple.
  *
  * @param string $fieldName Name of a field, in the form "Modelname.fieldname"
  * @param array $options Array of HTML attributes, and special options above.
@@ -488,6 +179,16 @@ $(document).ready(function() {
  * an identifier using css.
  */
 	public function richtext($fieldName, $options = array()) {
+		$preLinks = $options['hideToggleLinks'] !== true ? 
+			'<div class="ckeditorLinks">
+				<a id="' . $fieldName . '_exec-source" class="exec-source"><i class="icon-wrench"></i> HTML</a>
+					 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<a onclick="toggleExtras();" id="toggle-extras"><i class="icon-fire"></i> TOGGLE EXTRAS</a>
+			</div>' : 
+			null;
+			
+		$options['class'] = !empty($options['class']) ? $options['class'] . ' ckeditor' : 'ckeditor';
+				
 		App::uses('CkeHelper', 'View/Helper');
 		$Cke = new CkeHelper($this->View);
 		$ckeSettings = $this->_ckeConfig($options);
@@ -501,17 +202,7 @@ $(document).ready(function() {
 			}
 			unset($options['value']);
 		}
-		// this one throws an error
-		//return $this->Html->useTag('richtext', $options['name'],
-		// array_diff_key($options, array('type' => '', 'name' => '')), $value,
-		// $this->Html->script('ckeditor/ckeditor', array('inline' =>
-		// false)).$this->Html->script('ckeditor/adapters/jquery', array('inline' =>
-		// false)), $Cke->load($fieldId, $ckeSettings));
-		// this one doesn't
-		return $this->Html->useTag('richtext', $options['name'], array_diff_key($options, array(
-			'type' => '',
-			'name' => ''
-		)), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
+		return $this->Html->useTag('richtext', $preLinks, $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
 	}
 
 /**
@@ -520,12 +211,14 @@ $(document).ready(function() {
 	protected function _ckeConfig($options = array()) {
 		if (!empty($options['ckeSettings'])) {
 			$ckeSettings = $options['ckeSettings'];
-		} else {
 		}
 		$ckeSettings['path'] = Configure::read('appPath') . '/js/kcfinder/';
 		return $ckeSettings;
 	}
 
+/**
+ * Date time picker method
+ */
 	public function datetimepicker($fieldName, $attributes = array(), $dateFormat = 'm/d/Y h:i a', $timeFormat = '24') {
 		$this->setEntity($fieldName);
 		$attributes += array(
@@ -540,6 +233,10 @@ $(document).ready(function() {
 		} else {
 			$attributes['value'] = date($dateFormat);
 		}
+		
+		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
+		
+		$firstId = !empty($attributes['id']) ? $attributes['id'] : Inflector::camelize(Inflector::slug($fieldName)); // same as taken from FormHelper
 		$this->View->Html->css('http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
 		$this->View->Html->css('jquery-ui/jquery-ui-timepicker-addon', null, array('inline' => false));
 		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false));
@@ -547,8 +244,8 @@ $(document).ready(function() {
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : 'hh:mm tt';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
 		$code = '$(document).ready(function() {
-			$(".date-time-picker").next().val("' . date('Y-m-d h:i:s', strtotime($attributes['value'])) . '");
-			$(".date-time-picker").datetimepicker({
+			$("#' . $firstId . '").next().val("' . date('Y-m-d h:i:s', strtotime($attributes['value'])) . '");
+			$("#' . $firstId . '").datetimepicker({
 		    	timeFormat: "' . $jsTime . '", 
 		        dateFormat: "' . $jsDate . '",
 		        altField: "#' . str_replace('.', '', $fieldName) . '_",
@@ -558,14 +255,12 @@ $(document).ready(function() {
 		        altSeparator: " "
 			});
 		});';
-		$this->View->Html->scriptBlock($code, array(
-			'inline' => false,
-			'once' => true
-		));
+		$this->View->Html->scriptBlock($code, array('inline' => false, 'once' => false));
+		
+		// return a text field plus a hidden field with proper Y-m-d h:i:s format
 		return $this->text($fieldName, array(
 			'type' => 'text',
-			'class' => 'date-time-picker'
-		) + $attributes);
+		) + $attributes) . $this->hidden($fieldName, array('id' => str_replace('.', '', $fieldName) . '_'));
 	}
 
 /**

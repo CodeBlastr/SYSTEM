@@ -337,9 +337,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				return null;
 			} elseif ($price > 999999) {
 				$price = substr(round($price, -4), 0, -4);
-				return substr($price, 0, -2) . '.' . substr($price, -2) . 'm';
+				return $start . substr($price, 0, -2) . '.' . substr($price, -2) . 'm' . $end;
 			} elseif ($price > 99999) {
-				return substr(round($price, -3), 0, -3) . 'k';
+				return $start . substr(round($price, -3), 0, -3) . 'k' . $end;
 			} else {
 				return $start . number_format($price, 2, '.', ',') . $end;
 			}

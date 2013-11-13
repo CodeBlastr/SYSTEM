@@ -12,7 +12,11 @@ if (!empty($formsSearch)) {
 	$inputs = !empty($inputs) ? $inputs : array();
 	$inputs = Set::merge(array(array('name' => 'contains:name', 'options' => array('class' => 'search-query pull-left', 'label' => false, 'placeholder' => 'Type Your Search and Hit Enter'))), $inputs);
 	$action = strpos($_SERVER['REQUEST_URI'], 'index') ? $_SERVER['REQUEST_URI'] : $url;
-	echo $this->Form->create('', array('type' => 'get', 'class' => 'form-inline index-form navbar-form', 'url' => Router::normalize($action) . '/')); 
+	$formOptions['class'] = !empty($formOptions['class']) ? $formOptions['class'] : 'form-inline index-form navbar-form';
+	$formOptions['url'] = !empty($formOptions['url']) ? $formOptions['url'] : Router::normalize($action)  . '/';
+	$formOptions['type'] = !empty($formOptions['type']) ? $formOptions['type'] : 'get';
+	
+	echo $this->Form->create('', $formOptions);
 	foreach ($inputs as $input) {
 		echo $this->Form->input($input['name'], $input['options']);
 	}
