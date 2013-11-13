@@ -254,23 +254,23 @@ span.icon {
 						<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
 						<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
 						After  
-						<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium')); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium input-sm')); ?>
 						<?php echo $userRole['UserRole']['name']; ?> should go to a 
-						<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'class' => 'input-small')); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'class' => 'input-small input-sm')); ?>
 						<a href="#" rel="tooltip" title="Pages are just one page static content (like about us), a Section is when you have multiple articles under one page (like news), a Plugin is when you have dynamically generated content based on user interaction."><i class="icon-question-sign"></i></a>
-						<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'placeholder' => 'called', 'class' => 'input-small')); ?>
-						<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small')); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'placeholder' => 'called', 'class' => 'input-small input-sm')); ?>
+						<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small btn-sm')); ?>
 						
 						<!-- plugin form -->
 						<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => false, 'controller' => 'install', 'action' => 'client'))); ?>
 						<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
 						<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
 						After  
-						<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium')); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium input-sm')); ?>
 						<?php echo $userRole['UserRole']['name']; ?> should go to a 
-						<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'value' => 'plugin', 'class' => 'input-small')); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'value' => 'plugin', 'class' => 'input-small input-sm')); ?>
 						<a href="#" rel="tooltip" title="Pages are just one page static content (like about us), a Section is when you have multiple articles under one page (like news), a Plugin is when you have dynamically generated content based on user interaction."><i class="icon-question-sign"></i></a>
-						<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'type' => 'select', 'options' => $plugins, 'class' => 'input-small')); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'type' => 'select', 'options' => $plugins, 'class' => 'input-small input-sm')); ?>
 						<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small')); ?>
 					</div>
 					
