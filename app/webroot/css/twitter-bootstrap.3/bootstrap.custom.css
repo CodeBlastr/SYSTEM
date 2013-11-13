@@ -46,3 +46,7 @@ li.switch-mini.has-switch {
 .media, .media-body {
 	overflow: visible; /* /admin/webpages/webpages/index/content with a section having lots of subpages, and is showing a drop down is where this is needed */
 }
+
+.form-inline div {
+	display: inline-block; /* used on the install/client first, make sure the forms look good there if changing */
+}
