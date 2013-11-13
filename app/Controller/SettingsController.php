@@ -159,6 +159,7 @@ class SettingsController extends AppController {
 	}
 
 	public function test() {
+		//debug($this->request->is('push'));exit;
 		if ($this->request->is('post') || $this->request->is('push')) {
 			$to = $this->request->data['Setting']['to'];
 			$subject = $this->request->data['Setting']['subject'];
@@ -171,6 +172,7 @@ class SettingsController extends AppController {
 				break;
 			}
 		}
+		
 		$this->set('title_for_layout', 'Test Email Settings');
 		$this->set('page_title_for_layout', 'Test Email Settings');
 	}
