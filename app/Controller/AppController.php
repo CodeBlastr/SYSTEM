@@ -13,7 +13,7 @@ App::uses('Controller', 'Controller');
  *
  * Licensed under GPL v3 License
  * Must retain the above copyright notice and release modifications publicly.
- * 
+ *
  * Note : Enable CURL PHP in php.ini file to use Facebook.Connect component Facebook plugin
  *
  * @copyright     Copyright 2009-2012, Zuha Foundation Inc. (http://zuha.com)

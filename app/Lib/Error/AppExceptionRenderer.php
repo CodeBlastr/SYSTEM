@@ -24,7 +24,7 @@ class AppExceptionRenderer extends ExceptionRenderer {
 		
 		$Controller = new AppErrorController($request, $response);
 		//Needed to add this check to allow errors from testing to be displayed
-		if(!defined('APP_TEST_CASES')) {
+		//if(!defined('APP_TEST_CASES')) {
 			try {
 				$Controller->handleAlias($request, $exception); // checks for alias match
 			} catch (Exception $e) {
@@ -35,7 +35,7 @@ class AppExceptionRenderer extends ExceptionRenderer {
 					$Controller->viewPath = 'Errors';
 				}
 			}
-		}
+		//}
 		return $Controller;
 	} 
 	
