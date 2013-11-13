@@ -319,7 +319,7 @@ class AppModel extends Model {
 					$subject = $webpage['Webpage']['title'];
 				} else {
 					//Should we auto gen instead of throwing exception????
-					throw new NotFoundException(__('Please create a email template named %s', $name));
+					throw new Exception(__('Please create a email template named %s', $name));
 				}			
 			} 		
 	

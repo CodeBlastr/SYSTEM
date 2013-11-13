@@ -1,9 +1,10 @@
 <?php
-
 echo __('<span id="%s"></span><hr /><h2> %s Access Privileges </h2><p>Set privileges by checking the box under the user role in the row of the action you want to allow access to.</p>', Inflector::underscore($name), Inflector::humanize(Inflector::underscore($name)));
-
-echo $this->Form->create('Privilege', array('url' => array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'add')));
-
+echo $this->Form->create('Privilege', array('url' => array(
+		'plugin' => 'privileges',
+		'controller' => 'privileges',
+		'action' => 'add'
+	)));
 echo '<table class="table"><thead>';
 $tableHeaders[] = 'Action';
 foreach ($groups as $g) {
@@ -13,17 +14,12 @@ foreach ($groups as $g) {
 }
 echo $this->Html->tableHeaders($tableHeaders);
 echo '</thead><tbody>';
-
 foreach ($data as $ac) {
-	
 	$tableCells = array($ac['Section']["alias"]);
-	
 	for ($i = 0; $i < count($groups); $i++) {
-		
-		$field_name = $ac["Section"]["id"] . '_' . $groups[$i]["Requestor"]['id'];	
+		$field_name = $ac["Section"]["id"] . '_' . $groups[$i]["Requestor"]['id'];
 		$formInputs = '';
 		$cell = '';
-		
 		// remove admin user role (they have access to everything)
 		if (isset($ac["Requestor"][0]) && $groups[$i]['UserRole']['id'] != 1) {
 			// loop through Requestors to see if it maches the given group
@@ -33,13 +29,12 @@ foreach ($data as $ac) {
 					$hasCheck = true;
 				}
 			}
-			
-			$cell .= '<div class="checkboxToggleDiv">';
-			if($groups[$i]['UserRole']['id'] != 5) {
+			$cell .= '<div class="checkboxToggleDiv "><div class="make-switch switch-mini">';
+			if ($groups[$i]['UserRole']['id'] != 5) {
 				if (!empty($userFields)) {
 					$q = 0;
-					foreach($userFields as $field) {
-						if($hasCheck) {
+					foreach ($userFields as $field) {
+						if ($hasCheck) {
 							// check each user field to see if it is set
 							$requestors = Set::combine($ac['Requestor'], '{n}.ArosAco.aro_id', '{n}.ArosAco.user_fields');
 							$requestorUserFields = $requestors[$groups[$i]['Requestor']['id']];
@@ -48,46 +43,67 @@ foreach ($data as $ac) {
 						} else {
 							$checked = false;
 						}
-						$formInputs .= $this->Form->input('ArosAco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => __('Only %s', Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE)))), 'checked' => $checked === false ? null : 'true', 'div' => false));
+						$formInputs .= '<label class="checkbox-inline">' . $this->Form->input('ArosAco' . '.' . $field_name . '.' . $field, array(
+							'type' => 'checkbox',
+							'label' => false,
+							'checked' => $checked === false ? null : 'true',
+							'div' => false
+						)) . __('Only %s', Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE)))) . '</label>';
 						$q++;
 					}
 				}
 			}
-			
 			if ($hasCheck) {
-				$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => '', 'checked' => 'true', 'div' => false));
-				$cell .= '<div class="ct-on">';
+				$cell .= $this->Form->input($field_name, array(
+					'type' => 'checkbox',
+					'label' => false,
+					'checked' => 'true',
+					'div' => false
+				));
+				$cell .= '</div><div class="ct-on">';
 				$cell .= $formInputs;
 				$cell .= '</div></div>';
 			} else {
-				$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => '', 'div' => false));
-				$cell .= '<div class="ct-on">';
+				$cell .= $this->Form->input($field_name, array(
+					'type' => 'checkbox',
+					'label' => false,
+					'div' => false
+				));
+				$cell .= '</div><div class="ct-on">';
 				$cell .= $formInputs;
-				$cell .= '</div></div>';	
+				$cell .= '</div></div>';
 			}
 		} elseif ($groups[$i]["UserRole"]['id'] != 1) {
-			$cell .= '<div class="checkboxToggleDiv">';
-			if($groups[$i]['UserRole']['id'] != 5) {
+			$cell .= '<div class="checkboxToggleDiv"><div class="make-switch switch-mini">';
+			if ($groups[$i]['UserRole']['id'] != 5) {
 				if (!empty($userFields)) {
-					foreach($userFields as $field) {
-						$formInputs .= $this->Form->input('ArosAco' .  '.' . $field_name . '.' . $field, array('type' => 'checkbox', 'label' => __('Only %s', Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE)))), 'div' => false));
-					}
-				}			
+					foreach ($userFields as $field) :
+						$formInputs .= '<label class="checkbox-inline">' . $this->Form->input('ArosAco' . '.' . $field_name . '.' . $field, array(
+							'type' => 'checkbox',
+							'label' => false,
+							'div' => false
+						)) . __('Only %s', Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE)))) . '</label>';
+					endforeach;
+				}
 			}
-			$cell .= $this->Form->input($field_name, array('type' => 'checkbox', 'label' => '', 'div' => false));
-			$cell .= '<div class="ct-on">';
+			$cell .= $this->Form->input($field_name, array(
+				'type' => 'checkbox',
+				'label' => false,
+				'div' => false
+			));
+			$cell .= '</div><div class="ct-on">';
 			$cell .= $formInputs;
 			$cell .= '</div></div>';
 		}
-		if($cell !== ''){
+		if ($cell !== '') {
 			$tableCells[] = $cell;
 		}
-		
 	}
-
 	echo $this->Html->tableCells(array($tableCells));
-} // end <tr> loop
-
+}// end <tr> loop
 echo '</tbody></table>';
-
-echo $this->Form->end(array('label' => __('Update %s Privileges', Inflector::humanize(Inflector::underscore($name))), 'class' => 'btn-primary', 'div' => false));
+echo $this->Form->end(array(
+	'label' => __('Update %s Privileges', Inflector::humanize(Inflector::underscore($name))),
+	'class' => 'btn btn-primary',
+	'div' => false
+));

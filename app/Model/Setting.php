@@ -578,7 +578,7 @@ class Setting extends AppModel {
 		// so that we can specify all settings which need encryption, and reuse this instead 
 		// of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well.
 		if (!empty($data['Setting']['name']) && $data['Setting']['name'] == 'SMTP' && !parse_ini_string($data['Setting']['name'])) {
-			$data['Setting']['value'] = 'smtp = "' . base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.iniSalt'))) . '"';
+			$data['Setting']['value'] = 'smtp = "' . base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.salt'))) . '"';
 		}
 
 		if (!empty($data['Query']) && $data['Setting']['name'] == 'ZUHA_DB_VERSION') {

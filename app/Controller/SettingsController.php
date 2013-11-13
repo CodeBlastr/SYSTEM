@@ -151,13 +151,18 @@ class SettingsController extends AppController {
 	public function install() {
 		try {
 			$this->Setting->writeSettingsIniData();
-			$this->Session->setFlash(__('Success! Your site is ready to go.'));
+			$this->Session->setFlash(__('Success! Your site is ready to go. Please login using the email and password entered on the previous screen.'));
 		} catch (Exception $e) {
 			$this->Session->setFlash($e->getMessage());
 		}
-		$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+		$this->redirect(array('plugin' => false, 'controller' => 'install', 'action' => 'login'));
 	}
 
+/**
+ * Test email method
+ * 
+ * Test the send mail function to see if a site email works. 
+ */
 	public function test() {
 		if ($this->request->is('post') || $this->request->is('push')) {
 			$to = $this->request->data['Setting']['to'];
@@ -167,8 +172,7 @@ class SettingsController extends AppController {
 				$this->Setting->__sendMail($to, $subject, $message);
 				$this->Session->setFlash(__('Message sent'));
 			} catch (Exception $e) {
-				debug($e->getMessage());
-				break;
+				$this->Session->setFlash($e->getMessage());
 			}
 		}
 		$this->set('title_for_layout', 'Test Email Settings');
