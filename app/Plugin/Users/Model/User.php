@@ -399,7 +399,7 @@ class AppUser extends UsersAppModel {
 				$data['Contact']['id'] = $this->Contact->id;
 			}
 		}
-		$this->_cleanAddData($data);
+		$data = $this->_cleanAddData($data);
 		return $data;
 	}
 
