@@ -204,38 +204,38 @@ class AppUsersController extends UsersAppController {
 		// looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
 			$conditions = array('User.id' => $this->request->params['named']['user_id']);
-		} else if (!empty($id)) {
+		} elseif (!empty($id)) {
 			$conditions = array('User.id' => $id);
-		} else {
+		} elseif ($this->Session->read('Auth.User.id')) {
 			$conditions = array('User.id' => $this->Session->read('Auth.User.id'));
 		}
 		
-		if (empty($this->request->data) && (!empty($this->request->params['named']['user_id']) || !empty($id))) {
+		if (empty($this->request->data) && !empty($conditions)) {
 			$user = $this->User->find('first',array(
 				'conditions' => $conditions,
 				'contain' => array(
 					'Contact' => array('ContactAddress')
 				)
 			));
-			if(isset($user['User'])) {
+			if (isset($user['User'])) {
 				$this->request->data = $user;
 			} else {
 				$this->request->data = $this->User->read(null, $id);
 			}
 		// saving a user which was edited
-		} else if(!empty($this->request->data)) {
-			if(!isset($this->request->data['User']['id'])) {
+		} elseif (!empty($this->request->data)) {
+			if (!isset($this->request->data['User']['id'])) {
 				$this->request->data['User']['id'] = $this->Auth->user('id');
 			}
 			//getting password issue when saving ; so unsetting in this case
-			if(!isset($this->request->data['User']['password']))	{
+			if (!isset($this->request->data['User']['password']))	{
 				unset($this->User->validate['password']);
 			}
-			if(!empty($this->request->data['User']['avatar'])) {
+			if (!empty($this->request->data['User']['avatar'])) {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
-			if($this->User->saveAll($this->request->data)) {
+			if ($this->User->saveAll($this->request->data)) {
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->User->id));
 			} else {
