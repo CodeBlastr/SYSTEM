@@ -376,7 +376,7 @@ class AppUser extends UsersAppModel {
 	protected function _userContact($data) {
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->Contact->findById($data['Contact']['id']);
-			$data['Contact'] = Set::merge($data['Contact'], $contact['Contact']);
+			$data['Contact'] = Set::merge($contact['Contact'], $data['Contact']);
 		} else if (!empty($data[$this->alias]['id'])) {
 			$contact = $this->Contact->findByUserId($data[$this->alias]['id']);
 			if (!empty($contact)) {
@@ -399,6 +399,7 @@ class AppUser extends UsersAppModel {
 				$data['Contact']['id'] = $this->Contact->id;
 			}
 		}
+
 		$data = $this->_cleanAddData($data);
 		return $data;
 	}
