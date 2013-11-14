@@ -74,13 +74,13 @@ if (empty($runUpdates)) { ?>
 
     <div class="btn-group">
         <a href="#masonryBox" class="filterClick btn btn-default">All</a>
-        <?php echo CakePlugin::loaded('Classifieds') ? $this->Html->link(__('Classifieds'), array('admin' => true, 'plugin' => 'classifieds', 'controller' => 'classifieds', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default')) : null; ?>
-        <?php echo CakePlugin::loaded('Products') ? $this->Html->link(__('Ecommerce'), array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default')) : null; ?>
         <?php echo $this->Html->link(__('Pages'), '#tagPages', array('class' => 'filterClick btn btn-default')); ?>
         <?php echo CakePlugin::loaded('Media') ? $this->Html->link(__('Media'), '#tagMedia', array('class' => 'filterClick btn btn-default')) : null; ?>
         <?php echo CakePlugin::loaded('Comments') ? $this->Html->link(__('Discussion'), '#tagDiscussion', array('class' => 'filterClick btn btn-default')) : null; ?>
         <?php echo $this->Html->link(__('Themes'), '#tagThemes', array('class' => 'filterClick btn btn-default')); ?>
         <?php echo $this->Html->link(__('Settings'), '#tagAdmin', array('class' => 'filterClick btn btn-default')); ?>
+        <?php echo CakePlugin::loaded('Classifieds') ? $this->Html->link(__('<span class="glyphicon glyphicon-dashboard"></span> Classifieds'), array('admin' => true, 'plugin' => 'classifieds', 'controller' => 'classifieds', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default', 'escape' => false)) : null; ?>
+        <?php echo CakePlugin::loaded('Products') ? $this->Html->link(__('<span class="glyphicon glyphicon-dashboard"></span> Ecommerce'), array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default', 'escape' => false)) : null; ?>
     </div>
     
     
@@ -168,7 +168,7 @@ if (empty($runUpdates)) { ?>
         <?php } ?>
 		      
         <div class="masonryBox dashboardBox tagMedia">
-            <h3 class="title"><i class="glyphicon glyphicon-picture"></i> Favicon</h3>
+            <h3 class="title"><i class="glyphicon glyphicon-star-empty"></i> Favicon</h3>
             <p>Add the little icon that appears in browser title bars. </p>
           	<?php
           	echo $this->Form->create('Admin', array('type' => 'file'));
@@ -252,14 +252,14 @@ if (empty($runUpdates)) { ?>
         
         <?php if (CakePlugin::loaded('Tasks')) { ?>
         <div class="masonryBox dashboardBox tagProjects tagTasks">
-            <h3 class="title"><i class="glyphicon glyphicon-globe"></i> <?php echo $this->Html->link('Tasks', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'my')); ?> </h3>
+            <h3 class="title"><i class="glyphicon glyphicon-fire"></i> <?php echo $this->Html->link('Tasks', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'my')); ?> </h3>
             <p>See and manage all to-do tasks whether they're for a project a contact or anything else.</p>
         </div>
         <?php } ?>
 
         <?php if (CakePlugin::loaded('Events')) { ?>
         <div class="masonryBox dashboardBox">
-            <h3 class="title"><i class="glyphicon glyphicon-th-list"></i> <?php echo $this->Html->link('Events', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'index')); ?> </h3>
+            <h3 class="title"><i class="glyphicon glyphicon-calendar"></i> <?php echo $this->Html->link('Events', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'index')); ?> </h3>
             <p>See and manage event listings.</p>
             <ul>
                 <li><?php echo $this->Html->link('Add Event', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'add')); ?></li>
