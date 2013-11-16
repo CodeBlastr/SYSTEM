@@ -1,6 +1,14 @@
 label {
 	font-weight: normal;
 }
+.btn-inverse {
+	background: #333333;
+	color: #FFFFFF;
+}
+.btn-inverse:hover {
+	background: #000000;
+	color: #FFFFFF;
+}
 
 /* navbar */
 li.switch-mini.has-switch {
@@ -51,6 +59,11 @@ li.switch-mini.has-switch {
 
 .form-inline div {
 	display: inline-block; /* used on the install/client first, make sure the forms look good there if changing */
+}
+.form-inline input[type="text"], .form-inline select, .form-inline input[type="password"] {
+	max-width: 175px;
+	margin-left: 4px;
+	margin-right: 4px;
 }
 
 .table-fixed {

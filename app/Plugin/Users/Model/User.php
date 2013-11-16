@@ -511,7 +511,10 @@ class AppUser extends UsersAppModel {
 	}
 
 /**
- * Set the default redirect variables, using the settings table constant.
+ * Login Redirect Url method
+ * Sets the default redirect variables, using the settings table constant.
+ * 
+ * @param mixed $redirect 
  */
 	public function loginRedirectUrl($redirect) {
 		// this handles redirects where a url was called that redirected you to the login page
@@ -552,7 +555,10 @@ class AppUser extends UsersAppModel {
 	}
 
 /**
- * Set the default redirect variables, using the settings table constant.
+ * Logout Redirect Url method
+ * 
+ * Sets the default redirect variables, using the settings table constant.
+ *
  */
 	public function logoutRedirectUrl() {
 		if (defined('__APP_LOGOUT_REDIRECT_URL')) {
@@ -575,7 +581,8 @@ class AppUser extends UsersAppModel {
 	}
 	
 /**
- * verifies the key passed and if valid key, remove it from DB and return user else
+ * Verify Key method
+ * Verifies the key passed and if valid key, remove it from DB and return user else
  *
  * @return {mixed}			user data array, or null.
  */

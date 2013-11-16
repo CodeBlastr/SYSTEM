@@ -1,6 +1,10 @@
 <?php
 ini_set('session.cookie_httponly', true); // used for PCI compliance to make session unavailable to Javascript, can be overwritten on a site by site level
 
+if (file_exists(ROOT . DS . 'app' . DS . 'Config' . DS . '.secret.php')) {
+	require_once(ROOT . DS . 'app' . DS . 'Config' . DS . '.secret.php');
+}
+
 if (defined('SITE_DIR')) {
 	// we are in a site within the sites directory
   	if (@include(ROOT.DS.SITE_DIR.DS.'Config'.DS.'core.php')) {
@@ -15,12 +19,12 @@ if (defined('SITE_DIR')) {
 	// OR using the cake console
 	if (php_sapi_name() !== 'cli') {
 	    if ($_SERVER['REQUEST_URI'] != '/install/site') {
-	        //header('Location: /install/site'); // switch with line below to allow installs at a catchall
-	        header('Location: http://buildrr.com/');
+	        header('Location: /install/site'); // switch with line below to allow installs at a catchall
+	        //header('Location: http://buildrr.com/');
 	        break;
 		}
-		//Configure::write('Install', true); // switch with line below to allow installs at a catchall
-		Configure::write('Install', false);
+		Configure::write('Install', true); // switch with line below to allow installs at a catchall
+		//Configure::write('Install', false);
 	}
 	if (file_exists(ROOT . DS . 'sites' . DS . 'example.com' . DS . 'Config' . DS . 'core.php')) {
 		require_once(ROOT . DS . 'sites' . DS . 'example.com' . DS . 'Config' . DS . 'core.php');
