@@ -6,11 +6,12 @@
  * ex. 
  * array(
  * 		0 => array(
- * 			'year' => 2013,
- * 			'month' => 9,
- * 			'day' => 4,
- * 			'formatted' => 
- * 
+ * 			'formatted' => '2013/19',
+ * 			'year' => '2013',
+ * 			'month' => '5',
+ * 			'day' => '15',
+ * 			'week' => '19',
+ * 			'count' => '77'
  */ ?>
 <script type="text/javascript">
 
@@ -76,7 +77,7 @@ $(document).ready(function() {
 
         series: [{
             type: 'area',
-            name: 'Activitie Logs',
+            name: 'Activity Logs',
             pointInterval: 24 * 3600 * 1000 * 7, // weekly
             // pointInterval: 24 * 3600 * 1000 * 7, // daily
             pointStart: Date.UTC(<?php echo $data[0]['year']; ?>, <?php echo $data[0]['month'] - 1; ?>, <?php echo $data[0]['day']; ?>),

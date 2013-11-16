@@ -38,7 +38,7 @@ class Setting extends AppModel {
  */
 	public function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
-		$this->virtualFields['displayName'] = sprintf('CONCAT(%s.type, " : ", %s.name)', $this->alias, $this->alias);
+		$this->virtualFields['displayName'] = sprintf('%s.name', $this->alias);
 		$this->displayField = 'displayName';
 		$settings = array(
 			'System' => array(
@@ -51,9 +51,13 @@ class Setting extends AppModel {
 					'description' => 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'smtpUsername = xyz@example.com' . PHP_EOL . 'smtpPassword = "XXXXXXX"' . PHP_EOL . 'smtpHost = mail.example.com' . PHP_EOL . 'smtpPort = 465' . PHP_EOL . 'from = myemail@example.com' . PHP_EOL . 'fromName = "My Name"',
 				),
 				array(
-					'name' => 'ZUHA_DB_VERSION ',
-					'description' => 'Defines the current version of the database.  Used to determine if an upgrade is needed. ' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . '0.0123',
+					'name' => 'SITE_NAME',
+					'description' => 'Defines the site name used in various places throughout the site. ' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'My Business Ltd.',
 				),
+				// array(
+					// 'name' => 'ZUHA_DB_VERSION ',
+					// 'description' => 'Defines the current version of the database.  Used to determine if an upgrade is needed. ' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . '0.0123',
+				// ),
 				array(
 					'name' => 'LOAD_PLUGINS',
 					'description' => 'Defines the plugins that should be loaded. ' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'plugins[] = Webpages' . PHP_EOL . 'plugins[] = Contacts' . PHP_EOL . 'plugins[] = Search',
