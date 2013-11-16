@@ -511,23 +511,36 @@ class AppContact extends ContactsAppModel {
  	public function leadActivities() {
 		$return = null;
 		if (in_array('Activities', CakePlugin::loaded())) {
-			$return = $this->Activity->find('all', array(
-				'conditions' => array(
-					'Activity.action_description' => 'lead created',
-					'Activity.model' => 'Contact',
-					'Activity.created >' => date('Y-m-d', strtotime('-6 months'))
-					),
-				'fields' => array(
-					'COUNT(Activity.created)',
-					'Activity.created',
-					),
-				'group' =>  array(
-					'DATE(Activity.created)',
-					),
-				'order' => array(
-					'Activity.created' => 'ASC',
-					)
-				));
+			
+			
+			$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'lead created' AND `Activity`.`model` = 'Contact' ".$foreignKeyQuery." GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
+			for ($i=0; $i < count($results); $i++) {
+				$return[] = $results[$i][0];
+				// $key = array_search($emptyDate, Set::extract('/0/formatted', $result));
+				// if ($key === 0 || $key > 0) {
+					// $return[] = $result[$key];
+				// } else {
+					// $return[] = array(0 => array('count' => 0), 'Activity' => array('created' => $emptyDate));
+				// }
+			}
+			
+			// $return = $this->Activity->find('all', array(
+				// 'conditions' => array(
+					// 'Activity.action_description' => 'lead created',
+					// 'Activity.model' => 'Contact',
+					// 'Activity.created >' => date('Y-m-d', strtotime('-6 months'))
+					// ),
+				// 'fields' => array(
+					// 'COUNT(Activity.created)',
+					// 'Activity.created',
+					// ),
+				// 'group' =>  array(
+					// 'DATE(Activity.created)',
+					// ),
+				// 'order' => array(
+					// 'Activity.created' => 'ASC',
+					// )
+				// ));
 		}
 		return $return;
 	}
@@ -555,6 +568,104 @@ class AppContact extends ContactsAppModel {
 	}
 	
 /**
+ * My ratings
+ */
+ 	public function myRatings() {
+		$salesPeople = $this->find('all', array('conditions' => array('Contact.assignee_id NOT' => null, 'Contact.assignee_id !=' => '', 'Contact.assignee_id NOT IN' => array(0, 1), 'Contact.contact_type !=' => 'vendor'), 'group' => 'Contact.assignee_id', 'contain' => array('Assignee')));
+		$salesPerson = Set::extract('/Contact/assignee_id', $salesPeople);
+		foreach ($salesPerson as $key => $person) {
+			$salesStats[$person]['Assignee'] = $salesPeople[$key]['Assignee'];
+			$stats = $this->find('all', array(
+				'fields' => array(
+					'SUM(`Contact`.`contact_type` = "lead") AS `leads`',
+					'SUM(`Contact`.`contact_type` = "customer") AS `sales`'
+					),
+				'conditions' => array(
+					'Contact.assignee_id' => $person,
+					'Contact.created >' => date('Y-m-d', strtotime('-6 months'))
+					),
+				'order' => false
+				));
+			$salesStats[$person]['Assignee']['_leads'] = $stats[0][0]['leads']; // count of leads
+			$salesStats[$person]['Assignee']['_sales'] = $stats[0][0]['sales']; // count of sales
+			if (CakePlugin::loaded('Estimates')) {
+				$estimates = $this->Estimate->find('all', array(
+					'fields' => array(
+						'COUNT(*) AS `proposals`',
+						'SUM(`Estimate`.`is_accepted` = 1) AS `sales`',
+						'SUM(`Estimate`.`total`) AS `total`',
+						'SUM(IF(`Estimate`.`is_accepted` = 1, `Estimate`.`total`, 0)) AS `sold`',
+						),
+					'conditions' => array(
+						'Estimate.creator_id' => $person,
+						'Estimate.created >' => date('Y-m-d', strtotime('-6 months'))
+						)
+					));
+				
+				$converted = $this->Estimate->find('all', array(
+					'conditions' => array(
+						'Estimate.is_accepted' => 1,
+						'Estimate.model' => 'Contact',
+						'Estimate.creator_id' => $person,
+						'Estimate.created >' => date('Y-m-d', strtotime('-6 months'))
+						)
+					));
+				foreach ($converted as $convert) {
+					$cycles[] = round((strtotime($convert['Estimate']['closed']) - strtotime($convert['Estimate']['created'])) / 86400);
+				}
+				
+				$salesStats[$person]['Assignee']['_proposals'] = $estimates[0][0]['proposals']; // count of all proposals
+				$salesStats[$person]['Assignee']['_total'] = $estimates[0][0]['total']; // total of all proposals
+				$salesStats[$person]['Assignee']['_sold'] = $estimates[0][0]['sold']; // total of all sales
+				$salesStats[$person]['Assignee']['_cycle'] = @round(array_sum($cycles) / count($cycles)); // average time from estimate to close
+				//debug($cycles);
+				//debug($estimates);
+				// these two should match, if they don't then we're probably missing an is_accepted estimate which has a contact marked as customer
+				//debug($estimates[0][0]['sales']);
+				//debug($salesStats[$i]['Assignee']['_sales']);
+			}
+			// btw, we supress warnings because of the division by zero thing
+			$salesStats[$person]['Assignee']['_averageProposal'] = @round($salesStats[$person]['Assignee']['_total'] / $salesStats[$person]['Assignee']['_proposals'], 2);
+			$salesStats[$person]['Assignee']['_averageSale'] = @round($salesStats[$person]['Assignee']['_sold'] / $salesStats[$person]['Assignee']['_sales'], 2);
+			$salesStats[$person]['Assignee']['_leadToProposal'] = @round($salesStats[$person]['Assignee']['_proposals'] * 100 / $salesStats[$person]['Assignee']['_leads'], 1);
+			$salesStats[$person]['Assignee']['_leadToSale'] = @round($salesStats[$person]['Assignee']['_sales'] * 100 / $salesStats[$person]['Assignee']['_leads'], 1);
+			$salesStats[$person]['Assignee']['_proposalToSale'] = @round($salesStats[$person]['Assignee']['_sales'] * 100 / $salesStats[$person]['Assignee']['_proposals'], 1);
+		}
+
+		$salesStats = $this->getRank($salesStats, '_leads');
+		$salesStats = $this->getRank($salesStats, '_sales');
+		$salesStats = $this->getRank($salesStats, '_proposals');
+		$salesStats = $this->getRank($salesStats, '_total');
+		$salesStats = $this->getRank($salesStats, '_sold');
+		$salesStats = $this->getRank($salesStats, '_cycle', 'asort');
+		$salesStats = $this->getRank($salesStats, '_averageProposal');
+		$salesStats = $this->getRank($salesStats, '_averageSale');
+		$salesStats = $this->getRank($salesStats, '_leadToProposal');
+		$salesStats = $this->getRank($salesStats, '_leadToSale');
+		$salesStats = $this->getRank($salesStats, '_proposalToSale');
+		
+		return $salesStats; 
+ 	}
+	
+/**
+ * Get rank method
+ * 
+ * @param string $field
+ * @param string $function
+ * @return array
+ */
+ 	public function getRank($data, $field, $function = 'arsort') {
+ 		$rank = Set::combine($data, '{n}.Assignee.id', '{n}.Assignee.' . $field);
+ 		$function($rank);
+		$n=1; 
+		foreach ($rank as $p => $r) {
+			$data[$p]['Assignee'][$field . '_rank'] = $n; 
+			$n++;
+		}
+		return $data;
+ 	}
+
+/**
  * Estimates method
  *
  * @return array
@@ -572,12 +683,16 @@ class AppContact extends ContactsAppModel {
 					'Contact'
 					)
 				));
-			$converted = $this->Estimate->find('count', array(
+			$converted = $this->Estimate->find('all', array(
 				'conditions' => array(
 					'Estimate.is_accepted' => 1,
-					'Estimate.model' => 'Contact',
+					'Estimate.model' => 'Contact'
 					)
 				));
+			foreach ($converted as $convert) {
+				$cycles[] = round((strtotime($convert['Estimate']['closed']) - strtotime($convert['Estimate']['created'])) / 86400);
+			}
+			
 			$dead = $this->Estimate->find('count', array(
 				'conditions' => array(
 					'Estimate.is_accepted' => 0,
@@ -593,10 +708,11 @@ class AppContact extends ContactsAppModel {
 			foreach ($values as $value) {
 				$average[] = !empty($ratings[$value]) ? $ratings[$value] : 0;
 			}
+			$return['_conversion'] = intval((count($converted) / (count($return) + count($converted) + $dead)) * 100); // order is important
 			$return['_subTotal'] = array_sum(Set::extract('/Estimate/total', $return));
 			$return['_multiplier'] = !empty($average) ? array_sum($average) / count($values) : 0;
 			$return['_total'] = array_sum(Set::extract('/Estimate/total', $return)) * ('.' . $return['_multiplier']);
-			$return['_conversion'] = intval(($converted / (count($return) + $converted + $dead)) * 100);
+			$return['_cycle'] = round(array_sum($cycles) / count($cycles)); // average time from estimate to close
 		}
 		return $return;
 	}
@@ -608,24 +724,28 @@ class AppContact extends ContactsAppModel {
  */
 	public function estimateActivities($foreignKey = null) {
 		$return = null;
-		if (in_array('Activities', CakePlugin::loaded())) {
-			$return = $this->Activity->find('all', array(
-				'conditions' => array(
-					'Activity.action_description' => 'estimate created',
-					'Activity.model' => 'Estimate',
-					),
-				'fields' => array(
-					'COUNT(Activity.created)',
-					'Activity.created',
-					),
-				'group' =>  array(
-					'DATE(Activity.created)',
-					),
-				'order' => array(
-					'Activity.created' => 'ASC',
-					)
-				));
-		}
+		$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'estimate created' AND `Activity`.`model` = 'Estimate' ".$foreignKeyQuery." GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
+			for ($i=0; $i < count($results); $i++) {
+				$return[] = $results[$i][0];
+			}
+		// if (in_array('Activities', CakePlugin::loaded())) {
+			// $return = $this->Activity->find('all', array(
+				// 'conditions' => array(
+					// 'Activity.action_description' => 'estimate created',
+					// 'Activity.model' => 'Estimate',
+					// ),
+				// 'fields' => array(
+					// 'COUNT(Activity.created)',
+					// 'Activity.created',
+					// ),
+				// 'group' =>  array(
+					// 'DATE(Activity.created)',
+					// ),
+				// 'order' => array(
+					// 'Activity.created' => 'ASC',
+					// )
+				// ));
+		// }
 		
 		return $return;
 	}
@@ -671,7 +791,7 @@ class AppContact extends ContactsAppModel {
 				// } else {
 					// $return[] = array(0 => array('count' => 0), 'Activity' => array('created' => $emptyDate));
 				// }
-			}		
+			}
 		}
 		return $return;
 	}

@@ -1,21 +1,34 @@
-<div class="settings form">
-<?php echo $this->Form->create('Setting'); ?>
-	<fieldset>
- 		<legend><?php echo __('Edit Setting');?></legend>
-		<?php
-		echo $this->Form->input('id');
-		echo $this->Form->input('type');
-		echo $this->Form->input('name');
-		echo $this->Form->input('value');
-		echo $this->Form->input('description', array('disabled' => 'disabled', 'class' => 'span12', 'rows' => 10));
-		echo $this->Form->end('Submit');
-		?>
-	</fieldset>
+<div class="settings form row">
+	<div class="col-sm-7">
+		<?php echo $this->Form->create('Setting'); ?>
+		<fieldset>
+	 		<legend><?php echo __('Edit Setting'); ?></legend>
+			<?php echo $this->Form->input('Setting.id'); ?>
+			<?php echo $this->Form->input('Setting.type'); ?>
+			<?php echo $this->Form->input('Setting.name'); ?>
+			<?php echo $this->Form->input('Setting.value'); ?>
+			<?php echo $this->Form->end('Submit'); ?>
+		</fieldset>
+	</div>
+	<div class="col-sm-5">
+		<h4>Description</h4>
+		<p class="well well-lg"><?php echo $this->Form->value('Setting.description'); ?></p>
+	</div>
 </div>
 
-<div class="actions">
-	<ul>
-		<li><?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $this->Form->value('Setting.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Setting.id'))); ?></li>
-		<li><?php echo $this->Html->link(__('List Settings', true), array('action' => 'index'));?></li>
-	</ul>
-</div>
+<?php
+// set the contextual breadcrumb items
+$this->set('context_crumbs', array('crumbs' => array(
+	$this->Html->link(__('Admin Dashboard'), '/admin'),
+	$page_title_for_layout,
+)));
+
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array( array(
+			'heading' => 'Settings',
+			'items' => array(
+				$this->Html->link(__('List'), array('action' => 'index')),
+				$this->Html->link(__('Add'), array('action' => 'add')),
+				$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Setting.id')), null, sprintf(__('Are you sure you want to delete # %s?', true), $this->Form->value('Setting.id')))
+			)
+		))));
