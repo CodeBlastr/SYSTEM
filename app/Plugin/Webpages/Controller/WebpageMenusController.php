@@ -59,7 +59,7 @@ class WebpageMenusController extends WebpagesAppController {
  */
 	public function index() {
         $this->paginate['fields'] = array('WebpageMenu.id', 'WebpageMenu.name', 'WebpageMenu.code', 'WebpageMenu.type');
-		$this->paginate['conditions']['OR']['WebpageMenu.menu_id'] = array(null, '');
+		$this->paginate['conditions']['OR']['WebpageMenu.parent_id'] = null;
 		$this->set('menus', $this->paginate());
 	}
 	

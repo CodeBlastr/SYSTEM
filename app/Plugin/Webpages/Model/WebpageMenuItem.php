@@ -109,6 +109,7 @@ class WebpageMenuItem extends WebpagesAppModel {
  * @return array $data 
  */
     protected function _cleanData($data) {
+		
     	// handle beforeSave() type data
         if (empty($data['WebpageMenuItem']['parent_id']) && !empty($data['WebpageMenuItem']['menu_id'])) {
             $data['WebpageMenuItem']['parent_id'] = $data['WebpageMenuItem']['menu_id'];
@@ -174,6 +175,15 @@ class WebpageMenuItem extends WebpagesAppModel {
 				}
 			}
 		}
+		
+		if (!empty($data['ChildMenuItem'][0])) {
+			for ($i = 0; $i < count($data['ChildMenuItem']); ++$i) {
+				if (empty($data['ChildMenuItem'][$i]['user_role_id']) && !empty($data['WebpageMenuItem']['user_role_id'])) {
+					$data['ChildMenuItem'][$i]['user_role_id'] = $data['WebpageMenuItem']['user_role_id'];
+				}
+			}
+		}
+
         return $data;    
     }
 	
