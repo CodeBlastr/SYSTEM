@@ -792,10 +792,10 @@ class InstallController extends Controller {
     		return true;
     	}
 		
-        $userRoleId = !empty($userRoleId) ? $userRoleId : $this->Session->read('Auth.User.id');
+        $userRoleId = $this->Session->read('Auth.User.user_role_id');
         if ((defined('SITE_DIR') && SITE_DIR && $userRoleId != 1) || Configure::read('Install') === false) {
-            $this->message[] = __('Install access restricted.');
-            $this->_redirect('/users/users/login');
+            $this->message[] = __('Please login');
+            $this->_redirect('/install/login');
         }
         return true;
     }
@@ -893,6 +893,7 @@ class InstallController extends Controller {
  * 
  */
  	public function client() {
+ 		$this->_handleSecurity();
  		return $this->build();
 	}
 

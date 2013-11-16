@@ -2,6 +2,15 @@
  	/*Now the CSS*/
 * {margin: 0; padding: 0;}
 
+.navbar-fixed-top {
+	display: none;
+}
+.notree li {
+	margin-left: 25px;
+}
+.tree * {
+	vertical-align: top;
+}
 .tree ul {
 	padding-top: 20px; position: relative;
 	
@@ -71,12 +80,13 @@ right connector from last child*/
 }
 
 .tree li div.item {
+	background: #ffffff;
 	border: 1px solid #ccc;
-	padding: 5px 10px;
+	padding: 6px 19px;
 	text-decoration: none;
 	color: #666;
 	font-family: arial, verdana, tahoma;
-	font-size: 11px;
+	font-size: 1.6em;
 	display: inline-block;
 	
 	border-radius: 5px;
@@ -102,15 +112,17 @@ right connector from last child*/
 }
 
 
-.grow, .navbar-fixed-bottom {
+.navbar-fixed-bottom {
 	display:none;
 }
 div.canvas {
-	border: 1px solid #EAEAEA;
+	background: #f9f9f9;
+	border: 1px solid #eaeaea;
 	border-radius: 0.3em 0.3em 0.3em 0.3em;
-	box-shadow: 0 0 30px #CCCCCC inset;
-	overflow-y: scroll;
+	box-shadow: 0 0 10px #bbb inset;
+	overflow: scroll;
 	max-height: 30em;
+	max-width: 100%;
 	padding: 1.5em 0.5em 4em;
 }
 div.canvas.tree {
@@ -118,6 +130,9 @@ div.canvas.tree {
 }
 .for-centering {
 	display: inline-block;
+}
+.for-centering ul:first-child {
+	float: left;
 }
 .switch, .toggle {
 	width: auto;
@@ -127,16 +142,50 @@ span.icon {
 	display: block;
 	float: left;
 }
-.menus.edit.form .canvas.medium {
-	transform: scale(0.8, 0.8);
-	-ms-transform: scale(0.8, 0.8);
-	-webkit-transform: scale(0.8, 0.8);
+
+.grow {
+	display: none;
 }
-.menus.edit.form .canvas.small {
-	transform: scale(0.6, 0.6);
-	-ms-transform: scale(0.6, 0.6);
-	-webkit-transform: scale(0.6, 0.6);
+
+/* medium canvas */ 
+.medium .menus.edit.form .canvas.tree li div.item {
+	padding: 3px 7px;
+	font-size: 1em;
 }
+.medium .shrink, .medium .grow {
+	display: inline;
+}
+
+/* small canvas */
+.small .menus.edit.form .canvas.tree ul {
+	padding-top: 2px;
+}
+.small .menus.edit.form .canvas.tree ul ul::before {
+	top: -6px;
+	height: 9px;
+}
+.small .menus.edit.form .canvas.tree li {
+	padding: 11px 5px 0 5px;
+}
+.small .menus.edit.form .canvas.tree li::before, .small .menus.edit.form .canvas.tree li::after {
+	height: 12px;
+}
+.small .menus.edit.form .canvas.tree li:only-child {
+	padding-top: 0;
+}
+.small .menus.edit.form .canvas.tree li div.item  {
+	padding: 1px 5px;
+	font-size: 0.5em;
+}
+.small .shrink {
+	display: none;
+}
+.small .grow {
+	display: inline;
+}
+
+
+
 .menus.edit.form a {
 	color: #000;
 	cursor:default;
@@ -157,17 +206,107 @@ span.icon {
 	text-align: left;
 }
 .modal-body textarea {
-	width: 90%;
+	width: 100%;
 }
-
+/* Css Logo */
+.brand {
+	/*font-family: 'Myriad Pro', sans-serif;*/
+	color: #8A8A8A;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 0.05em; /* should be able to control the whole logo from here */
+	padding: 2em 0 10em;
+	white-space: nowrap;
+}
+.brand .name {
+	font-size: 21em;
+	line-height: 0.74em;
+	display: inline;
+}
+.brand .name .rr {
+	bac.kground: none repeat scroll 0 0 #85B13F;
+	background: #85B13F; /* Old browsers */
+	background: -moz-linear-gradient(top,  #85B13F 0%, #85B13F 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#85B13F), color-stop(100%,#85B13F)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #85B13F 0%,#85B13F 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #85B13F 0%,#85B13F 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #85B13F 0%,#85B13F 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #85B13F 0%,#85B13F 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#85B13F', endColorstr='#85B13F',GradientType=0 ); /* IE6-9 */
+	
+	background-repeat:no-repeat;
+	background-position: -0.05em -0.106em;
+	
+	color: #FFFFFF;
+	display: inline-block;
+	margin-top: 0;
+	height: 0.8em;
+}
+.brand .tagline {
+	display: block;
+	font-size: 3.2em;
+	letter-spacing: 0.27em;
+	line-height: 1;
+	text-transform: uppercase;
+	margin-top: 1.1em;
+	font-weight: 400;
+}
+.green {
+	color: #85B13F;
+}
+footer {
+	margin-top: 10em;
+}
 </style>
 
-<div class="install form">
+<div class="install form" id="install">
 	<div class="container">
-		<div class="hero-unit" style="display:none;">
-			<button data-dismiss="alert" class="close" type="button">×</button>
-			<h2>How will people experience your new site? </h2>
-			<p class="lead"> To answer that question, let's build a "user flow". Build a "flow" by simply answering the question: "When <span style="text-decoration: underline;">&nbsp; (user type) &nbsp; </span> visits the <span style="text-decoration: underline;">&nbsp; (page name) &nbsp; </span> page, they should then go to <span style="text-decoration: underline;">&nbsp; (new page name) &nbsp; </span>".  Do this repeatedly, until you have thought out and visualized the entire user experience.</p>
+		<?php $this->Session->read('Message.flash.message') == 'The UserRole has been saved' ? $in = 'in' : $in = null; ?>
+		<a href="#userRoleManager" class="btn btn-inverse" data-toggle="collapse" data-target=".userRoleManager" style="position: absolute; top: -5px; right: 80px;"> <i class="glyphicon glyphicon-cog"></i> Config</a>
+		
+		<div class="well row collapse <?php echo $in; ?> userRoleManager">
+			<legend class="lead text-muted">
+				Current User Roles 
+		        <?php foreach ($userRoles as $userRole) : ?>
+		        	 <span class="badge badge-default"><?php echo $userRole['UserRole']['name']; ?></span>
+		        <?php endforeach; ?>
+		        <?php echo !empty($in) ? '<span class="text-success"><i class="glyphicon glyphicon-arrow-left"></i> User Role Added</span>' : null; ?>
+		 		<?php echo $this->Html->link('Approve', array('action' => 'approve'), array('class' => 'btn btn-success btn-xs pull-right', 'rel' => 'tooltip', 'title' => 'Notify your project manager of an approved site flow.')); ?>
+			</legend>
+
+		  	<fieldset class="row clearfix">
+		  		<div class="col-md-8 span8">
+	 				<?php echo $this->Form->create('WebpageMenu', array('class' => 'form-inline', 'url' => array('plugin' => false, 'controller' => 'install', 'action' => 'menu'), 'class' => 'form-inline')); ?>
+					<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+					<?php echo $this->Form->input('WebpageMenu.user_role_id', array('options' => $userRoleOptions, 'label' => 'New flow for', 'value' => $mine['WebpageMenu']['user_role_id'], 'div' => false, 'class' => 'input-sm')); ?>
+					<?php //echo $this->Form->input('WebpageMenu.template', array('options' => array('0' => 'fill this with template names'), 'label' => false, 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-eye-open"></i>&nbsp;</span>')); ?>
+					<?php echo $this->Form->submit('Save', array('div' => false, 'class' => 'btn btn-primary btn-sm btn-small')); ?>
+					<?php echo !empty($in) ? '<span class="lead text-success"><i class="glyphicon glyphicon-arrow-left"></i> Add Experience Visualizer Here</span>' : null; ?>
+					<?php echo $this->Form->end(); ?>
+				</div>
+		  		<div class="span4 col-md-4 text-right">
+			        <?php echo $this->Form->create('UserRole', array('class' => 'form-inline', 'url' => array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'add'))); ?>
+					<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+					<?php echo $this->Form->input('UserRole.name', array('label' => false, 'placeholder' => 'Add user type (eg. paid-users)', 'style' => 'width: 200px', 'class' => 'input-sm')); ?>
+					<?php echo $this->Form->end(array('label' => 'Add', 'class' => 'btn-sm')); ?>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="jumbotron hero-unit alert clearfix" style="display:none;">
+			<div class="col-md-7">
+				<h2> <?php echo __SYSTEM_SITE_NAME; ?> Experience Visualizer <br /></h2>
+				<p class="lead">
+					How will visitors experience your site?  Your site should be easy and intuitive.  It should 
+					have a logical flow that moves users from the homepage through to the goal of accomplishing what they came for.
+					Whether that is becoming a lead for your business, or using a custom application, this is a tool used to visualize
+					how that user will experience your site.  
+				</p>
+			</div>
+			<div class="col-md-5 text-right">
+				<h2><small> <cite>brought to you by <a href="http://buildrr.com/" class="brand active"><span class="name">build<span class="rr">r</span>r</span></a> </cite></small></h2>
+				<img src="/img/install/visualizer.jpg" class="img-thumbnail" style="margin: 0 0 12px 0" />
+			</div>
+			<a data-dismiss="alert" class="btn btn-lg btn-warning pull-right" type="button" style="margin-right: 16px">Dismiss Info Box</a>
 		</div>
 		
 	    
@@ -196,15 +335,45 @@ span.icon {
 						} ?>
 					</div>
 						
-						
-					<h5>
-						<?php echo Inflector::humanize($userRole['UserRole']['name']); ?> Experience Visualizer (
-						<?php echo $this->Html->link('<i class="icon-resize-small"></i>', '#', array('class' => 'shrink', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
-						<?php echo $this->Html->link('<i class="icon-resize-full"></i>', '#', array('class' => 'grow', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
-						<?php echo $this->Html->link('<i class="icon-resize-vertical"></i>', '#', array('class' => 'reorder', 'rel' => 'tooltip', 'title' => 'Re-order easier with a drag and drop list.', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
-						)
-					</h5>
-					<div class="menus edit">
+					<div class="row">
+						<div class="col-md-4">
+							<h4 style="margin-top:0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+								<?php echo $this->Html->link('<i class="glyphicon glyphicon-list"></i>', '#', array('class' => 'reorder', 'rel' => 'tooltip', 'title' => 'Re-order easier with a drag and drop list.', 'data-target' => '#canvas' . $mine['WebpageMenu']['id'], 'escape' => false)); ?>
+								<?php echo $this->Html->link('<i class="glyphicon glyphicon-resize-small"></i>', '#', array('class' => 'shrink', 'data-target' => '#install', 'escape' => false)); ?>
+								<?php echo $this->Html->link('<i class="glyphicon glyphicon-resize-full"></i>', '#', array('class' => 'grow', 'data-target' => '#install', 'escape' => false)); ?>
+								<?php echo Inflector::humanize($userRole['UserRole']['name']); ?> Experience Visualizer
+							</h4>
+						</div>
+						<div class="col-md-8 text-right">
+							<div class="create-menu-item">
+								<!-- page or section form -->
+								<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'add'))); ?>
+								<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+								<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
+								From the  
+								<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium input-sm')); ?>
+								&nbsp;&nbsp; page <?php echo $userRole['UserRole']['name']; ?> can go to the
+								<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'class' => 'input-small input-sm')); ?>
+								<a style="position: relative; top: -17px; left: -2px;" rel="tooltip" title="Pages are just one page static content (like about us), a Section is when you have multiple articles under one page (like news), a Plugin is when you have dynamically generated content based on user interaction."><i class="glyphicon glyphicon-question-sign"></i></a>
+								<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'placeholder' => 'page or section name', 'class' => 'input-small input-sm')); ?>
+								<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small btn-sm')); ?>
+								
+								<!-- plugin form -->
+								<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => false, 'controller' => 'install', 'action' => 'client'))); ?>
+								<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+								<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
+								After  
+								<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium input-sm')); ?>
+								&nbsp;&nbsp; page <?php echo $userRole['UserRole']['name']; ?> can go to the
+								<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'value' => 'plugin', 'class' => 'input-small input-sm')); ?>
+								<a style="position: relative; top: -17px; left: -2px;" rel="tooltip" title="Pages are just one page static content (like about us), a Section is when you have multiple articles under one page (like news), a Plugin is when you have dynamically generated content based on user interaction."><i class="glyphicon glyphicon-question-sign"></i></a>
+								<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'type' => 'select', 'options' => $plugins, 'class' => 'input-small input-sm')); ?>
+								<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small btn-sm')); ?>
+							</div>
+						</div>
+					</div>
+
+					<div class="row menus edit">
 						 <div class="menus edit form">
 					    	<div class="canvas tree" id="canvas<?php echo $mine['WebpageMenu']['id']; ?>">
 					    		<div class="for-centering">
@@ -213,15 +382,19 @@ span.icon {
 						    				<div class="item home">
 												<?php echo $this->Html->link(__('<span class="icon"> %s </span> <span class="link"> %s </span>', $defaultTemplate[0]['Template']['icon'], $mine['WebpageMenu']['name']), '#', array('class' => 'toggleClick toggle', 'data-target' => '#form' . $mine['WebpageMenu']['id'], 'escape' => false,  'rel' =>'tooltip', 'title' => $mine['WebpageMenu']['notes'])); ?>
 												<div id="form<?php echo $mine['WebpageMenu']['id']; ?>">
-													<?php echo $this->Html->link('Notes', '#', array('data-toggle' => 'modal', 'data-target' => '#menuNote'.$mine['WebpageMenu']['id'], 'class' => 'btn btn-info btn-mini')); ?>
-													<div id="menuNote<?php echo $mine['WebpageMenu']['id']; ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-														<div class="modal-body">
-															<?php echo $this->Form->create('WebpageMenuItem', array('url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'edit', $mine['WebpageMenu']['id']))); ?>
-															<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
-															<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
-															<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
-															<?php echo $this->Form->input('WebpageMenuItem.notes', array('type' => 'textarea', 'label' => $mine['WebpageMenu']['name'] . ' Notes', 'value' => $mine['WebpageMenu']['notes'])); ?>
-															<?php echo $this->Form->end('Save'); ?> 
+													<?php echo $this->Html->link('Notes', '#', array('data-toggle' => 'modal', 'data-target' => '#menuNote'.$mine['WebpageMenu']['id'], 'class' => 'btn btn-info btn-xs btn-mini')); ?>
+													<div id="menuNote<?php echo $mine['WebpageMenu']['id']; ?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+														<div class="modal-dialog">
+															<div class="modal-content">
+																<div class="modal-body">
+																	<?php echo $this->Form->create('WebpageMenuItem', array('url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'edit', $mine['WebpageMenu']['id']))); ?>
+																	<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
+																	<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+																	<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $mine['WebpageMenu']['id'])); ?>
+																	<?php echo $this->Form->input('WebpageMenuItem.notes', array('type' => 'textarea', 'label' => $mine['WebpageMenu']['name'] . ' Notes', 'value' => $mine['WebpageMenu']['notes'])); ?>
+																	<?php echo $this->Form->end('Save'); ?> 
+																</div>
+															</div>
 														</div>
 													</div>
 													<?php //echo $this->Form->create('WebpageMenu', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'edit'), 'class' => 'form-inline')); ?>
@@ -244,73 +417,10 @@ span.icon {
 							</div>
 					    </div>						
 					</div>
-		
-		<hr />
-		
-						
-					<div class="row-fluid create-menu-item">
-						<!-- page or section form -->
-						<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'add'))); ?>
-						<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
-						<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
-						After  
-						<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium input-sm')); ?>
-						<?php echo $userRole['UserRole']['name']; ?> should go to a 
-						<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'class' => 'input-small input-sm')); ?>
-						<a href="#" rel="tooltip" title="Pages are just one page static content (like about us), a Section is when you have multiple articles under one page (like news), a Plugin is when you have dynamically generated content based on user interaction."><i class="icon-question-sign"></i></a>
-						<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'placeholder' => 'called', 'class' => 'input-small input-sm')); ?>
-						<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small btn-sm')); ?>
-						
-						<!-- plugin form -->
-						<?php echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => false, 'controller' => 'install', 'action' => 'client'))); ?>
-						<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
-						<?php echo $this->Form->input('WebpageMenuItem.user_role_id', array('value' => $userRole['UserRole']['session_user_role_id'], 'type' => 'hidden')); ?>
-						After  
-						<?php echo $this->Form->input('WebpageMenuItem.menu_id', array('label' => false, 'options' => $dropdown, 'class' => 'input-medium input-sm')); ?>
-						<?php echo $userRole['UserRole']['name']; ?> should go to a 
-						<?php echo $this->Form->input('WebpageMenuItem.page_type', array('type' => 'select', 'label' => false, 'options' => array('content' => 'page', 'section' => 'section', 'plugin' => 'plugin'), 'value' => 'plugin', 'class' => 'input-small input-sm')); ?>
-						<a href="#" rel="tooltip" title="Pages are just one page static content (like about us), a Section is when you have multiple articles under one page (like news), a Plugin is when you have dynamically generated content based on user interaction."><i class="icon-question-sign"></i></a>
-						<?php echo $this->Form->input('WebpageMenuItem.item_text', array('label' => false, 'type' => 'select', 'options' => $plugins, 'class' => 'input-small input-sm')); ?>
-						<?php echo $this->Form->end(array('label' => 'Save', 'class' => 'btn-success btn-small')); ?>
-					</div>
-					
 				</div>
 			<?php endforeach; ?>
 				
 		<?php endforeach; ?>
-		
-		<hr />
-		
-		<div class="row-fluid pull-right">
-			<?php echo $this->Html->link('Approve', array('action' => 'approve'), array('class' => 'btn btn-info btn-small pull-right', 'rel' => 'tooltip', 'title' => 'Notify your project manager of an approved site flow.')); ?>
-		</div>
-		
-		<div class="row-fluid">
-			
-			<legend class="lead toggleClick"><?php echo __('Manage user types'); ?></legend>
-			<!--p>User usually fall into groups.  By grouping users we can control what parts of the site they have access to. </p-->
-		  	<fieldset class="row-fluid clearfix">
-		  		<div class="span5 pull-left">
-			        <?php foreach ($userRoles as $userRole) : ?>
-			        	<span class="label label-info"><?php echo $userRole['UserRole']['name']; ?></span> 
-			        <?php endforeach; ?>
-			        
-			        <?php echo $this->Form->create('UserRole', array('class' => 'form-inline', 'url' => array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'add'))); ?>
-					<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
-					<?php echo $this->Form->input('UserRole.name', array('label' => false, 'placeholder' => 'Add user type')); ?>
-					<?php echo $this->Form->end('Add'); ?>
-				</div>
- 				
-		  		<div class="span5 pull-right">
-	 				<?php echo $this->Form->create('WebpageMenu', array('class' => 'form-inline', 'url' => array('plugin' => false, 'controller' => 'install', 'action' => 'menu'), 'class' => 'form-inline')); ?>
-					<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
-					<?php echo $this->Form->input('WebpageMenu.user_role_id', array('options' => $userRoleOptions, 'label' => 'New flow for', 'value' => $mine['WebpageMenu']['user_role_id'], 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput', 'between' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-user"></i>&nbsp;</i></span>')); ?>
-					<?php //echo $this->Form->input('WebpageMenu.template', array('options' => array('0' => 'fill this with template names'), 'label' => false, 'div' => array('class' => 'input-prepend'), 'class' => 'prependedInput span1', 'before' => '<span class="add-on">&nbsp;&nbsp;<i class="icon-eye-open"></i>&nbsp;</span>')); ?>
-					<?php echo $this->Form->submit('Save', array('div' => false, 'class' => 'btn btn-success btn-small')); ?>
-					<?php echo $this->Form->end(); ?>
-				</div>
-			</fieldset>
-		</div>
 		
 	</div>
 </div>
@@ -321,9 +431,9 @@ span.icon {
 <?php echo $this->Html->script('/webpages/menus/js/jquery.ui.nestedSortable'); ?>
 <script type="text/javascript">
 
-$(document).ready(function() {
+$(document).ready(function() {	
 	// when close is clicked we don't need to show the tip anymore
-	$('.close').click(function(e) {
+	$('.hero-unit a[data-dismiss=alert]').click(function(e) {
 		e.preventDefault;
 		$.cookie('installTipClose', 'true', { expires: 365, path: '/' });
 	});
@@ -363,34 +473,37 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 	
+	
+	// canvas size
+	$('#install').addClass($.cookie('installCanvasSize')); // keep the canvas the same size on reload
 	$('a.shrink').click(function(e) {
 		e.preventDefault();
 		if ($($(this).attr('data-target')).hasClass('medium')) {
 			$($(this).attr('data-target')).removeClass('medium').addClass('small');
-			$(this).hide();
+			$.cookie('installCanvasSize', 'small', { expires: 365, path: '/' });
 		} else {
 			$($(this).attr('data-target')).addClass('medium');
-			$('a.grow').show();
+			$.cookie('installCanvasSize', 'medium', { expires: 365, path: '/' });
 		}
 	});
-	
 	$('a.grow').click(function(e) {
 		e.preventDefault();
 		if ($($(this).attr('data-target')).hasClass('small')) {
 			$($(this).attr('data-target')).removeClass('small').addClass('medium');
-			$('a.shrink').show();
+			$.cookie('installCanvasSize', 'medium', { expires: 365, path: '/' });
 		} else {
 			$($(this).attr('data-target')).removeClass('medium');
-			$(this).hide();
+			$.cookie('installCanvasSize', '', { expires: 365, path: '/' });
 		}
 	});
-	
+
+	// toggle view for dragging
 	$('a.reorder').click(function(e) {
 		e.preventDefault();
 		if ($($(this).attr('data-target')).hasClass('tree')) {
 			$($(this).attr('data-target')).removeClass('tree').addClass('notree');
 		} else {
-			$($(this).attr('data-target')).addClass('tree');
+			$($(this).attr('data-target')).removeClass('notree').addClass('tree');
 		}
 	});
 	
@@ -417,6 +530,11 @@ $(document).ready(function() {
 	});
 <?php endif; endforeach; ?>
 });
+
+	// set width of the stuff inside of the canvas element
+	// $('.for-centering').width('100000px');
+	// var width = $('.for-centering ul:first-child').width();
+	// $('.for-centering').width(width + 'px');
 </script>
 
 <?php
