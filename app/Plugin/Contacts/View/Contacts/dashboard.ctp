@@ -1,235 +1,161 @@
 <?php echo $this->Html->script('http://code.highcharts.com/highcharts.js', array('inline' => false)); ?>
 <?php echo $this->Html->script('http://code.highcharts.com/modules/exporting.js', array('inline' => false)); ?>
-<?php echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false)); ?>
 
-<div class="masonry contacts dashboard">
-    <div class="masonryBox dashboardBox tagLeads">
-        <h3 class="title"><span class="label label-important">Attention!</span> New Leads </h3>
-        <?php 
-        if (!empty($leads)) {
-            echo '<p>The latest incoming contacts, that have not been claimed yet.<p>';
-            foreach ($leads as $lead) {
-                echo '<p>' . $this->Html->link('Assign', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'edit', $lead['Contact']['id']), array('class' => 'btn btn-mini btn-primary')) . ' ' . $this->Html->link($lead['Contact']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $lead['Contact']['id'])) . ' ' . date('M d, Y', strtotime($lead['Contact']['created'])) . '</p>';
-            }
-            echo '<hr />';
-        } else {
-            echo '<p>No unassigned leads, check back soon.</p><hr />';
-        }
-    
-        if (!empty($leadActivities)) { 
-            echo '<h4>Leads over time</h4>'; 
-           // echo $this->Chart->time(); ?>
-            
-            <script type="text/javascript">
-            // leads chart @todo, once you have daily data convert this to zoomable too (like the above)
-            var chart;
-            $(document).ready(function() {
-                chart = new Highcharts.Chart({
-                    chart: {
-                        renderTo: 'leadsTime',
-                        type: 'spline'
-                    },
-                    credits: false,
-                    title: {
-                        text: false
-                    },
-                    subtitle: {
-                        text: false
-                    },
-                    xAxis: {
-                        type: 'datetime',
-                        dateTimeLabelFormats: { // don't display the dummy year
-                            month: '%e. %b',
-                            year: '%b'
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: false
-                        },
-                        min: 0
-                    },
-                    tooltip: {
-                        formatter: function() {
-                                return '<b>'+ this.series.name +'</b><br/>'+
-                                Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y +' m';
-                        }
-                    },
-
-                    series: [{
-                        name: 'Leads',
-                        // Define the data points. All series have a dummy year
-                        // of 1970/71 in order to be compared on the same x axis. Note
-                        // that in JavaScript, months start at 0 for January, 1 for February etc.
-                        data: [
-                        <?php 
-                        foreach ($leadActivities as $leadGroup) { ?>
-                            [Date.UTC(<?php echo date('Y, n-1, d', strtotime($leadGroup['Activity']['created'])); ?>),   <?php echo $leadGroup['Activity']['COUNT(`Activity`.`created`)']; ?>],
-                        <?php } ?>
-                        ]
-                    }]
-                });
-            });
-            </script>
-            <div id="leadsTime" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
-        <?php
-        } ?>
-    </div>
-    
-    <?php 
-    if (!empty($estimates)) : ?>
-	    <div class="masonryBox dashboardBox tagOpportunities">
-	        <h3 class="title"><i class="icon-th-large"></i>Opportunities </h3>
-	       	<div class="alert alert-success clearfix">
-	       		<div class="pull-left"> 
-	       			<?php echo ZuhaInflector::pricify($estimates['_subTotal']); ?> Out
-	       			<h1> $<?php echo ZuhaInflector::pricify($estimates['_total']); ?></h1>
-	       		</div>
-	       	<div class="pull-right">
-	       		Est. Conversion 
-	       		<h1> <?php echo intval($estimates['_multiplier']); ?>%</h1>
-	       	</div>
+<div class="contacts dashboard">
+	
+	<div class="alert alert-success clearfix row">
+		<div class="text-left col-sm-4">
+			
+	        <h3 class="title"><i class="icon-th-large"></i> Search Contacts </h3>
+	        <?php   
+	        echo $this->Element('forms/search', array('formsSearch' => array(
+	        	'formOptions' => array(
+					'class' => 'form',
+					'url' => '/contacts/contacts/index'
+					),
+	            'inputs' => array(
+	                array(
+	                    'name' => 'contains:name', 
+	                    'options' => array(
+	                        'label' => '', 
+	                        'placeholder' => 'Type Your Search and Hit Enter',
+	                        'class' => 'input-lg'
+	                        )
+	                    ),
+	                )
+	            ))); ?>
+	        <hr />
+			<p>
+				With <strong><?php echo ZuhaInflector::pricify($estimates['_subTotal'], array('currency' => 'USD')); ?></strong> worth of opportunities out, 
+				we might estimate <strong><?php echo ZuhaInflector::pricify(round(($estimates['_subTotal'] * ($estimates['_conversion'] / 100)), 3), array('currency' => 'USD')); ?></strong>,
+				to actually be closed, over the next <strong><?php echo $estimates['_cycle']; ?> days</strong>, based on our current conversion rate of <strong><?php echo $estimates['_conversion']; ?>%</strong>,
+				for proposals and our average time from proposal to sale.
+			</p>
+	    	<h3>Leads per week</h3>
+	      	<?php echo $this->Chart->time($leadActivities, array('dataTarget' => 'leadsTime')); ?>
+	      	
+	      	<div id="leadsTime" style="height: 150px"></div>
 		</div>
-		<div class="alert alert-info clearfix">
-			<div class="pull-left">
-				<?php echo ZuhaInflector::pricify($estimates['_subTotal']); ?> Out
-				<h1> $<?php echo ZuhaInflector::pricify(round(($estimates['_subTotal'] * ($estimates['_conversion'] / 100)), 3)); ?></h1>
-			</div>
-			<div class="pull-right">
-				Act. Conversion
-				<h1><?php echo $estimates['_conversion']; ?>%</h1>
-			</div>
-		</div>
-		<div style="max-height: 200px; overflow: scroll;">
-	        <?php
-	        unset($estimates['_subTotal']);
-	        unset($estimates['_multiplier']);
-	        unset($estimates['_total']);
-	        foreach ($estimates as $estimate) :
-	        	if (!empty($estimate['Estimate'])) : ?>
-	        		<div class="media">
-	        			<?php echo $this->Html->link('Close', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'edit', $estimate['Estimate']['id']), array('class' => 'btn btn-mini btn-primary pull-left')); ?>
-	        			<div class="media-body">
-	        				<?php echo $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $estimate['Estimate']['foreign_key']), array('escape' => false)); ?>
-	        			</div>
-	        		</div>
+	
+	
+	    <?php if (!empty($leadActivities)) : ?>
+	    	<div class="col-sm-8">
+				<?php //$__userId = 67; ?>
+				<?php if (!empty($myRatings[$__userId])) : ?>
+					<h5><?php echo $myRatings[$__userId]['Assignee']['full_name']; ?>'s Trailing Six Month Stats</h5>
+					<?php $ratings = $myRatings[$__userId]; ?>
+					<ul class="list-group">
+						<?php echo __('<li class="list-group-item">%s leads <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leads'], $ratings['Assignee']['_leads_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s sales <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_sales'], $ratings['Assignee']['_sales_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s proposals <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_proposals'], $ratings['Assignee']['_proposals_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s dollars proposed <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_total'], array('currency' => 'USD')), $ratings['Assignee']['_total_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s dollars sold <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_sold'], array('currency' => 'USD')), $ratings['Assignee']['_sold_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s days average cycle <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_cycle'], $ratings['Assignee']['_cycle_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s average prop <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageProposal'], array('currency' => 'USD')), $ratings['Assignee']['_averageProposal_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s average sale <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageSale'], array('currency' => 'USD')), $ratings['Assignee']['_averageSale_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s&#37; lead to prop <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leadToProposal'], $ratings['Assignee']['_leadToProposal_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s&#37; prop to sale <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_proposalToSale'], $ratings['Assignee']['_proposalToSale_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s&#37; lead to sale <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leadToSale'], $ratings['Assignee']['_leadToSale_rank'], count($myRatings)); ?>
+					</ul>
 				<?php endif; ?>
-			<?php endforeach; ?>
-        </div><hr />
+	
+				<?php if ($__userId == 1) : ?>
+					<div class="row">
+					<?php foreach ($myRatings as $key => $ratings) : ?>
+						<div class="col-sm-4">
+							<strong><?php echo $myRatings[$key]['Assignee']['full_name']; ?></strong>
+							<ul class="list-group">
+								<?php echo __('<li class="list-group-item">%s leads <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leads'], $ratings['Assignee']['_leads_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s sales <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_sales'], $ratings['Assignee']['_sales_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s proposals <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_proposals'], $ratings['Assignee']['_proposals_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s proposed <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_total'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_total_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s sold <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_sold'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_sold_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s avg cycle <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_cycle'], $ratings['Assignee']['_cycle_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s avg prop <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageProposal'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_averageProposal_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s avg sale <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageSale'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_averageSale_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s&#37; lead2prop <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leadToProposal'], $ratings['Assignee']['_leadToProposal_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s&#37; prop2sale <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_proposalToSale'], $ratings['Assignee']['_proposalToSale_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s&#37; lead2sale <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leadToSale'], $ratings['Assignee']['_leadToSale_rank'], count($myRatings)); ?>
+							</ul>
+						</div>
+					<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
+	    	</div>
+		<?php endif; ?>
+	</div>
+		
+    <?php if (!empty($leads)) : ?>
+    	<div class="col-lg-4">
+        	<h3 class="title"><span class="label label-primary">Attention!</span> New Leads </h3>
+        	<p>The latest incoming contacts, that have not been claimed yet.<p>
+        	<?php foreach ($leads as $lead) : ?>
+                <?php echo '<p>' . $this->Html->link('Assign', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'edit', $lead['Contact']['id']), array('class' => 'btn btn-mini btn-xs btn-primary')) . ' ' . $this->Html->link($lead['Contact']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $lead['Contact']['id'])) . ' ' . date('M d, Y', strtotime($lead['Contact']['created'])) . '</p>'; ?>
+            <?php endforeach; ?>
+           	<hr />
+		</div>
 	<?php endif; ?>
-	<?php
-        if (!empty($estimateActivities)) { 
-            echo '<h4>Opportunities over time</h4>'; ?>
-            <div id="estimates_over_time"></div>
-            <script type="text/javascript">
-            // leads chart @todo, once you have daily data convert this to zoomable too (like the above)
-            var chart;
-            $(document).ready(function() {
-                chart = new Highcharts.Chart({
-                    chart: {
-                        renderTo: 'estimatesTime',
-                        type: 'spline'
-                    },
-                    credits: false,
-                    title: {
-                        text: false
-                    },
-                    subtitle: {
-                        text: false
-                    },
-                    xAxis: {
-                        type: 'datetime',
-                        dateTimeLabelFormats: { // don't display the dummy year
-                            month: '%e. %b',
-                            year: '%b'
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: false
-                        },
-                        min: 0
-                    },
-                    tooltip: {
-                        formatter: function() {
-                                return '<b>'+ this.series.name +'</b><br/>'+
-                                Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y +' m';
-                        }
-                    },
-
-                    series: [{
-                        name: 'Opportunities',
-                        // Define the data points. All series have a dummy year
-                        // of 1970/71 in order to be compared on the same x axis. Note
-                        // that in JavaScript, months start at 0 for January, 1 for February etc.
-                        data: [
-                        <?php 
-                        foreach ($estimateActivities as $estimateGroup) { ?>
-                            [Date.UTC(<?php echo date('Y, n-1, d', strtotime($estimateGroup['Activity']['created'])); ?>),   <?php echo $estimateGroup['Activity']['COUNT(`Activity`.`created`)']; ?>],
-                        <?php } ?>
-                        ]
-                    }]
-                });
-            });
-            </script>
-            <div id="estimatesTime" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
-    </div>
-    <?php
-        } ?>
     
     
-    <div class="masonryBox dashboardBox tagActivities">
-        <h3 class="title"><i class="icon-th-large"></i> Search Contacts </h3>
-        <?php   
-        echo $this->Element('forms/search', array('forms_search' => array(
-            'url' => '/contacts/contacts/index/', 
-            'inputs' => array(
-                array(
-                    'name' => 'contains:name', 
-                    'options' => array(
-                        'label' => '', 
-                        'placeholder' => 'Type Your Search and Hit Enter'
-                        )
-                    ),
-                )
-            ))); ?>
-    </div>
-    
-    
-    <?php 
-  if (!empty($tasks)) { ?>
-  <div class="masonryBox dashboardBox tagTasks">
-      <h3 class="title"><i class="icon-th-large"></i> Reminders </h3>
-      <?php
-      echo '<p>A list of scheduled follow ups.</p><table>';
-      foreach ($tasks as $task) {
-      	echo '<tr><td>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'complete', $task['Task']['id']), array('class' => 'btn btn-mini btn-primary')) . '</td><td> ' . $this->Html->link($task['Task']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $task['Task']['foreign_key']), array('escape' => false)) . ', by ' . date('M d', strtotime($task['Task']['due_date'])) . '</td></tr>';
-      }
-	  echo '</table>'; ?>
-  </div>
-  
-  <?php
-  } ?>
-    
-    
-    <?php 
-  if (!empty($myContacts)) { ?>
-  <div class="masonryBox dashboardBox tagMyContacts">
+    <?php if (!empty($myContacts)) : ?>
+	<div class="col-sm-4">
       <h3 class="title"><i class="icon-th-large"></i> My Contacts </h3>
       <p>The last five contacts assigned to you.</p>
-    <?php
-    foreach ($myContacts as $contact) {
-      echo '<p>' . $this->Html->link($contact['Contact']['name'], array('action' => 'view', $contact['Contact']['id'])) . '</p>';
-    } ?>
-    <p class="pull-right"><?php echo $this->Html->link('View all of your contacts here', array('action' => 'index', 'filter' => 'assignee_id:' . $this->Session->read('Auth.User.id'))); ?></p>
-  </div>
-  <?php
-  } ?>
+    	<?php foreach ($myContacts as $contact) : ?>
+      		<?php echo '<p>' . $this->Html->link($contact['Contact']['name'], array('action' => 'view', $contact['Contact']['id'])) . '</p>'; ?>
+   		<?php endforeach; ?>
+    	<p class="pull-right"><?php echo $this->Html->link('View all of your contacts here', array('action' => 'index', 'filter' => 'assignee_id:' . $this->Session->read('Auth.User.id'))); ?></p>
+	</div>
+	<?php endif; ?>
+	
+    
+    <?php if (!empty($estimates)) : ?>
+	    <div class="col-sm-4">
+	        <h3 class="title"><i class="icon-th-large"></i>All Open Proposals </h3>
+			<div style="max-height: 200px; overflow: scroll;">
+		        <?php unset($estimates['_subTotal']); ?>
+		        <?php unset($estimates['_multiplier']); ?>
+		       	<?php unset($estimates['_total']); ?>
+		        <?php foreach ($estimates as $estimate) : ?>
+		        	<?php if (!empty($estimate['Estimate'])) : ?>
+		        		<div class="media">
+		        			<?php echo $this->Html->link('Close', array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'edit', $estimate['Estimate']['id']), array('class' => 'btn btn-mini btn-xs btn-primary pull-left')); ?>
+		        			<div class="media-body">
+		        				<?php echo $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $estimate['Estimate']['foreign_key']), array('escape' => false)); ?>
+		        			</div>
+		        		</div>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	<?php endif; ?>
+	
+	
+	<?php if (!empty($estimateActivities)) : ?>
+	    <div class="col-sm-4">
+    		<h3>Proposals by Week</h3>
+            <?php echo $this->Chart->time($estimateActivities, array('dataTarget' => 'estimatesTime')); ?>
+            <div id="estimatesTime" style="height: 250px;"></div>
+    	</div>
+    <?php endif; ?>
+    
+    
+    <?php if (!empty($tasks)) : ?>
+	<div class="col-sm-4">
+		<h3> Reminders </h3>
+	      <?php
+	      echo '<p>A list of scheduled follow ups.</p><table>';
+	      foreach ($tasks as $task) {
+	      	echo '<tr><td>' . $this->Html->link('Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'complete', $task['Task']['id']), array('class' => 'btn btn-mini btn-xs btn-primary')) . '</td><td> ' . $this->Html->link($task['Task']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $task['Task']['foreign_key']), array('escape' => false)) . ', by ' . date('M d', strtotime($task['Task']['due_date'])) . '</td></tr>';
+	      }
+		  echo '</table>'; ?>
+	</div>
+	<?php endif; ?>
     
     
     <?php if (!empty($activities)) : ?>
-	<div class="masonryBox dashboardBox tagActivities">
-		<h3 class="title"><i class="icon-th-large"></i> Weekly Activity <small>(26 weeks)</small> </h3>
+	<div class="row">
+		<h3> Weekly Activity <small>(26 weeks)</small> </h3>
 		<?php $rActivities = array_reverse($activities); ?>
 		<?php for ($i = 0; $i <= 4; $i++) : ?>
 			<?php echo !empty($rActivities[$i]['Activity']['name']) ? '<p>' . $this->Html->link($rActivities[$i]['Activity']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $rActivities[$i]['Activity']['foreign_key'])) . '</p>' : null; ?>
@@ -237,8 +163,8 @@
       	<?php echo $this->Chart->time($activities, array('dataTarget' => 'activityTime')); ?>
     	<div id="activityTime" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
     	<p class="pull-right"><?php echo $this->Html->link(__('All of Today\'s Activity'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activities', 'contains' => 'created:' . date('Y-m-d'))); ?></p>
-	<?php endif; ?>
 	</div>
+    <?php endif; ?>
     
 </div>
 
@@ -254,7 +180,6 @@ $this->set('context_menu', array('menus' => array(
   array(
     'heading' => '',
     'items' => array(
-      $this->Html->link(__('Leads'), array('plugin' => 'contacts', 'controller'=> 'contacts', 'action' => 'index', 'filter' => 'contact_type:lead')),
       $this->Html->link(__('Companies'), '/contacts/contacts/index/filter:is_company:1/filter:contact_type:customer'),
       $this->Html->link(__('People'), '/contacts/contacts/index/filter:is_company:0'),
       ),

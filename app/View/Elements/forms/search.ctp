@@ -15,6 +15,7 @@ if (!empty($formsSearch)) {
 	$formOptions['class'] = !empty($formOptions['class']) ? $formOptions['class'] : 'form-inline index-form navbar-form';
 	$formOptions['url'] = !empty($formOptions['url']) ? $formOptions['url'] : Router::normalize($action)  . '/';
 	$formOptions['type'] = !empty($formOptions['type']) ? $formOptions['type'] : 'get';
+	$formOptions['id'] = !empty($formOptions['id']) ? $formOptions['id'] : 'form' . rand(5500, 89000);
 	
 	echo $this->Form->create('', $formOptions);
 	foreach ($inputs as $input) {
@@ -24,10 +25,10 @@ if (!empty($formsSearch)) {
 		
 	<script type="text/javascript">
 	$(function() {
-		$('.index-form').submit(function() {
+		$('#<?php echo $formOptions['id']; ?>').submit(function() {
 			var $url = '';
 			var $href = $(this).attr("action");
-			$('.index-form input[type=text], .index-form select').each(function(index) {
+			$('#<?php echo $formOptions['id']; ?> input[type=text], #<?php echo $formOptions['id']; ?> select').each(function(index) {
 				if (!$(this).val()) {
 					$href = $href.replace($(this).attr('name') + ':', '');
 				} else if ($href.indexOf($(this).attr('name')) != -1) {
@@ -37,10 +38,10 @@ if (!empty($formsSearch)) {
 					$url = $url + $(this).attr('name') + ':' + $(this).val() + '/';	
 				}
 			});
-			$location = $href + $url;
+			$location = $href + '/' + $url;
 			$location = $location.replace(new RegExp('//', 'g'), '/'); // normalize the url
 			window.location = $location;
-			return false;	
+			return false;
 		});
 	});
 	</script>
