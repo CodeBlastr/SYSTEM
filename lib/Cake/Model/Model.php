@@ -1759,7 +1759,7 @@ class Model extends Object implements CakeEventListener {
 				$this->set($updateCol, $time);
 			}
 		}
-
+		
 		if ($options['callbacks'] === true || $options['callbacks'] === 'before') {
 			$event = new CakeEvent('Model.beforeSave', $this, array($options));
 			list($event->break, $event->breakOn) = array(true, array(false, null));

@@ -32,16 +32,13 @@ $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
 $showEmpty = isset($showEmpty) ? $showEmpty : true;
 $defaultImage = !empty($defaultImage) ? $defaultImage : '/img/noImage.jpg';
 
+$title = isset($title) ? array('title' => $title) : array();
 // default sizes
 $indexWidth = !empty($galleryThumb['GallerySettings']['indexImageWidth']) ? $galleryThumb['GallerySettings']['indexImageWidth'] : 24;
 $indexHeight = !empty($galleryThumb['GallerySettings']['indexImageHeight']) ? $galleryThumb['GallerySettings']['indexImageHeight'] : 24;
-
-
-$title = isset($title) ? array('title' => $title) : array();
-$thumbWidth = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageWidth']) ? $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'] : $indexWidth;
-$thumbHeight = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageHeight']) ? $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'] : $indexHeight;
+$thumbWidth = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageWidth']) && empty($thumbWidth) ? $galleryThumb['GallerySettings'][$thumbSize.'ImageWidth'] : $thumbWidth;
+$thumbHeight = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageHeight']) && empty($thumbHeight) ? $galleryThumb['GallerySettings'][$thumbSize.'ImageHeight'] : $thumbHeight;
 // if the width was defined in the element call
-
 $thumbWidth = !empty($thumbWidth) ? array('width' => $thumbWidth) : array('width' => $indexWidth);
 $thumbHeight = !empty($thumbHeight) ? array('height' => $thumbHeight) : array('height' => $indexHeight);
 $thumbAlt = !empty($thumbAlt) ? array('alt' => $thumbAlt) : array('alt' => $model);
@@ -58,8 +55,8 @@ if (!empty($galleryThumb['GalleryThumb']['filename'])) {
 	
 	$image = !empty($galleryThumb['GalleryThumb']['_embed']) ? 
 		// video support
-		'<iframe height="' . $galleryThumb['GallerySettings'][$thumbSize . 'ImageHeight'] . '" width="' . $galleryThumb['GallerySettings'][$thumbSize . 'ImageWidth'] . '" src="' . $galleryThumb['GalleryThumb']['_embed'] . '?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe>' : 
-		
+		'<iframe height="' . $galleryThumb['GallerySettings'][$thumbSize . 'ImageHeight'] . '" width="' . $thumbWidth . '" src="' . $galleryThumb['GalleryThumb']['_embed'] . '?showinfo=0&controls=0" frameborder="0" allowfullscreen></iframe>' : 
+		//debug($thumbImageOptions);
 		$this->Html->image($imagePath, $thumbImageOptions,	array(
 	    	'conversion' => $conversionType,
 			'quality' => 75,

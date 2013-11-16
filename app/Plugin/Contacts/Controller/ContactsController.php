@@ -163,24 +163,18 @@ class AppContactsController extends ContactsAppController {
 		$this->set('estimates', in_array('Estimates', CakePlugin::loaded()) ? $this->paginate('Contact.Estimate', array('Estimate.foreign_key' => $id, 'Estimate.model' => 'Contact')) : null);
 		
 		// vars for activities
-		unset($this->paginate);
-		$this->paginate = array('fields' => array('Activity.id', 'Activity.name', 'Activity.created', 'Activity.creator_id', 'Creator.id', 'Creator.full_name'), 'contain' => array('Creator'));
-		$this->set('activities', in_array('Activities', CakePlugin::loaded()) ? $this->paginate('Contact.Activity', array('Activity.foreign_key' => $id, 'Activity.model' => 'Contact', 'Activity.action_description !=' => 'lead created')) : null);
+		$this->set('activities', CakePlugin::loaded('Activities') ? $this->Contact->Activity->find('all', array('conditions' => array('Activity.foreign_key' => $id, 'Activity.model' => 'Contact', 'Activity.action_description !=' => 'lead created'), 'order' => array('Activity.created' => 'DESC'))) : null);
 		
 		// vars for reminders
-		unset($this->paginate);
-		$this->paginate = array('fields' => array('Task.id', 'Task.name', 'Task.due_date', 'Task.assignee_id', 'Assignee.id', 'Assignee.full_name'), 'contain' => array('Assignee'));
-		$this->set('tasks', in_array('Tasks', CakePlugin::loaded()) ? $this->paginate('Contact.Task', array('Task.foreign_key' => $id, 'Task.model' => 'Contact', 'Task.is_completed' => 0)) : null);
+		$this->set('tasks', CakePlugin::loaded('Tasks') ? $this->Contact->Task->find('all', array('conditions' => array('Task.foreign_key' => $id, 'Task.model' => 'Contact', 'Task.is_completed' => 0))) : null);
 		
 		// view vars
 		$this->set('people', $this->Contact->Employer->findPeople('list'));
-		$this->set('modelName', 'Contact');
-		$this->set('displayName', 'name');
-		$this->set('displayDescription', '');
-		$this->set('page_title_for_layout', __('%s %s', $contact['Contact']['name'], !empty($contact['Assignee']['full_name']) ? __('<br /><small>%s is responsible for this %s %s.</small>', $contact['Assignee']['full_name'], $contact['Contact']['contact_rating'], $contact['Contact']['contact_type']) : '<br /><small>Unassigned</small>'));
+		$this->set('page_title_for_layout', $contact['Contact']['name']);
 		$this->set('title_for_layout',  $contact['Contact']['name']);
 		$this->set('loggedActivities', $this->Contact->activities(array('foreign_key' => $id, 'start_date' => $contact['Contact']['created'])));
 		$this->set('loggedEstimates', $this->Contact->estimates($id));
+		$this->set('contactDetailTypes', $contactDetailTypes = $this->Contact->ContactDetail->types());
 		
 		// which view file to use
 		!empty($contact['Contact']['is_company']) ? $this->render('view_company') : $this->render('view_person');
@@ -437,8 +431,12 @@ class AppContactsController extends ContactsAppController {
 		
 		// list of activities
 		$this->set('myContacts', $this->Contact->find('all', array('conditions' => array('Contact.assignee_id' => $this->Session->read('Auth.User.id')), 'limit' => 5, 'order' => 'Contact.created DESC')));
+		
+		// list of my ratings
+		$this->set('myRatings', $myRatings = $this->Contact->myRatings());
 
-		$this->set('page_title_for_layout', 'CRM Dashboard');
+		$this->set('page_title_for_layout', __('%s Sales Dashboard', __SYSTEM_SITE_NAME));
+		$this->set('title_for_layout', __('%s Sales Dashboard', __SYSTEM_SITE_NAME));
 	}
 }
 
