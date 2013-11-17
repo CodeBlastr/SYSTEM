@@ -295,7 +295,7 @@ if (empty($runUpdates)) { ?>
         #echo __('<li>Table %s is %s</li>', $table, $action);
 		switch ( $action ) {
 			case ('up to date'):
-				$class = '';
+				$class = ' label-primary';
 				break;
 			case ('updated'):
 				$class = ' label-success';

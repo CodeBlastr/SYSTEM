@@ -510,9 +510,7 @@ class AppContact extends ContactsAppModel {
  */
  	public function leadActivities() {
 		$return = null;
-		if (in_array('Activities', CakePlugin::loaded())) {
-			
-			
+		if (CakePlugin::loaded('Activities')) {
 			$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'lead created' AND `Activity`.`model` = 'Contact' ".$foreignKeyQuery." GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
 			for ($i=0; $i < count($results); $i++) {
 				$return[] = $results[$i][0];
@@ -724,28 +722,31 @@ class AppContact extends ContactsAppModel {
  */
 	public function estimateActivities($foreignKey = null) {
 		$return = null;
-		$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'estimate created' AND `Activity`.`model` = 'Estimate' ".$foreignKeyQuery." GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
-			for ($i=0; $i < count($results); $i++) {
-				$return[] = $results[$i][0];
-			}
-		// if (in_array('Activities', CakePlugin::loaded())) {
-			// $return = $this->Activity->find('all', array(
-				// 'conditions' => array(
-					// 'Activity.action_description' => 'estimate created',
-					// 'Activity.model' => 'Estimate',
-					// ),
-				// 'fields' => array(
-					// 'COUNT(Activity.created)',
-					// 'Activity.created',
-					// ),
-				// 'group' =>  array(
-					// 'DATE(Activity.created)',
-					// ),
-				// 'order' => array(
-					// 'Activity.created' => 'ASC',
-					// )
-				// ));
-		// }
+		
+		if (CakePlugin::loaded('Activities')) {
+			$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'estimate created' AND `Activity`.`model` = 'Estimate' ".$foreignKeyQuery." GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
+				for ($i=0; $i < count($results); $i++) {
+					$return[] = $results[$i][0];
+				}
+			// if (in_array('Activities', CakePlugin::loaded())) {
+				// $return = $this->Activity->find('all', array(
+					// 'conditions' => array(
+						// 'Activity.action_description' => 'estimate created',
+						// 'Activity.model' => 'Estimate',
+						// ),
+					// 'fields' => array(
+						// 'COUNT(Activity.created)',
+						// 'Activity.created',
+						// ),
+					// 'group' =>  array(
+						// 'DATE(Activity.created)',
+						// ),
+					// 'order' => array(
+						// 'Activity.created' => 'ASC',
+						// )
+					// ));
+			// }
+		}
 		
 		return $return;
 	}

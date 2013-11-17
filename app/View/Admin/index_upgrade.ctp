@@ -15,6 +15,4 @@ for ($i = 0; $i < count($syncd); $i++) {
 $this->set('context_crumbs', array('crumbs' => array(
 	$this->Html->link('Admin Dashboard', '/admin'),
 	'Updates'
-	)))
-
-?>
+	)));
