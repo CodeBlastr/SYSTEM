@@ -104,7 +104,7 @@ class AppUsersController extends UsersAppController {
 				'User.id' => $id
 				),
 			'contain' => array(
-				'UserGroup',
+				'UserRole',
 				),
 			));
 

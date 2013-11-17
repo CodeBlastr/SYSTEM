@@ -26,20 +26,22 @@
 	            ))); ?>
 	        <hr />
 			<p>
-				With <strong><?php echo ZuhaInflector::pricify($estimates['_subTotal'], array('currency' => 'USD')); ?></strong> worth of opportunities out, 
+				With <strong><?php echo !empty($estimates['_subTotal']) ? ZuhaInflector::pricify($estimates['_subTotal'], array('currency' => 'USD')) : '$0.00'; ?></strong> worth of opportunities out, 
 				we might estimate <strong><?php echo ZuhaInflector::pricify(round(($estimates['_subTotal'] * ($estimates['_conversion'] / 100)), 3), array('currency' => 'USD')); ?></strong>,
-				to actually be closed, over the next <strong><?php echo $estimates['_cycle']; ?> days</strong>, based on our current conversion rate of <strong><?php echo $estimates['_conversion']; ?>%</strong>,
-				for proposals and our average time from proposal to sale.
+				to actually be closed, over the next <strong><?php echo !empty($estimates['_cycle']) ? $estimates['_cycle'] : '0'; ?> days</strong>, based on our current conversion rate of 
+				<strong><?php echo !empty($estimates['_conversion']) ? $estimates['_conversion'] : '0'; ?>%</strong>,	for proposals and our average time from proposal to sale.
 			</p>
-	    	<h3>Leads per week</h3>
-	      	<?php echo $this->Chart->time($leadActivities, array('dataTarget' => 'leadsTime')); ?>
-	      	
-	      	<div id="leadsTime" style="height: 150px"></div>
+			
+	    	<?php if (!empty($leadActivities)) : ?>
+	    		<h3>Leads per week</h3>
+	      		<?php echo $this->Chart->time($leadActivities, array('dataTarget' => 'leadsTime')); ?>
+	      		<div id="leadsTime" style="height: 150px"></div>
+	      	<?php endif; ?>
 		</div>
 	
 	
-	    <?php if (!empty($leadActivities)) : ?>
-	    	<div class="col-sm-8">
+	    <div class="col-sm-8">
+		    <?php if (!empty($leadActivities)) : ?>
 				<?php //$__userId = 67; ?>
 				<?php if (!empty($myRatings[$__userId])) : ?>
 					<h5><?php echo $myRatings[$__userId]['Assignee']['full_name']; ?>'s Trailing Six Month Stats</h5>
@@ -81,8 +83,18 @@
 					<?php endforeach; ?>
 					</div>
 				<?php endif; ?>
-	    	</div>
-		<?php endif; ?>
+		    <?php else : ?>
+		    	<h2>No sales data to show.</h2>
+		    	<p>
+		    		Sales data gets populated automatically by creating <?php echo $this->Html->link('estimates', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'estimates')); ?>
+		    		<?php echo $this->Html->link('leads', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'add')); ?>
+		    		<?php echo $this->Html->link('reminders', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'tasks')); ?> 
+		    		and tracking
+		    		<?php echo $this->Html->link('activities', array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'activity')); ?>
+		    		.
+		    	</p>
+			<?php endif; ?>
+	    </div>
 	</div>
 		
     <?php if (!empty($leads)) : ?>
