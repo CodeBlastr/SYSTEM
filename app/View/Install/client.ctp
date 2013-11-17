@@ -256,6 +256,16 @@ span.icon {
 footer {
 	margin-top: 10em;
 }
+
+#UserRoleClientForm {
+	position: relative;
+}
+#UserRoleClientForm div.checkbox {
+	position: absolute;
+	top: 2em;
+	white-space: nowrap;
+	left: 2.6em;
+}
 </style>
 
 <div class="install form" id="install">
@@ -286,6 +296,7 @@ footer {
 		  		<div class="span4 col-md-4 text-right">
 			        <?php echo $this->Form->create('UserRole', array('class' => 'form-inline', 'url' => array('plugin' => 'users', 'controller' => 'user_roles', 'action' => 'add'))); ?>
 					<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+					<?php echo $this->Form->input('UserRole.is_registerable', array('label' => '<small> Can guests fill a registration form to join this user role?</small>', 'default' => 1)); ?>
 					<?php echo $this->Form->input('UserRole.name', array('label' => false, 'placeholder' => 'Add user type (eg. paid-users)', 'style' => 'width: 200px', 'class' => 'input-sm')); ?>
 					<?php echo $this->Form->end(array('label' => 'Add', 'class' => 'btn-sm')); ?>
 				</div>

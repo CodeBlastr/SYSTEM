@@ -2,7 +2,6 @@
 	<?php echo $this->Form->create('User', array('type' => 'file')); ?>
 	<?php echo $this->Form->input('Contact.id', array('type' => 'hidden')); ?>  
 	<fieldset>
-		<legend><h2><?php echo __('Register'); ?></h2></legend>
 		<?php echo $this->Form->input('User.contact_type', array('type' => 'hidden')); ?>
 		<?php echo $this->Form->input('User.referal_code', array('type' => 'hidden')); ?>
 		<?php echo !empty($userRoleId) ? $this->Form->hidden('User.user_role_id', array('value' => $userRoleId)) : $this->Form->input('User.user_role_id'); ?>

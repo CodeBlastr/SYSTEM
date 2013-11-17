@@ -251,8 +251,10 @@ class AppUsersController extends UsersAppController {
 		$this->request->data['Contact']['id'] = !empty($this->request->params['named']['contact']) ? $this->request->params['named']['contact'] : null;
 		$this->request->data['User']['referal_code'] = isset($this->request->params['named']['referal_code']) && !empty($this->request->params['named']['referal_code']) ? $this->request->params['named']['referal_code'] : null;
 		$this->set(compact('userRoleId', 'userRoles'));
+		$title = !empty($userRoles[$userRoleId]) ? Inflector::humanize($userRoles[$userRoleId]) . ' Registration' : 'User Registration';
 		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
-		$this->set('title_for_layout', 'Register | ' . __SYSTEM_SITE_NAME);
+		$this->set('title_for_layout', $title . ' | ' . __SYSTEM_SITE_NAME);
+		$this->set('page_title_for_layout', $title);
 	}
 
 /**
