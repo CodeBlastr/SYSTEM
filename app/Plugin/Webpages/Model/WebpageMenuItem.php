@@ -176,6 +176,10 @@ class WebpageMenuItem extends WebpagesAppModel {
 			}
 		}
 		
+		if (!empty($data['WebpageMenuItem']['parent_id']) && empty($data['WebpageMenuItem']['user_role_id'])) {
+			$data['WebpageMenuItem']['user_role_id'] = $this->field('user_role_id', array($this->alias.'.id' => $data['WebpageMenuItem']['parent_id']));
+		}
+
 		if (!empty($data['ChildMenuItem'][0])) {
 			for ($i = 0; $i < count($data['ChildMenuItem']); ++$i) {
 				if (empty($data['ChildMenuItem'][$i]['user_role_id']) && !empty($data['WebpageMenuItem']['user_role_id'])) {

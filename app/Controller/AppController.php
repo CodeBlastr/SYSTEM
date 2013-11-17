@@ -69,8 +69,7 @@ class AppController extends Controller {
 		'Session',
 		'RequestHandler',
 		'Cookie',
-		'FormSecurity',
-		'Paginator'
+		'FormSecurity'
 	);
 
 /**

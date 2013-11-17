@@ -34,7 +34,7 @@ class ConditionsController extends AppController {
 
 	function index() {
 		//$this->Condition->recursive = 0;
-		$this->set('conditions', $this->Paginator->paginate());
+		$this->set('conditions', $this->paginate());
 	}
 
 	public function view($id = null) {
