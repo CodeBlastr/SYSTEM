@@ -28,10 +28,13 @@ App::uses('AppController', 'Controller');
 class ConditionsController extends AppController {
 
 	public $name = 'Conditions';
+	
+    public $uses = array('Condition');
+	
 
 	function index() {
-		$this->Condition->recursive = 0;
-		$this->set('conditions', $this->paginate());
+		//$this->Condition->recursive = 0;
+		$this->set('conditions', $this->Paginator->paginate());
 	}
 
 	public function view($id = null) {
