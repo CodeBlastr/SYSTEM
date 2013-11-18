@@ -190,4 +190,10 @@ input[type=radio], input[type=checkbox] {
     color: #EEE;
     font-size: 10px;
 }
+
+/* code mirror */
+.CodeMirror-lines div {
+	display: block !important;
+}
+
     
