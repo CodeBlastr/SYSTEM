@@ -230,7 +230,7 @@ class AppUsersController extends UsersAppController {
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force();
 		endif;
-		if (!empty($this->request->data)) {
+		if ($this->request->is('post')) {
 			if ($this->User->saveAll($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 					$this->Session->setFlash(__('Success, please check your email'));
@@ -253,6 +253,27 @@ class AppUsersController extends UsersAppController {
 		$this->set(compact('userRoleId', 'userRoles'));
 		$title = !empty($userRoles[$userRoleId]) ? Inflector::humanize($userRoles[$userRoleId]) . ' Registration' : 'User Registration';
 		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
+		$this->set('title_for_layout', $title . ' | ' . __SYSTEM_SITE_NAME);
+		$this->set('page_title_for_layout', $title);
+	}
+
+/**
+ * Procreate method
+ * 
+ * @param uuid $userRoleId
+ */
+	public function procreate($userRoleId = null) {
+		if ($this->request->is('post')) {
+			if ($this->User->procreate($this->request->data)) {
+				$this->Session->setFlash(__('User created, and email sent notifying them.'));
+				$this->redirect(array('action' => 'view', $this->User->id));
+			}
+		}
+		$userRoles = $this->User->UserRole->find('list', array('conditions' => array('UserRole.is_registerable' => 1, 'UserRole.id !=' => 1))); // remove the administrators group by default - too insecure
+		$userRoleId = count($userRoles) == 1 && empty($userRoleId) ? key($userRoles) : $userRoleId;
+		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') && empty($userRoleId) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : $userRoleId;
+		$this->set(compact('userRoleId', 'userRoles'));
+		$title = !empty($userRoles[$userRoleId]) ? Inflector::humanize($userRoles[$userRoleId]) . ' Registration' : 'User Registration';
 		$this->set('title_for_layout', $title . ' | ' . __SYSTEM_SITE_NAME);
 		$this->set('page_title_for_layout', $title);
 	}
