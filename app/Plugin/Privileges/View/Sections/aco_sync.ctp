@@ -33,13 +33,14 @@
 	<?php endif; ?>
 </div>
 
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		var pathname = window.location.pathname;
-		window.location.replace(pathname);
-	}); 
-</script>
+<?php if (CakeSession::read('Privileges.end') != $last) : ?>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			var pathname = window.location.pathname;
+			window.location.replace(pathname);
+		}); 
+	</script>
+<?php endif; ?>
 
 
 <?php
