@@ -1,96 +1,121 @@
-<?php echo $this->Html->script('https://www.google.com/jsapi', array('inline' => false)); ?>
+<div class="row">
+	<div class="well well-large pull-right last span3 col-md-5">
 
-<div class="well well-large pull-right last span3">
-	<span class="label label-info"><?php echo !empty($contact['Contact']['contact_rating']) ? Inflector::humanize($contact['Contact']['contact_rating']) : 'Unrated'; ?> <?php echo !empty($contact['Contact']['contact_type']) ? $contact['Contact']['contact_type'] : 'Uncategorized'; ?></span>
-	<span class="label label-info"><?php echo !empty($contact['Contact']['contact_industry']) ? $contact['Contact']['contact_industry'] : 'Uncategorized'; ?></span>
-	<span class="label label-info"><?php echo !empty($contact['Contact']['contact_source']) ? $contact['Contact']['contact_source'] : 'Unsourced'; ?></span>
-	<span class="label label-info"><?php echo !empty($contact['Contact']['created']) ? ZuhaInflector::datify($contact['Contact']['created']) : 'Undated'; ?></span>
-	<?php
-	if (!empty($loggedEstimates)) {
-		echo '<h5>Open Opportunity</h5>';
-		echo '<div class="alert alert-success"><h1> $'. $loggedEstimates['_total'] . '</h1></div>';
-		echo '<p> Calculated by taking the total, <strong> $'. $loggedEstimates['_subTotal'] . '</strong> and multiplying by the average likelihood of closing, <strong> ' . $loggedEstimates['_multiplier'] . '%</strong></p>';
-	}
-	if (!empty($loggedActivities)) { ?>
-		<script type="text/javascript">
-		google.load("visualization", "1", {packages:["corechart"]});
-		google.setOnLoadCallback(drawLeadsChart);
-			 
-		function drawLeadsChart() {
-			// Create and populate the data table.
-			var data = google.visualization.arrayToDataTable([
-			['x', 'Date'],
-			<?php 
-			foreach ($loggedActivities as $activity) { ?>
-				['<?php echo date('M d, Y', strtotime($activity['Activity']['created'])); ?>',   <?php echo $activity[0]['count']; ?>],
-			<?php } ?>
-			]);
-					
-			// Create and draw the visualization.
-			new google.visualization.LineChart(document.getElementById('activities_over_time')).
-				draw(data, {
-					curveType: "function",
-					width: '100%', height: 200,
-					legend: {position: 'none'},
-					chartArea: {width: '80%', height: '80%'}
-					}
-				);
-			$(".masonry").masonry("reload"); // reload the layout
-		}
-		</script>
-        
-        <h5>Activity since created</h5>
-		<div id="activities_over_time"></div>
+		<div class="col-md-12 clearfix">
+			<h4><?php echo $contact['Contact']['name']; ?>'s Details 
+				<?php echo $this->Html->link('Add Detail', array('plugin' => 'contacts', 'controller' => 'contact_details', 'action' => 'add', $contact['Contact']['id']), array('class' => 'btn btn-mini btn-xs btn-primary toggleClick', 'data-target' => '#ContactDetailAddForm')); ?>
+				<?php echo $this->Html->link(__('Add Employee'), '', array('class' => 'btn btn-xs btn-primary toggleClick addEmployeeBtn', 'data-target' => '.employeeSelect, .employeeSubmit')); ?>
+			</h4>
+						
+			<?php echo $this->Form->create('Contact', array('url' => array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'add')));?>
+			<?php echo $this->Form->hidden('Contact.is_company', array('value' => 0)); ?>
+			<?php echo $this->Form->hidden('Employer', array('value' => $contact['Contact']['id'])); ?>
+			<?php echo $this->Form->input('Contact.id', array('div' => array('class' => 'employeeSelect'), 'empty' => '-- Select --', 'type' => 'select', 'options' => $people, 'label' => __('Choose Person <small>%s</small>', $this->Html->link('(create new person)', '', array('class' => 'toggleClick', 'data-target' => '.employeeSelect, .employeeInput'))))); ?>
+			<?php echo $this->Form->input('Contact.name', array('div' => array('class' => 'employeeInput'), 'label' => 'Employee\'s Name', 'after' => __(' %s', $this->Html->link('Cancel', '', array('class' => 'toggleClick', 'data-target' => '.employeeInput, .employeeSelect'))))); ?>
+			<?php echo $this->Form->end(array('label' => 'Submit', 'class' => 'employeeSubmit'));?>
+			
+			<?php echo $this->Form->create('ContactDetail', array('id' => 'ContactDetailAddForm', 'url' => array('controller' => 'contact_details', 'action' => 'add')));?>
+			<?php echo $this->Form->input('ContactDetail.contact_id', array('type' => 'hidden', 'value' => $contact['Contact']['id'])); ?>
+			<?php echo $this->Form->input('Override.redirect', array('type' => 'hidden', 'value' => '/contacts/contacts/view/' . $contact['Contact']['id'])); ?>
+			<?php echo $this->Form->input('ContactDetail.contact_detail_type', array('label' => false)); ?>
+			<?php echo $this->Form->input('ContactDetail.value', array('type' => 'text', 'label' => false, 'placeholder' => 'Enter Detail Value')); ?>
+			<?php echo $this->Form->end(__('Submit')); ?>
+			
+			
+			<?php if (!empty($contact['ContactDetail'])) : ?>
+				<table class="table table-condensed table-fixed">
+					<tbody>
+						<?php for ($i = 0; $i < count($contact['ContactDetail']); ++$i) : ?>
+							<tr>
+								<td><small class="text-muted"><?php echo $contact['ContactDetail'][$i]['contact_detail_type']; ?></small></td>
+								<td><?php echo $contact['ContactDetail'][$i]['value']; ?></td>
+							</tr>
+						<?php endfor; ?>
+					</tbody>
+				</table>
+			<?php else : ?>
+				<p>No contact details provided.</p>
+			<?php endif; ?>
+		</div>
 		
-	<?php } ?>
-	<div class="contact form">
-		<hr />
-		<?php echo $this->Form->create('Contact', array('url' => array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'add')));?>
-		<?php echo $this->Html->link(__('Add Employee'), '', array('class' => 'btn btn-block toggleClick addEmployeeBtn', 'data-target' => '.employeeSelect, .employeeSubmit')); ?></legend>
-		    <?php
-			 echo $this->Form->hidden('Contact.is_company', array('value' => 0));
-			 echo $this->Form->hidden('Employer', array('value' => $contact['Contact']['id']));
-			 echo $this->Form->input('Contact.id', array('div' => array('class' => 'employeeSelect'), 'empty' => '-- Select --', 'type' => 'select', 'options' => $people, 'label' => __('Choose Person <small>%s</small>', $this->Html->link('(create new person)', '', array('class' => 'toggleClick', 'data-target' => '.employeeSelect, .employeeInput')))));
-			 echo $this->Form->input('Contact.name', array('div' => array('class' => 'employeeInput'), 'label' => 'Employee\'s Name', 'after' => __(' %s', $this->Html->link('Cancel', '', array('class' => 'toggleClick', 'data-target' => '.employeeInput, .employeeSelect')))));
-			 echo $this->Form->end(array('label' => 'Submit', 'class' => 'employeeSubmit'));?>
-		</fieldset>
+		<div class="col-md-12">
+			<div class="list-group">
+				<?php echo !empty($contact['Contact']['contact_rating']) ? $this->Html->link($contact['Contact']['contact_rating'] . '<span class="badge">rating</span>', array('action' => 'index', 'filter' => 'contact_rating:' . $contact['Contact']['contact_rating']), array('class' => 'list-group-item', 'escape' => false)) : '<span class="list-group-item">Unrated</span>'; ?>
+				<?php echo !empty($contact['Contact']['contact_source']) ? $this->Html->link($contact['Contact']['contact_source'] . '<span class="badge">source</span>', array('action' => 'index', 'filter' => 'contact_source:' . $contact['Contact']['contact_source']), array('class' => 'list-group-item', 'escape' => false)) : '<span class="list-group-item">Unsourced</span>'; ?>
+				<?php echo !empty($contact['Assignee']['full_name']) ? $this->Html->link($contact['Assignee']['full_name'] . '<span class="badge">assigned</span>', array('action' => 'index', 'filter' => 'assignee_id:' . $contact['Assignee']['id']), array('class' => 'list-group-item', 'escape' => false)) : '<span class="list-group-item">Unassigned</span>'; ?>
+				<?php echo !empty($contact['Contact']['created']) ? $this->Html->link(ZuhaInflector::datify($contact['Contact']['created']) . '<span class="badge">created</span>', array('action' => 'index', 'filter' => 'created:' . $contact['Contact']['created']), array('class' => 'list-group-item', 'escape' => false)) : '<span class="list-group-item">No Date</span>'; ?>
+			</div>
+		</div>
+
+		<?php if (!empty($loggedEstimates['_subTotal'])) : ?>
+		<div class="col-md-12 clearfix">
+			<h5>Open Opportunity</h5>
+			<div class="alert alert-success">
+				<h1> <?php echo ZuhaInflector::pricify($loggedEstimates['_total'], array('currency' => 'USD')); ?></h1>
+			</div>
+			<p> Calculated by taking the total, <strong><?php echo ZuhaInflector::pricify($loggedEstimates['_subTotal'], array('currency' => 'USD')); ?></strong> 
+				and multiplying by the average likelihood of closing, <strong><?php echo $loggedEstimates['_multiplier']; ?>%</strong>
+			</p>
+		</div>
+		<?php endif; ?>
+		
+		<?php if (!empty($loggedActivities)) : ?>
+		<div class="col-md-12">
+			<?php echo $this->Chart->time($loggedActivities, array('dataTarget' => 'activityTime')); ?>
+			<div id="activityTime"></div>
+		</div>
+		<?php endif; ?>
+	</div>
+	
+	<div class="contacts view span8 col-md-7">
+		
+		<?php if (!empty($estimates)) : ?>
+			<h4> Opportunities </h4>
+			<div class="list-group">
+			<?php foreach ($estimates as $estimate) : ?>
+				<div class="list-group-item">
+					<?php echo $this->Html->link($estimate['Estimate']['name'], array('plugin' => 'estimates', 'controller' => 'estimates', 'action' => 'view', $estimate['Estimate']['id'])); ?>
+				</div>
+			<?php endforeach; ?>
+			</div>
+		<?php endif; ?>
+		
+		<?php if (!empty($tasks)) : ?>
+			<h4> Reminders </h4>
+			<div class="list-group">
+			<?php foreach ($tasks as $task) : ?>
+				<div class="list-group-item">
+					<?php echo $this->Html->link($task['Task']['name'], array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'view', $task['Task']['id'])); ?>
+					<span class="badge"><?php echo ZuhaInflector::datify($task['Task']['created']); ?></span>
+				</div>
+			<?php endforeach; ?>
+			</div>
+		<?php endif; ?>
+		
+		<?php if (!empty($activities)) : ?>
+			<h4> Activities </h4>
+			<div class="list-group">
+			<?php foreach ($activities as $activity) : ?>
+				<div class="list-group-item">
+					<?php echo $this->Html->link($activity['Activity']['name'], array('plugin' => 'activities', 'controller' => 'activities', 'action' => 'view', $activity['Activity']['id'])); ?>
+					<span class="badge"><?php echo ZuhaInflector::datify($activity['Activity']['created']); ?></span>
+				</div>
+			<?php endforeach; ?>
+			</div>
+		<?php endif; ?>
+		
+		<?php if (!empty($employees)) : ?>
+			<h4> Employees </h4>
+			<div class="list-group">
+			<?php foreach ($employees as $employee) : ?>
+				<div class="list-group-item">
+					<?php echo $this->Html->link($employee['Contact']['name'], array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'view', $employee['Contact']['id'])); ?>
+				</div>
+			<?php endforeach; ?>
+			</div>
+		<?php endif; ?>	
 	</div>
 </div>
-
-<div class="contacts view pull-left span8 first">
-	<?php
-	echo '<h4>Contact Details ' . $this->Html->link('Add', array('plugin' => 'contacts', 'controller' => 'contact_details', 'action' => 'add', $contact['Contact']['id']), array('class' => 'btn btn-mini btn-primary')) . '</h4>';
-	if (!empty($contact['ContactDetail'])) {
-		echo '<div class="span8 first pull-left"><table class="table table-hover"><tbody>';
-		for ($i = 0; $i < count($contact['ContactDetail']); ++$i) {
-			echo __('<tr><td class="span2">%s</td><td> %s %s </td></tr>', $contact['ContactDetail'][$i]['contact_detail_type'], $contact['ContactDetail'][$i]['value'],  $this->Html->link(__('Edit'), array('plugin' => 'contacts', 'controller' => 'contact_details', 'action' => 'edit', $contact['ContactDetail'][$i]['id']), array('class' => 'btn btn-mini btn-primary')));
-		}
-		echo "</tbody></table></div>";
-	} else {
-		echo __('<p>No contact details provided.</p>');
-	}
-	
-	if (!empty($estimates)) {
-		echo '<h4> Opportunities </h4>';
-		echo $this->Element('scaffolds/index', array('data' => $estimates, 'modelName' => 'Estimate', 'associations' => array('Creator' => array('displayField' => 'full_name'))));
-	}
-	
-	if (!empty($tasks)) {
-		echo '<h4> Reminders </h4>';
-		echo $this->Element('scaffolds/index', array('data' => $tasks, 'modelName' => 'Task', 'associations' => array('Assignee' => array('displayField' => 'full_name')), 'actions' => array($this->Html->link('Mark as Complete', array('plugin' => 'tasks', 'controller' => 'tasks', 'action' => 'complete', '{id}')))));
-	}
-	
-	if (!empty($activities)) {
-		echo '<h4> Activities </h4>';
-		echo $this->Element('scaffolds/index', array('data' => $activities, 'modelName' => 'Activity', 'associations' => array('Creator' => array('displayField' => 'full_name'))));
-	}
-	
-	if (!empty($employees)) {
-		echo '<h4> Employees </h4>';
-		echo $this->Element('scaffolds/index', array('data' => $employees));
-	} ?>	
-</div>
-
 
         
 <?php
@@ -117,4 +142,4 @@ $this->set('context_menu', array('menus' => array(
 			$this->Html->link(__('Edit'), array('plugin' => 'contacts', 'controller' => 'contacts', 'action' => 'edit', $contact['Contact']['id'])),
 			),
 		),
-	))); ?>
+	)));

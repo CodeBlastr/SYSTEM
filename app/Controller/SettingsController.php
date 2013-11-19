@@ -47,28 +47,42 @@ class SettingsController extends AppController {
 		}
 	}
 
+/**
+ * Index method
+ * 
+ * @return void
+ */
 	public function index() {
-		$this->paginate['fields'] = array('id', 'displayName', 'description');
+		$this->redirect('admin');
+		$this->paginate['limit'] = 10;
 		$this->paginate['order'] = array('Setting.type' => 'asc', 'Setting.name' => 'asc');
-		$this->set('settings', $this->paginate());
-		$this->set('displayName', 'displayName');
-		$this->set('displayDescription', 'description');
-		$this->layout = 'default';
+		$this->set('settings', $settings = $this->paginate());
+		$this->set('page_title_for_layout', __('%s Configuration', __SYSTEM_SITE_NAME));
+		$this->set('title_for_layout', __('%s Configuration', __SYSTEM_SITE_NAME));
+		return $settings;
 	}
 
+/**
+ * View method
+ * 
+ * @return void
+ */
 	public function view($id = null) {
-		if (!$id) {
-			$this->Session->setFlash(__('Invalid Setting.', true));
-			$this->redirect(array('action' => 'index'));
-		}
-		$this->set('setting', $this->Setting->read(null, $id));
-		$this->layout = 'default';
+		$this->redirect('admin');
+        $this->Setting->id = $id;
+        if (!$this->Setting->exists()) {
+            throw new NotFoundException();
+        }
+		$this->set('setting', $setting = $this->Setting->read(null, $id));
+		return $setting;
 	}
 
 /**
  * Add method
+ * 
  */
 	public function add() {
+		$this->redirect('admin');
 		if ($this->request->is('post')) {
 			if ($this->Setting->add($this->request->data)) {
 				$this->Session->setFlash(__('The Setting has been saved', true));
@@ -79,12 +93,14 @@ class SettingsController extends AppController {
 		}
 		$types = $this->Setting->types();
 		$this->set(compact('types'));
-		$this->layout = 'default';
+		$this->set('page_title_for_layout', __('%s Configuration', __SYSTEM_SITE_NAME));
+		$this->set('title_for_layout', __('%s Configuration', __SYSTEM_SITE_NAME));
 	}
 
 /**
  * Names method
- *
+ * Used by settings/add to get info about a particular setting type
+ * 
  * @param string $typeName
  */
 	public function names($typeName = null) {
@@ -92,6 +108,11 @@ class SettingsController extends AppController {
 		$this->set(compact('settings'));
 	}
 
+/**
+ * Edit method
+ * 
+ * @param uuid $id
+ */
 	public function edit($id = null) {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->Setting->add($this->request->data)) {
@@ -119,6 +140,11 @@ class SettingsController extends AppController {
 		$this->layout = 'default';
 	}
 
+/**
+ * Delete method
+ * 
+ * @param uuid $id
+ */
 	public function delete($id = null) {
 		if (!$id) {
 			$this->Session->setFlash(__('Invalid id for Setting', true));
@@ -132,6 +158,9 @@ class SettingsController extends AppController {
 		}
 	}
 
+/**
+ * Form method
+ */
 	public function form($type = null, $name = null) {
 
 		$type = !empty($type) ? array('Setting.type' => $type) : array();
@@ -151,14 +180,20 @@ class SettingsController extends AppController {
 	public function install() {
 		try {
 			$this->Setting->writeSettingsIniData();
-			$this->Session->setFlash(__('Success! Your site is ready to go.'));
+			$this->Session->setFlash(__('Success! Your site is ready to go. Please login using the email and password entered on the previous screen.'));
 		} catch (Exception $e) {
 			$this->Session->setFlash($e->getMessage());
 		}
-		$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'login'));
+		$this->redirect(array('plugin' => false, 'controller' => 'install', 'action' => 'login'));
 	}
 
+/**
+ * Test email method
+ * 
+ * Test the send mail function to see if a site email works. 
+ */
 	public function test() {
+		//debug($this->request->is('push'));exit;
 		if ($this->request->is('post') || $this->request->is('push')) {
 			$to = $this->request->data['Setting']['to'];
 			$subject = $this->request->data['Setting']['subject'];
@@ -170,6 +205,7 @@ class SettingsController extends AppController {
 				$this->Session->setFlash($e->getMessage());
 			}
 		}
+		
 		$this->set('title_for_layout', 'Test Email Settings');
 		$this->set('page_title_for_layout', 'Test Email Settings');
 	}

@@ -40,13 +40,13 @@ $(function() {
 		var length = $(this).attr('data-truncate') !== undefined ? $(this).attr('data-truncate') : 100;
         var end = $(this).attr('data-truncate-end') !== undefined ? $(this).attr('data-truncate-end') : '&hellip; Read More';
 		if ($(this).text().length > length) {
-			$(this).after('<div class="truncated hide">' + $(this).html() + ' <a class="truncate-less">&hellip; Less</a></div>');
+			$(this).after('<div class="truncated" style="display: none;">' + $(this).html() + ' <a class="truncate-less">&hellip; Less</a></div>');
 			$(this).html($.trim($(this).text()).substring(0, length).split(" ").slice(0, -1).join(" ") + '  <a class="truncate-more">' + end + '</a>');
 		}
 	});
 	$('.truncate-more').click(function(){
 		$(this).parent().hide();
-		$(this).parent().next().slideDown('slow');
+		$(this).parent().next().show('slow');
 	});
 	$('.truncate-less').click(function(){
 		$(this).parent().hide();
@@ -201,6 +201,16 @@ $(function() {
 		$(currentName).show('slow');
 		return false;
 	});	
+	
+	// make drop down navs use hover
+	$('ul.nav li.dropdown').hover(function() {
+	  $(this).find('.dropdown-menu').stop(true, true).delay(150).fadeIn();
+	}, function() {
+	  $(this).find('.dropdown-menu').stop(true, true).delay(150).fadeOut();
+	});
+	$('ul.nav li.dropdown a').click(function(e) {
+		window.location = $(this).attr('href');
+	});
 });
 
 // hmm.. only place I see this used is on the privileges page

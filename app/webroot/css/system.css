@@ -4,7 +4,7 @@ The css placed here should be easily over written even with simple css rules for
 Note that the class names could be updated and change often.
 */
 * {
-	vertical-align: top;
+	/*vertical-align: top; This does not looking good with different size text in hX tags */
 }
 
 /* Site Errors */
@@ -190,4 +190,10 @@ input[type=radio], input[type=checkbox] {
     color: #EEE;
     font-size: 10px;
 }
+
+/* code mirror */
+.CodeMirror-lines div {
+	display: block !important;
+}
+
     

@@ -21,7 +21,7 @@ class AppErrorHandler extends ErrorHandler {
 		$renderer = $config['renderer'];
 		if ($renderer !== 'ExceptionRenderer') {
 			list($plugin, $renderer) = pluginSplit($renderer, true);
-			App::uses($renderer, $plugin . 'Error');
+			App::uses($renderer, $plugin . 'Lib/Error');
 		}
 		try {
 			$error = new $renderer($exception);
