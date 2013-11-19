@@ -1,4 +1,4 @@
-<?php 
+<?php
 class UsersSchema extends CakeSchema {
 
 	public $renames = array();
@@ -73,6 +73,7 @@ class UsersSchema extends CakeSchema {
 		'rght' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'view_prefix' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 30, 'collate' => 'utf8_general_ci', 'comment' => 'Specifies what view prefix this user role should have access to.', 'charset' => 'utf8'),
 		'is_system' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'is_registerable' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => '0000-00-00 00:00:00'),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'name' => array('column' => 'name', 'unique' => 1)),

@@ -71,7 +71,14 @@ class AppUser extends UsersAppModel {
         		'rule'    => array('email', true),
         		'message' => 'Please supply a valid email address.',
 				'allowEmpty' => true
-    		)
+    		),
+		'user_role_id' => array(
+			'isRegisterable' => array(
+				'rule' => array('_isRegisterable'),
+				'message' => 'Invalid user role. Public registration restricted.',
+				'allowEmpty' => false
+				),
+			),
 		);
 
 	// this seems to break things because of nesting if I put Users.UserRole for the className
@@ -137,9 +144,6 @@ class AppUser extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
-		
-		
-
 		if (CakePlugin::loaded('Transactions')) {
 			$this->hasMany['TransactionAddress'] = array(
 				'className' => 'Transactions.TransactionAddress',
@@ -184,6 +188,20 @@ class AppUser extends UsersAppModel {
 		// }
 		
 		parent::__construct($id, $table, $ds);
+	}
+
+/**
+ * Is Registerable User Role 
+ * 
+ * Checks to make sure user role is allowed to be registered.
+ * @return bool
+ */
+	public function _isRegisterable() {
+		$userRole = $this->UserRole->find('count', array('conditions' => array('UserRole.id' => $this->data['User']['user_role_id'], 'UserRole.is_registerable' => 1)));
+		if (!empty($userRole)) {
+			return true;
+		}
+		return false;
 	}
 
 /**
@@ -279,6 +297,7 @@ class AppUser extends UsersAppModel {
         if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
 			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
 		}
+		
         return true;
     }
 	
@@ -376,7 +395,7 @@ class AppUser extends UsersAppModel {
 	protected function _userContact($data) {
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->Contact->findById($data['Contact']['id']);
-			$data['Contact'] = Set::merge($data['Contact'], $contact['Contact']);
+			$data['Contact'] = Set::merge($contact['Contact'], $data['Contact']);
 		} else if (!empty($data[$this->alias]['id'])) {
 			$contact = $this->Contact->findByUserId($data[$this->alias]['id']);
 			if (!empty($contact)) {
@@ -399,7 +418,8 @@ class AppUser extends UsersAppModel {
 				$data['Contact']['id'] = $this->Contact->id;
 			}
 		}
-		$this->_cleanAddData($data);
+
+		$data = $this->_cleanAddData($data);
 		return $data;
 	}
 
@@ -509,7 +529,10 @@ class AppUser extends UsersAppModel {
 	}
 
 /**
- * Set the default redirect variables, using the settings table constant.
+ * Login Redirect Url method
+ * Sets the default redirect variables, using the settings table constant.
+ * 
+ * @param mixed $redirect 
  */
 	public function loginRedirectUrl($redirect) {
 		// this handles redirects where a url was called that redirected you to the login page
@@ -550,7 +573,10 @@ class AppUser extends UsersAppModel {
 	}
 
 /**
- * Set the default redirect variables, using the settings table constant.
+ * Logout Redirect Url method
+ * 
+ * Sets the default redirect variables, using the settings table constant.
+ *
  */
 	public function logoutRedirectUrl() {
 		if (defined('__APP_LOGOUT_REDIRECT_URL')) {
@@ -573,7 +599,8 @@ class AppUser extends UsersAppModel {
 	}
 	
 /**
- * verifies the key passed and if valid key, remove it from DB and return user else
+ * Verify Key method
+ * Verifies the key passed and if valid key, remove it from DB and return user else
  *
  * @return {mixed}			user data array, or null.
  */
@@ -964,16 +991,12 @@ Thank you for registering with us and welcome to the community.";
 	
 	
 /**
- * 
+ * Rate
  */	
- 
 	 public function rate($data){
 		 App::uses('Rating', 'Ratings.Model'); // load Ratings Model
 		 $Rating = new Rating; //create Object $Rating
 		 return $Rating->save($data); //return data and save
-	 
-	 
-	 
 	}
 
 }
