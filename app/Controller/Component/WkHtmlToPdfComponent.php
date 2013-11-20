@@ -22,7 +22,7 @@ class WkHtmlToPdfComponent extends Component {
 	}
 
 
-	public function rasterizePdf($autoDownload = true, $options = array()) {
+	public function rasterizePdf($autoDownload = true, $options = array(), $filename = 'rasterize') {
 
 		$this->controller->autoRender = false;
 		$this->controller->render();
@@ -43,16 +43,16 @@ class WkHtmlToPdfComponent extends Component {
 			$commands = ' "A4" ';
 
 			if (PHP_OS === 'Darwin') {
-				$cmd = VENDORS . 'phantomjs/MacOS/phantomjs '.VENDORS . 'phantomjs/examples/rasterize.js '. $commands . $url . ' ' . $output;
+				$cmd = VENDORS . 'phantomjs/MacOS/phantomjs '.VENDORS . 'phantomjs/examples/'.$filename.'.js '. $commands . $url . ' ' . $output;
 			} elseif (PHP_OS === 'WINNT') {
-				$cmd = VENDORS . 'phantomjs\windows\phantomjs '.VENDORS . 'phantomjs\windows\examples\rasterize.ewc.js ' . $url . ' ' . $output . $commands;
+				$cmd = VENDORS . 'phantomjs\windows\phantomjs '.VENDORS . 'phantomjs\windows\examples\\'.$filename.'.js ' . $url . ' ' . $output . $commands;
 			}else {
 				switch (PHP_INT_SIZE) {
 					case 4 :
 						throw new Exception('32bit not installed yet', 1);
 						break;
 					case 8 :
-						$cmd = VENDORS . 'phantomjs/nix64/phantomjs '.VENDORS . 'phantomjs/examples/rasterize.ttysoon.js \'' . $url . '\' ' . $output;
+						$cmd = VENDORS . 'phantomjs/nix64/phantomjs '.VENDORS . 'phantomjs/examples/'.$filename.'.js \'' . $url . '\' ' . $output;
 						break;
 					default :
 						throw new Exception('I was unable to detect which phantomjs file to use on this system.', 1);
@@ -73,7 +73,7 @@ class WkHtmlToPdfComponent extends Component {
 		}
 	}
 
-	public function createWkPdf($autoDownload = true, $options = array()) {
+	public function createPdf($autoDownload = true, $options = array()) {
 
 		$defaults = array(
 			'grayscale' => false, // boolean
