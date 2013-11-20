@@ -14,7 +14,8 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Users',
 		'items' => array(
-			$this->Html->link(__('Edit User', true), array('action' => 'edit', $user['User']['id']), array('checkPermissions' => true)),
+			$this->Html->link(__('Edit'), array('action' => 'edit', $user['User']['id'])),
+			$this->Html->link(__('Delete'), array('action' => 'delete', $user['User']['id']), array(), 'Are you sure you want to delete ' . $user['User']['full_name']),
 			),
 		),
 	)));

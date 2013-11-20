@@ -17,10 +17,9 @@ class AppUser extends UsersAppModel {
 	
 	
 
-	/**
-	 * Auto Login setting, used to skip session write in aftersave 
-	 */
-	 
+/**
+ * Auto Login setting, used to skip session write in aftersave 
+ */
 	public $autoLogin = true; 
 
 	public $validate = array(
@@ -76,7 +75,9 @@ class AppUser extends UsersAppModel {
 			'isRegisterable' => array(
 				'rule' => array('_isRegisterable'),
 				'message' => 'Invalid user role. Public registration restricted.',
-				'allowEmpty' => false
+				'allowEmpty' => false,
+				'required' => 'create',
+				'on' => 'create'
 				),
 			),
 		);
@@ -195,8 +196,15 @@ class AppUser extends UsersAppModel {
  * 
  * Checks to make sure user role is allowed to be registered.
  * @return bool
+ * @todo It would be cool if we looked up who can bypass this function by
+ * seeing if the current user has access to the UsersController::procreate()
+ * method.
  */
 	public function _isRegisterable() {
+		$userRoleId = CakeSession::read('Auth.User.user_role_id');
+		if ($userRoleId == 1) {
+			return true; // admin user over ride
+		}
 		$userRole = $this->UserRole->find('count', array('conditions' => array('UserRole.id' => $this->data['User']['user_role_id'], 'UserRole.is_registerable' => 1)));
 		if (!empty($userRole)) {
 			return true;
@@ -923,9 +931,9 @@ class AppUser extends UsersAppModel {
  */
 	public function checkEmailVerification($data) {
 		if(!empty($data['User']['username'])) {
-			$user = $this->field('User.forgot_key', array('User.username' => $data['User']['username']));
+			$key = $this->field('User.forgot_key', array('User.username' => $data['User']['username']));
 			// W at the start of the key tells us the account needs to be verified still.
-			if ($user['User']['forgot_key'][0] != 'W') {
+			if (strpos($key, 'W') !== 0) {
 				return $user;
 			} else {
 				throw new Exception(__('Account must be verified. %s', '<a href="/users/users/reverify">Resend Verification?</a>'));
