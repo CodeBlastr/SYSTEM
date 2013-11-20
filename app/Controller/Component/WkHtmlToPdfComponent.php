@@ -40,7 +40,7 @@ class WkHtmlToPdfComponent extends Component {
 
 			$output = $this->filepath . DS . "output{$this->randomNumber}.pdf";
 
-			$commands = ' "A4" ';
+			$commands = ' "letter" ';
 
 			if (PHP_OS === 'Darwin') {
 				$cmd = VENDORS . 'phantomjs/MacOS/phantomjs '.VENDORS . 'phantomjs/examples/'.$filename.'.js '. $commands . $url . ' ' . $output;
@@ -52,7 +52,7 @@ class WkHtmlToPdfComponent extends Component {
 						throw new Exception('32bit not installed yet', 1);
 						break;
 					case 8 :
-						$cmd = VENDORS . 'phantomjs/nix64/phantomjs '.VENDORS . 'phantomjs/examples/'.$filename.'.js \'' . $url . '\' ' . $output;
+						$cmd = VENDORS . 'phantomjs/nix64/phantomjs '.VENDORS . 'phantomjs/examples/'.$filename.'.js ' . $url . ' ' . $output . $commands;
 						break;
 					default :
 						throw new Exception('I was unable to detect which phantomjs file to use on this system.', 1);
