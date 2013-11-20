@@ -54,7 +54,7 @@ class SettingsController extends AppController {
  */
 	public function index() {
 		$this->redirect('admin');
-		$this->paginate['limit'] = 10;
+		$this->paginate['limit'] = 20;
 		$this->paginate['order'] = array('Setting.type' => 'asc', 'Setting.name' => 'asc');
 		$this->set('settings', $settings = $this->paginate());
 		$this->set('page_title_for_layout', __('%s Configuration', __SYSTEM_SITE_NAME));
