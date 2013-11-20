@@ -73,7 +73,7 @@ class WkHtmlToPdfComponent extends Component {
 		}
 	}
 
-	public function createPdf($autoDownload = true, $options = array()) {
+	public function createWkPdf($autoDownload = true, $options = array()) {
 
 		$defaults = array(
 			'grayscale' => false, // boolean
