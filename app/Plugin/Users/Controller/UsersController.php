@@ -487,7 +487,7 @@ class AppUsersController extends UsersAppController {
 				if ($forceUrl) {
 					$this->redirect($this->User->loginRedirectUrl('/'));
 				} else {
-					$this->redirect($this->User->loginRedirectUrl('/' . $this->Auth->redirect()));
+					$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 				}
 			} catch (Exception $e) {
 				$this->Auth->logout();
