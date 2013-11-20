@@ -20,50 +20,9 @@ class WkHtmlToPdfComponent extends Component {
 		$fileName = 'viewDump' . $randomNumber . '.html';
 		$this->viewFile = new File($this->siteFolder->pwd() . DS . $fileName);
 	}
-	
-	public function rasterizePdf() {
-		
-		$this->controller->autoRender = false;
-		$this->controller->render();
-		$view = $this->controller->View->output;
-		
-		if ($this->viewFile !== false) {
-			$this->viewFile->delete();
-		}
-		// write view from memory to file and then generate the pdf
-		if ($this->viewFile->write($view, 'w')) {
-			
-			$this->viewFile->close();
-			
-			$url = 'http://' . $_SERVER ['HTTP_HOST'] . '/theme/Default/upload/pdf/' . $this->viewFile->name;
-			
-			$output = $this->filepath . DS . "output{$this->randomNumber}.pdf";
-		
-			$commands = '';
-		
-			if (PHP_OS === 'Darwin') {
-				$cmd = VENDORS . '/phantomjs/MacOS/phantomjs '.VENDORS . '/phantomjs/examples/rasterize.js '. $commands . $url . ' ' . $output;
-			} else {
-				switch (PHP_INT_SIZE) {
-					case 4 :
-						throw new Exception('32bit not installed yet', 1);
-						break;
-					case 8 :
-						$cmd = VENDORS . 'phantomjs/nix64/phantomjs rasterize.js '. $commands . $url . ' ' . $output;
-						break;
-					default :
-						throw new Exception('I was unable to detect which phantomjs file to use on this system.', 1);
-						break;
-				}
-			}
-			echo $cmd;
-			exec($cmd);
-			die();
-		}
-	}
 
 
-	public function createPdf($autoDownload = true, $options = array()) {
+	public function rasterizePdf($autoDownload = true, $options = array()) {
 
 		$this->controller->autoRender = false;
 		$this->controller->render();
