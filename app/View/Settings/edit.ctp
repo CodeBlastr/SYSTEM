@@ -12,7 +12,7 @@
 	</div>
 	<div class="col-sm-5">
 		<h4>Description</h4>
-		<p class="well well-lg"><?php echo $this->Form->value('Setting.description'); ?></p>
+		<p class="well well-lg"><?php echo nl2br($this->Form->value('Setting.description')); ?></p>
 	</div>
 </div>
 
