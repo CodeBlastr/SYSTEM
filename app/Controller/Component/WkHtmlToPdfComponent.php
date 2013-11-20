@@ -81,11 +81,13 @@ class WkHtmlToPdfComponent extends Component {
 
 			$output = $this->filepath . DS . "output{$this->randomNumber}.pdf";
 
-			$commands = "  'A4' ";
+			$commands = ' "A4" ';
 
 			if (PHP_OS === 'Darwin') {
 				$cmd = VENDORS . 'phantomjs/MacOS/phantomjs '.VENDORS . 'phantomjs/examples/rasterize.js '. $commands . $url . ' ' . $output;
-			} else {
+			} elseif (PHP_OS === 'WINNT') {
+				$cmd = VENDORS . 'phantomjs\windows\phantomjs '.VENDORS . 'phantomjs\windows\examples\rasterize.ewc.js ' . $url . ' ' . $output . $commands;
+			}else {
 				switch (PHP_INT_SIZE) {
 					case 4 :
 						throw new Exception('32bit not installed yet', 1);
@@ -98,9 +100,8 @@ class WkHtmlToPdfComponent extends Component {
 						break;
 				}
 			}
-
+			//debug($cmd);exit;
 			exec($cmd);
-
 			if ($autoDownload) {
 				// send file to browser and trigger download dialogue box
 				$this->returnFile($output, "document{$this->randomNumber}.pdf");
