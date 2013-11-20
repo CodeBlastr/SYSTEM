@@ -40,13 +40,13 @@ $(function() {
 		var length = $(this).attr('data-truncate') !== undefined ? $(this).attr('data-truncate') : 100;
         var end = $(this).attr('data-truncate-end') !== undefined ? $(this).attr('data-truncate-end') : '&hellip; Read More';
 		if ($(this).text().length > length) {
-			$(this).after('<div class="truncated hide">' + $(this).html() + ' <a class="truncate-less">&hellip; Less</a></div>');
+			$(this).after('<div class="truncated" style="display: none;">' + $(this).html() + ' <a class="truncate-less">&hellip; Less</a></div>');
 			$(this).html($.trim($(this).text()).substring(0, length).split(" ").slice(0, -1).join(" ") + '  <a class="truncate-more">' + end + '</a>');
 		}
 	});
 	$('.truncate-more').click(function(){
 		$(this).parent().hide();
-		$(this).parent().next().slideDown('slow');
+		$(this).parent().next().show('slow');
 	});
 	$('.truncate-less').click(function(){
 		$(this).parent().hide();
@@ -142,7 +142,7 @@ $(function() {
     $('input[type=submit]').addClass('btn btn-primary');
     $('.required').attr('required', true);
     $('label').addClass('control-label');
-    $('input:not([type=submit]), textarea').addClass('form-control').parent().addClass('form-group');
+    $('input:not([type=submit], [type=checkbox], [type=radio]), select, textarea').addClass('form-control').parent().addClass('form-group');
 	
 /**
  * Hides form elements that come after a legend with the class toggleClick
@@ -201,4 +201,39 @@ $(function() {
 		$(currentName).show('slow');
 		return false;
 	});	
+	
+	// make drop down navs use hover
+	$('ul.nav li.dropdown').hover(function() {
+	  $(this).find('.dropdown-menu').stop(true, true).delay(150).fadeIn();
+	}, function() {
+	  $(this).find('.dropdown-menu').stop(true, true).delay(150).fadeOut();
+	});
+	$('ul.nav li.dropdown a').click(function(e) {
+		window.location = $(this).attr('href');
+	});
 });
+
+// hmm.. only place I see this used is on the privileges page
+
+function applyCheckboxToggles () {
+    $('.checkboxToggleDiv').each(function () {
+        var c = $(this).children('input[type=checkbox]').first();
+        c.wrap('<label class="toggle well header-toggle" style="width:70px;" />');
+        c.after('<p><span class="btn-inverse disabled active">no</span><span class="btn-success disabled active">yes</span></p><a class="btn btn-mini slide-button"></a>');
+        c.change(function(e){
+        	toggleMode($(e.target));
+        });
+    	
+    	toggleMode(c);
+    	
+    });
+    
+    $('.checkboxToggle').each(function () {
+		var yes = ( $(this).data('yes') === undefined ) ? 'yes' : $(this).data('yes');
+		var no = ( $(this).data('no') === undefined ) ? 'no' : $(this).data('no');
+		var width = ( $(this).data('width') === undefined ) ? '70' : $(this).data('width');
+        $(this).wrap('<label class="toggle well header-toggle" style="width:'+width+'px;" />');
+        $(this).after('<p><span>'+no+'</span><span>'+yes+'</span></p><a class="btn btn-mini slide-button"></a>');
+    });
+}
+applyCheckboxToggles();

@@ -18,7 +18,7 @@ class AppContactsController extends ContactsAppController {
 	
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
-		if (in_array('Comments', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Comments')) {
 			$this->components['Comments.Comments'] = array(
 				'userModelClass' => 'Users.User', 
 				'actionNames' => array('task'),
@@ -163,24 +163,18 @@ class AppContactsController extends ContactsAppController {
 		$this->set('estimates', in_array('Estimates', CakePlugin::loaded()) ? $this->paginate('Contact.Estimate', array('Estimate.foreign_key' => $id, 'Estimate.model' => 'Contact')) : null);
 		
 		// vars for activities
-		unset($this->paginate);
-		$this->paginate = array('fields' => array('Activity.id', 'Activity.name', 'Activity.created', 'Activity.creator_id', 'Creator.id', 'Creator.full_name'), 'contain' => array('Creator'));
-		$this->set('activities', in_array('Activities', CakePlugin::loaded()) ? $this->paginate('Contact.Activity', array('Activity.foreign_key' => $id, 'Activity.model' => 'Contact', 'Activity.action_description !=' => 'lead created')) : null);
+		$this->set('activities', CakePlugin::loaded('Activities') ? $this->Contact->Activity->find('all', array('conditions' => array('Activity.foreign_key' => $id, 'Activity.model' => 'Contact', 'Activity.action_description !=' => 'lead created'), 'order' => array('Activity.created' => 'DESC'))) : null);
 		
 		// vars for reminders
-		unset($this->paginate);
-		$this->paginate = array('fields' => array('Task.id', 'Task.name', 'Task.due_date', 'Task.assignee_id', 'Assignee.id', 'Assignee.full_name'), 'contain' => array('Assignee'));
-		$this->set('tasks', in_array('Tasks', CakePlugin::loaded()) ? $this->paginate('Contact.Task', array('Task.foreign_key' => $id, 'Task.model' => 'Contact', 'Task.is_completed' => 0)) : null);
+		$this->set('tasks', CakePlugin::loaded('Tasks') ? $this->Contact->Task->find('all', array('conditions' => array('Task.foreign_key' => $id, 'Task.model' => 'Contact', 'Task.is_completed' => 0))) : null);
 		
 		// view vars
 		$this->set('people', $this->Contact->Employer->findPeople('list'));
-		$this->set('modelName', 'Contact');
-		$this->set('displayName', 'name');
-		$this->set('displayDescription', '');
-		$this->set('page_title_for_layout', __('%s %s', $contact['Contact']['name'], !empty($contact['Assignee']['full_name']) ? __('<br /><small>%s is responsible for this %s %s.</small>', $contact['Assignee']['full_name'], $contact['Contact']['contact_rating'], $contact['Contact']['contact_type']) : '<br /><small>Unassigned</small>'));
+		$this->set('page_title_for_layout', $contact['Contact']['name']);
 		$this->set('title_for_layout',  $contact['Contact']['name']);
 		$this->set('loggedActivities', $this->Contact->activities(array('foreign_key' => $id, 'start_date' => $contact['Contact']['created'])));
 		$this->set('loggedEstimates', $this->Contact->estimates($id));
+		$this->set('contactDetailTypes', $contactDetailTypes = $this->Contact->ContactDetail->types());
 		
 		// which view file to use
 		!empty($contact['Contact']['is_company']) ? $this->render('view_company') : $this->render('view_person');
@@ -275,25 +269,47 @@ class AppContactsController extends ContactsAppController {
 	
 /**
  * Add an opportunity / estimate for a contact
+ * 
+ * @throws MissingPluginException
+ * @throws NotFoundException
  */
 	public function estimate($contactId = null) {
-		$this->Contact->id = $contactId;
-		if (!$this->Contact->exists()) {
-			throw new NotFoundException(__('Contact not found'));
-		}
-		if (!empty($this->request->data)) {
-			try {
-				$this->Contact->Estimate->save($this->request->data);
-				$this->Session->setFlash('Opportunity Added');
-				$this->redirect(array('action' => 'view', $contactId));
-			} catch (Exception $e) {
-				$this->Session->setFlash($e->getMessage());			
+		if (CakePlugin::loaded('Tasks')) {
+			$this->Contact->id = $contactId;
+			if (!$this->Contact->exists()) {
+				throw new NotFoundException(__('Contact not found'));
 			}
+			if (!empty($this->request->data)) {
+				try {
+					$this->Contact->Estimate->save($this->request->data);
+					$this->Session->setFlash('Opportunity Added');
+					$this->redirect(array('action' => 'view', $contactId));
+				} catch (Exception $e) {
+					$this->Session->setFlash($e->getMessage());			
+				}
+			}
+			$contact = $this->Contact->read(null, $contactId);
+			$this->set(compact('contact')); 
+			$this->set('page_title_for_layout', __('Create an opportunity for %s', $contact['Contact']['name']));
+		} else {
+			throw new MissingPluginException('Estimates Plugin Not Installed');
 		}
-		$contact = $this->Contact->read(null, $contactId);
-		$this->set(compact('contact')); 
-		$this->set('page_title_for_layout', __('Create an opportunity for %s', $contact['Contact']['name']));
 	}
+
+/**
+ * Estimates method
+ * List all contact related estimates
+ * 
+ * @throws MissingPluginException
+ */
+	public function estimates() {
+		if (CakePlugin::loaded('Tasks')) {
+		} else {
+			throw new MissingPluginException('Estimates Plugin Not Installed');
+		}
+	}
+ 	
+ 	
 
 /**
  * Activities method
@@ -301,30 +317,34 @@ class AppContactsController extends ContactsAppController {
  * @return array $activities
  */
 	public function activities() {
-		$this->paginate['fields'] = array('Activity.id', 'Activity.name', 'Activity.description', 'Activity.creator_id', 'Activity.created', 'Creator.id', 'Creator.full_name', 'Contact.name');
-		$this->paginate['contain'] = array('Contact', 'Creator');
-        $this->paginate['conditions']['Activity.model'] = 'Contact';
-		
-		$this->Contact->Activity->bindModel(array(
-			'belongsTo' => array(
-    	       	'Contact' => array(
-        	       	'className' => 'Contacts.Contact',
-					'foreignKey' => 'foreign_key',
-					'conditions' => array('Activity.model' => 'Contact')
-	        	    )
-            	)));
-					
-		$activities = $this->paginate('Activity');
-		for($i = 0, $size = count($activities); $i < $size; ++$i) {
-			$activities[$i]['Activity']['name'] = __('%s <small>for %s</small>', $activities[$i]['Activity']['name'], $activities[$i]['Contact']['name']);
+		if (CakePlugin::loaded('Activities')) {
+			$this->paginate['fields'] = array('Activity.id', 'Activity.name', 'Activity.description', 'Activity.creator_id', 'Activity.created', 'Creator.id', 'Creator.full_name', 'Contact.name');
+			$this->paginate['contain'] = array('Contact', 'Creator');
+	        $this->paginate['conditions']['Activity.model'] = 'Contact';
+			
+			$this->Contact->Activity->bindModel(array(
+				'belongsTo' => array(
+	    	       	'Contact' => array(
+	        	       	'className' => 'Contacts.Contact',
+						'foreignKey' => 'foreign_key',
+						'conditions' => array('Activity.model' => 'Contact')
+		        	    )
+	            	)));
+						
+			$activities = $this->paginate('Activity');
+			for($i = 0, $size = count($activities); $i < $size; ++$i) {
+				$activities[$i]['Activity']['name'] = __('%s <small>for %s</small>', $activities[$i]['Activity']['name'], $activities[$i]['Contact']['name']);
+			}
+			$associations =  array('Creator' => array('displayField' => 'full_name'));
+			$this->set(compact('activities', 'associations'));
+			$this->set('modelName', 'Activity');
+			$this->set('displayName', 'name');
+			$this->set('displayDescription', '');
+			$this->set('page_title_for_layout', __('Contact Activities'));
+			return $activities;
+		} else {
+			throw new MissingPluginException('Activities Plugin Not Installed');
 		}
-		$associations =  array('Creator' => array('displayField' => 'full_name'));
-		$this->set(compact('activities', 'associations'));
-		$this->set('modelName', 'Activity');
-		$this->set('displayName', 'name');
-		$this->set('displayDescription', '');
-		$this->set('page_title_for_layout', __('Contact Activities'));
-		return $activities;
 	}
 	
 /**
@@ -333,23 +353,27 @@ class AppContactsController extends ContactsAppController {
  * @param string
  */
 	public function activity($contactId = null) {
-		$this->Contact->id = $contactId;
-		if (!$this->Contact->exists()) {
-			throw new NotFoundException(__('Contact not found'));
-		}
-		if (!empty($this->request->data)) {
-			try {
-				$this->Contact->Activity->save($this->request->data);
-				$this->Session->setFlash('Activity Logged');
-				$this->redirect(array('action' => 'view', $contactId));
-			} catch (Exception $e) {
-				$this->Session->setFlash($e->getMessage());			
+		if (CakePlugin::loaded('Activities')) {
+			$this->Contact->id = $contactId;
+			if (!$this->Contact->exists()) {
+				throw new NotFoundException(__('Contact not found'));
 			}
+			if (!empty($this->request->data)) {
+				try {
+					$this->Contact->Activity->save($this->request->data);
+					$this->Session->setFlash('Activity Logged');
+					$this->redirect(array('action' => 'view', $contactId));
+				} catch (Exception $e) {
+					$this->Session->setFlash($e->getMessage());			
+				}
+			}
+	        $this->Contact->contain('ContactDetail');
+			$contact = $this->Contact->read(null, $contactId);
+			$this->set(compact('contact')); 
+			$this->set('page_title_for_layout', __('Log an Activity for %s', $contact['Contact']['name']));
+		} else {
+			throw new MissingPluginException('Activities Plugin Not Installed');
 		}
-        $this->Contact->contain('ContactDetail');
-		$contact = $this->Contact->read(null, $contactId);
-		$this->set(compact('contact')); 
-		$this->set('page_title_for_layout', __('Log an Activity for %s', $contact['Contact']['name']));
 	}
 
 /**
@@ -358,56 +382,55 @@ class AppContactsController extends ContactsAppController {
  * @return array $tasks
  */
 	public function tasks() {
-		$this->paginate['fields'] = array('Task.id', 'Task.name', 'Task.description', 'Task.assignee_id', 'Task.due_date', 'Assignee.id', 'Assignee.full_name', 'Contact.name');
-		$this->paginate['contain'] = array('Contact', 'Assignee');
-		
-		$this->Contact->Task->bindModel(array(
-			'belongsTo' => array(
-    	       	'Contact' => array(
-        	       	'className' => 'Tasks.Task',
-					'foreignKey' => 'foreign_key',
-					'conditions' => array('Task.model' => 'Contact')
-	        	    )
-            	)));
-					
-		$tasks = $this->paginate('Task');
-		for($i = 0, $size = count($tasks); $i < $size; ++$i) {
-			$tasks[$i]['Task']['name'] = __('%s <small>for %s</small>', $tasks[$i]['Task']['name'], $tasks[$i]['Contact']['name']);
+		if (CakePlugin::loaded('Tasks')) {
+			$this->paginate['contain'] = array('Contact', 'Assignee');
+			$this->Contact->Task->bindModel(array(
+				'belongsTo' => array(
+	    	       	'Contact' => array(
+	        	       	'className' => 'Tasks.Task',
+						'foreignKey' => 'foreign_key',
+						'conditions' => array('Task.model' => 'Contact')
+		        	    )
+	            	)));
+			$tasks = $this->paginate('Task');
+			for($i = 0, $size = count($tasks); $i < $size; ++$i) {
+				$tasks[$i]['Task']['name'] = __('%s <small>for %s</small>', $tasks[$i]['Task']['name'], $tasks[$i]['Contact']['name']);
+			}
+			$this->set(compact('tasks'));
+			$this->set('page_title_for_layout', __('Contact Reminders'));
+			return $tasks;
+		} else {
+			throw new MissingPluginException('Tasks Plugin Not Installed');
 		}
-		
-		$associations =  array('Assignee' => array('displayField' => 'full_name'));
-		$this->set(compact('tasks', 'associations'));
-		$this->set('modelName', 'Task');
-		$this->set('displayName', 'displayName');
-		$this->set('displayDescription', 'description');
-		$this->set('page_title_for_layout', __('Contact Reminders'));
-		return $tasks;
 	}
-	
-	
+
 /**
  * Add a reminder
  * 
  * @param string
  */
-	public function task($contactId = null) {		
-		$this->Contact->id = $contactId;
-		if (!$this->Contact->exists()) {
-			throw new NotFoundException(__('Contact not found'));
-		}
-		if (!empty($this->request->data)) {
-			try {
-				$this->Contact->Task->save($this->request->data);
-				$this->Session->setFlash('Activity Logged');
-				$this->redirect(array('action' => 'view', $contactId));
-			} catch (Exception $e) {
-				$this->Session->setFlash($e->getMessage());			
+	public function task($contactId = null) {	
+		if (CakePlugin::loaded('Tasks')) {	
+			$this->Contact->id = $contactId;
+			if (!$this->Contact->exists()) {
+				throw new NotFoundException(__('Contact not found'));
 			}
+			if (!empty($this->request->data)) {
+				try {
+					$this->Contact->Task->save($this->request->data);
+					$this->Session->setFlash('Activity Logged');
+					$this->redirect(array('action' => 'view', $contactId));
+				} catch (Exception $e) {
+					$this->Session->setFlash($e->getMessage());			
+				}
+			}
+			$contact = $this->Contact->read(null, $contactId);
+			$this->set(compact('contact')); 
+			$this->set('assignees', $this->Contact->Assignee->find('list'));
+			$this->set('page_title_for_layout', __('Create a Reminder for %s', $contact['Contact']['name']));
+		} else {
+			throw new MissingPluginException('Tasks Plugin Not Installed');
 		}
-		$contact = $this->Contact->read(null, $contactId);
-		$this->set(compact('contact')); 
-		$this->set('assignees', $this->Contact->Assignee->find('list'));
-		$this->set('page_title_for_layout', __('Create a Reminder for %s', $contact['Contact']['name']));
 	}
 	
 	
@@ -437,8 +460,12 @@ class AppContactsController extends ContactsAppController {
 		
 		// list of activities
 		$this->set('myContacts', $this->Contact->find('all', array('conditions' => array('Contact.assignee_id' => $this->Session->read('Auth.User.id')), 'limit' => 5, 'order' => 'Contact.created DESC')));
+		
+		// list of my ratings
+		$this->set('myRatings', $myRatings = $this->Contact->myRatings());
 
-		$this->set('page_title_for_layout', 'CRM Dashboard');
+		$this->set('page_title_for_layout', __('%s Sales Dashboard', __SYSTEM_SITE_NAME));
+		$this->set('title_for_layout', __('%s Sales Dashboard', __SYSTEM_SITE_NAME));
 	}
 }
 

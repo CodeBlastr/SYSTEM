@@ -191,7 +191,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 				}
 			} else {
 				debug('Width & height attributes are required for dynamic image conversions.');
-				break;
+				//break;
 			}
 		} else {
 			return $image;

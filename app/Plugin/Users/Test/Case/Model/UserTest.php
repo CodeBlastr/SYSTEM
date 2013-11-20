@@ -14,6 +14,7 @@ class UserTestCase extends CakeTestCase {
 	public $fixtures = array(
 		'app.Aro',
 		'plugin.Users.User',
+		'plugin.Users.UserRole',
 		'plugin.Users.Used',
 		'plugin.Contacts.Contact',
 		'plugin.Ratings.Rating',
@@ -55,38 +56,77 @@ class UserTestCase extends CakeTestCase {
 		$result = $this->Rating->find('first', array('conditions' => array('Rating.title' => $data['Rating']['title']))); //find all records for Rating 
 		
 		$this->assertTrue(!empty($result));
-		
-		
 	}
 	
+	public function testSave() {
+		$data = array(
+			'User' => array(
+				'password' => 'asdDDFEF234424fasdf',
+				'username' => 'byrnes.joel@example.com',
+				'email' => 'byrnes.joel@example.com',
+				'facebook_id' => '1102252405',
+				'first_name' => 'Joel',
+				'last_name' => 'Byrnes',
+				'full_name' => 'Joel Byrnes',
+				'user_role_id' => '3',
+				'contact_type' => 'person',
+				'forgot_key' => null,
+				'forgot_key_created' => '2013-04-26 01:32:16',
+				'parent_id' => '',
+				'reference_code' => '2quif40p'
+			)
+		);
+		$this->User->save($data);
+		$user = $this->User->find('first', array('conditions' => array('User.email' => $data['User']['email'])));
+		$this->assertEqual(1, count($user)); // user was added
+	}
 	
-    ///NOT WORKING
-	// public function testAdd() {
-		// $data = array(
-			// 'User' => array(
-				// 'password' => 'asdDDFEF234424fasdf',
-				// 'username' => 'byrnes.joel@razorit.com',
-				// 'email' => 'byrnes.joel@razorit.com',
-				// 'facebook_id' => '1102252405',
-				// 'first_name' => 'Joel',
-				// 'last_name' => 'Byrnes',
-				// 'full_name' => 'Joel Byrnes',
-				// 'user_role_id' => '3',
-				// 'contact_type' => 'person',
-				// 'forgot_key' => null,
-				// 'forgot_key_created' => '2013-04-26 01:32:16',
-				// 'parent_id' => '',
-				// 'reference_code' => '2quif40p'
-			// )
-		// );
-// 		
-		// $this->User->add($data);
-		// $user = $this->User->find('first', array('conditions' => array('User.email' => $data['User']['email'])));
-		// $this->assertEqual(1, count($user)); // user was added
-		// $contact = $this->User->Contact->find('first', array('conditions' => array('Contact.user_id' => $this->User->id)));
-		// $this->assertEqual(1, count($contact)); // contact for the user was added too
-	// }
-//     
+	public function testIsRegisterable() {
+		$data = array(
+			'User' => array(
+				'password' => 'asdDDFEF234424fasdf',
+				'username' => 'byrnes.joel@example.com',
+				'email' => 'byrnes.joel@example.com',
+				'facebook_id' => '1102252405',
+				'first_name' => 'Joel',
+				'last_name' => 'Byrnes',
+				'full_name' => 'Joel Byrnes',
+				'user_role_id' => '6', // invalidate an existing user_role_id
+				'contact_type' => 'person',
+				'forgot_key' => null,
+				'forgot_key_created' => '2013-04-26 01:32:16',
+				'parent_id' => '',
+				'reference_code' => '2quif40p'
+			)
+		);
+		$this->User->create();
+		$this->User->save($data);
+		$isRegisterable = $this->User->invalidFields();
+		$this->assertTrue(!empty($isRegisterable['user_role_id'][0]));
+		
+		$data = array(
+			'User' => array(
+				'password' => 'asdDDFEF234424fasdf',
+				'username' => 'byrnes.joel@example.com',
+				'email' => 'byrnes.joel@example.com',
+				'facebook_id' => '1102252405',
+				'first_name' => 'Joel',
+				'last_name' => 'Byrnes',
+				'full_name' => 'Joel Byrnes',
+				'user_role_id' => '8374853745', // invalidate a non-existing user_role_id
+				'contact_type' => 'person',
+				'forgot_key' => null,
+				'forgot_key_created' => '2013-04-26 01:32:16',
+				'parent_id' => '',
+				'reference_code' => '2quif40p'
+			)
+		);
+		$this->User->create();
+		$this->User->save($data);
+		$isRegisterable = $this->User->invalidFields();
+		$this->assertTrue(!empty($isRegisterable['user_role_id'][0]));
+	}
+
 	public function testProcreate() {
 		// commented out because it is actually emailing, and it caused us to get blocked on gmail with our smtp server
 		//

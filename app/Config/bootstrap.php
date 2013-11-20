@@ -326,6 +326,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
 		 */
 		public function pricify($price, $options = array()) {
+			$defaults['places'] = 2;
+			$defaults['decimal'] = '.';
+			$defaults['separator'] = ',';
+			$options = array_merge($defaults, $options);
 			// currency add ons
 			$start = null;
 			$end = null;
@@ -337,11 +341,11 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				return null;
 			} elseif ($price > 999999) {
 				$price = substr(round($price, -4), 0, -4);
-				return substr($price, 0, -2) . '.' . substr($price, -2) . 'm';
-			} elseif ($price > 99999) {
-				return substr(round($price, -3), 0, -3) . 'k';
+				return $start . substr($price, 0, -2) . '.' . substr($price, -2) . 'm' . $end;
+			} elseif ($price > 9999) {
+				return $start . substr(round($price, -3), 0, -3) . 'k' . $end;
 			} else {
-				return $start . number_format($price, 2, '.', ',') . $end;
+				return $start . number_format($price, $options['places'], $options['decimal'], $options['separator']) . $end;
 			}
 		}
 	
@@ -488,7 +492,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
                 'ProductStore' => 'Products',
                 'Product' => 'Products',
                 'Property' => 'Properties',
-                'Job' => 'Jobs', 
+                'Job' => 'Jobs',
+                'JobResume' => 'Jobs',
 				'ProjectIssue' => 'Projects',
 				'Project' => 'Projects',
 				'ProjectsMember' => 'Projects',
@@ -496,6 +501,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'ProjectsWiki' => 'Projects',
 				'Rating' => 'Ratings',
 				'Record' => 'Records',
+				'Report' => 'Reports',
+				'ReportData' => 'Reports',
+				'ReportPage' => 'Reports',
+				'ReportSalaryCalculatorData' => 'Reports',
                 'Requestor' => 'Privileges',
 				'Searchable' => 'Searchable',
                 'Section' => 'Privileges',

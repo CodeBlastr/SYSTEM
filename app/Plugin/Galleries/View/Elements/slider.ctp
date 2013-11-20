@@ -1,5 +1,4 @@
 <?php
-// This file is good to edit but make a copy of it in canopy nation first
 // thats probably where the javascript we need is too ?>
 <!--div class="slide-wrapper"-->
 	<div class="slide-container">
