@@ -14,5 +14,5 @@ if (empty($type)) {
     		'id' => $cssId, 
     		'element' => 'Webpages.link'));
 } else {
-    echo $this->Element('Webpages.menus/' . $type, array('data' => $data));
-} ?>
+    echo $this->element('Webpages.menus/' . $type, array('data' => $data));
+}

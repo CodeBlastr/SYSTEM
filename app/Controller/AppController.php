@@ -13,7 +13,7 @@ App::uses('Controller', 'Controller');
  *
  * Licensed under GPL v3 License
  * Must retain the above copyright notice and release modifications publicly.
- * 
+ *
  * Note : Enable CURL PHP in php.ini file to use Facebook.Connect component Facebook plugin
  *
  * @copyright     Copyright 2009-2012, Zuha Foundation Inc. (http://zuha.com)
@@ -80,6 +80,8 @@ class AppController extends Controller {
  */
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
+		//Set the adminbar view var so it can be overridden later
+		$this->set('adminbar', true);
 		$this->_getComponents();
 		$this->_getHelpers();
 		$this->_getUses();
@@ -170,9 +172,8 @@ class AppController extends Controller {
 		// order is important for these automatic view vars
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
 		$this->set('title_for_layout', $this->_titleForLayout());
-		$this->set('userRoleId', $this->userRoleId);
-		// deprecated (use the one below) // 07/19/2013 RK
 		$this->set('__userRoleId', $this->userRoleId);
+		$this->set('__userId', $this->userId);
 	}
 
 /**
@@ -597,8 +598,9 @@ class AppController extends Controller {
 			}
 			foreach ($paths as $path) {
 				if (file_exists($path . CakeSession::read('Auth.User.view_prefix') . DS . $this->viewPath . DS . $this->request->params['action'] . '.ctp')) {
-					$this->viewPath = CakeSession::read('Auth.User.view_prefix') . DS . ucfirst($this->request->params['controller']);
-				} 
+					$this->viewPath = CakeSession::read('Auth.User.view_prefix') . DS . Inflector::camelize($this->request->params['controller']);
+					//debug($this->request->params);exit;
+				}
 			}
 			$this->layout = 'default';
 		} else if (empty($this->request->params['requested']) && !$this->request->is('ajax') && !$this->request->ext == 'csv') {
@@ -815,7 +817,7 @@ class AppController extends Controller {
 		if (in_array('Facebook', CakePlugin::loaded())) {
 			$this->helpers[] = 'Facebook.Facebook';
 		}
-		// please leave a comment about why this would have to be here
+		// Used for media display, widely used enough to load in the appcontroller
 		if (in_array('Media', CakePlugin::loaded())) {
 			$this->helpers[] = 'Media.Media';
 		}

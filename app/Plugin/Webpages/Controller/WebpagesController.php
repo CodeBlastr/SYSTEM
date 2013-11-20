@@ -88,6 +88,7 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->paginate['conditions']['Webpage.type'] = $type;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
+		$this->paginate['order']['Webpage.parent_id'] = 'DESC';
 		//$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
 		$this->paginate['contain'][] = 'Child';
 		//$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
@@ -167,16 +168,17 @@ class AppWebpagesController extends WebpagesAppController {
  * @throws NotFoundException
  */
     protected function _indexTemplate() {
+    	$this->redirect('admin');
 		$this->paginate['conditions']['Webpage.type'] = 'template';
-		$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
 		$this->set('webpages', $this->paginate());
         
-		$templates = $this->Webpage->syncFiles('template');
-		$this->set('displayName', 'title');
-		$this->set('displayDescription', 'content'); 
-		$this->set('page_title_for_layout', 'Templates');
-		$this->layout = 'default';	
+		App::uses('Template', 'Model');
+		$Template = new Template;
+		$this->set('templates', $templates = $Template->find('all', array('conditions' => array('Template.install NOT' => null))));
+		$sync = $this->Webpage->syncFiles('template');
 		$this->view = 'index_template';
+		$this->set('page_title_for_layout', 'Site Templates');
+		$this->set('title_for_layout', 'Site Templates');
     }
     
     
@@ -428,7 +430,12 @@ class AppWebpagesController extends WebpagesAppController {
  * @param int $id
  */
  	public function export($id) {
- 		$data = $form = $this->Webpage->export($id);
+ 		try {
+ 			$data = $form = $this->Webpage->export($id);
+		} catch (Exception $e) {
+			$this->Session->setFlash($e->getMessage());
+			$this->redirect($this->referer());
+		}
 		$form['Template']['install'] = substr($form['Template']['install'], 0, 500);
 		if (!unserialize($data['Template']['install'])) {
 			debug('data not serialized properly');

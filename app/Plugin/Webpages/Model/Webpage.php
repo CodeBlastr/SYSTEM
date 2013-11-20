@@ -669,6 +669,16 @@ class Webpage extends WebpagesAppModel {
 				$results[0]['Webpage']['content'] = $file->read();				
 				$file->close(); // Be sure to close the file when you're done
 			}
+			// virtual _usage field
+			for ($i = 0; $i < count($results); ++$i) {
+				if ($results[$i][$this->alias]['is_default']) {
+					$results[$i][$this->alias]['_usage'] = 'Default';
+				} elseif (!empty($results[$i][$this->alias]['template_urls'])) {
+					$results[$i][$this->alias]['_usage'] = 'Specific Pages';
+				} else {
+					$results[$i][$this->alias]['_usage'] = 'Not Used';
+				}
+			}
 		}
 		return $results;
 	}
@@ -1056,7 +1066,7 @@ class Webpage extends WebpagesAppModel {
 		}
 		$templateFile = ROOT.DS.SITE_DIR.DS.'Locale'.DS.'View'.DS.'Layouts'.DS.$template['Webpage']['name'];
 		
-		if ($templateContent = file_get_contents($templateFile)) {
+		if ($templateContent = @file_get_contents($templateFile)) {
 			$output[] = array(
 				'Webpage' => array(
 					'type' => 'template',
@@ -1065,14 +1075,14 @@ class Webpage extends WebpagesAppModel {
 					),
 				);
 		} else {
-			throw new Exception(__('Missing %s template file', $template['Webpage']['name']));
+			throw new Exception(__('Cannot export missing %s template file', $template['Webpage']['name']));
 		}
 		// get all of the {page: some-name} data
 		preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $template['Webpage']['content'], $matches);
         for ($i = 0; $i < sizeof($matches[2]); $i++) {
         	// has to be an actual file
 			$file = $paths[2].'Elements'.DS.trim($matches[2][$i]).'.ctp'; // we could support other paths in the future
-			if ($elementContent = file_get_contents($file)) {
+			if ($elementContent = @file_get_contents($file)) {
 				$output[] = array(
 					'Webpage' => array(
 						'type' => 'element',
@@ -1081,7 +1091,7 @@ class Webpage extends WebpagesAppModel {
 						)
 					);
 			} else {
-				throw new Exception(__('Missing %s element file', trim($matches[2][$i])));
+				throw new Exception(__('Cannot export missing %s element file', trim($matches[2][$i])));
 			}
 		}
 

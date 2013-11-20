@@ -29,10 +29,22 @@ class UserRoleFixture extends CakeTestFixture {
 			'is_system' => '0',
 			'name' => 'users',
 			'view_prefix' => '',
+			'is_registerable' => 1,
 			'created' => '2013-07-21 09:51:58',
 			'modified' => '2013-07-21 09:51:58',
 			'lft' => 5,
 			'rght' => 6
+		),
+		array(
+			'id' => '10',
+			'is_system' => '0',
+			'name' => 'secret-users',
+			'view_prefix' => '',
+			'is_registerable' => 0,
+			'created' => '2013-07-21 09:51:58',
+			'modified' => '2013-07-21 09:51:58',
+			'lft' => 9,
+			'rght' => 10
 		)
 	);
 }
