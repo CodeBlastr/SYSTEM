@@ -66,30 +66,8 @@ class AppUsersController extends UsersAppController {
  * Index method
  */
 	public function index() {
-		$this->paginate['fields'] = array(
-			'User.id',
-			'User.first_name',
-		);
-		$this->paginate['conditions'] = array('not' => array('User.id' => '1'));
+		//$this->paginate['conditions'] = array('not' => array('User.id' => '1'));
 		$this->set('users', $this->paginate());
-		$this->set('displayName', 'first_name');
-		$this->set('displayDescription', '');
-		$this->set('indexClass', '');
-		$this->set('showGallery', true);
-		$this->set('galleryForeignKey', 'id');
-		$this->set('pageActions', array(
-			array(
-				'linkText' => 'Create',
-				'linkUrl' => array('action' => 'add', ),
-			),
-			array(
-				'linkText' => 'Archived',
-				'linkUrl' => array(
-					'action' => 'index',
-					'archived' => 1,
-				),
-			),
-		));
 	}
 
 /**
@@ -100,7 +78,7 @@ class AppUsersController extends UsersAppController {
 	public function view($id) {
 		$user = $this->User->find('first', array(
 			'conditions' => array('User.id' => $id),
-			'contain' => array('UserRole', ),
+			'contain' => array('UserRole')
 		));
 		// This is here, because we have an element doing a request action on it.
 		if (isset($this->request->params['requested'])) {
@@ -170,6 +148,9 @@ class AppUsersController extends UsersAppController {
  * @param boolean $forcePw
  */
 	public function edit($id = null, $forcePw = null) {
+		if ($id == 'my') {
+			return $this->_editMy();
+		}
 		if ($forcePw > 0) {
 			$this->view = 'edit_pwd';
 		}
@@ -222,6 +203,13 @@ class AppUsersController extends UsersAppController {
 	}
 
 /**
+ * Edit My method
+ */
+ 	protected function _editMy() {
+		$this->redirect(array('action' => 'edit', $this->Session->read('Auth.User.id')));
+ 	}
+
+/**
  * Register method
  *
  * @param uuid $userRoleId
@@ -264,12 +252,13 @@ class AppUsersController extends UsersAppController {
  */
 	public function procreate($userRoleId = null) {
 		if ($this->request->is('post')) {
+			$this->User->autoLogin = false;
 			if ($this->User->procreate($this->request->data)) {
 				$this->Session->setFlash(__('User created, and email sent notifying them.'));
 				$this->redirect(array('action' => 'view', $this->User->id));
 			}
 		}
-		$userRoles = $this->User->UserRole->find('list', array('conditions' => array('UserRole.is_registerable' => 1, 'UserRole.id !=' => 1))); // remove the administrators group by default - too insecure
+		$userRoles = $this->User->UserRole->find('list', array('conditions' => array('UserRole.id !=' => 1, 'UserRole.name !=' => 'guests'))); // remove the administrators group by default - too insecure
 		$userRoleId = count($userRoles) == 1 && empty($userRoleId) ? key($userRoles) : $userRoleId;
 		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') && empty($userRoleId) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : $userRoleId;
 		$this->set(compact('userRoleId', 'userRoles'));
@@ -280,15 +269,27 @@ class AppUsersController extends UsersAppController {
 
 /**
  * Delete method
+ * 
+ * @param uuid $id
  */
 	public function delete($id) {
-		$this->__delete('User', $id);
+		$this->User->id = $id;
+		if (!$this->User->exists()) {
+			throw new NotFoundException(__('Invalid user'));
+		}
+		if ($this->User->delete($id)) {
+			$this->Session->setFlash(__('User deleted')); 
+			$this->redirect(array('action' => 'index'));
+		} else {
+			$this->Session->setFlash(__('Error deleting user'));
+		}
 	}
 
 /**
  * Dashboard method
  */
 	public function dashboard() {
+		$this->set('users', $this->User->find('all', array('order' => array('User.created' => 'DESC'), 'contain' => array('UserRole'))));
 	}
 
 /**
@@ -486,7 +487,7 @@ class AppUsersController extends UsersAppController {
 				if ($forceUrl) {
 					$this->redirect($this->User->loginRedirectUrl('/'));
 				} else {
-					$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
+					$this->redirect($this->User->loginRedirectUrl('/' . $this->Auth->redirect()));
 				}
 			} catch (Exception $e) {
 				$this->Auth->logout();
@@ -495,7 +496,7 @@ class AppUsersController extends UsersAppController {
 			}
 		} else {
 			$this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
-			$this->redirect($this->referer);
+			!empty($this->referer) ? $this->redirect($this->referer) : null;
 			// added this because we use /install/login too and it should go back to
 			// /install/login
 		}
@@ -622,6 +623,8 @@ class AppUsersController extends UsersAppController {
 				$this->Session->setFlash('Password changed.');
 				$this->_login();
 			} else {
+				debug($this->User->invalidFields());
+				exit;
 				$this->Session->setFlash('Password could not be changed.');
 				$this->redirect(array('action' => 'forgot_password'));
 			}
