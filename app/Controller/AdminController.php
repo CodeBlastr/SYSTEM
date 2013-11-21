@@ -451,6 +451,7 @@ class AdminController extends AppController {
 		$includes['*'] = true;
 		$includes['tmp'] = false;
 		$includes['sites'] = false;
+		$includes['vendors'] = false;
 		$includes['sites.default'] = false;
 		
 		$filename = strtolower(str_replace(' ', '_', __SYSTEM_SITE_NAME));
@@ -470,7 +471,7 @@ class AdminController extends AppController {
 			$dbname = $db->config['database'];
 			$dbuser = $db->config['login'];
 			$dbpass = $db->config['password'];
-			exec('mysqldump -u '.$dbuser.' -p "'.$dbpass.'" "'.$dbname.'" > '.$tmpdir . DS . $sourcefolder . DS . $filename.'.sql');
+			exec('mysql dump -u '.$dbuser.' -p ['.$dbpass.'] ['.$dbname.'] > '.$tmpdir . DS . $sourcefolder . DS . $filename.'.sql');
 		}catch (Exception $e) {
 			$this->Session->setFlash('Error: '.$e->getMessage());
 		}
