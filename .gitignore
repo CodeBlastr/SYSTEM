@@ -1,4 +1,5 @@
 /app/Config/facebook.php
+/app/tmp/logs/*
 /app/tmp/logs/debug.log
 /app/tmp/logs/error.log
 /app/webroot/ip.php
