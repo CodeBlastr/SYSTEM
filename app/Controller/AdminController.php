@@ -471,7 +471,7 @@ class AdminController extends AppController {
 			$dbname = $db->config['database'];
 			$dbuser = $db->config['login'];
 			$dbpass = $db->config['password'];
-			exec('mysql dump -u '.$dbuser.' -p ['.$dbpass.'] ['.$dbname.'] > '.$tmpdir . DS . $sourcefolder . DS . $filename.'.sql');
+			exec('mysql dump -u '.$dbuser.' -p"'.$dbpass.'" '.$dbname.' > '.$tmpdir . DS . $sourcefolder . DS . $filename.'.sql');
 		}catch (Exception $e) {
 			$this->Session->setFlash('Error: '.$e->getMessage());
 		}
