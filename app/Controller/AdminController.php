@@ -443,7 +443,6 @@ class AdminController extends AppController {
 	protected function _exportSite() {
 		$tmpdir = TMP . 'backup';
 		$plugins = CakePlugin::loaded();
-		debug($plugins);
 		$includes = array();
 		foreach ($plugins as $plugin) {
 			$includes['app']['Plugin'][$plugin] = true;
@@ -459,7 +458,8 @@ class AdminController extends AppController {
 		
 		try {
 			//Create backup directory
-			mkdir($tmpdir, '0770', true);
+			mkdir($tmpdir, 0777);
+			chmod($tmpdir, 0777);
 			// copy root folder without sites and plugins
 			$this->copyr(ROOT, $tmpdir, $includes);
 			//Copy the site seperate
@@ -475,14 +475,16 @@ class AdminController extends AppController {
 			$this->Session->setFlash('Error: '.$e->getMessage());
 		}
 		
-		exec('zip -r '.$tmpdir.DS.$sourcefolder.' '.$tmpdir.DS.$filename.'.zip');
+		exec('cd '.$tmpdir.DS.$sourcefolder.';zip -r '.$tmpdir.DS.$filename.'.zip *');
 		
 		try {
 			$this->returnFile($tmpdir.DS.$filename.'.zip', $filename.'.zip', 'zip');
 		}catch (Exception $e) {
 			$this->Session->setFlash('Error: '.$e->getMessage());
 		}
-		exit;
+		
+		//remove the backup folder
+		exec('rm -R '.$tmpdir);
 		
 	}
 	
@@ -498,7 +500,7 @@ class AdminController extends AppController {
 		if(is_dir($source)) {
 			$dir_handle=opendir($source);
 			$sourcefolder = basename($source);
-			mkdir($dest.DS.$sourcefolder, '0770', true);
+			mkdir($dest.DS.$sourcefolder, 0777, true);
 			while($file=readdir($dir_handle)){
 				if($file != "." && $file != ".."){
 					$check = false;
@@ -621,7 +623,7 @@ class AdminController extends AppController {
 		}
 
 		/* output the file itself */
-		$chunksize = 1 * (1024 * 1024); // you may want to change this
+		$chunksize = 1 * (2048 * 2048); // you may want to change this
 		$bytes_send = 0;
 
 		if ($file = fopen($file, 'r')) {
