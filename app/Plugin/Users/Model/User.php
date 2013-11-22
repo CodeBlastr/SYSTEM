@@ -738,7 +738,10 @@ class AppUser extends UsersAppModel {
 			$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
 		}
 		
-		$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
+		if(isset($data[$this->alias]['referal_code'])) {
+			$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
+		}
+		
 		if (isset($data[$this->alias]['parent_id']) && empty($data[$this->alias]['parent_id'])) {
 			unset($data[$this->alias]['parent_id']);
 		} 
@@ -879,7 +882,12 @@ class AppUser extends UsersAppModel {
 		$data['User']['forgot_key'] = $this->__uuid('F');
 		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
 		
+		
+		//Remove the user role validation so other users can create users
+		$this->validator()->remove('user_role_id');
+		
 		// save the setup data
+		//debug($data);exit;
 		if ($this->saveAll($data)) {
 			if ((!empty($data['User']['username']) || !empty($data['User']['email'])) && $options['dryrun'] == false) {
 				$data['User']['username'] = !empty($data['User']['username']) ? $data['User']['username'] : $data['User']['email']; 
