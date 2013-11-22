@@ -482,6 +482,7 @@ class AdminController extends AppController {
 		}catch (Exception $e) {
 			$this->Session->setFlash('Error: '.$e->getMessage());
 		}
+		
 		exit;
 		
 	}
