@@ -20,8 +20,50 @@ class WkHtmlToPdfComponent extends Component {
 		$fileName = 'viewDump' . $randomNumber . '.html';
 		$this->viewFile = new File($this->siteFolder->pwd() . DS . $fileName);
 	}
+	
+	public function rasterizePdf() {
+		
+		$this->controller->autoRender = false;
+		$this->controller->render();
+		$view = $this->controller->View->output;
+		
+		if ($this->viewFile !== false) {
+			$this->viewFile->delete();
+		}
+		// write view from memory to file and then generate the pdf
+		if ($this->viewFile->write($view, 'w')) {
+			
+			$this->viewFile->close();
+			
+			$url = 'http://' . $_SERVER ['HTTP_HOST'] . '/theme/Default/upload/pdf/' . $this->viewFile->name;
+			
+			$output = $this->filepath . DS . "output{$this->randomNumber}.pdf";
+		
+			$commands = '';
+		
+			if (PHP_OS === 'Darwin') {
+				$cmd = VENDORS . '/phantomjs/MacOS/phantomjs '.VENDORS . '/phantomjs/examples/rasterize.js '. $commands . $url . ' ' . $output;
+			} else {
+				switch (PHP_INT_SIZE) {
+					case 4 :
+						throw new Exception('32bit not installed yet', 1);
+						break;
+					case 8 :
+						$cmd = VENDORS . 'phantomjs/nix64/phantomjs rasterize.js '. $commands . $url . ' ' . $output;
+						break;
+					default :
+						throw new Exception('I was unable to detect which phantomjs file to use on this system.', 1);
+						break;
+				}
+			}
+			echo $cmd;
+			exec($cmd);
+			die();
+		}
+	}
 
-	public function rasterizePdf($autoDownload = true) {
+
+	public function createPdf($autoDownload = true, $options = array()) {
 
 		$this->controller->autoRender = false;
 		$this->controller->render();
@@ -39,11 +81,13 @@ class WkHtmlToPdfComponent extends Component {
 
 			$output = $this->filepath . DS . "output{$this->randomNumber}.pdf";
 
-			$commands = "  'A4' ";
+			$commands = ' "A4" ';
 
 			if (PHP_OS === 'Darwin') {
 				$cmd = VENDORS . 'phantomjs/MacOS/phantomjs '.VENDORS . 'phantomjs/examples/rasterize.js '. $commands . $url . ' ' . $output;
-			} else {
+			} elseif (PHP_OS === 'WINNT') {
+				$cmd = VENDORS . 'phantomjs\windows\phantomjs '.VENDORS . 'phantomjs\windows\examples\rasterize.ewc.js ' . $url . ' ' . $output . $commands;
+			}else {
 				switch (PHP_INT_SIZE) {
 					case 4 :
 						throw new Exception('32bit not installed yet', 1);
@@ -56,9 +100,8 @@ class WkHtmlToPdfComponent extends Component {
 						break;
 				}
 			}
-
+			//debug($cmd);exit;
 			exec($cmd);
-
 			if ($autoDownload) {
 				// send file to browser and trigger download dialogue box
 				$this->returnFile($output, "document{$this->randomNumber}.pdf");
@@ -115,11 +158,12 @@ class WkHtmlToPdfComponent extends Component {
 			if ($options['javascriptdelay']) {
 				$commands .= '--javascript-delay ' . $options['javascriptdelay'] . ' ';
 			}
+
 			if ($options['nostopslowscripts']) {
 				$commands .= '--no-stop-slow-scripts ';
 			}
 			if ($options['windowstatus']) {
-				$commands .= '--window-status "' . $options['javascriptdelay'] . '" ';
+				$commands .= '--window-status "' . $options['windowstatus'] . '" ';
 			}
 
 			//For windows debugging on localhost
@@ -178,7 +222,7 @@ class WkHtmlToPdfComponent extends Component {
 		/*
 		 * This function takes a path to a file to output ($file), the filename that the browser will see ($name) and the MIME type of the file ($mime_type, optional). If you want to do something on download abort/finish, register_shutdown_function('function_name');
 		 */
-
+		 
 		 $i = 0;
 		 while (!file_exists($file)) {
 		 	++$i;

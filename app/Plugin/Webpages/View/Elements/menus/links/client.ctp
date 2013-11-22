@@ -23,19 +23,23 @@ $this->Tree->addItemAttribute('data-identifier', false, $data['WebpageMenu']['id
 	<?php echo $this->Html->link(__('<span class="icon"> %s </span> <span class="link"> %s </span>', $defaultTemplate[0]['Template']['icon'], $data['WebpageMenu']['item_text']), '#', array('class' => 'toggleClick', 'data-target' => '#form' . $data['WebpageMenu']['id'], 'escape' => false,  'rel' =>'tooltip', 'title' => $data['WebpageMenu']['notes'])); ?>
 	
     <div id="form<?php echo $data['WebpageMenu']['id']; ?>">
-		<?php echo $this->Html->link('Notes', '#', array('data-toggle' => 'modal', 'data-target' => '#menuNote'.$data['WebpageMenu']['id'], 'class' => 'btn btn-info btn-mini pull-left')); ?>
-		<div id="menuNote<?php echo $data['WebpageMenu']['id']; ?>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-body">
-				<?php echo $this->Form->create('WebpageMenuItem', array('url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'edit', $data['WebpageMenu']['id']))); ?>
-				<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $data['WebpageMenu']['id'])); ?>
-				<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
-				<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $data['WebpageMenu']['id'])); ?>
-				<?php echo $this->Form->input('WebpageMenuItem.notes', array('type' => 'textarea', 'label' => $data['WebpageMenu']['name'] . ' Notes', 'value' => $data['WebpageMenu']['notes'])); ?>
-				<?php echo $this->Form->end('Save'); ?> 
+		<?php echo $this->Html->link('Notes', '#', array('data-toggle' => 'modal', 'data-target' => '#menuNote'.$data['WebpageMenu']['id'], 'class' => 'btn btn-info btn-xs btn-mini pull-left')); ?>
+		<div id="menuNote<?php echo $data['WebpageMenu']['id']; ?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<?php echo $this->Form->create('WebpageMenuItem', array('url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'edit', $data['WebpageMenu']['id']))); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $data['WebpageMenu']['id'])); ?>
+						<?php echo $this->Form->input('Override.redirect', array('value' => '/install/client', 'type' => 'hidden')); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $data['WebpageMenu']['id'])); ?>
+						<?php echo $this->Form->input('WebpageMenuItem.notes', array('type' => 'textarea', 'label' => $data['WebpageMenu']['name'] . ' Notes', 'value' => $data['WebpageMenu']['notes'])); ?>
+						<?php echo $this->Form->end('Save'); ?> 
+					</div>
+				</div>
 			</div>
 		</div>
     <?php
-	echo $this->Form->postlink(__('Delete'), array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'delete', $data['WebpageMenu']['id']), array('class' => 'pull-right btn btn-danger btn-mini', 'escape' => false), __('Are you sure you want to delete the %s menu item?', $data['WebpageMenu']['item_text']));
+	echo $this->Form->postlink(__('Delete'), array('plugin' => 'webpages', 'controller' => 'webpage_menu_items', 'action' => 'delete', $data['WebpageMenu']['id']), array('class' => 'pull-right btn btn-danger btn-xs btn-mini', 'escape' => false), __('Are you sure you want to delete the %s menu item?', $data['WebpageMenu']['item_text']));
     //echo $this->Form->create('WebpageMenuItem', array('class' => 'form-inline', 'url' => array('plugin' => 'webpages', 'controller' => 'webpage_menu_items','action' => 'edit'), 'class' => 'form-inline'));
     //echo $this->Form->input('Override.redirect', array('value' => '/install/build', 'type' => 'hidden'));
     //echo $this->Form->input('WebpageMenuItem.id', array('type' => 'hidden', 'value' => $data['WebpageMenu']['id']));

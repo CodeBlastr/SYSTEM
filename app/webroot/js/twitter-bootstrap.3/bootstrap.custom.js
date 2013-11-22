@@ -201,6 +201,16 @@ $(function() {
 		$(currentName).show('slow');
 		return false;
 	});	
+	
+	// make drop down navs use hover
+	$('ul.nav li.dropdown').hover(function() {
+	  $(this).find('.dropdown-menu').stop(true, true).delay(150).fadeIn();
+	}, function() {
+	  $(this).find('.dropdown-menu').stop(true, true).delay(150).fadeOut();
+	});
+	$('ul.nav li.dropdown a').click(function(e) {
+		window.location = $(this).attr('href');
+	});
 });
 
 // hmm.. only place I see this used is on the privileges page
