@@ -443,7 +443,6 @@ class AdminController extends AppController {
 	protected function _exportSite() {
 		$tmpdir = TMP . 'backup';
 		$plugins = CakePlugin::loaded();
-		debug($plugins);
 		$includes = array();
 		foreach ($plugins as $plugin) {
 			$includes['app']['Plugin'][$plugin] = true;
@@ -452,6 +451,7 @@ class AdminController extends AppController {
 		$includes['*'] = true;
 		$includes['tmp'] = false;
 		$includes['sites'] = false;
+		$includes['vendors'] = false;
 		$includes['sites.default'] = false;
 		
 		$filename = strtolower(str_replace(' ', '_', __SYSTEM_SITE_NAME));
@@ -459,7 +459,8 @@ class AdminController extends AppController {
 		
 		try {
 			//Create backup directory
-			mkdir($tmpdir, '0770', true);
+			mkdir($tmpdir, 0777);
+			chmod($tmpdir, 0777);
 			// copy root folder without sites and plugins
 			$this->copyr(ROOT, $tmpdir, $includes);
 			//Copy the site seperate
@@ -470,12 +471,12 @@ class AdminController extends AppController {
 			$dbname = $db->config['database'];
 			$dbuser = $db->config['login'];
 			$dbpass = $db->config['password'];
-			exec('mysqldump -u '.$dbuser.' -p "'.$dbpass.'" "'.$dbname.'" > '.$tmpdir . DS . $sourcefolder . DS . $filename.'.sql');
+			exec('mysql dump -u '.$dbuser.' -p"'.$dbpass.'" '.$dbname.' > '.$tmpdir . DS . $sourcefolder . DS . $filename.'.sql');
 		}catch (Exception $e) {
 			$this->Session->setFlash('Error: '.$e->getMessage());
 		}
 		
-		exec('zip -r '.$tmpdir.DS.$sourcefolder.' '.$tmpdir.DS.$filename.'.zip');
+		exec('cd '.$tmpdir.DS.$sourcefolder.';zip -r '.$tmpdir.DS.$filename.'.zip *');
 		
 		try {
 			$this->returnFile($tmpdir.DS.$filename.'.zip', $filename.'.zip', 'zip');
@@ -483,9 +484,31 @@ class AdminController extends AppController {
 			$this->Session->setFlash('Error: '.$e->getMessage());
 		}
 		
-		exit;
+		//remove the backup folder
+		exec('rm -R '.$tmpdir);
 		
 	}
+	
+	/**
+	 * Recursive Copy method
+	 * 
+	 * Copys and entire directory tree
+	 * Allow you to pass an array of includes and excludes
+	 * 
+	 * ex: $includes = array(
+	 * 		'*' => true //This makes all files not specified true
+	 * 		'path1' => true
+	 * 		'path2' => false
+	 * 		'path3' => array(
+	 * 			'subpath1' => true,
+	 * 			'subpath2' => false
+	 * 		) 
+	 * 
+	 * @param unknown $source
+	 * @param unknown $dest
+	 * @param string $includes
+	 * @throws Exception
+	 */
 	
 	static protected function copyr($source, $dest, $includes = false)
 	{
@@ -499,7 +522,7 @@ class AdminController extends AppController {
 		if(is_dir($source)) {
 			$dir_handle=opendir($source);
 			$sourcefolder = basename($source);
-			mkdir($dest.DS.$sourcefolder, '0770', true);
+			mkdir($dest.DS.$sourcefolder, 0777, true);
 			while($file=readdir($dir_handle)){
 				if($file != "." && $file != ".."){
 					$check = false;
@@ -536,6 +559,19 @@ class AdminController extends AppController {
 			copy($source, $dest);
 		}
 	}
+	
+	/**
+	 * 
+	 * Funtion to load a file and send it to the browser.
+	 * 
+	 * @todo This should be moved to a more global scope
+	 * 
+	 * 
+	 * @param string $file - Filepath
+	 * @param string $name - Name of output file
+	 * @param string $mime_type - Mime Type
+	 * @throws Exception
+	 */
 	
 	private function returnFile($file, $name, $mime_type = '') {
 		/*
@@ -622,7 +658,7 @@ class AdminController extends AppController {
 		}
 
 		/* output the file itself */
-		$chunksize = 1 * (1024 * 1024); // you may want to change this
+		$chunksize = 1 * (2048 * 2048); // you may want to change this
 		$bytes_send = 0;
 
 		if ($file = fopen($file, 'r')) {
