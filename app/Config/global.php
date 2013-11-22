@@ -63,7 +63,7 @@ class Zuha {
  * @param {mixed} 		The type string (ie. PRICE_TYPE, SETTING_TYPE), if null we find all enumerations. If an integer then we return the single exact enum being called.
  * @param {mixed}		A string or an array of names to find.  If null we find all for the type, if string we find a single enum, if an array we find all which match both the type and the array of names.
  */
-	public function enum($type = null, $name = null) {
+	public function enum($type = null, $name = null, $options = array()) {
 		$Enum = ClassRegistry::init('Enumeration');
 		if (!empty($type)) {
 			if (is_numeric($type)) {
@@ -79,7 +79,7 @@ class Zuha {
 					'conditions' => array(
 						'Enumeration.type' => $type,
 						),
-					));
+					) + $options );
 			} else if (is_string($name)) {
 				// find the single enum which matches the type and the name
 				return $Enum->field('id', array(

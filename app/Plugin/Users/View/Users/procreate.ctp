@@ -5,10 +5,9 @@
 		<?php echo $this->Form->input('User.contact_type', array('type' => 'hidden')); ?>
 		<?php echo $this->Form->input('User.referal_code', array('type' => 'hidden')); ?>
 		<?php echo !empty($userRoleId) ? $this->Form->hidden('User.user_role_id', array('value' => $userRoleId)) : $this->Form->input('User.user_role_id'); ?>
-		<?php echo $this->Form->input('User.full_name', array('label' => 'Name')); ?>
-		<?php echo $this->Form->input('User.username', array('label' => 'Email')); ?>
-		<?php echo $this->Form->input('User.password', array('value' => '')); ?>
-		<?php echo $this->Form->input('User.confirm_password', array('type' => 'password', 'value' => '')); ?>
+		<?php echo $this->Form->input('User.full_name', array('label' => 'Full Name')); ?>
+		<?php echo $this->Form->input('User.username', array('label' => 'Email (and username)')); ?>
+
 	</fieldset>
 	<?php echo $this->Form->end('Submit'); ?>
 </div>
