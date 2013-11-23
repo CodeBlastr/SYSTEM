@@ -36,7 +36,7 @@ if (defined('SITE_DIR')) {
   	Configure::write('Config.language', 'en');
 	$prefix = 'console';
 }
-    
+
 Configure::write('Error', array(
   'handler' => 'ErrorHandler::handleError',
   'level' => E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED,
@@ -54,31 +54,31 @@ Configure::write('Exception', array(
   'renderer' => 'AppExceptionRenderer',
   'log' => true
   ));
-  
-Cache::config('default', array(
- 	'engine' => 'Apc', //[required]
- 	'duration'=> 3600, //[optional]
- 	'probability'=> 100, //[optional]
- 	'prefix' => Inflector::slug($prefix) . '_', //[optional]  prefix every cache file with this string
- 	));
 
 /**
  * We need to implement our own acl check.
  */
 Configure::write('Acl.classname', 'ZuhaAcl');
 
-/**
- * Pick the caching engine to use.  If APC is enabled use it.
- * If running via cli - apc is disabled by default. ensure it's available and enabled in this case
- *
- */
-$engine = 'Memcache';
-if (extension_loaded('apc') && (php_sapi_name() !== 'cli' || ini_get('apc.enable_cli'))) {
-	$engine = 'Apc';
+
+if ($_SERVER["REMOTE_ADDR"] === '127.0.0.1') {
+    $engine = 'File';
+} elseif (extension_loaded('apc') && (php_sapi_name() !== 'cli' || ini_get('apc.enable_cli'))) {
+    $engine = 'Apc';
+} elseif (extension_loaded('memcache')) {
+    $engine = 'Memcache';
 }
 
+Cache::config('default', array(
+ 	'engine' => $engine, //[required]
+ 	'duration'=> 3600, //[optional]
+ 	'probability'=> 100, //[optional]
+ 	'prefix' => Inflector::slug($prefix) . '_', //[optional]  prefix every cache file with this string
+ 	));
+
+
 // In development mode, caches should expire quickly.
-$duration = '+999 days';
+$duration = '+90 days';
 if (Configure::read('debug') >= 1) {
 	$duration = '+10 seconds';
 }
