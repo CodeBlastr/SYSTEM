@@ -379,14 +379,15 @@ class AppUsersController extends UsersAppController {
 	}
 
 /**
- * Index view of users that logged in user in parent of
+ * Index view of users that logged in user is parent of
  *
  */
 	public function children() {
 		$this->paginate['conditions'] = array(
 			'parent_id' => $this->userId,
-			'not' => array('User.id' => '1')
+			'not' => array('User.id' => '1'),
 		);
+		$this->paginate['contain'] = array('UserRole');
 		$this->view = 'index';
 		$this->paginate['fields'] = array(
 			'User.id',
@@ -394,6 +395,7 @@ class AppUsersController extends UsersAppController {
 			'User.last_name',
 			'User.username',
 			'User.email',
+			'UserRole.name'
 		);
 		$this->set('users', $this->paginate());
 		$this->set('displayName', 'first_name');
