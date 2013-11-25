@@ -243,12 +243,17 @@ class ZuhaFormHelper extends FormHelper {
 		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false));
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : 'hh:mm tt';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
+		// $fieldnameId = str_replace(' ', '', ucwords(str_replace('.', ' ', $fieldName)));
+		$fieldhiddenname = $fieldnameId . '_';
 		$code = '$(document).ready(function() {
+			// fixing a conflict and removed these two lines in favor of the two below it
+			// $("#'.$fieldnameId.'").next().val("' . date('Y-m-d h:i:s', strtotime($attributes['value'])) . '");
+			// $("#'.$fieldnameId.'").datetimepicker({
 			$("#' . $firstId . '").next().val("' . date('Y-m-d h:i:s', strtotime($attributes['value'])) . '");
 			$("#' . $firstId . '").datetimepicker({
 		    	timeFormat: "' . $jsTime . '", 
 		        dateFormat: "' . $jsDate . '",
-		        altField: "#' . str_replace('.', '', $fieldName) . '_",
+		        altField: "#' . $fieldhiddenname .'",
 		        altFieldTimeOnly: false,
 		        altFormat: "yy-mm-dd",
 		        altTimeFormat: "hh:mm:ss",
@@ -260,7 +265,7 @@ class ZuhaFormHelper extends FormHelper {
 		// return a text field plus a hidden field with proper Y-m-d h:i:s format
 		return $this->text($fieldName, array(
 			'type' => 'text',
-		) + $attributes) . $this->hidden($fieldName, array('id' => str_replace('.', '', $fieldName) . '_'));
+		) + $attributes) . $this->hidden($fieldName, array('id' => $fieldhiddenname));
 	}
 
 /**

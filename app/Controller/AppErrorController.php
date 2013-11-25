@@ -133,8 +133,13 @@ class AppErrorController extends AppController {
 			(!empty($alias['Alias']['controller']) ? $request->url = $request->url . $alias['Alias']['controller'] . '/' : '');
 			(!empty($alias['Alias']['action']) ? $request->url = $request->url . $alias['Alias']['action'] . '/' : '');
 			(!empty($alias['Alias']['value']) ? $request->url = $request->url . $alias['Alias']['value'] . '/' : '');
-			$request->query['url'] = substr($request->url, 1, -1);
-			$request->here = substr($request->url, 1, -1);
+			// this
+			$request->query['url'] = $request->url;
+			$request->here = $request->url;
+			// was this (changed after Cake2.4 because the login redirect wasn't playing nice)
+			// $request->query['url'] = substr($request->url, 1, -1);
+			// $request->here = substr($request->url, 1, -1);
+			
 			$dispatcher = new Dispatcher();
 			$dispatcher->dispatch($request, new CakeResponse());
 		} else {
