@@ -576,7 +576,9 @@ class AppUser extends UsersAppModel {
 				// its not an array because it couldn't be unserialized
 				$redirect = __APP_LOGIN_REDIRECT_URL;
 			}
-		}
+		} //else {
+			// $redirect = strpos($redirect, '/') === 0 ? $redirect : '/' . $redirect;  // wasn't working with out this since cake 2.4
+		// }
 		return $redirect;
 	}
 
