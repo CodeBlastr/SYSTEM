@@ -384,7 +384,7 @@ class AppUsersController extends UsersAppController {
  */
 	public function children() {
 		$this->paginate['conditions'] = array(
-			'parent_id' => $this->userId,
+			'User.parent_id' => $this->userId,
 			'not' => array('User.id' => '1'),
 		);
 		$this->paginate['contain'] = array('UserRole');
