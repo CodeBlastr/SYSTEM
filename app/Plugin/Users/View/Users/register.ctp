@@ -4,7 +4,7 @@
 	<fieldset>
 		<?php echo $this->Form->input('User.contact_type', array('type' => 'hidden')); ?>
 		<?php echo $this->Form->input('User.referal_code', array('type' => 'hidden')); ?>
-		<?php echo !empty($userRoleId) ? $this->Form->hidden('User.user_role_id', array('value' => $userRoleId)) : $this->Form->input('User.user_role_id'); ?>
+		<?php echo !empty($this->request->data['User']['user_role_id']) ? $this->Form->hidden('User.user_role_id') : $this->Form->input('User.user_role_id'); ?>
 		<?php echo $this->Form->input('User.full_name', array('label' => 'Name')); ?>
 		<?php echo $this->Form->input('User.username', array('label' => 'Email')); ?>
 		<?php echo $this->Form->input('User.password', array('value' => '')); ?>
