@@ -1,7 +1,7 @@
 <?php
 
 App::uses('AppHelper', 'View/Helper');
-App::uses('Webpages.Webpage', 'Webpages.Model');
+App::uses('Webpage', 'Webpages.Model');
 class WebpageHelper extends AppHelper {
 	
 	public $options = array(

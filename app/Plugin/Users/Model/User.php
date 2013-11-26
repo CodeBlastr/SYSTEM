@@ -171,8 +171,17 @@ class AppUser extends UsersAppModel {
 				'foreignKey' => 'user_id',
 				'dependent' => true
 				);
+		}		
+		if(CakePlugin::loaded('Categories')) {
+			$this->actsAs[] = 'Categories.Categorizable';
+			$this->hasAndBelongsToMany['Category'] = array(
+				'className' => 'Categories.Category',
+				'foreignKey' => 'foreign_key',
+				'associationForeignKey' => 'category_id',
+				'with' => 'Categories.Categorized'
+			);
 		}
-		// these should not be needed anymore 1016/2013 RK
+		// these should not be needed anymore 10/16/2013 RK
 		// if (CakePlugin::loaded('Ratings')) {
 			//$this->actsAs[] = 'Ratings.Ratable';
 				// 'className' => 'Ratings.Rating',
