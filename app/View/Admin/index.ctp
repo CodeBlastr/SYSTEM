@@ -175,6 +175,15 @@ if (empty($runUpdates)) { ?>
 			echo $this->Form->input('icon', array('type' => 'file', 'label' => false));
 			echo $this->Form->end('Upload'); ?>
         </div>
+        
+        <div class="masonryBox dashboardBox tagMedia">
+            <h3 class="title"><i class="glyphicon glyphicon-star-empty"></i> Site Backup</h3>
+            <p>Backup Your Site and download a zipfile</p>
+          	<?php
+          		echo $this->Form->create('Admin');
+				echo $this->Form->hidden('export', array('value' => true));
+				echo $this->Form->end('Export'); ?>
+        </div>
 		
 		<?php if (CakePlugin::loaded('Categories')) { ?>  
         <div class="masonryBox dashboardBox tagText tagAdmin">
