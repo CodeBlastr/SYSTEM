@@ -1688,7 +1688,7 @@ class Model extends Object implements CakeEventListener {
 		);
 		$_whitelist = $this->whitelist;
 		$fields = array();
-
+		
 		if (!is_array($validate)) {
 			$options = array_merge($defaults, compact('validate', 'fieldList'));
 		} else {
