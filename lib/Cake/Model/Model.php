@@ -1704,7 +1704,7 @@ class Model extends Object implements CakeEventListener {
 		} elseif ($options['fieldList'] === null) {
 			$this->whitelist = array();
 		}
-
+		
 		$this->set($data);
 
 		if (empty($this->data) && !$this->hasField(array('created', 'updated', 'modified'))) {
@@ -1808,7 +1808,7 @@ class Model extends Object implements CakeEventListener {
 
 		$success = true;
 		$created = false;
-
+		
 		if ($count > 0) {
 			$cache = $this->_prepareUpdateFields(array_combine($fields, $values));
 
@@ -1823,7 +1823,7 @@ class Model extends Object implements CakeEventListener {
 						list($fields[], $values[]) = array($this->primaryKey, String::uuid());
 					}
 				}
-
+				
 				if (!$db->create($this, $fields, $values)) {
 					$success = false;
 				} else {
