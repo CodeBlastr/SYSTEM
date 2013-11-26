@@ -1,13 +1,13 @@
 <?php
 echo $this->Form->create('Enumeration');
 echo $this->Form->input('Enumeration.id');
-echo $this->Form->input('Enumeration.name');
 if(count($enumerationTypes)) {
-	echo $this->Form->input('Enumeration.type',array('type'=>'select','options'=>array_merge($enumerationTypes,array('+'=>'+ Add new type'))));
+	echo $this->Form->input('Enumeration.type',array('label' => 'Key', 'type'=>'select','options'=>array_merge($enumerationTypes,array('+'=>'+ Add new type'))));
 }
 else {
-	echo $this->Form->input('Enumeration.type', array('value' => $type));
+	echo $this->Form->input('Enumeration.type', array('label' => 'Key', 'value' => $type));
 }
+echo $this->Form->input('Enumeration.name', array('label' => 'Value'));
 echo $this->Form->end('Done');
 
 // set the contextual menu items
