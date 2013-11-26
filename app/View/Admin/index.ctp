@@ -176,14 +176,16 @@ if (empty($runUpdates)) { ?>
 			echo $this->Form->end('Upload'); ?>
         </div>
         
-        <div class="masonryBox dashboardBox tagMedia">
-            <h3 class="title"><i class="glyphicon glyphicon-star-empty"></i> Site Backup</h3>
-            <p>Backup Your Site and download a zipfile</p>
+        <?php if ($this->request->query['s'] == 'f9823uf9283u9283u') : ?>
+		<div class="masonryBox dashboardBox tagMedia">
+           	 <h3 class="title"><i class="glyphicon glyphicon-floppy-save"></i> Site Backup</h3>
+            	<p>Backup Your Site and download a zipfile</p>
           	<?php
           		echo $this->Form->create('Admin');
 				echo $this->Form->hidden('export', array('value' => true));
-				echo $this->Form->end('Export'); ?>
+				echo $this->Form->end('Save Backup'); ?>
         </div>
+        <?php endif; ?>
 		
 		<?php if (CakePlugin::loaded('Categories')) { ?>  
         <div class="masonryBox dashboardBox tagText tagAdmin">
