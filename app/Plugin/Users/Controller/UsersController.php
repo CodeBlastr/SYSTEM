@@ -387,6 +387,9 @@ class AppUsersController extends UsersAppController {
 			'User.parent_id' => $this->userId,
 			'not' => array('User.id' => '1'),
 		);
+		if($this->request->query['roleid']) {
+			$this->paginate['conditions']['User.user_role_id'] = $this->request->query['roleid'];
+		}
 		$this->paginate['contain'] = array('UserRole');
 		$this->view = 'index';
 		$this->paginate['fields'] = array(
@@ -625,8 +628,6 @@ class AppUsersController extends UsersAppController {
 				$this->Session->setFlash('Password changed.');
 				$this->_login();
 			} else {
-				debug($this->User->invalidFields());
-				exit;
 				$this->Session->setFlash('Password could not be changed.');
 				$this->redirect(array('action' => 'forgot_password'));
 			}
