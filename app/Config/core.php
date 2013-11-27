@@ -60,14 +60,15 @@ Configure::write('Exception', array(
  */
 Configure::write('Acl.classname', 'ZuhaAcl');
 
-
-if ($_SERVER["REMOTE_ADDR"] === '127.0.0.1') {
+// use File cache when working locally, then APC, and finally try Memcache.  Defaults to File.
+if (php_sapi_name() === 'cli' || $_SERVER["REMOTE_ADDR"] === '127.0.0.1') {
     $engine = 'File';
 } elseif (extension_loaded('apc') && (php_sapi_name() !== 'cli' || ini_get('apc.enable_cli'))) {
     $engine = 'Apc';
 } elseif (extension_loaded('memcache')) {
     $engine = 'Memcache';
 }
+$engine = isset($engine) ? $engine : 'File';
 
 Cache::config('default', array(
  	'engine' => $engine, //[required]
