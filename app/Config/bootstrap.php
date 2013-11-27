@@ -432,6 +432,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'CourseGrade' => 'Courses',
 				'CourseGradeDetail' => 'Courses',
 				'CourseLesson' => 'Courses',
+				'CourseSchool' => 'Courses',
 				'CourseSeries' => 'Courses',
 				'Coupon' => 'Coupons',
 				'Credit' => 'Credits',
