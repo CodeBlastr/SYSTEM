@@ -840,7 +840,8 @@ class AppController extends Controller {
 		}
 		// not really loving it but it has to be here because it is in the construct and
 		// for logins to work
-		if (in_array('Facebook', CakePlugin::loaded())) {
+		// @todo Seems to mess up the cake console usage.. Facebook.Facebook needs table=false or something
+		if (CakePlugin::loaded('Facebook')) {
 			$this->uses = ( is_array($this->uses)) ? array_merge($this->uses, array('Facebook.Facebook')) : array(
 				$this->uses,
 				'Facebook.Facebook'
