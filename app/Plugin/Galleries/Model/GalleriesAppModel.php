@@ -1,7 +1,9 @@
 <?php
 App::uses('AppModel', 'Model');
+
 class GalleriesAppModel extends AppModel {
-	
+
+	public $useTable = false; // this is here because we have the construct which causes an error if you load this class directly, because cake tries to find a table called galleries_app_model
 	public $galleryType = 'fancybox';
    	public $smallImageWidth = 50;
 	public $smallImageHeight = 50;
