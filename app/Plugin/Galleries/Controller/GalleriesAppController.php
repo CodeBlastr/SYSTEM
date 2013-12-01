@@ -2,4 +2,3 @@
 class GalleriesAppController extends AppController {
 	
 }
-?>
