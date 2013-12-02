@@ -1,1 +1,1 @@
-<?php  if(!empty($this->Facebook)) {echo $this->Facebook->init(); } ?>
+<?php echo (!empty($this->Facebook)) ? $this->Facebook->init() : '';
