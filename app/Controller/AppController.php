@@ -779,7 +779,7 @@ class AppController extends Controller {
 		}
 		// not really loving it but it has to be here because it is in the construct and
 		// for logins to work
-		if (in_array('Facebook', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Facebook')) {
 			$this->components['Facebook.Connect'] = array(
 				'plugin' => 'Users',
 				'model' => 'User'
@@ -816,11 +816,11 @@ class AppController extends Controller {
 		}
 		// not really loving these helpers here
 		// this one has to be here because it is in the construct and for logins to work
-		if (in_array('Facebook', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Facebook')) {
 			$this->helpers[] = 'Facebook.Facebook';
 		}
 		// Used for media display, widely used enough to load in the appcontroller
-		if (in_array('Media', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Media')) {
 			$this->helpers[] = 'Media.Media';
 		}
 	}
@@ -843,7 +843,7 @@ class AppController extends Controller {
 		}
 		// not really loving it but it has to be here because it is in the construct and
 		// for logins to work
-		if (in_array('Facebook', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Facebook')) {
 			$this->uses = ( is_array($this->uses)) ? array_merge($this->uses, array('Facebook.Facebook')) : array(
 				$this->uses,
 				'Facebook.Facebook'
