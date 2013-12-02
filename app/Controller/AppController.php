@@ -43,7 +43,9 @@ class AppController extends Controller {
 	public $helpers = array(
 		'Session',
 		'Text',
-		'Form' => array('className' => 'ZuhaForm'),
+		'Form' => array(
+			'className' => 'ZuhaForm'
+			),
 		'Js',
 		'Time',
 		'Html' => array(
