@@ -217,6 +217,55 @@ class ZuhaFormHelper extends FormHelper {
 	}
 
 /**
+ * Date picker method
+ */
+	public function datepicker($fieldName, $attributes = array(), $dateFormat = 'm/d/Y') {
+		$this->setEntity($fieldName);
+		$attributes += array(
+			'empty' => true,
+			'value' => null
+		);
+		if (empty($attributes['value'])) {
+			$attributes = $this->value($attributes, $fieldName);
+		}
+		if (!empty($attributes['value'])) {
+			$attributes['value'] = date($dateFormat, strtotime($attributes['value']));
+		} else {
+			$attributes['value'] = date($dateFormat);
+		}
+		
+		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
+		
+		$firstId = !empty($attributes['id']) ? $attributes['id'] : Inflector::camelize(Inflector::slug($fieldName)); // same as taken from FormHelper
+		$this->View->Html->css('http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
+		$this->View->Html->css('jquery-ui/jquery-ui-timepicker-addon', null, array('inline' => false));
+		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false));
+		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false));
+		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : '';
+		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
+		$fieldnameId = str_replace(' ', '', ucwords(str_replace('.', ' ', $fieldName)));
+		$fieldhiddenname = $fieldnameId . '_';
+		$code = '$(document).ready(function() {
+			// fixing a conflict and removed these two lines in favor of the two below it
+			// $("#'.$fieldnameId.'").next().val("' . date('Y-m-d', strtotime($attributes['value'])) . '");
+			// $("#'.$fieldnameId.'").datepicker({
+			$("#' . $firstId . '").next().val("' . date('Y-m-d', strtotime($attributes['value'])) . '");
+			$("#' . $firstId . '").datepicker({
+		    	timeFormat: "' . $jsTime . '", 
+		        dateFormat: "' . $jsDate . '",
+		        altField: "#' . $fieldhiddenname . '",
+		        altFormat: "yy-mm-dd"
+			});
+		});';
+		$this->View->Html->scriptBlock($code, array('inline' => false, 'once' => false));
+		
+		// return a text field plus a hidden field with proper Y-m-d h:i:s format
+		return $this->text($fieldName, array(
+			'type' => 'text',
+		) + $attributes) . $this->hidden($fieldName, array('id' => $fieldhiddenname));
+	}
+
+/**
  * Date time picker method
  */
 	public function datetimepicker($fieldName, $attributes = array(), $dateFormat = 'm/d/Y h:i a', $timeFormat = '24') {
@@ -243,7 +292,7 @@ class ZuhaFormHelper extends FormHelper {
 		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false));
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : 'hh:mm tt';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
-		// $fieldnameId = str_replace(' ', '', ucwords(str_replace('.', ' ', $fieldName)));
+		$fieldnameId = str_replace(' ', '', ucwords(str_replace('.', ' ', $fieldName))); // comment why, if you comment this line out
 		$fieldhiddenname = $fieldnameId . '_';
 		$code = '$(document).ready(function() {
 			// fixing a conflict and removed these two lines in favor of the two below it
@@ -253,7 +302,7 @@ class ZuhaFormHelper extends FormHelper {
 			$("#' . $firstId . '").datetimepicker({
 		    	timeFormat: "' . $jsTime . '", 
 		        dateFormat: "' . $jsDate . '",
-		        altField: "#' . $fieldhiddenname .'",
+		        altField: "#' . $fieldhiddenname . '",
 		        altFieldTimeOnly: false,
 		        altFormat: "yy-mm-dd",
 		        altTimeFormat: "hh:mm:ss",

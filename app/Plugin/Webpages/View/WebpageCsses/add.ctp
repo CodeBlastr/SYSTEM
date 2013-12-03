@@ -1,13 +1,14 @@
 <div class="webpageCsses form">
 	<fieldset>
 		<?php echo $this->Form->create('WebpageCss', array('class'=> 'form-inline'));?>
-		<div class="row-fluid">
+		<div class="col-md-12">
 			<?php echo $this->Form->input('WebpageCss.webpage_id', array('class' => 'input-small', 'label' => 'Template <a href="#" rel="tooltip" title="If blank then this css file will load with all templates"><i class="icon-info-sign"></i></a>', 'empty' => true)); ?>
 			<?php echo $this->Form->input('WebpageCss.type', array('class' => 'input-small')); ?>
 			<?php echo $this->Form->input('WebpageCss.name', array('class' => 'input-small', 'label' => 'File Name')); ?>
 			<?php echo $this->Form->input('WebpageCss.is_requested', array('label' => 'Load manually? <a href="#" rel="tooltip" title="Advanced users may want to put css files into the template explicitly, and not have them loaded dynamically."><i class="icon-info-sign"></i></a>')); ?>
 		</div>
-		<div class="row-fluid block">
+		<hr />
+		<div class="col-md-12 block">
 			<?php echo $this->Form->input('content', array('label' => false, 'default' => '/* New Css File */' . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL . PHP_EOL)); ?>
 		</div>
 		<?php echo $this->Form->end(__('Create'));?>
