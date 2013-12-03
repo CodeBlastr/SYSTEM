@@ -72,7 +72,7 @@ class AdminController extends AppController {
 		$this->layout = 'default';
 		
 		// this is here so we can show "Add Post" links foreach Blog on the dashboard
-		if (in_array('Blogs', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Blogs')) {
 			App::uses('Blog', 'Blogs.Model');
 			$Blog = new Blog();
 			$this->set('blogs', $Blog->find('all'));
@@ -105,7 +105,7 @@ class AdminController extends AppController {
 		// debug($this->Session->read());
 		// break;
 		
-		if (!empty($nextPlugin) && !in_array($nextPlugin, CakePlugin::loaded())) { 
+		if (!empty($nextPlugin) && !CakePlugin::loaded($nextPlugin)) { 
 			// plugin is not loaded so downgrade
 			$last = !empty($lastTableWithPlugin) ? array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) : $this->_downgrade($nextTable, $lastTable);
 			$this->Session->write('Updates.last', $last);
@@ -257,6 +257,9 @@ class AdminController extends AppController {
 			if (get_class($e) == 'MissingTableException' && in_array($table, array_keys($Schema->tables))) {
 				// missing table create it
 				$tableName = explode(' ', $e->getMessage()); // string like Table table_name for model TableName was not found in ...'
+				debug($e->getMessage());
+				debug($tableName);
+				debug($db->createSchema($Schema, $tableName[1]));
 				$this->_run($db->createSchema($Schema, $tableName[1]), 'create', $Schema);
 			} else {
 				debug('Hopefully we do not reach this spot.');
@@ -303,8 +306,8 @@ class AdminController extends AppController {
 				debug($e->getMessage());
 				debug($contents);
 				debug($compare);
-				debug('You need to run this update manually.  Probably an unrecognized column type, like enum.');
-				break;
+				throw new Exception('You need to run this update manually.  Probably an unrecognized column type, like enum.', 1);
+				
 			}
 		}
 		return $out;
@@ -322,6 +325,9 @@ class AdminController extends AppController {
  */
 	protected function _run($contents, $event, &$Schema) {
 		if (empty($contents)) {
+			// debug($contents);
+			// debug($event);
+			// debug($Schema);
 			throw new Exception(__('Sql could not be run'));
 		}
 		
