@@ -4,6 +4,8 @@ class Template extends AppModel {
 	
 	public $name = 'Template';
 	
+	public $useTable = 'webpages';
+	
 /**
  * Before save callback
  * 
