@@ -325,6 +325,10 @@ class Setting extends AppModel {
 					'name' => 'CREDITS_PER_PRICE_UNIT',
 					'description' => 'Defines setting variables for credits given to user on purchase of credits.' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . '5',
 				),
+				array(
+					'name' => 'NEW_REGISTRATION',
+					'description' => 'Defines setting variables for use when a new user is created and a notification is needed.' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'notify = "myadmin@example.com, myotheradmin@example.com"',
+				),
 			),
 			'Connections' => array(
 				array(
