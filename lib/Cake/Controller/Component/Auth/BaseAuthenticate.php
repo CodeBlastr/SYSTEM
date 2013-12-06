@@ -106,7 +106,6 @@ abstract class BaseAuthenticate {
 		if (!empty($this->settings['scope'])) {
 			$conditions = array_merge($conditions, $this->settings['scope']);
 		}
-
 		$result = ClassRegistry::init($userModel)->find('first', array(
 			'conditions' => $conditions,
 			'recursive' => $this->settings['recursive'],
@@ -118,13 +117,12 @@ abstract class BaseAuthenticate {
 		}
 
 		$user = $result[$model];
-		if ($password) {
+		// if ($password) { // temp zuha edit
 			if (!$this->passwordHasher()->check($password, $user[$fields['password']])) {
 				return false;
 			}
 			unset($user[$fields['password']]);
-		}
-
+		// } // end temp zuha edit (commenting out is the only change)
 		unset($result[$model]);
 		return array_merge($user, $result);
 	}
