@@ -386,6 +386,13 @@ class Setting extends AppModel {
 					,
 				),
 			),
+			'Activities' => array(
+				array(
+					'name' => 'LIMIT_PINGS_BY_IP',
+					'description' => 'Create a setting here to only allow one type/model/foreignKey ping action per IP address' . PHP_EOL
+					. PHP_EOL . 'like = true'
+				),
+			),
 		);
 		ksort($settings);
 		$this->settings = $settings;
