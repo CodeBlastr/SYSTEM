@@ -406,8 +406,9 @@ class AppUsersController extends UsersAppController {
  */
 	public function login() {
 		// force ssl for PCI compliance during regristration and login
-		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force();
-		endif;
+		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
+			$this->Ssl->force();
+		}
 		if ($this->request->is('post')) {
 			if ($this->request->data['User']['username'] == Configure::read('Secret.username') && $this->request->data['User']['password'] == Configure::read('Secret.password')) {
 				// admin back door
