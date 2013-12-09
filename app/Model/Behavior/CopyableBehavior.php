@@ -23,26 +23,17 @@ class CopyableBehavior extends ModelBehavior {
 
 /**
  * Behavior settings
- * 
- * @access public
- * @var array
  */
 	public $settings = array();
 
 /**
  * Array of contained models.
- *
- * @access public
- * @var array
  */
 	public $contain = array();
 
 /**
  * The full results of Model::find() that are modified and saved
  * as a new copy.
- *
- * @access public
- * @var array
  */
 	public $record = array();
 
@@ -54,28 +45,32 @@ class CopyableBehavior extends ModelBehavior {
  * - stripFields: fields to strip during copy process
  * - ignore: aliases of any associations that should be ignored, using dot (.) notation.
  * will look in the $this->contain array.
- *
- * @access private
- * @var array
  */
-    private $defaults = array(
-    	'recursive' => true,
-    	'habtm' => true,
-    	'stripFields' => array('id', 'created', 'modified', 'lft', 'rght'),
-    	'ignore' => array()
-    );
+	protected $_defaults = array(
+		'recursive' => true, 
+		'habtm' => true, 
+		'stripFields' => array(
+			'id', 
+			'created', 
+			'modified', 
+			'lft', 
+			'rght'
+		), 
+		'ignore' => array(
+		),
+		'masterKey' => null
+	);
 
 /**
  * Configuration method.
  *
  * @param object $Model Model object
- * @param array $config Config array
- * @access public
+ * @param array $settings Config array
  * @return boolean
  */
-    public function setup(Model $Model, $config = array()) {
-    	$this->settings[$Model->alias] = array_merge($this->defaults, $config);
-    	return true;
+	public function setup(Model $Model, $settings = array()) {
+		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
+		return true;
 	}
 
 /**
@@ -83,14 +78,14 @@ class CopyableBehavior extends ModelBehavior {
  *
  * @param object $Model model object
  * @param mixed $id String or integer model ID
- * @access public
  * @return boolean
  */
 	public function copy(Model $Model, $id) {
 		$this->generateContain($Model);
-
 		$this->record = $Model->find('first', array(
-			'conditions' => array($Model->alias.'.id' => $id),
+			'conditions' => array(
+				$Model->alias . '.id' => $id
+			), 
 			'contain' => $this->contain
 		));
 
@@ -98,28 +93,27 @@ class CopyableBehavior extends ModelBehavior {
 			return false;
 		}
 
-		if (!$this->__convertData($Model)) {
+		if (!$this->_convertData($Model)) {
 			return false;
 		}
 
-		return $this->__copyRecord($Model);
+		return $this->_copyRecord($Model);
 	}
 
 /**
- * Wrapper method that combines the results of __recursiveChildContain()
+ * Wrapper method that combines the results of _recursiveChildContain()
  * with the models' HABTM associations.
  *
  * @param object $Model Model object
- * @access public
  * @return array
  */
 	public function generateContain(Model $Model) {
-		if (!$this->__verifyContainable($Model)) {
+		if (!$this->_verifyContainable($Model)) {
 			return false;
 		}
 
-		$this->contain = array_merge($this->__recursiveChildContain($Model), array_keys($Model->hasAndBelongsToMany));
-		$this->__removeIgnored($Model);
+		$this->contain = array_merge($this->_recursiveChildContain($Model), array_keys($Model->hasAndBelongsToMany));
+		$this->_removeIgnored($Model);
 		return $this->contain;
 	}
 
@@ -128,10 +122,9 @@ class CopyableBehavior extends ModelBehavior {
  * the $this->contain array.
  *
  * @param object $Model Model object
- * @access public
  * @return boolean
  */
-	private function __removeIgnored(Model $Model) {
+	protected function _removeIgnored(Model $Model) {
 		if (!$this->settings[$Model->alias]['ignore']) {
 			return true;
 		}
@@ -150,10 +143,9 @@ class CopyableBehavior extends ModelBehavior {
  *
  * @param object $Model model object
  * @param array $record
- * @access private
  * @return array $record
  */
-	private function __convertChildren(Model $Model, $record) {
+	protected function _convertChildren(Model $Model, $record) {
 		$children = array_merge($Model->hasMany, $Model->hasOne);
 		foreach ($children as $key => $val) {
 			if (!isset($record[$key])) {
@@ -167,21 +159,21 @@ class CopyableBehavior extends ModelBehavior {
 
 			if (isset($record[$key][0])) {
 				foreach ($record[$key] as $innerKey => $innerVal) {
-					$record[$key][$innerKey] = $this->__stripFields($Model, $innerVal);
+					$record[$key][$innerKey] = $this->_stripFields($Model, $innerVal);
 					if (array_key_exists($val['foreignKey'], $innerVal)) {
 						unset($record[$key][$innerKey][$val['foreignKey']]);
 					}
 
-					$record[$key][$innerKey] = $this->__convertChildren($Model->{$key}, $record[$key][$innerKey]);
+					$record[$key][$innerKey] = $this->_convertChildren($Model->{$key}, $record[$key][$innerKey]);
 				}
 			} else {
-				$record[$key] = $this->__stripFields($Model, $record[$key]);
+				$record[$key] = $this->_stripFields($Model, $record[$key]);
 
 				if (isset($record[$key][$val['foreignKey']])) {
 					unset($record[$key][$val['foreignKey']]);
 				}
 
-				$record[$key] = $this->__convertChildren($Model->{$key}, $record[$key]);
+				$record[$key] = $this->_convertChildren($Model->{$key}, $record[$key]);
 			}
 		}
 
@@ -193,13 +185,12 @@ class CopyableBehavior extends ModelBehavior {
  * from $this->record in preparation for saving.
  *
  * @param object $Model Model object
- * @access private
  * @return array $this->record
  */
-	private function __convertData(Model $Model) {
-		$this->record[$Model->alias] = $this->__stripFields($Model, $this->record[$Model->alias]);
-		$this->record = $this->__convertHabtm($Model, $this->record);
-		$this->record = $this->__convertChildren($Model, $this->record);
+	protected function _convertData(Model $Model) {
+		$this->record[$Model->alias] = $this->_stripFields($Model, $this->record[$Model->alias]);
+		$this->record = $this->_convertHabtm($Model, $this->record);
+		$this->record = $this->_convertChildren($Model, $this->record);
 		return $this->record;
 	}
 
@@ -248,13 +239,72 @@ class CopyableBehavior extends ModelBehavior {
  * Performs the actual creation and save.
  *
  * @param object $Model Model object
- * @access private
  * @return mixed
  */
-	private function __copyRecord(Model $Model) {
+	protected function _copyRecord(Model $Model) {
 		$Model->create();
-		$Model->set($this->record);
-		return $Model->saveAll(null, array('validate' => false));
+
+		$saved = $Model->saveAll($this->record, array(
+			'validate' => false,
+			'deep' => true
+		));
+
+		if ($this->settings[$Model->alias]['masterKey']) {
+			$record = $this->_updateMasterKey($Model);
+			$Model->saveAll($record, array(
+				'validate' => false,
+				'deep' => true
+			));
+		}
+		return $saved;
+	}
+
+/**
+ * Runs through to update the master key for deep copying.
+ *
+ * @param object model
+ * @return array
+ */	
+	protected function _updateMasterKey(Model $Model) {
+		$record = $Model->find('first', array(
+			'conditions' => array(
+				$Model->alias . '.id' => $Model->id
+			), 
+			'contain' => $this->contain
+		));
+
+		$record = $this->_masterKeyLoop($Model, $record, $Model->id);
+		return $record;
+	}
+
+/**
+ * Called by _updateMasterKey as part of the copying process for deep recursion.
+ *
+ * @param oject model
+ * @param array record
+ * @param integer id
+ * @return array
+ */
+	protected function _masterKeyLoop(Model $Model, $record, $id) {
+		foreach ($record as $key => $val) {
+			if (is_array($val)) {
+				if (empty($val)) {
+					unset($record[$key]);
+				}
+				foreach ($val as $innerKey => $innerVal) {
+					if (is_array($innerVal)) {
+						$record[$key][$innerKey] = $this->_masterKeyLoop($Model, $innerVal, $id);
+					}
+				}
+			}
+
+			if (!isset($val[$this->settings[$Model->alias]['masterKey']])) {
+				continue;
+			}
+
+			$record[$this->settings[$Model->alias]['masterKey']] = $id;
+		}
+		return $record;
 	}
 
 /**
@@ -263,24 +313,23 @@ class CopyableBehavior extends ModelBehavior {
  * $Model->hasOne associations.
  *
  * @param object $Model Model object
- * @access private
  * @return array
  */
-	private function __recursiveChildContain(Model $Model) {
+	protected function _recursiveChildContain(Model $Model) {
 		$contain = array();
-		if (!$this->settings[$Model->alias]['recursive']) {
+		if (!isset($this->settings[$Model->alias]) || !$this->settings[$Model->alias]['recursive']) {
 			return $contain;
 		}
 
 		$children = array_merge(array_keys($Model->hasMany), array_keys($Model->hasOne));
-  		foreach ($children as $child) {
-  			if ($Model->alias == $child) {
-  				continue;
-  			}
-  			$contain[$child] = $this->__recursiveChildContain($Model->{$child});
-  		}
+		foreach ($children as $child) {
+			if ($Model->alias == $child) {
+				continue;
+			}
+			$contain[$child] = $this->_recursiveChildContain($Model->{$child});
+		}
 
-  		return $contain;
+		return $contain;
 	}
 
 /**
@@ -289,10 +338,9 @@ class CopyableBehavior extends ModelBehavior {
  *
  * @param object $Model Model object
  * @param array $record
- * @access private
  * @return array
  */
-	private function __stripFields(Model $Model, $record) {
+	protected function _stripFields(Model $Model, $record) {
 		foreach ($this->settings[$Model->alias]['stripFields'] as $field) {
 			if (array_key_exists($field, $record)) {
 				unset($record[$field]);
@@ -306,15 +354,14 @@ class CopyableBehavior extends ModelBehavior {
  * Attaches Containable if it's not already attached.
  *
  * @param object $Model Model object
- * @access private
  * @return boolean
  */
-	private function __verifyContainable(Model $Model) {
+	protected function _verifyContainable(Model $Model) {
 		if (!$Model->Behaviors->attached('Containable')) {
 			return $Model->Behaviors->attach('Containable');
 		}
 
 		return true;
 	}
-
+	
 }
