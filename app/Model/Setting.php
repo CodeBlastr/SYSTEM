@@ -113,6 +113,10 @@ class Setting extends AppModel {
 					'description' => 'mode = TEST OR LIVE' . PHP_EOL . 'accountId = 99999999999' . PHP_EOL . 'secretKey = FdNcOBCgngMkvJ...'
 				),
 				array(
+					'name' => 'INTERSWITCH',
+					'description' => 'environment = sandbox' . PHP_EOL . 'apiUsername = 99999999999' . PHP_EOL . 'sharedSecret = FdNcOBCgngMkvJ...' . PHP_EOL . 'subdomain = http://pay.example.com'
+				),
+				array(
 					'name' => 'PAYPAL',
 					'description' => 'Defines the credentials to Access Paypal Payment PRO : https://www.paypal.com/us/cgi-bin/webscr?cmd=_profile-api-add-direct-access.' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'API_USERNAME = webpro_126328478_biz_api1.example.com' . PHP_EOL . 'API_PASSWORD = 9294399233' . PHP_EOL . 'API_SIGNATURE = ApJtg.JrUW0YLN.tPmmGiu-exM.va778w7f873mX29QghYJnTf' . PHP_EOL . 'API_ENDPOINT = https://api-3t.sandbox.paypal.com/nvp' . PHP_EOL . 'PROXY_HOST = 127.0.0.1' . PHP_EOL . 'PROXY_PORT = 808' . PHP_EOL . 'PAYPAL_URL = "https://www.sandbox.paypal.com/webscr&cmd=_express-checkout&token="' . PHP_EOL . 'VERSION  = 51.0' . PHP_EOL . 'USE_PROXY = "FALSE"',
 				),
