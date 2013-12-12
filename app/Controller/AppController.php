@@ -57,10 +57,17 @@ class AppController extends Controller {
 	);
 	public $components = array(
 		'Auth' => array(
-			'authenticate' => array('Form' => array('fields' => array('username' => array(
+			'authenticate' => array(
+				'Form' => array(
+					'fields' => array(
+						'username' => array(
 							'username',
 							'email'
-						)))),
+						),
+						'password' => 'password'
+					)
+				)
+			),
 			'authorize' => 'Controller',
 			'loginAction' => array(
 				'plugin' => 'users',

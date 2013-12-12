@@ -383,5 +383,88 @@ class AppModel extends Model {
 		}
 		return $result;
 	}
+	
+	/**
+	 * CSV Parsing Function used to create model and save imported models
+	 */
+	
+	public function parsecsv($data=false, $deletefirst = true) {
+		//debug($this->data);exit;
+		if(!isset($this->data[$this->alias]['uploadfile']) && !$data) {
+			throw new Exception('No Data Defined', 0);
+		}elseif(!isset($this->data[$this->alias]['uploadfile']) && $data) {
+			$this->data = $data;
+		}
+	
+		$this->deleteAll($deletefirst);
+		// open the file
+		$handle = fopen($this->data[$this->alias]['uploadfile']['tmp_name'], "r");
+	
+		// read the 1st row as headings
+		$header = fgetcsv($handle);
+		// create a message container
+		$return = array(
+				'messages' => array(),
+				'errors' => array(),
+		);
+	
+		// read each data row in the file
+		while ( ($row = fgetcsv($handle)) !== FALSE ) {
+			$i++;
+			$csvData = array();
+				
+			// for each header field
+			foreach ($header as $k => $head) {
+				// get the data field from Model.field
+				if (strpos($head, '.') !== false) {
+					$h = explode('.', $head);
+					$csvData[$h[0]][$h[1]] = (isset($row[$k])) ? $row[$k] : '';
+				}
+				// get the data field from field
+				else {
+					$csvData[$this->alias][$head] = (isset($row[$k])) ? $row[$k] : '';
+					//$csvData[$this->alias]['owner_id'] = $data['Import']['owner_id'];
+				}
+			}
+				
+			// see if we have an id
+			$id = isset($csvData[$this->alias]['id']) ? $csvData[$this->alias]['id'] : false;
+	
+			// we have an id, so we update
+			if ($id) {
+				$this->id = $id;
+			}
+	
+			// or create a new record
+			else {
+				$this->create();
+			}
+	
+			// see what we have
+			
+				
+			// validate the row
+			$this->set($csvData);
+			if ( !$this->validates() ) {
+				//$this->_flash( 'warning');
+				$return['errors'][] = __(sprintf('Row %d failed to validate.', $i), true);
+			}
+			
+			// save the row
+			if ( !$this->save($csvData) ) {
+				$return['errors'][] = __(sprintf('Row %d failed to save.', $i), true);
+			}
+			
+			// success message!
+			if ( !$error ) {
+				$return['messages'][] = __(sprintf('Row %d was saved.', $i), true);
+			}
+		}
+		
+		// close the file
+		fclose($handle);
+		// return the messages
+		return $return;
+	}
 
 }

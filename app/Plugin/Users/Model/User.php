@@ -311,6 +311,7 @@ class AppUser extends UsersAppModel {
 			App::uses('AuthComponent', 'Controller/Component');
 	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
 		}
+		
         if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
 			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
 		}
@@ -332,7 +333,7 @@ class AppUser extends UsersAppModel {
 		if ($created) {
 			$this->data = $this->__afterCreation($this->data);
 		}
-
+		
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
@@ -366,7 +367,7 @@ class AppUser extends UsersAppModel {
  * @todo should probably be declared deprecated, as saveUserAndContact() seems more appropriate than overriding the saveAll ^JB
  */
  	public function saveAll($data = null, $options = array()) {
-		$data = $this->_userContact($data);
+		//$data = $this->_userContact($data);
  		return parent::saveAll($data, $options);
  	}
 
@@ -375,7 +376,7 @@ class AppUser extends UsersAppModel {
 		$data = $this->save($data['User']);
 		return $data;
 	}
-
+	
 /**
  * Handles the data of adding of a user // DEPRECATED WILL BE REMOVED 07/18/2013 RK
  *
@@ -429,14 +430,15 @@ class AppUser extends UsersAppModel {
 		}
 		$contactData = $data;
 		unset($contactData['User']); // we will save this in the user model not from the contact model
+		
 		if ($this->Contact->saveAll($contactData)) {
 			unset($data['Contact']);
 			if ( $this->Contact->id ) {
 				$data['Contact']['id'] = $this->Contact->id;
 			}
 		}
-
 		$data = $this->_cleanAddData($data);
+		
 		return $data;
 	}
 
@@ -749,7 +751,10 @@ class AppUser extends UsersAppModel {
 			$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
 		}
 		
-		$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
+		if(isset($data[$this->alias]['referal_code'])) {
+			$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
+		}
+		
 		if (isset($data[$this->alias]['parent_id']) && empty($data[$this->alias]['parent_id'])) {
 			unset($data[$this->alias]['parent_id']);
 		} 
@@ -890,7 +895,12 @@ class AppUser extends UsersAppModel {
 		$data['User']['forgot_key'] = $this->__uuid('F');
 		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
 		
+		
+		//Remove the user role validation so other users can create users
+		$this->validator()->remove('user_role_id');
+		
 		// save the setup data
+		//debug($data);exit;
 		if ($this->saveAll($data)) {
 			if ((!empty($data['User']['username']) || !empty($data['User']['email'])) && $options['dryrun'] == false) {
 				$data['User']['username'] = !empty($data['User']['username']) ? $data['User']['username'] : $data['User']['email']; 
