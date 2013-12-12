@@ -42,11 +42,6 @@ if (empty($runUpdates)) : ?>
             	<li><?php echo $this->Html->link('List Pages', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></li>
             	<li><?php echo $this->Html->link('Add Page', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'content')); ?></li>
             	<li><?php echo $this->Html->link('Add Section', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'section')); ?> (eg. page with multiple pages)</li>
-            	<?php
-            	foreach (Zuha::enum('WEBPAGES_PAGE_TYPE') as $type) {
-					echo __('<li>%s</li>', $this->Html->link(__('Add %s Page', $type), array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', Inflector::underscore($type))));
-					echo __('<li>%s</li>', $this->Html->link(__('View %s Pages', $type), array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', Inflector::underscore($type))));
-				} ?>
             </ul>
         </div>
         
