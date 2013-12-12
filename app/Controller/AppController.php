@@ -850,6 +850,7 @@ class AppController extends Controller {
 		}
 		// not really loving it but it has to be here because it is in the construct and
 		// for logins to work
+		// @todo Seems to mess up the cake console usage.. Facebook.Facebook needs table=false or something
 		if (CakePlugin::loaded('Facebook')) {
 			$this->uses = ( is_array($this->uses)) ? array_merge($this->uses, array('Facebook.Facebook')) : array(
 				$this->uses,
@@ -945,20 +946,24 @@ class AppController extends Controller {
 			$smtp = base64_decode($smtp);
 			$smtp = Security::cipher($smtp, Configure::read('Security.salt'));
 			if (parse_ini_string($smtp)) {
-				if (isset($toEmail['to']) && is_array($toEmail))
+				if (isset($toEmail['to']) && is_array($toEmail)) {
 					$this->SwiftMailer->to = $toEmail['to'];
-				else
+				} else {
 					$this->SwiftMailer->to = $toEmail;
-				if (isset($toEmail['cc']) && is_array($toEmail))
+				}
+				if (isset($toEmail['cc']) && is_array($toEmail)) {
 					$this->SwiftMailer->cc = $toEmail['cc'];
-				if (isset($toEmail['bcc']) && is_array($toEmail))
+				}
+				if (isset($toEmail['bcc']) && is_array($toEmail)) {
 					$this->SwiftMailer->bcc = $toEmail['bcc'];
-				if (isset($toEmail['replyTo']) && is_array($toEmail))
+				}
+				if (isset($toEmail['replyTo']) && is_array($toEmail)) {
 					$this->SwiftMailer->replyTo = $toEmail['replyTo'];
-					$this->SwiftMailer->template = $template;
-					$this->SwiftMailer->attachments = $attachment;
-					$this->SwiftMailer->layout = 'email';
-					$this->SwiftMailer->sendAs = 'html';
+				}
+				$this->SwiftMailer->template = $template;
+				$this->SwiftMailer->attachments = $attachment;
+				$this->SwiftMailer->layout = 'email';
+				$this->SwiftMailer->sendAs = 'html';
 				if ($message) {
 					$this->SwiftMailer->content = $message;
 					if (is_array($message) && isset($message['html'])) {
