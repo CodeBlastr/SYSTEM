@@ -14,8 +14,6 @@ class AppUser extends UsersAppModel {
 		);
 		
 	public $order = array('last_name', 'full_name', 'first_name');
-	
-	
 
 /**
  * Auto Login setting, used to skip session write in aftersave 
@@ -82,7 +80,6 @@ class AppUser extends UsersAppModel {
 			),
 		);
 
-	// this seems to break things because of nesting if I put Users.UserRole for the className
 	public $belongsTo = array(
 		'UserRole' => array(
 			'className' => 'Users.UserRole',
@@ -132,6 +129,15 @@ class AppUser extends UsersAppModel {
 			'foreignKey' => 'user_id',
 			'dependent' => false
 			),
+		// I wonder if something like this will work so that 
+		// in the privileges section we can limit editing a profile
+		// to the owner.  I worry about the foreignKey as
+		// 'id' causing some loop that breaks everything. 12/8/2013 RK
+		// 'Owner' => array(
+			// 'className' => 'Users.User',
+			// 'foreignKey' => 'id',
+			// 'dependent' => false
+			// )
 		);
 
 	public $hasAndBelongsToMany = array(
@@ -145,6 +151,9 @@ class AppUser extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
+		if(CakePlugin::loaded('Media')) {
+			$this->actsAs[] = 'Media.MediaAttachable';
+		}
 		if (CakePlugin::loaded('Transactions')) {
 			$this->hasMany['TransactionAddress'] = array(
 				'className' => 'Transactions.TransactionAddress',
@@ -180,23 +189,7 @@ class AppUser extends UsersAppModel {
 				'associationForeignKey' => 'category_id',
 				'with' => 'Categories.Categorized'
 			);
-		}
-		// these should not be needed anymore 10/16/2013 RK
-		// if (CakePlugin::loaded('Ratings')) {
-			//$this->actsAs[] = 'Ratings.Ratable';
-				// 'className' => 'Ratings.Rating',
-				// 'foreignKey' => 'user_id',
-				// 'dependent' => false
-				// );
-			// $this->hasMany['Ratee'] = array(
-				// 'className' => 'Ratings.Rating',
-				// 'foreignKey' => 'foreign_key',
-				// 'conditions' => array('model' => 'User'),
-				// 'dependent' => false
-				// );
-			// $this->actsAs[] = 'Ratable';
-		// }
-		
+		}		
 		parent::__construct($id, $table, $ds);
 	}
 
