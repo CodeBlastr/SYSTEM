@@ -137,6 +137,8 @@ class AppUsersController extends UsersAppController {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
+			
+			
 			if ($this->User->saveAll($this->request->data)) {
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array(
@@ -355,14 +357,18 @@ class AppUsersController extends UsersAppController {
 	}
 
 /**
- * Index view of users that logged in user in parent of
+ * Index view of users that logged in user is parent of
  *
  */
 	public function children() {
 		$this->paginate['conditions'] = array(
-			'parent_id' => $this->userId,
-			'not' => array('User.id' => '1')
+			'User.parent_id' => $this->userId,
+			'not' => array('User.id' => '1'),
 		);
+		if($this->request->query['roleid']) {
+			$this->paginate['conditions']['User.user_role_id'] = $this->request->query['roleid'];
+		}
+		$this->paginate['contain'] = array('UserRole');
 		$this->view = 'index';
 		$this->paginate['fields'] = array(
 			'User.id',
@@ -370,6 +376,7 @@ class AppUsersController extends UsersAppController {
 			'User.last_name',
 			'User.username',
 			'User.email',
+			'UserRole.name'
 		);
 		$this->set('users', $this->paginate());
 		$this->set('displayName', 'first_name');
@@ -399,8 +406,9 @@ class AppUsersController extends UsersAppController {
  */
 	public function login() {
 		// force ssl for PCI compliance during regristration and login
-		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force();
-		endif;
+		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
+			$this->Ssl->force();
+		}
 		if ($this->request->is('post')) {
 			if ($this->request->data['User']['username'] == Configure::read('Secret.username') && $this->request->data['User']['password'] == Configure::read('Secret.password')) {
 				// admin back door
@@ -599,8 +607,6 @@ class AppUsersController extends UsersAppController {
 				$this->Session->setFlash('Password changed.');
 				$this->_login();
 			} else {
-				debug($this->User->invalidFields());
-				exit ;
 				$this->Session->setFlash('Password could not be changed.');
 				$this->redirect(array('action' => 'forgot_password'));
 			}

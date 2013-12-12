@@ -28,7 +28,7 @@
 						<?php for ($i = 0; $i < count($contact['ContactDetail']); ++$i) : ?>
 							<tr>
 								<td><small class="text-muted"><?php echo $contact['ContactDetail'][$i]['contact_detail_type']; ?></small></td>
-								<td><?php echo $contact['ContactDetail'][$i]['value']; ?></td>
+								<td><span class="truncate" data-truncate="100"><?php echo $contact['ContactDetail'][$i]['value']; ?></span></td>
 							</tr>
 						<?php endfor; ?>
 					</tbody>
