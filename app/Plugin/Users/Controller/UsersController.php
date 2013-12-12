@@ -454,7 +454,7 @@ class AppUsersController extends UsersAppController {
 				$this->User->checkEmailVerification($user);
 				// save the login meta data
 				$this->User->loginMeta($user);
-				if (in_array('Connections', CakePlugin::loaded())) {
+				if (CakePlugin::loaded('Connections')) {
 					$this->User->Connection->afterLogin($user['User']['id']);
 				}
 				// Create a remember me login cookie for two weeks if checked

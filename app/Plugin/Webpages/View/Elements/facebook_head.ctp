@@ -1,1 +1,1 @@
-<?php if(!empty($this->Facebook)) { echo $this->Facebook->html(); } else { echo '<html>'; } ?>
+<?php echo (!empty($this->Facebook)) ? $this->Facebook->html() : '<html>';
