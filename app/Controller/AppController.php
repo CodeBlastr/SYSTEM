@@ -588,7 +588,7 @@ class AppController extends Controller {
 				$this->request->here = str_replace('/admin', '', $this->request->here);
 				$Dispatcher = new Dispatcher();
 				$Dispatcher->dispatch($this->request, new CakeResponse(array('charset' => Configure::read('App.encoding'))));
-				break;
+				exit;
 			} else {
 				$this->Session->setFlash(__('Section access restricted.'));
 				$this->redirect($this->referer());
