@@ -262,6 +262,7 @@ class AppUsersController extends UsersAppController {
  * Dashboard method
  */
 	public function dashboard() {
+		$this->redirect('admin');
 		$this->set('users', $this->User->find('all', array(
 			'order' => array('User.created' => 'DESC'),
 			'contain' => array('UserRole')

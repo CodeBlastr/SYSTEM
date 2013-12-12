@@ -36,6 +36,12 @@ PR_NOCODE:"nocode",PR_PLAIN:"pln",PR_PUNCTUATION:"pun",PR_SOURCE:"src",PR_STRING
 
 
 $(function() {
+	$('*[data-target]').click(function(e) {
+		e.preventDefault();  // don't know why bootstrap doesn't have this already
+	})
+	
+	
+	// EVERYTHING HERE DOWN IS ON THE OLD SIDE
 	$('.truncate').each(function(index) {
 		var length = $(this).attr('data-truncate') !== undefined ? $(this).attr('data-truncate') : 100;
         var end = $(this).attr('data-truncate-end') !== undefined ? $(this).attr('data-truncate-end') : '&hellip; Read More';
@@ -146,6 +152,7 @@ $(function() {
 	
 /**
  * Hides form elements that come after a legend with the class toggleClick
+ * DEPRECATED USE BOOTSTRAP 3 INSTEAD
  * <legend class="toggleClick">Legend Text</legend>
  */
   	$('legend.toggleClick').siblings().hide();
