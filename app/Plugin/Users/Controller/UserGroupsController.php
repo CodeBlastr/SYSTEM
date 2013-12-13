@@ -58,7 +58,7 @@ class AppUserGroupsController extends UsersAppController {
 	public function view($id = null) {
 		$this->UserGroup->id = $id;
 		if (!$this->UserGroup->exists()) {
-			throw new NotFoundException(__('Invalid catalog item'));
+			throw new NotFoundException(__('Invalid user group'));
 		}
 		
 		$userGroup  = $this->UserGroup->find('first', array(
@@ -83,14 +83,11 @@ class AppUserGroupsController extends UsersAppController {
 				'UserGroupWallPost' => array(
 					'Creator',
 					'Comment' => array(
-//						'contain' => array(
-//							'User' => array('fields' => array('User.id', 'User.full_name'))
-//						)
+						'User' => array('fields' => array('User.id', 'User.full_name'))
 					),
 				),
 			)
 		));
-		
 		$this->set('userGroup', $userGroup);
 		$this->set('userId' , $this->Session->read('Auth.User.id'));
 		# get the logged in users group status
@@ -101,6 +98,7 @@ class AppUserGroupsController extends UsersAppController {
 				),
 			));
 		$this->set(compact('status'));
+		$this->set('page_title_for_layout' , $userGroup['UserGroup']['title'] . ' < ' . __('User Group') . ' | '. __SYSTEM_SITE_NAME);
 	}
 
 /**
