@@ -39,7 +39,6 @@ class MetableBehavior extends ModelBehavior {
  * @param boolean $created The value of $created will be true if a new record was created (rather than an update).
  */
 	public function afterSave(Model $Model, $created, $options = array()) {
-        debug($Model->data);
 		if ( !empty($Model->data[$Model->alias]['Meta']) && is_array($Model->data[$Model->alias]['Meta']) ) {
 			$metadata = $Model->data[$Model->alias]['Meta'];
 			unset($Model->data[$Model->alias]['Meta']);
