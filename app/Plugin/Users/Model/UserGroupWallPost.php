@@ -2,10 +2,11 @@
 App::uses('UsersAppModel', 'Users.Model');
 
 class UserGroupWallPost extends UsersAppModel {
-	var $name = 'UserGroupWallPost';
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
+	public $name = 'UserGroupWallPost';
 
-	var $belongsTo = array(
+	public $actsAs = array('Comments.Commentable');
+	
+	public $belongsTo = array(
 		'UserGroup' => array(
 			'className' => 'Users.UserGroup',
 			'foreignKey' => 'user_group_id',
@@ -22,7 +23,7 @@ class UserGroupWallPost extends UsersAppModel {
 		)
 	);
 	
-	var $hasMany = array(
+	public $hasMany = array(
 		'Comment' => array(
 			'className' => 'Comments.Comment',
 			'foreignKey' => 'foreign_key',
