@@ -906,7 +906,6 @@ and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/ed
 		$this->validator()->remove('user_role_id');
 		
 		// save the setup data
-		//debug($data);exit;
 		if ($this->saveAll($data)) {
 			if ((!empty($data['User']['username']) || !empty($data['User']['email'])) && $options['dryrun'] == false) {
 				$data['User']['username'] = !empty($data['User']['username']) ? $data['User']['username'] : $data['User']['email']; 
