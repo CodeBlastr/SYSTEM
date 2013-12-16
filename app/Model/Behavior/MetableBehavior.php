@@ -29,6 +29,20 @@ class MetableBehavior extends ModelBehavior {
 	public function setup(Model $Model, $settings = array()) {
         return true;
 	}
+	
+/**
+ * beforeSave callback
+ *
+ * @param object $Model
+ * @todo bind the model here if not bound already
+ */
+	public function beforeSave(Model $Model, $options = array()) {
+		
+		if ( !empty($Model->data[$Model->alias]['Meta']) && is_array($Model->data[$Model->alias]['Meta']) ) {
+			$this->data = $Model->data[$Model->alias]['Meta'];
+			unset( $Model->data[$Model->alias]['Meta'] );
+		}
+	}
     
 /**
  * After save callback
@@ -39,17 +53,12 @@ class MetableBehavior extends ModelBehavior {
  * @param boolean $created The value of $created will be true if a new record was created (rather than an update).
  */
 	public function afterSave(Model $Model, $created, $options = array()) {
-        
-		if ( !empty($Model->data[$Model->alias]['Meta']) && is_array($Model->data[$Model->alias]['Meta']) ) {
-			$metadata = $Model->data[$Model->alias]['Meta'];
-			unset( $Model->data[$Model->alias]['Meta'] );
-		}
-
-		if ( !empty($metadata) ) {
+		
+		if ( !empty($this->data) && isset($this->data) ) {
             $Meta = ClassRegistry::init('Meta');
 			$existingMeta = $Meta->find( 'first', array('conditions' => array('model' => $Model->name, 'foreign_key' => $Model->id)) );
 			if ( !$existingMeta ) {
-				$cleanMetadata = mysql_escape_string( serialize($metadata) ); 
+				$cleanMetadata = mysql_escape_string( serialize($this->data) ); 
 				$Meta->query("
 					INSERT INTO `metas` (model, foreign_key, value)
 					VALUES ('{$Model->name}', '{$Model->id}', '{$cleanMetadata}');
@@ -69,7 +78,7 @@ class MetableBehavior extends ModelBehavior {
 				}
 
 				// merge that array with $metadata
-				$updatedMetaValue = ZuhaSet::array_replace_r( $existingMetaValue, $metadata );
+				$updatedMetaValue = ZuhaSet::array_replace_r( $existingMetaValue, $this->data );
 
 				// put it back in $existingMeta
 				$existingMeta['Meta']['value'] = mysql_escape_string( serialize($updatedMetaValue) );
