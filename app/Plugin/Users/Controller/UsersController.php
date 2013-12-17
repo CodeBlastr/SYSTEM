@@ -179,10 +179,10 @@ class AppUsersController extends UsersAppController {
 		if ($this->request->is('post')) {
 			if ($this->User->saveAll($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-					$this->Session->setFlash(__('Success, please check your email'));
+					$this->Session->setFlash(__('Success, please check your email', 'flash_success'));
 					$this->Auth->logout();
 				} else {
-					$this->Session->setFlash(__('Successful Registration'));
+					$this->Session->setFlash(__('Successful Registration'), 'flash_success');
 					$this->_login();
 				}
 			} else {
