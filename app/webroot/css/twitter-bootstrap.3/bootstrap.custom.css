@@ -78,3 +78,6 @@ li.switch-mini.has-switch {
 body.contacts.view .table-fixed tr td:first-child {
 	width: 8em; /* specific to the crm, should be moved somewhere */
 }
+.badge a {
+	color: #ffffff;
+}

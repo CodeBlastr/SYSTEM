@@ -14,8 +14,6 @@ class AppUser extends UsersAppModel {
 		);
 		
 	public $order = array('last_name', 'full_name', 'first_name');
-	
-	
 
 /**
  * Auto Login setting, used to skip session write in aftersave 
@@ -82,7 +80,6 @@ class AppUser extends UsersAppModel {
 			),
 		);
 
-	// this seems to break things because of nesting if I put Users.UserRole for the className
 	public $belongsTo = array(
 		'UserRole' => array(
 			'className' => 'Users.UserRole',
@@ -132,6 +129,15 @@ class AppUser extends UsersAppModel {
 			'foreignKey' => 'user_id',
 			'dependent' => false
 			),
+		// I wonder if something like this will work so that 
+		// in the privileges section we can limit editing a profile
+		// to the owner.  I worry about the foreignKey as
+		// 'id' causing some loop that breaks everything. 12/8/2013 RK
+		// 'Owner' => array(
+			// 'className' => 'Users.User',
+			// 'foreignKey' => 'id',
+			// 'dependent' => false
+			// )
 		);
 
 	public $hasAndBelongsToMany = array(
@@ -145,6 +151,9 @@ class AppUser extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
+		if(CakePlugin::loaded('Media')) {
+			$this->actsAs[] = 'Media.MediaAttachable';
+		}
 		if (CakePlugin::loaded('Transactions')) {
 			$this->hasMany['TransactionAddress'] = array(
 				'className' => 'Transactions.TransactionAddress',
@@ -180,23 +189,7 @@ class AppUser extends UsersAppModel {
 				'associationForeignKey' => 'category_id',
 				'with' => 'Categories.Categorized'
 			);
-		}
-		// these should not be needed anymore 10/16/2013 RK
-		// if (CakePlugin::loaded('Ratings')) {
-			//$this->actsAs[] = 'Ratings.Ratable';
-				// 'className' => 'Ratings.Rating',
-				// 'foreignKey' => 'user_id',
-				// 'dependent' => false
-				// );
-			// $this->hasMany['Ratee'] = array(
-				// 'className' => 'Ratings.Rating',
-				// 'foreignKey' => 'foreign_key',
-				// 'conditions' => array('model' => 'User'),
-				// 'dependent' => false
-				// );
-			// $this->actsAs[] = 'Ratable';
-		// }
-		
+		}		
 		parent::__construct($id, $table, $ds);
 	}
 
@@ -353,6 +346,19 @@ class AppUser extends UsersAppModel {
 		// Send a Welcome Email
 		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 			$this->welcome($this->data[$this->alias]['username']);
+		}
+		// Send admin an email
+		if (defined('__USERS_NEW_REGISTRATION') && $notify = unserialize(__USERS_NEW_REGISTRATION)) {
+			if (!empty($notify['notify'])) {
+				$message = 'A new user has been created. <br /><br /> You can view the user user 
+here http://' . $_SERVER['HTTP_HOST'] . '/users/users/view/' . $this->id  . '<br /><br />
+and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/edit/' . $this->id;
+				if ($this->__sendMail($notify['notify'], 'New User Registration', $message)) {
+					// do nothing just notifying the admin
+				} else {
+					throw new Exception(__('Registration error, please notify a site admin.'));
+				}
+			}
 		}
 		// Initialize some fields
 		$data = $this->_cleanAddData($data);
@@ -529,12 +535,12 @@ class AppUser extends UsersAppModel {
 				$data['User']['user_role_id'] = $user['UserRole']['id'];
 				if (empty($user['User']['forgot_key']) || $user['User']['forgot_key'][0] != 'W') {
 					unset($data['User']['password']);
-					if($this->save($data, array('validate' => false))) {
+					if ($this->save($data, array('validate' => false))) {
 						return $user;
 					} else {
 						// we should log errors like this
 						// an error which shouldn't stop functionality, but nevertheless is an error
-						return $$user;
+						return $user;
 					}
 				} else {
 					throw new Exception(__d('users', 'Please check your email to verify your account.'));
@@ -900,7 +906,6 @@ class AppUser extends UsersAppModel {
 		$this->validator()->remove('user_role_id');
 		
 		// save the setup data
-		//debug($data);exit;
 		if ($this->saveAll($data)) {
 			if ((!empty($data['User']['username']) || !empty($data['User']['email'])) && $options['dryrun'] == false) {
 				$data['User']['username'] = !empty($data['User']['username']) ? $data['User']['username'] : $data['User']['email']; 
