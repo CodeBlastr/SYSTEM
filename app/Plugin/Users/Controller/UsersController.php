@@ -179,10 +179,10 @@ class AppUsersController extends UsersAppController {
 		if ($this->request->is('post')) {
 			if ($this->User->saveAll($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-					$this->Session->setFlash(__('Success, please check your email'));
+					$this->Session->setFlash(__('Success, please check your email', 'flash_success'));
 					$this->Auth->logout();
 				} else {
-					$this->Session->setFlash(__('Successful Registration'));
+					$this->Session->setFlash(__('Successful Registration'), 'flash_success');
 					$this->_login();
 				}
 			} else {
@@ -264,6 +264,7 @@ class AppUsersController extends UsersAppController {
  * Dashboard method
  */
 	public function dashboard() {
+		$this->redirect('admin');
 		$this->set('users', $this->User->find('all', array(
 			'order' => array('User.created' => 'DESC'),
 			'contain' => array('UserRole')
@@ -453,7 +454,7 @@ class AppUsersController extends UsersAppController {
 				$this->User->checkEmailVerification($user);
 				// save the login meta data
 				$this->User->loginMeta($user);
-				if (in_array('Connections', CakePlugin::loaded())) {
+				if (CakePlugin::loaded('Connections')) {
 					$this->User->Connection->afterLogin($user['User']['id']);
 				}
 				// Create a remember me login cookie for two weeks if checked

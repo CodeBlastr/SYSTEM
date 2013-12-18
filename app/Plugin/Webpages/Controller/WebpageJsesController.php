@@ -29,17 +29,14 @@ class WebpageJsesController extends WebpagesAppController {
  * 
  */
 	public function index() {
+		$this->redirect('admin');
 		$this->WebpageJs->syncFiles('js');
-		$this->WebpageJs->recursive = 0;
-		$this->paginate['fields'] = array('id', 'name', 'content', 'webpage_id', 'modified');
-		
-		$this->set('webpageJses', $this->paginate());
-		
-		$this->set('displayName', 'name');
-		$this->set('displayDescription', 'content'); 
+		$this->paginate['contain'][] = 'Webpage';
+		$this->paginate['order']['WebpageJs.webpage_id'] = 'DESC';
+		$this->set('webpageJses', $this->request->data = $this->paginate());
 		$this->set('page_title_for_layout', 'Javascript Files');
-		$this->set('title_for_layout', 'Javascript Files');
-        $this->layout = 'default';
+		$this->set('title_for_layout', 'Css Files');
+		return $this->request->data;
 	}
 
 /**

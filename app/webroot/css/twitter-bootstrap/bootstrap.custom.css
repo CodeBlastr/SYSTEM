@@ -16,6 +16,9 @@
 .hero-unit {
 	clear: both;
 }
+.badge a {
+	color: #fff;
+}
 /* super select */
 .super-select ol, .super-select ul {
     margin: 0;
