@@ -311,7 +311,7 @@ class AppWebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function edit($id = null) {
-        $this->Webpage->id = $id;
+        	$this->Webpage->id = $id;
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
 		}
