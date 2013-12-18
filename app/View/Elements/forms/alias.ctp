@@ -22,7 +22,7 @@ echo $this->Form->input('Alias.value', array('type' => 'hidden', 'value' => $for
 echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => $aliasPlugin));
 echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => $aliasController));
 echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => $aliasAction));
-echo $this->Form->input(key($aliasName), array('label' => 'Permanent Url')); ?>
+echo $this->Form->input(key($aliasName), array('required' => false, 'label' => 'Permanent Url')); ?>
 
 <style type="text/css">
     #permaLink {
