@@ -42,6 +42,7 @@ class MetableBehavior extends ModelBehavior {
 		if ( !empty($this->data) && isset($this->data) ) {
             $Meta = ClassRegistry::init('Meta');
 			$existingMeta = $Meta->find( 'first', array('conditions' => array('model' => $Model->name, 'foreign_key' => $Model->id)) );
+			
 			if ( !$existingMeta ) {
 				$cleanMetadata = mysql_escape_string( serialize($this->data) ); 
 				$Meta->query("
@@ -63,8 +64,9 @@ class MetableBehavior extends ModelBehavior {
 				}
 					
 				// merge that array with $metadata
-				$updatedMetaValue = ZuhaSet::array_replace_r( $existingMetaValue, $this->data );
-
+				#$updatedMetaValue = ZuhaSet::array_replace_r( $existingMetaValue, $this->data ); // this was not maintiaining the old meta data ^JB 12/19/2013
+				$updatedMetaValue = Hash::merge($existingMetaValue, $this->data);
+				
 				// put it back in $existingMeta
 				$existingMeta['Meta']['value'] = mysql_escape_string( serialize($updatedMetaValue) );
 				$Meta->query("
