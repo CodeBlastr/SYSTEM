@@ -181,14 +181,15 @@ class AppUser extends UsersAppModel {
 				'dependent' => true
 				);
 		}		
-		if(CakePlugin::loaded('Categories')) {
+		if (CakePlugin::loaded('Categories')) {
 			$this->actsAs[] = 'Categories.Categorizable';
-			$this->hasAndBelongsToMany['Category'] = array(
-				'className' => 'Categories.Category',
-				'foreignKey' => 'foreign_key',
-				'associationForeignKey' => 'category_id',
-				'with' => 'Categories.Categorized'
-			);
+			// commented out: this happens in the behavior, as it should.
+			// $this->hasAndBelongsToMany['Category'] = array(
+				// 'className' => 'Categories.Category',
+				// 'foreignKey' => 'foreign_key',
+				// 'associationForeignKey' => 'category_id',
+				// 'with' => 'Categories.Categorized'
+			// );
 		}		
 		parent::__construct($id, $table, $ds);
 	}
@@ -370,6 +371,8 @@ and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/ed
 /**
  * Save all method
  *
+ * @deprecated
+ * 
  * @todo should probably be declared deprecated, as saveUserAndContact() seems more appropriate than overriding the saveAll ^JB
  */
  	public function saveAll($data = null, $options = array()) {
@@ -386,6 +389,8 @@ and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/ed
 /**
  * Handles the data of adding of a user // DEPRECATED WILL BE REMOVED 07/18/2013 RK
  *
+ * @deprecated
+ * 
  * @param {array}		An array in the array(model => array(field)) format
  * @todo		 		Not sure the rollback for user_id works in all cases (Line 66)
  */
