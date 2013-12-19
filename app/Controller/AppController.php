@@ -112,7 +112,7 @@ class AppController extends Controller {
 				debug($goodUrls);
 				debug($this->request);
 				break;
-				$this->Session->setFlash('Please change your password.');
+				$this->Session->setFlash('Please change your password.', 'flash_warning');
 				$this->redirect(array(
 					'plugin' => 'users',
 					'controller' => 'users',
@@ -415,7 +415,7 @@ class AppController extends Controller {
 		} else {
 			// no matching field don't filter anything
 			if (Configure::read('debug') > 0) {
-				$this->Session->setFlash(__('Invalid field filter attempted on ' . $options['alias']));
+				$this->Session->setFlash(__('Invalid field filter attempted on ' . $options['alias']), 'flash_warning');
 			}
 		}
 	}
@@ -458,7 +458,7 @@ class AppController extends Controller {
 		} else {
 			// no matching field don't filter anything
 			if (Configure::read('debug') > 0) {
-				$this->Session->setFlash(__('Invalid starter filter attempted.'));
+				$this->Session->setFlash(__('Invalid starter filter attempted.'), 'flash_warning');
 			}
 		}
 	}
@@ -478,7 +478,7 @@ class AppController extends Controller {
 		} else {
 			// no matching field don't filter anything
 			if (Configure::read('debug') > 0) {
-				$this->Session->setFlash(__('Invalid container filter attempted.'));
+				$this->Session->setFlash(__('Invalid container filter attempted.'), 'flash_warning');
 			}
 		}
 	}
@@ -501,7 +501,7 @@ class AppController extends Controller {
 		} else {
 			// no matching field don't filter anything
 			if (Configure::read('debug') > 0) {
-				$this->Session->setFlash(__('Invalid range filter attempted.'));
+				$this->Session->setFlash(__('Invalid range filter attempted.'), 'flash_warning');
 			}
 		}
 	}
@@ -597,7 +597,7 @@ class AppController extends Controller {
 				$Dispatcher->dispatch($this->request, new CakeResponse(array('charset' => Configure::read('App.encoding'))));
 				exit;
 			} else {
-				$this->Session->setFlash(__('Section access restricted.'));
+				$this->Session->setFlash(__('Section access restricted.'), 'flash_warning');
 				$this->redirect($this->referer());
 			}
 		} else if (!empty($this->request->params['admin']) && $this->request->params['admin'] == 1) {
@@ -1079,7 +1079,7 @@ class AppController extends Controller {
 			$requestor = $aro['model'] . ' ' . $aro['foreign_key'];
 			$requested = is_array($aco) ? $aco['model'] . ' ' . $aco['foreign_key'] : str_replace('/', ' ', $aco);
 			$message = defined('__APP_DEFAULT_LOGIN_ERROR_MESSAGE') ? __APP_DEFAULT_LOGIN_ERROR_MESSAGE : 'does not have access to';
-			$this->Session->setFlash(__('%s %s %s.', $requestor, $message, $requested));
+			$this->Session->setFlash(__('%s %s %s.', $requestor, $message, $requested), 'flash_danger');
 			$this->redirect(array(
 				'plugin' => 'users',
 				'controller' => 'users',
