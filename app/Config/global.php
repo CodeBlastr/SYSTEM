@@ -381,17 +381,15 @@ class ZuhaSet {
  * @return $array_b with all the values from array_a
  */
     public function array_replace_r($array_a, $array_b) {
-
-		foreach($array_b as $k => $v) {
-			if($array_b[$k] != $array_a[$k]) {
-				if(is_array($array_a[$k])) {
+		foreach ($array_b as $k => $v) {
+			if ($array_b[$k] != $array_a[$k]) {
+				if (is_array($array_a[$k])) {
 					ZuhaSet::array_replace_r($array_a[$k], $array_b[$k]);
-				}else {
+				} else {
 					$array_b[$k] = $v;
 				}
 			}
 		}
-
 		return $array_b;
     }
 
