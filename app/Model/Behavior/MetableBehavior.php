@@ -28,6 +28,7 @@ class MetableBehavior extends ModelBehavior {
 			$this->data = $Model->data[$Model->alias]['Meta'];
 			unset( $Model->data[$Model->alias]['Meta'] );
 		}
+		return true;
 	}
     
 /**
