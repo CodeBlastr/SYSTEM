@@ -22,6 +22,9 @@ class WkHtmlToPdfComponent extends Component {
 	}
 
 
+/**
+ * @throws Exception
+ */
 	public function rasterizePdf($autoDownload = true, $options = array(), $filename = 'rasterize') {
 
 		$this->controller->autoRender = false;
@@ -46,7 +49,7 @@ class WkHtmlToPdfComponent extends Component {
 				$cmd = VENDORS . 'phantomjs/MacOS/phantomjs '.VENDORS . 'phantomjs/examples/'.$filename.'.js '. $commands . $url . ' ' . $output;
 			} elseif (PHP_OS === 'WINNT') {
 				$cmd = VENDORS . 'phantomjs\windows\phantomjs '.VENDORS . 'phantomjs\windows\examples\\'.$filename.'.js ' . $url . ' ' . $output . $commands;
-			}else {
+			} else {
 				switch (PHP_INT_SIZE) {
 					case 4 :
 						throw new Exception('32bit not installed yet', 1);
@@ -59,8 +62,9 @@ class WkHtmlToPdfComponent extends Component {
 						break;
 				}
 			}
-			//debug($cmd);exit;
+			
 			exec($cmd);
+			
 			if ($autoDownload) {
 				// send file to browser and trigger download dialogue box
 				$this->returnFile($output, "document{$this->randomNumber}.pdf");
@@ -73,6 +77,9 @@ class WkHtmlToPdfComponent extends Component {
 		}
 	}
 
+/**
+ * @throws Exception
+ */
 	public function createPdf($autoDownload = true, $options = array()) {
 
 		$defaults = array(
