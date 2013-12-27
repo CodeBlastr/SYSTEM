@@ -79,6 +79,8 @@ class AppErrorController extends AppController {
  *
  * over written so that custom error pages can be handled from the database
  *
+ * @todo Was gettting "Controller class Controller not found" .. found that the $error parameter here had the real exception. ^JB
+ * 
  * @param object
  * @param object
  * @param array
@@ -86,6 +88,7 @@ class AppErrorController extends AppController {
  * @return void
  */
 	public function handleNotFound($request, $response, $error, $originalException) {
+		//debug($error);
 		$message = sprintf("[%s] %s\n%s", get_class($originalException), $originalException->getMessage(), $originalException->getTraceAsString());
 		CakeLog::write(LOG_ERR, $message);
 		$eName = get_class($originalException);
@@ -139,7 +142,6 @@ class AppErrorController extends AppController {
 			// was this (changed after Cake2.4 because the login redirect wasn't playing nice)
 			// $request->query['url'] = substr($request->url, 1, -1);
 			// $request->here = substr($request->url, 1, -1);
-			
 			$dispatcher = new Dispatcher();
 			$dispatcher->dispatch($request, new CakeResponse());
 		} else {
