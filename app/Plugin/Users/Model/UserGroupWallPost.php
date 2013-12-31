@@ -4,7 +4,7 @@ App::uses('UsersAppModel', 'Users.Model');
 class UserGroupWallPost extends UsersAppModel {
 	public $name = 'UserGroupWallPost';
 
-	public $actsAs = array('Comments.Commentable');
+	
 	
 	public $belongsTo = array(
 		'UserGroup' => array(
@@ -23,11 +23,15 @@ class UserGroupWallPost extends UsersAppModel {
 		)
 	);
 	
-	public $hasMany = array(
-		'Comment' => array(
-			'className' => 'Comments.Comment',
-			'foreignKey' => 'foreign_key',
-			'conditions' => array('Comment.model' => 'UserGroupWallPost')
-		)
-	);
+	public function __construct($id = false, $table = null, $ds = null) {
+		if(CakePlugin::loaded('Comments')) {
+			$this->actsAs[] = 'Comments.Commentable';
+			$this->hasMany[] = array(
+					'Comment' => array(
+						'className' => 'Comments.Comment',
+						'foreignKey' => 'foreign_key',
+						'conditions' => array('Comment.model' => 'UserGroupWallPost')
+					));
+		}
+	}
 }
