@@ -177,6 +177,11 @@ class AppUsersController extends UsersAppController {
 			$this->Ssl->force();
 		}
 		if ($this->request->is('post')) {
+			
+			if(!isset($this->request->data['User']['user_role_id']) || empty($this->request->data['User']['user_role_id'])) {
+				$this->request->data['User']['user_role_id'] = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
+			}
+			
 			if ($this->User->saveAll($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 					$this->Session->setFlash(__('Success, please check your email', 'flash_success'));
