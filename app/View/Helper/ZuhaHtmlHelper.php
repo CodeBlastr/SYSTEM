@@ -63,7 +63,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
  */
 	public function image($path, $options = array(), $extOptions = null) {
 		$path = $this->assetUrl($path, $options + array('pathPrefix' => IMAGES_URL));
-		$options = array_diff_key($options, array('fullBase' => '', 'pathPrefix' => ''));
+		$options = array_diff_key($options, array('fullBase' => null, 'pathPrefix' => null));
 		
 		if (!isset($options['alt'])) {
 			$options['alt'] = '';
@@ -166,7 +166,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 					if ($extOptions['caller'] === 'Media') {
 						$fileName = str_replace('images\\', '', $fileName);
 						$id = urldecode(str_replace('images\\', '', $fileName));
-						$imgFolder = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . 'webroot' . DS . $themeFolder . DS . 'images' . DS;
+						$imgFolder = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . 'webroot' . DS . $themeFolder . DS;
 					} else {
 						$id = urldecode($fileName);
 						$imgFolder = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . 'webroot' . DS . $themeFolder . DS;
@@ -217,89 +217,89 @@ class ZuhaHtmlHelper extends HtmlHelper {
 		$img = $imgFolder . $id;
 		if (file_exists($img)) {
 			list($oldWidth, $oldHeight, $type) = getimagesize($img);
-		$ext = $this->image_type_to_extension($type);
+			$ext = $this->image_type_to_extension($type);
 
-		// check for and create cacheFolder
-		$cacheFolder = 'cache';
-		$cachePath = $imgFolder . $cacheFolder;
-		if (is_dir($cachePath)) {
-			// do nothing the cache dir exists
-		} else {
-			if (mkdir($cachePath)) {
+			// check for and create cacheFolder
+			$cacheFolder = 'cache';
+			$cachePath = $imgFolder . $cacheFolder;
+			if (is_dir($cachePath)) {
 				// do nothing the cache dir exists
 			} else {
-				debug('Could not make images ' . $cachePath . ', and it doesn\'t exist.');
-				break;
+				if (mkdir($cachePath)) {
+					// do nothing the cache dir exists
+				} else {
+					debug('Could not make images ' . $cachePath . ', and it doesn\'t exist.');
+					exit;
+				}
 			}
-		}
 
-		//check to make sure that the file is writeable, if so, create destination image (temp image)
-		if (is_writeable($cachePath)) {
-			if ($newName) {
-				$dest = $cachePath . DS . $newName . '.' . $id;
+			//check to make sure that the file is writeable, if so, create destination image (temp image)
+			if (is_writeable($cachePath)) {
+				if ($newName) {
+					$dest = $cachePath . DS . $newName . '.' . $id;
+				} else {
+					$newName = 'tmp_' . $id;
+					$dest = $cachePath . DS . $newName;
+				}
 			} else {
-				$newName = 'tmp_' . $id;
-				$dest = $cachePath . DS . $newName;
+				//if not let developer know
+				$imgFolder = substr($imgFolder, 0, strlen($imgFolder) - 1);
+				$imgFolder = substr($imgFolder, strrpos($imgFolder, '\\') + 1, 20);
+				debug("You must allow proper permissions for image processing. And the folder has to be writable.");
+				debug("Run \"chmod 777 on '$imgFolder' folder\"");
+				exit();
 			}
-		} else {
-			//if not let developer know
-			$imgFolder = substr($imgFolder, 0, strlen($imgFolder) - 1);
-			$imgFolder = substr($imgFolder, strrpos($imgFolder, '\\') + 1, 20);
-			debug("You must allow proper permissions for image processing. And the folder has to be writable.");
-			debug("Run \"chmod 777 on '$imgFolder' folder\"");
-			exit();
-		}
-
-		//check to make sure that something is requested, otherwise there is nothing to resize.
-		//although, could create option for quality only
-		if ($newWidth || $newHeight) {
-			// check to make sure temp file doesn't exist from a mistake or system hang up. If so delete.
-			if (file_exists($dest)) {
-				$size = @getimagesize($dest);
-				return array(
-				'path' => $cacheFolder . '/' . $newName . '.' . $id,
-				'width' => $size[0],
-				'height' => $size[1],
-				);
-			} else {
-				switch ($cType) {
-					default:
-					case 'resize':
-						// Maintains the aspect ration of the image and makes sure that it fits
-						// within the maxW(newWidth) and maxH(newHeight) (thus some side will be smaller)
-						$widthScale = 2;
-						$heightScale = 2;
-	
-						if ($newWidth) {
-							$widthScale = $newWidth / $oldWidth;
-						}
-						if ($newHeight) {
-							$heightScale = $newHeight / $oldHeight;
-						}
-						if ($widthScale < $heightScale) {
-							$maxWidth = $newWidth;
-							$maxHeight = false;
-						} elseif ($widthScale > $heightScale) {
-							$maxHeight = $newHeight;
-							$maxWidth = false;
-						} else {
-							$maxHeight = $newHeight;
-							$maxWidth = $newWidth;
-						}
-	
-						if ($maxWidth > $maxHeight) {
-							$applyWidth = $maxWidth;
-							$applyHeight = ($oldHeight * $applyWidth) / $oldWidth;
-						} elseif ($maxHeight > $maxWidth) {
-							$applyHeight = $maxHeight;
-							$applyWidth = ($applyHeight * $oldWidth) / $oldHeight;
-						} else {
-							$applyWidth = $maxWidth;
-							$applyHeight = $maxHeight;
-						}
-						$startX = 0;
-						$startY = 0;
-						break;
+			
+			//check to make sure that something is requested, otherwise there is nothing to resize.
+			//although, could create option for quality only
+			if ($newWidth || $newHeight) {
+				// check to make sure temp file doesn't exist from a mistake or system hang up. If so delete.
+				if (file_exists($dest)) {
+					$size = @getimagesize($dest);
+					return array(
+					'path' => $cacheFolder . '/' . $newName . '.' . $id,
+					'width' => $size[0],
+					'height' => $size[1],
+					);
+				} else {
+					switch ($cType) {
+						default:
+						case 'resize':
+							// Maintains the aspect ration of the image and makes sure that it fits
+							// within the maxW(newWidth) and maxH(newHeight) (thus some side will be smaller)
+							$widthScale = 2;
+							$heightScale = 2;
+		
+							if ($newWidth) {
+								$widthScale = $newWidth / $oldWidth;
+							}
+							if ($newHeight) {
+								$heightScale = $newHeight / $oldHeight;
+							}
+							if ($widthScale < $heightScale) {
+								$maxWidth = $newWidth;
+								$maxHeight = false;
+							} elseif ($widthScale > $heightScale) {
+								$maxHeight = $newHeight;
+								$maxWidth = false;
+							} else {
+								$maxHeight = $newHeight;
+								$maxWidth = $newWidth;
+							}
+		
+							if ($maxWidth > $maxHeight) {
+								$applyWidth = $maxWidth;
+								$applyHeight = ($oldHeight * $applyWidth) / $oldWidth;
+							} elseif ($maxHeight > $maxWidth) {
+								$applyHeight = $maxHeight;
+								$applyWidth = ($applyHeight * $oldWidth) / $oldHeight;
+							} else {
+								$applyWidth = $maxWidth;
+								$applyHeight = $maxHeight;
+							}
+							$startX = 0;
+							$startY = 0;
+							break;
 						case 'resizeCrop':
 							// -- resize to max, then crop to center
 							$ratioX = $newWidth / $oldWidth;
@@ -329,7 +329,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 							$applyWidth = $newWidth;
 							break;
 					}
-
+	
 					switch ($ext) {
 						case 'gif' :
 							$oldImage = imagecreatefromgif($img);
@@ -346,7 +346,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 							return false;
 							break;
 					}
-	
+		
 					//create new image
 					$newImage = imagecreatetruecolor($applyWidth, $applyHeight);
 	
@@ -363,7 +363,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 						imagealphablending($newImage, false);
 						imagesavealpha($newImage, true);
 					}
-	
+		
 					//put old image on top of new image
 					imagecopyresampled($newImage, $oldImage, 0, 0, $startX, $startY, $applyWidth, $applyHeight, $oldWidth, $oldHeight);
 					switch ($ext) {
@@ -371,7 +371,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 							imagegif($newImage, $dest, $quality);
 							break;
 						case 'png' :
-							imagepng($newImage, $dest, $quality);
+							imagepng($newImage, $dest, 1); /** @todo Need to replace '1' with the 0-9 equivalent of our 0-100 $quality number. 0 = no compression png. **/
 							break;
 						case 'jpg' :
 						case 'jpeg' :
@@ -381,7 +381,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 							return false;
 							break;
 					}
-	
+		
 					imagedestroy($newImage);
 					imagedestroy($oldImage);
 	
@@ -389,7 +389,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 						unlink($img);
 						rename($dest, $img);
 					}
-	
+		
 					$size = @getimagesize($cacheFolder . '/' . $newName . '.' . $id);
 					return array(
 						'path' => $cacheFolder . '/' . $newName . '.' . $id,
