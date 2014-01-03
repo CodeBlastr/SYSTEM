@@ -84,7 +84,7 @@ class AppWebpagesController extends WebpagesAppController {
  * @param type $id
  * @return void
  */
-    protected function _indexContent($type) {        
+    protected function _indexContent($type) {
 		$this->paginate['conditions']['Webpage.type'] = $type;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
 		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
@@ -223,8 +223,7 @@ class AppWebpagesController extends WebpagesAppController {
         $this->set('page', $page['Webpage']['content']); // an unparsed version of the page for the inline editor
        	$this->view = $this->_fileExistsCheck('view_' . $page['Webpage']['type'] . $this->ext) ? 'view_' . $page['Webpage']['type'] : 'view_content';
 	}
-    
-	
+
 /**
  * Add method
  *

@@ -904,7 +904,13 @@ class InstallController extends Controller {
  	public function build() {
         $currentlyLoadedPlugins = CakePlugin::loaded();
         CakePlugin::loadAll();
-        $this->set('plugins', $plugins = array_diff(CakePlugin::loaded(), array('Activities', 'Answers', 'Categories', 'Connections', 'Contacts', 'Courses', 'Drafts', 'Facebook', 'Feeds', 'Forms', 'Media', 'Privileges', 'Recaptcha', 'Searchable', 'Subscribers', 'Tags', 'Twitter', 'Utils', 'Webpages', 'Wizards', 'Workflows')));
+		foreach (CakePlugin::loaded() as $plugin) {
+			$Plugin = ClassRegistry::init($plugin . '.' . $plugin . 'AppModel');
+			if (method_exists($Plugin, 'menuInit')) {
+				$plugins[] = $plugin;
+			}
+		}
+        $this->set('plugins', $plugins); //$plugins = array_diff(CakePlugin::loaded(), array('Activities', 'Answers', 'Categories', 'Connections', 'Contacts', 'Drafts', 'Facebook', 'Feeds', 'Forms', 'Media', 'Privileges', 'Recaptcha', 'Searchable', 'Subscribers', 'Tags', 'Twitter', 'Utils', 'Webpages', 'Wizards', 'Workflows')));
  		CakePlugin::unload();
 		CakePlugin::load($currentlyLoadedPlugins);
 		

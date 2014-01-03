@@ -18,16 +18,17 @@ class MetableBehavior extends ModelBehavior {
 	public $settings = array();
 	
 /**
- * Setup 
- * 
- * If a model uses this behavior, we bind the Meta model
- * automatically and force a contain onto all SELECTS. 
- * 
- * @param Model $Model
- * @param type $settings
+ * beforeSave callback
+ *
+ * @param object $Model
+ * @todo bind the model here if not bound already
  */
-	public function setup(Model $Model, $settings = array()) {
-        return true;
+	public function beforeSave(Model $Model, $options = array()) {
+		if ( !empty($Model->data[$Model->alias]['Meta']) && is_array($Model->data[$Model->alias]['Meta']) ) {
+			$this->data = $Model->data[$Model->alias]['Meta'];
+			unset( $Model->data[$Model->alias]['Meta'] );
+		}
+		return true;
 	}
     
 /**
@@ -39,17 +40,12 @@ class MetableBehavior extends ModelBehavior {
  * @param boolean $created The value of $created will be true if a new record was created (rather than an update).
  */
 	public function afterSave(Model $Model, $created, $options = array()) {
-        
-		if ( !empty($Model->data[$Model->alias]['Meta']) && is_array($Model->data[$Model->alias]['Meta']) ) {
-			$metadata = $Model->data[$Model->alias]['Meta'];
-			unset( $Model->data[$Model->alias]['Meta'] );
-		}
-
-		if ( !empty($metadata) ) {
+		if ( !empty($this->data) && isset($this->data) ) {
             $Meta = ClassRegistry::init('Meta');
 			$existingMeta = $Meta->find( 'first', array('conditions' => array('model' => $Model->name, 'foreign_key' => $Model->id)) );
+			
 			if ( !$existingMeta ) {
-				$cleanMetadata = mysql_escape_string( serialize($metadata) ); 
+				$cleanMetadata = mysql_escape_string( serialize($this->data) ); 
 				$Meta->query("
 					INSERT INTO `metas` (model, foreign_key, value)
 					VALUES ('{$Model->name}', '{$Model->id}', '{$cleanMetadata}');
@@ -57,20 +53,21 @@ class MetableBehavior extends ModelBehavior {
 			} else {
 				// Meta already exists, update it. The incoming data, $metadata, needs to overwrite current values.
 				// extract array from $existingMeta['Meta']['value']
-				$existingMetaValue = unserialize( $existingMeta['Meta']['value'] );
+				$existingMetaValue = unserialize($existingMeta['Meta']['value']);
 
-				foreach ( $existingMetaValue as $k => $v ) {
+				foreach ($existingMetaValue as $k => $v) {
 					// clean out obsolete exclamation points
-					if ( strstr($k, '!') ) {
+					if (strstr($k, '!')) {
 						$noPoint = str_replace('!', '', $k);
 						$existingMetaValue[$noPoint] = $v;
-						unset( $existingMetaValue[$k] );
+						unset($existingMetaValue[$k]);
 					}
 				}
-
+					
 				// merge that array with $metadata
-				$updatedMetaValue = ZuhaSet::array_replace_r( $existingMetaValue, $metadata );
-
+				#$updatedMetaValue = ZuhaSet::array_replace_r( $existingMetaValue, $this->data ); // this was not maintiaining the old meta data ^JB 12/19/2013
+				$updatedMetaValue = Hash::merge($existingMetaValue, $this->data);
+				
 				// put it back in $existingMeta
 				$existingMeta['Meta']['value'] = mysql_escape_string( serialize($updatedMetaValue) );
 				$Meta->query("
@@ -80,6 +77,7 @@ class MetableBehavior extends ModelBehavior {
 				");
 			}
 		}
+
 		parent::afterSave($Model, $created, $options);
 	}
     
@@ -181,18 +179,17 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  */
     public function mergeSerializedMeta(Model $Model, $results = array()) {
-		foreach($results as &$result) {
-//			debug($result);
-			if(isset($result['Meta']['foreign_key'])) {
+		foreach ($results as &$result) {
+			if (isset($result['Meta']['foreign_key'])) {
 				// merges the unserialized Meta values into the Model.Meta array
 				$result[$Model->alias]['Meta'] = unserialize($result['Meta']['value']);
 				
 				// clean out obsolete exclamation points
-				foreach ( $result[$Model->alias]['Meta'] as $k => $v ) {
-					if( strstr($k, '!') ) {
+				foreach ($result[$Model->alias]['Meta'] as $k => $v) {
+					if (strstr($k, '!')) {
 						$noPoint = str_replace('!', '', $k);
 						$result[$Model->alias]['Meta'][$noPoint] = $v;
-						unset( $result[$Model->alias]['Meta'][$k] );
+						unset($result[$Model->alias]['Meta'][$k]);
 					}
 				}
 				
@@ -282,7 +279,7 @@ class MetableBehavior extends ModelBehavior {
  * and if we need them, they might be better in the hasOne['fields'] area
  */
 	protected function _queryFields(Model $Model, $query) {
-		if(!empty($query['fields']) && is_array($query['fields'])) {
+		if (!empty($query['fields']) && is_array($query['fields'])) {
 			$query['fields'][] = 'Meta.model';
 			$query['fields'][] = 'Meta.foreign_key';
 			$query['fields'][] = 'Meta.value';
@@ -301,14 +298,13 @@ class MetableBehavior extends ModelBehavior {
  * @return array
  */
 	protected function _queryConditions(Model $Model, $query) {
-        
-		if(!empty($query['conditions']) && is_array($query['conditions'])) {
+		if (!empty($query['conditions']) && is_array($query['conditions'])) {
 			foreach($query['conditions'] as $condition => $value) {
-				if(strstr($condition, $Model->alias.'.Meta.')) {
+				if (strstr($condition, $Model->alias.'.Meta.')) {
 					$Model->metaConditions[str_replace($Model->alias.'.', '', $condition)] = $value;
 					unset($query['conditions'][$condition]);
 				}
-				elseif(strstr($condition, $Model->alias.'.!')) {  // support deprecated !fields
+				elseif (strstr($condition, $Model->alias.'.!')) {  // support deprecated !fields
 					$Model->metaConditions[str_replace($Model->alias.'.!', '', $condition)] = $value;
 					unset($query['conditions'][$condition]);
 				}
@@ -335,6 +331,5 @@ class MetableBehavior extends ModelBehavior {
 		}
 		return $results;
 	}
-
 
 }

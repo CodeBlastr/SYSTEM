@@ -14,8 +14,6 @@ class AppUser extends UsersAppModel {
 		);
 		
 	public $order = array('last_name', 'full_name', 'first_name');
-	
-	
 
 /**
  * Auto Login setting, used to skip session write in aftersave 
@@ -82,7 +80,6 @@ class AppUser extends UsersAppModel {
 			),
 		);
 
-	// this seems to break things because of nesting if I put Users.UserRole for the className
 	public $belongsTo = array(
 		'UserRole' => array(
 			'className' => 'Users.UserRole',
@@ -132,6 +129,15 @@ class AppUser extends UsersAppModel {
 			'foreignKey' => 'user_id',
 			'dependent' => false
 			),
+		// I wonder if something like this will work so that 
+		// in the privileges section we can limit editing a profile
+		// to the owner.  I worry about the foreignKey as
+		// 'id' causing some loop that breaks everything. 12/8/2013 RK
+		// 'Owner' => array(
+			// 'className' => 'Users.User',
+			// 'foreignKey' => 'id',
+			// 'dependent' => false
+			// )
 		);
 
 	public $hasAndBelongsToMany = array(
@@ -145,6 +151,9 @@ class AppUser extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
+		if(CakePlugin::loaded('Media')) {
+			$this->actsAs[] = 'Media.MediaAttachable';
+		}
 		if (CakePlugin::loaded('Transactions')) {
 			$this->hasMany['TransactionAddress'] = array(
 				'className' => 'Transactions.TransactionAddress',
@@ -171,23 +180,17 @@ class AppUser extends UsersAppModel {
 				'foreignKey' => 'user_id',
 				'dependent' => true
 				);
-		}
-		// these should not be needed anymore 1016/2013 RK
-		// if (CakePlugin::loaded('Ratings')) {
-			//$this->actsAs[] = 'Ratings.Ratable';
-				// 'className' => 'Ratings.Rating',
-				// 'foreignKey' => 'user_id',
-				// 'dependent' => false
-				// );
-			// $this->hasMany['Ratee'] = array(
-				// 'className' => 'Ratings.Rating',
+		}		
+		if (CakePlugin::loaded('Categories')) {
+			$this->actsAs[] = 'Categories.Categorizable';
+			// commented out: this happens in the behavior, as it should.
+			// $this->hasAndBelongsToMany['Category'] = array(
+				// 'className' => 'Categories.Category',
 				// 'foreignKey' => 'foreign_key',
-				// 'conditions' => array('model' => 'User'),
-				// 'dependent' => false
-				// );
-			// $this->actsAs[] = 'Ratable';
-		// }
-		
+				// 'associationForeignKey' => 'category_id',
+				// 'with' => 'Categories.Categorized'
+			// );
+		}		
 		parent::__construct($id, $table, $ds);
 	}
 
@@ -302,6 +305,7 @@ class AppUser extends UsersAppModel {
 			App::uses('AuthComponent', 'Controller/Component');
 	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
 		}
+		
         if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
 			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
 		}
@@ -323,7 +327,7 @@ class AppUser extends UsersAppModel {
 		if ($created) {
 			$this->data = $this->__afterCreation($this->data);
 		}
-
+		
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
@@ -344,6 +348,19 @@ class AppUser extends UsersAppModel {
 		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 			$this->welcome($this->data[$this->alias]['username']);
 		}
+		// Send admin an email
+		if (defined('__USERS_NEW_REGISTRATION') && $notify = unserialize(__USERS_NEW_REGISTRATION)) {
+			if (!empty($notify['notify'])) {
+				$message = 'A new user has been created. <br /><br /> You can view the user user 
+here http://' . $_SERVER['HTTP_HOST'] . '/users/users/view/' . $this->id  . '<br /><br />
+and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/edit/' . $this->id;
+				if ($this->__sendMail($notify['notify'], 'New User Registration', $message)) {
+					// do nothing just notifying the admin
+				} else {
+					throw new Exception(__('Registration error, please notify a site admin.'));
+				}
+			}
+		}
 		// Initialize some fields
 		$data = $this->_cleanAddData($data);
 
@@ -354,10 +371,12 @@ class AppUser extends UsersAppModel {
 /**
  * Save all method
  *
+ * @deprecated
+ * 
  * @todo should probably be declared deprecated, as saveUserAndContact() seems more appropriate than overriding the saveAll ^JB
  */
  	public function saveAll($data = null, $options = array()) {
-		$data = $this->_userContact($data);
+		//$data = $this->_userContact($data);
  		return parent::saveAll($data, $options);
  	}
 
@@ -366,10 +385,12 @@ class AppUser extends UsersAppModel {
 		$data = $this->save($data['User']);
 		return $data;
 	}
-
+	
 /**
  * Handles the data of adding of a user // DEPRECATED WILL BE REMOVED 07/18/2013 RK
  *
+ * @deprecated
+ * 
  * @param {array}		An array in the array(model => array(field)) format
  * @todo		 		Not sure the rollback for user_id works in all cases (Line 66)
  */
@@ -420,14 +441,15 @@ class AppUser extends UsersAppModel {
 		}
 		$contactData = $data;
 		unset($contactData['User']); // we will save this in the user model not from the contact model
+		
 		if ($this->Contact->saveAll($contactData)) {
 			unset($data['Contact']);
 			if ( $this->Contact->id ) {
 				$data['Contact']['id'] = $this->Contact->id;
 			}
 		}
-
 		$data = $this->_cleanAddData($data);
+		
 		return $data;
 	}
 
@@ -740,7 +762,10 @@ class AppUser extends UsersAppModel {
 			$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
 		}
 		
-		$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
+		if(isset($data[$this->alias]['referal_code'])) {
+			$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
+		}
+		
 		if (isset($data[$this->alias]['parent_id']) && empty($data[$this->alias]['parent_id'])) {
 			unset($data[$this->alias]['parent_id']);
 		} 
@@ -880,6 +905,10 @@ class AppUser extends UsersAppModel {
 		$data['User']['confirm_password'] = $randompassword;
 		$data['User']['forgot_key'] = $this->__uuid('F');
 		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+		
+		
+		//Remove the user role validation so other users can create users
+		$this->validator()->remove('user_role_id');
 		
 		// save the setup data
 		if ($this->saveAll($data)) {

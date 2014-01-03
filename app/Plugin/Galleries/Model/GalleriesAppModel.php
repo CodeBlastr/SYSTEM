@@ -1,7 +1,9 @@
 <?php
 App::uses('AppModel', 'Model');
+
 class GalleriesAppModel extends AppModel {
-	
+
+	//public $useTable = false; // this is here because we have the construct which causes an error if you load this class directly, because cake tries to find a table called galleries_app_model
 	public $galleryType = 'fancybox';
    	public $smallImageWidth = 50;
 	public $smallImageHeight = 50;
@@ -13,20 +15,24 @@ class GalleriesAppModel extends AppModel {
 	public $indexImageHeight = null;
 	public $conversionType = 'resizeCrop';	
 		
-	public function __construct($id = false, $table = null, $ds = null) {
-		parent:: __construct($id, $table, $ds);
+	// see note in gallerySettings()
+	//public function __construct($id = false, $table = null, $ds = null) {
+		// parent:: __construct($id, $table, $ds);
+	// }
+	
+	
+/**
+ * Takes a gallery data array and updates the settings if this gallery over write them.
+ * 
+ */  
+	public function gallerySettings($newSettings = null) {
 		
-		// deprecated gallery constants THESE WILL BE DELETED 12/30/2011 RK
-		$galleryType = defined('__GALLERY_DEFAULT_TYPE') ? __GALLERY_DEFAULT_TYPE : null;
-		$smallImageWidth = defined('__GALLERY_IMAGE_DEFAULT_THUMB_WIDTH') ? __GALLERY_IMAGE_DEFAULT_THUMB_WIDTH : null;
-		$smallImageHeight = defined('__GALLERY_IMAGE_DEFAULT_THUMB_HEIGHT') ? __GALLERY_IMAGE_DEFAULT_THUMB_HEIGHT : null;
-		$mediumImageWidth = defined('__GALLERY_DEFAULT_THUMB_WIDTH') ? __GALLERY_DEFAULT_THUMB_WIDTH : null;
-		$mediumImageHeight = defined('__GALLERY_DEFAULT_THUMB_HEIGHT') ? __GALLERY_DEFAULT_THUMB_HEIGHT : null;
-		$largeImageWidth = defined('__GALLERY_IMAGE_DEFAULT_FULL_WIDTH') ? __GALLERY_IMAGE_DEFAULT_FULL_WIDTH : null;
-		$largeImageHeight = defined('__GALLERY_IMAGE_DEFAULT_FULL_HEIGHT') ? __GALLERY_IMAGE_DEFAULT_FULL_HEIGHT : null;
-		$conversionType = defined('__GALLERY_RESIZE_OR_CROP') ? __GALLERY_RESIZE_OR_CROP : null;
-		
-		// gallery default setting constants
+		// START NOTE : These lines were moved from the __construct() because $this->useTable doesn't work on some pages
+		// was causing an infinite redirect and breaking sites.  And because we need to tell this GalleriesAppModel
+		// that there isn't a table when there is a __construct() method used, so that it doesn't break the install/client
+		// page that relies on loading XXXAppModel directly to see if the menuInit() function exists.  I leave this note,
+		// because I'm not sure that moving these settings here (down to where it sas // END NOTE) will not break something else.
+		// gallery default setting constants  (11/27/2013 RK)
 		if(!empty($instance) && defined('__GALLERIES_SETTINGS_'.$instance)) {
 			extract(unserialize(constant('__GALLERIES_SETTINGS_'.$instance)));
 		} else if (defined('__GALLERIES_SETTINGS')) {
@@ -44,7 +50,7 @@ class GalleriesAppModel extends AppModel {
 	    $indexImageHeight = !empty($indexImageHeight) ? $indexImageHeight : $this->indexImageHeight;
 	    $conversionType = !empty($conversionType) ? $conversionType : $this->conversionType;
 		
-		# make it available to the views and to the controllers
+		// make it available to the views and to the controllers, (does this even work from models????????  11/27/2013 RK)
 		$this->set(compact('galleryType', 'smallImageWidth', 'smallImageHeight', 'mediumImageWidth', 'mediumImageHeight', 'largeImageWidth', 'largeImageHeight', 'conversionType'));
 		
 		$this->galleryType = $galleryType;
@@ -69,13 +75,8 @@ class GalleriesAppModel extends AppModel {
 			'indexImageHeight' => $this->indexImageHeight,
 			'conversionType' => $this->conversionType,
 			);
-	}
-	
-	
-/**
- * Takes a gallery data array and updates the settings if this gallery over write them.
- */  
-	public function gallerySettings($newSettings = null) {
+		// END NOTE 
+		
 		if (!empty($newSettings)) {
 			$this->gallerySettings['galleryType'] = !empty($newSettings['Gallery']['type']) ?  $newSettings['Gallery']['type'] : $this->galleryType;
 			$this->gallerySettings['smallImageWidth'] = !empty($newSettings['Gallery']['thumb_width']) ?  $newSettings['Gallery']['thumb_width'] : $this->smallImageWidth;
@@ -98,4 +99,3 @@ class GalleriesAppModel extends AppModel {
 	}
 
 }
-?>

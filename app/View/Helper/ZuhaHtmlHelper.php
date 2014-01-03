@@ -8,51 +8,56 @@ class ZuhaHtmlHelper extends HtmlHelper {
  *
  * Overwritten to check and see if plugin is loaded (other wise removes the link)
  * Also adds a class for whether the current view is authorized.
+ * Also has a new 'absolute' option for changing strings to absolute 
  */
  	public function link($title, $url = null, $options = array(), $confirmMessage = false) {
-		// zuha added
+		// zuha added - absolute option
+		if (is_string($url) && $options['absolute'] === true && strpos($url, 'http') === false) {
+				$url = 'http://' . $url; 
+		}
+		// zuha added - remove links if the plugin isn't installed
 		if (is_array($url) && !empty($url['plugin']) && $url['plugin'] != '/' && !in_array(Inflector::camelize($url['plugin']), CakePlugin::loaded())) {
 			return null;
 			// end zuha added
 		} else {
-		// zuha added
-		if (!empty($url['action'])) {
-			$options['class'] = !empty($options['class']) ? $options['class'] . ' ' . $url['action'] : $url['action'];
-		} // end zuha added
-		
-		$escapeTitle = true;
-		if ($url !== null) {
-			$url = $this->url($url);
-		} else {
-			$url = $this->url($title);
-			$title = h(urldecode($url));
-			$escapeTitle = false;
-		}
-		if (isset($options['escape'])) {
-			$escapeTitle = $options['escape'];
-		}
-		if ($escapeTitle === true) {
-			$title = h($title);
-		} elseif (is_string($escapeTitle)) {
-			$title = htmlentities($title, ENT_QUOTES, $escapeTitle);
-		}
-		if (!empty($options['confirm'])) {
- 			$confirmMessage = $options['confirm'];
-			unset($options['confirm']);
-		}
-		if ($confirmMessage) {
-			$confirmMessage = str_replace("'", "\'", $confirmMessage);
-			$confirmMessage = str_replace('"', '\"', $confirmMessage);
-			$options['onclick'] = "return confirm('{$confirmMessage}');";
-		} elseif (isset($options['default']) && $options['default'] == false) {
-			if (isset($options['onclick'])) {
-				$options['onclick'] .= ' event.returnValue = false; return false;';
+			// zuha added
+			if (!empty($url['action'])) {
+				$options['class'] = !empty($options['class']) ? $options['class'] . ' ' . $url['action'] : $url['action'];
+			} // end zuha added
+			
+			$escapeTitle = true;
+			if ($url !== null) {
+				$url = $this->url($url);
 			} else {
-				$options['onclick'] = 'event.returnValue = false; return false;';
+				$url = $this->url($title);
+				$title = h(urldecode($url));
+				$escapeTitle = false;
 			}
-			unset($options['default']);
-		}
-		return sprintf($this->_tags['link'], $url, $this->_parseAttributes($options), $title);
+			if (isset($options['escape'])) {
+				$escapeTitle = $options['escape'];
+			}
+			if ($escapeTitle === true) {
+				$title = h($title);
+			} elseif (is_string($escapeTitle)) {
+				$title = htmlentities($title, ENT_QUOTES, $escapeTitle);
+			}
+			if (!empty($options['confirm'])) {
+	 			$confirmMessage = $options['confirm'];
+				unset($options['confirm']);
+			}
+			if ($confirmMessage) {
+				$confirmMessage = str_replace("'", "\'", $confirmMessage);
+				$confirmMessage = str_replace('"', '\"', $confirmMessage);
+				$options['onclick'] = "return confirm('{$confirmMessage}');";
+			} elseif (isset($options['default']) && $options['default'] == false) {
+				if (isset($options['onclick'])) {
+					$options['onclick'] .= ' event.returnValue = false; return false;';
+				} else {
+					$options['onclick'] = 'event.returnValue = false; return false;';
+				}
+				unset($options['default']);
+			}
+			return sprintf($this->_tags['link'], $url, $this->_parseAttributes($options), $title);
 		}
 	}
 

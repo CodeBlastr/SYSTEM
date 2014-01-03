@@ -6,7 +6,17 @@ class CsvView extends View {
 	
     public function render($view = null, $layout = null) {
 		$path = Inflector::tableize($this->viewPath);
-		$csv = $this->_array_to_csv($this->viewVars[$path]);
+		$arr = array();
+		if(isset($this->viewVars[$path])) {
+			$arr = $this->viewVars[$path];
+		}else {
+			$arr = $this->request->data;
+		}
+		if(empty($arr)) {
+			return '';
+		}
+		
+		$csv = $this->_array_to_csv($arr);
 		return $csv; 
     }
 	
