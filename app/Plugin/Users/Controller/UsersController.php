@@ -20,9 +20,6 @@ App::uses('UsersAppController', 'Users.Controller');
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and
  * Future Versions
- * @todo		  The "view" method needs a requestAction fix so that requestAction
- * works for all requestAction type calls, without the if params['requested']
- * thing being necessary everyhwere we want to do that.
  */
 class AppUsersController extends UsersAppController {
 
@@ -51,6 +48,10 @@ class AppUsersController extends UsersAppController {
 		'reverify',
 	);
 
+/**
+ * Constructor
+ *
+ */
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
 		if (CakePlugin::loaded('Invite')) {
@@ -64,6 +65,7 @@ class AppUsersController extends UsersAppController {
 
 /**
  * Index method
+ *
  */
 	public function index() {
 		//$this->paginate['conditions'] = array('not' => array('User.id' => '1'));
@@ -72,73 +74,22 @@ class AppUsersController extends UsersAppController {
 
 /**
  * View method
- * 
+ *
  * @param uuid $id
  */
-	public function view($id) {
+	public function view($id = null) {
+		$this->User->id = $id;
+		if (!$this->User->exists()) {
+			throw new NotFoundException(__('Invalid user'));
+		}
 		$user = $this->User->find('first', array(
 			'conditions' => array('User.id' => $id),
 			'contain' => array('UserRole')
 		));
-		// This is here, because we have an element doing a request action on it.
-		if (isset($this->request->params['requested'])) {
-			if (!empty($user)) {
-				return $user;
-			}
-		}
-		// check if user exists
-		if (!isset($user['User'])) {
-			//	$this->Session->setFlash('You do not have a user, please create one.');
-			//	$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action'
-			// => 'register', 'user' => $this->Auth->user('id')));
-		}
-		$followedUsers = $this->User->UserFollower->find('all', array('conditions' => array('UserFollower.follower_id' => $user['User']['id'], ), ));
-		// Setup the user ids which we'll find the statuses of
-		foreach ($followedUsers as $followedUser) {
-			//$followedUserIds[] = $followedUser['User']['id'];
-			$statusUserIds[] = $followedUser['UserFollower']['user_id'];
-		}
-		$statusUserIds[] = $user['User']['id'];
-		// get the statuses for display
-		$statuses = $this->User->UserStatus->find('all', array(
-			'conditions' => array('UserStatus.user_id' => $statusUserIds, ),
-			'contain' => array('User', ),
-			'order' => array('UserStatus.created DESC'),
-		));
-		// get the wall of the user
-		$walls = $this->User->UserWall->find('all', array(
-			'conditions' => array('UserWall.creator_id' => $user['User']['id'], ),
-			'contain' => array(
-				'Creator',
-				'Owner'
-			),
-			'order' => array('UserWall.creator_id')
-		));
-		// Get the users followers
-		$followers = $this->User->UserFollower->find('all', array(
-			'conditions' => array('UserFollower.user_id' => $user['User']['id'], ),
-			'contain' => array('User')
-		));
-		// does the logged in user follow
-		$does_follow = $this->User->UserFollower->find('count', array(
-			'conditions' => array(
-				'UserFollower.user_id' => $user['User']['id'],
-				'UserFollower.follower_id' => $this->Auth->user('id'),
-			),
-			'contain' => array()
-		));
-		$friends = array_intersect($followedUsers, $followers);
-		$is_self = ($user['User']['id'] == $this->Auth->user('id') ? true : false);
-		$this->set('is_self', $is_self);
-		$this->set('uid', $user['User']['id']);
-		$this->set('walls', $walls);
-		$this->set('followedUsers', $followedUsers);
-		$this->set('followers', $followers);
-		$this->set('statuses', $statuses);
-		$this->set('does_follow', $does_follow);
-		$this->set('user', $user);
-		$this->set('friends', $friends);
+		$this->set('user', $this->request->data = $user);
 		$this->set('title_for_layout', $user['User']['full_name'] . ' | ' . __SYSTEM_SITE_NAME);
+		$this->set('page_title_for_layout', $user['User']['full_name'] . ' | ' . __SYSTEM_SITE_NAME);
+		return $user;
 	}
 
 /**
@@ -148,11 +99,12 @@ class AppUsersController extends UsersAppController {
  * @param boolean $forcePw
  */
 	public function edit($id = null, $forcePw = null) {
+		// keyword redirects
 		if ($id == 'my') {
-			return $this->_editMy();
+			return $this->_getMy(array('action' => 'edit'));
 		}
-		if ($forcePw > 0) {
-			$this->view = 'edit_pwd';
+		if ($forcePw > 0 || $forcePw === 'password' || !empty($this->request->params['named']['cpw'])) {
+			$this->view = 'password';
 		}
 		// looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
@@ -185,6 +137,8 @@ class AppUsersController extends UsersAppController {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
+			
+			
 			if ($this->User->saveAll($this->request->data)) {
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array(
@@ -199,15 +153,18 @@ class AppUsersController extends UsersAppController {
 		} else {
 			$this->Session->setFlash('Invalid user');
 		}
-		$this->set('userRoles', $this->User->UserRole->find('list'));
+		$this->set('userRoles', $this->request->data['User']['user_roles'] = $this->User->UserRole->find('list'));
 	}
 
 /**
  * Edit My method
  */
- 	protected function _editMy() {
-		$this->redirect(array('action' => 'edit', $this->Session->read('Auth.User.id')));
- 	}
+	protected function _editMy() {
+		$this->redirect(array(
+			'action' => 'edit',
+			$this->Session->read('Auth.User.id')
+		));
+	}
 
 /**
  * Register method
@@ -216,15 +173,21 @@ class AppUsersController extends UsersAppController {
  */
 	public function register($userRoleId = null) {
 		// force ssl for PCI compliance during regristration and login
-		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force();
-		endif;
+		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
+			$this->Ssl->force();
+		}
 		if ($this->request->is('post')) {
+			
+			if(!isset($this->request->data['User']['user_role_id']) || empty($this->request->data['User']['user_role_id'])) {
+				$this->request->data['User']['user_role_id'] = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
+			}
+			
 			if ($this->User->saveAll($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-					$this->Session->setFlash(__('Success, please check your email'));
+					$this->Session->setFlash(__('Success, please check your email', 'flash_success'));
 					$this->Auth->logout();
 				} else {
-					$this->Session->setFlash(__('Successful Registration'));
+					$this->Session->setFlash(__('Successful Registration'), 'flash_success');
 					$this->_login();
 				}
 			} else {
@@ -232,22 +195,32 @@ class AppUsersController extends UsersAppController {
 				$this->Auth->logout();
 			}
 		}
-		$userRoles = $this->User->UserRole->find('list', array('conditions' => array('UserRole.is_registerable' => 1, 'UserRole.id !=' => 1))); // remove the administrators group by default - too insecure
+		$userRoles = $this->User->UserRole->find('list', array('conditions' => array(
+				'UserRole.is_registerable' => 1,
+				'UserRole.id !=' => 1
+			)));
+		// remove the administrators group by default - too insecure
 		$userRoleId = count($userRoles) == 1 && empty($userRoleId) ? key($userRoles) : $userRoleId;
-		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') && empty($userRoleId) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : $userRoleId;
+		$this->request->data['User']['user_role_id'] = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') && empty($userRoleId) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : $userRoleId;
 		$this->request->data['User']['contact_type'] = defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE') ? __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE : 'person';
 		$this->request->data['Contact']['id'] = !empty($this->request->params['named']['contact']) ? $this->request->params['named']['contact'] : null;
 		$this->request->data['User']['referal_code'] = isset($this->request->params['named']['referal_code']) && !empty($this->request->params['named']['referal_code']) ? $this->request->params['named']['referal_code'] : null;
-		$this->set(compact('userRoleId', 'userRoles'));
+		$this->set('userRoleId', $this->request->data['User']['user_role_id']);
+		// legacy variable deprecated 11/23/2013 RK
+		$this->set('userRoles', $this->request->data['User']['user_roles'] = $userRoles);
+		// request->data used in overwrites of this function
 		$title = !empty($userRoles[$userRoleId]) ? Inflector::humanize($userRoles[$userRoleId]) . ' Registration' : 'User Registration';
-		$this->set('contactTypes', array('person' => 'person', 'company' => 'company'));
+		$this->set('contactTypes', array(
+			'person' => 'person',
+			'company' => 'company'
+		));
 		$this->set('title_for_layout', $title . ' | ' . __SYSTEM_SITE_NAME);
 		$this->set('page_title_for_layout', $title);
 	}
 
 /**
  * Procreate method
- * 
+ *
  * @param uuid $userRoleId
  */
 	public function procreate($userRoleId = null) {
@@ -255,10 +228,17 @@ class AppUsersController extends UsersAppController {
 			$this->User->autoLogin = false;
 			if ($this->User->procreate($this->request->data)) {
 				$this->Session->setFlash(__('User created, and email sent notifying them.'));
-				$this->redirect(array('action' => 'view', $this->User->id));
+				$this->redirect(array(
+					'action' => 'view',
+					$this->User->id
+				));
 			}
 		}
-		$userRoles = $this->User->UserRole->find('list', array('conditions' => array('UserRole.id !=' => 1, 'UserRole.name !=' => 'guests'))); // remove the administrators group by default - too insecure
+		$userRoles = $this->User->UserRole->find('list', array('conditions' => array(
+				'UserRole.id !=' => 1,
+				'UserRole.name !=' => 'guests'
+			)));
+		// remove the administrators group by default - too insecure
 		$userRoleId = count($userRoles) == 1 && empty($userRoleId) ? key($userRoles) : $userRoleId;
 		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') && empty($userRoleId) ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : $userRoleId;
 		$this->set(compact('userRoleId', 'userRoles'));
@@ -269,7 +249,7 @@ class AppUsersController extends UsersAppController {
 
 /**
  * Delete method
- * 
+ *
  * @param uuid $id
  */
 	public function delete($id) {
@@ -278,7 +258,7 @@ class AppUsersController extends UsersAppController {
 			throw new NotFoundException(__('Invalid user'));
 		}
 		if ($this->User->delete($id)) {
-			$this->Session->setFlash(__('User deleted')); 
+			$this->Session->setFlash(__('User deleted'));
 			$this->redirect(array('action' => 'index'));
 		} else {
 			$this->Session->setFlash(__('Error deleting user'));
@@ -289,7 +269,11 @@ class AppUsersController extends UsersAppController {
  * Dashboard method
  */
 	public function dashboard() {
-		$this->set('users', $this->User->find('all', array('order' => array('User.created' => 'DESC'), 'contain' => array('UserRole'))));
+		$this->redirect('admin');
+		$this->set('users', $this->User->find('all', array(
+			'order' => array('User.created' => 'DESC'),
+			'contain' => array('UserRole')
+		)));
 	}
 
 /**
@@ -379,14 +363,18 @@ class AppUsersController extends UsersAppController {
 	}
 
 /**
- * Index view of users that logged in user in parent of
+ * Index view of users that logged in user is parent of
  *
  */
 	public function children() {
 		$this->paginate['conditions'] = array(
-			'parent_id' => $this->userId,
-			'not' => array('User.id' => '1')
+			'User.parent_id' => $this->userId,
+			'not' => array('User.id' => '1'),
 		);
+		if($this->request->query['roleid']) {
+			$this->paginate['conditions']['User.user_role_id'] = $this->request->query['roleid'];
+		}
+		$this->paginate['contain'] = array('UserRole');
 		$this->view = 'index';
 		$this->paginate['fields'] = array(
 			'User.id',
@@ -394,6 +382,7 @@ class AppUsersController extends UsersAppController {
 			'User.last_name',
 			'User.username',
 			'User.email',
+			'UserRole.name'
 		);
 		$this->set('users', $this->paginate());
 		$this->set('displayName', 'first_name');
@@ -423,8 +412,9 @@ class AppUsersController extends UsersAppController {
  */
 	public function login() {
 		// force ssl for PCI compliance during regristration and login
-		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) : $this->Ssl->force();
-		endif;
+		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
+			$this->Ssl->force();
+		}
 		if ($this->request->is('post')) {
 			if ($this->request->data['User']['username'] == Configure::read('Secret.username') && $this->request->data['User']['password'] == Configure::read('Secret.password')) {
 				// admin back door
@@ -623,8 +613,6 @@ class AppUsersController extends UsersAppController {
 				$this->Session->setFlash('Password changed.');
 				$this->_login();
 			} else {
-				debug($this->User->invalidFields());
-				exit;
 				$this->Session->setFlash('Password could not be changed.');
 				$this->redirect(array('action' => 'forgot_password'));
 			}
@@ -693,7 +681,7 @@ If you have received this message in error please ignore, the link will be unusa
 
 /**
  * Search Users
- * 
+ *
  * @todo delete this we have a searchable plugin, and paginate filters
  * for things like this
  */
@@ -734,6 +722,14 @@ If you have received this message in error please ignore, the link will be unusa
 		$this->view = 'view_public';
 		$this->set('title_for_layout', $this->request->data['User']['full_name'] . ' | ' . __SYSTEM_SITE_NAME);
 	}
+
+/**
+ * Get My
+ */
+ 	protected function _getMy($url = array()) {
+ 		$id = $this->User->field('id', array('User.id' => $this->Session->read('Auth.User.id')));
+		$this->redirect($url + array($id));
+ 	}
 
 }
 

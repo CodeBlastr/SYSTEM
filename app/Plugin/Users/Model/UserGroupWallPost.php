@@ -2,10 +2,11 @@
 App::uses('UsersAppModel', 'Users.Model');
 
 class UserGroupWallPost extends UsersAppModel {
-	var $name = 'UserGroupWallPost';
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
+	public $name = 'UserGroupWallPost';
 
-	var $belongsTo = array(
+	
+	
+	public $belongsTo = array(
 		'UserGroup' => array(
 			'className' => 'Users.UserGroup',
 			'foreignKey' => 'user_group_id',
@@ -22,11 +23,15 @@ class UserGroupWallPost extends UsersAppModel {
 		)
 	);
 	
-	var $hasMany = array(
-		'Comment' => array(
-			'className' => 'Comments.Comment',
-			'foreignKey' => 'foreign_key',
-			'conditions' => array('Comment.model' => 'UserGroupWallPost')
-		)
-	);
+	public function __construct($id = false, $table = null, $ds = null) {
+		if(CakePlugin::loaded('Comments')) {
+			$this->actsAs[] = 'Comments.Commentable';
+			$this->hasMany[] = array(
+					'Comment' => array(
+						'className' => 'Comments.Comment',
+						'foreignKey' => 'foreign_key',
+						'conditions' => array('Comment.model' => 'UserGroupWallPost')
+					));
+		}
+	}
 }

@@ -1,4 +1,20 @@
-<?php 
+<div class="contacts activities index">
+	<?php if (!empty($activities)) : ?>
+		<div class="list-group">
+			<?php foreach ($activities as $activity) : ?>
+				<div class="list-group-item">
+					<?php echo $this->Html->link(strip_tags($activity['Activity']['name']), array('plugin' => 'activities', 'controller' => 'activities', 'action' => 'view', $activity['Activity']['id'])); ?>
+					<span class="badge"><?php echo $activity['Creator']['full_name']; ?></span>
+					<span class="badge"><?php echo ZuhaInflector::datify($activity['Activity']['created']); ?></span>
+				</div>
+			<?php endforeach; ?>
+		</div>
+	<?php else : ?>
+		<p>No activities logged</p>
+	<?php endif; ?>
+</div>
+	
+<?php
 // set the contextual sorting items
 echo $this->Element('context_sort', array(
     'context_sort' => array(
@@ -27,9 +43,6 @@ echo $this->Element('forms/search', array(
 			),
 		)
 	));
-
-echo $this->Element('scaffolds/index', array('data' => $activities));
-
 
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(

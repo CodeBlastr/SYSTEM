@@ -33,16 +33,14 @@ class WebpageCssesController extends WebpagesAppController {
  * @return void
  */
 	public function index() {
+		$this->redirect('admin');
 		$this->WebpageCss->syncFiles('css');
-		$this->WebpageCss->recursive = 0;
-		$this->paginate['fields'] = array('id', 'name', 'content', 'webpage_id', 'modified');
-		
-		$this->set('webpageCsses', $this->paginate());
-		
-		$this->set('displayName', 'name');
-		$this->set('displayDescription', 'content');
+		$this->paginate['contain'][] = 'Webpage';
+		$this->paginate['order']['WebpageCss.webpage_id'] = 'DESC';
+		$this->set('webpageCsses', $this->request->data = $this->paginate());
 		$this->set('page_title_for_layout', 'Css Files');
-		$this->layout = 'default';
+		$this->set('title_for_layout', 'Css Files');
+		return $this->request->data;
 	}
 
 
