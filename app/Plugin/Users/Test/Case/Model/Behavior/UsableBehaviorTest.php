@@ -57,6 +57,10 @@ class UsableBehaviorTestCase extends CakeTestCase {
 		'plugin.Users.Used',
         'plugin.Users.User',
 		'core.article',
+		'plugin.Media.Media.',
+		'plugin.Media.MediaAttachment',
+		'app.Alias'
+
 		);
 
 /**
