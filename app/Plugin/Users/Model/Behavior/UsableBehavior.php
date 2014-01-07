@@ -101,6 +101,7 @@ class UsableBehavior extends ModelBehavior {
 				'joins' => array(),
 				'conditions' => array(
 					'Used.model' => "{$Model->alias}",
+					'Used.foreign_key = ' . $Model->alias . '.id',
 					),
 				'order' => null,
 				'group' => null
