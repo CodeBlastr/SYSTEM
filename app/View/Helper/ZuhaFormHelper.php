@@ -279,8 +279,10 @@ class ZuhaFormHelper extends FormHelper {
 		}
 		if (!empty($attributes['value'])) {
 			$attributes['value'] = date($dateFormat, strtotime($attributes['value']));
-		} else {
+		} elseif(isset($attributes['required'])) {
 			$attributes['value'] = date($dateFormat);
+		}else {
+			$attributes['value'] = null;
 		}
 		
 		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
