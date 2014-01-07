@@ -14,6 +14,7 @@
 /app/tmp/cache/cake*
 /app/tmp/testscake*
 /app/tmp/tests/cake*
+/app/webroot/img/tmp
 /lib/Cake/Console/Templates/skel/tmp/cache/persistent/myapp*
 \#*\#
 /plugins
@@ -33,6 +34,7 @@
 /sites/**/Locale/View/webroot/upload/*
 /sites/**/Locale/View/webroot/files/*
 /sites/**/Locale/View/webroot/media/*
+/sites/**/Locale/View/webroot/img/tmp
 settings.ini
 desktop.ini
 \.*

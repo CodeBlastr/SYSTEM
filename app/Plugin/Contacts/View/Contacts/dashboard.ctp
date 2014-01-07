@@ -47,17 +47,17 @@
 					<h5><?php echo $myRatings[$__userId]['Assignee']['full_name']; ?>'s Trailing Six Month Stats</h5>
 					<?php $ratings = $myRatings[$__userId]; ?>
 					<ul class="list-group">
-						<?php echo __('<li class="list-group-item">%s leads <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leads'], $ratings['Assignee']['_leads_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s sales <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_sales'], $ratings['Assignee']['_sales_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s proposals <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_proposals'], $ratings['Assignee']['_proposals_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s dollars proposed <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_total'], array('currency' => 'USD')), $ratings['Assignee']['_total_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s dollars sold <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_sold'], array('currency' => 'USD')), $ratings['Assignee']['_sold_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s days average cycle <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_cycle'], $ratings['Assignee']['_cycle_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s average prop <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageProposal'], array('currency' => 'USD')), $ratings['Assignee']['_averageProposal_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s average sale <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageSale'], array('currency' => 'USD')), $ratings['Assignee']['_averageSale_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s&#37; lead to prop <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leadToProposal'], $ratings['Assignee']['_leadToProposal_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s&#37; prop to sale <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_proposalToSale'], $ratings['Assignee']['_proposalToSale_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s&#37; lead to sale <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leadToSale'], $ratings['Assignee']['_leadToSale_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s leads <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leads'], $ratings['Assignee']['_leads_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s sales <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_sales'], $ratings['Assignee']['_sales_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s proposals <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_proposals'], $ratings['Assignee']['_proposals_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s dollars proposed <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_total'], array('currency' => 'USD')), $ratings['Assignee']['_total_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s dollars sold <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_sold'], array('currency' => 'USD')), $ratings['Assignee']['_sold_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s days average cycle <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_cycle'], $ratings['Assignee']['_cycle_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s average prop <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageProposal'], array('currency' => 'USD')), $ratings['Assignee']['_averageProposal_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s average sale <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageSale'], array('currency' => 'USD')), $ratings['Assignee']['_averageSale_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s&#37; lead to prop <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leadToProposal'], $ratings['Assignee']['_leadToProposal_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s&#37; prop to sale <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_proposalToSale'], $ratings['Assignee']['_proposalToSale_rank'], count($myRatings)); ?>
+						<?php echo __('<li class="list-group-item">%s&#37; lead to sale <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leadToSale'], $ratings['Assignee']['_leadToSale_rank'], count($myRatings)); ?>
 					</ul>
 				<?php endif; ?>
 	
@@ -67,17 +67,17 @@
 						<div class="col-sm-4">
 							<strong><?php echo $myRatings[$key]['Assignee']['full_name']; ?></strong>
 							<ul class="list-group">
-								<?php echo __('<li class="list-group-item">%s leads <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leads'], $ratings['Assignee']['_leads_rank'], count($myRatings)); ?>
-								<?php echo __('<li class="list-group-item">%s sales <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_sales'], $ratings['Assignee']['_sales_rank'], count($myRatings)); ?>
-								<?php echo __('<li class="list-group-item">%s proposals <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_proposals'], $ratings['Assignee']['_proposals_rank'], count($myRatings)); ?>
-								<?php echo __('<li class="list-group-item">%s proposed <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_total'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_total_rank'], count($myRatings)); ?>
-								<?php echo __('<li class="list-group-item">%s sold <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_sold'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_sold_rank'], count($myRatings)); ?>
-								<?php echo __('<li class="list-group-item">%s avg cycle <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_cycle'], $ratings['Assignee']['_cycle_rank'], count($myRatings)); ?>
-								<?php echo __('<li class="list-group-item">%s avg prop <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageProposal'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_averageProposal_rank'], count($myRatings)); ?>
-								<?php echo __('<li class="list-group-item">%s avg sale <span class="badge">rank %s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageSale'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_averageSale_rank'], count($myRatings)); ?>
-								<?php echo __('<li class="list-group-item">%s&#37; lead2prop <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leadToProposal'], $ratings['Assignee']['_leadToProposal_rank'], count($myRatings)); ?>
-								<?php echo __('<li class="list-group-item">%s&#37; prop2sale <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_proposalToSale'], $ratings['Assignee']['_proposalToSale_rank'], count($myRatings)); ?>
-								<?php echo __('<li class="list-group-item">%s&#37; lead2sale <span class="badge">rank %s of %s</span></li>', $ratings['Assignee']['_leadToSale'], $ratings['Assignee']['_leadToSale_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s leads <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leads'], $ratings['Assignee']['_leads_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s sales <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_sales'], $ratings['Assignee']['_sales_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s proposals <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_proposals'], $ratings['Assignee']['_proposals_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s proposed <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_total'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_total_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s sold <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_sold'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_sold_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s avg cycle <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_cycle'], $ratings['Assignee']['_cycle_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s avg prop <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageProposal'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_averageProposal_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s avg sale <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageSale'], array('currency' => 'USD', 'places' => 0)), $ratings['Assignee']['_averageSale_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s&#37; lead2prop <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leadToProposal'], $ratings['Assignee']['_leadToProposal_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s&#37; prop2sale <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_proposalToSale'], $ratings['Assignee']['_proposalToSale_rank'], count($myRatings)); ?>
+								<?php echo __('<li class="list-group-item">%s&#37; lead2sale <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leadToSale'], $ratings['Assignee']['_leadToSale_rank'], count($myRatings)); ?>
 							</ul>
 						</div>
 					<?php endforeach; ?>
