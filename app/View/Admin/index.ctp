@@ -1,5 +1,5 @@
 <?php
-echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false)); 
+echo $this->Html->script('plugins/jquery.masonry.min', array('inline' => false));
 /**
  * Admin Dashboard Index View
  *

@@ -7,7 +7,7 @@ if (defined('SITE_DIR')) {
     	Configure::write('Session.cookie', 'PHPSESSID');
   	} else {
   		echo 'Core.php File is Missing';
-		break;
+		exit;
   	}
 	$prefix = SITE_DIR;
 } else {
@@ -17,7 +17,7 @@ if (defined('SITE_DIR')) {
 	    if ($_SERVER['REQUEST_URI'] != '/install/site') {
 	        header('Location: /install/site'); // switch with line below to allow installs at a catchall
 	        //header('Location: http://buildrr.com/');
-	        break;
+	        exit;
 		}
 		Configure::write('Install', true); // switch with line below to allow installs at a catchall
 		//Configure::write('Install', false);
