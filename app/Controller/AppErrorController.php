@@ -70,7 +70,7 @@ class AppErrorController extends AppController {
 		}
 		$this->_db();
 		// we can get here with no db connection, so check db before looking up an alias
-		$this->_alias($request);
+		$this->_alias($request, $exception);
 		// check for an alias throws not found otherwise
 	}
 
@@ -115,11 +115,14 @@ class AppErrorController extends AppController {
  *
  * @return void
  */
-	protected function _alias($request) {
+	protected function _alias($request, $exception = null) {
 		try {
 			$Alias = ClassRegistry::init('Alias');
 			$alias = $Alias->find('first', array('conditions' => array('Alias.name' => trim(urldecode($request->here), "/"))));
 		} catch (Exception $e) {
+			// trying to show the original exception if it exists
+			debug($exception);
+			// this will probably always be missing alias table or something to do with alias
 			debug($e->getMessage());
 			// in some rare cases this is a hard to find error
 			debug(Debugger::trace());
