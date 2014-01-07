@@ -123,7 +123,7 @@ class AppErrorController extends AppController {
 			debug($e->getMessage());
 			// in some rare cases this is a hard to find error
 			debug(Debugger::trace());
-			break;
+            exit;
 		}
 		if (!empty($alias)) {
 			$request->params['controller'] = $alias['Alias']['controller'];
