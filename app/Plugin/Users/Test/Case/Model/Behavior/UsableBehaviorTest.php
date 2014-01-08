@@ -56,10 +56,12 @@ class UsableBehaviorTestCase extends CakeTestCase {
 		'app.Condition',
 		'plugin.Users.Used',
         'plugin.Users.User',
+		'plugin.Users.UserGroup',
+		'plugin.Users.UsersUserGroup',
 		'core.article',
-		'plugin.Media.Media.',
+		'plugin.Media.Media',
 		'plugin.Media.MediaAttachment',
-		'app.Alias'
+
 
 		);
 
@@ -73,6 +75,7 @@ class UsableBehaviorTestCase extends CakeTestCase {
 		$this->Usable = new UsableBehavior();
 		$this->Model = Classregistry::init('UsedArticle'); // not tied to an actual model file
 		$this->Used = ClassRegistry::init('Users.Used'); // not tied to an actual model file
+		$this->User = ClassRegistry::init('Users.User'); // not tied to an actual model file
 	}
 
 /**
@@ -84,6 +87,7 @@ class UsableBehaviorTestCase extends CakeTestCase {
 		unset($this->Usable);
 		unset($this->Model);
 		unset($this->Used);
+		unset($this->User);
 		parent::tearDown();
 	}
 
@@ -126,7 +130,56 @@ class UsableBehaviorTestCase extends CakeTestCase {
 		$result = $this->Model->addUsedUser($data);
 		$this->assertTrue($result); // with a brand new user id we should have no problem adding a user to an existing article.
 	}
-	
+
+	public function dataAfterFindWithUserGroupID(){
+		$article = array(
+			'Article' => array(
+				'title' => 'Lorem ipsum',
+				'body' => 'Lorem ipsum',
+				'published' => 1,
+			),
+			'Used' => array(
+				'user_group_id' => array(
+					1,2
+				),
+			),
+		);
+		return array(
+			'resultIsNotEmpty'=>array(
+				'userId'=>100,
+				'article'=>$article,
+				'expected'=>false
+			),
+			'resultIsEmpty'=>array(
+				'userId'=>838239,
+				'article'=>$article,
+				'excepted'=>true,
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider dataAfterFindWithUserGroupID
+	 * @param $userId | integer
+	 * @param $article | array
+	 * @param $excepted | boolean
+	 */
+	public function testAfterFindWithUserGroupID($userId,$article,$excepted) {
+
+		$this->Model->save($article);
+		$articleId = $this->Model->id;
+
+		CakeSession::write('Auth.User.id', $userId); // set user id
+
+		$result = $this->Model->find('all', array(
+			'conditions' => array(
+				'Article.id' => $articleId,
+			),
+		));
+
+		$this->assertEqual($excepted,empty($result));
+		CakeSession::destroy();
+	}
 /**
  * testAfterFind method
  *
@@ -153,13 +206,14 @@ class UsableBehaviorTestCase extends CakeTestCase {
 		$articleId = $this->Model->id;
 		
 		CakeSession::write('Auth.User.id', 7); // set user id
+
 		$result = $this->Model->find('all', array(
 			'conditions' => array(
 				'Article.id' => $articleId,
 				),
 			));
 		$this->assertTrue(empty($result)); // test that result is empty because our user id is not 838239, or 38989128
-		
+
 		
 		CakeSession::write('Auth.User.id', 838239); // set user id
 		$result = $this->Model->find('all', array(
@@ -167,10 +221,11 @@ class UsableBehaviorTestCase extends CakeTestCase {
 				'Article.id' => $articleId,
 				),
 			));
+
+
 		$this->assertTrue(!empty($result)); // should now be filled because the user id is now set
 		$this->assertTrue(!empty($result[0]['Article']['__used'])); // test that the __used field exists and is filled
-		
-		
+
 		CakeSession::write('Auth.User.id', 38989128); // set user id
 		$result = $this->Model->find('first', array(
 			'conditions' => array(

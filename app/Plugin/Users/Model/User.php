@@ -435,7 +435,7 @@ and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/ed
 			}
 		} else if (!empty($data['Contact']['user_id'])) {
 			debug($this->Contact->findByUserId($data['Contact']['user_id']));
-			break;
+			exit;
 		} else {
 			$data['Contact']['name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'Not Provided';
 		}
