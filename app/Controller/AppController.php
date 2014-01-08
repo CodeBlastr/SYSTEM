@@ -111,7 +111,7 @@ class AppController extends Controller {
 				debug($this->request->here);
 				debug($goodUrls);
 				debug($this->request);
-				break;
+				exit;
 				$this->Session->setFlash('Please change your password.', 'flash_warning');
 				$this->redirect(array(
 					'plugin' => 'users',
