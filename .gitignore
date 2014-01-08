@@ -46,3 +46,5 @@ version
 /favicon.ico
 /nbproject/*
 /app/webroot/fonts/google
+logs/*
+*.iml
