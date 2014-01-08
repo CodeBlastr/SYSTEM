@@ -61,7 +61,7 @@ class UsableBehaviorTestCase extends CakeTestCase {
 		'core.article',
 		'plugin.Media.Media',
 		'plugin.Media.MediaAttachment',
-
+		'app.Alias'
 
 		);
 
@@ -204,7 +204,6 @@ class UsableBehaviorTestCase extends CakeTestCase {
 		
 		$this->Model->save($article);
 		$articleId = $this->Model->id;
-		
 		CakeSession::write('Auth.User.id', 7); // set user id
 
 		$result = $this->Model->find('all', array(
