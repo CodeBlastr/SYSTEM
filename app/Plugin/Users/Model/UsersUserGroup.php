@@ -4,8 +4,8 @@ App::uses('UsersAppModel', 'Users.Model');
 /**
  * Extension Code
  * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Model'.DS.'UsersUserGroup.php');
+ * @property User User
  */
-
 class AppUsersUserGroup extends UsersAppModel {
 	public $name = 'UsersUserGroup';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
@@ -66,7 +66,19 @@ class AppUsersUserGroup extends UsersAppModel {
 			throw new Exception(__d('users', 'User is already in this group.'));
 		}
 	}
-	
+
+	/**
+	 * @return array | list of current logined user's groups
+	 */
+	public function	getUserGroups($type = 'all',$options = array()){
+		$userGroups = $this->User->UserGroup->UsersUserGroup->find($type,
+			array('conditions'=>array('UsersUserGroup.user_id'=>$this->_userId()),
+				'contain'=>array('UserGroup')));
+		if(!empty($options)){
+
+		}
+		return $userGroups;
+	}
 	private function _isApproved($data) {
 		# incoming data from UsersUserGroupController
 		if (!empty($data['UsersUserGroup']['is_approved'])) {
@@ -96,16 +108,16 @@ class AppUsersUserGroup extends UsersAppModel {
 	}
 	
 	
-	private function _userId($data) {
-		# incoming data from the UserModel
+	private function _userId($data = array()) {
+		// incoming data from the UserModel
 		if (!empty($this->User->id)) {
 			return $this->User->id;
 		}
-		# incoming data from the UserModel
+		// incoming data from the UserModel
 		if (!empty($data['User']['id'])) {
 			return $data['User']['id'];
 		}
-		# incoming data from UsersUserGroupController
+		// incoming data from UsersUserGroupController
 		if (!empty($data['UsersUserGroup']['user_id'])) {
 			return $data['UsersUserGroup']['user_id'];
 		}
