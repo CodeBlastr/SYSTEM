@@ -27,7 +27,7 @@ class AppExceptionRenderer extends ExceptionRenderer {
 					$Controller->handleMissingPlugin($request, $exception);
 				} catch (Exception $e) {
 					debug($e->getMessage());
-					break;
+					exit;
 				}
 			} else {
 				try {
