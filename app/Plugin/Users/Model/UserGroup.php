@@ -4,8 +4,8 @@ App::uses('UsersAppModel', 'Users.Model');
 /**
  * Extension Code
  * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Model'.DS.'UserGroup.php');
+ *@property UsersUserGroup UsersUserGroup
  */
-
 class AppUserGroup extends UsersAppModel {
 	public $name = 'UserGroup';
 	public $displayField = 'title';
@@ -43,7 +43,7 @@ class AppUserGroup extends UsersAppModel {
 	);
 	
 	public function findUserGroupsByModerator($type = 'list', $params = array('order' => 'UserGroup.title')) {
-		# you must be a moderator to see groups
+		// you must be a moderator to see groups
 		$userRoleId = CakeSession::read('Auth.User.user_role_id');
 		if ($userRoleId != 1) {
 			$userId = CakeSession::read('Auth.User.id');
@@ -61,7 +61,7 @@ class AppUserGroup extends UsersAppModel {
 	}
 	
 	public function findUserGroupStatus($type = 'first', $params = null) {
-		# you must be a moderator to see groups
+		// you must be a moderator to see groups
 		$userRoleId = CakeSession::read('Auth.User.user_role_id');
 		if ($userRoleId == 1) {
 			$status = 'moderator';
@@ -82,7 +82,7 @@ class AppUserGroup extends UsersAppModel {
 	}
 	
 	public function findRelated($model = null, $type = 'list', $params = array('order' => 'UserGroup.title')) {
-		# groups can be assigned to only be available to certain other systems by associating a model to the group
+		// groups can be assigned to only be available to certain other systems by associating a model to the group
 		$params['conditions']['UserGroup.model'] = $model;
 		return $this->find($type, $params);
 	}
