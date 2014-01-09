@@ -22,16 +22,16 @@ class UserGroupWallPost extends UsersAppModel {
 			'order' => ''
 		)
 	);
-	
+
 	public function __construct($id = false, $table = null, $ds = null) {
 		if(CakePlugin::loaded('Comments')) {
 			$this->actsAs[] = 'Comments.Commentable';
-			$this->hasMany[] = array(
-					'Comment' => array(
-						'className' => 'Comments.Comment',
-						'foreignKey' => 'foreign_key',
-						'conditions' => array('Comment.model' => 'UserGroupWallPost')
-					));
+			$this->hasMany['Comment'] = array(
+				'className' => 'Comments.Comment',
+				'foreignKey' => 'foreign_key',
+				'conditions' => array('Comment.model' => 'UserGroupWallPost')
+			);
 		}
+		parent::__construct($id, $table, $ds);
 	}
 }
