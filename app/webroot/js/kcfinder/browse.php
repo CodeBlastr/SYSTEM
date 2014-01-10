@@ -1,5 +1,5 @@
 <?php
-session_start(); // zuha creation
+//session_start(); // zuha creation
 if (!empty($_SESSION['Auth']['User'])) { // zuha creation
 	/** This file is part of KCFinder project
 	  *
