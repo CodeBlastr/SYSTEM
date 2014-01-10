@@ -66,7 +66,7 @@ class AdminController extends AppController {
 		$complete = $this->Session->read('Updates.complete');
 		if (!empty($complete)) {
 			$this->Session->delete('Updates'); 
-			$this->Session->setFlash(__('Update check complete!!!'));
+			$this->Session->setFlash(__('Update check complete!!!'), 'flash_success');
 		}
 		$this->set('page_title_for_layout', 'Admin Dashboard');
 		$this->layout = 'default';
@@ -441,7 +441,7 @@ class AdminController extends AppController {
 	protected function _saveFavicon() {
 		$upload = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . WEBROOT_DIR . DS . 'favicon.ico';
 		if(move_uploaded_file($this->request->data['Admin']['icon']['tmp_name'], $upload)){
-			$this->Session->setFlash('Favicon Updated. NOTE ( You may need to clear browser history and refresh to see it. )');
+			$this->Session->setFlash('Favicon Updated. NOTE ( You may need to clear browser history and refresh to see it. )', 'flash_success');
 			!empty($this->request->data['Override']) ? $this->redirect('/admin') : null; // not needed, but we get here through /install/build so this is a quick and dirty fix
 		}
 	}
@@ -479,7 +479,7 @@ class AdminController extends AppController {
 			$dbpass = $db->config['password'];
 			exec('mysql dump -u '.$dbuser.' -p"'.$dbpass.'" '.$dbname.' > '.$tmpdir . DS . $sourcefolder . DS . $filename.'.sql');
 		}catch (Exception $e) {
-			$this->Session->setFlash('Error: '.$e->getMessage());
+			$this->Session->setFlash('Error: '.$e->getMessage(), 'flash_danger');
 		}
 		
 		exec('cd '.$tmpdir.DS.$sourcefolder.';zip -r '.$tmpdir.DS.$filename.'.zip *');
@@ -487,7 +487,7 @@ class AdminController extends AppController {
 		try {
 			$this->returnFile($tmpdir.DS.$filename.'.zip', $filename.'.zip', 'zip');
 		}catch (Exception $e) {
-			$this->Session->setFlash('Error: '.$e->getMessage());
+			$this->Session->setFlash('Error: '.$e->getMessage(), 'flash_danger');
 		}
 		
 		//remove the backup folder

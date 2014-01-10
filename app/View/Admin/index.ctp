@@ -240,8 +240,7 @@ if (empty($runUpdates)) : ?>
     	<table class="table table-bordered">
       	<?php if (CakeSession::read('Updates.last')) : ?>
       		<?php foreach (array_reverse(CakeSession::read('Updates.last')) as $table => $action) : ?>
-		        <li>Table <?php echo $table; ?> is <?php echo $action; ?></li>
-				<?php switch ( $action ) {
+				<?php switch ($action) {
 					case ('up to date'):
 						$class = ' label-primary';
 						break;
@@ -263,7 +262,7 @@ if (empty($runUpdates)) : ?>
     <script type="text/javascript">
         $(function() {
        		$("#autoUpdateForm").submit();
-        })
+        });
 	</script>
 	<?php endif; ?>
 <?php endif; ?>
