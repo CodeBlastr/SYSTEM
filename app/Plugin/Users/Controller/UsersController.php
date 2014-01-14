@@ -20,6 +20,8 @@ App::uses('UsersAppController', 'Users.Controller');
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and
  * Future Versions
+ * @property User User
+ * @property SslComponent Ssl
  */
 class AppUsersController extends UsersAppController {
 
@@ -182,7 +184,7 @@ class AppUsersController extends UsersAppController {
 				$this->request->data['User']['user_role_id'] = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
 			}
 			
-			if ($this->User->saveAll($this->request->data)) {
+			if ($this->User->saveUserAndContact($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 					$this->Session->setFlash(__('Success, please check your email', 'flash_success'));
 					$this->Auth->logout();
