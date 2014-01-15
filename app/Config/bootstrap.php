@@ -504,6 +504,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'ReportData' => 'Reports',
 				'ReportPage' => 'Reports',
 				'ReportSalaryCalculatorData' => 'Reports',
+				'SalaryCalculator' => 'Reports',
                 'Requestor' => 'Privileges',
 				'Searchable' => 'Searchable',
                 'Section' => 'Privileges',
