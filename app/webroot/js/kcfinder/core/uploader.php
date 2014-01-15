@@ -110,8 +110,9 @@ class uploader {
     public function __construct() {
 
         // DISABLE MAGIC QUOTES
-        if (function_exists('set_magic_quotes_runtime'))
+        if (function_exists('set_magic_quotes_runtime')) {
             @set_magic_quotes_runtime(false);
+		}
 
         // INPUT INIT
         $input = new input();
@@ -120,28 +121,36 @@ class uploader {
         $this->cookie = &$input->cookie;
 
         // SET CMS INTEGRATION ATTRIBUTE
-        if (isset($this->get['cms']) &&
-            in_array($this->get['cms'], array("drupal"))
-        )
+        if (isset($this->get['cms']) && in_array($this->get['cms'], array("drupal"))) {
             $this->cms = $this->get['cms'];
+		}
 
 		// LINKING UPLOADED FILE
-        if (count($_FILES))
+        if (count($_FILES)) {
             $this->file = &$_FILES[key($_FILES)];
+		}
 
         // LOAD DEFAULT CONFIGURATION
         require "config.php";
 
         // SETTING UP SESSION
-        if (isset($_CONFIG['_sessionLifetime']))
+        if (isset($_CONFIG['_sessionLifetime'])) {
             ini_set('session.gc_maxlifetime', $_CONFIG['_sessionLifetime'] * 60);
-        if (isset($_CONFIG['_sessionDir']))
+		}
+        if (isset($_CONFIG['_sessionDir'])) {
             ini_set('session.save_path', $_CONFIG['_sessionDir']);
-        if (isset($_CONFIG['_sessionDomain']))
+		}
+        if (isset($_CONFIG['_sessionDomain'])) {
             ini_set('session.cookie_domain', $_CONFIG['_sessionDomain']);
+		}
         switch ($this->cms) {
-            case "drupal": break;
-            default: session_start(); break;
+            case "drupal":
+				break;
+            default:
+				if (session_status() === PHP_SESSION_NONE) {
+					session_start();
+				}
+				break;
         }
 
         // RELOAD DEFAULT CONFIGURATION
