@@ -19,6 +19,10 @@ if (!empty($depth)) {
     $this->Tree->addTypeAttribute('class', 'dropdown-menu', null, 'previous');
 }
 
-echo $this->Html->link($data['WebpageMenu']['item_text'] . $caret, $data['WebpageMenu']['item_url'], array('data-toggle' => $dataToggle, 'class' => $navLinkClass, 'escape' => false));
+echo $this->Html->link($data['WebpageMenu']['item_text'] . $caret, $data['WebpageMenu']['item_url'], array(
+	'data-toggle' => $dataToggle,
+	'class' => $navLinkClass,
+	'escape' => false
+));
 
 unset($navLinkClass);
