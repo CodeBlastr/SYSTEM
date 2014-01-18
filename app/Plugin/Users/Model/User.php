@@ -1,6 +1,9 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
-
+/**
+ *@property UserGroup UserGroup
+ *@property Contact Contact
+ */
 class AppUser extends UsersAppModel {
 
 	public $name = 'User';
