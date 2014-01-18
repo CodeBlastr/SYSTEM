@@ -68,17 +68,42 @@ class AppUsersUserGroup extends UsersAppModel {
 	}
 
 	/**
-	 * @return array | list of current logined user's groups
+	 * @param integer $userId | default null, if not passed use current logged in user's id
+	 * @param string $type
+	 * @param array $options
+	 *
+	 * @return array
 	 */
-	public function	getUserGroups($type = 'all',$options = array()){
-		$userGroups = $this->User->UserGroup->UsersUserGroup->find($type,
-			array('conditions'=>array('UsersUserGroup.user_id'=>$this->_userId()),
-				'contain'=>array('UserGroup')));
+	public function	getUserGroups($userId = null,$type = 'all',$options = array()){
+		$condition = array('UsersUserGroup.user_id'=>!is_null($userId) ? $userId : $this->_userId(),'UsersUserGroup.is_moderator'=> 1);
 		if(!empty($options)){
-
+			if(isset($options['owner'])){
+				$condition['UsersUserGroup.is_moderator'] = $options['owner'] === true ? 1 : 0;
+			}
 		}
+
+		$userGroups = $this->User->UserGroup->UsersUserGroup->find($type,array('conditions'=>$condition,
+				'contain'=>array('UserGroup')));
+
+
 		return $userGroups;
 	}
+
+	public function getIntersectUserGroups($userId,$viewUserId){
+
+
+		$userGroups = Set::combine($this->getUserGroups($userId,'all',array('owner'=>false)),
+			'{n}.UserGroup.id','{n}.UserGroup.title');
+
+		$viewUserGroup = Set::combine($this->getUserGroups($viewUserId,'all',array('owner'=>true)),
+			'{n}.UserGroup.id','{n}.UserGroup.title');
+
+		return array_intersect($userGroups,$viewUserGroup);
+
+
+	}
+
+
 	private function _isApproved($data) {
 		# incoming data from UsersUserGroupController
 		if (!empty($data['UsersUserGroup']['is_approved'])) {
