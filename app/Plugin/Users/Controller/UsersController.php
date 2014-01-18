@@ -23,6 +23,7 @@ App::uses('UsersAppController', 'Users.Controller');
  * @property User User
  * @property SslComponent Ssl
  */
+
 class AppUsersController extends UsersAppController {
 
 	public $name = 'Users';
@@ -658,12 +659,12 @@ class AppUsersController extends UsersAppController {
 						$forgotKey
 					), true);
 					$mail = "Dear {$user['User']['full_name']},
-<br></br><br></br>
+<br><br /><br><br />
     A reset of your password was requested.
-<br></br><br></br>
+<br><br /><br><br />
     To complete the reset please follow the link below or copy it to your browser address bar:
-<br></br><br></br>
-{$url}<br></br>
+<br><br /><br><br />
+{$url}<br><br />
 If you have received this message in error please ignore, the link will be unusable in three days.";
 					if ($this->__sendMail($user['User']['email'], 'Password reset', $mail, 'password_reset')) {
 						$this->Session->setFlash('Password reset email sent to email ending with ******' . substr($user['User']['email'], -9));
@@ -734,9 +735,8 @@ If you have received this message in error please ignore, the link will be unusa
  	}
 
 }
-
 if (!isset($refuseInit)) {
+
 	class UsersController extends AppUsersController {
 	}
-
 }
