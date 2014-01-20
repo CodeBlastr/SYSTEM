@@ -109,7 +109,10 @@ class WebpageMenuItem extends WebpagesAppModel {
  * @return array $data 
  */
     protected function _cleanData($data) {
-		
+		// handle if we are saving a page automatically and only have the alias
+		if (!empty($data['Alias']['name']) && empty($data['WebpageMenuItem']['item_url'])) {
+			$data['WebpageMenuItem']['item_url'] = '/' . $data['Alias']['name'];
+		}
     	// handle beforeSave() type data
         if (empty($data['WebpageMenuItem']['parent_id']) && !empty($data['WebpageMenuItem']['menu_id'])) {
             $data['WebpageMenuItem']['parent_id'] = $data['WebpageMenuItem']['menu_id'];
