@@ -25,9 +25,7 @@ class UsableBehavior extends ModelBehavior {
 			$this->userData = $Model->data;
 			unset($Model->data['User']['User']);
         }
-		
 		$Model->data = $this->getChildContacts($Model);
-		
 		return true;
 	}
 	

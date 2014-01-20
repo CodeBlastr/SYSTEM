@@ -231,8 +231,9 @@ class AppWebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function add($type = 'content', $parentId = NULL) {
+		$this->redirect('admin');
 		$this->type = $type;
-		if (!empty($this->request->data)) {
+		if ($this->request->is('post')) {
 			try {
 				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'), 'flash_success');
@@ -257,10 +258,13 @@ class AppWebpagesController extends WebpagesAppController {
  */
     protected function _addContent() {
 		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? rtrim(str_replace('+', '/', $this->request->params['named']['alias']), '/') : null;
+		// auto add to a webpage menu
+		App::uses('WebpageMenu', 'Webpages.Model');
+		$WebpageMenu = new WebpageMenu();
+		$this->set('parents', $WebpageMenu->generateTreeList(null, null, null, ' - - '));
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Page Builder'));
-		$this->layout = 'default';
 		$this->view = $this->_fileExistsCheck('add_' . $this->type . $this->ext) ? 'add_' . $this->type : 'add_content';       
     }
 	
@@ -277,8 +281,6 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('parent', $parent);
 		$this->set('page_title_for_layout', __('<small>Create a subpage of</small> %s', $parent['Webpage']['name']));
-	
-		$this->layout = 'default';	
 		$this->view = 'add_sub';      
     }
     
@@ -289,7 +291,6 @@ class AppWebpagesController extends WebpagesAppController {
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Widget/Element Builder'));
-		$this->layout = 'default';	
 		$this->view = 'add_element';        
     }
     
@@ -299,7 +300,6 @@ class AppWebpagesController extends WebpagesAppController {
     protected function _addTemplate() {
         $this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Template Builder'));
-		$this->layout = 'default';	
 		$this->view = 'add_template';        
     }
 	
@@ -310,7 +310,7 @@ class AppWebpagesController extends WebpagesAppController {
  * @return void
  */
 	public function edit($id = null) {
-        	$this->Webpage->id = $id;
+        $this->Webpage->id = $id;
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
 		}
