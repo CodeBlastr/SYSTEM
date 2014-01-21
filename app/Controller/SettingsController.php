@@ -31,19 +31,19 @@ class SettingsController extends AppController {
 
 	public function update_defaults() {
 		if ($this->Setting->writeDefaultsIniData()) {
-			$this->Session->setFlash(__('Defaults update successful.', true));
+			$this->Session->setFlash(__('Defaults update successful.', true), 'flash_success');
 			$this->redirect($this->referer());
 		} else {
-			$this->Session->setFlash(__('Defaults update failed. Please, try again.'));
+			$this->Session->setFlash(__('Defaults update failed. Please, try again.'), 'flash_warning');
 		}
 	}
 
 	public function update_settings() {
 		if ($this->Setting->writeSettingsIniData()) {
-			$this->Session->setFlash(__('Settings update successful.'));
+			$this->Session->setFlash(__('Settings update successful.'), 'flash_success');
 			$this->redirect($this->referer());
 		} else {
-			$this->Session->setFlash(__('Settings update failed. Please, try again.'));
+			$this->Session->setFlash(__('Settings update failed. Please, try again.'), 'flash_warning');
 		}
 	}
 
@@ -85,10 +85,10 @@ class SettingsController extends AppController {
 		$this->redirect('admin');
 		if ($this->request->is('post')) {
 			if ($this->Setting->add($this->request->data)) {
-				$this->Session->setFlash(__('The Setting has been saved', true));
+				$this->Session->setFlash(__('The Setting has been saved', true), 'flash_success');
 				$this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true), 'flash_warning');
 			}
 		}
 		$types = $this->Setting->types();
@@ -116,14 +116,14 @@ class SettingsController extends AppController {
 	public function edit($id = null) {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			if ($this->Setting->add($this->request->data)) {
-				$this->Session->setFlash(__('The Setting has been saved', true));
+				$this->Session->setFlash(__('The Setting has been saved', true), 'flash_success');
 				$this->redirect($this->referer());
 			} else {
-				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The Setting could not be saved. Please, try again.', true), 'flash_warning');
 			}
 		}
 		if (!$id && empty($this->request->data) && empty($this->request->params['named'])) {
-			$this->Session->setFlash(__('Invalid Setting', true));
+			$this->Session->setFlash(__('Invalid Setting', true), 'flash_danger');
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->params['named'])) {
@@ -147,12 +147,12 @@ class SettingsController extends AppController {
  */
 	public function delete($id = null) {
 		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for Setting', true));
+			$this->Session->setFlash(__('Invalid id for Setting', true), 'flash_danger');
 			$this->redirect(array('action' => 'index'));
 		}
 		if ($this->Setting->delete($id)) {
 			if ($this->Setting->writeSettingsIniData()) {
-				$this->Session->setFlash(__('Setting deleted', true));
+				$this->Session->setFlash(__('Setting deleted', true), 'flash_success');
 				$this->redirect(array('action' => 'index'));
 			}
 		}
@@ -180,9 +180,9 @@ class SettingsController extends AppController {
 	public function install() {
 		try {
 			$this->Setting->writeSettingsIniData();
-			$this->Session->setFlash(__('Success! Your site is ready to go. Please login using the email and password entered on the previous screen.'));
+			$this->Session->setFlash(__('Success! Your site is ready to go. Please login using the email and password entered on the previous screen.'), 'flash_success');
 		} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
+			$this->Session->setFlash($e->getMessage(), 'flash_warning');
 		}
 		$this->redirect(array('plugin' => false, 'controller' => 'install', 'action' => 'login'));
 	}
@@ -200,9 +200,9 @@ class SettingsController extends AppController {
 			$message = $this->request->data['Setting']['message'];
 			try {
 				$this->Setting->__sendMail($to, $subject, $message);
-				$this->Session->setFlash(__('Message sent'));
+				$this->Session->setFlash(__('Message sent'), 'flash_success');
 			} catch (Exception $e) {
-				$this->Session->setFlash($e->getMessage());
+				$this->Session->setFlash($e->getMessage(), 'flash_warning');
 			}
 		}
 		

@@ -502,10 +502,10 @@ class AppUsersController extends UsersAppController {
 		if ($this->Auth->logout() || $this->Session->delete('Auth')) {
 			$this->Session->destroy();
 			$this->Cookie->destroy('rememberMe');
-			$this->Session->setFlash('Successful Logout');
+			$this->Session->setFlash('Successful Logout', 'flash_success');
 			$this->redirect($this->User->logoutRedirectUrl());
 		} else {
-			$this->Session->setFlash('Logout Failed');
+			$this->Session->setFlash('Logout Failed', 'flash_danger');
 			$this->redirect($this->User->loginRedirectUrl());
 		}
 	}
@@ -667,17 +667,17 @@ class AppUsersController extends UsersAppController {
 {$url}<br><br />
 If you have received this message in error please ignore, the link will be unusable in three days.";
 					if ($this->__sendMail($user['User']['email'], 'Password reset', $mail, 'password_reset')) {
-						$this->Session->setFlash('Password reset email sent to email ending with ******' . substr($user['User']['email'], -9));
+						$this->Session->setFlash('Password reset email sent to email ending with ******' . substr($user['User']['email'], -9), 'flash_success');
 					} else {
-						$this->Session->setFlash('Reset email could not be sent. Please try again.');
+						$this->Session->setFlash('Reset email could not be sent. Please try again.', 'flash_warning');
 					}
 				} else {
-					$this->Session->setFlash('Password could not be reset, please try again.');
+					$this->Session->setFlash('Password could not be reset, please try again.', 'flash_warning');
 				}
 			} else if (!empty($user['User']['id']) && empty($user['User']['email'])) {
-				$this->Session->setFlash('Email does not exist for this user.');
+				$this->Session->setFlash('Email does not exist for this user.', 'flash_warning');
 			} else {
-				$this->Session->setFlash('Invalid user.');
+				$this->Session->setFlash('Invalid user.', 'flash_danger');
 			}
 		}
 	}

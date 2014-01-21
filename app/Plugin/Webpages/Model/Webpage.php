@@ -170,6 +170,14 @@ class Webpage extends WebpagesAppModel {
             // template settings are special
             $this->_syncTemplateSettings($this->id, $this->data);
         }
+		if ($created && !empty($this->data['WebpageMenuItem']['parent_id'])) {
+			App::uses('WebpageMenuItem', 'Webpages.Model');
+			$WebpageMenuItem = new WebpageMenuItem();
+			$WebpageMenuItem->create();
+			if (!$WebpageMenuItem->save($this->data)) {
+				throw new Exception(__('Problem adding menu item for this page.'));
+			}
+		}
 		return parent::afterSave($created, $options);
 	}
 
@@ -244,7 +252,6 @@ class Webpage extends WebpagesAppModel {
  * @todo This really needs to be redone, and cleaned.
  */
     public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
-	
         $matches = array();
         preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage['Webpage']['content'], $matches);
         for ($i = 0; $i < sizeof($matches[2]); $i++) {
@@ -282,7 +289,6 @@ class Webpage extends WebpagesAppModel {
 					$content = $include['Webpage']['content'];
 				}
 			}
-				
 			// where the replacement of the template tag happens
 			if ( CakeSession::read('Auth.User.user_role_id') == '1' ) {
 				$includeContainer = array('start' => __('<div id="webpage%s" pageid="%s" class="edit-box global-edit-box">', $includeId, $includeId), 'end' => '</div>');
@@ -323,122 +329,6 @@ class Webpage extends WebpagesAppModel {
 		}
 		return $include;
 	}
-	
-	
-		
-/**
- * Parse Included Pages ::: REDONE 7/30/2013 (saved in case the re-do breaks stuff)
- * Used to combine multiple pages into a single page using standardized template tags
- * 
- * @param object
- * @param array
- * @param string
- * @param string
- * @param object
- * @return string
- * @todo This really needs to be redone, and cleaned.
-    public function parseIncludedPages(&$webpage, $parents = array(), $action = 'page', $userRoleId = null, $request = null) {
-        $requestUrl = $request->url;
-		
-        // DEPRECATED - 7/30/2013 RK (left here so that we bring this functionality back, but written more concisely)
-		// Ah, just updated on the use.  Its so you can set a template to work with /someAlias/* instead of a bunch of
-		// /webpages/webpages/view/2, /webpages/webpages/view/3
-		
-        // if(isset($request->params['alias'])) {
-			// $aliasName = $request->params['alias'];
-        // } else {
-			// $aliasName = '';
-        // }
-        // if(isset($webpage['Alias'])) {
-			// if(!empty($webpage['Alias']['name']) && empty($aliasName)) {
-			    // $aliasName = $webpage['Alias']['name'];
-			// }
-        // }
-		
-		
-        $matches = array();
-        $parents[] = $webpage['Webpage']['id'];
-        preg_match_all("/(\{page:([^\}\{]*)([0-9]*)([^\}\{]*)\})/", $webpage['Webpage']['content'], $matches);
-        for ($i = 0; $i < sizeof($matches[2]); $i++) {
-			if (in_array($matches[2][$i], $parents)) {
-                $webpage['Webpage']['content'] = str_replace($matches[0][$i], "", $webpage['Webpage']['content']);
-                continue;
-			}
-			switch ($action) {
-				case 'site_edit':
-				$include_container = array('start' => '<div id="webpage' . $matches[2][$i] . '" pageid="' . trim($matches[2][$i]) . '" class="edit-box global-edit-box">', 'end' => '</div>');
-				break;
-				default:
-				$include_container = array('start' => '<div id="webpage' . trim($matches[2][$i]) . '" pageid="' . trim($matches[2][$i]) . '" class="edit-box global-edit-box">', 'end' => '</div>');
-			}
-			// remove the div.global_edit_area's if this user is not userRoleId = 1
-			if ($userRoleId !== '1') {
-				$include_container = array('start' => '', 'end' => '');
-			}
-			$include = $this->find("first", array(
-				"conditions" => array("Webpage.id" => trim($matches[2][$i])),
-				'contain' => array(
-					'Child' => array(
-						'fields' => array(
-							'Child.id',
-							'Child.template_urls',
-							'Child.content'
-						)
-					)
-				),
-				'fields' => array(
-					'Webpage.id',
-					'Webpage.content',
-					),
-				'callbacks' => false
-				));
-			if (empty($include) || !is_array($include)) {
-				continue; // skip everything below this and go back to the top of the loop
-			}
-			if(!empty($include['Child'])) {
-				foreach($include['Child'] as $child) {
-					$urls = unserialize(gzuncompress(base64_decode($child['template_urls'])));
-					if(!empty($urls)) {
-						foreach($urls as $url) {
-							$urlString = str_replace('/', '\/', trim($url));
-							$urlRegEx = '/'.str_replace('*', '(.*)', $urlString).'/';
-							$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/'.substr($urlRegEx, 3) : $urlRegEx;
-							$urlCompare = strpos($requestUrl, '/') === 0 ? substr($requestUrl, 1) : $requestUrl;
-							if (preg_match($urlRegEx, $urlCompare)) {
-								$include['Webpage'] = $child;
-								break;
-							}
-
-							// DEPRECATED - 7/30/2013 RK (left here so that we bring this functionality back, but written more concisely)
-							// Ah, just updated on the use.  Its so you can set a template to work with /someAlias/* instead of a bunch of
-							// /webpages/webpages/view/2, /webpages/webpages/view/3
-							// if(!empty($aliasName)) {
-								// if($aliasName[strlen($aliasName)-1] !== '/') {
-									// $aliasName .= '/';
-								// }
-								// $urlCompare = strpos($aliasName, '/') === 0 ? substr($aliasName, 1) : $aliasName;
-								// if (preg_match($urlRegEx, $urlCompare)) {
-									// $include['Webpage'] = $child;
-									// break;
-								// }
-							// }
-						}
-					}
-				}
-			}
-
-			$this->parseIncludedPages($include, $parents, $action, $userRoleId, $request); // this is what makes it recursive
-			if ($webpage['Webpage']['type'] == 'template') {
-				$webpage['Webpage']['content'] = str_replace($matches[0][$i], $include_container['start'] . $include['Webpage']['content'] . $include_container['end'], $webpage['Webpage']['content']);
-			} else {
-				$webpage['Webpage']['content'] = str_replace($matches[0][$i], $include['Webpage']['content'], $webpage['Webpage']['content']);
-			}
-		}
-	}
- */
- 
- 
- 
 	
 /**
  * Clean Input Data
