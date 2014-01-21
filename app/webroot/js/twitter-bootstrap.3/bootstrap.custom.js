@@ -164,6 +164,16 @@ $(function() {
 			$(this).addClass("toggle");
 		}
     });
+ 
+/**
+ * The accordion behavior of bootstrap isn't working as good as it should. 
+ */
+    // $('*[data-parent]').click(function() {
+    	// var that = this
+    	// $('body').on('shown.bs.collapse', function() {
+    		// $($(that).attr('data-parent') + ' .collapse').hide()
+    	// })
+    // })
 	
 /**
  * Site wide toggle, set the click elements class to toggleClick, 

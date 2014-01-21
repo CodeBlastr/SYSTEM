@@ -37,30 +37,31 @@ echo $this->Form->input(key($aliasName), array('required' => false, 'label' => '
     var formId = '<?php echo $formId; ?>';
     var aliasId = $("#AliasId");
     var aliasValue = $('<?php echo $nameInput; ?>').val().replace(/\s+/g, '-').toLowerCase()
-    var permaLinkHtml = '<?php echo __('<div style="float: left;"><h1><small>%s/<span id="permaLink" title="Edit">%s</span> <a class="btn btn-mini" id="permaLinkEdit">Edit</a></small>', $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name']); ?>'.replace('></span>', aliasValue + '></span></h1></div>');
+    var permaLinkHtml = '<?php echo __('&nbsp;&nbsp; &nbsp;<small><strong>Permalink: </strong>%s/<span id="permaLink" title="Change">%s</span> <a class="btn btn-primary btn-xs" id="permaLinkEdit">Change</a></small>', $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name']); ?>'.replace('></span>', aliasValue + '></span>');
    	var prefix = '<?php echo $prefix; ?>';
    	var newPermaLink = null;
    	   	
-    $('h1.page-title').after(permaLinkHtml);
+    //$('h1.page-title').after(permaLinkHtml);
+    $('<?php echo $dataDisplay; ?>').after(permaLinkHtml);
     
     var permaLink = $('<?php echo $aliasInput ?>').val();
     
     $(document).on('click', '#permaLink, #permaLinkEdit', function() {
        var newlink = $('#permaLink').html();
-       $('#permaLink').replaceWith('<div class="form-inline" id="aliasForm"><input type="text" value="' + newlink + '" id="slugInput"> <a class="btn" id="saveSlug">Done</a> <a class="btn" id="cancelSlug">Cancel</a> <span id="saveOld"></span></div>');
+       $('#permaLink').replaceWith('<span class="form-inline" id="aliasForm"><input type="text" value="' + newlink + '" id="slugInput"> <a class="btn btn-primary btn-xs" id="saveSlug">Done</a> <a class="btn btn-primary btn-xs" id="cancelSlug">Cancel</a> <span id="saveOld"></span></span>');
        $('#permaLinkEdit').hide();
     });
     $(document).on('keyup', '#slugInput', function () {
         $("#AliasName").val($(this).val());
         if ($("#AliasId").length > 0 ) {
-            $("#saveOld").replaceWith('<a id="saveOldLink" class="btn btn-danger" rel="tooltip" title="Click here to keep the old url working, so that links pointing to the old url will not break.">Keep old url live?</a></small>');
+            $("#saveOld").replaceWith('<a id="saveOldLink" class="btn btn-xs btn-danger" rel="tooltip" title="Click here to keep the old url working, so that links pointing to the old url will not break.">Keep old url live?</a></small>');
         }
         $("a[rel=tooltip]").tooltip();
     });
     $(document).on('click', '#saveOldLink', function () {
         $(".tooltip").remove();
         $("#AliasId").remove();
-        $("#saveOldLink").replaceWith('<a id="oldLinkSaved" class="btn btn-success" rel="tooltip" title="This means that old links pointing to the old url will still work. If this was a mistake, you will need to refresh the page before saving any changes.">Old url has been preserved! &nbsp;&nbsp; <button type="button" class="close" data-dismiss="alert">×</button></a></small>');
+        $("#saveOldLink").replaceWith('<a id="oldLinkSaved" class="btn btn-xs btn-success" rel="tooltip" title="This means that old links pointing to the old url will still work. If this was a mistake, you will need to refresh the page before saving any changes.">Old url has been preserved! &nbsp;&nbsp; <button type="button" class="close" data-dismiss="alert">×</button></a></small>');
         $("a[rel=tooltip]").tooltip();
     });
     $(document).on('click', '.close', function() {

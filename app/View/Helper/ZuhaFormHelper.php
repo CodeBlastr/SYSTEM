@@ -186,12 +186,13 @@ class ZuhaFormHelper extends FormHelper {
 				<a onclick="toggleExtras();" id="toggle-extras"><i class="icon-fire"></i> TOGGLE EXTRAS</a>
 			</div>' : 
 			null;
-			
+
 		$options['class'] = !empty($options['class']) ? $options['class'] . ' ckeditor' : 'ckeditor';
-				
+
 		App::uses('CkeHelper', 'View/Helper');
 		$Cke = new CkeHelper($this->View);
 		$ckeSettings = $this->_ckeConfig($options);
+
 		$options = $this->_initInputField($fieldName, $options);
 		$fieldId = !empty($options['id']) ? $options['id'] : $options['name'];
 		$value = null;
@@ -202,7 +203,42 @@ class ZuhaFormHelper extends FormHelper {
 			}
 			unset($options['value']);
 		}
+
 		return $this->Html->useTag('richtext', $preLinks, $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
+	}
+
+	public function simpletext($fieldName, $options = array()){
+		$options['hideToggleLinks'] = true;
+		$defaultSettings = array(
+			'buttons'=>array('Bold','Italic','Underline',
+				'-','JustifyLeft','JustifyCenter','JustifyRight','-','NumberedList','BulletedList','Blockquote'),
+		);
+		if(is_array($options['ckeSettings'])){
+			$options['ckeSettings'] = array_merge_recursive($options['ckeSettings'],$defaultSettings);
+			//remove duplicates buttons
+			$options['ckeSettings']['buttons'] = array_flip(array_flip($options['ckeSettings']['buttons']));
+		}else{
+			$options['ckeSettings'] = $defaultSettings;
+		}
+		 ;
+		$returnValue = $this->simplebuttons().$this->richtext($fieldName,$options);
+		if($options['simpleButtons'] === false){
+			$returnValue = $this->richtext($fieldName,$options);
+		}
+		return $this->Html->script('ckeditor/config-simple') . $returnValue;
+	}
+	public function simplebuttons(){
+		$defaultButtons = <<<EOD
+<div id="editor-buttons">
+		<button type="button" class="text" data-action="text">Text</button>
+		<button type="button" class="audios" data-action="audios">Audios</button>
+		<button type="button" class="videos" data-action="videos">Videos</button>
+		<button type="button" class="links" data-action="links">Links</button>
+		<button type="button" class="documents" data-action="documents">Documents</button>
+		<button type="button" class="photos" data-action="photos">Photos</button>
+	</div>
+EOD;
+		return $defaultButtons;
 	}
 
 /**
@@ -243,12 +279,8 @@ class ZuhaFormHelper extends FormHelper {
 		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false));
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : '';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
-		$fieldnameId = str_replace(' ', '', ucwords(str_replace('.', ' ', $fieldName)));
-		$fieldhiddenname = $fieldnameId . '_';
+		$fieldhiddenname = $firstId . '_';
 		$code = '$(document).ready(function() {
-			// fixing a conflict and removed these two lines in favor of the two below it
-			// $("#'.$fieldnameId.'").next().val("' . date('Y-m-d', strtotime($attributes['value'])) . '");
-			// $("#'.$fieldnameId.'").datepicker({
 			$("#' . $firstId . '").next().val("' . date('Y-m-d', strtotime($attributes['value'])) . '");
 			$("#' . $firstId . '").datepicker({
 		    	timeFormat: "' . $jsTime . '", 

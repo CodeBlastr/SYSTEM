@@ -467,6 +467,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'InvoiceItem' => 'Invoices',
 				'InvoiceTime' => 'Invoices',
 				'Invoice' => 'Invoices',
+				'LenovoProduct' => 'LenovoProducts',
 				'Location' => 'Locations',
 				'Map' => 'Maps',
 				'Media' => 'Media',
