@@ -1,5 +1,5 @@
 CKEDITOR.editorConfig = function( config ) {
-    config.extraPlugins = 'mediaembed';
+    config.extraPlugins = 'mediaembed,oembed,sharelink,confighelper';
 
     config.toolbar = [
         {

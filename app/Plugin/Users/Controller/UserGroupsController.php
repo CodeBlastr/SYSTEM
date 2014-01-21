@@ -1,5 +1,7 @@
 <?php
-
+/**
+ *@property UserGroup UserGroup
+ */
 class AppUserGroupsController extends UsersAppController {
 
 	public $name = 'UserGroups';
@@ -8,8 +10,20 @@ class AppUserGroupsController extends UsersAppController {
 	public function index() {
 		$this->UserGroup->recursive = 0;
 		$this->paginate['contain'][] = 'Creator';
-		$this->set('userGroups', $this->paginate());
-		
+		$this->set('userGroups', $this->request->data = $this->paginate());
+		return $this->request->data;
+	}
+
+/**
+ * get cureent logged in user's groups
+ * @return array |
+ */
+	public function my() {
+		$uid = $this->userId;
+		$this->paginate['contain'] = array('UserGroup', 'Moderator');
+		$this->paginate['conditions'] = array('UsersUserGroup.user_id' => $uid, 'UsersUserGroup.is_moderator' => 1);
+		$this->set('userGroups', $this->paginate('UsersUserGroup'));
+		$this->view = 'index';
 	}
 
 /**
@@ -57,10 +71,11 @@ class AppUserGroupsController extends UsersAppController {
 
 	public function view($id = null) {
 		$this->UserGroup->id = $id;
+
 		if (!$this->UserGroup->exists()) {
 			throw new NotFoundException(__('Invalid user group'));
 		}
-		
+
 		$userGroup  = $this->UserGroup->find('first', array(
 			'conditions'=>array(
 				'UserGroup.id' => $id
@@ -72,7 +87,7 @@ class AppUserGroupsController extends UsersAppController {
 						'username',
 						'full_name',
 						)
-					), 
+					),
 				'User'=>array(
 					'fields'=>array(
 						'id',
@@ -200,13 +215,10 @@ class AppUserGroupsController extends UsersAppController {
 	
 /**
  *  Only show groups that a user is the moderator for
+ * @deprecated use my instead
  */
 	public function mygroups() {
-		$uid = $this->userId;
-		$this->paginate['contain'] = array('UserGroup', 'Moderator');
-		$this->paginate['conditions'] = array('UsersUserGroup.user_id' => $uid, 'UsersUserGroup.is_moderator' => 1);
-		$this->set('userGroups', $this->paginate('UsersUserGroup'));
-		$this->view = 'index';
+		$this->my();
 	}
 
 /**

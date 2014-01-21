@@ -26,6 +26,7 @@ if (!empty($model) && !empty($foreignKey)) {
 } else {
     $model = 'Gallery';
 }
+
 // set up the config vars
 $thumbLink = !empty($thumbLink) ? $thumbLink : null;
 $thumbSize = !empty($thumbSize) ? $thumbSize : 'small';
@@ -42,7 +43,11 @@ $thumbHeight = !empty($galleryThumb['GallerySettings'][$thumbSize.'ImageHeight']
 $thumbWidth = !empty($thumbWidth) ? array('width' => $thumbWidth) : array('width' => $indexWidth);
 $thumbHeight = !empty($thumbHeight) ? array('height' => $thumbHeight) : array('height' => $indexHeight);
 $thumbAlt = !empty($thumbAlt) ? array('alt' => $thumbAlt) : array('alt' => $model);
-$thumbClass = !empty($thumbClass) || $thumbClass == 'empty' ? array('class' => $thumbClass) : array('class' => 'thumbnail gallery-thumb');
+if($thumbClass !== false){
+	$thumbClass = !empty($thumbClass) || $thumbClass == 'empty' ? array('class' => $thumbClass) : array('class' => 'thumbnail gallery-thumb');
+}else{
+	$thumbClass = array();
+}
 $thumbId = !empty($thumbId) ? array('id' => $thumbId) : array('id' => 'gallery'.$foreignKey); // was $galleryThumb['Gallery']['id'] (didn't work for /cart)
 $thumbImageOptions = array_merge($thumbWidth, $thumbHeight, $thumbAlt, $thumbClass, $thumbId, $title);
 $thumbDiv = isset($thumbDiv) ? ($thumbDiv==true ? true : false) : true; // added to skip the display of div on demand (true/false)
@@ -64,10 +69,15 @@ if (!empty($galleryThumb['GalleryThumb']['filename'])) {
 			));	
 } else if (!empty($showEmpty)) {
 	$imagePath = $defaultImage;
-    $image = $this->Html->image($imagePath, array(
-        'class' => $thumbImageOptions['class'],
-        'title' => $thumbImageOptions['title']
-    ));	
+	if($applyToDefaultImage !== true){
+		$image = $this->Html->image($imagePath, array(
+			'class' => $thumbImageOptions['class'],
+			'title' => $thumbImageOptions['title']
+		));
+	}else{
+		$image = $this->Html->image($imagePath, $thumbImageOptions);
+	}
+
 }
 
 echo !empty($thumbLink) ? $this->Html->link($image . $thumbLinkAppend, $thumbLink, $thumbLinkOptions) :	$image;
