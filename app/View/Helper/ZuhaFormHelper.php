@@ -279,12 +279,8 @@ EOD;
 		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false));
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : '';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
-		$fieldnameId = str_replace(' ', '', ucwords(str_replace('.', ' ', $fieldName)));
-		$fieldhiddenname = $fieldnameId . '_';
+		$fieldhiddenname = $firstId . '_';
 		$code = '$(document).ready(function() {
-			// fixing a conflict and removed these two lines in favor of the two below it
-			// $("#'.$fieldnameId.'").next().val("' . date('Y-m-d', strtotime($attributes['value'])) . '");
-			// $("#'.$fieldnameId.'").datepicker({
 			$("#' . $firstId . '").next().val("' . date('Y-m-d', strtotime($attributes['value'])) . '");
 			$("#' . $firstId . '").datepicker({
 		    	timeFormat: "' . $jsTime . '", 

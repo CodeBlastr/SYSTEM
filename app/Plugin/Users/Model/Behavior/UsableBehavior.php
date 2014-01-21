@@ -32,13 +32,13 @@ class UsableBehavior extends ModelBehavior {
 			$this->userData = $Model->data;
 			unset($Model->data['User']['User']);
         }
-		if(!empty($Model->data['Used'])){
-			$this->userData = $Model->data;
-			unset($Model->data['Used']);
-		}
 
+		// this was removed during a conflict resolution, was not sure if it should be here or be removed
+		// if(!empty($Model->data['Used'])){
+			// $this->userData = $Model->data;
+			// unset($Model->data['Used']);
+		// }
 		$Model->data = $this->getChildContacts($Model);
-
 		return true;
 	}
 

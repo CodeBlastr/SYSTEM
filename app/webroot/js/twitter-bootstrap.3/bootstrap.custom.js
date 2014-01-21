@@ -36,10 +36,6 @@ PR_NOCODE:"nocode",PR_PLAIN:"pln",PR_PUNCTUATION:"pun",PR_SOURCE:"src",PR_STRING
 
 
 $(function() {
-	$('*[data-target]').click(function(e) {
-		e.preventDefault();  // don't know why bootstrap doesn't have this already
-	})
-	
 	
 	// EVERYTHING HERE DOWN IS ON THE OLD SIDE
 	$('.truncate').each(function(index) {
@@ -168,6 +164,16 @@ $(function() {
 			$(this).addClass("toggle");
 		}
     });
+ 
+/**
+ * The accordion behavior of bootstrap isn't working as good as it should. 
+ */
+    // $('*[data-parent]').click(function() {
+    	// var that = this
+    	// $('body').on('shown.bs.collapse', function() {
+    		// $($(that).attr('data-parent') + ' .collapse').hide()
+    	// })
+    // })
 	
 /**
  * Site wide toggle, set the click elements class to toggleClick, 
