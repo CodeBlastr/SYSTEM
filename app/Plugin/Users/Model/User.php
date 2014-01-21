@@ -21,7 +21,7 @@ class AppUser extends UsersAppModel {
 /**
  * Auto Login setting, used to skip session write in aftersave 
  */
-	public $autoLogin = true; 
+	public $autoLogin = true;
 
 	public $validate = array(
 		'password' => array(
