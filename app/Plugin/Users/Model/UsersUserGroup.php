@@ -4,8 +4,8 @@ App::uses('UsersAppModel', 'Users.Model');
 /**
  * Extension Code
  * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Model'.DS.'UsersUserGroup.php');
+ * @property User User
  */
-
 class AppUsersUserGroup extends UsersAppModel {
 	public $name = 'UsersUserGroup';
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
@@ -66,7 +66,44 @@ class AppUsersUserGroup extends UsersAppModel {
 			throw new Exception(__d('users', 'User is already in this group.'));
 		}
 	}
-	
+
+	/**
+	 * @param integer $userId | default null, if not passed use current logged in user's id
+	 * @param string $type
+	 * @param array $options
+	 *
+	 * @return array
+	 */
+	public function	getUserGroups($userId = null,$type = 'all',$options = array()){
+		$condition = array('UsersUserGroup.user_id'=>!is_null($userId) ? $userId : $this->_userId(),'UsersUserGroup.is_moderator'=> 1);
+		if(!empty($options)){
+			if(isset($options['owner'])){
+				$condition['UsersUserGroup.is_moderator'] = $options['owner'] === true ? 1 : 0;
+			}
+		}
+
+		$userGroups = $this->User->UserGroup->UsersUserGroup->find($type,array('conditions'=>$condition,
+				'contain'=>array('UserGroup')));
+
+
+		return $userGroups;
+	}
+
+	public function getIntersectUserGroups($userId,$viewUserId){
+
+
+		$userGroups = Set::combine($this->getUserGroups($userId,'all',array('owner'=>false)),
+			'{n}.UserGroup.id','{n}.UserGroup.title');
+
+		$viewUserGroup = Set::combine($this->getUserGroups($viewUserId,'all',array('owner'=>true)),
+			'{n}.UserGroup.id','{n}.UserGroup.title');
+
+		return array_intersect($userGroups,$viewUserGroup);
+
+
+	}
+
+
 	private function _isApproved($data) {
 		# incoming data from UsersUserGroupController
 		if (!empty($data['UsersUserGroup']['is_approved'])) {
@@ -96,16 +133,16 @@ class AppUsersUserGroup extends UsersAppModel {
 	}
 	
 	
-	private function _userId($data) {
-		# incoming data from the UserModel
+	private function _userId($data = array()) {
+		// incoming data from the UserModel
 		if (!empty($this->User->id)) {
 			return $this->User->id;
 		}
-		# incoming data from the UserModel
+		// incoming data from the UserModel
 		if (!empty($data['User']['id'])) {
 			return $data['User']['id'];
 		}
-		# incoming data from UsersUserGroupController
+		// incoming data from UsersUserGroupController
 		if (!empty($data['UsersUserGroup']['user_id'])) {
 			return $data['UsersUserGroup']['user_id'];
 		}

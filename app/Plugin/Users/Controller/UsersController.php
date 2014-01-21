@@ -20,7 +20,10 @@ App::uses('UsersAppController', 'Users.Controller');
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and
  * Future Versions
+ * @property User User
+ * @property SslComponent Ssl
  */
+
 class AppUsersController extends UsersAppController {
 
 	public $name = 'Users';
@@ -182,7 +185,7 @@ class AppUsersController extends UsersAppController {
 				$this->request->data['User']['user_role_id'] = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
 			}
 			
-			if ($this->User->saveAll($this->request->data)) {
+			if ($this->User->saveUserAndContact($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 					$this->Session->setFlash(__('Success, please check your email', 'flash_success'));
 					$this->Auth->logout();
@@ -656,12 +659,12 @@ class AppUsersController extends UsersAppController {
 						$forgotKey
 					), true);
 					$mail = "Dear {$user['User']['full_name']},
-<br></br><br></br>
+<br><br /><br><br />
     A reset of your password was requested.
-<br></br><br></br>
+<br><br /><br><br />
     To complete the reset please follow the link below or copy it to your browser address bar:
-<br></br><br></br>
-{$url}<br></br>
+<br><br /><br><br />
+{$url}<br><br />
 If you have received this message in error please ignore, the link will be unusable in three days.";
 					if ($this->__sendMail($user['User']['email'], 'Password reset', $mail, 'password_reset')) {
 						$this->Session->setFlash('Password reset email sent to email ending with ******' . substr($user['User']['email'], -9), 'flash_success');
@@ -732,9 +735,8 @@ If you have received this message in error please ignore, the link will be unusa
  	}
 
 }
-
 if (!isset($refuseInit)) {
+
 	class UsersController extends AppUsersController {
 	}
-
 }

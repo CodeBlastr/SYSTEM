@@ -9,12 +9,9 @@
 			<th class="actions"><?php echo __('Actions');?></th>
 	</tr>
 	<?php
-	$i = 0;
-	foreach ($userGroups as $userGroup):
-		$class = null;
-		if ($i++ % 2 == 0) {
-			$class = ' class="altrow"';
-		}
+
+	foreach ($userGroups as $k => $userGroup):
+		$class = ($k++ % 2) ? ' class="altrow"' : '';
 	?>
 	<tr<?php echo $class;?>>
 		<td><?php echo $userGroup['UserGroup']['id']; ?>&nbsp;</td>
@@ -34,7 +31,7 @@
 
 <?php echo $this->Element('paging'); ?>
 
-<?php 
+<?php
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(

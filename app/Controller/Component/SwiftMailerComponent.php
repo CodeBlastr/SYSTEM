@@ -221,12 +221,13 @@ class SwiftMailerComponent extends Component {
 				$this->smtpPort = !empty($smtp['smtpPort']) ? $smtp['smtpPort'] : $this->smtpPort;
 				$this->from = !empty($smtp['from']) ? $smtp['from'] : $this->from;
 				$this->fromName = !empty($smtp['fromName']) ? $smtp['fromName'] : $this->fromName;
-				//debug($this->smtpUsername);
-				//debug($this->smtpPassword);
-				//debug($this->smtpHost);
-				//debug($this->smtpPort);
-				//debug($this->from);
-				//debug($this->fromName);
+				// debug($this->smtpUsername);
+				// debug($this->smtpPassword);
+				// debug($this->smtpHost);
+				// debug($this->smtpPort);
+				// debug($this->from);
+				// debug($this->fromName);
+				// exit;
 			} else {
 				return false;
 			}
