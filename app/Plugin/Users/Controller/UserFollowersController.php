@@ -36,6 +36,7 @@ class UserFollowersController extends UsersAppController {
 		}else {
 			$this->UserFollower->create();
 			if ( $this->UserFollower->save($this->request->data) ) {
+				$this->Session->setFlash('You are already following this user');
 				$this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $uid));
 			}
 		}
@@ -66,7 +67,7 @@ class UserFollowersController extends UsersAppController {
 		if ( $this->UserFollower->deleteAll(array('user_id'=>$id, 'follower_id'=> $this->Auth->user('id'))) ) {
 			$this->flash(__('User follower deleted', true), array('action' => 'index'));
 		} else {
-			break;
+			exit;
 			$this->flash(__('User follower was not deleted', true), array('action' => 'index'));
 		}
 		//$this->redirect(array('action' => 'index'));
@@ -99,11 +100,11 @@ class UserFollowersController extends UsersAppController {
 		if ( $this->UserFollower->deleteAll(array('user_id' => $this->Auth->user('id'), 'follower_id' => $id)) ) {
 			$this->flash(__('Follower deleted', true), array('action' => 'index'));
 		} else {
-			break;
+			exit;
 			$this->flash(__('Follower was not deleted', true), array('action' => 'index'));
 		}
 		//$this->redirect(array('action' => 'index'));
 		$this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $this->Auth->user('id')));
 	}
-	
+
 }

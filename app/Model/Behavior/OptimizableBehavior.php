@@ -129,10 +129,8 @@ class OptimizableBehavior extends ModelBehavior {
 		$oldAlias = $this->Alias->find('first', array('conditions' => array('id' => $this->data['Alias']['id'])));
 		$newAlias = !empty($Model->data['Alias']['name']) ? $Model->data['Alias']['name'] : $Model->data[$Model->alias]['alias'];
 		
-		// not sure what removing this will do (2013-09-04 RK)
-		// if it doesn't break anything, remove this trigger=true thing, and remove it from afterSave() as well
-		// $this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
-		$this->trigger = true;
+		// this keeps us from trying to save an alias twice (we tried removing it, and it throws an error)
+		$this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
 		
 		//Added check for the alias won't save if they match
 		if($oldAlias['Alias']['name'] == $newAlias) {

@@ -128,7 +128,7 @@ class UserGroupableBehavior extends ModelBehavior {
 				));
 			} catch (Exception $e) {
 				debug($e->getMessage());
-				break;
+				exit;
 			}
 			
 		}
