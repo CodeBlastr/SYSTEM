@@ -52,7 +52,7 @@ class WebpageMenuItemsController extends WebpagesAppController {
             $this->paginate['contain'] = array('WebpageMenu', 'WebpageMenuItem' => array('WebpageMenuItem'));
 			$this->set('menuItems', $this->paginate());
 		} else {
-			$this->Session->setFlash(__('Invalid menu', true));
+			$this->Session->setFlash(__('Invalid menu', true), 'flash_warning');
 			$this->redirect(array('controller' => 'menus', 'action' => 'index'));
 		}
 	}
@@ -87,7 +87,7 @@ class WebpageMenuItemsController extends WebpagesAppController {
 		if (!empty($this->request->data)) {
 			try {
 				$this->WebpageMenuItem->saveAll($this->request->data);
-				$this->Session->setFlash(__d('menus', 'Menu item added.', true));
+				$this->Session->setFlash(__d('menus', 'Menu item added.', true), 'flash_success');
 				$this->redirect(array('controller' => 'webpage_menus', 'action' => 'edit', $this->request->data['WebpageMenuItem']['menu_id']));
 			} catch (Exception $e) {
 				$this->Session->setFlash($e->getMessage());
@@ -111,10 +111,10 @@ class WebpageMenuItemsController extends WebpagesAppController {
 	public function edit($id = null) {
 		if (!empty($this->request->data)) {
 			if ($this->WebpageMenuItem->save($this->request->data)) {
-				$this->Session->setFlash(__('Link has been saved', true));
+				$this->Session->setFlash(__('Link has been saved', true), 'flash_success');
 				$this->redirect(array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'edit', $this->request->data['WebpageMenuItem']['menu_id']));
 			} else {
-				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true), 'flash_warning');
 			}
 		}
 		if (empty($this->request->data)) {
@@ -138,10 +138,10 @@ class WebpageMenuItemsController extends WebpagesAppController {
 			throw new NotFoundException(__('Link not found'));
 		}
 		if ($this->WebpageMenuItem->delete($id)) {
-			$this->Session->setFlash(__('Link deleted', true));
+			$this->Session->setFlash(__('Link deleted', true), 'flash_success');
 			$this->redirect($this->referer());
 		}
-		$this->Session->setFlash(__('Link was not deleted', true));
+		$this->Session->setFlash(__('Link was not deleted', true), 'flash_danger');
 		$this->redirect($this->referer());
 	}
 	
