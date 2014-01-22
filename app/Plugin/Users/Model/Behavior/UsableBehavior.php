@@ -536,6 +536,16 @@ class UsableBehavior extends ModelBehavior {
 			return false;
 		}
 	}
+	/**
+	 * Remove all used users from the object
+	 */
+	public function removeAllUsedUsers(&$Model,  $foreignKey = null) {
+		if ($Model->Used->deleteAll(array( 'Used.foreign_key' => $foreignKey))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 /** 
  * Remove used users from the object
