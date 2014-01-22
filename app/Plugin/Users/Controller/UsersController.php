@@ -172,7 +172,7 @@ class AppUsersController extends UsersAppController {
 /**
  * Register method
  *
- * @param uuid $userRoleId
+ * @param int $userRoleId
  */
 	public function register($userRoleId = null) {
 		// force ssl for PCI compliance during regristration and login
@@ -187,7 +187,7 @@ class AppUsersController extends UsersAppController {
 			
 			if ($this->User->saveUserAndContact($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-					$this->Session->setFlash(__('Success, please check your email', 'flash_success'));
+					$this->Session->setFlash(__('Success, please check your email'), 'flash_success');
 					$this->Auth->logout();
 				} else {
 					$this->Session->setFlash(__('Successful Registration'), 'flash_success');
