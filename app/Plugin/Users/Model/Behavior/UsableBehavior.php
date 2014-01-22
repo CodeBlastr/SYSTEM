@@ -232,8 +232,6 @@ class UsableBehavior extends ModelBehavior {
 			), $Model);
 			$subQuery = "`{$Model->alias}`.`id` IN (" . $subQuery . ")";
 			$subQueryExpression = $Dbo->expression($subQuery);
-
-
 			// First model records that aren't accessed controlled
 			$subQuery2 = $Dbo->buildStatement(array(
 				//'fields' => array('`User2`.`id`'),
@@ -406,26 +404,13 @@ class UsableBehavior extends ModelBehavior {
 			// this is if its a user group we need to look up.
 			// add all of the team members to the used table
 			$users = $this->_saveUsersInUserGroup($Model);
-
 		}
-
-
-
-		
 		// gets rid of duplicate users from two arrays... @todo: maybe move this to its own function if its needed again
 		if (!empty($users)) {
-
 			$users = Set::extract($path, $users);
-
 			$currentUsers = Set::extract('/User/id', $currentUsers);
-
 			$users = array_diff($users, $currentUsers);
-
-
-
 			if(count($users) > 0){
-
-
 				$Used = ClassRegistry::init('Users.Used');
 				foreach ($users as $user) {
 					$data['Used'][$path == '/id' ? 'user_id' : 'user_group_id'] = $user;
@@ -524,7 +509,6 @@ class UsableBehavior extends ModelBehavior {
  * @throws Exception
  */
 	public function addUsedUser($Model, $data) {
-
 		$Model->bindModel(
         	array('hasMany' => array(
                	'Used' => array(
@@ -545,7 +529,7 @@ class UsableBehavior extends ModelBehavior {
 /** 
  * Remove used users from the object
  */
-	public function removeUsedUser(&$Model, $userId = null, $foreignKey = null) {
+	public function removeUsedUser($Model, $userId = null, $foreignKey = null) {
 		if ($Model->Used->deleteAll(array('Used.user_id' => $userId, 'Used.foreign_key' => $foreignKey))) { 
 			return true;
 		} else {
@@ -553,11 +537,21 @@ class UsableBehavior extends ModelBehavior {
 		}
 	}
 	
+/** 
+ * Remove used users from the object
+ */
+	public function removeUsed($Model, $foreignKey = null) {
+		if ($Model->Used->deleteAll(array('Used.foreign_key' => $foreignKey))) { 
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 /**
  * Find child contacts of a parent contact and add them to the data user list
  */
-	public function getChildContacts(&$Model) {
+	public function getChildContacts($Model) {
 		if (!empty($Model->data[$Model->alias]['contact_id']) && $Model->data[$Model->alias]['contact_all_access']) {
 			// add all of the companies people to the used table
 			// note, if the model has contact_id, then it should belongTo Contact
