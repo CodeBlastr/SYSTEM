@@ -32,7 +32,6 @@ class UsableBehavior extends ModelBehavior {
 			$this->userData = $Model->data;
 			unset($Model->data['User']['User']);
         }
-
 		// this was removed during a conflict resolution, was not sure if it should be here or be removed
 		// if(!empty($Model->data['Used'])){
 			// $this->userData = $Model->data;
@@ -397,8 +396,9 @@ class UsableBehavior extends ModelBehavior {
 		 * it does not add every user in the user group.
 		 *
 		 */
-		if(!empty($this->userData['Used']['user_group_id'])){
-			$users = $this->_saveUserGroupIds($this->userData['Used']['user_group_id']);
+
+		if(!empty($Model->data['Used']['user_group_id'])){
+			$users = $this->_saveUserGroupIds($Model->data['Used']['user_group_id']);
 			$path = '/user_group_id';
 		} elseif (!empty($Model->data[$Model->alias]['user_group_id'])) {
 			// this is if its a user group we need to look up.
@@ -537,18 +537,7 @@ class UsableBehavior extends ModelBehavior {
 		}
 	}
 	/**
-	 * Remove all used users from the object
-	 */
-	public function removeAllUsedUsers(&$Model,  $foreignKey = null) {
-		if ($Model->Used->deleteAll(array( 'Used.foreign_key' => $foreignKey))) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-/** 
- * Remove used users from the object
+	 * Remove alsed users from the object
  */
 	public function removeUsed($Model, $foreignKey = null) {
 		if ($Model->Used->deleteAll(array('Used.foreign_key' => $foreignKey))) { 
