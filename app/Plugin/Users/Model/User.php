@@ -385,7 +385,7 @@ and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/ed
 
 	public function saveUserAndContact($data) {
 		$data = $this->_userContact($data);
-		$data = $this->save($data['User']);
+		$data = $this->save($data);
 		return $data;
 	}
 	
