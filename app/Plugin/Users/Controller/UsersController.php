@@ -174,7 +174,8 @@ class AppUsersController extends UsersAppController {
  *
  * @param uuid $userRoleId
  */
-	public function register($userRoleId = null) {
+	public function register($userRoleId = null,$options = array()) {
+
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
 			$this->Ssl->force();
@@ -184,14 +185,14 @@ class AppUsersController extends UsersAppController {
 			if(!isset($this->request->data['User']['user_role_id']) || empty($this->request->data['User']['user_role_id'])) {
 				$this->request->data['User']['user_role_id'] = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
 			}
-			
+
 			if ($this->User->saveUserAndContact($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 					$this->Session->setFlash(__('Success, please check your email', 'flash_success'));
 					$this->Auth->logout();
 				} else {
 					$this->Session->setFlash(__('Successful Registration'), 'flash_success');
-					$this->_login();
+					$this->_login(null,$options);
 				}
 			} else {
 				$this->Session->setFlash(ZuhaInflector::flatten($this->User->validationErrors));
@@ -413,7 +414,7 @@ class AppUsersController extends UsersAppController {
  *
  * Public login function to verify access to restricted areas.
  */
-	public function login() {
+	public function login($options= array()) {
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
 			$this->Ssl->force();
@@ -426,13 +427,13 @@ class AppUsersController extends UsersAppController {
 					'order' => array('User.created' => 'ASC')
 				));
 				if (!empty($user)) {
-					$this->_login($user);
+					$this->_login($user,$options);
 				} else {
 					throw new Exception(__('There is no admin user installed.'));
 				}
 			} else {
 				// our regular login
-				$this->_login();
+				$this->_login(null,$options);
 			}
 		}
 		$userRoles = $this->User->UserRole->find('list');
@@ -452,9 +453,11 @@ class AppUsersController extends UsersAppController {
  * @param array $user
  * @param bool $forceUrl forces login redirect url
  */
-	protected function _login($user = null, $forceUrl = false) {
+	protected function _login($user = null, $options = array('forceUrl'=>false)) {
 		// log user in
 		if ($this->Auth->login($user)) {
+			$forceUrl = isset($options['forceUrl']) ? $options['forceUrl'] : false;
+			$callback = isset($options['callback']) ? $options['callback'] : null;
 			try {
 				$user = !empty($user) ? $user : $this->request->data;
 				$cookieData = $user;
@@ -477,9 +480,13 @@ class AppUsersController extends UsersAppController {
 					// write the cookie
 					$this->Cookie->write('rememberMe', $cookieData['User'], true, $cookieTime);
 				}
+
+				if(is_callable($callback)){
+					call_user_func($callback,empty($this->userId) ? $this->User->getLastInsertID() : $this->userId);
+				}
 				if ($forceUrl) {
 					$this->redirect($this->User->loginRedirectUrl('/'));
-				} else {
+				}  {
 					$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 				}
 			} catch (Exception $e) {
