@@ -235,11 +235,11 @@ class AppWebpagesController extends WebpagesAppController {
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->saveAll($this->request->data);
-				$this->Session->setFlash(__('Saved'));
+				$this->Session->setFlash(__('Saved'), 'flash_success');
 				$redirect = !empty($this->request->data['Alias']['name']) ? __('/%s', $this->request->data['Alias']['name']) : array('action' => 'view', $this->Webpage->id);
 				$this->redirect($redirect);
 			} catch(Exception $e) {
-				$this->Session->setFlash($e->getMessage());
+				$this->Session->setFlash($e->getMessage(), 'flash_warning');
 			}
 		}
 		if (!$this->Webpage->types($type)) {
@@ -317,10 +317,10 @@ class AppWebpagesController extends WebpagesAppController {
 		if (!empty($this->request->data)) {
 			try {
 				$this->Webpage->saveAll($this->request->data);
-				$this->Session->setFlash(__('Saved'));
+				$this->Session->setFlash(__('Saved'), 'flash_success');
 				$this->request->data['Webpage']['type'] == 'template' ? null : $this->redirect(array('action' => 'view', $this->Webpage->id));
 			} catch(Exception $e) {
-				$this->Session->setFlash($e->getMessage());
+				$this->Session->setFlash($e->getMessage(), 'flash_warning');
 			}
 		}
 		
@@ -369,10 +369,10 @@ class AppWebpagesController extends WebpagesAppController {
 			throw new NotFoundException(__('Page not found'));
 		}
 		if ($this->Webpage->delete($id, true)) {
-			$this->Session->setFlash(__('Webpage deleted', true));
+			$this->Session->setFlash(__('Webpage deleted', true), 'flash_success');
 			$this->redirect(array('action'=>'index'));
 		} else {
-			$this->Session->setFlash(__('Webpage could not be deleted.', true));
+			$this->Session->setFlash(__('Webpage could not be deleted.', true), 'flash_warning');
 			$this->redirect(array('action'=>'index'));
 		}
 	}
@@ -388,10 +388,10 @@ class AppWebpagesController extends WebpagesAppController {
 	public function save($id = null) {
         if (empty($id) && !empty($this->request->data['Webpage']['url'])) {
             if (!empty($this->request->data['Webpage']['id']) && $this->Webpage->updateTemplateSettings($this->request->data)) {
-                $this->Session->setFlash(__('Template applied'));
+                $this->Session->setFlash(__('Template applied'), 'flash_success');
                 $this->redirect($this->referer());
             } else {
-                $this->Session->setFlash(__('Template is already applied, or could not be applied.'));
+                $this->Session->setFlash(__('Template is already applied, or could not be applied.'), 'flash_warning');
                 $this->redirect($this->referer());
             }
         } else {
