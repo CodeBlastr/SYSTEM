@@ -25,9 +25,32 @@ class WkHtmlToPdfComponent extends Component {
 /**
  * @throws Exception
  */
-	public function rasterizePdf($autoDownload = true, $options = array(), $filename = 'rasterize') {
-
+	public function rasterizePdf($autoDownload = true, $options = array(), $filename = 'rasterize', $renderfile = false, $force = true) {
+		
 		$this->controller->autoRender = false;
+		
+		//Check if output name is supplied if not generates a random filename
+		if(!$renderfile) {
+			$output = "output{$this->randomNumber}.pdf";
+		}else {
+			$output = "{$renderfile}.pdf";
+		}
+		$output = $this->filepath . DS . $output;
+		
+		//If filename is send and force is false checks if file exists,
+		//If it does send that instead
+		if((!$force && $renderfile) && file_exists($output)) {
+			if ($autoDownload) {
+				// send file to browser and trigger download dialogue box
+				$this->returnFile($output, "document{$this->randomNumber}.pdf");
+				$this->viewFile->delete();
+			} else {
+				// keep the PDF on the server and return it's location
+				$this->viewFile->delete();
+				return $output;
+			}
+		}
+		
 		$this->controller->render();
 		$view = $this->controller->View->output;
 
@@ -40,15 +63,13 @@ class WkHtmlToPdfComponent extends Component {
 			$this->viewFile->close();
 
 			$url = 'http://' . $_SERVER ['HTTP_HOST'] . '/theme/Default/upload/pdf/' . $this->viewFile->name;
-
-			$output = $this->filepath . DS . "output{$this->randomNumber}.pdf";
-
+			
 			$commands = ' "letter" ';
 
 			if (PHP_OS === 'Darwin') {
 				$cmd = VENDORS . 'phantomjs/MacOS/phantomjs '.VENDORS . 'phantomjs/examples/'.$filename.'.js '. $commands . $url . ' ' . $output;
 			} elseif (PHP_OS === 'WINNT') {
-				$cmd = VENDORS . 'phantomjs\windows\phantomjs '.VENDORS . 'phantomjs\windows\examples\\'.$filename.'.js ' . $url . ' ' . $output . $commands;
+				$cmd = VENDORS . 'phantomjs\windows\phantomjs '.VENDORS . 'phantomjs\examples\\'.$filename.'.js ' . $url . ' ' . $output . $commands;
 			} else {
 				switch (PHP_INT_SIZE) {
 					case 4 :
@@ -62,7 +83,6 @@ class WkHtmlToPdfComponent extends Component {
 						break;
 				}
 			}
-			
 			exec($cmd);
 			
 			if ($autoDownload) {
@@ -72,6 +92,7 @@ class WkHtmlToPdfComponent extends Component {
 				$this->cleanUp();
 			} else {
 				// keep the PDF on the server and return it's location
+				$this->viewFile->delete();
 				return $output;
 			}
 		}

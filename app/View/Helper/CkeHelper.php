@@ -4,6 +4,10 @@
  *
  * @todo Need to set default variables, like $this->uiColor, instead of the return thing from the _config function.
  */
+/**
+ * Class CkeHelper
+ * @property HtmlHelper Html
+ */
 class CkeHelper extends Helper { 
 
     public $helpers = array('Html', 'Javascript'); 
@@ -17,7 +21,6 @@ class CkeHelper extends Helper {
     public function load($id, $settings = null) {
 
         $css = '<style type="text/css">.richtext {position: relative;} .ckeditorLinks {position: absolute; right: 6px; top: 3px;} .ckeditorLinks a {color: #000; text-decoration: none; cursor: pointer} .ckeditorLinks a:hover {text-decoration: none; color: #000;}</style>';
-
 		$configuration = $this->_config($settings);
         $code = "
         	
@@ -52,13 +55,17 @@ class CkeHelper extends Helper {
                     $('#'+actualFieldName).parent().parent().find('.exec-source').html('<i class=\"icon-wrench\"></i> HTML');
                 }
 			});
+
 ";
+
 		if ( $configuration ) {
 			$code .= "
+			var editor_id = '$id';
 			CKEDITOR.replace( '$id', {
 				$configuration	
 			});";
         }
+
         return $css . $this->Html->scriptBlock($code);  
         
         /* these will be useful in the future
@@ -162,13 +169,16 @@ class CkeHelper extends Helper {
 			}				
 		}
 		if (!empty($button)) {
-			# add in buttons if they exist
+			// add in buttons if they exist
 			if (!empty($output)) {
 				$output .= $button;
 			} else {
 				$output = $button;
 			}
-		} 
+		}
+
+
+
 		if (!empty($output)) {
 			return $output;
 		} else {

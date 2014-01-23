@@ -20,7 +20,10 @@ App::uses('UsersAppController', 'Users.Controller');
  * @since         Zuha(tm) v 0.0.1
  * @license       GPL v3 License (http://www.gnu.org/licenses/gpl.html) and
  * Future Versions
+ * @property User User
+ * @property SslComponent Ssl
  */
+
 class AppUsersController extends UsersAppController {
 
 	public $name = 'Users';
@@ -169,9 +172,10 @@ class AppUsersController extends UsersAppController {
 /**
  * Register method
  *
- * @param uuid $userRoleId
+ * @param int $userRoleId
  */
-	public function register($userRoleId = null) {
+	public function register($userRoleId = null,$options = array()) {
+
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
 			$this->Ssl->force();
@@ -181,14 +185,14 @@ class AppUsersController extends UsersAppController {
 			if(!isset($this->request->data['User']['user_role_id']) || empty($this->request->data['User']['user_role_id'])) {
 				$this->request->data['User']['user_role_id'] = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
 			}
-			
-			if ($this->User->saveAll($this->request->data)) {
+
+			if ($this->User->saveUserAndContact($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-					$this->Session->setFlash(__('Success, please check your email', 'flash_success'));
+					$this->Session->setFlash(__('Success, please check your email'), 'flash_success');
 					$this->Auth->logout();
 				} else {
 					$this->Session->setFlash(__('Successful Registration'), 'flash_success');
-					$this->_login();
+					$this->_login(null,$options);
 				}
 			} else {
 				$this->Session->setFlash(ZuhaInflector::flatten($this->User->validationErrors));
@@ -410,7 +414,7 @@ class AppUsersController extends UsersAppController {
  *
  * Public login function to verify access to restricted areas.
  */
-	public function login() {
+	public function login($options= array()) {
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
 			$this->Ssl->force();
@@ -423,13 +427,13 @@ class AppUsersController extends UsersAppController {
 					'order' => array('User.created' => 'ASC')
 				));
 				if (!empty($user)) {
-					$this->_login($user);
+					$this->_login($user,$options);
 				} else {
 					throw new Exception(__('There is no admin user installed.'));
 				}
 			} else {
 				// our regular login
-				$this->_login();
+				$this->_login(null,$options);
 			}
 		}
 		$userRoles = $this->User->UserRole->find('list');
@@ -449,9 +453,11 @@ class AppUsersController extends UsersAppController {
  * @param array $user
  * @param bool $forceUrl forces login redirect url
  */
-	protected function _login($user = null, $forceUrl = false) {
+	protected function _login($user = null, $options = array('forceUrl'=>false)) {
 		// log user in
 		if ($this->Auth->login($user)) {
+			$forceUrl = isset($options['forceUrl']) ? $options['forceUrl'] : false;
+			$callback = isset($options['callback']) ? $options['callback'] : null;
 			try {
 				$user = !empty($user) ? $user : $this->request->data;
 				$cookieData = $user;
@@ -474,9 +480,13 @@ class AppUsersController extends UsersAppController {
 					// write the cookie
 					$this->Cookie->write('rememberMe', $cookieData['User'], true, $cookieTime);
 				}
+
+				if(is_callable($callback)){
+					call_user_func($callback,empty($this->userId) ? $this->User->getLastInsertID() : $this->userId);
+				}
 				if ($forceUrl) {
 					$this->redirect($this->User->loginRedirectUrl('/'));
-				} else {
+				}  {
 					$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 				}
 			} catch (Exception $e) {
@@ -499,10 +509,10 @@ class AppUsersController extends UsersAppController {
 		if ($this->Auth->logout() || $this->Session->delete('Auth')) {
 			$this->Session->destroy();
 			$this->Cookie->destroy('rememberMe');
-			$this->Session->setFlash('Successful Logout');
+			$this->Session->setFlash('Successful Logout', 'flash_success');
 			$this->redirect($this->User->logoutRedirectUrl());
 		} else {
-			$this->Session->setFlash('Logout Failed');
+			$this->Session->setFlash('Logout Failed', 'flash_danger');
 			$this->redirect($this->User->loginRedirectUrl());
 		}
 	}
@@ -656,25 +666,25 @@ class AppUsersController extends UsersAppController {
 						$forgotKey
 					), true);
 					$mail = "Dear {$user['User']['full_name']},
-<br></br><br></br>
+<br><br /><br><br />
     A reset of your password was requested.
-<br></br><br></br>
+<br><br /><br><br />
     To complete the reset please follow the link below or copy it to your browser address bar:
-<br></br><br></br>
-{$url}<br></br>
+<br><br /><br><br />
+{$url}<br><br />
 If you have received this message in error please ignore, the link will be unusable in three days.";
 					if ($this->__sendMail($user['User']['email'], 'Password reset', $mail, 'password_reset')) {
-						$this->Session->setFlash('Password reset email sent to email ending with ******' . substr($user['User']['email'], -9));
+						$this->Session->setFlash('Password reset email sent to email ending with ******' . substr($user['User']['email'], -9), 'flash_success');
 					} else {
-						$this->Session->setFlash('Reset email could not be sent. Please try again.');
+						$this->Session->setFlash('Reset email could not be sent. Please try again.', 'flash_warning');
 					}
 				} else {
-					$this->Session->setFlash('Password could not be reset, please try again.');
+					$this->Session->setFlash('Password could not be reset, please try again.', 'flash_warning');
 				}
 			} else if (!empty($user['User']['id']) && empty($user['User']['email'])) {
-				$this->Session->setFlash('Email does not exist for this user.');
+				$this->Session->setFlash('Email does not exist for this user.', 'flash_warning');
 			} else {
-				$this->Session->setFlash('Invalid user.');
+				$this->Session->setFlash('Invalid user.', 'flash_danger');
 			}
 		}
 	}
@@ -732,9 +742,8 @@ If you have received this message in error please ignore, the link will be unusa
  	}
 
 }
-
 if (!isset($refuseInit)) {
+
 	class UsersController extends AppUsersController {
 	}
-
 }

@@ -103,6 +103,17 @@ if (empty($runUpdates)) : ?>
             <p>See and manage the discussions going on.</p>
         </div>
         <?php endif; ?>
+        
+        <?php if (CakePlugin::loaded('Properties')) : ?>
+        <div class="masonryBox dashboardBox tagComments tagDiscussion">
+            <h3 class="title"><i class="glyphicon glyphicon-tasks"></i> <?php echo $this->Html->link('Properties', array('admin' => true, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'index')); ?></h3>
+            <ul>
+                <li><?php echo $this->Html->link('See all properties', array('plugin' => 'properties', 'controller' => 'properties', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link('Add Properties', array('admin' => true, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'add')); ?></li>
+            </ul>
+            <p>See and manage property listings</p>
+        </div>
+        <?php endif; ?>
 		
 		<?php if (CakePlugin::loaded('Galleries')) : ?>        
         <div class="masonryBox dashboardBox tagGalleries tagMedia">
