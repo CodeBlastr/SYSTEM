@@ -23,5 +23,26 @@ class UserGroupFixture extends CakeTestFixture {
  *
  * @var array
  */
-	public $records = array();
+	public $records = array(
+		array(
+			'id' => 1,
+			'title' => 'title',
+			'description' => 'this is desc',
+			'model' => null,
+			'foreign_key' => null,
+			'creator_id' => null,
+			'modifier_id' => null,
+		),
+		array(
+			'id' => 2,
+			'title' => 'title',
+			'description' => 'this is desc',
+			'model' => null,
+			'foreign_key' => null,
+			'creator_id' => null,
+			'modifier_id' => null,
+		),
+	);
+
+
 }

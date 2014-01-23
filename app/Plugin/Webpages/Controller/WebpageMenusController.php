@@ -88,10 +88,10 @@ class WebpageMenusController extends WebpagesAppController {
 		if (!empty($this->request->data)) {
 			$this->WebpageMenu->create();
 			if ($this->WebpageMenu->save($this->request->data)) {
-				$this->Session->setFlash(__('The menu has been saved', true));
+				$this->Session->setFlash(__('The menu has been saved', true), 'flash_success');
 				$this->redirect(array('controller' => 'webpage_menu_items', 'action' => 'add', $this->WebpageMenu->id));
 			} else {
-				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The menu could not be saved. Please, try again.', true), 'flash_warning');
 			}
 		}
 		$types = $this->WebpageMenu->types();
@@ -105,9 +105,9 @@ class WebpageMenusController extends WebpagesAppController {
 		}
 		if (!empty($this->request->data)) {
 			if ($this->WebpageMenu->save($this->request->data)) {
-				$this->Session->setFlash(__('Menu saved.'));
+				$this->Session->setFlash(__('Menu saved.'), 'flash_success');
 			} else {
-				$this->Session->setFlash(__('Menu could not be saved.'));
+				$this->Session->setFlash(__('Menu could not be saved.'), 'flash_danger');
 			}
 		}
         
@@ -129,7 +129,7 @@ class WebpageMenusController extends WebpagesAppController {
 			$this->Session->setFlash(__('Menu deleted', true));
 			$this->redirect(array('controller' => 'webpage_menus', 'action'=>'index'));
 		} else {
-		    $this->Session->setFlash(__('Menu not deleted', true));
+		    $this->Session->setFlash(__('Menu not deleted', true), 'flash_danger');
 		}
 	}
 }
