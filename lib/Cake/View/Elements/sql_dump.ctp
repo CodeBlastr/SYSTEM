@@ -1,3 +1,4 @@
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=sql"></script>
 <?php
 /**
  * SQL Dump element. Dumps out SQL log information
@@ -65,7 +66,7 @@ if ($noLogs || isset($_forced_from_dbo_)):
 				}
 				$i['query'] .= " , params[ " . rtrim($bindParam, ', ') . " ]";
 			}
-			printf('<tr><td>%d</td><td>%s</td><td>%s</td><td style="text-align: right">%d</td><td style="text-align: right">%d</td><td style="text-align: right">%d</td></tr>%s',
+			printf('<tr><td>%d</td><td><pre class="prettyprint lang-sql">%s</pre></td><td>%s</td><td style="text-align: right">%d</td><td style="text-align: right">%d</td><td style="text-align: right">%d</td></tr>%s',
 				$k + 1,
 				h($i['query']),
 				$i['error'],
