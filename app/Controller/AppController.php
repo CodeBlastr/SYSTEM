@@ -1014,7 +1014,22 @@ class AppController extends Controller {
 		}
 		// we get here and do nothing if you are logged in
 	}
-
+	public function isSiteAdmin(){
+		if($this->Auth->loggedIn()){
+			$user = $this->Session->read('Auth.User');
+			if (!empty($user['view_prefix']) && ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public function accessDenied(){
+		$this->redirect(array(
+			'plugin' => 'users',
+			'controller' => 'users',
+			'action' => 'restricted'
+		));
+	}
 /**
  * This function is called by $this->Auth->authorize('controller') and only fires
  * when the user is logged in.
@@ -1023,6 +1038,7 @@ class AppController extends Controller {
  * @todo		Optimize this somehow, someway.
  */
 	public function isAuthorized($user) {
+
 		// this allows all users in the administrators group access to everything
 		if (!empty($user['view_prefix']) && ($user['view_prefix'] == 'admin' || $user['user_role_id'] == 1)) {
 			return true;

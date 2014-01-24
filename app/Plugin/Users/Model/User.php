@@ -3,6 +3,7 @@ App::uses('UsersAppModel', 'Users.Model');
 /**
  *@property UserGroup UserGroup
  *@property Contact Contact
+ *@property UserFollower UserFollower
  */
 class AppUser extends UsersAppModel {
 
@@ -118,7 +119,12 @@ class AppUser extends UsersAppModel {
 			'className' => 'Users.UserGroupWallPost',
 			'foreignKey' => 'creator_id',
 			'dependent' => false,
-			), 
+			),
+		'UsersUserGroup'=>array(
+			'className'     => 'Users.UsersUserGroup',
+			'foreignKey'    => 'user_id',
+			'dependent'		=> true
+		),
 		);
 
 	public $hasOne = array(

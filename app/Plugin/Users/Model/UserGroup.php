@@ -5,6 +5,7 @@ App::uses('UsersAppModel', 'Users.Model');
  * Extension Code
  * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Model'.DS.'UserGroup.php');
  *@property UsersUserGroup UsersUserGroup
+ * @property User User
  */
 class AppUserGroup extends UsersAppModel {
 	public $name = 'UserGroup';
@@ -86,6 +87,27 @@ class AppUserGroup extends UsersAppModel {
 		$params['conditions']['UserGroup.model'] = $model;
 		return $this->find($type, $params);
 	}
+
+	public function approve($pendingId,$groupId,$userId){
+		if(!empty($pendingId) && !empty($groupId) && !empty($userId)){
+			$isMyGroup = $this->isMyGroup($groupId,$userId);
+			if($isMyGroup){
+				$row = $this->UsersUserGroup->read(null,$pendingId);
+
+				if($row['UsersUserGroup']['user_group_id'] === $groupId){
+					$row['UsersUserGroup']['is_approved'] = 1;
+					$this->UsersUserGroup->save($row);
+				}
+			}
+
+		}
+	}
+	public function isMyGroup($id,$userId){
+		return $this->find('count',array('fields'=>array('Creator.id'),'conditions'=>array('UserGroup.id'=>$id,'Creator.id'=>$userId),'contain'=>array('Creator')))
+			===1;
+	}
+
+
 	
 /**
  * User method
