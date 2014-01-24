@@ -273,10 +273,10 @@ EOD;
 		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
 		
 		$firstId = !empty($attributes['id']) ? $attributes['id'] : Inflector::camelize(Inflector::slug($fieldName)); // same as taken from FormHelper
-		$this->View->Html->css('http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
+		$this->View->Html->css('//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
 		$this->View->Html->css('jquery-ui/jquery-ui-timepicker-addon', null, array('inline' => false));
-		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false));
-		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false));
+		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false, 'once' => true));
+		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false, 'once' => true));
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : '';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
 		$fieldhiddenname = $firstId . '_';
@@ -320,10 +320,10 @@ EOD;
 		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
 		
 		$firstId = !empty($attributes['id']) ? $attributes['id'] : Inflector::camelize(Inflector::slug($fieldName)); // same as taken from FormHelper
-		$this->View->Html->css('http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
+		$this->View->Html->css('//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
 		$this->View->Html->css('jquery-ui/jquery-ui-timepicker-addon', null, array('inline' => false));
-		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false));
-		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false));
+		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false, 'once' => true));
+		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false, 'once' => true));
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : 'hh:mm tt';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
 		$fieldnameId = str_replace(' ', '', ucwords(str_replace('.', ' ', $fieldName))); // comment why, if you comment this line out
