@@ -128,7 +128,7 @@ class ZuhaAcl extends DbAcl {
 			  	if ( !isset($isRightUser) ) {
 				  	SessionComponent::setFlash(__('Only the %s has access.', str_replace('_id', '', $this->permission['user_fields'])));
 				  	header('Location: /users/users/restricted');
-				  	break;
+				  	exit;
 			  	}
 			}			
 		}
