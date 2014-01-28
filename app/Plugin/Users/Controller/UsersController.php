@@ -175,13 +175,12 @@ class AppUsersController extends UsersAppController {
  * @param int $userRoleId
  */
 	public function register($userRoleId = null,$options = array()) {
-
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
 			$this->Ssl->force();
 		}
 		if ($this->request->is('post')) {
-			
+			// this should be in the model shouldn't it?
 			if(!isset($this->request->data['User']['user_role_id']) || empty($this->request->data['User']['user_role_id'])) {
 				$this->request->data['User']['user_role_id'] = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
 			}
@@ -486,7 +485,7 @@ class AppUsersController extends UsersAppController {
 				}
 				if ($forceUrl) {
 					$this->redirect($this->User->loginRedirectUrl('/'));
-				}  {
+				} else {
 					$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 				}
 			} catch (Exception $e) {
