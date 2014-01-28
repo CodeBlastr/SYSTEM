@@ -4,11 +4,13 @@ App::uses('UsersAppModel', 'Users.Model');
 /**
  * Extension Code
  * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Users'.DS.'Model'.DS.'UserGroup.php');
- *@property UsersUserGroup UsersUserGroup
+ * @property UsersUserGroup UsersUserGroup
  * @property User User
  */
 class AppUserGroup extends UsersAppModel {
+
 	public $name = 'UserGroup';
+
 	public $displayField = 'title';
 	
 	public $hasAndBelongsToMany = array(
@@ -107,8 +109,6 @@ class AppUserGroup extends UsersAppModel {
 			===1;
 	}
 
-
-	
 /**
  * User method
  * 
@@ -119,6 +119,28 @@ class AppUserGroup extends UsersAppModel {
 	public function user($data) {
 		return $this->User->procreate($data);
 	}
+	
+/**
+ * Process invite
+ * 
+ * Used as a callback from the Invite Model, and automatically adds the invited user to the group.
+ * Must return true if it worked.
+ */
+ 	public function processInvite($invite) {
+ 		$userGroup = $this->find('first', array('conditions' => array('UserGroup.id' => $invite['Invite']['foreign_key'])));
+		if (!empty($userGroup)) {
+			$data['UsersUserGroup']['user_id'] = $invite['Invite']['user_id'];
+			$data['UsersUserGroup']['user_group_id'] = $invite['Invite']['foreign_key'];
+			$data['UsersUserGroup']['is_approved'] = 1;
+			if ($this->UsersUserGroup->save($data)) {
+				return true;
+			} else {
+				throw new Exception(__('Auto add to user group failed.'));
+			}
+		} else {
+			throw new Exception(__('Group does not exist.'));
+		}
+ 	}
 }
 
 if (!isset($refuseInit)) {
