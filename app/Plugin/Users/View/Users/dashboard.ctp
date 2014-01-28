@@ -16,10 +16,12 @@
                             <i class="glyphicon glyphicon-edit"></i>
                             Edit
                         </a>
-                        <a class="btn btn-danger btn-sm" href="<?php echo $this->Html->url(array('action' => 'delete', $user['User']['id'])); ?>">
-                            <i class="glyphicon glyphicon-trash"></i>
-                            Delete
-                        </a>
+						<?php echo $this->Html->link(
+								'<i class="glyphicon glyphicon-trash"></i> Delete',
+								array('action' => 'delete', $gallery['MediaGallery']['id']),
+								array('class' => 'btn btn-danger btn-sm', 'escape' => false),
+								sprintf('Are you sure you want to delete %s?', $user['User']['full_name'])
+						); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

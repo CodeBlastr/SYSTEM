@@ -204,7 +204,7 @@ class ZuhaFormHelper extends FormHelper {
 			unset($options['value']);
 		}
 
-		return $this->Html->useTag('richtext', $preLinks, $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
+		return $this->View->Html->useTag('richtext', $preLinks, $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->View->Html->script('ckeditor/ckeditor', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
 	}
 
 	public function simpletext($fieldName, $options = array()){
@@ -225,7 +225,7 @@ class ZuhaFormHelper extends FormHelper {
 		if($options['simpleButtons'] === false){
 			$returnValue = $this->richtext($fieldName,$options);
 		}
-		return $this->Html->script('ckeditor/config-simple') . $returnValue;
+		return $this->View->Html->script('ckeditor/config-simple',array('inline'=>false)) . $returnValue;
 	}
 	public function simplebuttons(){
 		$defaultButtons = <<<EOD
@@ -273,10 +273,10 @@ EOD;
 		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
 		
 		$firstId = !empty($attributes['id']) ? $attributes['id'] : Inflector::camelize(Inflector::slug($fieldName)); // same as taken from FormHelper
-		$this->View->Html->css('http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
+		$this->View->Html->css('//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
 		$this->View->Html->css('jquery-ui/jquery-ui-timepicker-addon', null, array('inline' => false));
-		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false));
-		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false));
+		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false, 'once' => true));
+		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false, 'once' => true));
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : '';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
 		$fieldhiddenname = $firstId . '_';
@@ -286,9 +286,12 @@ EOD;
 		    	timeFormat: "' . $jsTime . '", 
 		        dateFormat: "' . $jsDate . '",
 		        altField: "#' . $fieldhiddenname . '",
-		        altFormat: "yy-mm-dd"
+		        altFormat: "yy-mm-dd",
+		        changeMonth:true,
+		        changeYear:true
 			});
 		});';
+
 		$this->View->Html->scriptBlock($code, array('inline' => false, 'once' => false));
 		
 		// return a text field plus a hidden field with proper Y-m-d h:i:s format
@@ -320,10 +323,10 @@ EOD;
 		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
 		
 		$firstId = !empty($attributes['id']) ? $attributes['id'] : Inflector::camelize(Inflector::slug($fieldName)); // same as taken from FormHelper
-		$this->View->Html->css('http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
+		$this->View->Html->css('//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));
 		$this->View->Html->css('jquery-ui/jquery-ui-timepicker-addon', null, array('inline' => false));
-		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false));
-		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false));
+		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false, 'once' => true));
+		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false, 'once' => true));
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : 'hh:mm tt';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
 		$fieldnameId = str_replace(' ', '', ucwords(str_replace('.', ' ', $fieldName))); // comment why, if you comment this line out
