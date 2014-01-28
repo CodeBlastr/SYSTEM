@@ -582,10 +582,9 @@ and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/ed
  */
 	public function loginRedirectUrl($redirect) {
 		// this handles redirects where a url was called that redirected you to the login page
-		
 		if ($redirect == '/') {
 			// default login location
-			$redirect = array('plugin' => 'users','controller' => 'users','action' => 'my');
+			$redirect = array('plugin' => 'users', 'controller' => 'users', 'action' => 'my');
 
 			if (defined('__APP_DEFAULT_LOGIN_REDIRECT_URL')) {
 				// this setting name is deprecated, will be deleted (got rid of the DEFAULT in the setting name.)
