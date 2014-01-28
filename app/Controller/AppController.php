@@ -1030,6 +1030,7 @@ class AppController extends Controller {
 			'action' => 'restricted'
 		));
 	}
+
 /**
  * This function is called by $this->Auth->authorize('controller') and only fires
  * when the user is logged in.
