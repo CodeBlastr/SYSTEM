@@ -204,7 +204,7 @@ class ZuhaFormHelper extends FormHelper {
 			unset($options['value']);
 		}
 
-		return $this->Html->useTag('richtext', $preLinks, $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->Html->script('ckeditor/ckeditor', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
+		return $this->View->Html->useTag('richtext', $preLinks, $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value, $this->View->Html->script('ckeditor/ckeditor', array('inline' => false)), $Cke->load($fieldId, $ckeSettings));
 	}
 
 	public function simpletext($fieldName, $options = array()){
@@ -225,7 +225,7 @@ class ZuhaFormHelper extends FormHelper {
 		if($options['simpleButtons'] === false){
 			$returnValue = $this->richtext($fieldName,$options);
 		}
-		return $this->Html->script('ckeditor/config-simple') . $returnValue;
+		return $this->View->Html->script('ckeditor/config-simple',array('inline'=>false)) . $returnValue;
 	}
 	public function simplebuttons(){
 		$defaultButtons = <<<EOD
@@ -286,9 +286,12 @@ EOD;
 		    	timeFormat: "' . $jsTime . '", 
 		        dateFormat: "' . $jsDate . '",
 		        altField: "#' . $fieldhiddenname . '",
-		        altFormat: "yy-mm-dd"
+		        altFormat: "yy-mm-dd",
+		        changeMonth:true,
+		        changeYear:true
 			});
 		});';
+
 		$this->View->Html->scriptBlock($code, array('inline' => false, 'once' => false));
 		
 		// return a text field plus a hidden field with proper Y-m-d h:i:s format
