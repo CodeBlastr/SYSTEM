@@ -175,7 +175,6 @@ class AppUsersController extends UsersAppController {
  * @param int $userRoleId
  */
 	public function register($userRoleId = null,$options = array()) {
-
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
 			$this->Ssl->force();
@@ -486,7 +485,7 @@ class AppUsersController extends UsersAppController {
 				}
 				if ($forceUrl) {
 					$this->redirect($this->User->loginRedirectUrl('/'));
-				}  {
+				} else {
 					$this->redirect($this->User->loginRedirectUrl($this->Auth->redirect()));
 				}
 			} catch (Exception $e) {
