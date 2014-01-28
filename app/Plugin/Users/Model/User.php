@@ -96,7 +96,7 @@ class AppUser extends UsersAppModel {
 			'className' => 'Users.User',
 			'foreignKey' => 'id',
 			'conditions' => '',
-			'fields' => '',
+			'fields' => array('id'),
 			'order' => ''
 			)
 		);
