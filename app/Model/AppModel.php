@@ -212,7 +212,15 @@ class AppModel extends Model {
 		//$this->data = !empty($this->data) ? $this->data : $results;
 
 		// this solves some problems, like: not being able to use find('list')... but probably isn't a final solution.
-		$this->permissionData = ( $this->findType == 'first' ) ? $results : null;
+
+		if (isset($results[$this->alias])) {
+			$this->permissionData[0] = $results[$this->alias];
+		} elseif (isset($results[0][$this->alias])) {
+			$this->permissionData[0] = $results[0][$this->alias];
+		} else {
+			$this->permissionData = ( $this->findType == 'first' ) ? $results : null;
+		}
+		
 		return $results;
 	}
 
