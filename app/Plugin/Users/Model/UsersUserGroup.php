@@ -39,7 +39,7 @@ class AppUsersUserGroup extends UsersAppModel {
 		$userId =  $this->_userId($data);
 		$approved =  $this->_isApproved($data);
 		$moderator =  $this->_isModerator($data);
-		# check if user is already in this grpoup or not
+		// check if user is already in this grpoup or not
 		$userCount = $this->find('count' , array(
 			'conditions'=>array(
 				'user_group_id' => $groupId,
@@ -82,16 +82,14 @@ class AppUsersUserGroup extends UsersAppModel {
 			}
 		}
 
-		$userGroups = $this->User->UserGroup->UsersUserGroup->find($type,array('conditions'=>$condition,
-				'contain'=>array('UserGroup')));
-
-
+		$userGroups = $this->User->UserGroup->UsersUserGroup->find($type,array(
+			'conditions'=>$condition,
+			'contain'=>array('UserGroup')
+		));
 		return $userGroups;
 	}
 
 	public function getIntersectUserGroups($userId,$viewUserId){
-
-
 		$userGroups = Set::combine($this->getUserGroups($userId,'all',array('owner'=>false)),
 			'{n}.UserGroup.id','{n}.UserGroup.title');
 
@@ -99,13 +97,11 @@ class AppUsersUserGroup extends UsersAppModel {
 			'{n}.UserGroup.id','{n}.UserGroup.title');
 
 		return array_intersect($userGroups,$viewUserGroup);
-
-
 	}
 
 
 	private function _isApproved($data) {
-		# incoming data from UsersUserGroupController
+		// incoming data from UsersUserGroupController
 		if (!empty($data['UsersUserGroup']['is_approved'])) {
 			return 1;
 		}
@@ -113,7 +109,7 @@ class AppUsersUserGroup extends UsersAppModel {
 	}
 	
 	private function _isModerator($data) {
-		# incoming data from UsersUserGroupController
+		// incoming data from UsersUserGroupController
 		if (!empty($data['UsersUserGroup']['is_moderator'])) {
 			return 1;
 		}
@@ -121,11 +117,11 @@ class AppUsersUserGroup extends UsersAppModel {
 	}
 	
 	private function _groupId($data) {
-		# incoming data from the UserModel
+		// incoming data from the UserModel
 		if (!empty($data['UserGroup']['UserGroup']['id'])) {
 			return $data['UserGroup']['UserGroup']['id'];
 		}
-		# incoming data from UsersUserGroupController
+		// incoming data from UsersUserGroupController
 		if (!empty($data['UsersUserGroup']['user_group_id'])) {
 			return $data['UsersUserGroup']['user_group_id'];
 		}
