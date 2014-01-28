@@ -22,15 +22,14 @@ class UserFollower extends UsersAppModel {
         )
 	);
 
-
-	public function approve($requestId,$userId){
+	private function _changeStatus($requestId,$userId,$status){
 		$row = $this->read(array('approved','user_id'),$requestId);
 
 
 		if(!empty($row) && $row['UserFollower']['user_id'] == $userId){
 			$data = array(
 				'UserFollower'=>array(
-					'approved'=> 1,
+					'approved'=> $status,
 					'id'	=>$requestId
 				),
 			);
@@ -38,7 +37,14 @@ class UserFollower extends UsersAppModel {
 		}
 
 		return false;
+	}
+	public function approve($requestId,$userId){
+		$this->_changeStatus($requestId,$userId,1);
 
+	}
+
+	public function decline($requestId,$userId){
+		$this->_changeStatus($requestId,$userId,-2);
 	}
 
 
@@ -82,10 +88,10 @@ class UserFollower extends UsersAppModel {
 
 	public	function getPendingRequetCount($userId){
 
-		return count($this->find('list',array('conditions'=>array(
+		return $this->find('count',array('conditions'=>array(
 			'approved' => null,
 			'user_id'	=>$userId,
-		))));
+		)));
 
 
 	}
