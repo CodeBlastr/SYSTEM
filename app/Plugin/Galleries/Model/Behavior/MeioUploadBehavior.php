@@ -389,7 +389,7 @@ class MeioUploadBehavior extends ModelBehavior {
 				}
 				return false;
 			} else {
-				$this->request->data = $result['data'];
+				$model->data = $result['data'];
 				return true;
 			}
 		} else {
