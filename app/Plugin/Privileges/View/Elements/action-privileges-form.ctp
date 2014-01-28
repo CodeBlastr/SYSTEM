@@ -1,19 +1,24 @@
 <?php
 echo __('<span id="%s"></span><hr /><h2> %s Access Privileges </h2><p>Set privileges by checking the box under the user role in the row of the action you want to allow access to.</p>', Inflector::underscore($name), Inflector::humanize(Inflector::underscore($name)));
+
 echo $this->Form->create('Privilege', array('url' => array(
 		'plugin' => 'privileges',
 		'controller' => 'privileges',
 		'action' => 'add'
 	)));
+
 echo '<table class="table"><thead>';
+
 $tableHeaders[] = 'Action';
 foreach ($groups as $g) {
 	if ($g["UserRole"]["id"] != 1) {
 		$tableHeaders[] = $g["UserRole"]["name"];
 	}
 }
+
 echo $this->Html->tableHeaders($tableHeaders);
 echo '</thead><tbody>';
+
 foreach ($data as $ac) {
 	$tableCells = array($ac['Section']["alias"]);
 	for ($i = 0; $i < count($groups); $i++) {
@@ -43,12 +48,19 @@ foreach ($data as $ac) {
 						} else {
 							$checked = false;
 						}
-						$formInputs .= '<label class="checkbox-inline">' . $this->Form->input('ArosAco' . '.' . $field_name . '.' . $field, array(
+						$formInputs .= '<label class="checkbox-inline">';
+						$formInputs .= $this->Form->input('ArosAco' . '.' . $field_name . '.' . $field, array(
 							'type' => 'checkbox',
 							'label' => false,
 							'checked' => $checked === false ? null : 'true',
 							'div' => false
-						)) . __('Only %s', Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE)))) . '</label>';
+						));
+						if ($field === 'id') {
+							// for self-referring models (i.e. UserModel)
+							$field = 'self_';
+						}
+						$formInputs .= __('Only %s', Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))));
+						$formInputs .= '</label>';
 						$q++;
 					}
 				}
@@ -77,13 +89,20 @@ foreach ($data as $ac) {
 			$cell .= '<div class="checkboxToggleDiv"><div class="make-switch switch-mini">';
 			if ($groups[$i]['UserRole']['id'] != 5) {
 				if (!empty($userFields)) {
-					foreach ($userFields as $field) :
-						$formInputs .= '<label class="checkbox-inline">' . $this->Form->input('ArosAco' . '.' . $field_name . '.' . $field, array(
+					foreach ($userFields as $field) {
+						$formInputs .= '<label class="checkbox-inline">';
+						$formInputs .= $this->Form->input('ArosAco' . '.' . $field_name . '.' . $field, array(
 							'type' => 'checkbox',
 							'label' => false,
 							'div' => false
-						)) . __('Only %s', Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE)))) . '</label>';
-					endforeach;
+						));
+						if ($field === 'id') {
+							// for self-referring models (i.e. UserModel)
+							$field = 'self_';
+						}
+						$formInputs .= __('Only %s', Inflector::pluralize(Inflector::humanize(strstr($field, '_', TRUE))));
+						$formInputs .= '</label>';
+					}
 				}
 			}
 			$cell .= $this->Form->input($field_name, array(
@@ -101,7 +120,9 @@ foreach ($data as $ac) {
 	}
 	echo $this->Html->tableCells(array($tableCells));
 }// end <tr> loop
+
 echo '</tbody></table>';
+
 echo $this->Form->end(array(
 	'label' => __('Update %s Privileges', Inflector::humanize(Inflector::underscore($name))),
 	'class' => 'btn btn-primary',
