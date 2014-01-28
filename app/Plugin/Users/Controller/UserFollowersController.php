@@ -16,27 +16,26 @@ class AppUserFollowersController extends UsersAppController {
 
 	function view($user = null) {
 		$dat = $this->UserFollower->find('all', array(
-									'conditions'=>array(
-										'UserFollower.user_id'=>$user
-									),
-									'contain'=>array('User')
+			'conditions'=>array(
+				'UserFollower.user_id' => $user
+			),
+			'contain' => array('User')
 		));
 		$this->set('dat', $dat);
 	}
 	
-	/*
-	 * 
-	 * Follow a user 
-	 * @param {int} uid => The id of the user
-	 */
-
+/*
+ * 
+ * Follow a user 
+ * @param {int} uid => The id of the user
+ */
 	function add($uid) {
 		$this->request->data['UserFollower']['user_id'] = $uid;
 		$this->request->data['UserFollower']['follower_id'] = $this->Auth->user('id');	
 		if($this->UserFollower->find('first', array('conditions' => array('user_id' => $uid, 'follower_id' => $this->Auth->user('id'))))) {
 			$this->Session->setFlash('You are already following this user');
 			$this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $uid));
-		}else {
+		} else {
 			$this->UserFollower->create();
 			if ( $this->UserFollower->save($this->request->data) ) {
 				$this->Session->setFlash('You are already following this user');

@@ -5,8 +5,8 @@ App::uses('Gallery', 'Galleries.Model');
 /**
  * Mediable Behavior class file.
  *
- * Adds ability to add media related to any model. 
- * 
+ * Adds ability to add media related to any model.
+ *
  * Usage is :
  * Attach behavior to a model, and add the necessary form inputs and then when you save, this behavior will handle the rest.
  *
@@ -31,7 +31,7 @@ class MediableBehavior extends ModelBehavior {
  * @var array
  */
     protected $defaults = array(
-		'modelAlias' => null, 
+		'modelAlias' => null,
 		'foreignKeyName' => null,
 		);
 
@@ -44,15 +44,15 @@ class MediableBehavior extends ModelBehavior {
  * @access public
  * @return boolean
  */
-    public function setup(Model $Model, $config = array()) {        
+    public function setup(Model $Model, $config = array()) {
     	$this->settings = array_merge($this->defaults, $config);
 		$this->modelName = !empty($this->settings['modelAlias']) ? $this->settings['modelAlias'] : $Model->alias;
 		$this->foreignKey =  !empty($this->settings['foreignKeyName']) ? $this->settings['foreignKeyName'] : $Model->primaryKey;
-        $this->Gallery = ClassRegistry::init('Galleries.Gallery');		
+        $this->Gallery = ClassRegistry::init('Galleries.Gallery');
     	return true;
 	}
-        
-	
+
+
 
 /**
  * After save method.
