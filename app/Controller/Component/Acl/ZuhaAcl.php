@@ -89,11 +89,11 @@ class ZuhaAcl extends DbAcl {
 								return false;
 							case 0:
 								continue;
-							break;
+								#break;
 							case 1:
 								$this->permission = $permission; // zuha update;
 								return true;
-							break;
+								#break;
 						}
 					}
 				}
@@ -111,26 +111,24 @@ class ZuhaAcl extends DbAcl {
  * @param array $data
  */
 	public function permission($data = array()) {
-		if (!empty($data)) {
+		if ( ! empty($data)) {
 			// This is a permission check for record level permissions.
 			// userfields are ACO records from the controller
 			if (isset($this->permission['user_fields']) && !empty($this->permission['user_fields']) && CakeSession::read('Auth.User.id') !== 1) {
 				$userFields = explode(',', $this->permission['user_fields']);
 				// we are only checking individual records so only the data from find(first) or read() can be used
-		  		foreach ($data[0] as $field => $value) {
-			  		foreach($userFields as $user) {
-			  			if ($value[$user] !== null && $value[$user] == CakeSession::read('Auth.User.id')) {
-			  				$isRightUser = true;
-			  			}
-			  		}
-		  		}
+				foreach ($userFields as $user) {
+					if ($data[0][$user] !== null && $data[0][$user] == CakeSession::read('Auth.User.id')) {
+						$isRightUser = true;
+					}
+				}
 				// What we do with users that don't have record level user access
-			  	if ( !isset($isRightUser) ) {
-				  	SessionComponent::setFlash(__('Only the %s has access.', str_replace('_id', '', $this->permission['user_fields'])));
+			  	if ( ! isset($isRightUser)) {
+				  	SessionComponent::setFlash(__('Only the %s has access.', str_replace('_id', '', $this->permission['user_fields'])), 'flash_warning');
 				  	header('Location: /users/users/restricted');
-				  	break;
+				  	exit;
 			  	}
-			}			
+			}
 		}
 		// nothing to check
 		return true;
