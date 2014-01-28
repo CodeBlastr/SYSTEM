@@ -129,7 +129,7 @@ class AppUserGroup extends UsersAppModel {
  	public function processInvite($invite) {
  		$userGroup = $this->find('first', array('conditions' => array('UserGroup.id' => $invite['Invite']['foreign_key'])));
 		if (!empty($userGroup)) {
-			$data['UsersUserGroup']['user_id'] = $invite['Invite']['user_id'];
+			$data['UsersUserGroup']['user_id'] = CakeSession::read('Auth.User.id');
 			$data['UsersUserGroup']['user_group_id'] = $invite['Invite']['foreign_key'];
 			$data['UsersUserGroup']['is_approved'] = 1;
 			if ($this->UsersUserGroup->save($data)) {
