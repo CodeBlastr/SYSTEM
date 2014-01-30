@@ -2,8 +2,8 @@
 App::uses('UsersAppModel', 'Users.Model');
 
 class UserFollower extends UsersAppModel {
+
 	public $name = 'UserFollower';
-	//The Associations below have been created with all possible keys, those that are not needed can be removed
     
 	public $belongsTo = array(
 		'User' => array(
@@ -22,11 +22,9 @@ class UserFollower extends UsersAppModel {
         )
 	);
 
-	public function beforeSave($options = array()) {
-		return parent::beforeSave($options);
-	}
-
-
+/**
+ * Change status
+ */
 	private function _changeStatus($requestId,$userId,$status){
 		$row = $this->read(array('approved','user_id'),$requestId);
 		if(!empty($row) && $row['UserFollower']['user_id'] == $userId){
@@ -41,12 +39,19 @@ class UserFollower extends UsersAppModel {
 		}
 		return false;
 	}
-	public function approve($requestId,$userId){
-		$this->_changeStatus($requestId,$userId,1);
+
+/**
+ * Approve method
+ */
+	public function approve($requestId, $userId){
+		$this->_changeStatus($requestId, $userId, 1);
 	}
 
-	public function decline($requestId,$userId){
-		$this->_changeStatus($requestId,$userId,-1);
+/**
+ * Decline method
+ */
+	public function decline($requestId, $userId){
+		$this->_changeStatus($requestId, $userId, -1);
 	}
 
 
