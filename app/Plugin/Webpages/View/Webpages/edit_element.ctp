@@ -11,8 +11,7 @@
     
 	<fieldset>
 		<legend class="toggleClick"><?php echo __('<span class="hoverTip" title="User role site privileges are used by default. Choose an option to restrict access to only the chosen group for this specific element.">Access Restrictions (optional)</span>');?></legend>
-    	<?php 
-		echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => 'User Roles', 'type' => 'select', 'multiple' => 'checkbox', 'options' => $userRoles)); ?>
+    	<?php echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => 'User Roles', 'type' => 'select', 'multiple' => 'checkbox', 'options' => $userRoles)); ?>
     </fieldset>
     
 	<?php echo $this->Form->end('Save Webpage');?>
@@ -31,4 +30,4 @@ $this->set('context_menu', array('menus' => array(
 	  array('heading' => 'Webpages',
 		'items' => $menuItems
 			)
-	  ))); ?>
+	  )));
