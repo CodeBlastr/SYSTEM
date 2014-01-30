@@ -261,10 +261,10 @@ class AppUsersController extends UsersAppController {
 			throw new NotFoundException(__('Invalid user'));
 		}
 		if ($this->User->delete($id)) {
-			$this->Session->setFlash(__('User deleted'));
-			$this->redirect(array('action' => 'index'));
+			$this->Session->setFlash(__('User #'.$id.' deleted'), 'flash_success');
+			$this->redirect($this->referer());
 		} else {
-			$this->Session->setFlash(__('Error deleting user'));
+			$this->Session->setFlash(__('Error deleting user'), 'flash_danger');
 		}
 	}
 
