@@ -37,7 +37,7 @@ class UsersSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
 		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'follower_id' => array('type' => 'integer', 'null' => false, 'default' => NULL),
-		'approved' => array('type' => 'boolean', 'null' => true, 'default' => NULL, 'comment' => 'was enum with \'0\',\'1\' as values'),
+		'approved' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'comment' => 'was enum with \'0\',\'1\',\'-1\' as values'),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);

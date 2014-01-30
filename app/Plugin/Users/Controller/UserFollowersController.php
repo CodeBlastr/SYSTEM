@@ -1,7 +1,10 @@
 <?php
 App::uses('UsersAppController', 'Users.Controller');
-
-class UserFollowersController extends UsersAppController {
+/**
+ * Class AppUserFollowersController
+ * @property UserFollower UserFollower
+ */
+class AppUserFollowersController extends UsersAppController {
 
 	public $name = 'UserFollowers';
 	public $uses = 'Users.UserFollower';
@@ -106,4 +109,9 @@ class UserFollowersController extends UsersAppController {
 		$this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $this->Auth->user('id')));
 	}
 
+}
+
+
+if (!isset($refuseInit)) {
+	class UserFollowersController extends AppUserFollowersController {}
 }
