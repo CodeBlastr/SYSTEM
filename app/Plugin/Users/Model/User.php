@@ -164,6 +164,20 @@ class AppUser extends UsersAppModel {
 			'associationForeignKey' => 'user_group_id',
 			'dependent' => true,
 			),
+        'Follower' => array(
+			'className' => 'Users.User',
+			'joinTable' => 'user_followers',
+			'foreignKey' => 'user_id',
+			'associationForeignKey' => 'follower_id',
+			'dependent' => true,
+			),
+        'Following' => array(
+			'className' => 'Users.User',
+			'joinTable' => 'user_followers',
+			'foreignKey' => 'follower_id',
+			'associationForeignKey' => 'user_id',
+			'dependent' => true,
+			),
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
