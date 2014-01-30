@@ -65,7 +65,7 @@ class CkeHelper extends Helper {
 				$configuration	
 			});";
         }
-
+		
         return $css . $this->Html->scriptBlock($code);  
         
         /* these will be useful in the future
