@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>{element: title}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="author" content="">
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-    {element: favicon}
-    <link rel="stylesheet" type="text/css" href="/css/system.css" />
-    <link rel="stylesheet" type="text/css" href="/css/twitter-bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="/css/twitter-bootstrap/bootstrap.custom.css" />
-    {element: css}
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-    <script type="text/javascript" src="/js/twitter-bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/js/system.js"></script>
-    <script type="text/javascript" src="/js/plugins/modernizr-2.6.1-respond-1.1.0.min.js"></script>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	{element: favicon}
+	<title>{element: title</title><!-- Bootstrap core CSS -->
+	<link href="/css/system.css" rel="stylesheet" />
+	<link href="/css/twitter-bootstrap.3/bootstrap.min.css" rel="stylesheet">
+	<link href="/css/twitter-bootstrap.3/bootstrap.custom.css" rel="stylesheet" />
+	{element: css}
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>		<script src="/js/twitter-bootstrap.3/html5shiv.js"></script>		<script src="/js/twitter-bootstrap.3/respond.min.js"></script>		<![endif]-->
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<script src="/js/twitter-bootstrap.3/bootstrap.min.js"></script>
+	<script src="/js/twitter-bootstrap.3/bootstrap.custom.js"></script>
+	<script src="/js/system.js"></script>
     {element: javascript}
     {element: Webpages.analytics}
 </head>
