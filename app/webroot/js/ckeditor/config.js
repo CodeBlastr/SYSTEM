@@ -1,5 +1,5 @@
 CKEDITOR.editorConfig = function( config ) {
-    config.extraPlugins = 'mediaembed,oembed,sharelink,confighelper';
+    config.extraPlugins = 'mediaembed,oembed,sharelink,confighelper,colorbutton,panelbutton,justify,pagebreak,font';
 
     config.toolbar = [
         {
@@ -26,7 +26,7 @@ CKEDITOR.editorConfig = function( config ) {
         {
             name: 'extras4', 
             items: ['Format','Font','FontSize']
-        },
+        }
 	  ];
 	config.skin = 'moono';
 	
