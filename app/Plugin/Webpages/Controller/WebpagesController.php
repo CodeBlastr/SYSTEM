@@ -438,19 +438,19 @@ class AppWebpagesController extends WebpagesAppController {
 		$form['Template']['install'] = substr($form['Template']['install'], 0, 500);
 		if (!unserialize($data['Template']['install'])) {
 			debug('data not serialized properly');
-			break;
+			exit;
 		}
 		
  		if ($this->request->is('post') || $this->request->is('push')) {
  			if (!unserialize($data['Template']['install'])) {
  				debug('serialization error');
 				debug($data['Template']['install']);
-				break;
+				exit;
  			}
 			$this->request->data['Template']['install'] = $data['Template']['install'];
 			debug('Copy and paste this into the app/Config/Schema/schema.php file in the appropriate spot.');
 			debug($this->request->data);
-			break;
+			exit;
  		}
 		$this->request->data = $form;
 		$this->set('page_title_for_layout', __('Export %s', $this->request->data['Template']['layout']));
