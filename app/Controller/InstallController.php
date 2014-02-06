@@ -511,8 +511,9 @@ class InstallController extends Controller {
         $Schema = $this->Schema->load($options);
 
         if (!$Schema) {
-            $this->message[] = __(' ( could not load %s database schema ) ', $options['name']);
-            $this->_redirect($this->referer());
+			$this->message[] = __(' ( %s has no database schema ) ', $options['name']);
+            //$this->message[] = __(' ( could not load %s database schema ) ', $options['name']);
+            //$this->_redirect($this->referer());
         }
         $table = null;
         if (isset($this->args[1])) {
