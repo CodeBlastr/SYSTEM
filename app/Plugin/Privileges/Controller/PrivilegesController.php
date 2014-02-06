@@ -33,10 +33,10 @@ class PrivilegesController extends PrivilegesAppController {
 			$i++;
 		}
 		if (!empty($data) && $this->Privilege->saveAll($data)) {
-			$this->Session->setFlash(__('Privileges Updated'));
+			$this->Session->setFlash(__('Privileges Updated'), 'flash_success');
 	 		$this->redirect($this->referer());
 		} else {
-			$this->Session->setFlash(__('Privlege update failed, please try again.'));
+			$this->Session->setFlash(__('Privlege update failed, please try again.'), 'flash_warning');
 	 		$this->redirect($this->referer());
 		}
 		
