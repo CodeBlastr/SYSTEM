@@ -87,7 +87,13 @@ class WkHtmlToPdfComponent extends Component {
 			
 			if ($autoDownload) {
 				// send file to browser and trigger download dialogue box
-				$this->returnFile($output, "document{$this->randomNumber}.pdf");
+
+				if(isset($options['downloadFileName'])){
+
+					$this->returnFile($output, "{$options['downloadFileName']}.pdf");
+				}else{
+					$this->returnFile($output, "document{$this->randomNumber}.pdf");
+				}
 				// delete the PDF from the server
 				$this->cleanUp();
 			} else {

@@ -30,7 +30,7 @@ if (empty($runUpdates)) : ?>
         <?php echo CakePlugin::loaded('Comments') ? $this->Html->link(__('Discussion'), '#tagDiscussion', array('class' => 'filterClick btn btn-default')) : null; ?>
         <?php echo $this->Html->link(__('Themes'), '#tagThemes', array('class' => 'filterClick btn btn-default')); ?>
         <?php echo $this->Html->link(__('Settings'), '#tagAdmin', array('class' => 'filterClick btn btn-default')); ?>
-        <?php echo CakePlugin::loaded('Classifieds') ? $this->Html->link(__('<span class="glyphicon glyphicon-dashboard"></span> Classifieds'), array('admin' => true, 'plugin' => 'classifieds', 'controller' => 'classifieds', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default', 'escape' => false)) : null; ?>
+        <?php echo CakePlugin::loaded('Campaigns') ? $this->Html->link(__('<span class="glyphicon glyphicon-dashboard"></span> Campaigns'), array('admin' => true, 'plugin' => 'classifieds', 'controller' => 'classifieds', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default', 'escape' => false)) : null; ?>
         <?php echo CakePlugin::loaded('Products') ? $this->Html->link(__('<span class="glyphicon glyphicon-dashboard"></span> Ecommerce'), array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default', 'escape' => false)) : null; ?>
     </div>
 

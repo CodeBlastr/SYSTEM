@@ -1,13 +1,11 @@
 <div class="userRoles form">
 <?php echo $this->Form->create('UserRole');?>
 	<fieldset>
- 		<legend><?php echo __('Edit UserRole');?></legend>
-	<?php 
-		echo $this->Form->input('id');
-		echo $this->Form->input('name');
-		echo $this->Form->input('view_prefix', array('empty' => '-- Option View Access --'));
-      
-	?>
+ 		<legend><?php echo __('Edit User Role');?></legend>
+	<?php echo $this->Form->input('UserRole.id'); ?>
+	<?php echo $this->Form->input('UserRole.name'); ?>
+    <?php echo $this->Form->input('UserRole.is_registerable'); ?>
+	<?php echo $this->Form->input('UserRole.view_prefix', array('empty' => '-- Option View Access --')); ?>
 	</fieldset>
 <?php echo $this->Form->end('Submit');?>
 </div>
@@ -29,4 +27,3 @@ $this->set('context_menu', array('menus' => array(
 			 )
 		),
 	)));
-?>
