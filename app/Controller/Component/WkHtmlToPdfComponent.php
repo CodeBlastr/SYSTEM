@@ -53,7 +53,7 @@ class WkHtmlToPdfComponent extends Component {
 		
 		$this->controller->render();
 		$view = $this->controller->View->output;
-
+		$output = str_replace(' ','_',$output);
 		if ($this->viewFile !== false) {
 			$this->viewFile->delete();
 		}
