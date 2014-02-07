@@ -468,7 +468,7 @@ class AppWebpagesController extends WebpagesAppController {
   * @return bool
   */
  
-	private function _fileExistsCheck($filename) {
+	protected function _fileExistsCheck($filename) {
 		App::uses('File', 'Utility');
 		$return = false;
 		if(isset($filename)) {
@@ -481,7 +481,8 @@ class AppWebpagesController extends WebpagesAppController {
 			$file = new File($path . $filename);
 			$return = $file->exists();
 		}
-	 	return $return;}
+	 	return $return;
+	}
 
 }
 
