@@ -156,7 +156,7 @@ class PrivilegesController extends PrivilegesAppController {
 		} else {
 			debug('Should not be here, if it is then we need unit test for it, please.');
 			debug($this->request->data);
-			break;
+			exit;
 		}
 		return $acoReturnArr;
 	}
