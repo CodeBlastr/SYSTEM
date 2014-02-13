@@ -48,7 +48,7 @@ class AppUsersController extends UsersAppController {
 		'register',
 		'checkLogin',
 		'restricted',
-		'reverify',
+		'reverify'
 	);
 
 /**
@@ -229,12 +229,12 @@ class AppUsersController extends UsersAppController {
 	public function procreate($userRoleId = null) {
 		if ($this->request->is('post')) {
 			$this->User->autoLogin = false;
-			if ($this->User->procreate($this->request->data)) {
+			try {
+				$this->User->procreate($this->request->data);
 				$this->Session->setFlash(__('User created, and email sent notifying them.'));
-				$this->redirect(array(
-					'action' => 'view',
-					$this->User->id
-				));
+				$this->redirect(array('action' => 'view', $this->User->id));
+			} catch (Exception $e) {
+				$this->Session->setFlash(__($e->getMessage()));
 			}
 		}
 		$userRoles = $this->User->UserRole->find('list', array('conditions' => array(
@@ -273,10 +273,11 @@ class AppUsersController extends UsersAppController {
  */
 	public function dashboard() {
 		$this->redirect('admin');
-		$this->set('users', $this->User->find('all', array(
-			'order' => array('User.created' => 'DESC'),
-			'contain' => array('UserRole')
-		)));
+		
+		$this->paginate['order'] = array('User.created' => 'DESC');
+		$this->paginate['contain'] = array('UserRole');
+		$this->set('users', $this->paginate('User'));
+		$this->set('userRoles', $this->User->UserRole->find('list', array('conditions' => array('UserRole.name NOT' => 'guests'))));
 	}
 
 /**
