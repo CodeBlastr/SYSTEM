@@ -55,26 +55,29 @@ $(function() {
 		$(this).parent().prev().show();
 	});
 	
-	
-	// default super-select class
-    $(".super-select").bsmSelect({
-        removeLabel: ' x',
-        containerClass: 'row super-select', // Class for container that wraps this widget
-        listClass: '',               // Class for the list ($ol)
-        listItemClass: 'label label-info pull-left',             // Class for the <li> list items
-        listItemLabelClass: '',       // Class for the label text that appears in list items
-        removeClass: 'close'         // Class given to the "remove" link
-    }).parent().parent().children('label').append('<small> (<a href="#" class="super-select-all">select all</a>) </small>');
-    $(document).on('click', '.super-select-all', function() {
-        $('.super-select', $(this).parent().parent().parent()).children().attr('selected', 'selected').end().change();
-        $(this).parent().replaceWith('<small> (<a href="#" class="super-remove-all">remove all</a>) </small>');
-        return false;
-    });
-    $(document).on('click', '.super-remove-all', function() {
-        $('.super-select', $(this).parent().parent().parent()).children().removeAttr('selected').end().change();
-        $(this).parent().replaceWith('<small> (<a href="#" class="super-select-all">select all</a>) </small>');
-        return false;
-    }); 
+	try {
+		// default super-select class
+		$(".super-select").bsmSelect({
+			removeLabel: ' x',
+			containerClass: 'row super-select', // Class for container that wraps this widget
+			listClass: '',               // Class for the list ($ol)
+			listItemClass: 'label label-info pull-left',             // Class for the <li> list items
+			listItemLabelClass: '',       // Class for the label text that appears in list items
+			removeClass: 'close'         // Class given to the "remove" link
+		}).parent().parent().children('label').append('<small> (<a href="#" class="super-select-all">select all</a>) </small>');
+		$(document).on('click', '.super-select-all', function() {
+			$('.super-select', $(this).parent().parent().parent()).children().attr('selected', 'selected').end().change();
+			$(this).parent().replaceWith('<small> (<a href="#" class="super-remove-all">remove all</a>) </small>');
+			return false;
+		});
+		$(document).on('click', '.super-remove-all', function() {
+			$('.super-select', $(this).parent().parent().parent()).children().removeAttr('selected').end().change();
+			$(this).parent().replaceWith('<small> (<a href="#" class="super-select-all">select all</a>) </small>');
+			return false;
+		});
+	} catch (e) {
+		console.log(e);
+	}
 
 });
 
