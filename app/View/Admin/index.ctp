@@ -166,7 +166,7 @@ if (empty($runUpdates)) : ?>
         
 		<?php if (CakePlugin::loaded('Forms')) : ?>  
         <div class="masonryBox dashboardBox tagForms tagPages">
-            <h3 class="title"><i class="glyphicon glyphicon-send"></i> <?php echo $this->Html->link('Custom Forms', array('plugin' => 'forms', 'controller' => 'forms', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="glyphicon glyphicon-send"></i> <?php echo $this->Html->link('Custom Forms <small>(old)</small>', array('plugin' => 'forms', 'controller' => 'forms', 'action' => 'index'), array('escape' => false)); ?></h3>
             <p>Create custom forms, so users can interact with your site how you want them to..</p>
         </div>
         <?php endif; ?>
