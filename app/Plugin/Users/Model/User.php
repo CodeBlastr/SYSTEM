@@ -331,6 +331,11 @@ class AppUser extends UsersAppModel {
  * @todo move all of the items in beforeSave() into _cleanData() and put $this->data = $this->_cleanData($this->data) here. Then we can get rid of the add() function all together.
  */
 	public function beforeSave($options = array()) {
+		// I don't know why __cleanAddData was moved so that it doesn't actually "Clean Add Data", but this is necessary!
+		if (isset($this->data[$this->alias]['username']) && strpos($this->data[$this->alias]['username'], '@') && empty($this->data[$this->alias]['email'])) {
+			$this->data[$this->alias]['email'] = $this->data[$this->alias]['username'];
+		}
+		
 		if (!empty($this->data[$this->alias]['password'])) {
 			App::uses('AuthComponent', 'Controller/Component');
 	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
@@ -339,7 +344,6 @@ class AppUser extends UsersAppModel {
         if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
 			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
 		}
-		
         return true;
     }
 	
@@ -374,10 +378,6 @@ class AppUser extends UsersAppModel {
  * @return array $data
  */
 	private function __afterCreation($data) {
-		// Send a Welcome Email
-		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-			$this->welcome($this->data[$this->alias]['username']);
-		}
 		// Send admin an email
 		if (defined('__USERS_NEW_REGISTRATION') && $notify = unserialize(__USERS_NEW_REGISTRATION)) {
 			if (!empty($notify['notify'])) {
@@ -394,6 +394,10 @@ and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/ed
 		// Initialize some fields
 		$data = $this->_cleanAddData($data);
 
+		// Send a Welcome Email (moved to after __cleanAddData because sometimes the email field is empty)
+		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
+			$this->welcome($this->data[$this->alias]['username']);
+		}
 		return $data;
 	}
 
@@ -762,7 +766,7 @@ and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/ed
 		if (!isset($data[$this->alias])) {
 			return $data;
 		}
-		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@')) {
+		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@') && empty($data[$this->alias]['email'])) {
 			$data[$this->alias]['email'] = $data[$this->alias]['username'];
 		}
 
@@ -1019,7 +1023,7 @@ and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/ed
 			//$this->set('name', $user['User']['full_name']);
 			//$this->set('key', $user['User']['forgot_key']);
 			// todo: temp change for error in swift mailer
-			$url =   Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $user['User']['forgot_key']), true);
+			$url =   Router::url(array('admin' => false, 'plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $user['User']['forgot_key']), true);
 			$message ="Dear {$user['User']['full_name']}, <br></br>
 Congratulations! You have created an account with us.<br><br>
 To complete the registration please activate your account by following the link below or by copying it to your browser:</br>{$url}<br></br>
