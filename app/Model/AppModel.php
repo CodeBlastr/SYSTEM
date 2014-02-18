@@ -397,14 +397,16 @@ class AppModel extends Model {
 	 */
 	
 	public function parsecsv($data=false, $deletefirst = true) {
-		//debug($this->data);exit;
+		
 		if(!isset($this->data[$this->alias]['uploadfile']) && !$data) {
 			throw new Exception('No Data Defined', 0);
 		}elseif(!isset($this->data[$this->alias]['uploadfile']) && $data) {
 			$this->data = $data;
 		}
-	
-		$this->deleteAll($deletefirst);
+		
+		if($deletefirst) {
+			$this->query("TRUNCATE {$this->table}");
+		}
 		// open the file
 		$handle = fopen($this->data[$this->alias]['uploadfile']['tmp_name'], "r");
 	
