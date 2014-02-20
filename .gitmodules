@@ -1,178 +1,135 @@
 [submodule "sites"]
 	path = sites
 	url = git@github.com:zuha/SITES.git
-	ignore = dirty
 [submodule "app/Plugin/Twitter"]
 	path = app/Plugin/Twitter
 	url = git@github.com:zuha/Twitter-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Tags"]
 	path = app/Plugin/Tags
 	url = git@github.com:zuha/Tags-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Forms"]
 	path = app/Plugin/Forms
 	url = git@github.com:zuha/Custom-Forms-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Products"]
 	path = app/Plugin/Products
 	url = git@github.com:zuha/Catalogs-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Drafts"]
 	path = app/Plugin/Drafts
 	url = git@github.com:zuha/Drafts-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Activities"]
 	path = app/Plugin/Activities
 	url = git@github.com:zuha/Activities-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Blogs"]
 	path = app/Plugin/Blogs
 	url = git@github.com:zuha/Blogs-MultiUser-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Categories"]
 	path = app/Plugin/Categories
 	url = git@github.com:zuha/Categories-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Comments"]
 	path = app/Plugin/Comments
 	url = git@github.com:zuha/Comments-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Coupons"]
 	path = app/Plugin/Coupons
 	url = git@github.com:zuha/Coupons-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Credits"]
 	path = app/Plugin/Credits
 	url = git@github.com:zuha/Store-Credits-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Invoices"]
 	path = app/Plugin/Invoices
 	url = git@github.com:zuha/Invoices-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Media"]
 	path = app/Plugin/Media
 	url = git@github.com:zuha/Media-Files-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Messages"]
 	path = app/Plugin/Messages
 	url = git@github.com:zuha/Messages-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Projects"]
 	path = app/Plugin/Projects
 	url = git@github.com:zuha/Project-Management-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Recaptcha"]
 	path = app/Plugin/Recaptcha
 	url = git@github.com:zuha/Recaptcha-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Searchable"]
 	path = app/Plugin/Searchable
 	url = git@github.com:zuha/Searches-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Tasks"]
 	path = app/Plugin/Tasks
 	url = git@github.com:zuha/Tasks-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Timesheets"]
 	path = app/Plugin/Timesheets
 	url = git@github.com:zuha/Timesheets-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Workflows"]
 	path = app/Plugin/Workflows
 	url = git@github.com:zuha/Workflows-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "vendors/swift_mailer"]
 	path = vendors/swift_mailer
 	url = git@github.com:zuha/swift-mailer.git
-	ignore = dirty
 [submodule "app/Plugin/Facebook"]
 	path = app/Plugin/Facebook
 	url = git@github.com:zuha/Facebook-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "vendors/OAuth"]
 	path = vendors/OAuth
 	url = git@github.com:zuha/OAuth-Consumer-Zuha-Cakephp.git
-	ignore = dirty
 [submodule "app/Plugin/Connections"]
 	path = app/Plugin/Connections
 	url = git@github.com:zuha/Connections-Zuha-Cakephp-Plugin.git
-	ignore = dirty
 [submodule "app/Plugin/Events"]
 	path = app/Plugin/Events
 	url = git@github.com:zuha/Events-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Transactions"]
 	path = app/Plugin/Transactions
 	url = git@github.com:zuha/Transactions-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Estimates"]
 	path = app/Plugin/Estimates
 	url = git@github.com:zuha/Estimates-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Ratings"]
 	path = app/Plugin/Ratings
 	url = git@github.com:zuha/Ratings-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Invites"]
 	path = app/Plugin/Invites
 	url = git@github.com:zuha/Invites-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Maps"]
 	path = app/Plugin/Maps
 	url = git@github.com:zuha/Maps-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Courses"]
 	path = app/Plugin/Courses
 	url = git@github.com:zuha/Courses-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Forums"]
 	path = app/Plugin/Forums
 	url = git@github.com:zuha/Forums-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Favorites"]
 	path = app/Plugin/Favorites
 	url = git@github.com:zuha/Favorites-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Feeds"]
 	path = app/Plugin/Feeds
 	url = git@github.com:zuha/Feeds-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Answers"]
 	path = app/Plugin/Answers
 	url = git@github.com:zuha/Answers-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Chats"]
 	path = app/Plugin/Chats
 	url = git@github.com:zuha/Chats-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Wizards"]
 	path = app/Plugin/Wizards
 	url = git@github.com:zuha/Wizards-Zuha-CakePHP-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Subscribers"]
 	path = app/Plugin/Subscribers
 	url = git@github.com:zuha/Subscribers-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Classifieds"]
 	path = app/Plugin/Classifieds
 	url = git@github.com:zuha/Classifieds-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Phonebooks"]
 	path = app/Plugin/Phonebooks
 	url = git@github.com:zuha/Phonebooks-Zuha-Cakephp-Plugin.git
 [submodule "app/Plugin/Properties"]
 	path = app/Plugin/Properties
 	url = git@github.com:zuha/Properties-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Auctions"]
 	path = app/Plugin/Auctions
 	url = git@github.com:zuha/Auctions-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Jobs"]
 	path = app/Plugin/Jobs
 	url = git@github.com:zuha/Jobs-Zuha-Cakephp-Plugin.git
-    ignore = dirty
 [submodule "app/Plugin/Campaigns"]
 	path = app/Plugin/Campaigns
 	url = git@github.com:zuha/Campaigns-Zuha-Cakephp-Plugin.git
