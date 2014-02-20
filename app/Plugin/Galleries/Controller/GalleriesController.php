@@ -2,18 +2,18 @@
 class GalleriesController extends GalleriesAppController {
 
 	public $name = 'Galleries';
-	
+
 	public $uses = 'Galleries.Gallery';
-	
+
 	public $allowedActions = array('thumb', 'mythumb');
 
 
 /**
  * Index for gallery.
- * 
+ *
  */
 	public function index() {
-		// paginate the results		
+		// paginate the results
 		$this->set('galleries', $this->paginate());
 		$this->set('displayName', 'name');
 		$this->set('displayDescription', 'description');
@@ -47,7 +47,7 @@ class GalleriesController extends GalleriesAppController {
 			$this->set(compact('gallery', 'model', 'foreignKey'));
 			return $gallery;
 		} else {
-			$this->Session->setFlash(__('Invalid gallery request.'));
+			$this->Session->setFlash(__('Invalid gallery request.'), 'flash_danger');
 			$gallery = null;
 		}
 	}
@@ -57,13 +57,13 @@ class GalleriesController extends GalleriesAppController {
 		if (!empty($model) && !empty($foreignKey)) {
 			$gallery = $this->Gallery->find('first', array(
 				'conditions' => array(
-					'Gallery.model' => $model, 
+					'Gallery.model' => $model,
 					'Gallery.foreign_key' => $foreignKey,
 					),
 				'contain' => array(
 					'GalleryThumb',
 					),
-				));	
+				));
 		}
 		$this->set(compact('gallery'));
 		// This is here, because we have an element doing a request action on it.
@@ -76,20 +76,20 @@ class GalleriesController extends GalleriesAppController {
 		if (!empty($this->request->data)) {
 			try {
 				$this->Gallery->GalleryImage->add($this->request->data, 'filename');
-				$this->Session->setFlash(__('The Gallery has been saved. You can add more images now.'));
+				$this->Session->setFlash(__('The Gallery has been saved. You can add more images now.'), 'flash_success');
 				$gallery = $this->Gallery->find('first', array('conditions' => array('Gallery.id' => $this->Gallery->id)));
-				$this->redirect(array('action' => 'edit', $gallery['Gallery']['model'], $gallery['Gallery']['foreign_key']));			
+				$this->redirect(array('action' => 'edit', $gallery['Gallery']['model'], $gallery['Gallery']['foreign_key']));
 			} catch (Exception $e) {
-				$this->Session->setFlash($e->getMessage());
+				$this->Session->setFlash($e->getMessage(), 'flash_warning');
 				$this->redirect($this->referer());
 			}
 		}
-		$types = $this->Gallery->types(); 
+		$types = $this->Gallery->types();
 		$model = !empty($model) ? $model : 'Gallery';
 		$foreignKey = !empty($foreignKey) ? $foreignKey : null;
 		$this->set(compact('model', 'foreignKey', 'types'));
 	}
-	
+
 
 /**
  * Edit a Gallery
@@ -98,17 +98,17 @@ class GalleriesController extends GalleriesAppController {
  * @todo		Convert galleries to slugs or aliases, for easier linking into edit and views.
  */
 	public function edit($model = null, $foreignKey = null) {
-		if (!empty($this->request->data)) {			
+		if (!empty($this->request->data)) {
 			if ($this->Gallery->GalleryImage->add($this->request->data, 'filename')) {
 				// if this comes back tell us why!  GalleryImage::add() should do Gallery::save() already. So what are you trying to save here.
 				// $this->Gallery->save($this->request->data);
-				$this->Session->setFlash(__('Saved'));
+				$this->Session->setFlash(__('Saved'), 'flash_success');
 				$this->redirect($this->referer());
 			} else {
-				$this->Session->setFlash(__('Could not be saved. Please, try again.'));
+				$this->Session->setFlash(__('Could not be saved. Please, try again.'), 'flash_warning');
 			}
-		} 
-		
+		}
+
 		if (!empty($model) && !empty($foreignKey)) {
 			$this->request->data = $this->Gallery->find('first', array(
 				'conditions' => array(
@@ -122,36 +122,36 @@ class GalleriesController extends GalleriesAppController {
 					)
 				));
 		} else {
-			$this->Session->setFlash(__('Invalid Gallery', true));
+			$this->Session->setFlash(__('Invalid Gallery', true), 'flash_danger');
 			$this->redirect($this->referer());
 		}
-		
+
 		$types = $this->Gallery->types();
 		$conversionTypes = $this->Gallery->conversionTypes();
 		$this->set(compact('model', 'foreignKey', 'gallery', 'types', 'conversionTypes'));
 		$this->set('page_title_for_layout', __('Edit Gallery <small>w/ preview</small>'));
 		$this->set('title_for_layout', __('Edit Gallery'));
 	}
-	
-	
-	
+
+
+
 	function delete($id = null) {
 		$this->__delete('Gallery', $id);
-	}	
-    
+	}
+
 
 /**
  * MyThumb method
- * 
- * Similiar to edit(), but only the creator can edit  
+ *
+ * Similiar to edit(), but only the creator can edit
  *
  * @todo		Convert galleries to slugs or aliases, for easier linking into edit and views.
  */
 	public function mythumb() {
-		
-		if (!empty($this->request->data['Gallery']['model']) && !empty($this->request->data['Gallery']['foreign_key'])) {	
+
+		if (!empty($this->request->data['Gallery']['model']) && !empty($this->request->data['Gallery']['foreign_key'])) {
             $continue = true;
-            // check for gallery and if it exists 
+            // check for gallery and if it exists
             $gallery = $this->Gallery->find('first', array(
                 'conditions' => array(
                     'Gallery.model' => $this->request->data['Gallery']['model'],
@@ -162,20 +162,20 @@ class GalleriesController extends GalleriesAppController {
                 $this->request->data['Galery']['id'] = $gallery['Gallery']['id'];
                 $continue = false;
             }
-            
+
 			if ($continue === true && $this->Gallery->GalleryImage->add($this->request->data, 'filename')) {
-				$this->Session->setFlash(__('Saved'));
+				$this->Session->setFlash(__('Saved'), 'flash_success');
 				$this->redirect($this->referer());
-			} 
-		} 
-		$this->Session->setFlash(__('Could not be saved. Please, try again.'));
+			}
+		}
+		$this->Session->setFlash(__('Could not be saved. Please, try again.'), 'flash_warning');
 		$this->redirect($this->referer());
 	}
-	
-	
+
+
 /**
  * Changes the thumbnail image used for a particular gallery.
- * @param {int} 
+ * @param {int}
  * @param {int}
  */
 	public function make_thumb($galleryId = null, $galleryImageId = null) {
@@ -183,15 +183,15 @@ class GalleriesController extends GalleriesAppController {
 			$data['Gallery']['id'] = $galleryId;
 			$data['GalleryImage']['id'] = $galleryImageId;
 			$this->Gallery->makeThumb($data);
-			$this->Session->setFlash(__d('galleries', 'Successful Gallery Thumb Update.', true));
-			$this->redirect($this->referer());				
+			$this->Session->setFlash(__d('galleries', 'Successful Gallery Thumb Update.', true), 'flash_success');
+			$this->redirect($this->referer());
 		} catch (Exception $e) {
-			$this->Session->setFlash($e->getMessage());
+			$this->Session->setFlash($e->getMessage(), 'flash_warning');
 			$this->redirect($this->referer());
 		}
 	}
-	
-	
+
+
 /**
  * Area to manage galleries and gallery settings.
  */
