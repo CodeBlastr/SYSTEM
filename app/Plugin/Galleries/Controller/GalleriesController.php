@@ -159,7 +159,7 @@ class GalleriesController extends GalleriesAppController {
                     )
                 ));
             if (!empty($gallery) && $gallery['Gallery']['creator_id'] != $this->userId) {
-                $this->request->data['Galery']['id'] = $gallery['Gallery']['id'];
+                $this->request->data['Gallery']['id'] = $gallery['Gallery']['id'];
                 $continue = false;
             }
 
