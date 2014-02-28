@@ -25,8 +25,8 @@ class AdminController extends AppController {
 
 /**
  * Name
- * 
- * @var 
+ *
+ * @var
  */
 	public $name = 'Admin';
 
@@ -36,10 +36,10 @@ class AdminController extends AppController {
  * @var string
  */
     public $uses = array();
-	
+
 /**
  * Index method
- * 
+ *
  * @param void
  * @return void
  */
@@ -56,7 +56,7 @@ class AdminController extends AppController {
 		}
 		if (!empty($this->request->data['Update']['index'])) {
 			$this->view = 'index_upgrade';
-		} 
+		}
 		if (!empty($this->request->data['Alias']['update'])) {
 			App::uses('Alias', 'Model');
 			$Alias = new Alias;
@@ -65,12 +65,12 @@ class AdminController extends AppController {
 		}
 		$complete = $this->Session->read('Updates.complete');
 		if (!empty($complete)) {
-			$this->Session->delete('Updates'); 
+			$this->Session->delete('Updates');
 			$this->Session->setFlash(__('Update check complete!!!'), 'flash_success');
 		}
 		$this->set('page_title_for_layout', 'Admin Dashboard');
 		$this->layout = 'default';
-		
+
 		// this is here so we can show "Add Post" links foreach Blog on the dashboard
 		if (CakePlugin::loaded('Blogs')) {
 			App::uses('Blog', 'Blogs.Model');
@@ -78,7 +78,7 @@ class AdminController extends AppController {
 			$this->set('blogs', $Blog->find('all'));
 		}
 	}
-	
+
 /**
  * Run updates
  *
@@ -89,13 +89,13 @@ class AdminController extends AppController {
 		$this->_tempSettings();
 		$allTables = $this->_tables();  // all tables and their plugins
 		$lastTableWithPlugin = $this->Session->read('Updates.last'); // ex. array('blog_posts' => 'Blogs');
-		$lastTable = @array_pop(array_keys($this->Session->read('Updates.last'))); // check the session for the last TABLE run  
+		$lastTable = @array_pop(array_keys($this->Session->read('Updates.last'))); // check the session for the last TABLE run
 		$nextTable = key(array_slice($allTables, array_search($lastTable, array_keys($allTables)) + 1));
 		$nextPlugin = !empty($nextTable) ? $allTables[$nextTable] : null;
         $keysOfAllTables = array_keys($allTables);
-		$endTable = array_pop($keysOfAllTables); // check the session for the last TABLE run  
-		
-		// Turn on to debug 
+		$endTable = array_pop($keysOfAllTables); // check the session for the last TABLE run
+
+		// Turn on to debug
 		// debug($lastTable);
 		// debug($nextTable);
 		// debug($nextPlugin); // if false, means its not a plugin
@@ -104,8 +104,8 @@ class AdminController extends AppController {
 		// debug($allTables);
 		// debug($this->Session->read());
 		// break;
-		
-		if (!empty($nextPlugin) && !CakePlugin::loaded($nextPlugin)) { 
+
+		if (!empty($nextPlugin) && !CakePlugin::loaded($nextPlugin)) {
 			// plugin is not loaded so downgrade
 			$last = !empty($lastTableWithPlugin) ? array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) : $this->_downgrade($nextTable, $lastTable);
 			$this->Session->write('Updates.last', $last);
@@ -131,12 +131,12 @@ class AdminController extends AppController {
 			} else {
 				$update = $this->_runAppUpate($nextTable); // app update
 			}
-			$this->Session->write('Updates.last', $update); 
+			$this->Session->write('Updates.last', $update);
 			$this->_tempSettings(false);
-			return true;			
+			return true;
 		} elseif (!empty($lastTable) && empty($nextPlugin)) {
 			// NOT a plugin run the core update and write the session using the table name and status
-			$this->Session->write('Updates.last', array_merge($lastTableWithPlugin, $this->_runAppUpate($nextTable))); 
+			$this->Session->write('Updates.last', array_merge($lastTableWithPlugin, $this->_runAppUpate($nextTable)));
 			$this->_tempSettings(false);
 			return true;
 		} elseif (!empty($lastTable) && !empty($nextPlugin)) {
@@ -151,38 +151,38 @@ class AdminController extends AppController {
 			return false; // nothing to do, should never reach this point
 		}
 	}
-	
+
 /**
- * Run app update 
- * 
+ * Run app update
+ *
  */
  	protected function _runAppUpate($table = null) {
 		$this->Schema = new CakeSchema(array(
-			'path' => null, 
-			'file' => false, 
+			'path' => null,
+			'file' => false,
 			'connection' => 'default'
 			));
 		$New = $this->Schema->load();
 		return $this->_update($New, $table);
 	}
-	
+
 /**
- * Run plugin update 
- * 
+ * Run plugin update
+ *
  */
  	protected function _runPluginUpate($plugin, $table = null) {
 		$this->Schema = new CakeSchema(array(
-			'name' => $plugin, 
-			'path' => null, 
-			'file' => false, 
-			'connection' => 'default', 
+			'name' => $plugin,
+			'path' => null,
+			'file' => false,
+			'connection' => 'default',
 			'plugin' => $plugin
-			));				
+			));
 		$New = $this->Schema->load();
 		return $this->_update($New, $table);
 	}
-	
-	
+
+
 /**
  * Downgrade table method
  *
@@ -197,14 +197,14 @@ class AdminController extends AppController {
 		$db = ConnectionManager::getDataSource('default');
 		$db->cacheSources = false;
 		$tableCheck = $db->query('SHOW TABLES LIKE "' . $table . '";');
-		
+
 		if (!empty($tableCheck)) {
 			try {
-				$db->execute('DROP TABLE `zbk_' . $table . '`;'); 
+				$db->execute('DROP TABLE `zbk_' . $table . '`;');
 			} catch (PDOException $e) {
 				// do nothing, just tried deleting a table that doesn't exist
-			} 
-			
+			}
+
 			if ($db->query('SELECT * FROM `' . $table . '`;')) {
 				// backup a table that we're about to delete
 				try {
@@ -213,12 +213,12 @@ class AdminController extends AppController {
 				} catch (PDOException $e) {
 					throw new Exception($table . ': ' . $e->getMessage());
 				}
-			} 
-			
+			}
+
 			try {
 				$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;'); // back it up first
 				$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
-				$db->query('DROP TABLE `' . $table . '`;'); 
+				$db->query('DROP TABLE `' . $table . '`;');
 				// need the last table, because the table just removed will no longer exist in the tables array
 				return array($lastTable => __('AND %s removed', $table));
 			} catch (PDOException $e) {
@@ -229,8 +229,8 @@ class AdminController extends AppController {
 			return array($table => __('AND %s was already gone', $table));
 		}
 	}
-	
-	
+
+
 /**
  * Update method
  *
@@ -250,7 +250,7 @@ class AdminController extends AppController {
 		if (isset($this->params['force'])) {
 			$options['models'] = false;
 		}
-		
+
 		try {
 			$Old = $this->Schema->read($options);
 		} catch (Exception $e) {
@@ -268,7 +268,7 @@ class AdminController extends AppController {
 			}
 		}
 		$compare = $this->Schema->compare($Old, $Schema);
-		
+
 		$contents = array();
 
 		if (empty($table)) {
@@ -288,7 +288,7 @@ class AdminController extends AppController {
 		if (empty($contents)) {
 			return array($table => 'up to date'); // its already up to date we
 		}
-		
+
 		$i = 0;
 		foreach($contents as $key => $value) {
 			$out[$i]['table'] = $key;
@@ -298,7 +298,7 @@ class AdminController extends AppController {
 			$i = $i + 1;
 		}
 		//debug($out);  turn on to see queries as they run
-		
+
 		if (!empty($this->request->data['Upgrade']['all'])) {
 			try {
 				return $this->_run($contents, 'update', $Schema);
@@ -307,13 +307,13 @@ class AdminController extends AppController {
 				debug($contents);
 				debug($compare);
 				throw new Exception('You need to run this update manually.  Probably an unrecognized column type, like enum.', 1);
-				
+
 			}
 		}
 		return $out;
 	}
-	
-	
+
+
 
 /**
  * Runs sql from _create() or _update()
@@ -330,7 +330,7 @@ class AdminController extends AppController {
 			// debug($Schema);
 			throw new Exception(__('Sql could not be run'));
 		}
-		
+
 		Configure::write('debug', 2);
 		$db = ConnectionManager::getDataSource($this->Schema->connection);
 		if (is_string($contents)) {
@@ -353,14 +353,14 @@ class AdminController extends AppController {
 					return false;
 				}
 				$error = null;
-				
+
 				try {
 					$db->execute($sql);
 				} catch (PDOException $e) {
 					$error = $table . ': ' . $e->getMessage();
 				}
 				$Schema->after(array($event => $table, 'errors' => $error));
-				
+
 				if (!empty($error)) {
 					throw new Exception($error);
 				} else {
@@ -369,11 +369,11 @@ class AdminController extends AppController {
 			}
 		}
 	}
-	
-	
+
+
 /**
  * Tables
- * 
+ *
  * A list of all tables, as keys with their corresponding plugin as values
  *
  * @access protected
@@ -392,29 +392,29 @@ class AdminController extends AppController {
 		}
 		return $tables;
 	}
-	
-/** 
+
+/**
  * Temp settings
- * 
+ *
  * turns on debug and disables cache, then sets them back to what they were previously
  *
  */
-	protected function _tempSettings($start = true) {		
+	protected function _tempSettings($start = true) {
 		if (!empty($start)) {
 			$this->debug = Configure::read('debug');
 			$this->cacheDisable = Configure::read('Cache.disable');
 			Configure::write('debug', 2);
 			Configure::write('Cache.disable', true);
 		} else {
-			Configure::write('Cache.disable', $this->cacheDisable);	
-			Configure::write('debug', $this->debug);	
+			Configure::write('Cache.disable', $this->cacheDisable);
+			Configure::write('debug', $this->debug);
 		}
 	}
-	
-	
+
+
 /**
  * Upgrade
- * 
+ *
  * Upgrades the database to the latest version.
  *
  * @todo 	 Looks like this upgrade function and the other(s) need to be made into a plugin or core behavior
@@ -422,7 +422,7 @@ class AdminController extends AppController {
 	protected function _upgrade() {
 		$db = ConnectionManager::getDataSource('default');
 		$tables = $db->listSources();
-		
+
 		// left as an example, but we don't use that setting anymore, so not much use
 		// if (defined('__SYSTEM_ZUHA_DB_VERSION') && __SYSTEM_ZUHA_DB_VERSION < 0.0192) {
 			// // eliminate used table duplicates so that the index can be added
@@ -435,9 +435,9 @@ class AdminController extends AppController {
 					// }
 				// }
 			// }
-		// }	
+		// }
 	}
-	
+
 	protected function _saveFavicon() {
 		$upload = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . WEBROOT_DIR . DS . 'favicon.ico';
 		if(move_uploaded_file($this->request->data['Admin']['icon']['tmp_name'], $upload)){
@@ -445,7 +445,7 @@ class AdminController extends AppController {
 			!empty($this->request->data['Override']) ? $this->redirect('/admin') : null; // not needed, but we get here through /install/build so this is a quick and dirty fix
 		}
 	}
-	
+
 	protected function _exportSite() {
 		$tmpdir = TMP . 'backup';
 		$plugins = CakePlugin::loaded();
@@ -459,10 +459,10 @@ class AdminController extends AppController {
 		$includes['sites'] = false;
 		$includes['vendors'] = false;
 		$includes['sites.default'] = false;
-		
+
 		$filename = strtolower(str_replace(' ', '_', __SYSTEM_SITE_NAME));
-		
-		
+
+
 		try {
 			//Create backup directory
 			mkdir($tmpdir, 0777);
@@ -481,26 +481,26 @@ class AdminController extends AppController {
 		}catch (Exception $e) {
 			$this->Session->setFlash('Error: '.$e->getMessage(), 'flash_danger');
 		}
-		
+
 		exec('cd '.$tmpdir.DS.$sourcefolder.';zip -r '.$tmpdir.DS.$filename.'.zip *');
-		
+
 		try {
 			$this->returnFile($tmpdir.DS.$filename.'.zip', $filename.'.zip', 'zip');
 		}catch (Exception $e) {
 			$this->Session->setFlash('Error: '.$e->getMessage(), 'flash_danger');
 		}
-		
+
 		//remove the backup folder
 		exec('rm -R '.$tmpdir);
-		
+
 	}
-	
+
 	/**
 	 * Recursive Copy method
-	 * 
+	 *
 	 * Copys and entire directory tree
 	 * Allow you to pass an array of includes and excludes
-	 * 
+	 *
 	 * ex: $includes = array(
 	 * 		'*' => true //This makes all files not specified true
 	 * 		'path1' => true
@@ -508,14 +508,14 @@ class AdminController extends AppController {
 	 * 		'path3' => array(
 	 * 			'subpath1' => true,
 	 * 			'subpath2' => false
-	 * 		) 
-	 * 
+	 * 		)
+	 *
 	 * @param unknown $source
 	 * @param unknown $dest
 	 * @param string $includes
 	 * @throws Exception
 	 */
-	
+
 	static protected function copyr($source, $dest, $includes = false)
 	{
 		if(is_array($includes)) {
@@ -537,7 +537,7 @@ class AdminController extends AppController {
 					}else {
 						$check = $allfiles;
 					}
-					
+
 					if($check) {
 						if(is_dir($source.DS.$file)){
 							if($file[0] != '.') {
@@ -565,25 +565,25 @@ class AdminController extends AppController {
 			copy($source, $dest);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Funtion to load a file and send it to the browser.
-	 * 
+	 *
 	 * @todo This should be moved to a more global scope
-	 * 
-	 * 
+	 *
+	 *
 	 * @param string $file - Filepath
 	 * @param string $name - Name of output file
 	 * @param string $mime_type - Mime Type
 	 * @throws Exception
 	 */
-	
+
 	private function returnFile($file, $name, $mime_type = '') {
 		/*
 		 * This function takes a path to a file to output ($file), the filename that the browser will see ($name) and the MIME type of the file ($mime_type, optional). If you want to do something on download abort/finish, register_shutdown_function('function_name');
 		 */
-		 
+
 		 $i = 0;
 		 while (!file_exists($file)) {
 		 	++$i;
@@ -686,5 +686,5 @@ class AdminController extends AppController {
 			die('Error - can not open file.');
 		}
 	}
-	
+
 }
