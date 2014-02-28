@@ -145,9 +145,6 @@ class AdminController extends AppController {
 			$this->_tempSettings(false);
 			return true;
 		} else {
-			break;
-			$this->_tempSettings(false);
-			break;
 			return false; // nothing to do, should never reach this point
 		}
 	}
@@ -264,7 +261,7 @@ class AdminController extends AppController {
 			} else {
 				debug('Hopefully we do not reach this spot.');
 				debug($e->getMessage());
-				break;
+				exit;
 			}
 		}
 		$compare = $this->Schema->compare($Old, $Schema);
@@ -289,6 +286,7 @@ class AdminController extends AppController {
 			return array($table => 'up to date'); // its already up to date we
 		}
 
+		$out = array();
 		$i = 0;
 		foreach($contents as $key => $value) {
 			$out[$i]['table'] = $key;
