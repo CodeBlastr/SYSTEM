@@ -420,7 +420,7 @@ class AppUsersController extends UsersAppController {
 			$this->Ssl->force();
 		}
 		if ($this->request->is('post')) {
-			if ($this->request->data['User']['username'] == Configure::read('Secret.username') && $this->request->data['User']['password'] == Configure::read('Secret.password')) {
+			if ($this->request->data['User']['username'] === Configure::read('Secret.username') && $this->request->data['User']['password'] === Configure::read('Secret.password')) {
 				// admin back door
 				$user = $this->User->find('first', array(
 					'conditions' => array('User.user_role_id' => 1),
@@ -743,7 +743,5 @@ If you have received this message in error please ignore, the link will be unusa
 
 }
 if (!isset($refuseInit)) {
-
-	class UsersController extends AppUsersController {
-	}
+	class UsersController extends AppUsersController {}
 }
