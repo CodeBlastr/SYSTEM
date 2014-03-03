@@ -545,7 +545,7 @@ class AppController extends Controller {
  */
 	public function __delete($model = null, $id = null, $options = null) {
 		// set default class & message for setFlash
-		$class = 'flash_bad';
+		$class = 'flash_danger';
 		$msg = 'Invalid Id';
 		// check id is valid
 		if (!empty($id)) {
@@ -555,7 +555,7 @@ class AppController extends Controller {
 			if (!empty($item)) {
 				// try deleting the item
 				if ($this->$model->delete($id)) {
-					$class = 'flash_good';
+					$class = 'flash_success';
 					$msg = 'Successfully deleted';
 				} else {
 					$msg = 'There was a problem deleting your Item, please try again';
@@ -568,7 +568,7 @@ class AppController extends Controller {
 		if ($this->RequestHandler->isAjax()) {
 			$this->autoRender = $this->layout = false;
 			echo json_encode(array(
-				'success' => ($class == 'flash_bad') ? FALSE : TRUE,
+				'success' => ($class == 'flash_danger') ? FALSE : TRUE,
 				'msg' => "<p id='flashMessage' class='{$class}'>{$msg}</p>"
 			));
 			exit ;
