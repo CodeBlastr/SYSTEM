@@ -474,8 +474,7 @@ class AppController extends Controller {
 			$options = $this->_getPaginatorVars($object, $containField);
 			if (!empty($options['fieldName'])) {
 				if (count($contains > 1)) {
-					// need an OR here.. but there is already a Webpage.parent_id = 0 OR ??
-					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
+					$this->paginate['conditions']['OR'][][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
 				} else {
 					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
 				}
