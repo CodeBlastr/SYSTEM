@@ -29,9 +29,22 @@
 						<?php echo strip_tags($webpage['Webpage']['content']); ?>
 					</p>
 					<p>
+						<?php
+						switch ($webpage['Webpage']['type']) {
+							case 'section':
+								$typeClass = 'info';
+								break;
+							case 'content':
+								$typeClass = 'success';
+								break;
+							default:
+								$typeClass = 'primary';
+								break;
+						}
+						?>
 						<span class="label label-primary"><span class="glyphicon glyphicon-qrcode"></span> <?php echo $webpage['Webpage']['id']; ?></span>
-						<span class="label label-primary"><span class="glyphicon glyphicon-th"></span> <?php echo $webpage['Webpage']['type']; ?></span>
-						<span class="label label-primary"><span class="glyphicon glyphicon-time"></span> <?php echo ZuhaInflector::datify($webpage['Webpage']['created']); ?></span>
+						<span class="label label-<?php echo $typeClass ?>"><span class="glyphicon glyphicon-th"></span> <?php echo $webpage['Webpage']['type']; ?></span>
+						<span class="label label-default"><span class="glyphicon glyphicon-time"></span> <?php echo ZuhaInflector::datify($webpage['Webpage']['created']); ?></span>
 					</p>
 				</div>
 			</div>
