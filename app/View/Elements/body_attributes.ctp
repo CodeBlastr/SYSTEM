@@ -3,7 +3,7 @@ $conflicts = array('media');
 $controller = in_array($this->request->params['controller'], $conflicts) ? $this->request->params['controller'] . 'Controller' : $this->request->params['controller'];
 $access = $this->Session->read('Auth.User') ? __(' authorized') : __(' restricted');
 $action = $this->request->params['action'];
-$role = __('userRole%s', $userRoleId);
+$role = __('userRole%s', $__userRoleId);
 $template = !empty($templateId) ? str_replace('.ctp', '', $templateId) : 'default-template';
 $template = strpos($template, '-template') ? $template : __('%s-template', $template);
 
