@@ -86,8 +86,8 @@ class AppWebpagesController extends WebpagesAppController {
  */
     protected function _indexContent($type) {
 		$this->paginate['conditions']['Webpage.type'] = $type;
-		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
-		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
+		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = 0;
+		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = null;
 		$this->paginate['order']['Webpage.parent_id'] = 'DESC';
 		//$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
 		$this->paginate['contain'][] = 'Child';
