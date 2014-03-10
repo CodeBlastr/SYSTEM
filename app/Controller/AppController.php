@@ -743,7 +743,7 @@ class AppController extends Controller {
 			$i = 0;
 			foreach ($data['urls'] as $url) {
 				$urlString = str_replace('/', '\/', trim($url));
-				$urlRegEx = '/' . str_replace('*', '(.*)', $urlString) . '/';
+				$urlRegEx = '/' . str_replace('*', '(.*)', $urlString) . '\//';
 				$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/' . substr($urlRegEx, 3) : $urlRegEx;
 				$url = $this->request->action == 'index' ? $this->request->plugin . '/' . $this->request->controller . '/' . $this->request->action . '/' : $this->request->url . '/';
 				$urlCompare = strpos($url, '/') === 0 ? substr($url, 1) : $url;
@@ -759,7 +759,7 @@ class AppController extends Controller {
 			return null;
 		}
 	}
-
+	
 /**
  * Loads components dynamically using both system wide, and per controller
  * loading abilities.
