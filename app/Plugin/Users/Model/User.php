@@ -1054,6 +1054,7 @@ Thank you for registering with us and welcome to the community.";
 		$data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
 		$data['User']['user_role_id'] = $user['User']['user_role_id'];
 		$this->Behaviors->detach('Translate');
+		$this->autoLogin = false;
 		if ($this->save($data, array('validate' => false))) {
 			return $data['User']['forgot_key'];
 		} else {
