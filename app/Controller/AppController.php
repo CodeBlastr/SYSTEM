@@ -743,11 +743,15 @@ class AppController extends Controller {
 			$i = 0;
 			foreach ($data['urls'] as $url) {
 				$urlString = str_replace('/', '\/', trim($url));
-				$urlRegEx = '/' . str_replace('*', '(.*)', $urlString) . '\//';
+				if (substr($urlString, -1) !== '/') {
+					$urlString . '/';
+				}
+				$urlRegEx = '/' . str_replace('*', '(.*)', $urlString) . '/';
 				$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/' . substr($urlRegEx, 3) : $urlRegEx;
 				$url = $this->request->action == 'index' ? $this->request->plugin . '/' . $this->request->controller . '/' . $this->request->action . '/' : $this->request->url . '/';
 				$urlCompare = strpos($url, '/') === 0 ? substr($url, 1) : $url;
-				if (preg_match($urlRegEx, $urlCompare)) {
+				$urlCompare = str_replace("//", "/", $urlCompare);
+				if ($urlRegEx !== '//' && preg_match($urlRegEx, $urlCompare)) {
 					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateName'];
 				}
 				$i++;
