@@ -1,5 +1,6 @@
 CKEDITOR.editorConfig = function( config ) {
-    config.extraPlugins = 'mediaembed,oembed,sharelink,confighelper,colorbutton,panelbutton,justify,pagebreak,font';
+    config.extraPlugins = 'oembed,sharelink,confighelper,colorbutton,panelbutton,justify,pagebreak,font';
+    //config.extraPlugins = 'mediaembed,oembed,sharelink,confighelper,colorbutton,panelbutton,justify,pagebreak,font';
 
     config.toolbar = [
         {
@@ -8,7 +9,8 @@ CKEDITOR.editorConfig = function( config ) {
         },
         {
             name: 'default2',
-            items: ['Image','Link','Unlink','MediaEmbed']
+            items: ['Image','Link','Unlink','oembed']
+            //items: ['Image','Link','Unlink','MediaEmbed']
         },
             '/',
         {

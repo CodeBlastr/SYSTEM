@@ -2,11 +2,12 @@
 App::uses('WebpagesAppModel', 'Webpages.Model');
 /** 
  * CMS Webpage Model.
- * Handles the cms data 
- *
- * @todo		Need to add custom validation for webpage types.  (like is_default and template_urls can't both have values)
+ * Handles the cms data
+ * 
+ * @property Webpage Webpage
+ * @todo Need to add custom validation for webpage types.  (like is_default and template_urls can't both have values)
  */
-class Webpage extends WebpagesAppModel {
+class AppWebpage extends WebpagesAppModel {
 	
 /**
  * Name
@@ -1157,4 +1158,7 @@ class Webpage extends WebpagesAppModel {
 	}
 
 	
+}
+if (!isset($refuseInit)) {
+	class Webpage extends AppWebpage {}
 }
