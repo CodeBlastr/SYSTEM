@@ -31,7 +31,7 @@ class Setting extends AppModel {
 	public $settings = array();
 
 /**
- * 
+ *
  * @param type $id
  * @param type $table
  * @param type $ds
@@ -193,7 +193,7 @@ class Setting extends AppModel {
 					'description' => 'Defines whether or not guest checkout is enabled.' . PHP_EOL . PHP_EOL . 'Default Value : ' . PHP_EOL . 'false',
 				),
 				array(
-					'name' => 'RECEIPT_EMAIL', 
+					'name' => 'RECEIPT_EMAIL',
 					'description' => 'Sets the email content for a transaction receipt.' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'subject = "Some Subject"' . PHP_EOL . 'body = "Some body of the email"',
 				)
 			),
@@ -225,6 +225,13 @@ class Setting extends AppModel {
 				array(
 					'name' => 'LOGOUT_REDIRECT_URL',
 					'description' => 'Defines the url users go to after logging out. ' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . '/goodbye/',
+				),
+				array(
+					'name' => 'REGISTRATION_HELLO',
+					'description' => 'When set, the site will send an email notification to new users. '
+					. PHP_EOL . 'Configure the email by creating a Webpage named: hello-new-user'
+					. PHP_EOL . 'The Webpage has access to a User array.'
+					. PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'anything (If this setting exists at all, then verification is required.)',
 				),
 				array(
 					'name' => 'REGISTRATION_EMAIL_VERIFICATION',
@@ -403,7 +410,7 @@ class Setting extends AppModel {
 	}
 
 /**
- * 
+ *
  * @param type $results
  * @param type $primary
  * @return type
@@ -426,7 +433,7 @@ class Setting extends AppModel {
  * $data['Setting']['type'] = Plugin
  * $data['Setting']['name'] = RATINGS_SETTINGS
  * $data['Setting']['value'] = some string
- * 
+ *
  * @param {data}    An array contain the setting data
  * @param {bool}    If set to true, it will add to the value instead of replace.
  * @return {bool}    True if the settings were saved and the file was created.
@@ -473,7 +480,7 @@ class Setting extends AppModel {
 
 /**
  * We need to make sure that ini sections appear after all straight values in the ini file
- * 
+ *
  * @param array $settings
  * @return string
  */
@@ -537,7 +544,7 @@ class Setting extends AppModel {
  * @param {array}    An array of Setting data
  */
 	private function _cleanSettingData($data, $append = false) {
-		
+
 		if (is_array($data['Setting']['value'])) {
 			$settingValue = '';
 			foreach ($data['Setting']['value'] as $key => $value) {
@@ -572,7 +579,7 @@ class Setting extends AppModel {
 			$data = $data['Setting']; // because we are using saveAll
 		}
 
-		// @todo break these out into individual setting function in a foreach loop that will 
+		// @todo break these out into individual setting function in a foreach loop that will
 		// handle many and single records to save
 		if (!empty($data['Setting']['name']) && !empty($data['Setting']['type'])) {
 			// see if the setting already exists
@@ -592,9 +599,9 @@ class Setting extends AppModel {
 			}
 		}
 
-		// some values need to be encrypted.  We do that here (@todo put this in its own two 
-		// functions.  One for "encode" function, and one for which settings should be encoded, 
-		// so that we can specify all settings which need encryption, and reuse this instead 
+		// some values need to be encrypted.  We do that here (@todo put this in its own two
+		// functions.  One for "encode" function, and one for which settings should be encoded,
+		// so that we can specify all settings which need encryption, and reuse this instead
 		// of the if (xxxx setting) thing.  And make the corresponding decode() function somehwere as well.
 		if (!empty($data['Setting']['name']) && $data['Setting']['name'] == 'SMTP' && !parse_ini_string($data['Setting']['name'])) {
 			$data['Setting']['value'] = 'smtp = "' . base64_encode(Security::cipher($data['Setting']['value'], Configure::read('Security.salt'))) . '"';
@@ -679,9 +686,9 @@ class Setting extends AppModel {
 	}
 
 /**
- * @todo  Ha, convoluted enough?  This like all the settings need to be available if and only if the plugin is loaded, 
- * and then they should get the available properties using a standardized callback to the individual plugin.   
- * Maybe something like, Galleries.Config.settings... 
+ * @todo  Ha, convoluted enough?  This like all the settings need to be available if and only if the plugin is loaded,
+ * and then they should get the available properties using a standardized callback to the individual plugin.
+ * Maybe something like, Galleries.Config.settings...
  * Configure::write('SETTINGS', array('galleryType' =>  array('description' => 'xyz', 'formInput' => array('type' => 'select', etc.)));
  * @todo ^^^^^^^^^^^ DO THIS BEFORE YOU PUT TOO MANY SETTINGS HERE ^^^^^^^^^^^^^
  */
