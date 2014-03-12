@@ -381,7 +381,7 @@ class AppUser extends UsersAppModel {
 		// Send admin an email
 		if (defined('__USERS_NEW_REGISTRATION') && $notify = unserialize(__USERS_NEW_REGISTRATION)) {
 			if (!empty($notify['notify'])) {
-				$message = 'A new user has been created. <br /><br /> You can view the user user 
+				$message = 'A new user has been created. <br /><br /> You can view the user 
 here http://' . $_SERVER['HTTP_HOST'] . '/users/users/view/' . $this->id  . '<br /><br />
 and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/edit/' . $this->id;
 				if ($this->__sendMail($notify['notify'], 'New User Registration', $message)) {
