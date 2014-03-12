@@ -8,19 +8,19 @@ App::uses('UsersAppModel', 'Users.Model');
 class AppUser extends UsersAppModel {
 
 	public $name = 'User';
-	
+
 	public $displayField = 'full_name';
-	
+
 	public $actsAs = array(
 		'Acl' => array('type' => 'requester'),
 		'Users.Usable' => array('defaultRole' => 'friend'),
 		'Galleries.Mediable',
 		);
-		
+
 	public $order = array('last_name', 'full_name', 'first_name');
 
 /**
- * Auto Login setting, used to skip session write in aftersave 
+ * Auto Login setting, used to skip session write in aftersave
  */
 	public $autoLogin = true;
 
@@ -28,23 +28,23 @@ class AppUser extends UsersAppModel {
 		'password' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => true, 
+				'allowEmpty' => true,
 				'message' => 'Please enter a value for password',
 				'required' => 'create'
 				),
 			'comparePassword' => array(
 				'rule' => array('_comparePassword'),
-				'allowEmpty' => true, 
+				'allowEmpty' => true,
 				'message' => 'Password, and confirm password fields do not match.',
 				),
         	'strongPassword' => array(
 				'rule' => array('_strongPassword'),
-				'allowEmpty' => true, 
+				'allowEmpty' => true,
 				'message' => 'Password should be six characters, contain numbers and capital and lowercase letters.',
 				),
         	'newPassword' => array(
 				'rule' => array('_newPassword'),
-				'allowEmpty' => true, 
+				'allowEmpty' => true,
 				'message' => 'Your old password is incorrect.'
 				),
 			),
@@ -145,7 +145,7 @@ class AppUser extends UsersAppModel {
 			'foreignKey' => 'user_id',
 			'dependent' => false
 			),
-		// I wonder if something like this will work so that 
+		// I wonder if something like this will work so that
 		// in the privileges section we can limit editing a profile
 		// to the owner.  I worry about the foreignKey as
 		// 'id' causing some loop that breaks everything. 12/8/2013 RK
@@ -210,7 +210,7 @@ class AppUser extends UsersAppModel {
 				'foreignKey' => 'user_id',
 				'dependent' => true
 				);
-		}		
+		}
 		if (CakePlugin::loaded('Categories')) {
 			$this->actsAs[] = 'Categories.Categorizable';
 			// commented out: this happens in the behavior, as it should.
@@ -220,13 +220,13 @@ class AppUser extends UsersAppModel {
 				// 'associationForeignKey' => 'category_id',
 				// 'with' => 'Categories.Categorized'
 			// );
-		}		
+		}
 		parent::__construct($id, $table, $ds);
 	}
 
 /**
- * Is Registerable User Role 
- * 
+ * Is Registerable User Role
+ *
  * Checks to make sure user role is allowed to be registered.
  * @return bool
  * @todo It would be cool if we looked up who can bypass this function by
@@ -247,7 +247,7 @@ class AppUser extends UsersAppModel {
 
 /**
  * Compare Password
- * 
+ *
  * Matching password test.
  * @return bool
  */
@@ -263,20 +263,20 @@ class AppUser extends UsersAppModel {
 			return false;
 		}
 	}
-    
+
 /**
  * Strong Password
- * 
+ *
  * Password strength test
  * @return bool
  */
     public function _strongPassword() {
         return preg_match('/^((?=.*[^a-zA-Z])(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,})$/', $this->data['User']['password']);
     }
-    
+
 /**
  * New Password
- * 
+ *
  * Confirm old password before allowing a password change
  * @return bool
  */
@@ -290,7 +290,7 @@ class AppUser extends UsersAppModel {
 
 /**
  * Email Required
- * 
+ *
  * Check if email is required
  * @return bool
  */
@@ -304,7 +304,7 @@ class AppUser extends UsersAppModel {
 
 /**
  * Parent Node method
- * 
+ *
  * For relating the user to the correct parent user role in the aros table.
  */
 	public function parentNode() {
@@ -327,7 +327,7 @@ class AppUser extends UsersAppModel {
 
 /**
  * before save callback
- * 
+ *
  * @todo move all of the items in beforeSave() into _cleanData() and put $this->data = $this->_cleanData($this->data) here. Then we can get rid of the add() function all together.
  */
 	public function beforeSave($options = array()) {
@@ -335,21 +335,21 @@ class AppUser extends UsersAppModel {
 		if (isset($this->data[$this->alias]['username']) && strpos($this->data[$this->alias]['username'], '@') && empty($this->data[$this->alias]['email'])) {
 			$this->data[$this->alias]['email'] = $this->data[$this->alias]['username'];
 		}
-		
+
 		if (!empty($this->data[$this->alias]['password'])) {
 			App::uses('AuthComponent', 'Controller/Component');
 	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
 		}
-		
+
         if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
 			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
 		}
         return true;
     }
-	
+
 /**
  * Aftersave method
- * 
+ *
  * @param bool $created
  */
 	public function afterSave($created, $options = array()) {
@@ -357,11 +357,11 @@ class AppUser extends UsersAppModel {
 		if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
 			$this->UserGroup->UsersUserGroup->add($this->data);
 		}
-		
+
 		if ($created) {
 			$this->data = $this->__afterCreation($this->data);
 		}
-		
+
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
@@ -398,12 +398,12 @@ class AppUser extends UsersAppModel {
 		return $data;
 	}
 
-	
+
 /**
  * Save all method
  *
  * @deprecated
- * 
+ *
  * @todo should probably be declared deprecated, as saveUserAndContact() seems more appropriate than overriding the saveAll ^JB
  */
  	public function saveAll($data = null, $options = array()) {
@@ -416,12 +416,12 @@ class AppUser extends UsersAppModel {
 		$data = $this->save($data);
 		return $data;
 	}
-	
+
 /**
  * Handles the data of adding of a user // DEPRECATED WILL BE REMOVED 07/18/2013 RK
  *
  * @deprecated
- * 
+ *
  * @param {array}		An array in the array(model => array(field)) format
  * @todo		 		Not sure the rollback for user_id works in all cases (Line 66)
  */
@@ -433,7 +433,7 @@ class AppUser extends UsersAppModel {
 /**
  * Moves ContactAddress's up to the root so that we can easily add/edit them from User::edit()
  * @todo Should this be in the afterFind? ^JB
- * 
+ *
  * @param string $type
  * @param array $query
  * @return mixed
@@ -472,7 +472,7 @@ class AppUser extends UsersAppModel {
 		}
 		$contactData = $data;
 		unset($contactData['User']); // we will save this in the user model not from the contact model
-		
+
 		if ($this->Contact->saveAll($contactData)) {
 			unset($data['Contact']);
 			if ( $this->Contact->id ) {
@@ -480,7 +480,7 @@ class AppUser extends UsersAppModel {
 			}
 		}
 		$data = $this->_cleanAddData($data);
-		
+
 		return $data;
 	}
 
@@ -564,7 +564,7 @@ class AppUser extends UsersAppModel {
 					'UserRole',
 					),
 				));
-			if (!empty($user)) {			
+			if (!empty($user)) {
 				$data['User']['id'] = $user['User']['id'];
 				$data['User']['last_login'] = date('Y-m-d h:i:s');
 				$data['User']['view_prefix'] = $user['UserRole']['view_prefix'];
@@ -592,8 +592,8 @@ class AppUser extends UsersAppModel {
 /**
  * Login Redirect Url method
  * Sets the default redirect variables, using the settings table constant.
- * 
- * @param mixed $redirect 
+ *
+ * @param mixed $redirect
  */
 	public function loginRedirectUrl($redirect) {
 		// this handles redirects where a url was called that redirected you to the login page
@@ -636,7 +636,7 @@ class AppUser extends UsersAppModel {
 
 /**
  * Logout Redirect Url method
- * 
+ *
  * Sets the default redirect variables, using the settings table constant.
  *
  */
@@ -659,7 +659,7 @@ class AppUser extends UsersAppModel {
 			);
 		}
 	}
-	
+
 /**
  * Verify Key method
  * Verifies the key passed and if valid key, remove it from DB and return user else
@@ -791,18 +791,18 @@ class AppUser extends UsersAppModel {
 			$data[$this->alias]['forgot_key'] = $this->__uuid('W', array('User' => 'forgot_key'));
 			$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
 		}
-		
+
 		if(isset($data[$this->alias]['referal_code'])) {
 			$data[$this->alias]['parent_id'] = !empty($data[$this->alias]['referal_code']) ? $this->getParentId($data[$this->alias]['referal_code']) : '';
 		}
-		
+
 		if (isset($data[$this->alias]['parent_id']) && empty($data[$this->alias]['parent_id'])) {
 			unset($data[$this->alias]['parent_id']);
-		} 
+		}
 
 		// this is deprecated and will be changed to an affiliates plugin
 		// this cannot be done like this, because it would change the code on every save
-		// and it should be in an affiliates plugin 
+		// and it should be in an affiliates plugin
 		$data[$this->alias]['reference_code'] = $this->generateRandomCode();
 
 		return $data;
@@ -914,18 +914,18 @@ class AppUser extends UsersAppModel {
 			throw new Exception(__('Credits not Saved'));
 		}
 	}
-	
+
 /**
  * Procreate method
- * Used when you are creating a user for someone else. 
- * 
+ * Used when you are creating a user for someone else.
+ *
  * @param array $data
  * @return boolean
  */
 	public function procreate($data = array(), $options = array()) {
 		// change this to merge of some kind for default options
 		$options['dryrun'] = !empty($options['dryrun']) ? $options['dryrun'] : false;
-		
+
 		// setup data
 		$randompassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'),0,3);
 		$randompassword .= substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,3);
@@ -935,20 +935,20 @@ class AppUser extends UsersAppModel {
 		$data['User']['confirm_password'] = $randompassword;
 		$data['User']['forgot_key'] = $this->__uuid('F');
 		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
-		
-		
+
+
 		//Remove the user role validation so other users can create users
 		$this->validator()->remove('user_role_id');
-		
+
 		// save the setup data
 		if ($this->saveAll($data)) {
 			if ((!empty($data['User']['username']) || !empty($data['User']['email'])) && $options['dryrun'] == false) {
-				$data['User']['username'] = !empty($data['User']['username']) ? $data['User']['username'] : $data['User']['email']; 
+				$data['User']['username'] = !empty($data['User']['username']) ? $data['User']['username'] : $data['User']['email'];
 				$site = defined('SITE_NAME') ? SITE_NAME : 'New';
 				$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
 				$message = __('You have a new user account. <br /><br /> username : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $url, $url);
 				if ($this->__sendMail($data['User']['username'], __('%s User Account Created', $site), $message)) {
-					
+
 				} else {
 					throw new Exception(__('Failed to notify new user'));
 				}
@@ -1044,7 +1044,7 @@ Thank you for registering with us and welcome to the community.";
  * @return boolean
  * @throws Exception
  */
-	public function notifyAdmin($adminEmails) {
+	public function notifyAdmins($adminEmails) {
 		if (!empty($adminEmails)) {
 			$message = 'A new user has been created.'
 					. '<br /><br />'
@@ -1100,17 +1100,17 @@ Thank you for registering with us and welcome to the community.";
 			return false;
 		}
 	}
-	
-	
+
+
 /**
  * Rate
- */	
+ */
 	 public function rate($data){
 		 App::uses('Rating', 'Ratings.Model'); // load Ratings Model
 		 $Rating = new Rating; //create Object $Rating
 		 return $Rating->save($data); //return data and save
 	}
-	
+
 	/**
 	 * Generate a Random Password
 	 * @return string
