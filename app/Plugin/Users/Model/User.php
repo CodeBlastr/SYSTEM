@@ -380,17 +380,9 @@ class AppUser extends UsersAppModel {
 	private function __afterCreation($data) {
 		// Send admin an email
 		if (defined('__USERS_NEW_REGISTRATION') && $notify = unserialize(__USERS_NEW_REGISTRATION)) {
-			if (!empty($notify['notify'])) {
-				$message = 'A new user has been created. <br /><br /> You can view the user 
-here http://' . $_SERVER['HTTP_HOST'] . '/users/users/view/' . $this->id  . '<br /><br />
-and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/edit/' . $this->id;
-				if ($this->__sendMail($notify['notify'], 'New User Registration', $message)) {
-					// do nothing just notifying the admin
-				} else {
-					throw new Exception(__('Registration error, please notify a site admin.'));
-				}
-			}
+			$this->notifyAdmins($notify['notify']);
 		}
+
 		// Initialize some fields
 		$data = $this->_cleanAddData($data);
 
@@ -398,6 +390,11 @@ and edit the user here http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/ed
 		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 			$this->welcome($this->data[$this->alias]['username']);
 		}
+
+		if (defined('__APP_REGISTRATION_HELLO')) {
+			$this->sendHelloEmail();
+		}
+
 		return $data;
 	}
 
@@ -1039,6 +1036,48 @@ Thank you for registering with us and welcome to the community.";
 		}
 	}
 
+
+/**
+ * Sends an email to the specified address(es) when a user registers
+ *
+ * @param string $adminEmails A CSV of email addresses
+ * @return boolean
+ * @throws Exception
+ */
+	public function notifyAdmin($adminEmails) {
+		if (!empty($adminEmails)) {
+			$message = 'A new user has been created.'
+					. '<br /><br />'
+					. 'You can view the user here: http://' . $_SERVER['HTTP_HOST'] . '/users/users/view/' . $this->id
+					. '<br /><br />'
+					. 'and edit the user here: http://' . $_SERVER['HTTP_HOST'] . '/admin/users/users/edit/' . $this->id;
+
+			if ($this->__sendMail($adminEmails, 'New User Registration', $message)) {
+				// do nothing just notifying the admin
+				return true;
+			} else {
+				throw new Exception(__('Registration error, please notify a site admin.'));
+			}
+		}
+	}
+
+
+/**
+ * Sends a "Thanks for Registering"
+ * Requires you to create a webpage named, "hello-new-user"
+ *
+ * @return boolean
+ * @throws Exception
+ */
+	public function sendHelloEmail() {
+		if (!empty($this->data['User']['email'])) {
+			if ($this->__sendMail($this->data['User']['email'], 'Webpages.hello-new-user', $this->data)) {
+				return true;
+			} else {
+				throw new Exception(__('Verification email failed to send.'));
+			}
+		}
+	}
 
 /**
  *
