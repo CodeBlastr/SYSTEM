@@ -77,7 +77,8 @@ class AppWebpage extends WebpagesAppModel {
 		'element' => 'Element',
 		'section' => 'Section',
 		'sub' => 'Sub',
-		'content' => 'Content'
+		'content' => 'Content',
+		'email' => 'Email'
 		);
 	
 /**
