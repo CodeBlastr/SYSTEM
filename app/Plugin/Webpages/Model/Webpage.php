@@ -144,6 +144,9 @@ class AppWebpage extends WebpagesAppModel {
 		if (CakePlugin::loaded('Drafts')) {
 			$this->actsAs['Drafts.Draftable'] = array('conditions' => array('type' => 'content'));
 		}
+		if (CakePlugin::loaded('Media')) {
+			$this->actsAs[] = 'Media.MediaAttachable';
+		}
 		parent::__construct($id, $table, $ds);
 	}
 
