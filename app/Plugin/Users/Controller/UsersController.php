@@ -322,6 +322,7 @@ class AppUsersController extends UsersAppController {
 	public function my() {
 		$userId = $this->Session->read('Auth.User.id');
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
+                
 		if ($userId == null || $userRoleId == __SYSTEM_GUESTS_USER_ROLE_ID) {
 			$this->redirect(array(
 				'plugin' => 'users',
