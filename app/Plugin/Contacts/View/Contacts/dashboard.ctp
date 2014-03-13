@@ -64,7 +64,7 @@
 				<?php if ($__userId == 1) : ?>
 					<div class="row">
 					<?php foreach ($myRatings as $key => $ratings) : ?>
-						<div class="col-sm-4">
+						<div class="col-sm-6">
 							<strong><?php echo $myRatings[$key]['Assignee']['full_name']; ?></strong>
 							<ul class="list-group">
 								<?php echo __('<li class="list-group-item">%s leads <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leads'], $ratings['Assignee']['_leads_rank'], count($myRatings)); ?>
