@@ -42,6 +42,7 @@ if (empty($runUpdates)) : ?>
             	<li><?php echo $this->Html->link('List Pages', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></li>
             	<li><?php echo $this->Html->link('Add Page', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'content')); ?></li>
             	<li><?php echo $this->Html->link('Add Section', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'section')); ?> (eg. page with multiple pages)</li>
+            	<li><?php echo $this->Html->link('Email Templates', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'email')); ?></li>
             </ul>
         </div>
 
@@ -259,7 +260,7 @@ if (empty($runUpdates)) : ?>
 						$class = ' label-success';
 						break;
 					default:
-						$class = ' label-important';
+						$class = ' label-default';
 						break;
 				} ?>
 				<tr><td>`<?php echo $table; ?>`</td><td><span class="label<?php echo $class; ?>"><?php echo $action; ?></span></td></tr>
