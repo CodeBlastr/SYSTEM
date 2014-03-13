@@ -159,6 +159,17 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->layout = 'default';
 		$this->view = 'index_element';
     }
+
+
+    protected function _indexEmail() {
+		$this->paginate['conditions']['Webpage.type'] = 'email';
+		$this->set('webpages', $this->paginate());
+		$this->set('displayName', 'title');
+		$this->set('displayDescription', 'content');
+		$this->set('page_title_for_layout', 'Email Templates');
+		$this->layout = 'default';
+		$this->view = 'index_email';
+    }
     
 /**
  * Index pf type Template
@@ -302,7 +313,13 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('page_title_for_layout', __('Template Builder'));
 		$this->view = 'add_template';        
     }
-	
+
+    protected function _addEmail() {
+        $this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('page_title_for_layout', __('Email Builder'));
+		$this->view = 'add_email';
+    }
+
 /**
  * Edit method
  * 
