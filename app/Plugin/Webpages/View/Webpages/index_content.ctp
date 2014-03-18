@@ -25,6 +25,7 @@
 							</div>
 						<?php endif; ?>
 					</h4>
+					<code>/<?php echo $webpage['Webpage']['alias'] ?></code>
 					<p class="truncate">
 						<?php echo strip_tags($webpage['Webpage']['content']); ?>
 					</p>
