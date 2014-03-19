@@ -3,7 +3,7 @@
 
 App::uses('View', 'View');
 class CsvView extends View {
-	
+
     public function render($view = null, $layout = null) {
 		$path = Inflector::tableize($this->viewPath);
 		$arr = array();
@@ -15,14 +15,14 @@ class CsvView extends View {
 		if(empty($arr)) {
 			return '';
 		}
-		
+
 		$csv = $this->_array_to_csv($arr);
-		return $csv; 
+		return $csv;
     }
-	
+
 	private function _array_to_csv($array) {
 		$csv = array();
-		
+
 		//Flatten the given array
 		foreach ($array as $k => $item) {
 			if (is_array($item)) {
@@ -32,7 +32,7 @@ class CsvView extends View {
 				$csv[$k] = $item;
 			}
 		}
-		
+
 		//Create the Column names
 		//This has to be done seperate because we don't all of them beforehand
 		$csvString = array('headers' => array());
@@ -40,23 +40,23 @@ class CsvView extends View {
 			foreach ($lines as $header => $line) {
 				if (array_search($header, $csvString['headers']) === false) {
 					if (!empty($header)) {
-						$csvString['headers'][] = $header; 
+						$csvString['headers'][] = $header;
 					}
 				}
 			}
 		}
-		
+
 		//Create the values this will also check for commas in the values
 		foreach ($csv as $c => $lines) {
 			$csvString['values'][$c] = '';
 			foreach ($csvString['headers'] as $h) {
 				if (isset($lines[$h])) {
-					$csvString['values'][$c] .= is_int($lines[$h]) ? $lines[$h] . ',' : '"' . str_replace(',', '' , $lines[$h]) . '",'; 
+					$csvString['values'][$c] .= is_int($lines[$h]) ? $lines[$h] . ',' : '"' . str_replace(',', '' , $lines[$h]) . '",';
 				} else {
 					$csvString['values'][$c] .= ',';
 				}
 			}
-			
+
 		}
 		$output = '';
 		$output .= implode(',', str_replace('.', '_' ,$csvString['headers'])) . "\r\n";
