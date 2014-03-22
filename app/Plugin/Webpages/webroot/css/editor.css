@@ -150,6 +150,7 @@
 	margin-right: 15px;
     vertical-align: top;
     float: left;
+    border: 0;
 }
 #adminNavFloManagr ul li.dropdown li {
     float: none;
