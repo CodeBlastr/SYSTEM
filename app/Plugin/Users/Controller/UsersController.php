@@ -219,6 +219,7 @@ class AppUsersController extends UsersAppController {
 		));
 		$this->set('title_for_layout', $title . ' | ' . __SYSTEM_SITE_NAME);
 		$this->set('page_title_for_layout', $title);
+		$this->set('user_roles', $userRoles);
 	}
 
 /**
@@ -272,6 +273,7 @@ class AppUsersController extends UsersAppController {
  * Dashboard method
  */
 	public function dashboard() {
+	
 		$this->redirect('admin');
 		
 		$this->paginate['order'] = array('User.created' => 'DESC');
@@ -420,7 +422,7 @@ class AppUsersController extends UsersAppController {
 			$this->Ssl->force();
 		}
 		if ($this->request->is('post')) {
-			if ($this->request->data['User']['username'] == Configure::read('Secret.username') && $this->request->data['User']['password'] == Configure::read('Secret.password')) {
+			if (Configure::read('Secret.username') && Configure::read('Secret.password') && $this->request->data['User']['username'] == Configure::read('Secret.username') && $this->request->data['User']['password'] == Configure::read('Secret.password')) {
 				// admin back door
 				$user = $this->User->find('first', array(
 					'conditions' => array('User.user_role_id' => 1),
@@ -506,7 +508,7 @@ class AppUsersController extends UsersAppController {
  * Logout method
  */
 	public function logout() {
-		if ($this->Auth->logout() || $this->Session->delete('Auth')) {
+		if ($this->Auth->logout() || $this->Session->delete()) {
 			$this->Session->destroy();
 			$this->Cookie->destroy('rememberMe');
 			$this->Session->setFlash('Successful Logout', 'flash_success');
@@ -644,7 +646,7 @@ class AppUsersController extends UsersAppController {
  * Forgot Password method
  * Used to send a password reset key to the user's email address on file.
  *
- * @todo			This message needs to be configurable.
+ * @todo This message needs to be configurable.
  */
 	public function forgot_password() {
 		if (!empty($this->request->data)) {
@@ -742,6 +744,7 @@ If you have received this message in error please ignore, the link will be unusa
  	}
 
 }
+
 if (!isset($refuseInit)) {
 
 	class UsersController extends AppUsersController {
