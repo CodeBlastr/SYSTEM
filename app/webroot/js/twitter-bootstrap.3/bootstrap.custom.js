@@ -148,6 +148,9 @@ $(function() {
     $('.required').attr('required', true);
     $('label').addClass('control-label');
     $('input:not([type=submit], [type=checkbox], [type=radio]), select, textarea').addClass('form-control').parent().addClass('form-group');
+    $('.form-horizontal label').addClass('col-sm-2');
+    $('.form-horizontal input:not([type=submit], [type=checkbox], [type=radio])').wrap('<div class="col-sm-10" />');
+    $('.form-horizontal input[type=submit], .form-horizontal input[type=checkbox], .form-horizontal input[type=radio]').wrap('<div class="col-sm-offset-2 col-sm-10" />');
 	
 /**
  * Hides form elements that come after a legend with the class toggleClick

@@ -26,6 +26,7 @@
                 </tr>
             <?php endforeach; ?>
         </table>
+        <?php echo $this->element('paging'); ?>
     </div>
 
     <div class="col-md-4">

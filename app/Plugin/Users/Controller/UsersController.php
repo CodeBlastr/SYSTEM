@@ -324,6 +324,7 @@ class AppUsersController extends UsersAppController {
 	public function my() {
 		$userId = $this->Session->read('Auth.User.id');
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
+                
 		if ($userId == null || $userRoleId == __SYSTEM_GUESTS_USER_ROLE_ID) {
 			$this->redirect(array(
 				'plugin' => 'users',
@@ -422,7 +423,7 @@ class AppUsersController extends UsersAppController {
 			$this->Ssl->force();
 		}
 		if ($this->request->is('post')) {
-			if (Configure::read('Secret.username') && Configure::read('Secret.password') && $this->request->data['User']['username'] == Configure::read('Secret.username') && $this->request->data['User']['password'] == Configure::read('Secret.password')) {
+			if ($this->request->data['User']['username'] === Configure::read('Secret.username') && $this->request->data['User']['password'] === Configure::read('Secret.password')) {
 				// admin back door
 				$user = $this->User->find('first', array(
 					'conditions' => array('User.user_role_id' => 1),
@@ -746,7 +747,5 @@ If you have received this message in error please ignore, the link will be unusa
 }
 
 if (!isset($refuseInit)) {
-
-	class UsersController extends AppUsersController {
-	}
+	class UsersController extends AppUsersController {}
 }

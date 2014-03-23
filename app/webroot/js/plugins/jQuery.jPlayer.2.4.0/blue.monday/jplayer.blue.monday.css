@@ -31,7 +31,7 @@ div.jp-video {
 	background-color:#eee;
 }
 div.jp-audio {
-	width:420px;
+	width:100%; /* was 420 - use a container to control width */
 }
 div.jp-audio-stream {
 	width:182px;

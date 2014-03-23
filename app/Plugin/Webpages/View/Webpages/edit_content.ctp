@@ -3,11 +3,11 @@
 	<div class="clearfix">
 		<div class="webpages form col-md-9">
 			<fieldset>
-		    	<?php
-				echo $this->Form->input('Webpage.id');
-				echo $this->Form->input('Webpage.type', array('type' => 'hidden'));
-				echo $this->Form->input('Webpage.name', array('label' => 'Internal Page Name'));
-				echo $this->Form->input('Webpage.content', array('type' => 'richtext')); ?>
+		    	<?php echo $this->Form->input('Webpage.id'); ?>
+		    	<?php echo $this->Form->input('Webpage.type', array('type' => 'hidden')); ?>
+				<?php echo $this->Form->input('Webpage.name', array('label' => 'Internal Page Name')); ?>
+				<?php echo CakePlugin::loaded('Media') ? __('<hr>%s</h4>', $this->Element('Media.selector', array('media' => $this->request->data['Media'], 'multiple' => true))): null; ?>
+				<?php echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'label' => false)); ?>
 			</fieldset>
 		</div>
 		<div class="col-md-3" id="webpages-sidebar">

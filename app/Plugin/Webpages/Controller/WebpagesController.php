@@ -86,8 +86,8 @@ class AppWebpagesController extends WebpagesAppController {
  */
     protected function _indexContent($type) {
 		$this->paginate['conditions']['Webpage.type'] = $type;
-		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
-		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
+		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = 0;
+		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = null;
 		$this->paginate['order']['Webpage.parent_id'] = 'DESC';
 		//$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
 		$this->paginate['contain'][] = 'Child';
@@ -158,6 +158,17 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('page_title_for_layout', 'Widgets / Elements');
 		$this->layout = 'default';
 		$this->view = 'index_element';
+    }
+
+
+    protected function _indexEmail() {
+		$this->paginate['conditions']['Webpage.type'] = 'email';
+		$this->set('webpages', $this->paginate());
+		$this->set('displayName', 'title');
+		$this->set('displayDescription', 'content');
+		$this->set('page_title_for_layout', 'Email Templates');
+		$this->layout = 'default';
+		$this->view = 'index_email';
     }
     
 /**
@@ -302,7 +313,13 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('page_title_for_layout', __('Template Builder'));
 		$this->view = 'add_template';        
     }
-	
+
+    protected function _addEmail() {
+        $this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('page_title_for_layout', __('Email Builder'));
+		$this->view = 'add_email';
+    }
+
 /**
  * Edit method
  * 
