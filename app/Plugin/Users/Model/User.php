@@ -98,40 +98,49 @@ class AppUser extends UsersAppModel {
 			'conditions' => '',
 			'fields' => array('id'),
 			'order' => ''
+			),
+		'Parent' => array(
+			'className' => 'Users.User',
+			'foreignKey' => 'parent_id'
 			)
 		);
 
 	public $hasMany = array(
+		'Child' => array(
+			'className'     => 'Users.User',
+			'foreignKey'    => 'parent_id',
+			'dependent'		=> false
+			),
 		'Gallery' => array(
 			'className' => 'Galleries.Gallery',
 			'foreignKey' => 'foreign_key',
-			'dependent' => true,
+			'dependent' => true
 			),
 		'UserStatus' => array(
 			'className' => 'Users.UserStatus',
 			'foreignKey' => 'user_id',
-			'dependent' => true,
+			'dependent' => true
 			),
 		'UserFollower' => array(
 			'className' => 'Users.UserFollower',
 			'foreignKey' => 'user_id',
-			'dependent' => false,
+			'dependent' => false
 			),
 		'UserFollowed' => array(
 			'className' => 'Users.UserFollower',
 			'foreignKey' => 'follower_id',
-			'dependent' => false,
+			'dependent' => false
 			),
-		'UserGroupWallPost'=>array(
+		'UserGroupWallPost' => array(
 			'className' => 'Users.UserGroupWallPost',
 			'foreignKey' => 'creator_id',
-			'dependent' => false,
+			'dependent' => false
 			),
-		'UsersUserGroup'=>array(
-			'className'     => 'Users.UsersUserGroup',
-			'foreignKey'    => 'user_id',
-			'dependent'		=> true
-		),
+		'UsersUserGroup' => array(
+			'className' => 'Users.UsersUserGroup',
+			'foreignKey' => 'user_id',
+			'dependent' => true
+			)
 		);
 
 	public $hasOne = array(
@@ -941,13 +950,14 @@ class AppUser extends UsersAppModel {
 		$this->validator()->remove('user_role_id');
 
 		// save the setup data
+		$this->create();
 		if ($this->saveAll($data)) {
 			if ((!empty($data['User']['username']) || !empty($data['User']['email'])) && $options['dryrun'] == false) {
-				$data['User']['username'] = !empty($data['User']['username']) ? $data['User']['username'] : $data['User']['email'];
+				$email = !empty($data['User']['email']) ? $data['User']['email'] : $data['User']['username'];
 				$site = defined('SITE_NAME') ? SITE_NAME : 'New';
 				$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
 				$message = __('You have a new user account. <br /><br /> username : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $url, $url);
-				if ($this->__sendMail($data['User']['username'], __('%s User Account Created', $site), $message)) {
+				if ($this->__sendMail($email, __('%s User Account Created', $site), $message)) {
 
 				} else {
 					throw new Exception(__('Failed to notify new user'));
