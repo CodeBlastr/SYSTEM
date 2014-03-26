@@ -169,7 +169,6 @@ class Gallery extends GalleriesAppModel {
 					if ($this->makeThumb($newData)) {
 						return true;
 					} else {
-
 						// roll back everything the resave failed.
 						$this->GalleryImage->delete($galleryImageId);
 						$this->delete($galleryId);

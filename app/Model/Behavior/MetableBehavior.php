@@ -41,11 +41,11 @@ class MetableBehavior extends ModelBehavior {
  */
 	public function afterSave(Model $Model, $created, $options = array()) {
 		if ( !empty($this->data) && isset($this->data) ) {
-            $Meta = ClassRegistry::init('Meta');
+            $Meta = ClassRegistry::init('Meta');			
 			$existingMeta = $Meta->find( 'first', array('conditions' => array('model' => $Model->name, 'foreign_key' => $Model->id)) );
-			
-			if ( !$existingMeta ) {
-				$cleanMetadata = mysql_escape_string( serialize($this->data) ); 
+			if (empty($existingMeta)) {
+				// adding a new meta record
+				$cleanMetadata = mysql_escape_string(serialize($this->data));
 				$Meta->query("
 					INSERT INTO `metas` (model, foreign_key, value)
 					VALUES ('{$Model->name}', '{$Model->id}', '{$cleanMetadata}');
@@ -65,11 +65,11 @@ class MetableBehavior extends ModelBehavior {
 				}
 					
 				// merge that array with $metadata
-				#$updatedMetaValue = ZuhaSet::array_replace_r( $existingMetaValue, $this->data ); // this was not maintiaining the old meta data ^JB 12/19/2013
-				$updatedMetaValue = Hash::merge($existingMetaValue, $this->data);
-				
+				//$updatedMetaValue = ZuhaSet::array_replace_r( $existingMetaValue, $this->data ); // this was not maintiaining the old meta data ^JB 12/19/2013
+				//$updatedMetaValue = Hash::merge($existingMetaValue, $this->data); // this doesn't either for multi-dimensional values ^ RK 2/9/2014
+				$updatedMetaValue = array_replace_recursive($existingMetaValue, $this->data);
 				// put it back in $existingMeta
-				$existingMeta['Meta']['value'] = mysql_escape_string( serialize($updatedMetaValue) );
+				$existingMeta['Meta']['value'] = mysql_escape_string(serialize($updatedMetaValue));
 				$Meta->query("
 					UPDATE `metas`
 					SET value = '{$existingMeta['Meta']['value']}'

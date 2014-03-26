@@ -315,27 +315,26 @@ class AppModel extends Model {
 		if ($this->notifications !== false) {
 			App::uses('AppController', 'Controller');
 			$Controller = new AppController;
-			
-			if(strpos($subject, 'Webpages.') === 0){
+
+			if (strpos($subject, 'Webpages.') === 0){
 				$name = str_replace('Webpages.', '', $subject);
 				App::uses('Webpage', 'Webpages.Model');
 				$Webpage = new Webpage();
 				$webpage = $Webpage->findByName($name);
-				if(!empty($webpage)){
+				if (!empty($webpage)) {
 					$message = $Webpage->replaceTokens($webpage['Webpage']['content'], $message);	
-						
 					$subject = $webpage['Webpage']['title'];
 				} else {
 					//Should we auto gen instead of throwing exception????
 					throw new Exception(__('Please create a email template named %s', $name));
-				}			
-			} 		
-	
+				}
+			}
+
 			return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
 		}
 	}
-	
-	
+
+
 /**
  * 
  */
@@ -397,14 +396,16 @@ class AppModel extends Model {
 	 */
 	
 	public function parsecsv($data=false, $deletefirst = true) {
-		//debug($this->data);exit;
+		
 		if(!isset($this->data[$this->alias]['uploadfile']) && !$data) {
 			throw new Exception('No Data Defined', 0);
 		}elseif(!isset($this->data[$this->alias]['uploadfile']) && $data) {
 			$this->data = $data;
 		}
-	
-		$this->deleteAll($deletefirst);
+		
+		if($deletefirst) {
+			$this->query("TRUNCATE {$this->table}");
+		}
 		// open the file
 		$handle = fopen($this->data[$this->alias]['uploadfile']['tmp_name'], "r");
 	

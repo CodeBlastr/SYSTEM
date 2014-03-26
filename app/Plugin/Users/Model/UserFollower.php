@@ -92,7 +92,7 @@ class UserFollower extends UsersAppModel {
 	}
 	public function getPendingRequetCount($userId){
 		return $this->find('count',array('conditions'=>array(
-			'approved' => null,
+			'approved' => array(null,-1,0),
 			'user_id'	=>$userId,
 		)));
 	}

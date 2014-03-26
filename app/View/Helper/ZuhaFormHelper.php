@@ -267,7 +267,7 @@ EOD;
 		if (!empty($attributes['value'])) {
 			$attributes['value'] = date($dateFormat, strtotime($attributes['value']));
 		} else {
-			$attributes['value'] = date($dateFormat);
+			$attributes['value'] = $attributes['value'] === null ? date($dateFormat) : $attributes['value'];
 		}
 		
 		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
@@ -316,7 +316,7 @@ EOD;
 			$attributes['value'] = date($dateFormat, strtotime($attributes['value']));
 		} elseif(isset($attributes['required'])) {
 			$attributes['value'] = date($dateFormat);
-		}else {
+		} else {
 			$attributes['value'] = null;
 		}
 		

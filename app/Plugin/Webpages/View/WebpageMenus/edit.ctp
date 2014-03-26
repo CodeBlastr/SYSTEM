@@ -23,7 +23,8 @@
  		<legend class="toggleClick"><?php echo __('Add Link to %s', $this->request->data['WebpageMenu']['name']); ?></legend>
   	    <?php
     	echo $this->Form->input('WebpageMenuItem.item_text', array('label' => 'Link Text'));
-		echo $this->Form->input('WebpageMenuItem.item_url', array('label' => 'Url'));
+		echo $this->Form->input('WebpageMenuItem.item_url', array('label' => 'URL'));
+		echo $this->Form->input('WebpageMenuItem.item_target', array('label' => 'Target', 'options' => array('', '_blank', '_self', '_parent', '_top')));
     	echo $this->Form->input('WebpageMenuItem.menu_id', array('type' => 'hidden', 'value' => $this->request->data['WebpageMenu']['id']));
 		echo $this->Form->input('WebpageMenuItem.order', array('type' => 'hidden', 'value' => $this->request->data['WebpageMenu']['children'] + 1)); 
         echo $this->Form->end(__('Add Link'));?>
@@ -104,4 +105,4 @@ $this->set('context_menu', array('menus' => array(
 			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('WebpageMenu.id')), null, __('Are you sure you want to delete the entire menu?'), $this->Form->value('WebpageMenu.name')),
 			)
 		),
-	))); ?>
+	))); 
