@@ -86,8 +86,8 @@ class AppWebpagesController extends WebpagesAppController {
  */
     protected function _indexContent($type) {
 		$this->paginate['conditions']['Webpage.type'] = $type;
-		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
-		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
+		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = 0;
+		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = null;
 		$this->paginate['order']['Webpage.parent_id'] = 'DESC';
 		//$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
 		$this->paginate['contain'][] = 'Child';
@@ -158,6 +158,17 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('page_title_for_layout', 'Widgets / Elements');
 		$this->layout = 'default';
 		$this->view = 'index_element';
+    }
+
+
+    protected function _indexEmail() {
+		$this->paginate['conditions']['Webpage.type'] = 'email';
+		$this->set('webpages', $this->paginate());
+		$this->set('displayName', 'title');
+		$this->set('displayDescription', 'content');
+		$this->set('page_title_for_layout', 'Email Templates');
+		$this->layout = 'default';
+		$this->view = 'index_email';
     }
     
 /**
@@ -302,7 +313,13 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('page_title_for_layout', __('Template Builder'));
 		$this->view = 'add_template';        
     }
-	
+
+    protected function _addEmail() {
+        $this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('page_title_for_layout', __('Email Builder'));
+		$this->view = 'add_email';
+    }
+
 /**
  * Edit method
  * 
@@ -438,19 +455,19 @@ class AppWebpagesController extends WebpagesAppController {
 		$form['Template']['install'] = substr($form['Template']['install'], 0, 500);
 		if (!unserialize($data['Template']['install'])) {
 			debug('data not serialized properly');
-			break;
+			exit;
 		}
 		
  		if ($this->request->is('post') || $this->request->is('push')) {
  			if (!unserialize($data['Template']['install'])) {
  				debug('serialization error');
 				debug($data['Template']['install']);
-				break;
+				exit;
  			}
 			$this->request->data['Template']['install'] = $data['Template']['install'];
 			debug('Copy and paste this into the app/Config/Schema/schema.php file in the appropriate spot.');
 			debug($this->request->data);
-			break;
+			exit;
  		}
 		$this->request->data = $form;
 		$this->set('page_title_for_layout', __('Export %s', $this->request->data['Template']['layout']));
@@ -468,7 +485,7 @@ class AppWebpagesController extends WebpagesAppController {
   * @return bool
   */
  
-	private function _fileExistsCheck($filename) {
+	protected function _fileExistsCheck($filename) {
 		App::uses('File', 'Utility');
 		$return = false;
 		if(isset($filename)) {
@@ -481,7 +498,8 @@ class AppWebpagesController extends WebpagesAppController {
 			$file = new File($path . $filename);
 			$return = $file->exists();
 		}
-	 	return $return;}
+	 	return $return;
+	}
 
 }
 

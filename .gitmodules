@@ -130,3 +130,6 @@
 [submodule "app/Plugin/Jobs"]
 	path = app/Plugin/Jobs
 	url = git@github.com:zuha/Jobs-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Campaigns"]
+	path = app/Plugin/Campaigns
+	url = git@github.com:zuha/Campaigns-Zuha-Cakephp-Plugin.git

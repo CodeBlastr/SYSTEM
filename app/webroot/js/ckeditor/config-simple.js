@@ -19,7 +19,8 @@ $(function(){
                     $buttons.each(function(){
                         var action = 'self.'+$(this).data('action');
                         if($.isFunction(eval(action))){
-                            $(this).click(function(){
+                            $(this).click(function(e){
+                                e.preventDefault();
                                 eval(action+'()');
                             });
                         }
@@ -66,9 +67,10 @@ $(function(){
                     var dialogName = ev.data.name,
                         dialogDefinition = ev.data.definition;
 
-
-                    for(var index in remoteContentsList){
-                        dialogDefinition.removeContents(remoteContentsList[index]);
+                    if(remoteContentsList.length){
+                        for(var index in remoteContentsList){
+                            dialogDefinition.removeContents(remoteContentsList[index]);
+                        }
                     }
                     func(dialogName,dialogDefinition);
                 });
@@ -114,7 +116,37 @@ $(function(){
                 'videos':function(){
 
                     configEditor(['oembed'],function(editor){
+
+                        customDialog([],function(dname,def){
+                            if(dname == 'oembed'){
+                                var uploadButton = def.getContents('Upload').get('uploadButton');
+
+                                if(uploadButton){
+                                    uploadButton['filebrowser']['onSelect'] = function(fileUrl,error){
+                                        if(!error){
+                                            var ext = fileUrl.split('.').pop().toLowerCase(),
+                                                source = '<source src="'+fileUrl+'">Your browser does not support the html 5 media element.';
+                                            if(ext == 'mp4'){
+                                                source = '<video controls>'+source+'</video>';
+                                            }else{
+                                                source = '<audio controls>'+source+'</audio>';
+                                            }
+
+                                            var element = CKEDITOR.dom.element.createFromHtml( '<p>'+source+'</p>' );
+                                            editor.insertElement(element);
+                                            CKEDITOR.dialog.getCurrent().hide();
+                                        }else{
+                                            alert(error);
+                                        }
+
+
+                                    }
+                                }
+
+                            }
+                        });
                         editor.commands.oembed.exec();
+
                     });
                 },//videos method end
                 'documents':function(){
