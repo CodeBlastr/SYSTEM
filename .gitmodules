@@ -133,3 +133,6 @@
 [submodule "app/Plugin/Campaigns"]
 	path = app/Plugin/Campaigns
 	url = git@github.com:zuha/Campaigns-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/GenericAuth"]
+	path = app/Plugin/GenericAuth
+	url = git@github.com:zuha/GenericAuth-Zuha-Cakephp-Plugin.git

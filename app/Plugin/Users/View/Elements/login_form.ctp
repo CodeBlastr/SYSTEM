@@ -108,23 +108,20 @@ if (!empty($facebookId)) {
       </div>
 	<?php echo $this->Form->end(array('label' => $submitLabel, 'div' => array('class' => $submitClass))); ?>
 	
-<?php
-else:
-	if ($loggedElement) :
-		echo $this->element($loggedElement, array(
+<?php else: ?>
+	<?php if ($loggedElement) : ?>
+		<?php echo $this->element($loggedElement, array(
 			'user' => $this->Session->read('Auth'),
 			'textWelcome' => $textWelcome,
 			'linkClass' => $linkClass,
 			'linkIdUser' => $linkIdUser,
 			'textSeparator' => $textSeparator,
 			'logOutLink' => $logOutLink
-		), array('plugin'=>'users'));
-	else:
-	 ?>
+		), array('plugin'=>'users')); ?>
+	<?php else: ?>
 	    <span class="usernameWelcome"><?php echo $textWelcome ?></span>
 	    <span class="usernameName"><?php echo $this->Html->link($this->Session->read('Auth.User.username'), array('plugin' => 'users', 'controller' => 'users', 'action' => 'my'), array('class' => $linkClass, 'id' => $linkIdUser, 'checkPermissions' => true)); ?></span>
 	    <?php echo $textSeparator ?> 
 	    <?php echo $logOutLink ?>         
-	<?php
-	endif;
-endif;
+	<?php endif; ?>
+<?php endif; ?>
