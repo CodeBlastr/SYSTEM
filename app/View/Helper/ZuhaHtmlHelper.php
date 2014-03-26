@@ -162,7 +162,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 			if (!empty($options['width']) && !empty($options['height'])) {
 				// default extended options for images
 				$extOptions['conversion'] = !empty($extOptions['conversion']) ? $extOptions['conversion'] : 'resizeCrop'; // resize, resizeCrop, crop
-				$extOptions['quality'] = !empty($extOptions['quality']) ? $extOptions['quality'] : 75;
+				$extOptions['quality'] = !empty($extOptions['quality']) ? $extOptions['quality'] : 100;
 				if (strpos($path, 'theme') > 0 /* || strpos($path, 'theme') === 0 */) {
 					// this only works for theme images
 					$fileName = substr(strrchr($path, '/'), 1);
