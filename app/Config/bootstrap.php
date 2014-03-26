@@ -47,7 +47,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	
 	App::build(array(
 		'Plugin' => array(
-			ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
+			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS, If you do this it expects the entire plugin to be there
+			ROOT.DS.SITE_DIR.DS.'Plugin'.DS, // This is only used if the entire plugin is there.
 			ROOT.DS.APP_DIR.DS.'Plugin'.DS
 			),
 		'Model' =>  array(
@@ -355,11 +356,11 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 *
 		 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
 		 */
-		public function datify($date) {
+		public function datify($date, $options = array('format' => 'M j, Y')) {
 			if($date === NULL) {
 				return NULL;
 			} else {
-				return date('M j, Y', strtotime($date));
+				return date($options['format'], strtotime($date));
 			}
 		}
 	
