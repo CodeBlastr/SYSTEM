@@ -13,6 +13,8 @@
 	<?php endforeach; ?>
 </div>
 
+<?php echo $this->element('paging'); ?>
+
 <?php    
 // set contextual search options
 $this->set('forms_search', array(

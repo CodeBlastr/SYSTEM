@@ -325,7 +325,6 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		/**
 		 * Function for formatting the pricing of an item.
 		 *
-		 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
 		 */
 		public function pricify($price, $options = array()) {
 			$defaults['places'] = 2;
@@ -352,11 +351,13 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		}
 	
 		/**
-		 * Function for formatting the pricing of an item.
+		 * Function for formatting the date of a string.
 		 *
-		 * @todo 	Update to include the dollar sign, and decimal place for various languages. (and remove the dollar sign from the view files. Based on a setting that needs to be created yet.
+		 * @todo	Have options for the time, like timeAgo and/or date format string.
+		 * @todo	Make a site setting to format dates site wide.
 		 */
 		public function datify($date, $options = array('format' => 'M j, Y')) {
+			$options['format'] = $options['format'] == 'M j, Y' && defined('__APP_DATE_FORMAT') ? __APP_DATE_FORMAT : $options['format'];
 			if($date === NULL) {
 				return NULL;
 			} else {
@@ -365,13 +366,25 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		}
 	
 		/**
-		 * Function for formatting dates (yes I know about the Time helper, and I don't like it.
-		 * But mainly this will alos allow a default time format on a per site need (using a setting).
+		 * Function for formatting the time of a string.
 		 *
 		 * @todo	Have options for the time, like timeAgo and/or date format string.
+		 * @todo	Make a site setting to format dates site wide.
+		 */
+		public function timify($string = null) {
+			$format = defined('__APP_TIME_FORMAT') ? __APP_TIME_FORMAT : 'g:i a';
+			if($string === null) {
+				return null;
+			} else {
+				return date($format, strtotime($string));
+			}
+		}
+	
+		/**
+		 * @deprecated 
 		 */
 		public function dateize($date, $options = null) {
-			return date('M j, Y', strtotime($date));
+			return self::datify($date);
 		}
 	
 	
