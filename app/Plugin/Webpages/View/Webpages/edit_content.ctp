@@ -26,6 +26,14 @@
 				<div class="img-group collapse">
 					<?php echo $this->Form->input('GalleryImage.filename', array('type' => 'file')); ?>
 				</div>
+				
+				<h4 data-toggle="collapse" data-target=".menu-group" data-parent="#webpages-sidebar">Navigation Settings</h4>
+				<hr />
+				<div class="menu-group collapse">
+					<?php // not filled yet // echo $this->Form->input('WebpageMenuItem.parent_id', array('empty' => '-- Select Menu --', 'label' => __('Add to Menu'))); ?>
+					<?php // not fileed yet // echo $this->Form->input('WebpageMenuItem.item_text', array('label' => __('Menu Link Text'))); ?>
+					<?php echo $this->Form->input('Webpage.Meta.context_menu', array('empty' => '-- Select -- ', 'options' => $menus)); ?>
+				</div>
 	
 				<h4 data-toggle="collapse" data-target=".access-group" data-parent="#webpages-sidebar"><?php echo __('<span class="hoverTip" title="User role site privileges are used by default. Choose an option to restrict access to only the chosen group for this specific page.">Access</span>');?></h4>
 				<hr />
