@@ -393,4 +393,44 @@ class ZuhaSet {
 		return $array_b;
     }
 
+/**
+ * @return array
+ * @param array $src
+ * @param array $in
+ * @param int|string $pos
+ */
+	function array_splice_after($array, $insert, $position) {
+	    if(is_int($position)) {
+	    	$r = array_merge(array_slice($array, 0, $position + 1), $insert, array_slice($array, $position + 1));
+		} else {
+	        foreach($array as $k => $v) {
+	            $r[$k]=$v;
+	            if($k == $position) {
+	            	$r = array_merge($r, $insert);
+				}
+	        }
+	    }
+	    return $r;
+	}
+
+/**
+ * @return array
+ * @param array $src
+ * @param array $in
+ * @param int|string $pos
+ */
+	function array_splice_before($array, $insert, $position) {
+	    if(is_int($position)) {
+	    	$r = array_merge(array_slice($array, 0, $position), $insert, array_slice($array, $position));
+		} else {
+	        foreach($array as $k => $v){
+	            if($k == $position) {
+	            	$r = array_merge($r, $insert);
+				}
+	            $r[$k] = $v;
+	        }
+	    }
+	    return $r;
+	}
+
 }
