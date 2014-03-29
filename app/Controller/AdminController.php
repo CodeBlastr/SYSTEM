@@ -68,6 +68,7 @@ class AdminController extends AppController {
 			$this->Session->delete('Updates');
 			$this->Session->setFlash(__('Update check complete!!!'), 'flash_success');
 		}
+		$this->set('title_for_layout', 'Admin Dashboard');
 		$this->set('page_title_for_layout', 'Admin Dashboard');
 		$this->layout = 'default';
 
@@ -278,8 +279,8 @@ class AdminController extends AppController {
 			}
 		}
 		$compare = $this->Schema->compare($Old, $Schema);
-		$contents = array();
 
+		$contents = array();
 		if (empty($table)) {
 			foreach ($compare as $table => $changes) {
 				$contents[$table] = $db->alterSchema(array($table => $changes), $table);
