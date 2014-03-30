@@ -47,7 +47,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	
 	App::build(array(
 		'Plugin' => array(
-			ROOT.DS.SITE_DIR.DS.'Plugin'.DS,
+			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS, If you do this it expects the entire plugin to be there
+			ROOT.DS.SITE_DIR.DS.'Plugin'.DS, // This is only used if the entire plugin is there.
 			ROOT.DS.APP_DIR.DS.'Plugin'.DS
 			),
 		'Model' =>  array(
@@ -339,10 +340,12 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			// returns
 			if ($price === null) {
 				return null;
-			} elseif ($price > 999999) {
+			} elseif ($price > 999999 && $options['short'] == true) {
+				// one million or larger shows 2.5m
 				$price = substr(round($price, -4), 0, -4);
 				return $start . substr($price, 0, -2) . '.' . substr($price, -2) . 'm' . $end;
-			} elseif ($price > 9999) {
+			} elseif ($price > 9999 && $options['short'] == true) {
+				// ten thousand or larger shows 185k
 				return $start . substr(round($price, -3), 0, -3) . 'k' . $end;
 			} else {
 				return $start . number_format($price, $options['places'], $options['decimal'], $options['separator']) . $end;
@@ -355,12 +358,12 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * @todo	Have options for the time, like timeAgo and/or date format string.
 		 * @todo	Make a site setting to format dates site wide.
 		 */
-		public function datify($date = null) {
-			$format = defined('__APP_DATE_FORMAT') ? __APP_DATE_FORMAT : 'M j, Y';
-			if($date === null) {
-				return null;
+		public function datify($date, $options = array('format' => 'M j, Y')) {
+			$options['format'] = $options['format'] == 'M j, Y' && defined('__APP_DATE_FORMAT') ? __APP_DATE_FORMAT : $options['format'];
+			if($date === NULL) {
+				return NULL;
 			} else {
-				return date($format, strtotime($date));
+				return date($options['format'], strtotime($date));
 			}
 		}
 	
@@ -507,6 +510,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
                 'ProductStore' => 'Products',
                 'Product' => 'Products',
                 'Property' => 'Properties',
+                'PropertyDeveloper' => 'Properties',
                 'Job' => 'Jobs',
                 'JobResume' => 'Jobs',
 				'ProjectIssue' => 'Projects',
