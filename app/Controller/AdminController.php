@@ -1,5 +1,5 @@
 <?php
-App::uses('CakeSchema', 'Model');
+App::uses('ZuhaSchema', 'Model');
 /**
  * Admin Dashboard Controller
  *
@@ -68,6 +68,7 @@ class AdminController extends AppController {
 			$this->Session->delete('Updates');
 			$this->Session->setFlash(__('Update check complete!!!'), 'flash_success');
 		}
+		$this->set('title_for_layout', 'Admin Dashboard');
 		$this->set('page_title_for_layout', 'Admin Dashboard');
 		$this->layout = 'default';
 
@@ -99,16 +100,16 @@ class AdminController extends AppController {
 		// debug($lastTable);
 		// debug($nextTable);
 		// debug($nextPlugin); // if false, means its not a plugin
-		//debug(CakePlugin::loaded());
+		// debug(CakePlugin::loaded());
+		// debug(CakePlugin::loaded($nextPlugin));
 		// debug($endTable);
 		// debug($allTables);
 		// debug($this->Session->read());
-		// break;
+		// exit;
 
 		if (!empty($nextPlugin) && !CakePlugin::loaded($nextPlugin)) {
 			// plugin is not loaded so downgrade
 			$last = !empty($lastTableWithPlugin) ? array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) : $this->_downgrade($nextTable, $lastTable);
-			$this->Session->write('Updates.last', $last);
 			// more debugging
 			// if ( !empty($lastTableWithPlugin) ) {
 			//	 debug($lastTableWithPlugin);
@@ -141,7 +142,7 @@ class AdminController extends AppController {
 			return true;
 		} elseif (!empty($lastTable) && !empty($nextPlugin)) {
 			// if it is a plugin run the plugin update and write the session using the table name and status
-			$this->Session->write('Updates.last', array_merge($lastTableWithPlugin, $this->_runPluginUpate($nextPlugin, $nextTable)));
+			$this->Session->write('Updates.last', array_merge($lastTableWithPlugin, $this->_runPluginUpate($nextPlugin, $nextTable, $lastTable)));
 			$this->_tempSettings(false);
 			return true;
 		} else {
@@ -154,7 +155,7 @@ class AdminController extends AppController {
  *
  */
  	protected function _runAppUpate($table = null) {
-		$this->Schema = new CakeSchema(array(
+		$this->Schema = new ZuhaSchema(array(
 			'path' => null,
 			'file' => false,
 			'connection' => 'default'
@@ -167,16 +168,23 @@ class AdminController extends AppController {
  * Run plugin update
  *
  */
- 	protected function _runPluginUpate($plugin, $table = null) {
-		$this->Schema = new CakeSchema(array(
+ 	protected function _runPluginUpate($plugin, $table = null, $lastTable = null) {
+ 		$testPath = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'Plugin' . DS . $plugin . DS . 'Config' . DS . 'Schema' . DS;
+ 		$path = file_exists($testPath . 'schema.php') ? $testPath : null;
+		$options = array(
 			'name' => $plugin,
-			'path' => null,
-			'file' => false,
+			'path' => $path,
+			//'file' => false,
 			'connection' => 'default',
 			'plugin' => $plugin
-			));
-		$New = $this->Schema->load();
-		return $this->_update($New, $table);
+			);
+		$this->Schema = new ZuhaSchema();
+		$New = $this->Schema->load($options);
+		if (!$New->tables[$table]) {
+			return $this->_downgrade($table, $lastTable);
+		} else {
+			return $this->_update($New, $table, $options);
+		}
 	}
 
 
@@ -194,12 +202,13 @@ class AdminController extends AppController {
 		$db = ConnectionManager::getDataSource('default');
 		$db->cacheSources = false;
 		$tableCheck = $db->query('SHOW TABLES LIKE "' . $table . '";');
-
 		if (!empty($tableCheck)) {
 			try {
-				$db->execute('DROP TABLE `zbk_' . $table . '`;');
+				$db->execute('DROP TABLE IF EXISTS`zbk_' . $table . '`;');
 			} catch (PDOException $e) {
 				// do nothing, just tried deleting a table that doesn't exist
+				debug($e->getMessage());
+				exit;
 			}
 
 			if ($db->query('SELECT * FROM `' . $table . '`;')) {
@@ -207,14 +216,17 @@ class AdminController extends AppController {
 				try {
 					$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;');
 					$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
+					// don't return anything the table has to be deleted still
+					// return array($lastTable => __('AND %s removed', $table));
 				} catch (PDOException $e) {
 					throw new Exception($table . ': ' . $e->getMessage());
 				}
-			}
-
+			} 
+			
 			try {
-				$db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;'); // back it up first
-				$db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
+				// backups were done above if and only if there was data in the table.
+				// $db->execute('CREATE TABLE `zbk_' . $table . '` LIKE `' . $table . '`;'); // back it up first
+				// $db->execute('INSERT INTO `zbk_' . $table . '` SELECT * FROM `' . $table . '`;');
 				$db->query('DROP TABLE `' . $table . '`;');
 				// need the last table, because the table just removed will no longer exist in the tables array
 				return array($lastTable => __('AND %s removed', $table));
@@ -239,14 +251,15 @@ class AdminController extends AppController {
  * @param bool
  * @return mixed
  */
-	protected function _update(&$Schema, $table = null, $confirmed = false) {
+	protected function _update(&$Schema, $table = null, $options = array()) {
 		$db = ConnectionManager::getDataSource($this->Schema->connection);
 		$db->cacheSources = false;
 
-		$options = array();
-		if (isset($this->params['force'])) {
-			$options['models'] = false;
-		}
+		// don't think this is really necessary 3/25/2014 RK
+		// $options = array();
+		// if (isset($this->params['force'])) {
+			// $options['models'] = false;
+		// }
 
 		try {
 			$Old = $this->Schema->read($options);
@@ -254,9 +267,10 @@ class AdminController extends AppController {
 			if (get_class($e) == 'MissingTableException' && in_array($table, array_keys($Schema->tables))) {
 				// missing table create it
 				$tableName = explode(' ', $e->getMessage()); // string like Table table_name for model TableName was not found in ...'
-				debug($e->getMessage());
-				debug($tableName);
-				debug($db->createSchema($Schema, $tableName[1]));
+				// debug($e->getMessage());
+				// debug($tableName);
+				// debug($db->createSchema($Schema, $tableName[1]));
+				// exit;
 				$this->_run($db->createSchema($Schema, $tableName[1]), 'create', $Schema);
 			} else {
 				debug('Hopefully we do not reach this spot.');
@@ -267,19 +281,30 @@ class AdminController extends AppController {
 		$compare = $this->Schema->compare($Old, $Schema);
 
 		$contents = array();
-
 		if (empty($table)) {
 			foreach ($compare as $table => $changes) {
 				$contents[$table] = $db->alterSchema(array($table => $changes), $table);
 			}
-		} else if (isset($compare[$table])) {
+		} elseif (isset($compare[$table])) {
 			// turn on to see what the change is
 			// debug('old : table -> field -> parameters');
 			// debug(array($table => array(key($compare[key($compare)]['change']) => $Old['tables'][key($compare)][key($compare[key($compare)]['change'])])));
 			// debug('new');
 			// debug($compare);
-			// break;
+			// exit;
 			$contents[$table] = $db->alterSchema(array($table => $compare[$table]), $table);
+		} elseif (!empty($compare[key($compare)]['create'])) {
+			// debug($compare);
+			// debug($Schema);
+			// debug($db->createSchema($Schema, key($compare)));
+			// exit;
+			try {
+				$this->_run($db->createSchema($Schema, key($compare)), 'create', $Schema);
+			} catch (Exception $e) {
+				// we ignore this exception, because we can get to this spot multiple times in a single update
+				// debug($e->getMessage());
+				// exit;
+			}
 		}
 
 		if (empty($contents)) {
@@ -318,7 +343,7 @@ class AdminController extends AppController {
  *
  * @param array $contents
  * @param string $event
- * @param CakeSchema $Schema
+ * @param ZuhaSchema $Schema
  * @return void
  */
 	protected function _run($contents, $event, &$Schema) {
@@ -395,7 +420,6 @@ class AdminController extends AppController {
  * Temp settings
  *
  * turns on debug and disables cache, then sets them back to what they were previously
- *
  */
 	protected function _tempSettings($start = true) {
 		if (!empty($start)) {
