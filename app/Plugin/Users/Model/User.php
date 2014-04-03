@@ -576,6 +576,7 @@ class AppUser extends UsersAppModel {
 			if (!empty($user)) {
 				$data['User']['id'] = $user['User']['id'];
 				$data['User']['last_login'] = date('Y-m-d h:i:s');
+				$data['User']['last_ip'] = $_SERVER["REMOTE_ADDR"];
 				$data['User']['view_prefix'] = $user['UserRole']['view_prefix'];
 				$data['User']['user_role_id'] = $user['UserRole']['id'];
 				if (empty($user['User']['forgot_key']) || $user['User']['forgot_key'][0] != 'W') {
