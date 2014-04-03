@@ -116,6 +116,7 @@ class UsersSchema extends CakeSchema {
 		'view_prefix' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 30, 'collate' => 'utf8_general_ci', 'comment' => 'Used to specify if this user should be shown a specific view path if it exists.', 'charset' => 'utf8'),
 		'zip' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 10, 'collate' => 'utf8_general_ci', 'comment' => 'required for the locations plugin', 'charset' => 'utf8'),
 		'last_login' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
+		'last_ip' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'forgot_key' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'forgot_key_created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'forgot_tries' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 3),
