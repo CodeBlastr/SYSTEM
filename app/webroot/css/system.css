@@ -197,17 +197,70 @@ input[type=radio], input[type=checkbox] {
 }
 
 /* media browser */ 
-#mediaBrowser img {
-	max-width: 100%;
-	max-height: 100%;
+#mediaBrowser .media-container img {
+	max-height: 80px;
+	border: 1px solid #ccc;
+	padding: 1px;
 }
 #mediaBrowser .media-item {
 	float: left;
 	width: 22%;
-	height: 180px;
+	height: 128px;
 	margin: 0 8px 8px 0;
 	border: 1px solid #eaeaea;
 	padding: 8px;
 	overflow: hidden !important;
+	font-size: 10px;
+	white-space: nowrap;
+	border-radius: 3px;
+}
+#mediaBrowser .media-item.checked {
+	border: 2px solid #3276b1;
+}
+#mediaBrowser .media-container {
+	max-height: 380px;
+	overflow-y: scroll;
+}
+#mediaBrowser .media-item .title {
+	text-overflow: ellipsis;
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+}
+#mediaBrowser .media-item .actions {
+	font-size: 1.6em;
+	text-align: left;
+}
+#mediaBrowser .media-item .actions input[name=mediaSelected] {
+	visibility: hidden;
+}
+.media-selected.thumbnail.pull-left {
+	margin: 4px 4px 0 0;
+}
+.media-selected .content {
+	text-align: center;
+}
+.media-selected img {
+	height: 48px;
+}
+.media-selected .content p {
+	font-size: 10px;
+	color: #777;
+	width: 75px;
+	margin: 0 auto;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+#mediaBrowserModal .modal-footer {
+	border: 0;
+	margin: 0;
+	padding: 8px;
+}
+
+@media (min-width: 768px) {
+	#mediaBrowserModal .modal-dialog {
+		width: 75%;
+	}
 }
     
