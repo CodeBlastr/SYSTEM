@@ -17,7 +17,7 @@ class AppUser extends UsersAppModel {
 		'Galleries.Mediable',
 		);
 
-	public $order = array('last_name', 'full_name', 'first_name');
+	public $order = array('User.last_name', 'User.full_name', 'User.first_name');
 
 /**
  * Auto Login setting, used to skip session write in aftersave
