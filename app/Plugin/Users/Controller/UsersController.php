@@ -439,10 +439,10 @@ class AppUsersController extends UsersAppController {
 				$this->_login(null,$options);
 			}
 		}
-		$userRoles = $this->User->UserRole->find('list');
+		$userRoles = $this->User->UserRole->find('list', array('conditions' => array('UserRole.is_registerable' => 1)));
 		unset($userRoles[1]);
 		// remove the administrators group by default - too insecure
-		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
+		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : key($userRoles);
 		$this->set(compact('userRoleId', 'userRoles'));
 		if (empty($this->templateId)) {
 			$this->layout = 'login';
