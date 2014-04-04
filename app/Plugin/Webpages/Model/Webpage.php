@@ -306,8 +306,10 @@ class AppWebpage extends WebpagesAppModel {
 
 /**
  * Include children method
- * 
  * This allows us to have a parent element, with variations on that element depending on what url you're at.
+ *
+ * @TODO Add support in (again) for using Aliases in the Template URLs
+ *
  * @param array $include (the webpage data array)
  * @param string $requestUrl (the request url that is asking for parsing)
  */
@@ -327,6 +329,22 @@ class AppWebpage extends WebpagesAppModel {
 							$include['Webpage'] = $child;
 							break;
 						}
+
+//						$aliasName = $request->params['alias'];
+//						if($webpage['Alias']['name'] && empty($aliasName)) {
+//							$aliasName = $webpage['Alias']['name'];
+//						}
+//						if (!empty($aliasName)) {
+//							if ($aliasName[strlen($aliasName)-1] !== '/') {
+//								$aliasName .= '/';
+//							}
+//							$urlCompare = strpos($aliasName, '/') === 0 ? substr($aliasName, 1) : $aliasName;
+//							if (preg_match($urlRegEx, $urlCompare)) {
+//								$include['Webpage'] = $child;
+//								break;
+//							}
+//						}
+
 					}
 				}
 			}
