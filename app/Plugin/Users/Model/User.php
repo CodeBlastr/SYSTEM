@@ -17,6 +17,10 @@ class AppUser extends UsersAppModel {
 		'Galleries.Mediable',
 		);
 
+/**
+ * gets updated to use $this->alias in the __construct()
+ * @var array
+ */
 	public $order = array('User.last_name', 'User.full_name', 'User.first_name');
 
 /**
@@ -190,6 +194,8 @@ class AppUser extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
+		$this->order = array($this->alias.'.last_name', $this->alias.'.full_name', $this->alias.'.first_name');
+
 		if(CakePlugin::loaded('Media')) {
 			$this->actsAs[] = 'Media.MediaAttachable';
 		}
