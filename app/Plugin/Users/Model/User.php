@@ -17,8 +17,6 @@ class AppUser extends UsersAppModel {
 		'Galleries.Mediable',
 		);
 
-	public $order = array('User.last_name', 'User.full_name', 'User.first_name');
-
 /**
  * Auto Login setting, used to skip session write in aftersave
  */
@@ -231,6 +229,9 @@ class AppUser extends UsersAppModel {
 			// );
 		}
 		parent::__construct($id, $table, $ds);
+		
+		// default ordering
+		$this->order = array($this->alias . '.last_name', $this->alias . '.full_name', $this->alias . '.first_name');
 	}
 
 /**
