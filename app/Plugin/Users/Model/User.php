@@ -188,6 +188,8 @@ class AppUser extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
+		$this->order = array($this->alias.'.last_name', $this->alias.'.full_name', $this->alias.'.first_name');
+
 		if(CakePlugin::loaded('Media')) {
 			$this->actsAs[] = 'Media.MediaAttachable';
 		}
