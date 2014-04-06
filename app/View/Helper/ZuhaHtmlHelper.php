@@ -206,7 +206,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 	protected function _resizeImage($cType = 'resize', $id, $imgFolder, $newName = false, $newWidth = false, $newHeight = false, $quality = 75, $bgcolor = false) {
 		$img = $imgFolder . $id;
 		if (file_exists($img)) {
-			//list($oldWidth, $oldHeight, $type) = getimagesize($img);
+			list($oldWidth, $oldHeight, $type) = getimagesize($img);
 			$ext = $this->image_type_to_extension($type);
 
 			// check for and create cacheFolder
