@@ -45,7 +45,16 @@ class AppUserGroup extends UsersAppModel {
 		)
 	);
 
-/**
+	public function beforeSave($options = array()) {
+		if (!empty($this->data[$this->alias]['password'])) {
+			App::uses('AuthComponent', 'Controller/Component');
+	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
+		}
+		parent::beforeSave($options);
+	}
+
+
+	/**
  *
  * @param string $type
  * @param array $params
