@@ -17,8 +17,6 @@ class AppUser extends UsersAppModel {
 		'Galleries.Mediable',
 		);
 
-	public $order = array('last_name', 'full_name', 'first_name');
-
 /**
  * Auto Login setting, used to skip session write in aftersave
  */
@@ -190,6 +188,8 @@ class AppUser extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
+		$this->order = array($this->alias.'.last_name', $this->alias.'.full_name', $this->alias.'.first_name');
+
 		if(CakePlugin::loaded('Media')) {
 			$this->actsAs[] = 'Media.MediaAttachable';
 		}
@@ -231,6 +231,9 @@ class AppUser extends UsersAppModel {
 			// );
 		}
 		parent::__construct($id, $table, $ds);
+		
+		// default ordering
+		$this->order = array($this->alias . '.last_name', $this->alias . '.full_name', $this->alias . '.first_name');
 	}
 
 /**
@@ -576,6 +579,7 @@ class AppUser extends UsersAppModel {
 			if (!empty($user)) {
 				$data['User']['id'] = $user['User']['id'];
 				$data['User']['last_login'] = date('Y-m-d h:i:s');
+				$data['User']['last_ip'] = $_SERVER["REMOTE_ADDR"];
 				$data['User']['view_prefix'] = $user['UserRole']['view_prefix'];
 				$data['User']['user_role_id'] = $user['UserRole']['id'];
 				if (empty($user['User']['forgot_key']) || $user['User']['forgot_key'][0] != 'W') {

@@ -433,4 +433,19 @@ class ZuhaSet {
 	    return $r;
 	}
 
+/**
+ * Recursively remove empty values from an array
+ */
+	function array_filter_recursive($haystack) {
+	    foreach ($haystack as $key => $value) {
+	        if (is_array($value)) {
+	            $haystack[$key] = ZuhaSet::array_filter_recursive($haystack[$key]);
+	        }
+	        if (empty($haystack[$key])) {
+	            unset($haystack[$key]);
+	        }
+	    }
+	    return is_numeric(key($haystack)) ? array_values($haystack) : $haystack; // reindex if keys are sequential instead of associative
+	}
+
 }

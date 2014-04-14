@@ -151,56 +151,41 @@ class ZuhaHtmlHelper extends HtmlHelper {
  * @version 1.0
  */
 	private function _resize($image, $path, $options = array(), $extOptions = null) {
-		if (is_array($extOptions)) {
-			if (empty($options['width']) && empty($options['height'])) {
-				// attempt to get the image width and height
-				if ($size = getimagesize('http://' . $_SERVER['HTTP_HOST'] . $path)) {
-					$options['width'] = $size[0];
-					$options['height'] = $size[1];
+		if (is_array($extOptions) && !empty($options['width']) && !empty($options['height'])) {
+			// default extended options for images
+			$extOptions['conversion'] = !empty($extOptions['conversion']) ? $extOptions['conversion'] : 'resizeCrop'; // resize, resizeCrop, crop
+			$extOptions['quality'] = !empty($extOptions['quality']) ? $extOptions['quality'] : 100;
+			if (strpos($path, 'theme') > 0 /* || strpos($path, 'theme') === 0 */) {
+				// this only works for theme images
+				$fileName = substr(strrchr($path, '/'), 1);
+				$themeFolder = str_replace(strtolower('/theme/' . $this->theme . '/'), '', $path);
+				$themeFolder = str_replace('/' . $fileName, '', $themeFolder);
+				if ($extOptions['caller'] === 'Media') {
+					$fileName = str_replace('images\\', '', $fileName);
+					$id = urldecode(str_replace('images\\', '', $fileName));
+					$imgFolder = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . 'webroot' . DS . $themeFolder . DS;
+				} else {
+					$id = urldecode($fileName);
+					$imgFolder = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . 'webroot' . DS . $themeFolder . DS;
+				}
+				$convertedFile = $this->_resizeImage(
+					$extOptions['conversion'],
+					$id,
+					$imgFolder,
+					'tmp_' . $options['width'] . $options['height'] . $extOptions['conversion'],
+					$options['width'],
+					$options['height'],
+					$extOptions['quality']
+				);
+				if ($convertedFile) {
+					$htmlTag = str_replace($fileName, $convertedFile['path'], $image);
+					$htmlTag = preg_replace('/\width=".*?"/', 'width="' . $convertedFile['width'] . '"', $htmlTag);
+					$htmlTag = preg_replace('/height=".*?"/', 'height="' . $convertedFile['height'] . '"', $htmlTag);
+					return $htmlTag;
 				}
 			}
-			if (!empty($options['width']) && !empty($options['height'])) {
-				// default extended options for images
-				$extOptions['conversion'] = !empty($extOptions['conversion']) ? $extOptions['conversion'] : 'resizeCrop'; // resize, resizeCrop, crop
-				$extOptions['quality'] = !empty($extOptions['quality']) ? $extOptions['quality'] : 75;
-				if (strpos($path, 'theme') > 0 /* || strpos($path, 'theme') === 0 */) {
-					// this only works for theme images
-					$fileName = substr(strrchr($path, '/'), 1);
-					$themeFolder = str_replace(strtolower('/theme/' . $this->theme . '/'), '', $path);
-					$themeFolder = str_replace('/' . $fileName, '', $themeFolder);
-					if ($extOptions['caller'] === 'Media') {
-						$fileName = str_replace('images\\', '', $fileName);
-						$id = urldecode(str_replace('images\\', '', $fileName));
-						$imgFolder = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . 'webroot' . DS . $themeFolder . DS;
-					} else {
-						$id = urldecode($fileName);
-						$imgFolder = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'View' . DS . 'webroot' . DS . $themeFolder . DS;
-					}
-					$convertedFile = $this->_resizeImage(
-						$extOptions['conversion'],
-						$id,
-						$imgFolder,
-						'tmp_' . $options['width'] . $options['height'] . $extOptions['conversion'],
-						$options['width'],
-						$options['height'],
-						$extOptions['quality']
-					);
-					if ($convertedFile) {
-						$htmlTag = str_replace($fileName, $convertedFile['path'], $image);
-						$htmlTag = preg_replace('/\width=".*?"/', 'width="' . $convertedFile['width'] . '"', $htmlTag);
-						$htmlTag = preg_replace('/height=".*?"/', 'height="' . $convertedFile['height'] . '"', $htmlTag);
-						return $htmlTag;
-					} else {
-						return $image;
-					}
-				}
-			} else {
-				debug('Width & height attributes are required for dynamic image conversions.');
-				//break;
-			}
-		} else {
-			return $image;
 		}
+		return $image;
 	}
 
 /**
@@ -260,11 +245,11 @@ class ZuhaHtmlHelper extends HtmlHelper {
 			if ($newWidth || $newHeight) {
 				// check to make sure temp file doesn't exist from a mistake or system hang up. If so delete.
 				if (file_exists($dest)) {
-					$size = @getimagesize($dest);
+					//$size = @getimagesize($dest);
 					return array(
-					'path' => $cacheFolder . '/' . $newName . '.' . $id,
-					'width' => $size[0],
-					'height' => $size[1],
+						'path' => $cacheFolder . '/' . $newName . '.' . $id,
+						'width' => $size[0],
+						'height' => $size[1],
 					);
 				} else {
 					switch ($cType) {
@@ -395,7 +380,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
 						rename($dest, $img);
 					}
 		
-					$size = @getimagesize($cacheFolder . '/' . $newName . '.' . $id);
+					//$size = @getimagesize($cacheFolder . '/' . $newName . '.' . $id);
 					return array(
 						'path' => $cacheFolder . '/' . $newName . '.' . $id,
 						'width' => $applyWidth,
