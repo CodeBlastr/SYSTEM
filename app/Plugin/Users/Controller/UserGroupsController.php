@@ -137,16 +137,16 @@ class AppUserGroupsController extends UsersAppController {
 						'is_moderator' => 1,
 						)
 					);
-				// save the users user role data 
+				// save the users user role data
 				$this->UserGroup->UsersUserGroup->save($pg_data);
-				$this->Session->setFlash(__('Group has been saved', true));
+				$this->Session->setFlash(__('Group has been saved', true), 'flash_success');
 				$this->redirect(array('plugin'=>'users','controller'=>'user_groups' , 'action'=>'index'));
 			} else {
-				$this->Session->setFlash(__('Group could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('Group could not be saved. Please, try again.', true), 'flash_warning');
 			}
 		}
 	}
-	
+
 /**
  * Action to join a group
  *
