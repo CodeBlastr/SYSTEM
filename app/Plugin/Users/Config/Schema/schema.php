@@ -3,10 +3,6 @@ class UsersSchema extends CakeSchema {
 
 	public $renames = array();
 
-	public function __construct($options = array()) {
-		parent::__construct();
-	}
-
 	public function before($event = array()) {
 		App::uses('UpdateSchema', 'Model'); 
 		$this->UpdateSchema = new UpdateSchema;
@@ -34,10 +30,10 @@ class UsersSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 	public $user_followers = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'key' => 'primary'),
+		'id' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'follower_id' => array('type' => 'integer', 'null' => false, 'default' => NULL),
-		'approved' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'comment' => 'was enum with \'0\',\'1\',\'-1\' as values'),
+		'approved' => array('type' => 'integer', 'null' => false, 'default' => 0),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
@@ -158,7 +154,7 @@ class UsersSchema extends CakeSchema {
 		'phone_2' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 155, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'emergency_contact' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 155, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'hobbies' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 155, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'about_me' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 155, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'about_me' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'twitter' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 155, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'facebook' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 155, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'pinterest' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 155, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
