@@ -11,21 +11,21 @@
 	<?php
 
 
-	foreach ($userfollowers as $k => $userfollower):
+	foreach ($userFollowers as $k => $follower):
 		$class = (($k % 2)==0) ? ' class="altrow"' : '';
 
 	?>
 	<tr<?php echo $class;?>>
-		<td><?php echo $userfollower['UserFollower']['id']; ?>&nbsp;</td>
+		<td><?php echo $follower['UserFollower']['id']; ?>&nbsp;</td>
 		<td>
-			<?php echo $this->Html->link($userfollower['User']['username'], array('controller' => 'users', 'action' => 'view', $userfollower['User']['id'])); ?>
+			<?php echo $this->Html->link($follower['User']['username'], array('controller' => 'users', 'action' => 'view', $follower['User']['id'])); ?>
 		</td>
-		<td><?php echo $this->Html->link($userfollower['UserRef']['username'],array('controller' => 'users', 'action' => 'view', $userfollower['UserRef']['id'])); ?>&nbsp;</td>
-		<td><?php echo $userfollower['UserFollower']['approved'] == 1 ? 'Yes' : 'No'; ?>&nbsp;</td>
+		<td><?php echo $this->Html->link($follower['UserRef']['username'],array('controller' => 'users', 'action' => 'view', $follower['UserRef']['id'])); ?>&nbsp;</td>
+		<td><?php echo $follower['UserFollower']['approved'] == 1 ? 'Yes' : 'No'; ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $userfollower['UserFollower']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $userfollower['UserFollower']['id'])); ?>
-			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $userfollower['UserFollower']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $userfollower['Userfollower']['id'])); ?>
+			<?php echo $this->Html->link(__('View', true), array('action' => 'view', $follower['UserFollower']['id'])); ?>
+			<?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $follower['UserFollower']['id'])); ?>
+			<?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $follower['UserFollower']['id']), null, sprintf(__('Are you sure you want to delete # %s?', true), $follower['Userfollower']['id'])); ?>
 		</td>
 	</tr>
 <?php endforeach; ?>
