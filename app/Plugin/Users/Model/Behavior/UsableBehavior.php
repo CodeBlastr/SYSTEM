@@ -309,7 +309,7 @@ class UsableBehavior extends ModelBehavior {
 							'Used.foreign_key' => $result[$Model->alias][$Model->primaryKey],
 							'Used.model' => $Model->alias,
 							),
-						));;
+						));
 					$results[$i][$Model->alias]['__used'] = $count;
 				}
 				$i = $i + 1;
@@ -331,7 +331,7 @@ class UsableBehavior extends ModelBehavior {
 		foreach ($data as $userId) {
 			$users[]['id'] = $userId;
 		}
-		return users;
+		return $users;
 	}
 
 	private function _saveUserGroupIds($data){
