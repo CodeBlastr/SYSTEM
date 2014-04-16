@@ -1,21 +1,19 @@
-<div id="loginWrapper">
-
-	<div id="Register" class="panel">
-		<div id="userRegisterWrapper" class="row">
+<div id="content">
+	<div id="register" class="collapse">
+		<div class="row table">
 			<div class="col-sm-6">
-				<h2>Register</h2>
 				<?php echo $this->element('register'); ?>
 			</div>
-			<div id="sidebarPromo" class="col-sm-6 text-center">
-				<a class="btn btn-default scrnChange" href="#Login">I already have an account</a>
+			<div class="col-sm-6 text-center vertical-center">
+				<a href="#login" class="btn btn-default" data-parent="#content" data-target="#login">I already have an account</a>
 			</div>
 		</div>
 	</div>
 
-	<div id="Login" class="panel">
-		<div id="userLoginWrapper" class="row">
-			<div class="col-sm-6 text-center">
-				<a class="btn btn-default scrnChange" href="#Register">Register a new account</a>
+	<div id="login" class="collapse in">
+		<div class="row table">
+			<div class="col-sm-6 text-center vertical-center">
+				<a href="#register" class="btn btn-default" data-parent="#content" data-target="#register">Register a new account</a>
 			</div>
 			<div class="col-sm-6">
 				<h2>Login</h2>
@@ -23,31 +21,23 @@
 			</div>
 		</div>
 	</div>
-
 </div>
 
 <script type="text/javascript">
-	(function($) {
+	$(function() {
+		$('a[data-parent]').click(function(e) {
+			var parent = $(this).attr('data-parent');
+			var self = $(this).attr('data-target');
+			console.log(parent + ' ' + self);
+			$(parent + ' .collapse').removeClass('in');
+			$(parent + ' ' + self).addClass('in');
+		});
 
+		// link to /users/users/login/#register to show the register form
 		if (window.location.hash.length > 0) {
-			$('#loginWrapper a[href="' + window.location.hash + '"]').tab('show');
-		} else {
-			$('#Login').hide();
+			console.log(window.location.hash + '.collapse');
+			$('.collapse').removeClass('in');
+			$(window.location.hash + '.collapse').addClass('in');
 		}
-
-		window.addEventListener('popstate', function(event) {
-			if (window.location.hash.length > 0) {
-				$('#loginWrapper a[href="' + window.location.hash + '"]').tab('show');
-			}
-		});
-
-		$('.scrnChange').click(function(e) {
-			//console.log('click');
-			e.preventDefault();
-			var id = $(this).attr('href');
-			$('#loginWrapper .panel').hide();
-			$(id).show('fast');
-		});
-
-	})(jQuery); 
+	}); 
 </script>
