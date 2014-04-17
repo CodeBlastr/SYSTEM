@@ -86,8 +86,8 @@ class AppWebpagesController extends WebpagesAppController {
  */
     protected function _indexContent($type) {
 		$this->paginate['conditions']['Webpage.type'] = $type;
-		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = 0;
-		$this->paginate['conditions']['OR'][]['Webpage.parent_id'] = null;
+		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = 0;
+		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = null;
 		$this->paginate['order']['Webpage.parent_id'] = 'DESC';
 		//$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
 		$this->paginate['contain'][] = 'Child';
@@ -158,6 +158,17 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('page_title_for_layout', 'Widgets / Elements');
 		$this->layout = 'default';
 		$this->view = 'index_element';
+    }
+
+
+    protected function _indexEmail() {
+		$this->paginate['conditions']['Webpage.type'] = 'email';
+		$this->set('webpages', $this->paginate());
+		$this->set('displayName', 'title');
+		$this->set('displayDescription', 'content');
+		$this->set('page_title_for_layout', 'Email Templates');
+		$this->layout = 'default';
+		$this->view = 'index_email';
     }
     
 /**
@@ -246,7 +257,6 @@ class AppWebpagesController extends WebpagesAppController {
 		if (!$this->Webpage->types($type)) {
 			throw new NotFoundException(__('Invalid content type'));
 		}
-		
 		$this->request->data['Webpage']['type'] = $type;
         $add = method_exists($this, '_add' . ucfirst($type)) ? '_add' . ucfirst($type) : '_addContent';
         $this->$add($parentId);
@@ -262,6 +272,7 @@ class AppWebpagesController extends WebpagesAppController {
 		App::uses('WebpageMenu', 'Webpages.Model');
 		$WebpageMenu = new WebpageMenu();
 		$this->set('parents', $WebpageMenu->generateTreeList(null, null, null, ' - - '));
+		$this->set('menus', $WebpageMenu->find('list', array('fields' => array('WebpageMenu.code', 'WebpageMenu.name'), 'conditions' => array('WebpageMenu.parent_id' => null))));
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Page Builder'));
@@ -302,7 +313,13 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('page_title_for_layout', __('Template Builder'));
 		$this->view = 'add_template';        
     }
-	
+
+    protected function _addEmail() {
+        $this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('page_title_for_layout', __('Email Builder'));
+		$this->view = 'add_email';
+    }
+
 /**
  * Edit method
  * 
@@ -333,24 +350,30 @@ class AppWebpagesController extends WebpagesAppController {
 		
 		$types = $this->Webpage->types();
 
-		if ($this->request->data['Webpage']['type'] == 'template') {
-			if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
-				$cssFiles = unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES);
-				$cssFile = $cssFiles['all'][0];
-			} else {
-				$cssFile = 'screen';
-			}
-			$this->set('ckeSettings', array(
-				'contentsCss' => '/theme/default/css/'.$cssFile.'.css',
-				'buttons' => array('Source')
-				));
-		} else {
-			unset($userRoles[1]);
-			$this->set('ckeSettings', null);
-		}
+		// don't believe this is used 03/23/2014 RK
+		// if ($this->request->data['Webpage']['type'] == 'template') {
+			// if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
+				// $cssFiles = unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES);
+				// $cssFile = $cssFiles['all'][0];
+			// } else {
+				// $cssFile = 'screen';
+			// }
+			// $this->set('ckeSettings', array(
+				// 'contentsCss' => '/theme/default/css/'.$cssFile.'.css',
+				// 'buttons' => array('Source')
+				// ));
+		// } else {
+			// unset($userRoles[1]);
+			// $this->set('ckeSettings', null);
+		// }
 		// 1/6/2012 rk - $this->set('templateUrls', $this->Webpage->templateUrls($this->request->data));
+		
+		// these three lines should be for content only
+		App::uses('WebpageMenu', 'Webpages.Model');
+		$WebpageMenu = new WebpageMenu();
+		$this->set('menus', $WebpageMenu->find('list', array('fields' => array('WebpageMenu.code', 'WebpageMenu.name'), 'conditions' => array('WebpageMenu.parent_id' => null))));
+		
 		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
-
 		$this->set(compact('userRoles', 'types'));
 		$type = $this->request->data['Webpage']['type'];
 		$this->view = $this->_fileExistsCheck('edit_' . $type . $this->ext) ? 'edit_' . $type : 'edit_content';

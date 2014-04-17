@@ -54,6 +54,16 @@
 	font-size: 20px;
 	font-weight: normal;
 	width: auto;
+	margin: 0 !important;
+	
+}
+#adminNavFloManagr .navbar-brand {
+	position: static;
+	height: auto;
+	background: none;
+	width: auto;
+	text-indent: 0;
+	overflow: auto;
 }
 #adminNavFloManagr.navbar .brand span {
 	font-size: 20px;
@@ -121,6 +131,9 @@
 #adminNavFloManagr .btn-navbar {
 	display: none;
 }
+#adminNavFloManagr .navbar-nav {
+	text-transform: none;
+}
 #adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
 	margin: 0 auto;
     width: 1170px;
@@ -137,7 +150,8 @@
 }
 #adminNavFloManagr .nav-collapse {
 	float: left;
-	width: 1020px;
+	/* width: 1020px;*/
+	width: 930px; /* was the above, changed on steve hatch */
 	height: 0; /* put in with bootstrap 3, might need to come out if it breaks 2 */
 }
 #adminNavFloManagr .navbar-inner {
@@ -153,6 +167,7 @@
 	margin-right: 15px;
     vertical-align: top;
     float: left;
+    border: 0;
 }
 #adminNavFloManagr ul li.dropdown li {
     float: none;

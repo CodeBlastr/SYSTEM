@@ -2,11 +2,12 @@
 App::uses('WebpagesAppModel', 'Webpages.Model');
 /** 
  * CMS Webpage Model.
- * Handles the cms data 
- *
- * @todo		Need to add custom validation for webpage types.  (like is_default and template_urls can't both have values)
+ * Handles the cms data
+ * 
+ * @property Webpage Webpage
+ * @todo Need to add custom validation for webpage types.  (like is_default and template_urls can't both have values)
  */
-class Webpage extends WebpagesAppModel {
+class AppWebpage extends WebpagesAppModel {
 	
 /**
  * Name
@@ -76,7 +77,8 @@ class Webpage extends WebpagesAppModel {
 		'element' => 'Element',
 		'section' => 'Section',
 		'sub' => 'Sub',
-		'content' => 'Content'
+		'content' => 'Content',
+		'email' => 'Email'
 		);
 	
 /**
@@ -130,7 +132,6 @@ class Webpage extends WebpagesAppModel {
 /**
  *  Holder for tokens
  */
-    
     public $tokens = array();
 	
 /**
@@ -142,6 +143,9 @@ class Webpage extends WebpagesAppModel {
 		}
 		if (CakePlugin::loaded('Drafts')) {
 			$this->actsAs['Drafts.Draftable'] = array('conditions' => array('type' => 'content'));
+		}
+		if (CakePlugin::loaded('Media')) {
+			$this->actsAs[] = 'Media.MediaAttachable';
 		}
 		parent::__construct($id, $table, $ds);
 	}
@@ -302,8 +306,10 @@ class Webpage extends WebpagesAppModel {
 
 /**
  * Include children method
- * 
  * This allows us to have a parent element, with variations on that element depending on what url you're at.
+ *
+ * @TODO Add support in (again) for using Aliases in the Template URLs
+ *
  * @param array $include (the webpage data array)
  * @param string $requestUrl (the request url that is asking for parsing)
  */
@@ -323,6 +329,22 @@ class Webpage extends WebpagesAppModel {
 							$include['Webpage'] = $child;
 							break;
 						}
+
+//						$aliasName = $request->params['alias'];
+//						if($webpage['Alias']['name'] && empty($aliasName)) {
+//							$aliasName = $webpage['Alias']['name'];
+//						}
+//						if (!empty($aliasName)) {
+//							if ($aliasName[strlen($aliasName)-1] !== '/') {
+//								$aliasName .= '/';
+//							}
+//							$urlCompare = strpos($aliasName, '/') === 0 ? substr($aliasName, 1) : $aliasName;
+//							if (preg_match($urlRegEx, $urlCompare)) {
+//								$include['Webpage'] = $child;
+//								break;
+//							}
+//						}
+
 					}
 				}
 			}
@@ -1157,4 +1179,7 @@ class Webpage extends WebpagesAppModel {
 	}
 
 	
+}
+if (!isset($refuseInit)) {
+	class Webpage extends AppWebpage {}
 }

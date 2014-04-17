@@ -25,5 +25,13 @@ $(function() {
 			if ($.isFunction(window.selectCallBack)) { selectCallBack(data); }
 	    });
 	});
+	
+	// turns off audio and video when you close a bootstrap modal
+	$('.modal').on('hidden.bs.modal', function () {
+	    $('video').each(function() {
+	    	this.pause();
+	    });
+	    $('.jp-pause').trigger('click');
+	});
 
 });

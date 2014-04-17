@@ -28,7 +28,7 @@ class CalendarHelper extends AppHelper {
  *	$params['header']	= array of calendar header options, or false for no header. @see http://arshaw.com/fullcalendar/docs/display/header/
  * @return string HTML and JavaScript to display the calendar
  */
-	public function renderCalendar ($params = array()) {
+	public function renderCalendar($params = array()) {
 		// jQueryUI is needed when editable = true.  It is used to drag and drop events on the calendar.
 		//$this->Html->script('/js/jquery-ui/jquery-ui-1.9.2.custom.min.js', array('inline' => false));
 		$this->Html->script('fullcalendar/fullcalendar', array('inline' => false));

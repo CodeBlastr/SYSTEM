@@ -19,7 +19,7 @@ $showContext = !empty($showContext) ? true : false; ?>
 	        </ul>
 		</div>
         
-        <div class="collapse nav-collapse navbar-collapse">
+        <div class="collapse nav-collapse">
             <ul class="nav navbar-nav">
                 <li class="nav-mode"><?php echo $this->Html->link('Content', '/admin/#tagPages+tagMedia+tagDiscussion+tagElements', array('title' => 'Pages, Modules, Media, Categories, Tags, Enumerations', 'onclick' => 'window.location.replace(this.href);window.location.reload(true)')); // takes extra js, because of the hash tags ?></li>
                 <li class="nav-mode"><?php echo $this->Html->link('Contacts', '/admin/contacts/contacts/dashboard', array('title' => 'Leads, Opportunities')); ?></li>
