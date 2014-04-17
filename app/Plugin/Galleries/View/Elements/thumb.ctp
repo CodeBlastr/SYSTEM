@@ -22,7 +22,16 @@
  
  
 if (!empty($model) && !empty($foreignKey)) {
-	$galleryThumb = $this->requestAction("/galleries/galleries/thumb/{$model}/{$foreignKey}");
+	$Gallery = ClassRegistry::init('Galleries.Gallery');
+	$galleryThumb = $Gallery->find('first', array(
+		'conditions' => array(
+			'Gallery.model' => $model,
+			'Gallery.foreign_key' => $foreignKey,
+			),
+		'contain' => array(
+			'GalleryThumb',
+			),
+		));
 } else {
     $model = 'Gallery';
 }

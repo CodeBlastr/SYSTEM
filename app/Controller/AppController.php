@@ -317,19 +317,21 @@ class AppController extends Controller {
 
 /**
  * Checks to see if we're paginating a sub model one level deep.
+ * If we are then we get the class and return the model schema, if not return false.
  *
- * If we are then we get the class and return the model schema, if not return
- * false.
- * @param string
+ * @todo The 1st set of if/elses needs a better check added.  if is_string() ?? ^JB
+ *
+ * @param string $object
+ * @param string $field
  * @return mixed
  */
 	private function _getPaginatorVars($object, $field) {
 		$ModelName = $this->modelClass;
-		if (@$this->$object->name) {
+		if ($this->$object->name) {
 			$Object = $this->$object;
-		} else if (@$this->$ModelName->$object->name) {
+		} else if ($this->$ModelName->$object->name) {
 			$Object = $this->$ModelName->$object;
-		} else if (@$this->$ModelName->name) {
+		} else if ($this->$ModelName->name) {
 			$Object = $this->$ModelName;
 		}
 		if (@$Object->name) {
@@ -743,11 +745,15 @@ class AppController extends Controller {
 			$i = 0;
 			foreach ($data['urls'] as $url) {
 				$urlString = str_replace('/', '\/', trim($url));
+				if (substr($urlString, -1) !== '/') {
+					$urlString . '/';
+				}
 				$urlRegEx = '/' . str_replace('*', '(.*)', $urlString) . '/';
 				$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/' . substr($urlRegEx, 3) : $urlRegEx;
 				$url = $this->request->action == 'index' ? $this->request->plugin . '/' . $this->request->controller . '/' . $this->request->action . '/' : $this->request->url . '/';
 				$urlCompare = strpos($url, '/') === 0 ? substr($url, 1) : $url;
-				if (preg_match($urlRegEx, $urlCompare)) {
+				$urlCompare = str_replace("//", "/", $urlCompare);
+				if ($urlRegEx !== '//' && preg_match($urlRegEx, $urlCompare)) {
 					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateName'];
 				}
 				$i++;
@@ -759,7 +765,7 @@ class AppController extends Controller {
 			return null;
 		}
 	}
-
+	
 /**
  * Loads components dynamically using both system wide, and per controller
  * loading abilities.
