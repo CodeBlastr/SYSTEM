@@ -2,19 +2,19 @@
 if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php')) {
 	require_once(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstrap.php');
 } else {
-	
+
 	/**
 	 * Default bootstrap.php file from here down.
 	 */
-	
+
 	require_once(ROOT.DS.APP_DIR.DS.'Config'.DS.'global.php');
-	
+
 	/**
 	 * The settings below can be used to set additional paths to models, views and controllers.
 	 * This is related to Ticket #470 (https://trac.cakephp.org/ticket/470)
 	 *
 	 */
-	
+
 	if (!defined('SITE_DIR')) {
 		define('SITE_DIR', null);
 	}
@@ -26,7 +26,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	    'ZuhaAssetDispatcher',
 	    'CacheDispatcher'
 	));
-	
+
 	// Add logging configuration.
 	CakeLog::config('debug', array(
 	    'engine' => 'FileLog',
@@ -44,7 +44,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 	// 'probability'=> 100, //[optional]
 	 	// 'prefix' => Inflector::slug(SITE_DIR) . '_', //[optional]  prefix every cache file with this string
 	// ));
-	
+
 	App::build(array(
 		'Plugin' => array(
 			//ROOT.DS.SITE_DIR.DS.'Locale'.DS.'Plugin'.DS, If you do this it expects the entire plugin to be there
@@ -120,10 +120,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 * ));
 	 *
 	 */
-	
+
     Inflector::rules('singular', array('irregular' => array('webpage_jses' => 'webpage_js')));
     Inflector::rules('plural', array('irregular' => array('webpage_js' => 'webpage_jses')));
-	
+
 	/**
 	 * reads settings.ini (or defaults.ini if non-existent)
 	 * and sets configurable constants that are set in the settings db table
@@ -157,9 +157,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			exit;
 		}
 	}
-	
+
 	__setConstants();
-	
+
 	/**
 	 * Plugins need to be loaded manually, you can either load them one by one or all of them in a single call
 	 * Uncomment one of the lines below, as you need. make sure you read the documentation on CakePlugin to use more
@@ -174,9 +174,9 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	} elseif (SITE_DIR === NULL){
     	CakePlugin::loadAll(); // Loads all plugins at once
     } else {
-    	CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages', 'Utils')); // required plugins    
+    	CakePlugin::load(array('Contacts', 'Galleries', 'Privileges', 'Users', 'Webpages', 'Utils')); // required plugins
 	}
-	
+
 	function templateSettings() {
 		$settings = unserialize(__APP_TEMPLATES);
 		$i = 0;
@@ -190,8 +190,8 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		}
 		return $templates;
 	}
-	
-	
+
+
 	/**
 	 * temporary convenience function for states options
 	 *
@@ -252,21 +252,21 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			'WY' => 'Wyoming',
 			);
 	}
-	
-	
+
+
 	/**
 	 * To add to the core cake utility Inflector
 	 */
 	class ZuhaInflector {
-    
+
 	    /**
 	     * String to ASCII
 	     * Converts the given string to a no spaces, no special characters, no cases string, like a url
-	     * 
+	     *
 	     * Tänk efter nu – förr'n vi föser dig bort BECOMES tank-efter-nu-forrn-vi-foser-dig-bort
-		 * 
+		 *
 		 * Usage : ZuhaInflector::asciify('some string');
-	     * 
+	     *
 	     * @param string $str
 	     * @param array $replace
 	     * @param string $delimiter
@@ -276,24 +276,24 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
             if(!empty($replace)) {
             	$str = str_replace((array)$replace, ' ', $str);
         	}
-        
+
         	$clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
         	$clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
         	$clean = strtolower(trim($clean, '-'));
         	$clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
-        
+
         	return $clean;
         }
-    
+
 	    /**
 	     * String to Url
-	     * Converts the given string to a no spaces, no special characters, no cases string, like a url. 
+	     * Converts the given string to a no spaces, no special characters, no cases string, like a url.
 		 * Unlike the asciify function it changes + (plus signs) to / (slashes)
-	     * 
+	     *
 	     * Tänk efter nu – förr'n vi föser dig b+ort BECOMES tank-efter-nu-forrn-vi-foser-dig-b/ort
-		 * 
+		 *
 		 * Usage : ZuhaInflector::urlify('some string');
-	     * 
+	     *
 	     * @param string $str
 	     * @param array $replace
 	     * @param string $delimiter
@@ -304,13 +304,13 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 			$string = '';
 			for ($i = 0; $i < count($strs); $i++) {
 				$parts[] = ZuhaInflector::asciify(trim($strs[$i]));
-			}        
+			}
         	return implode('/', $parts);
         }
-		
+
 		/**
 		 * Flatten a multidimensional array to a single string
-		 * 
+		 *
 		 * @param array $array
 		 * @param array $options
 		 */
@@ -321,7 +321,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		    @array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
 		    return implode($options['separator'], $return);
 		}
-	
+
 		/**
 		 * Function for formatting the pricing of an item.
 		 *
@@ -351,7 +351,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				return $start . number_format($price, $options['places'], $options['decimal'], $options['separator']) . $end;
 			}
 		}
-	
+
 		/**
 		 * Function for formatting the date of a string.
 		 *
@@ -366,7 +366,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				return date($options['format'], strtotime($date));
 			}
 		}
-	
+
 		/**
 		 * Function for formatting the time of a string.
 		 *
@@ -381,15 +381,15 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				return date($format, strtotime($string));
 			}
 		}
-	
+
 		/**
-		 * @deprecated 
+		 * @deprecated
 		 */
 		public function dateize($date, $options = null) {
 			return self::datify($date);
 		}
-	
-	
+
+
 		/**
 		 * return a plugin name from a controller name
 		 *
@@ -398,10 +398,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		public static function pluginize($name) {
             // if you put something like this here, comment as to why
             //if($name == "1s") { debug(debug_backtrace()); }
-            
+
 			// list of models and controllers to rename to the corresponding plugin
 			$name = Inflector::singularize(Inflector::camelize($name));
-			
+
 			$allowed = array(
 				'Aco' => false,
 				'Activity' => 'Activities',
@@ -462,7 +462,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Enumeration' => false,
 				'EstimateItem' => 'Estimates',
 				'Estimated' => 'Estimates',
-				'Estimate' => 'Estimates',	
+				'Estimate' => 'Estimates',
 				'EventSchedule' => 'Events',
 				'EventSeat' => 'Events',
 				'EventVenue' => 'Events',
@@ -478,10 +478,10 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'FormAnswer' => 'Forms',
 				'FormFieldset' => 'Forms',
 				'FormInput' => 'Forms',
-				'FormKey' => 'Forms',		
-				'Form' => 'Forms',	
+				'FormKey' => 'Forms',
+				'Form' => 'Forms',
 				'Forum' => 'Forums',
-				'ForumPost' => 'Forums',	
+				'ForumPost' => 'Forums',
 				'Gallery' => 'Galleries',
 				'GalleryImage' => 'Galleries',
 				'Invite' => 'Invites',
@@ -552,7 +552,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'TransactionShipment' => 'Transactions',
     			'TransactionTax' => 'Transactions',
 				'Twitter' => 'Twitter',
-				'UpdateSchema' => false,				
+				'UpdateSchema' => false,
 				'Used' => 'Users',
 				'UserConnect' => 'Users',
 				'UserFollower' => 'Users',
@@ -589,19 +589,19 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'QuestionAnswer' => 'Questions',
 				'ZuhaSchema' => false,
 				);
-				
+
 			if (!empty($name) && $allowed[$name] !== null) {
 				return $allowed[$name];
 			} else {
               	return Inflector::tableize($name);
 			}
 		}
-        
+
         /**
          * invalidate method
-         * 
+         *
          * parse the function $Model->invalidFields() into a string
-         * 
+         *
          * @param type $invalidFields
          */
         public function invalidate($invalidField = array()) {
@@ -616,21 +616,21 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
                 $four = Configure::read('debug') > 0 ? __('(Debugger field : CurrentModel.%s)', $one) : '';
                 $return .= __('%s', $invalidField[$one][0]);
             }
-            
+
             return __('%s %s', $return, $four);
         }
-		
+
 		/**
 		 * numerate method
-		 * 
+		 *
 		 * take a string and return just the numbers in it
-		 * 
+		 *
 		 * @param string
 		 */
 		 public function numerate($string) {
 		 	return preg_replace("/[^0-9]/","",$string);;
 		 }
-        
+
 	} // end ZuhaInflector class
 
 } // end bootstrap overwrite check
