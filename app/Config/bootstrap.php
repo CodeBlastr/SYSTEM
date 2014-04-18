@@ -394,6 +394,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * return a plugin name from a controller name
 		 *
 		 * @todo There must be a better way...
+		 * @see Zuha::getPluginControllerActions()
 		 */
 		public static function pluginize($name) {
             // if you put something like this here, comment as to why
