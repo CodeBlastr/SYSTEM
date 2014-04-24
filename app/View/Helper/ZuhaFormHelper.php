@@ -74,13 +74,10 @@ class ZuhaFormHelper extends FormHelper {
 				//Let the exception go,
 				$key = '';
 			}
-			//Took this out, used to capture a key from a different domain
-			// @todo if we are going to use this then the key checks must support 
-			// this also
-			//$json = json_decode(file_get_contents('http://' . $_SERVER['HTTP_HOST'] . '/forms/forms/secure.json'));
+			$json = json_decode(file_get_contents('http://' . $_SERVER['HTTP_HOST'] . '/forms/forms/secure.json'));
 			echo '<script type="text/javascript">
 			        jQuery(document).ready(function() {
-			          var timeOut = window.setTimeout(function() { jQuery("#' . $options['id'] . '").prepend("<input type=\"hidden\" name=\"data[FormKey][id]\" value=\"' . $key . '\" />"); }, 10000);
+			          var timeOut = window.setTimeout(function() { jQuery("#' . $options['id'] . '").prepend("<input type=\"hidden\" name=\"data[FormKey][id]\" value=\"' . $json->key . '\" />"); }, 10000);
 			        });
 			      </script>';
 		}
