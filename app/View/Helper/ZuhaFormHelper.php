@@ -38,6 +38,7 @@ class ZuhaFormHelper extends FormHelper {
 			}
 			// hash the form action to write into settings, as a form that must be checked
 			$settingValue = 'c' . Security::hash($this->url($this->_getAction($options)), 'md5', Configure::read('Security.salt'));
+			
 			// this is how we know which forms have to be checked on the catch side
 			if (defined('__APP_SECURE_FORMS')) {
 				// read settings
@@ -64,10 +65,22 @@ class ZuhaFormHelper extends FormHelper {
 				$data['Setting']['value'] = $value;
 				$Setting->add($data);
 			}
-			$json = json_decode(file_get_contents('http://' . $_SERVER['HTTP_HOST'] . '/forms/forms/secure.json'));
+			App::uses('FormKey', 'Forms.Model');
+			$FormKey = new FormKey();
+			try {
+				$key =  $FormKey->createKey();
+			}
+			catch (Exception $e) {
+				//Let the exception go,
+				$key = '';
+			}
+			//Took this out, used to capture a key from a different domain
+			// @todo if we are going to use this then the key checks must support 
+			// this also
+			//$json = json_decode(file_get_contents('http://' . $_SERVER['HTTP_HOST'] . '/forms/forms/secure.json'));
 			echo '<script type="text/javascript">
 			        jQuery(document).ready(function() {
-			          var timeOut = window.setTimeout(function() { jQuery("#' . $options['id'] . '").prepend("<input type=\"hidden\" name=\"data[FormKey][id]\" value=\"' . $json->key . '\" />"); }, 10000);
+			          var timeOut = window.setTimeout(function() { jQuery("#' . $options['id'] . '").prepend("<input type=\"hidden\" name=\"data[FormKey][id]\" value=\"' . $key . '\" />"); }, 10000);
 			        });
 			      </script>';
 		}
