@@ -65,15 +65,6 @@ class ZuhaFormHelper extends FormHelper {
 				$data['Setting']['value'] = $value;
 				$Setting->add($data);
 			}
-			App::uses('FormKey', 'Forms.Model');
-			$FormKey = new FormKey();
-			try {
-				$key =  $FormKey->createKey();
-			}
-			catch (Exception $e) {
-				//Let the exception go,
-				$key = '';
-			}
 			$json = json_decode(file_get_contents('http://' . $_SERVER['HTTP_HOST'] . '/forms/forms/secure.json'));
 			echo '<script type="text/javascript">
 			        jQuery(document).ready(function() {
