@@ -12,7 +12,9 @@ label {
 	background: #000000;
 	color: #FFFFFF;
 }
-
+.center-block {
+	float: none;
+}
 /* navbar */
 li.switch-mini.has-switch {
 	padding-top: 16px;
@@ -20,10 +22,10 @@ li.switch-mini.has-switch {
 #headerNavFloManagr.navbar .navbar-brand {
 	padding-top: 14px;
 }
-.navbar-inverse .nav .open>a, .nav .open>a:hover, .nav .open>a:focus {
+.navbar-inverse .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
 	background-color: #222222;
 }
-.navbar-inverse .nav .open>a, .nav .open>a:hover, .nav .open>a:focus {
+.navbar-inverse .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
 	background-color: #222222;
 }
 .page-title.navbar {
@@ -83,4 +85,17 @@ body.contacts.view .table-fixed tr td:first-child {
 }
 .badge a {
 	color: #ffffff;
+}
+
+/* table class for vertical alignment */
+.table {
+	display: table;
+}
+.table .vertical-center {
+	display: table-cell;
+	vertical-align: middle;
+}
+.table .col-xs-1, .table .col-sm-1, .table .col-md-1, .table .col-lg-1, .table .col-xs-2, .table .col-sm-2, .table .col-md-2, .table .col-lg-2, .table .col-xs-3, .table .col-sm-3, .table .col-md-3, .table .col-lg-3, .table .col-xs-4, .table .col-sm-4, .table .col-md-4, .table .col-lg-4, .table .col-xs-5, .table .col-sm-5, .table .col-md-5, .table .col-lg-5, .table .col-xs-6, .table .col-sm-6, .table .col-md-6, .table .col-lg-6, .table .col-xs-7, .table .col-sm-7, .table .col-md-7, .table .col-lg-7, .table .col-xs-8, .table .col-sm-8, .table .col-md-8, .table .col-lg-8, .table .col-xs-9, .table .col-sm-9, .table .col-md-9, .table .col-lg-9, .table .col-xs-10, .table .col-sm-10, .table .col-md-10, .table .col-lg-10, .table .col-xs-11, .table .col-sm-11, .table .col-md-11, .table .col-lg-11, .table .col-xs-12, .table .col-sm-12, .table .col-md-12, .table .col-lg-12 {
+	display: table-cell;
+	float: none;
 }

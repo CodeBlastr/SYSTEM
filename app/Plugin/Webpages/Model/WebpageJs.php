@@ -80,7 +80,7 @@ class WebpageJs extends WebpagesAppModel {
  * 
  */
  	public function beforeSave($options = array()) {
-		$this->data = $this->_cleanData();
+		$this->data = $this->_cleanData($this->data);
  		return parent::beforeSave($options);
  	}
 	
