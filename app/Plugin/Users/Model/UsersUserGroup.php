@@ -74,16 +74,18 @@ class AppUsersUserGroup extends UsersAppModel {
 	 *
 	 * @return array
 	 */
-	public function	getUserGroups($userId = null,$type = 'all',$options = array()){
-		$condition = array('UsersUserGroup.user_id'=>!is_null($userId) ? $userId : $this->_userId(),'UsersUserGroup.is_moderator'=> 1);
-		if(!empty($options)){
-			if(isset($options['owner'])){
-				$condition['UsersUserGroup.is_moderator'] = $options['owner'] === true ? 1 : 0;
+	public function	getUserGroups($userId = null, $type = 'all', $options = array()){
+		$conditions = array(
+			'UsersUserGroup.user_id' => !is_null($userId) ? $userId : $this->_userId(),
+			'UsersUserGroup.is_moderator' => 1);
+		if (!empty($options)) {
+			if (isset($options['owner'])) {
+				$conditions['UsersUserGroup.is_moderator'] = $options['owner'] === true ? 1 : 0;
 			}
 		}
 
 		$userGroups = $this->User->UserGroup->UsersUserGroup->find($type,array(
-			'conditions'=>$condition,
+			'conditions'=>$conditions,
 			'contain'=>array('UserGroup')
 		));
 		return $userGroups;
