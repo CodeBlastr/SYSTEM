@@ -1,4 +1,3 @@
-<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=sql"></script>
 <?php
 /**
  * SQL Dump element. Dumps out SQL log information
@@ -22,6 +21,7 @@
 if (!class_exists('ConnectionManager') || Configure::read('debug') < 2) {
 	return false;
 }
+echo $this->Html->script('https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=sql'); 
 $noLogs = !isset($sqlLogs);
 if ($noLogs):
 	$sources = ConnectionManager::sourceList();

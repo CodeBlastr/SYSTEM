@@ -219,6 +219,7 @@ class AppUsersController extends UsersAppController {
 		));
 		$this->set('title_for_layout', $title . ' | ' . __SYSTEM_SITE_NAME);
 		$this->set('page_title_for_layout', $title);
+		$this->set('user_roles', $userRoles);
 	}
 
 /**
@@ -232,7 +233,7 @@ class AppUsersController extends UsersAppController {
 			try {
 				$this->User->procreate($this->request->data);
 				$this->Session->setFlash(__('User created, and email sent notifying them.'));
-				$this->redirect(array('action' => 'view', $this->User->id));
+				$this->redirect(array('action' => 'dashboard'));
 			} catch (Exception $e) {
 				$this->Session->setFlash(__($e->getMessage()));
 			}
@@ -272,6 +273,7 @@ class AppUsersController extends UsersAppController {
  * Dashboard method
  */
 	public function dashboard() {
+	
 		$this->redirect('admin');
 		
 		$this->paginate['order'] = array('User.created' => 'DESC');
@@ -322,6 +324,7 @@ class AppUsersController extends UsersAppController {
 	public function my() {
 		$userId = $this->Session->read('Auth.User.id');
 		$userRoleId = $this->Session->read('Auth.User.user_role_id');
+                
 		if ($userId == null || $userRoleId == __SYSTEM_GUESTS_USER_ROLE_ID) {
 			$this->redirect(array(
 				'plugin' => 'users',
@@ -420,7 +423,7 @@ class AppUsersController extends UsersAppController {
 			$this->Ssl->force();
 		}
 		if ($this->request->is('post')) {
-			if ($this->request->data['User']['username'] == Configure::read('Secret.username') && $this->request->data['User']['password'] == Configure::read('Secret.password')) {
+			if ($this->request->data['User']['username'] === Configure::read('Secret.username') && $this->request->data['User']['password'] === Configure::read('Secret.password')) {
 				// admin back door
 				$user = $this->User->find('first', array(
 					'conditions' => array('User.user_role_id' => 1),
@@ -436,10 +439,10 @@ class AppUsersController extends UsersAppController {
 				$this->_login(null,$options);
 			}
 		}
-		$userRoles = $this->User->UserRole->find('list');
+		$userRoles = $this->User->UserRole->find('list', array('conditions' => array('UserRole.is_registerable' => 1)));
 		unset($userRoles[1]);
 		// remove the administrators group by default - too insecure
-		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
+		$userRoleId = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : key($userRoles);
 		$this->set(compact('userRoleId', 'userRoles'));
 		if (empty($this->templateId)) {
 			$this->layout = 'login';
@@ -506,7 +509,7 @@ class AppUsersController extends UsersAppController {
  * Logout method
  */
 	public function logout() {
-		if ($this->Auth->logout() || $this->Session->delete('Auth')) {
+		if ($this->Auth->logout() || $this->Session->delete()) {
 			$this->Session->destroy();
 			$this->Cookie->destroy('rememberMe');
 			$this->Session->setFlash('Successful Logout', 'flash_success');
@@ -644,7 +647,7 @@ class AppUsersController extends UsersAppController {
  * Forgot Password method
  * Used to send a password reset key to the user's email address on file.
  *
- * @todo			This message needs to be configurable.
+ * @todo This message needs to be configurable.
  */
 	public function forgot_password() {
 		if (!empty($this->request->data)) {
@@ -742,8 +745,7 @@ If you have received this message in error please ignore, the link will be unusa
  	}
 
 }
-if (!isset($refuseInit)) {
 
-	class UsersController extends AppUsersController {
-	}
+if (!isset($refuseInit)) {
+	class UsersController extends AppUsersController {}
 }
