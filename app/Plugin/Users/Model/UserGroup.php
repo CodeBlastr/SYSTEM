@@ -12,7 +12,7 @@ class AppUserGroup extends UsersAppModel {
 	public $name = 'UserGroup';
 
 	public $displayField = 'title';
-	
+
 	public $hasAndBelongsToMany = array(
         'User' => array(
 			'className' => 'Users.User',
@@ -21,7 +21,7 @@ class AppUserGroup extends UsersAppModel {
 			'associationForeignKey' => 'user_id'
 			),
 		);
-    
+
     public $belongsTo = array(
 		'Creator' => array(
 			'className' => 'Users.User',
@@ -31,7 +31,7 @@ class AppUserGroup extends UsersAppModel {
 			'order' => ''
 			),
 		);
-	
+
 	public $hasMany = array(
 		'UsersUserGroup'=>array(
 			'className'     => 'Users.UsersUserGroup',
@@ -44,7 +44,22 @@ class AppUserGroup extends UsersAppModel {
 			'dependent'		=> true
 		)
 	);
-	
+
+	public function beforeSave($options = array()) {
+		if (!empty($this->data[$this->alias]['password'])) {
+			App::uses('AuthComponent', 'Controller/Component');
+	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
+		}
+		parent::beforeSave($options);
+	}
+
+
+	/**
+ *
+ * @param string $type
+ * @param array $params
+ * @return array Array of records, or Null on failure.
+ */
 	public function findUserGroupsByModerator($type = 'list', $params = array('order' => 'UserGroup.title')) {
 		// you must be a moderator to see groups
 		$userRoleId = CakeSession::read('Auth.User.user_role_id');
@@ -62,7 +77,13 @@ class AppUserGroup extends UsersAppModel {
 		}
 		return $this->find($type, $params);
 	}
-	
+
+/**
+ *
+ * @param string $type
+ * @param array $params
+ * @return string|null
+ */
 	public function findUserGroupStatus($type = 'first', $params = null) {
 		// you must be a moderator to see groups
 		$userRoleId = CakeSession::read('Auth.User.user_role_id');
@@ -83,13 +104,26 @@ class AppUserGroup extends UsersAppModel {
 		}
 		return $status;
 	}
-	
+
+/**
+ *
+ * @param string $model
+ * @param string $type
+ * @param array $params
+ * @return array Array of records, or Null on failure.
+ */
 	public function findRelated($model = null, $type = 'list', $params = array('order' => 'UserGroup.title')) {
 		// groups can be assigned to only be available to certain other systems by associating a model to the group
 		$params['conditions']['UserGroup.model'] = $model;
 		return $this->find($type, $params);
 	}
 
+/**
+ *
+ * @param int $pendingId
+ * @param int $groupId
+ * @param int $userId
+ */
 	public function approve($pendingId,$groupId,$userId){
 		if(!empty($pendingId) && !empty($groupId) && !empty($userId)){
 			$isMyGroup = $this->isMyGroup($groupId,$userId);
@@ -104,27 +138,40 @@ class AppUserGroup extends UsersAppModel {
 
 		}
 	}
+
+/**
+ *
+ * @param int $id
+ * @param int $userId
+ * @return boolean
+ */
 	public function isMyGroup($id,$userId){
-		return $this->find('count',array('fields'=>array('Creator.id'),'conditions'=>array('UserGroup.id'=>$id,'Creator.id'=>$userId),'contain'=>array('Creator')))
+		return $this->find('count', array(
+			'fields'=>array('Creator.id'),
+			'conditions'=>array('UserGroup.id'=>$id,'Creator.id'=>$userId),
+			'contain'=>array('Creator')))
 			===1;
 	}
 
 /**
  * User method
- * 
+ *
  * Create a user and add to the provided group id
- * 
+ *
  * @param array $data
+ * @return boolean
  */
 	public function user($data) {
 		return $this->User->procreate($data);
 	}
-	
+
 /**
- * Process invite
- * 
  * Used as a callback from the Invite Model, and automatically adds the invited user to the group.
  * Must return true if it worked.
+ *
+ * @param array $invite
+ * @return boolean
+ * @throws Exception
  */
  	public function processInvite($invite) {
  		$userGroup = $this->find('first', array('conditions' => array('UserGroup.id' => $invite['Invite']['foreign_key'])));

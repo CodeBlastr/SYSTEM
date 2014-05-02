@@ -144,7 +144,7 @@ $(function() {
     $("*[data-toggle=collapse]").css('cursor', 'pointer');
     
     /* forms */
-    $('input[type=submit]').addClass('btn btn-primary');
+    $('input[type=submit]').addClass('btn btn-default');
     $('.required').attr('required', true);
     $('label').addClass('control-label');
     $('input:not([type=submit], [type=checkbox], [type=radio], .input-sm), select, textarea').addClass('form-control').parent().addClass('form-group');
