@@ -122,7 +122,18 @@ if (empty($runUpdates)) : ?>
             <p>Add and edit image and video galleries</p>
         </div>
         <?php endif; ?>
+<<<<<<< HEAD
+		
+		<?php if (CakePlugin::loaded('Jobs')) : ?>        
+        <div class="masonryBox dashboardBox tagPages">
+            <h3 class="title"><i class="glyphicon glyphicon-picture"></i> <?php echo $this->Html->link('Manage Jobs', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'index')); ?></h3>
+            <p><?php echo $this->Html->link('Add Job', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'add')); ?></p>
+        </div>
+        <?php endif; ?>
+		      
+=======
 
+>>>>>>> 488c790c3f2b1bde6aac8951818c47804ac3c74f
         <div class="masonryBox dashboardBox tagMedia">
             <h3 class="title"><i class="glyphicon glyphicon-star-empty"></i> Favicon</h3>
             <p>Add the little icon that appears in browser title bars. </p>
