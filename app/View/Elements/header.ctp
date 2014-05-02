@@ -19,7 +19,7 @@ $showContext = !empty($showContext) ? true : false; ?>
 	        </ul>
 		</div>
         
-        <div class="collapse nav-collapse navbar-collapse">
+        <div class="collapse nav-collapse">
             <ul class="nav navbar-nav">
                 <li class="nav-mode"><?php echo $this->Html->link('Content', '/admin/#tagPages+tagMedia+tagDiscussion+tagElements', array('title' => 'Pages, Modules, Media, Categories, Tags, Enumerations', 'onclick' => 'window.location.replace(this.href);window.location.reload(true)')); // takes extra js, because of the hash tags ?></li>
                 <li class="nav-mode"><?php echo $this->Html->link('Contacts', '/admin/contacts/contacts/dashboard', array('title' => 'Leads, Opportunities')); ?></li>
@@ -66,6 +66,8 @@ $(function() {
     }
 });
 </script>
+
+<!-- internet was down
 <script type="text/javascript" src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js"></script>
 <style type="text/css" media="screen, projection">
   @import url(//assets.zendesk.com/external/zenbox/v2.6/zenbox.css);
@@ -81,4 +83,4 @@ $(function() {
       tabPosition: "Right"
     });
   }
-</script>
+</script> -->

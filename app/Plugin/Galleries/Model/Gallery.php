@@ -75,7 +75,6 @@ class Gallery extends GalleriesAppModel {
 		),
 	);
 
-
 /**
  * Has many
  * 
@@ -96,8 +95,6 @@ class Gallery extends GalleriesAppModel {
 			'counterQuery' => ''
 		)
 	);
-
-
 
 /**
  * After save callback

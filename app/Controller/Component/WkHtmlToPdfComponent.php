@@ -175,7 +175,6 @@ class WkHtmlToPdfComponent extends Component {
 						break;
 					default :
 						throw new Exception('32/64? no found', 1);
-						break;
 				}
 			}
 
@@ -210,21 +209,26 @@ class WkHtmlToPdfComponent extends Component {
 		$file->delete();
 	}
 
+
+/**
+ * If you want to do something on download abort/finish, register_shutdown_function('function_name');
+ *
+ * @param string $file A path to a file to output
+ * @param string $name The filename that the browser will see
+ * @param string $mime_type The MIME type of the file (optional)
+ * @throws Exception
+ */
 	private function returnFile($file, $name, $mime_type = '') {
-		/*
-		 * This function takes a path to a file to output ($file), the filename that the browser will see ($name) and the MIME type of the file ($mime_type, optional). If you want to do something on download abort/finish, register_shutdown_function('function_name');
-		 */
-		 
 		 $i = 0;
 		 while (!file_exists($file)) {
 		 	++$i;
 			 if ($i > 10000000) {
-			 	throw new Exception('I can\'t find the generated PDF file.', 1);
+			 	throw new Exception('The PDF file cannot be found!', 1);
 			 }
 		 }
 
 		if (!is_readable($file)) {
-			throw new Exception('PDF file cannot found or is inaccessible!', 1);
+			throw new Exception('PDF file is inaccessible!', 1);
 		}
 
 		$size = filesize($file);

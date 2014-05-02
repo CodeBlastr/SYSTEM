@@ -315,27 +315,26 @@ class AppModel extends Model {
 		if ($this->notifications !== false) {
 			App::uses('AppController', 'Controller');
 			$Controller = new AppController;
-			
-			if(strpos($subject, 'Webpages.') === 0){
+
+			if (strpos($subject, 'Webpages.') === 0){
 				$name = str_replace('Webpages.', '', $subject);
 				App::uses('Webpage', 'Webpages.Model');
 				$Webpage = new Webpage();
 				$webpage = $Webpage->findByName($name);
-				if(!empty($webpage)){
+				if (!empty($webpage)) {
 					$message = $Webpage->replaceTokens($webpage['Webpage']['content'], $message);	
-						
 					$subject = $webpage['Webpage']['title'];
 				} else {
 					//Should we auto gen instead of throwing exception????
 					throw new Exception(__('Please create a email template named %s', $name));
-				}			
-			} 		
-	
+				}
+			}
+
 			return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
 		}
 	}
-	
-	
+
+
 /**
  * 
  */

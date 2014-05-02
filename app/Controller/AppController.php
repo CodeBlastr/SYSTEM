@@ -285,7 +285,6 @@ class AppController extends Controller {
  * @return null
  */
 	private function _handlePaginatorSorting() {
-		// debug($this->request->url.$this->request->query['contextSorter']);
 		if (!empty($this->request->query['contextSorter'])) {
 			$this->redirect($this->request->query['contextSorter']);
 		}
@@ -302,63 +301,37 @@ class AppController extends Controller {
 		if (empty($this->request->params['named']['filter'])) {
 			$this->__handlePaginatorArchivable($object);
 		}
+
 		// filter by database field full value
-		$filter = !empty($this->request->params['named']['filter']) ? $this->request->params['named']['filter'] : null;
-		if (!empty($filter) && is_array($filter)) {
-			// use an OR filter if we do multiple filters
-			foreach ($filter as $name) {
-				$this->__handlePaginatorFiltering(urldecode($name), $object);
-			}
-		} else if (!empty($filter)) {
-			$this->__handlePaginatorFiltering(urldecode($filter), $object);
-		}
+		$this->__handlePaginatorFilters($object);
+
 		// filter by starting letter of database field
-		$starter = !empty($this->request->params['named']['start']) ? $this->request->params['named']['start'] : null;
-		if (!empty($starter) && is_array($starter)) {
-			// use an OR filter if we do multiple filters
-			foreach ($starter as $start) {
-				$this->__handlePaginatorStarter(urldecode($start), $object);
-			}
-		} else if (!empty($starter)) {
-			$this->__handlePaginatorStarter(urldecode($starter), $object);
-		}
+		$this->__handlePaginatorStarts($object);
+
 		// filter by any match of a string in a particular field
-		$container = !empty($this->request->params['named']['contains']) ? $this->request->params['named']['contains'] : null;
-		if (!empty($container) && is_array($container)) {
-			// use an OR filter if we do multiple filters
-			foreach ($container as $contain) {
-				$this->__handlePaginatorContainer(urldecode($contain), $object);
-			}
-		} else if (!empty($container)) {
-			$this->__handlePaginatorContainer(urldecode($container), $object);
-		}
+		$this->__handlePaginatorContains($object);
+
 		// filter by range of a particular field
-		$range = !empty($this->request->params['named']['range']) ? $this->request->params['named']['range'] : null;
-		if (!empty($range) && is_array($range)) {
-			// use an OR filter if we do multiple filters
-			foreach ($range as $singleRange) {
-				$this->__handlePaginatorRange(urldecode($singleRange), $object);
-			}
-		} else if (!empty($range)) {
-			$this->__handlePaginatorRange(urldecode($range), $object);
-		}
+		$this->__handlePaginatorRanges($object);
 	}
 
 /**
  * Checks to see if we're paginating a sub model one level deep.
+ * If we are then we get the class and return the model schema, if not return false.
  *
- * If we are then we get the class and return the model schema, if not return
- * false.
- * @param string
+ * @todo The 1st set of if/elses needs a better check added.  if is_string() ?? ^JB
+ *
+ * @param string $object
+ * @param string $field
  * @return mixed
  */
 	private function _getPaginatorVars($object, $field) {
 		$ModelName = $this->modelClass;
-		if (@$this->$object->name) {
+		if ($this->$object->name) {
 			$Object = $this->$object;
-		} else if (@$this->$ModelName->$object->name) {
+		} else if ($this->$ModelName->$object->name) {
 			$Object = $this->$ModelName->$object;
-		} else if (@$this->$ModelName->name) {
+		} else if ($this->$ModelName->name) {
 			$Object = $this->$ModelName;
 		}
 		if (@$Object->name) {
@@ -398,24 +371,34 @@ class AppController extends Controller {
  * @param mixed
  * @return void
  */
-	private function __handlePaginatorFiltering($field, $object) {
-		$options = $this->_getPaginatorVars($object, $field);
-		if (!empty($options['fieldName'])) {
-			if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {
-				$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >'] = $options['fieldValue'];
+	private function __handlePaginatorFilters($object) {
+		$filters = !empty($this->request->params['named']['filter']) ? $this->request->params['named']['filter'] : null;
+		if (empty($filters)) {
+			return false;
+		}
+		if (!is_array($filters)) {
+			$filters = array($filters);
+		}
+		foreach ($filters as $filterField) {
+			$filterField = urldecode($filterField);
+			$options = $this->_getPaginatorVars($object, $filterField);
+			if (!empty($options['fieldName'])) {
+				if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >'] = $options['fieldValue'];
+				} else {
+					// this line
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName']] = $options['fieldValue'];
+					// was this, but the [] at the end of fielName made null not work (not sure if it
+					// broke anything to change) (works on bakkenbook homepage category_search)
+					//$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']][] =
+					// $options['fieldValue'];
+				}
+				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 			} else {
-				// this line
-				$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName']] = $options['fieldValue'];
-				// was this, but the [] at the end of fielName made null not work (not sure if it
-				// broke anything to change) (works on bakkenbook homepage category_search)
-				//$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']][] =
-				// $options['fieldValue'];
-			}
-			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
-		} else {
-			// no matching field don't filter anything
-			if (Configure::read('debug') > 0) {
-				$this->Session->setFlash(__('Invalid field filter attempted on ' . $options['alias']), 'flash_warning');
+				// no matching field don't filter anything
+				if (Configure::read('debug') > 0) {
+					$this->Session->setFlash(__('Invalid field filter attempted on ' . $options['alias']), 'flash_warning');
+				}
 			}
 		}
 	}
@@ -450,15 +433,25 @@ class AppController extends Controller {
  * @param mixed
  * @return void
  */
-	private function __handlePaginatorStarter($startField, $object) {
-		$options = $this->_getPaginatorVars($object, $startField);
-		if (!empty($options['fieldName'])) {
-			$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = $options['fieldValue'] . '%';
-			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
-		} else {
-			// no matching field don't filter anything
-			if (Configure::read('debug') > 0) {
-				$this->Session->setFlash(__('Invalid starter filter attempted.'), 'flash_warning');
+	private function __handlePaginatorStarts($object) {
+		$starters = !empty($this->request->params['named']['start']) ? $this->request->params['named']['start'] : null;
+		if (empty($starters)) {
+			return false;
+		}
+		if (!is_array($starters)) {
+			$starters = array($starters);
+		}
+		foreach ($starters as $starterField) {
+			$starterField = urldecode($starterField);
+			$options = $this->_getPaginatorVars($object, $starterField);
+			if (!empty($options['fieldName'])) {
+				$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = $options['fieldValue'] . '%';
+				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
+			} else {
+				// no matching field don't filter anything
+				if (Configure::read('debug') > 0) {
+					$this->Session->setFlash(__('Invalid starter filter attempted.'), 'flash_warning');
+				}
 			}
 		}
 	}
@@ -470,15 +463,29 @@ class AppController extends Controller {
  * @param mixed
  * @return void
  */
-	private function __handlePaginatorContainer($containField, $object) {
-		$options = $this->_getPaginatorVars($object, $containField);
-		if (!empty($options['fieldName'])) {
-			$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
-			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
-		} else {
-			// no matching field don't filter anything
-			if (Configure::read('debug') > 0) {
-				$this->Session->setFlash(__('Invalid container filter attempted.'), 'flash_warning');
+	private function __handlePaginatorContains($object) {
+		$contains = !empty($this->request->params['named']['contains']) ? $this->request->params['named']['contains'] : null;
+		if (empty($contains)) {
+			return false;
+		}
+		if (!is_array($contains)) {
+			$contains = array($contains);
+		}
+		foreach ($contains as $containField) {
+			$containField = urldecode($containField);
+			$options = $this->_getPaginatorVars($object, $containField);
+			if (!empty($options['fieldName'])) {
+				if (count($contains > 1)) {
+					$this->paginate['conditions']['OR'][][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
+				} else {
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
+				}
+				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
+			} else {
+				// no matching field don't filter anything
+				if (Configure::read('debug') > 0) {
+					$this->Session->setFlash(__('Invalid container filter attempted.'), 'flash_warning');
+				}
 			}
 		}
 	}
@@ -488,20 +495,29 @@ class AppController extends Controller {
  * @param type $rangeField
  * @param type $object
  */
-	private function __handlePaginatorRange($rangeField, $object) {
-		$options = $this->_getPaginatorVars($object, $rangeField);
-		$range = explode(';', $options['fieldValue']);
-		if (!empty($options['fieldName'])) {
-			$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >='] = $range[0];
-			if (!empty($range[1])) {
-				$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' <='] = $range[1];
-			}
-			//			debug($this->paginate['conditions']);
-			$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
-		} else {
-			// no matching field don't filter anything
-			if (Configure::read('debug') > 0) {
-				$this->Session->setFlash(__('Invalid range filter attempted.'), 'flash_warning');
+	private function __handlePaginatorRanges($object) {
+		$ranges = !empty($this->request->params['named']['range']) ? $this->request->params['named']['range'] : null;
+		if (empty($ranges)) {
+			return false;
+		}
+		if (!is_array($ranges)) {
+			$ranges = array($ranges);
+		}
+		foreach ($ranges as $rangeField) {
+			$rangeField = urldecode($rangeField);
+			$options = $this->_getPaginatorVars($object, $rangeField);
+			$range = explode(';', $options['fieldValue']);
+			if (!empty($options['fieldName'])) {
+				$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >='] = $range[0];
+				if (!empty($range[1])) {
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' <='] = $range[1];
+				}
+				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
+			} else {
+				// no matching field don't filter anything
+				if (Configure::read('debug') > 0) {
+					$this->Session->setFlash(__('Invalid range filter attempted.'), 'flash_warning');
+				}
 			}
 		}
 	}
@@ -545,7 +561,7 @@ class AppController extends Controller {
  */
 	public function __delete($model = null, $id = null, $options = null) {
 		// set default class & message for setFlash
-		$class = 'flash_bad';
+		$class = 'flash_danger';
 		$msg = 'Invalid Id';
 		// check id is valid
 		if (!empty($id)) {
@@ -555,7 +571,7 @@ class AppController extends Controller {
 			if (!empty($item)) {
 				// try deleting the item
 				if ($this->$model->delete($id)) {
-					$class = 'flash_good';
+					$class = 'flash_success';
 					$msg = 'Successfully deleted';
 				} else {
 					$msg = 'There was a problem deleting your Item, please try again';
@@ -568,7 +584,7 @@ class AppController extends Controller {
 		if ($this->RequestHandler->isAjax()) {
 			$this->autoRender = $this->layout = false;
 			echo json_encode(array(
-				'success' => ($class == 'flash_bad') ? FALSE : TRUE,
+				'success' => ($class == 'flash_danger') ? FALSE : TRUE,
 				'msg' => "<p id='flashMessage' class='{$class}'>{$msg}</p>"
 			));
 			exit ;
@@ -729,11 +745,15 @@ class AppController extends Controller {
 			$i = 0;
 			foreach ($data['urls'] as $url) {
 				$urlString = str_replace('/', '\/', trim($url));
+				if (substr($urlString, -1) !== '/') {
+					$urlString . '/';
+				}
 				$urlRegEx = '/' . str_replace('*', '(.*)', $urlString) . '/';
 				$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/' . substr($urlRegEx, 3) : $urlRegEx;
 				$url = $this->request->action == 'index' ? $this->request->plugin . '/' . $this->request->controller . '/' . $this->request->action . '/' : $this->request->url . '/';
 				$urlCompare = strpos($url, '/') === 0 ? substr($url, 1) : $url;
-				if (preg_match($urlRegEx, $urlCompare)) {
+				$urlCompare = str_replace("//", "/", $urlCompare);
+				if ($urlRegEx !== '//' && preg_match($urlRegEx, $urlCompare)) {
 					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateName'];
 				}
 				$i++;
@@ -745,7 +765,7 @@ class AppController extends Controller {
 			return null;
 		}
 	}
-
+	
 /**
  * Loads components dynamically using both system wide, and per controller
  * loading abilities.
