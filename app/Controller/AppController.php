@@ -983,9 +983,9 @@ class AppController extends Controller {
 				$this->SwiftMailer->layout = 'email';
 				$this->SwiftMailer->sendAs = 'html';
 				if ($message) {
-					$this->SwiftMailer->content = $message;
+					$this->SwiftMailer->content = $message . '<br><br>' . $_SERVER['REMOTE_ADDR'];
 					if (is_array($message) && isset($message['html'])) {
-						$this->SwiftMailer->content = $message['html'];
+						$this->SwiftMailer->content = $message['html'] . '<br><br>' . $_SERVER['REMOTE_ADDR'];
 					} else {
 						$message = array('html' => $message);
 					}
@@ -994,7 +994,6 @@ class AppController extends Controller {
 				if (!$subject) {
 					$subject = 'No Subject';
 				}
-				//Set view variables as normal
 				return $this->SwiftMailer->send($template, $subject);
 			} else {
 				throw new Exception(__('SMTP Ini parsing failed.'));
