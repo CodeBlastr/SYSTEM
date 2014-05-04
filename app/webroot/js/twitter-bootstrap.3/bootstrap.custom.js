@@ -148,7 +148,7 @@ $(function() {
     $('.required').attr('required', true);
     $('label').addClass('control-label');
     $('input:not([type=submit], [type=checkbox], [type=radio]), select, textarea').addClass('form-control').parent().addClass('form-group');
-	
+
 /**
  * Hides form elements that come after a legend with the class toggleClick
  * DEPRECATED USE BOOTSTRAP 3 INSTEAD

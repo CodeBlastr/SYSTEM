@@ -132,7 +132,6 @@ class AppWebpage extends WebpagesAppModel {
 /**
  *  Holder for tokens
  */
-    
     public $tokens = array();
 	
 /**
