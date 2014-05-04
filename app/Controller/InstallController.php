@@ -288,7 +288,6 @@ class InstallController extends Controller {
 /**
  * Install a new site
  *
- * @todo      We need some additional security on this.
  */
     public function site() {
         $this->_handleSecurity();
