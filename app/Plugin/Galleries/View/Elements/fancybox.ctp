@@ -6,9 +6,8 @@ if(!empty($instance) && defined('__ELEMENT_GALLERIES_FANCYBOX_'.$instance)) {
 } else if (defined('__ELEMENT_GALLERIES_FANCYBOX')) {
 	extract(unserialize(__ELEMENT_GALLERIES_FANCYBOX));
 }
-
 if (!empty($gallery['GalleryImage'][0])) {
-	# put default variable setups here
+	// put default variable setups here
 	$overlayShow = !empty($overlayShow) ? $overlayShow : 'true'; // true, false (string)
 	$transitionIn = !empty($transitionIn) ? $transitionIn : 'elastic'; // none, elastic
 	$transitionOut = !empty($transitionOut) ? $transitionOut : 'elastic'; // none, elastic
@@ -18,15 +17,15 @@ if (!empty($gallery['GalleryImage'][0])) {
 	$fancyType = !empty($fancyType) ? $fancyType : 'image'; // image, iframe
 	$fancyPadding =  !empty($fancyPadding) ? $fancyPadding : '10'; // 0+ (int)
 	$changeFade = !empty($changeFade) ? $changeFade : '300'; // 0+ (int)
-	# $width  # used for iframe type only (i think)
-	# $height # used for iframe type only (i think)
-	# $autoScale  # user for iframe type only (i think)
+	// $width  # used for iframe type only (i think)
+	// $height # used for iframe type only (i think)
+	// $autoScale  # user for iframe type only (i think)
 	$wishList = !empty($wishList) ? true : false;
 	$favoriteList = !empty($favoriteList) ? true : false;
 	$watchList = !empty($watchList) ? true : false;
 	$zoomType = 'colorbox';
 	
-	# additional files needed for gallery display
+	// additional files needed for gallery display
 	echo $this->Html->script('/galleries/js/fancybox/jquery.mousewheel-3.0.4.pack'); 
 	echo $this->Html->script('/galleries/js/fancybox/jquery.fancybox-1.3.4.pack');
 	echo $this->Html->css('/galleries/css/fancybox/jquery.fancybox-1.3.4');	?>
@@ -34,7 +33,7 @@ if (!empty($gallery['GalleryImage'][0])) {
     <div class="fancyboxGallery">
       <div id="mediumImage"> 
         <?php
-        # uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
+        // uses large version during dynamic conversion for highest quality (performance?? unknown) : 12/31/2011 RK
         $largeImage = $gallery['GalleryImage'][0]['dir'].'thumb/large/'.$gallery['GalleryImage'][0]['filename'];
         $image = $this->Html->image($largeImage,
             array(
@@ -47,7 +46,7 @@ if (!empty($gallery['GalleryImage'][0])) {
                 'quality' => 75,
                 ));	
         echo $this->Html->link($image,
-            '/'.$largeImage, 
+            $largeImage, 
             array(
                 'escape' => false,
                 'id' => 'galleryImage' . $gallery['GalleryImage'][0]['id'],
@@ -78,7 +77,7 @@ if (!empty($gallery['GalleryImage'][0])) {
 	                    'quality' => 75,
 	                    ));	
 	            echo $this->Html->link($image,
-	                '/'.$largeImage, 
+	                $largeImage, 
 	                array(
 	                    'escape' => false,
 	                    'id' => 'galleryImage' . $slide['id'],
@@ -102,7 +101,7 @@ if (!empty($gallery['GalleryImage'][0])) {
 	                    'quality' => 75,
 	                    ));	
 	            echo $this->Html->link($image,
-	                '/'.$largeImage, 
+	                $largeImage, 
 	                array(
 	                    'escape' => false,
 	                    'id' => 'galleryImage' . $slide['id'],
