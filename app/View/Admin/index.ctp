@@ -107,9 +107,9 @@ if (empty($runUpdates)) : ?>
 
         <?php if (CakePlugin::loaded('Properties')) : ?>
         <div class="masonryBox dashboardBox tagComments tagDiscussion">
-            <h3 class="title"><i class="glyphicon glyphicon-tasks"></i> <?php echo $this->Html->link('Properties', array('admin' => true, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="glyphicon glyphicon-tasks"></i> <?php echo $this->Html->link('Properties', array('admin' => true, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'dashboard')); ?></h3>
             <ul>
-                <li><?php echo $this->Html->link('See all properties', array('plugin' => 'properties', 'controller' => 'properties', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link('See all properties', array('admin' => false, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'index')); ?></li>
                 <li><?php echo $this->Html->link('Add Properties', array('admin' => true, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'add')); ?></li>
             </ul>
             <p>See and manage property listings</p>
