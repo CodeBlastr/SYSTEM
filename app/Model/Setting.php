@@ -70,7 +70,7 @@ class Setting extends AppModel {
 				),
 				array(
 					'name' => 'ENABLE_PAYMENT_OPTIONS',
-					'description' => 'Defines the options, in order, which will be shown in the dropdown of payment options for the app. ' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'AUTHORIZE = Authorize' . PHP_EOL . 'AUTHORIZEONLY = "Authorize Only"' . PHP_EOL . 'PAYPAL.ACCOUNT = Paypal' . PHP_EOL . 'CREDIT = Credit' . PHP_EOL . 'BLUEPAY.CC = CREDIT' . PHP_EOL . 'BLUEPAY.ACH = CHECK'
+					'description' => 'Defines the options, in order, which will be shown in the dropdown of payment options for the app. ' . PHP_EOL . PHP_EOL . 'Example value : ' . PHP_EOL . 'AUTHORIZE = Authorize' . PHP_EOL . 'AUTHORIZEONLY = "Authorize Only"' . PHP_EOL . 'PAYPAL.ACCOUNT = Paypal' . PHP_EOL . 'CREDIT = Credit' . PHP_EOL . 'PAYSIMPLE.CC = "Credit Card"' . PHP_EOL . 'PAYSIMPLE.CHECK = "eCheck"' . PHP_EOL . 'BLUEPAY.CC = CREDIT' . PHP_EOL . 'BLUEPAY.ACH = CHECK'
 				),
 				array(
 					'name' => 'AUTHORIZENET_LOGIN_ID',

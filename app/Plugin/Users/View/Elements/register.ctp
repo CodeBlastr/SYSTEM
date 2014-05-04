@@ -2,7 +2,6 @@
   <?php echo $this->Form->create(null, array('url' => array('plugin' => 'users', 'controller' => 'users', 'action' => 'register'), 'type' => 'file'));?>
   <?php echo $this->Form->input('Contact.id', array('type' => 'hidden')); ?>  
   <fieldset>
-    <legend><h2><?php echo __('Register'); ?></h2></legend>
     <?php 
 		if(defined('__APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE')) { 
 			echo $this->Form->input('User.contact_type', array('type' => 'hidden', 'value' => __APP_DEFAULT_USER_REGISTRATION_CONTACT_TYPE));

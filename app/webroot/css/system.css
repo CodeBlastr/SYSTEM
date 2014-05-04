@@ -1,38 +1,42 @@
-/* 
-This is a system css file to define default css rules so that new sites are at least legible.  
-The css placed here should be easily over written even with simple css rules for site css.
-Note that the class names could be updated and change often.
-*/
-* {
-	/*vertical-align: top; This does not looking good with different size text in hX tags */
-}
+/*
+ This is a system css file to define default css rules so that new sites are at least legible.
+ The css placed here should be easily over written even with simple css rules for site css.
+ Note that the class names could be updated and change often.
+ 
 
 /* Site Errors */
 .error-message, .error {
 	color: #C00;
 }
- img:-moz-broken{
-    -moz-force-broken-image-icon:1;
-    width:24px;
-    height:24px;
-  }
+pre.prettyprint {
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	word-wrap: break-word;
+}
+img:-moz-broken {
+	-moz-force-broken-image-icon: 1;
+	width: 24px;
+	height: 24px;
+}
 .toggleClick.toggle:after {
 	content: '\25B8 \ ';
-    color: #AAAAAA;
-    display: inline-block;
-    font-size: 0.6em;
-    margin: 0 0 0 5px;
-    position: relative;
-    vertical-align: middle;
+	color: #AAAAAA;
+	display: inline-block;
+	font-size: 0.6em;
+	margin: 0 0 0 5px;
+	position: relative;
+	vertical-align: middle;
 }
 .toggleClick.toggled:after {
 	content: '\25BE \ ';
-    color: #AAAAAA;
-    display: inline-block;
-    font-size: 0.6em;
-    margin: 0 0 0 5px;
-    position: relative;
-    vertical-align: middle;
+	color: #AAAAAA;
+	display: inline-block;
+	font-size: 0.6em;
+	margin: 0 0 0 5px;
+	position: relative;
+	vertical-align: middle;
 }
 .toggleClick, .toggleHover {
 	cursor: pointer;
@@ -51,7 +55,6 @@ td.show {
 	min-width: 0;
 }
 
-	
 /* Threaded Blog Comment Layout */
 .comment {
 	clear: both;
@@ -70,16 +73,14 @@ td.show {
 	list-style-type: none;
 }
 
-
 /* Very light form styling */
 .select .checkbox {
 	display: block;
 }
 input[type=radio], input[type=checkbox] {
-	width:auto;
+	width: auto;
 	min-width: 0;
 }
-
 
 /* Specific for invoices /invoices/invoices/add */
 .lineTotal {
@@ -127,17 +128,15 @@ input[type=radio], input[type=checkbox] {
 	clear: left;
 }
 
-
 .catalogItemOptions {
-	float:left; 
-	width: 200px; 
-	clear:none;
+	float: left;
+	width: 200px;
+	clear: none;
 }
-	
+
 .richtextarea {
 	clear: both;
 }
-
 
 .contextSorter form select option.des:after {
 	content: '\25B2 \ ';
@@ -146,14 +145,13 @@ input[type=radio], input[type=checkbox] {
 	content: '\25BC \ ';
 }
 
-
 .ajaxLoader {
 	position: fixed;
 	top: 50%;
 	left: 50%;
 	z-index: 9999999999;
 	padding: 3em;
-	background-color:rgba(255,255,255,0.8);
+	background-color: rgba(255,255,255,0.8);
 	border: 1px solid #999;
 	border-radius: 1em;
 	margin-top: -5em;
@@ -162,33 +160,33 @@ input[type=radio], input[type=checkbox] {
 }
 
 .preview {
-	border: 1px dashed #999; 
+	border: 1px dashed #999;
 	padding: 1em;
 	margin: 0 0 1em 0;
 }
 .preview:after {
-    content: ".";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
 }
 
 /* user edit profile picture  */
 #userEditThumb {
-    display: inline-block;
-    position: relative;
+	display: inline-block;
+	position: relative;
 }
 #userEditThumbLink {
-    position: absolute; 
-    bottom: 0; 
-    right: 0; 
-    background: #000; 
-    margin: 0; 
-    padding: 1px 4px; 
-    opacity:0.6;
-    color: #EEE;
-    font-size: 10px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	background: #000;
+	margin: 0;
+	padding: 1px 4px;
+	opacity: 0.6;
+	color: #EEE;
+	font-size: 10px;
 }
 
 /* code mirror */
@@ -196,18 +194,70 @@ input[type=radio], input[type=checkbox] {
 	display: block !important;
 }
 
-/* media browser */ 
-#mediaBrowser img {
-	max-width: 100%;
-	max-height: 100%;
+/* media browser */
+#mediaBrowser .media-container img {
+	max-height: 80px;
+	border: 1px solid #ccc;
+	padding: 1px;
 }
 #mediaBrowser .media-item {
 	float: left;
 	width: 22%;
-	height: 180px;
+	height: 128px;
 	margin: 0 8px 8px 0;
 	border: 1px solid #eaeaea;
 	padding: 8px;
 	overflow: hidden !important;
+	font-size: 10px;
+	white-space: nowrap;
+	border-radius: 3px;
 }
-    
+#mediaBrowser .media-item.checked {
+	border: 2px solid #3276b1;
+}
+#mediaBrowser .media-container {
+	max-height: 380px;
+	overflow-y: scroll;
+}
+#mediaBrowser .media-item .title {
+	text-overflow: ellipsis;
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+}
+#mediaBrowser .media-item .actions {
+	font-size: 1.6em;
+	text-align: left;
+}
+#mediaBrowser .media-item .actions input[name=mediaSelected] {
+	visibility: hidden;
+}
+.media-selected.thumbnail.pull-left {
+	margin: 4px 4px 0 0;
+}
+.media-selected .content {
+	text-align: center;
+}
+.media-selected img {
+	height: 48px;
+}
+.media-selected .content p {
+	font-size: 10px;
+	color: #777;
+	width: 75px;
+	margin: 0 auto;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+#mediaBrowserModal .modal-footer {
+	border: 0;
+	margin: 0;
+	padding: 8px;
+}
+
+@media (min-width: 768px) {
+	#mediaBrowserModal .modal-dialog {
+		width: 75%;
+	}
+}
