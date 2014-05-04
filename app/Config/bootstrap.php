@@ -396,6 +396,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'Answer' => 'Answers',
 				'AnswersResult' => 'Answers',
 				'AnswerSubmission' => 'Answers',
+				'AnswersSubmission' => 'Answers',
 				'AnswerStep' => 'Answers',
 				'Aro' => false,
 				'ArosAco' => false,
