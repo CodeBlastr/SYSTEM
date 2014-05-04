@@ -204,9 +204,10 @@ input[type=radio], input[type=checkbox] {
 #mediaBrowser .media-item {
 	float: left;
 	width: 22%;
+	height: 180px;
 	margin: 0 8px 8px 0;
 	border: 1px solid #eaeaea;
 	padding: 8px;
-	overflow: hidden;
+	overflow: hidden !important;
 }
     

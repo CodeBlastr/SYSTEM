@@ -317,19 +317,21 @@ class AppController extends Controller {
 
 /**
  * Checks to see if we're paginating a sub model one level deep.
+ * If we are then we get the class and return the model schema, if not return false.
  *
- * If we are then we get the class and return the model schema, if not return
- * false.
- * @param string
+ * @todo The 1st set of if/elses needs a better check added.  if is_string() ?? ^JB
+ *
+ * @param string $object
+ * @param string $field
  * @return mixed
  */
 	private function _getPaginatorVars($object, $field) {
 		$ModelName = $this->modelClass;
-		if (@$this->$object->name) {
+		if ($this->$object->name) {
 			$Object = $this->$object;
-		} else if (@$this->$ModelName->$object->name) {
+		} else if ($this->$ModelName->$object->name) {
 			$Object = $this->$ModelName->$object;
-		} else if (@$this->$ModelName->name) {
+		} else if ($this->$ModelName->name) {
 			$Object = $this->$ModelName;
 		}
 		if (@$Object->name) {
