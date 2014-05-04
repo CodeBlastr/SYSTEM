@@ -403,4 +403,65 @@ EOD;
 		}
 	}
 
+
+	public function tags($fieldName, $options = array()) {
+//		App::uses('Tag', 'Tags.Model');
+//		$this->Tag = new Tag();
+// 		$tags = $this->Tag->find('all', array(
+//			'conditions' => array('creator_id' => $this->View->getVar('__userId')),
+//			'fields' => 'name'
+//		));
+//		$tagNames = Hash::extract($tags, "{n}.Tag.name");
+//		foreach ($tagNames as &$tagName) {
+//			//$objects[] = '{ val: "'.$tagName.'" }';
+//			$tagName = json_encode($tagName);
+//		}
+//		$jsObject = implode(',', $tagNames);
+		echo $this->View->Html->css('/tags/css/bootstrap-tagsinput');
+		echo $this->View->Html->script('/tags/js/bootstrap-tagsinput.min');
+		#echo $this->View->Html->script('/tags/js/typeahead.jquery.min');
+		$options['data-role'] = 'tagsinput';
+		$typeahead = "
+			<script>
+//var engine = new Bloodhound({
+//	name: 'tags',
+//	//local: [{ val: 'dog' }, { val: 'pig' }, { val: 'moose' }],
+//	local: [{$jsObject}],
+//	//remote: '/tags/tags/ajax?q=%QUERY',
+//	datumTokenizer: function(d) {
+//		return Bloodhound.tokenizers.whitespace(d.val);
+//	},
+//	queryTokenizer: Bloodhound.tokenizers.whitespace
+//});
+//
+//engine.initialize();
+//
+////$('.typeahead').typeahead(null, {
+////  source: engine.ttAdapter()
+////});
+//
+//$('input[data-role=\"tagsinput\"]').typeahead({
+//   source: engine.ttAdapter()
+//}).bind('typeahead:selected', $.proxy(function (obj, datum) {  
+//  this.tagsinput('add', datum.value);
+//  this.tagsinput('input').typeahead('setQuery', '');
+//}, $('input')));
+
+//$('input[data-role=\"tagsinput\"]').tagsinput({
+//	typeahead: {
+//		source: [$jsObject],
+//		freeInput: true
+//	}
+//});
+
+//$('input[data-role=\"tagsinput\"]').tagsinput('input').typeahead({
+//	source: [$jsObject],
+//	freeInput: true
+//});
+
+</script>
+";
+		return $this->text($fieldName, $options);
+	}
+
 }
