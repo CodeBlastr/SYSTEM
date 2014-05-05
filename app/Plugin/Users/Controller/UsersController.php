@@ -495,11 +495,15 @@ class AppUsersController extends UsersAppController {
 			} catch (Exception $e) {
 				$this->Auth->logout();
 				$this->Session->setFlash($e->getMessage());
-				$this->redirect($this->User->logoutRedirectUrl($this->referer));
+				$this->redirect($this->User->logoutRedirectUrl($this->referer()));
 			}
 		} else {
-			$this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
-			!empty($this->referer) ? $this->redirect($this->referer) : null;
+			$this->Session->setFlash(__('Username or password is incorrect'), 'flash_danger', array(), 'auth');
+			if (isset($this->request->data['Override']['redirect'])) {
+				unset($this->request->data['Override']['redirect']);
+			}
+			$previousUrl = $this->referer();
+			!empty($previousUrl) ? $this->redirect($previousUrl) : null;
 			// added this because we use /install/login too and it should go back to
 			// /install/login
 		}

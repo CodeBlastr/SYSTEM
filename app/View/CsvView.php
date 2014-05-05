@@ -39,15 +39,31 @@ class CsvView extends View {
 			$csvString['values'][$c] = '';
 			foreach ($csvString['headers'] as $h) {
 				if (isset($lines[$h])) {
-					$csvString['values'][$c] .= is_int($lines[$h]) ? $lines[$h] . ',' : '"' . str_replace(',', '' , $lines[$h]) . '",';
+					if(is_array($lines[$h])) {
+						Hash::flatten($lines[$h],'|');
+					}
+					$csvString['values'][$c] .= is_int($lines[$h]) ? $lines[$h] . ',' : '"' . $this->_stipIllegalChars($lines[$h]) . '",'; 
+					// was a conflict, can probably delete // $csvString['values'][$c] .= is_int($lines[$h]) ? $lines[$h] . ',' : '"' . str_replace(',', '' , $lines[$h]) . '",';
 				} else {
 					$csvString['values'][$c] .= ',';
 				}
 			}
 		}
 		$output = '';
+		foreach ($csvString['headers'] as $i => $header) {
+			$csvString['headers'][$i] = '"'.$header.'"';
+		}
 		$output .= implode(',', str_replace('.', '_' ,$csvString['headers'])) . "\r\n";
 		$output	.= implode("\r\n", $csvString['values']);
 		return $output;
+	}
+	
+	protected function _stipIllegalChars($str) {
+		$str = str_replace(',', '' , $str);
+		$str = str_replace('\n', '', $str);
+		$str = str_replace('\r', '', $str);
+		$str = str_replace('"', '\"', $str);
+		$str = str_replace("'", "\'", $str);
+		return $str;
 	}
 }
