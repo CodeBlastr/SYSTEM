@@ -675,13 +675,7 @@ class AppContact extends ContactsAppModel {
 			$conditions['Estimate.is_accepted'] = 0;
 			$conditions['Estimate.is_archived'] = 0;
 			$conditions['Estimate.model'] = 'Contact';
-			!empty($foreignKey) ? $conditions['Estimate.foreign_key'] = $foreignKey : null; 
-			$return = $this->Estimate->find('all', array(
-				'conditions' => $conditions,
-				'contain' => array(
-					'Contact'
-					)
-				));
+			!empty($foreignKey) ? $conditions['Estimate.foreign_key'] = $foreignKey : null;
 			$converted = $this->Estimate->find('all', array(
 				'conditions' => array(
 					'Estimate.is_accepted' => 1,
@@ -691,7 +685,18 @@ class AppContact extends ContactsAppModel {
 			foreach ($converted as $convert) {
 				$cycles[] = round((strtotime($convert['Estimate']['closed']) - strtotime($convert['Estimate']['created'])) / 86400);
 			}
+			$cycle = round(array_sum($cycles) / count($cycles));
 			
+			$conditions['Estimate.created >'] = date('Y-m-d', strtotime('-'.$cycle.' day'));
+			// total estimates within the cycle
+			$return = $this->Estimate->find('all', array(
+				'conditions' => $conditions,
+				'contain' => array(
+					'Contact'
+					)
+				));
+				
+
 			$dead = $this->Estimate->find('count', array(
 				'conditions' => array(
 					'Estimate.is_accepted' => 0,
@@ -711,7 +716,7 @@ class AppContact extends ContactsAppModel {
 			$return['_subTotal'] = array_sum(Set::extract('/Estimate/total', $return));
 			$return['_multiplier'] = !empty($average) ? array_sum($average) / count($values) : 0;
 			$return['_total'] = array_sum(Set::extract('/Estimate/total', $return)) * ('.' . $return['_multiplier']);
-			$return['_cycle'] = round(array_sum($cycles) / count($cycles)); // average time from estimate to close
+			$return['_cycle'] = $cycle; // average time from estimate to close
 		}
 		return $return;
 	}

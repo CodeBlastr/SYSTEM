@@ -109,7 +109,7 @@ if (empty($runUpdates)) : ?>
         <div class="masonryBox dashboardBox tagComments tagDiscussion">
             <h3 class="title"><i class="glyphicon glyphicon-tasks"></i> <?php echo $this->Html->link('Properties', array('admin' => true, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'dashboard')); ?></h3>
             <ul>
-                <li><?php echo $this->Html->link('See all properties', array('plugin' => 'properties', 'controller' => 'properties', 'action' => 'dashboard')); ?></li>
+                <li><?php echo $this->Html->link('See all properties', array('admin' => false, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'index')); ?></li>
                 <li><?php echo $this->Html->link('Add Properties', array('admin' => true, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'add')); ?></li>
             </ul>
             <p>See and manage property listings</p>
@@ -120,6 +120,13 @@ if (empty($runUpdates)) : ?>
         <div class="masonryBox dashboardBox tagGalleries tagMedia">
             <h3 class="title"><i class="glyphicon glyphicon-picture"></i> <?php echo $this->Html->link('Galleries', array('admin' => true, 'plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'dashboard', 'admin' => 'true')); ?></h3>
             <p>Add and edit image and video galleries</p>
+        </div>
+        <?php endif; ?>
+		
+		<?php if (CakePlugin::loaded('Jobs')) : ?>        
+        <div class="masonryBox dashboardBox tagPages">
+            <h3 class="title"><i class="glyphicon glyphicon-picture"></i> <?php echo $this->Html->link('Manage Jobs', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'index')); ?></h3>
+            <p><?php echo $this->Html->link('Add Job', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'add')); ?></p>
         </div>
         <?php endif; ?>
 
@@ -134,7 +141,7 @@ if (empty($runUpdates)) : ?>
         <?php if ($this->request->query['s'] == 'f9823uf9283u9283u') : ?>
 		<div class="masonryBox dashboardBox tagMedia">
            	 <h3 class="title"><i class="glyphicon glyphicon-floppy-save"></i> Site Backup</h3>
-            	<p>Backup Your Site and download a zipfile</p>
+            	<p>Export your site and download as a zipfile.</p>
           		<?php echo $this->Form->create('Admin'); ?>
 				<?php echo $this->Form->hidden('export', array('value' => true)); ?>
 				<?php echo $this->Form->end('Save Backup'); ?>

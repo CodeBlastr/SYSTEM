@@ -353,14 +353,15 @@ class AppUser extends UsersAppModel {
 	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
 		}
 
-        if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
+    	if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
 			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
 		}
+		//$this->data = $this->_cleanData($this->data); // who ever made this function didn't do anything of value in the function
         return true;
     }
 
 /**
- * Aftersave method
+ * After save method
  *
  * @param bool $created
  */
@@ -382,6 +383,10 @@ class AppUser extends UsersAppModel {
 		}
 		return parent::afterSave($created);
 	}
+
+/**
+ * After find method
+ */
 
 
 /**
@@ -444,7 +449,7 @@ class AppUser extends UsersAppModel {
 
 /**
  * Moves ContactAddress's up to the root so that we can easily add/edit them from User::edit()
- * @todo Should this be in the afterFind? ^JB
+ * @todo Should this be in the afterFind? ^JB 
  *
  * @param string $type
  * @param array $query
@@ -1139,6 +1144,18 @@ Thank you for registering with us and welcome to the community.";
 		}
 		return implode($pass); //turn the array into a string
 	}
+
+/**
+ * Clean Data method
+ *
+ * @param array
+	public function _cleanData($data) {
+		if (!empty($data[$this->alias]['data'])) {
+			$data[$this->alias]['data'] = serialize($data[$this->alias]['data']);
+		}
+		return $data;
+	}
+ */
 
 }
 
