@@ -144,10 +144,13 @@ class AppWebpage extends WebpagesAppModel {
 		if (CakePlugin::loaded('Drafts')) {
 			$this->actsAs['Drafts.Draftable'] = array('conditions' => array('type' => 'content'));
 		}
+		parent::__construct($id, $table, $ds);
+		
+		// this was above the construct but it was breaking the site install
+		// put it here and the install worked, but not sure what might not work now
 		if (CakePlugin::loaded('Media')) {
 			$this->actsAs[] = 'Media.MediaAttachable';
 		}
-		parent::__construct($id, $table, $ds);
 	}
 
 /**
