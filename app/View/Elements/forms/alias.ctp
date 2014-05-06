@@ -10,6 +10,8 @@ $aliasNameDefaults = array('label' => 'Permanent Url');
 $aliasName['Alias.name'] = !empty($aliasId['Alias.name']) ? array_merge($aliasNameDefaults, $aliasId['Alias.name']) : $aliasNameDefaults;
 $prefix = !empty($prefix) ? $prefix : '';
 $formId = !empty($formId) ? $formId : null;
+$defaultInputOptions = array('required' => false, 'label' => 'Permanent Url');
+$inputOptions = !empty($inputOptions) && is_array($inputOptions) ? array_merge($defaultInputOptions, $inputOptions) : $defaultInputOptions;
 $nameInput = !empty($nameInput) ? $nameInput : null;
 $aliasInput = !empty($aliasInput) ? $aliasInput : '#AliasName';
 !empty($foreignKey) ? $foreignKey = '' : $foreignKey = !empty($this->request->data['Alias']['value']) ? $this->request->data['Alias']['value'] : '';
@@ -22,7 +24,7 @@ echo $this->Form->input('Alias.value', array('type' => 'hidden', 'value' => $for
 echo $this->Form->input('Alias.plugin', array('type' => 'hidden', 'value' => $aliasPlugin));
 echo $this->Form->input('Alias.controller', array('type' => 'hidden', 'value' => $aliasController));
 echo $this->Form->input('Alias.action', array('type' => 'hidden', 'value' => $aliasAction));
-echo $this->Form->input(key($aliasName), array('required' => false, 'label' => 'Permanent Url')); ?>
+echo $this->Form->input(key($aliasName), $inputOptions); ?>
 
 <style type="text/css">
     #permaLink {
