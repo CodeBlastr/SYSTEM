@@ -86,7 +86,7 @@ if (empty($runUpdates)) : ?>
 
 		<?php if (CakePlugin::loaded('Blogs')) : ?>
         <div class="masonryBox dashboardBox tagBlogs tagPages">
-            <h3 class="title"><i class="glyphicon glyphicon-file"></i> <?php echo $this->Html->link('Blogs', array('admin' => true, 'plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="glyphicon glyphicon-file"></i> <?php echo $this->Html->link('Blogs', array('admin' => true, 'plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'dashboard')); ?></h3>
             <p>Create multiple blogs, and post new content.</p>
             <ul>
             	<?php if (!empty($blogs)) : ?>
