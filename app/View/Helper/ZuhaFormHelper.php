@@ -38,6 +38,7 @@ class ZuhaFormHelper extends FormHelper {
 			}
 			// hash the form action to write into settings, as a form that must be checked
 			$settingValue = 'c' . Security::hash($this->url($this->_getAction($options)), 'md5', Configure::read('Security.salt'));
+			
 			// this is how we know which forms have to be checked on the catch side
 			if (defined('__APP_SECURE_FORMS')) {
 				// read settings

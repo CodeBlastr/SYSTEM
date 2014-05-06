@@ -16,8 +16,14 @@ class UserTestCase extends CakeTestCase {
 		'plugin.Users.User',
 		'plugin.Users.UserRole',
 		'plugin.Users.Used',
+		'plugin.Users.UsersUserGroup',
+		
 		'plugin.Contacts.Contact',
 		'plugin.Ratings.Rating',
+		'plugin.Media.Media',
+		'plugin.Media.MediaAttachment',
+		'plugin.Categories.Category',
+		'plugin.Categories.Categorized',
 		);
 
 /**
@@ -78,7 +84,7 @@ class UserTestCase extends CakeTestCase {
 		);
 		$this->User->save($data);
 		$user = $this->User->find('first', array('conditions' => array('User.email' => $data['User']['email'])));
-		$this->assertEqual(1, count($user)); // user was added
+		$this->assertEqual($data['User']['email'], $user['User']['email']); // user was added
 	}
 	
 	public function testIsRegisterable() {
