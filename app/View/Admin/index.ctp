@@ -30,7 +30,6 @@ if (empty($runUpdates)) : ?>
         <?php echo CakePlugin::loaded('Comments') ? $this->Html->link(__('Discussion'), '#tagDiscussion', array('class' => 'filterClick btn btn-default')) : null; ?>
         <?php echo $this->Html->link(__('Themes'), '#tagThemes', array('class' => 'filterClick btn btn-default')); ?>
         <?php echo $this->Html->link(__('Settings'), '#tagAdmin', array('class' => 'filterClick btn btn-default')); ?>
-        <?php echo CakePlugin::loaded('Campaigns') ? $this->Html->link(__('<span class="glyphicon glyphicon-dashboard"></span> Campaigns'), array('admin' => true, 'plugin' => 'classifieds', 'controller' => 'classifieds', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default', 'escape' => false)) : null; ?>
         <?php echo CakePlugin::loaded('Products') ? $this->Html->link(__('<span class="glyphicon glyphicon-dashboard"></span> Ecommerce'), array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default', 'escape' => false)) : null; ?>
     </div>
 
@@ -122,8 +121,8 @@ if (empty($runUpdates)) : ?>
             <p>Add and edit image and video galleries</p>
         </div>
         <?php endif; ?>
-		
-		<?php if (CakePlugin::loaded('Jobs')) : ?>        
+
+		<?php if (CakePlugin::loaded('Jobs')) : ?>
         <div class="masonryBox dashboardBox tagPages">
             <h3 class="title"><i class="glyphicon glyphicon-picture"></i> <?php echo $this->Html->link('Manage Jobs', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'index')); ?></h3>
             <p><?php echo $this->Html->link('Add Job', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'add')); ?></p>
@@ -245,6 +244,16 @@ if (empty($runUpdates)) : ?>
             <p>Create and edit Pop Up Help alerts.</p>
             <ul>
                 <li><?php echo $this->Html->link('Create Wizard', array('plugin' => 'wizards', 'controller' => 'wizards', 'action' => 'add')); ?></li>
+            </ul>
+        </div>
+        <?php endif; ?>
+
+        <?php if (CakePlugin::loaded('Campaigns')) : ?>
+        <div class="masonryBox dashboardBox">
+            <h3 class="title"><i class="glyphicon glyphicon-tower"></i> <?php echo $this->Html->link('Campaigns', array('admin' => true, 'plugin' => 'campaigns', 'controller' => 'campaigns')); ?> </h3>
+            <p>Create and manage Campaigns.</p>
+            <ul>
+                <li><?php echo $this->Html->link('Create Campaign', array('admin' => true, 'plugin' => 'campaigns', 'controller' => 'campaigns', 'action' => 'add')); ?></li>
             </ul>
         </div>
         <?php endif; ?>
