@@ -23,7 +23,6 @@ class CkeHelper extends Helper {
         $css = '<style type="text/css">.richtext {position: relative;} .ckeditorLinks {position: absolute; right: 6px; top: 3px;} .ckeditorLinks a {color: #000; text-decoration: none; cursor: pointer} .ckeditorLinks a:hover {text-decoration: none; color: #000;}</style>';
 		$configuration = $this->_config($settings);
         $code = "
-        	
 			if (typeof window.toggleExtras === 'undefined') {
 				function toggleExtras() {
 	    			$('.cke_toolbar_break').nextAll().toggle();
@@ -55,8 +54,11 @@ class CkeHelper extends Helper {
                     $('#'+actualFieldName).parent().parent().find('.exec-source').html('<i class=\"icon-wrench\"></i> HTML');
                 }
 			});
-
-";
+			 setTimeout(function() {
+				toggleExtras();
+			}, 1000);
+		    
+		    ";
 
 		if ( $configuration ) {
 			$code .= "
