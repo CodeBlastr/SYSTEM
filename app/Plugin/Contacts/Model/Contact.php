@@ -328,7 +328,9 @@ class AppContact extends ContactsAppModel {
 					'Contact.id' => $data['Contact']['id'],
 					),
 				'contain' => array(
-					'User',
+					'User' => array(
+						'fields' => array('User.id', 'User.email', 'User.full_name', 'User.username')
+					),
 					'Employer',
 					),
 				));
@@ -426,6 +428,7 @@ class AppContact extends ContactsAppModel {
 		if ($data['Contact']['user_id'] == '') {
 			unset($data['Contact']['user_id']);
 		}
+
 		return $data;
 	}
 

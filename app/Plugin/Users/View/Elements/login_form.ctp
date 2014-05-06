@@ -57,14 +57,7 @@ $textSeparator = !empty($textSeparator) ? $textSeparator : '-';
 $textLogOut = !empty($textLogOut) ? $textLogOut : 'Logout';
 $linkIdLogout = !empty($linkIdLogout) ? $linkIdLogin : 'logoutLink';
 
-$facebookId = $this->Session->read('Auth.User.facebook_id');
-
-if (!empty($facebookId)) {
-	// use the facebook logout if it exists
-	$logOutLink = $this->Facebook->logout(array('label' => $textLogOut, 'redirect' => array('plugin' => 'users', 'controller' => 'users', 'action' => 'logout')));
-} else {
-	$logOutLink = $this->Html->link($textLogOut, array('plugin' => 'users', 'controller' => 'users', 'action' => 'logout'), array('class' => $linkClass, 'id' => $linkIdLogout));
-}
+$logOutLink = $this->Html->link($textLogOut, array('plugin' => 'users', 'controller' => 'users', 'action' => 'logout'), array('class' => $linkClass, 'id' => $linkIdLogout));
 ?>
 
 <?php if (empty($userId)) : ?>
