@@ -65,7 +65,10 @@ class ZuhaFormHelper extends FormHelper {
 				$data['Setting']['value'] = $value;
 				$Setting->add($data);
 			}
-			$json = json_decode(file_get_contents('http://' . $_SERVER['HTTP_HOST'] . '/forms/forms/secure.json'));
+			
+			// this code is extremely slow, it can cause pages to take two minutes to load
+			$context = stream_context_create(array('http' => array('header'=>'Connection: close\r\n')));
+			$json = json_decode(file_get_contents('http://' . $_SERVER['HTTP_HOST'] . '/forms/forms/secure.json', false, $context));
 			echo '<script type="text/javascript">
 			        jQuery(document).ready(function() {
 			          var timeOut = window.setTimeout(function() { jQuery("#' . $options['id'] . '").prepend("<input type=\"hidden\" name=\"data[FormKey][id]\" value=\"' . $json->key . '\" />"); }, 10000);
@@ -352,7 +355,7 @@ EOD;
 		// return a text field plus a hidden field with proper Y-m-d h:i:s format
 		return $this->text($fieldName, array(
 			'type' => 'text',
-		) + $attributes) . $this->hidden($fieldName, array('id' => $fieldhiddenname));
+		) + $attributes) . $this->hidden($fieldName, array_merge($attributes, array('id' => $fieldhiddenname)));
 	}
 
 /**
