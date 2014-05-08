@@ -944,7 +944,8 @@ class AppUser extends UsersAppModel {
 		// change this to merge of some kind for default options
 		$options['dryrun'] = !empty($options['dryrun']) ? $options['dryrun'] : false;
 
-		// setup data
+ 		// setup data
+		$data = $this->_cleanAddData($data);
 		$randompassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'),0,3);
 		$randompassword .= substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,3);
 		$randompassword .= substr(str_shuffle('0123456789'),0,3);
