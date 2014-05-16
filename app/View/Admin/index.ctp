@@ -258,7 +258,8 @@ if (empty($runUpdates)) : ?>
             <h3 class="title"><i class="glyphicon glyphicon-tower"></i> <?php echo $this->Html->link('Campaigns', array('admin' => true, 'plugin' => 'campaigns', 'controller' => 'campaigns')); ?> </h3>
             <p>Create and manage Campaigns.</p>
             <ul>
-                <li><?php echo $this->Html->link('Create Campaign', array('admin' => true, 'plugin' => 'campaigns', 'controller' => 'campaigns', 'action' => 'add')); ?></li>
+                <li><?php echo $this->Html->link('Campaign Results', array('admin' => true, 'plugin' => 'campaigns', 'controller' => 'campaign_results')); ?></li>
+                <li><?php echo $this->Html->link('Create New Campaign', array('admin' => true, 'plugin' => 'campaigns', 'controller' => 'campaigns', 'action' => 'add')); ?></li>
             </ul>
         </div>
         <?php endif; ?>
