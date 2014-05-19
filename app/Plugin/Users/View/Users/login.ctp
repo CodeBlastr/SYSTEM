@@ -1,10 +1,10 @@
 <div id="content">
 	<div id="register" class="collapse">
 		<div class="row table">
-			<div class="col-sm-6">
+			<div class="col-sm-6 table-cell">
 				<?php echo $this->element('register'); ?>
 			</div>
-			<div class="col-sm-6 text-center vertical-center">
+			<div class="col-sm-6 text-center vertical-center table-cell">
 				<a href="#login" class="btn btn-default" data-parent="#content" data-target="#login">I already have an account</a>
 			</div>
 		</div>
@@ -12,10 +12,10 @@
 
 	<div id="login" class="collapse in">
 		<div class="row table">
-			<div class="col-sm-6 text-center vertical-center">
+			<div class="col-sm-6 text-center vertical-center table-cell">
 				<a href="#register" class="btn btn-default" data-parent="#content" data-target="#register">Register a new account</a>
 			</div>
-			<div class="col-sm-6">
+			<div class="col-sm-6 table-cell">
 				<h2>Login</h2>
 				<?php echo $this->element('login_form'); ?>
 			</div>
