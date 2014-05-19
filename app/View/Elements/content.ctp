@@ -94,8 +94,6 @@ if (!empty($defaultTemplate)) {
 	$i = 0;
 	foreach ($matches[0] as $answerMatch) {
 		$answerCfg['id'] = trim($matches[3][$i]);
-		// removed cache for forms, because you can't set it based on form inputs
-		// $formCfg['cache'] = array('key' => 'form-'.$formCfg['id'], 'time' => '+2 days');
 		$content = str_replace($answerMatch, $this->element('Answers.answer', $answerCfg), $content);
 		$i++;
 	}

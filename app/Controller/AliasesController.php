@@ -39,16 +39,7 @@ class AliasesController extends AppController {
  * 
  */
     public function index() {
-        $this->paginate['fields'] = array(
-            'Alias.id',
-            'Alias.name',
-            'Alias.plugin',
-            'Alias.controller',
-            'Alias.value',
-            );
         $this->set('aliases', $this->paginate());
-        $this->set('displayName', 'name');
-        $this->set('displayDescription', '');
         $this->set('page_title_for_layout', 'Aliases');
     }
 

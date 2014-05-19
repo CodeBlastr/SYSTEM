@@ -14,12 +14,12 @@ $showContext = !empty($showContext) ? true : false; ?>
 	        <ul class="nav">
 	        	<li class="dropdown">
 	        		<a class="navbar-brand brand dropdown-toggle" data-toggle="dropdown" href="#">buildrr<b class="caret"></b></a>
-	        		<?php echo !empty($showContext) ? $this->Element('context_menu', array('before' => __('<li>%s</li><li>%s</li><li class="divider"></li>', $this->Html->link('Dashboard', '/admin/', array('title' => 'Admin Dashboard')), $this->Html->link('View Site', '/')))) : null; ?>   
+	        		<?php echo !empty($showContext) ? $this->element('context_menu', array('before' => __('<li>%s</li><li>%s</li><li class="divider"></li>', $this->Html->link('Dashboard', '/admin', array('title' => 'Admin Dashboard')), $this->Html->link('View Site', '/')))) : null; ?>   
 	        	</li>
 	        </ul>
 		</div>
         
-        <div class="collapse nav-collapse">
+        <div class="collapse navbar-collapse nav-collapse">
             <ul class="nav navbar-nav">
                 <li class="nav-mode"><?php echo $this->Html->link('Content', '/admin/#tagPages+tagMedia+tagDiscussion+tagElements', array('title' => 'Pages, Modules, Media, Categories, Tags, Enumerations', 'onclick' => 'window.location.replace(this.href);window.location.reload(true)')); // takes extra js, because of the hash tags ?></li>
                 <li class="nav-mode"><?php echo $this->Html->link('Contacts', '/admin/contacts/contacts/dashboard', array('title' => 'Leads, Opportunities')); ?></li>
