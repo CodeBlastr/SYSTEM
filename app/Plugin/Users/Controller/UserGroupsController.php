@@ -103,10 +103,9 @@ class AppUserGroupsController extends UsersAppController {
 				),
 			)
 		));
-		$this->set('userGroup', $userGroup);
+		$this->set('userGroup', $this->request->data = $userGroup);
 		$this->set('userId' , $this->Session->read('Auth.User.id'));
-		# get the logged in users group status
-		# @todo this should be reusable
+		// get the logged in users group status
 		$status = $this->UserGroup->findUserGroupStatus('first', array(
 			'conditions' => array(
 				'UsersUserGroup.user_group_id' => $id,

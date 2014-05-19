@@ -124,7 +124,7 @@ class AppUserGroup extends UsersAppModel {
  * @param int $groupId
  * @param int $userId
  */
-	public function approve($pendingId,$groupId,$userId){
+	public function approve($pendingId, $groupId, $userId){
 		if(!empty($pendingId) && !empty($groupId) && !empty($userId)){
 			$isMyGroup = $this->isMyGroup($groupId,$userId);
 			if($isMyGroup){
@@ -141,11 +141,26 @@ class AppUserGroup extends UsersAppModel {
 
 /**
  *
+ * @param int $pendingId
+ * @param int $groupId
+ * @param int $userId
+ */
+	public function isApproved($groupId, $userId){
+		if(!empty($groupId) && !empty($userId)) {
+			if ($this->UsersUserGroup->find('count', array('conditions' => array('UsersUserGroup.is_approved' => 1, 'UsersUserGroup.user_group_id' => $groupId, 'UsersUserGroup.user_id' => $userId)))) {
+				return true;
+			};
+		}
+		return false;
+	}
+
+/**
+ *
  * @param int $id
  * @param int $userId
  * @return boolean
  */
-	public function isMyGroup($id,$userId){
+	public function isMyGroup($id, $userId){
 		return $this->find('count', array(
 			'fields'=>array('Creator.id'),
 			'conditions'=>array('UserGroup.id'=>$id,'Creator.id'=>$userId),
