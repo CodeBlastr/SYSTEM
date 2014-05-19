@@ -14,7 +14,7 @@ $showContext = !empty($showContext) ? true : false; ?>
 	        <ul class="nav">
 	        	<li class="dropdown">
 	        		<a class="navbar-brand brand dropdown-toggle" data-toggle="dropdown" href="#">buildrr<b class="caret"></b></a>
-	        		<?php echo !empty($showContext) ? $this->Element('context_menu', array('before' => __('<li>%s</li><li>%s</li><li class="divider"></li>', $this->Html->link('Dashboard', '/admin/', array('title' => 'Admin Dashboard')), $this->Html->link('View Site', '/')))) : null; ?>   
+	        		<?php echo !empty($showContext) ? $this->element('context_menu', array('before' => __('<li>%s</li><li>%s</li><li class="divider"></li>', $this->Html->link('Dashboard', '/admin', array('title' => 'Admin Dashboard')), $this->Html->link('View Site', '/')))) : null; ?>   
 	        	</li>
 	        </ul>
 		</div>
