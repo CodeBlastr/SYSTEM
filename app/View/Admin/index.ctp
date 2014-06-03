@@ -30,7 +30,6 @@ if (empty($runUpdates)) : ?>
         <?php echo CakePlugin::loaded('Comments') ? $this->Html->link(__('Discussion'), '#tagDiscussion', array('class' => 'filterClick btn btn-default')) : null; ?>
         <?php echo $this->Html->link(__('Themes'), '#tagThemes', array('class' => 'filterClick btn btn-default')); ?>
         <?php echo $this->Html->link(__('Settings'), '#tagAdmin', array('class' => 'filterClick btn btn-default')); ?>
-        <?php echo CakePlugin::loaded('Campaigns') ? $this->Html->link(__('<span class="glyphicon glyphicon-dashboard"></span> Campaigns'), array('admin' => true, 'plugin' => 'classifieds', 'controller' => 'classifieds', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default', 'escape' => false)) : null; ?>
         <?php echo CakePlugin::loaded('Products') ? $this->Html->link(__('<span class="glyphicon glyphicon-dashboard"></span> Ecommerce'), array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default', 'escape' => false)) : null; ?>
     </div>
 
@@ -86,7 +85,7 @@ if (empty($runUpdates)) : ?>
 
 		<?php if (CakePlugin::loaded('Blogs')) : ?>
         <div class="masonryBox dashboardBox tagBlogs tagPages">
-            <h3 class="title"><i class="glyphicon glyphicon-file"></i> <?php echo $this->Html->link('Blogs', array('admin' => true, 'plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="glyphicon glyphicon-file"></i> <?php echo $this->Html->link('Blogs Dashboard', array('admin' => true, 'plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'dashboard')); ?></h3>
             <p>Create multiple blogs, and post new content.</p>
             <ul>
             	<?php if (!empty($blogs)) : ?>
@@ -109,7 +108,7 @@ if (empty($runUpdates)) : ?>
         <div class="masonryBox dashboardBox tagComments tagDiscussion">
             <h3 class="title"><i class="glyphicon glyphicon-tasks"></i> <?php echo $this->Html->link('Properties', array('admin' => true, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'dashboard')); ?></h3>
             <ul>
-                <li><?php echo $this->Html->link('See all properties', array('plugin' => 'properties', 'controller' => 'properties', 'action' => 'dashboard')); ?></li>
+                <li><?php echo $this->Html->link('See all properties', array('admin' => false, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'index')); ?></li>
                 <li><?php echo $this->Html->link('Add Properties', array('admin' => true, 'plugin' => 'properties', 'controller' => 'properties', 'action' => 'add')); ?></li>
             </ul>
             <p>See and manage property listings</p>
@@ -120,6 +119,13 @@ if (empty($runUpdates)) : ?>
         <div class="masonryBox dashboardBox tagGalleries tagMedia">
             <h3 class="title"><i class="glyphicon glyphicon-picture"></i> <?php echo $this->Html->link('Galleries', array('admin' => true, 'plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'dashboard', 'admin' => 'true')); ?></h3>
             <p>Add and edit image and video galleries</p>
+        </div>
+        <?php endif; ?>
+
+		<?php if (CakePlugin::loaded('Jobs')) : ?>
+        <div class="masonryBox dashboardBox tagPages">
+            <h3 class="title"><i class="glyphicon glyphicon-picture"></i> <?php echo $this->Html->link('Manage Jobs', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'index')); ?></h3>
+            <p><?php echo $this->Html->link('Add Job', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'add')); ?></p>
         </div>
         <?php endif; ?>
 
@@ -134,7 +140,7 @@ if (empty($runUpdates)) : ?>
         <?php if ($this->request->query['s'] == 'f9823uf9283u9283u') : ?>
 		<div class="masonryBox dashboardBox tagMedia">
            	 <h3 class="title"><i class="glyphicon glyphicon-floppy-save"></i> Site Backup</h3>
-            	<p>Backup Your Site and download a zipfile</p>
+            	<p>Export your site and download as a zipfile.</p>
           		<?php echo $this->Form->create('Admin'); ?>
 				<?php echo $this->Form->hidden('export', array('value' => true)); ?>
 				<?php echo $this->Form->end('Save Backup'); ?>
@@ -147,6 +153,11 @@ if (empty($runUpdates)) : ?>
             <p>Categorize anything.  Move, reorder, add, edit categories. <?php echo $this->Html->link('Dashboard', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'dashboard'), array('class' => 'btn btn-default btn-mini btn-xs')); ?></p>
         </div>
         <?php endif; ?>
+        
+        <div class="masonryBox dashboardBox tagText tagAdmin">
+            <h3 class="title"><i class="glyphicon glyphicon-tasks"></i> <?php echo $this->Html->link('Permanent URL\'s', array('admin' => 1, 'plugin' => false, 'controller' => 'aliases', 'action' => 'index')); ?></h3>
+            <p>Manage your site's url aliases.</p>
+        </div>
 
 		<?php if (CakePlugin::loaded('Tags')) : ?>
         <div class="masonryBox dashboardBox tagTags tagAdmin">
@@ -176,7 +187,7 @@ if (empty($runUpdates)) : ?>
         <div class="masonryBox dashboardBox tagForms tagPages">
             <h3 class="title"><i class="glyphicon glyphicon-send"></i> <?php echo $this->Html->link('Custom Forms', array('plugin' => 'answers', 'controller' => 'answers', 'action' => 'index')); ?></h3>
             <p>Create custom forms using the Drag and Drop Form Buildrr.</p>
-            <li><?php echo $this->Html->link('View Form Submissions', array('plugin' => 'answers', 'controller' => 'answerSubmissions')) ?></li>
+            <li><?php echo $this->Html->link('View Form Submissions', array('plugin' => 'answers', 'controller' => 'answersSubmissions')) ?></li>
         </div>
         <?php endif; ?>
 
@@ -238,6 +249,17 @@ if (empty($runUpdates)) : ?>
             <p>Create and edit Pop Up Help alerts.</p>
             <ul>
                 <li><?php echo $this->Html->link('Create Wizard', array('plugin' => 'wizards', 'controller' => 'wizards', 'action' => 'add')); ?></li>
+            </ul>
+        </div>
+        <?php endif; ?>
+
+        <?php if (CakePlugin::loaded('Campaigns')) : ?>
+        <div class="masonryBox dashboardBox">
+            <h3 class="title"><i class="glyphicon glyphicon-tower"></i> <?php echo $this->Html->link('Campaigns', array('admin' => true, 'plugin' => 'campaigns', 'controller' => 'campaigns')); ?> </h3>
+            <p>Create and manage Campaigns.</p>
+            <ul>
+                <li><?php echo $this->Html->link('Campaign Results', array('admin' => true, 'plugin' => 'campaigns', 'controller' => 'campaign_results')); ?></li>
+                <li><?php echo $this->Html->link('Create New Campaign', array('admin' => true, 'plugin' => 'campaigns', 'controller' => 'campaigns', 'action' => 'add')); ?></li>
             </ul>
         </div>
         <?php endif; ?>

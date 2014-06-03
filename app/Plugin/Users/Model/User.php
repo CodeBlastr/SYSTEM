@@ -17,8 +17,6 @@ class AppUser extends UsersAppModel {
 		'Galleries.Mediable',
 		);
 
-	public $order = array('last_name', 'full_name', 'first_name');
-
 /**
  * Auto Login setting, used to skip session write in aftersave
  */
@@ -190,6 +188,8 @@ class AppUser extends UsersAppModel {
 		);
 
 	public function __construct($id = false, $table = null, $ds = null) {
+		$this->order = array($this->alias.'.last_name', $this->alias.'.full_name', $this->alias.'.first_name');
+
 		if(CakePlugin::loaded('Media')) {
 			$this->actsAs[] = 'Media.MediaAttachable';
 		}
@@ -231,6 +231,9 @@ class AppUser extends UsersAppModel {
 			// );
 		}
 		parent::__construct($id, $table, $ds);
+		
+		// default ordering
+		$this->order = array($this->alias . '.last_name', $this->alias . '.full_name', $this->alias . '.first_name');
 	}
 
 /**
@@ -350,14 +353,15 @@ class AppUser extends UsersAppModel {
 	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
 		}
 
-        if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
+    	if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
 			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
 		}
+		//$this->data = $this->_cleanData($this->data); // who ever made this function didn't do anything of value in the function
         return true;
     }
 
 /**
- * Aftersave method
+ * After save method
  *
  * @param bool $created
  */
@@ -379,6 +383,10 @@ class AppUser extends UsersAppModel {
 		}
 		return parent::afterSave($created);
 	}
+
+/**
+ * After find method
+ */
 
 
 /**
@@ -441,7 +449,7 @@ class AppUser extends UsersAppModel {
 
 /**
  * Moves ContactAddress's up to the root so that we can easily add/edit them from User::edit()
- * @todo Should this be in the afterFind? ^JB
+ * @todo Should this be in the afterFind? ^JB 
  *
  * @param string $type
  * @param array $query
@@ -576,6 +584,7 @@ class AppUser extends UsersAppModel {
 			if (!empty($user)) {
 				$data['User']['id'] = $user['User']['id'];
 				$data['User']['last_login'] = date('Y-m-d h:i:s');
+				$data['User']['last_ip'] = $_SERVER["REMOTE_ADDR"];
 				$data['User']['view_prefix'] = $user['UserRole']['view_prefix'];
 				$data['User']['user_role_id'] = $user['UserRole']['id'];
 				if (empty($user['User']['forgot_key']) || $user['User']['forgot_key'][0] != 'W') {
@@ -935,7 +944,8 @@ class AppUser extends UsersAppModel {
 		// change this to merge of some kind for default options
 		$options['dryrun'] = !empty($options['dryrun']) ? $options['dryrun'] : false;
 
-		// setup data
+ 		// setup data
+		$data = $this->_cleanAddData($data);
 		$randompassword = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'),0,3);
 		$randompassword .= substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),0,3);
 		$randompassword .= substr(str_shuffle('0123456789'),0,3);
@@ -1135,6 +1145,18 @@ Thank you for registering with us and welcome to the community.";
 		}
 		return implode($pass); //turn the array into a string
 	}
+
+/**
+ * Clean Data method
+ *
+ * @param array
+	public function _cleanData($data) {
+		if (!empty($data[$this->alias]['data'])) {
+			$data[$this->alias]['data'] = serialize($data[$this->alias]['data']);
+		}
+		return $data;
+	}
+ */
 
 }
 

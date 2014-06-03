@@ -11,7 +11,7 @@
 	<?php echo $this->Html->css('twitter-bootstrap.3/bootstrap.min'); ?>
 	<?php echo $this->Html->css('twitter-bootstrap.3/bootstrap.custom'); ?>
 	<?php echo $this->Html->css('twitter-bootstrap.3/bootstrap.switch'); ?>
-	<?php echo $this->Html->script('http://code.jquery.com/jquery-latest.js'); ?>
+	<?php echo $this->Html->script('//code.jquery.com/jquery-latest.js'); ?>
 	<!-- if the internet was down ... script type="text/javascript" src="/js/twitter-bootstrap.3/jquery.js"></script> -->
 	<?php //echo $this->Html->script('//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'); ?>
 	<?php echo $this->Html->script('plugins/modernizr-2.6.1-respond-1.1.0.min'); ?>

@@ -7,14 +7,25 @@ App::uses('UsersAppController', 'Users.Controller');
 class AppUserFollowersController extends UsersAppController {
 
 	public $name = 'UserFollowers';
+
 	public $uses = 'Users.UserFollower';
 
-	function index() {
+	public function index($userId = null) {
 		$this->UserFollower->recursive = 0;
-		$this->set('userfollowers', $this->paginate());
+		!empty($userId) ? $this->paginate['conditions']['UserFollower.user_id'] = $userId : null;
+		$this->set('userFollowers', $this->request->data = $this->paginate());
+		$this->set('user', $user = $this->UserFollower->User->find('first', array('conditions' => array('User.id' => $userId))));
+		return $this->request->data;
 	}
 
-	function view($user = null) {
+	public function my() {
+		$this->UserFollower->recursive = 0;
+		$this->paginate['conditions']['UserFollower.user_id'] = $this->Session->read('Auth.User.id');
+		$this->set('userFollowers', $this->request->data = $this->paginate('UserFollower'));
+		return $this->request->data;
+	}
+
+	public function view($user = null) {
 		$dat = $this->UserFollower->find('all', array(
 			'conditions'=>array(
 				'UserFollower.user_id' => $user
@@ -29,23 +40,56 @@ class AppUserFollowersController extends UsersAppController {
  * Follow a user 
  * @param {int} uid => The id of the user
  */
-	function add($uid) {
-		$this->request->data['UserFollower']['user_id'] = $uid;
-		$this->request->data['UserFollower']['follower_id'] = $this->Auth->user('id');	
-		if($this->UserFollower->find('first', array('conditions' => array('user_id' => $uid, 'follower_id' => $this->Auth->user('id'))))) {
-			$this->Session->setFlash('You are already following this user');
-			$this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $uid));
-		} else {
-			$this->UserFollower->create();
-			if ( $this->UserFollower->save($this->request->data) ) {
+	public function add($userId) {
+		if ($this->request->is('post')) {
+			$this->request->data['UserFollower']['user_id'] = $userId;
+			$this->request->data['UserFollower']['follower_id'] = $this->Auth->user('id');	
+			if($this->UserFollower->find('first', array('conditions' => array('user_id' => $userId, 'follower_id' => $this->Auth->user('id'))))) {
 				$this->Session->setFlash('You are already following this user');
-				$this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $uid));
+				$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $userId));
+			} else {
+				$this->UserFollower->create();
+				if ( $this->UserFollower->save($this->request->data) ) {
+					$this->Session->setFlash('Request sent');
+					$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $userId));
+				}
 			}
 		}
-		
+	}
+	
+/*
+ * 
+ * Follow a user 
+ * @param {int} uid => The id of the user
+ */
+	public function approve($id = null, $mutual = null) {
+		// $id = $this->UserFollower->find('first', array('UserFollower.id' => $id));
+		// $id = $id['UserFollower']['follower_id']; 
+		if ($mutual) {
+			$follower = $this->UserFollower->find('first', array('conditions' => array('UserFollower.id' => $id)));
+			if (!empty($follower)) {
+				if ($this->UserFollower->followEachOther($follower['UserFollower']['user_id'], $follower['UserFollower']['follower_id'])) {
+					$this->Session->setFlash('Approved');
+				} else {
+					$this->Session->setFlash('Failed, please try again.');
+				}
+			} else {
+				$this->Session->setFlash('Invalid request id');
+			}
+		} elseif ($this->UserFollower->approve($id, $this->Session->read('Auth.User.id'))) { 
+			$this->Session->setFlash('Approved');
+		} else {
+			$this->Session->setFlash('Failed, please try again.');
+		}
+		$this->redirect($this->referer()); 
 	}
 
-	function edit($id = null) {
+/**
+ * Edit method
+ * 
+ * @param string
+ */
+	public function edit($id = null) {
 		if ( !$id && empty($this->request->data) ) {
 			$this->flash(sprintf(__('Invalid user follower', true)), array('action' => 'index'));
 		}
@@ -62,11 +106,11 @@ class AppUserFollowersController extends UsersAppController {
 		$this->set(compact('users'));
 	}
 
-	function delete($id = null) {
+	public function delete($id = null) {
 		if ( !$id ) {
 			$this->flash(sprintf(__('Invalid user follower', true)), array('action' => 'index'));
 		}
-		if ( $this->UserFollower->deleteAll(array('user_id'=>$id, 'follower_id'=> $this->Auth->user('id'))) ) {
+		if ( $this->UserFollower->deleteAll(array('user_id' => $id, 'follower_id' => $this->Auth->user('id'))) ) {
 			$this->Session->setFlash(__('Deleted'));
 			$this->redirect($this->referer()); 
 		} else {
@@ -75,26 +119,26 @@ class AppUserFollowersController extends UsersAppController {
 		}
 	}
     
-    function destroy($id = null) {
-        $uid = $this->Auth->user('id');
+    public function destroy($id = null) {
+        $userId = $this->Auth->user('id');
         if ( !$id ) {
             $this->Session->setFlash('Invalid User');
-            $this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $uid));
+            $this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $userId));
         }
 
         try {
-            $this->UserFollower->deleteAll(array('user_id'=>$id, 'follower_id'=> $uid));
-            $this->UserFollower->deleteAll(array('user_id'=>$uid, 'follower_id'=> $id));
+            $this->UserFollower->deleteAll(array('user_id'=>$id, 'follower_id'=> $userId));
+            $this->UserFollower->deleteAll(array('user_id'=>$userId, 'follower_id'=> $id));
             $this->Session->setFlash('Relationship Deleted');
         }catch (Exception $e) {
             $this->Session->setFlash('User Not Deleted');
-            $this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $uid));
+            $this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $userId));
         }       
         //$this->redirect(array('action' => 'index'));
-        $this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $uid));
+        $this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $userId));
     }
 	
-	function revoke($id = null) {
+	public function revoke($id = null) {
 		if ( !$id ) {
 			$this->flash(sprintf(__('Invalid user follower', true)), array('action' => 'index'));
 		}
@@ -105,7 +149,7 @@ class AppUserFollowersController extends UsersAppController {
 			$this->flash(__('Follower was not deleted', true), array('action' => 'index'));
 		}
 		//$this->redirect(array('action' => 'index'));
-		$this->redirect(array('plugin'=>'users', 'controller'=>'users', 'action'=>'view', $this->Auth->user('id')));
+		$this->redirect(array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $this->Auth->user('id')));
 	}
 
 }

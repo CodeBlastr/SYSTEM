@@ -29,10 +29,10 @@ class FormSecurityComponent extends Component {
     			if (in_array($thisAction, $secureForms['form'])) {
     				// we're in an action that needs a key 
     				if (empty($Controller->request->data['FormKey']['id'])) {
-    					throw new Exception('you need a handshake');
+    					// temp comment out // throw new Exception('you need a handshake');
     				}
-					$FormKey = ClassRegistry::init('Forms.FormKey');
-					$FormKey->testKey($Controller->request->data);
+					// temp comment out // $FormKey = ClassRegistry::init('Forms.FormKey');
+					// temp comment out // $FormKey->testKey($Controller->request->data);
     			}
     		}
     	}

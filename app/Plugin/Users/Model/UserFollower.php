@@ -1,7 +1,7 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
 
-class UserFollower extends UsersAppModel {
+class AppUserFollower extends UsersAppModel {
 
 	public $name = 'UserFollower';
     
@@ -25,16 +25,15 @@ class UserFollower extends UsersAppModel {
 /**
  * Change status
  */
-	private function _changeStatus($requestId,$userId,$status){
-		$row = $this->read(array('approved','user_id'),$requestId);
+	private function _changeStatus($requestId, $userId, $status){
+		$row = $this->read(array('approved','user_id'), $requestId);
 		if(!empty($row) && $row['UserFollower']['user_id'] == $userId){
 			$data = array(
 				'UserFollower'=>array(
-					'approved'=> $status,
-					'id'	=>$requestId
+					'approved' => $status,
+					'id' => $requestId
 				),
 			);
-
 			return $this->save($data);
 		}
 		return false;
@@ -44,14 +43,14 @@ class UserFollower extends UsersAppModel {
  * Approve method
  */
 	public function approve($requestId, $userId){
-		$this->_changeStatus($requestId, $userId, 1);
+		return $this->_changeStatus($requestId, $userId, 1);
 	}
 
 /**
  * Decline method
  */
 	public function decline($requestId, $userId){
-		$this->_changeStatus($requestId, $userId, -1);
+		return $this->_changeStatus($requestId, $userId, -1);
 	}
 
 
@@ -96,9 +95,16 @@ class UserFollower extends UsersAppModel {
 			'user_id'	=>$userId,
 		)));
 	}
-	
+
+/**
+ * Follow each other
+ */
 	public function followEachOther($creatorUserId = null, $userId = null) {
 		if (!empty($creatorUserId) && !empty($userId)) {
+			// delete any existing matches first
+			$this->deleteAll(array('UserFollower.user_id' => $creatorUserId, 'UserFollower.follower_id' => $userId), false);
+			$this->deleteAll(array('UserFollower.user_id' => $userId, 'UserFollower.follower_id' => $creatorUserId), false);
+			// save a new record for each user
 			$data = array(
 				array(
 					'UserFollower' => array(
@@ -115,6 +121,7 @@ class UserFollower extends UsersAppModel {
 					)
 				)
 			);
+			$this->create();
 			if ($this->saveAll($data)) {
 				return true;
 			} else {
@@ -125,4 +132,8 @@ class UserFollower extends UsersAppModel {
 		}
 	}
 
+}
+
+if (!isset($refuseInit)) {
+	class UserFollower extends AppUserFollower {}
 }
