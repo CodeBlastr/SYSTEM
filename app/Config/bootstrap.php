@@ -392,202 +392,49 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 *
 		 * @todo There must be a better way...
 		 */
-		public static function pluginize($name) {
-            // if you put something like this here, comment as to why
-            //if($name == "1s") { debug(debug_backtrace()); }
-            
-			// list of models and controllers to rename to the corresponding plugin
+	public static function pluginize($name) {
+           
+			//Array of things that need to return false for backwards
+			//compatabiliy, Especially when updating tables. 
+			//@todo Make it so this function doesn't get used for table upgrades
+			//lookups see App class
 			$name = Inflector::singularize(Inflector::camelize($name));
-			
-			$allowed = array(
+			$unallowed = array(
 				'Aco' => false,
-				'Activity' => 'Activities',
-				'AffiliateEarning' => 'Affiliates',
-				'Affiliated' => 'Affiliates',
-				'Affiliate' => 'Affiliates',
 				'Alias' => false,
-				'Answer' => 'Answers',
-				'AnswerAnswer' => 'Answers',
-				'AnswerSubmission' => 'Answers',
-				'AnswerStep' => 'Answers',
 				'Aro' => false,
 				'ArosAco' => false,
-				'Auction' => 'Auctions',
-				'AuctionBid' => 'Auctions',
-				'Banner' => 'Banners',
-				'BannerView' => 'Banners',
-				'BannerPosition' => 'Banners',
-				'BlogPost' => 'Blogs',
-				'Blog' => 'Blogs',
-				'Campaign' => 'Campaigns',
-				'CampaignResults' => 'Campaigns',
-				'CatalogItemBrand' => 'Catalogs',
-				'CatalogItemPrice' => 'Catalogs',
-				'CatalogItem' => 'Catalogs',
-				'CatalogItemsRelationship' => 'Catalogs',
-				'Catalog' => 'Catalogs',
-				'Category' => 'Categories',
-				'Categorized' => 'Categories',
-				'CategorizedOption' => 'Categories',
-				'CategoryOption' => 'Categories',
-				'Canvas' => 'Media',
-				'Canva' => 'Media',
-				'Chat' => 'Chats',
-				'Classified' => 'Classifieds',
-				'Comment' => 'Comments',
 				'Condition' => false,
-				'Connection' => 'Connections',
-				'ConnectionPaypal' => 'Connections',
-				'ContactAddress' => 'Contacts',
-				'ContactDetail' => 'Contacts',
-				'Contact' => 'Contacts',
-				'ContactsContact' => 'Contacts',
-				'Course' => 'Courses',
-				'CourseUser' => 'Courses',
-				'CourseGradeAnswer' => 'Courses',
-				'CourseGrade' => 'Courses',
-				'CourseGradeDetail' => 'Courses',
-				'CourseLesson' => 'Courses',
-				'CourseSchool' => 'Courses',
-				'CourseSeries' => 'Courses',
-				'Coupon' => 'Coupons',
-				'Credit' => 'Credits',
-				'Draft' => 'Drafts',
-				'Educast' => 'Educasts',
 				'Enumeration' => false,
-				'EstimateItem' => 'Estimates',
-				'Estimated' => 'Estimates',
-				'Estimate' => 'Estimates',	
-				'EventSchedule' => 'Events',
-				'EventSeat' => 'Events',
-				'EventVenue' => 'Events',
-				'Event' => 'Events',
-				'EventsGuest' => 'Events',
-				'Facebook' => 'Facebook',
-				'Favorite' => 'Favorites',
-				'Faq' => 'Faqs',
-				'Favorite' => 'Favorites',
-				'FeedCj' => 'Feeds',
-				'FeedAmazon' => 'Feeds',
-				'Feed' => 'Feeds',
-				'FormAnswer' => 'Forms',
-				'FormFieldset' => 'Forms',
-				'FormInput' => 'Forms',
-				'FormKey' => 'Forms',		
-				'Form' => 'Forms',	
-				'Forum' => 'Forums',
-				'ForumPost' => 'Forums',	
-				'Gallery' => 'Galleries',
-				'GalleryImage' => 'Galleries',
-				'Invite' => 'Invites',
-				'InvoiceItem' => 'Invoices',
-				'InvoiceTime' => 'Invoices',
-				'Invoice' => 'Invoices',
-				'Location' => 'Locations',
-				'Map' => 'Maps',
-				'Media' => 'Media',
-				'MediaAttachment' => 'Media',
-				'MediaGallery' => 'Media',
-				'Menu' => 'Menus',
-				'Message' => 'Messages',
 				'Meta' => false,
 				'Metum' => false,
-				'News' => 'News',
-				'NotificationTemplate' => 'Notifications',
-				'Notification' => 'Notifications',
-				'Option' => 'Products',
-				'Phonebook' => 'Phonebooks',
-				'PhonebookService' => 'Phonebooks',
-				'PhonebooksService' => 'Phonebooks',
-                'Privilege' => 'Privileges',
-                'ProductBrand' => 'Products',
-                'ProductPrice' => 'Products',
-                'ProductsOption' => 'Products',
-                'ProductsProductOption' => 'Products',
-                'ProductStore' => 'Products',
-                'Product' => 'Products',
-                'Property' => 'Properties',
-                'Job' => 'Jobs',
-                'JobResume' => 'Jobs',
-				'ProjectIssue' => 'Projects',
-				'Project' => 'Projects',
-				'ProjectsMember' => 'Projects',
-				'ProjectsWatcher' => 'Projects',
-				'ProjectsWiki' => 'Projects',
-				'Rating' => 'Ratings',
-				'Record' => 'Records',
-				'Report' => 'Reports',
-				'ReportData' => 'Reports',
-				'ReportPage' => 'Reports',
-				'ReportSalaryCalculatorData' => 'Reports',
-				'SalaryCalculator' => 'Reports',
-                'Requestor' => 'Privileges',
-				'Searchable' => 'Searchable',
-                'Section' => 'Privileges',
 				'Setting' => false,
-				'Subscriber' => 'Subscribers',
-				'SubscriberMail' => 'Subscribers',
-				'Tagged' => 'Tags',
-				'Tag' => 'Tags',
-				'Task' => 'Tasks',
-				'TaskAttachment' => 'Tasks',
 				'Template' => false,
-				'TicketDepartmentsAssignee' => 'Tickets',
-				'Ticket' => 'Tickets',
-				'TimesheetTime' => 'Timesheets',
-				'Timesheet' => 'Timesheets',
-				'TimesheetsTimesheetTime' => 'Timesheets',
-				'Transaction' => 'Transactions',
-				'TransactionAddress' => 'Transactions',
-				'TransactionCoupon' => 'Transactions',
-				'TransactionItem' => 'Transactions',
-				'TransactionPayment' => 'Transactions',
-				'TransactionShipment' => 'Transactions',
-    			'TransactionTax' => 'Transactions',
-				'Twitter' => 'Twitter',
-				'UpdateSchema' => false,				
-				'Used' => 'Users',
-				'UserConnect' => 'Users',
-				'UserFollower' => 'Users',
-				'UserGroupWallPost' => 'Users',
-				'UserGroup' => 'Users',
-				'UserRole' => 'Users',
-				'UserStatus' => 'Users',
-				'UserWall' => 'Users',
-				'User' => 'Users',
-				'UsersUserGroup' => 'Users',
-				'UserMeasurement' => 'Users',
-				'UserSocialNetwork' => 'GenericAuth',
-				'Util' => 'Utils',
-				'Utils' => 'Utils',
-				'WebpageCss' => 'Webpages',
-				'WebpageMenu' => 'Webpages',
-				'WebpageMenuItem' => 'Webpages',
-				'WebpageJ' => 'Webpages',
-				'WebpageJse' => 'Webpages',
-				'Webpage' => 'Webpages',
-				'WebpageReport' => 'Webpages',
-				'WikiContentVersion' => 'Wikis',
-				'WikiContent' => 'Wikis',
-				'WikiPage' => 'Wikis',
-				'Wiki' => 'Wikis',
-				'Wizard' => 'Wizards',
-				'WorkflowEvent' => 'Workflows',
-				'WorkflowItemEvent' => 'Workflows',
-				'WorkflowItem' => 'Workflows',
-				'Workflow' => 'Workflows',
+				'UpdateSchema' => false,
 				'Region' => false,
-                'Regional' => false,
-				'Question' => 'Questions',
-				'QuestionAnswer' => 'Questions',
+				'Regional' => false,
+				'Sessions' => false,
 				'ZuhaSchema' => false,
-				);
-				
-			if (!empty($name) && $allowed[$name] !== null) {
-				return $allowed[$name];
-			} else {
-              	return Inflector::tableize($name);
+				'DebugKit' => false,
+				'TwigView' => false,
+			);
+			
+			if(array_key_exists($name, $unallowed)) {
+				return $unallowed[$name];
 			}
+			
+			
+			
+			$plugins = CakePlugin::loaded();
+			foreach ($plugins as $plugin) {
+				$objects = App::objects($plugin.'.Model');
+				$i = array_search($name, $objects);
+				if($i) {
+					return $plugin;
+				}
+			}
+			
+            return Inflector::tableize($name);
 		}
         
         /**
