@@ -144,10 +144,10 @@ $(function() {
     $("*[data-toggle=collapse]").css('cursor', 'pointer');
     
     /* forms */
-    $('input[type=submit]').addClass('btn btn-primary');
+    $('input[type=submit]').addClass('btn btn-default');
     $('.required').attr('required', true);
     $('label').addClass('control-label');
-    $('input:not([type=submit], [type=checkbox], [type=radio]), select, textarea').addClass('form-control').parent().addClass('form-group');
+    $('input:not([type=submit], [type=checkbox], [type=radio], .input-sm), select, textarea').addClass('form-control').parent().addClass('form-group');
 
 /**
  * Hides form elements that come after a legend with the class toggleClick
@@ -219,14 +219,11 @@ $(function() {
 	});	
 	
 	// make drop down navs use hover
-	$('ul.nav li.dropdown').hover(function() {
-	  $(this).find('.dropdown-menu').stop(true, true).delay(150).fadeIn();
-	}, function() {
-	  $(this).find('.dropdown-menu').stop(true, true).delay(150).fadeOut();
-	});
-	$('ul.nav li.dropdown a').click(function(e) {
-		window.location = $(this).attr('href');
-	});
+	// $('ul.nav li.dropdown').hover(function() {
+	  // $(this).find('.dropdown-menu').stop(true, true).delay(150).fadeIn();
+	// }, function() {
+	  // $(this).find('.dropdown-menu').stop(true, true).delay(150).fadeOut();
+	// });
 });
 
 // hmm.. only place I see this used is on the privileges page

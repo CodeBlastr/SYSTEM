@@ -38,6 +38,7 @@ class ZuhaFormHelper extends FormHelper {
 			}
 			// hash the form action to write into settings, as a form that must be checked
 			$settingValue = 'c' . Security::hash($this->url($this->_getAction($options)), 'md5', Configure::read('Security.salt'));
+			
 			// this is how we know which forms have to be checked on the catch side
 			if (defined('__APP_SECURE_FORMS')) {
 				// read settings
@@ -64,7 +65,10 @@ class ZuhaFormHelper extends FormHelper {
 				$data['Setting']['value'] = $value;
 				$Setting->add($data);
 			}
-			$json = json_decode(file_get_contents('http://' . $_SERVER['HTTP_HOST'] . '/forms/forms/secure.json'));
+			
+			// this code is extremely slow, it can cause pages to take two minutes to load
+			$context = stream_context_create(array('http' => array('header'=>'Connection: close\r\n')));
+			$json = json_decode(file_get_contents('http://' . $_SERVER['HTTP_HOST'] . '/forms/forms/secure.json', false, $context));
 			echo '<script type="text/javascript">
 			        jQuery(document).ready(function() {
 			          var timeOut = window.setTimeout(function() { jQuery("#' . $options['id'] . '").prepend("<input type=\"hidden\" name=\"data[FormKey][id]\" value=\"' . $json->key . '\" />"); }, 10000);
@@ -351,7 +355,7 @@ EOD;
 		// return a text field plus a hidden field with proper Y-m-d h:i:s format
 		return $this->text($fieldName, array(
 			'type' => 'text',
-		) + $attributes) . $this->hidden($fieldName, array('id' => $fieldhiddenname));
+		) + $attributes) . $this->hidden($fieldName, array_merge($attributes, array('id' => $fieldhiddenname)));
 	}
 
 /**
@@ -400,6 +404,67 @@ EOD;
 		} else {
 			return parent::radio($fieldName, $options, $attributes);
 		}
+	}
+
+
+	public function tags($fieldName, $options = array()) {
+//		App::uses('Tag', 'Tags.Model');
+//		$this->Tag = new Tag();
+// 		$tags = $this->Tag->find('all', array(
+//			'conditions' => array('creator_id' => $this->View->getVar('__userId')),
+//			'fields' => 'name'
+//		));
+//		$tagNames = Hash::extract($tags, "{n}.Tag.name");
+//		foreach ($tagNames as &$tagName) {
+//			//$objects[] = '{ val: "'.$tagName.'" }';
+//			$tagName = json_encode($tagName);
+//		}
+//		$jsObject = implode(',', $tagNames);
+		echo $this->View->Html->css('/tags/css/bootstrap-tagsinput');
+		echo $this->View->Html->script('/tags/js/bootstrap-tagsinput.min');
+		#echo $this->View->Html->script('/tags/js/typeahead.jquery.min');
+		$options['data-role'] = 'tagsinput';
+		$typeahead = "
+			<script>
+//var engine = new Bloodhound({
+//	name: 'tags',
+//	//local: [{ val: 'dog' }, { val: 'pig' }, { val: 'moose' }],
+//	local: [{$jsObject}],
+//	//remote: '/tags/tags/ajax?q=%QUERY',
+//	datumTokenizer: function(d) {
+//		return Bloodhound.tokenizers.whitespace(d.val);
+//	},
+//	queryTokenizer: Bloodhound.tokenizers.whitespace
+//});
+//
+//engine.initialize();
+//
+////$('.typeahead').typeahead(null, {
+////  source: engine.ttAdapter()
+////});
+//
+//$('input[data-role=\"tagsinput\"]').typeahead({
+//   source: engine.ttAdapter()
+//}).bind('typeahead:selected', $.proxy(function (obj, datum) {  
+//  this.tagsinput('add', datum.value);
+//  this.tagsinput('input').typeahead('setQuery', '');
+//}, $('input')));
+
+//$('input[data-role=\"tagsinput\"]').tagsinput({
+//	typeahead: {
+//		source: [$jsObject],
+//		freeInput: true
+//	}
+//});
+
+//$('input[data-role=\"tagsinput\"]').tagsinput('input').typeahead({
+//	source: [$jsObject],
+//	freeInput: true
+//});
+
+</script>
+";
+		return $this->text($fieldName, $options);
 	}
 
 }

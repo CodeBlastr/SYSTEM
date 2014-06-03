@@ -4,6 +4,17 @@ App::uses('CakeSchema', 'Model');
 class ZuhaSchema extends CakeSchema {
 
 /**
+ * Overwritten to change $this->path when it's been specifically given in the first parameter
+ * CakePHP has a problem where it would override the path if it's a plugin, without checking if it was specified
+ */
+	public function build($data) {
+		parent::build($data);
+		if (!empty($data['path'])) {
+			$this->path = $data['path'];
+		}
+	}
+
+/**
  * Override write function
  *
  * @param mixed $object schema object or options array
@@ -131,14 +142,6 @@ class ZuhaSchema extends CakeSchema {
 /**
  * Override read() to get rid of HABTM tables from polluting our schema files
  *
- * Options
- *
- * - 'connection' - the db connection to use
- * - 'name' - name of the schema
- * - 'models' - a list of models to use, or false to ignore models
- *
- * @param array $options schema object properties
- * @return array Array indexed by name and tables
  */
 	public function read($options = array()) {
 		extract(array_merge(
