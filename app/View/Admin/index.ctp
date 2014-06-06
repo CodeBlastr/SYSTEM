@@ -243,6 +243,20 @@ if (empty($runUpdates)) : ?>
         </div>
         <?php endif; ?>
 
+        <?php if (CakePlugin::loaded('Invoices')) : ?>
+        <div class="masonryBox dashboardBox">
+            <h3 class="title"><i class="glyphicon glyphicon-barcode"></i> <?php echo $this->Html->link('Invoices', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'index')); ?> </h3>
+            <p>
+            	Manage invoices<br>
+	            <?php echo $this->Html->link('All Invoices', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'index')); ?><br>
+	           	<?php echo $this->Html->link('Add Invoice', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'add')); ?>
+	            <hr>
+	            <?php echo $this->Html->link('Reusable Items', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoice_items', 'action' => 'index')); ?><br>
+	            <?php echo $this->Html->link('Add Reusable Item', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoice_items', 'action' => 'add')); ?>
+            </p>
+        </div>
+        <?php endif; ?>
+
         <?php if (CakePlugin::loaded('Wizards')) : ?>
         <div class="masonryBox dashboardBox">
             <h3 class="title"><i class="glyphicon glyphicon-info-sign"></i> <?php echo $this->Html->link('Wizards', array('plugin' => 'wizards', 'controller' => 'wizards')); ?> </h3>

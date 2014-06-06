@@ -159,6 +159,18 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	}
 
 	__setConstants();
+	
+	function __setTimezone($timeZone = null) {
+		if (!empty($timezone)) {
+			date_default_timezone_set($timeZone); 
+		} elseif (defined('__SYSTEM_TIMEZONE')) {
+			date_default_timezone_set(__SYSTEM_TIMEZONE); 
+		} else {
+			date_default_timezone_set('America/New_York');
+		}
+	}
+	
+	__setTimezone();
 
 	/**
 	 * Plugins need to be loaded manually, you can either load them one by one or all of them in a single call
