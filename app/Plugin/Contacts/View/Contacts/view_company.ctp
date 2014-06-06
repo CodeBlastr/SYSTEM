@@ -23,12 +23,12 @@
 			
 			
 			<?php if (!empty($contact['ContactDetail'])) : ?>
-				<table class="table table-condensed table-fixed">
+				<table class="table table-condensed">
 					<tbody>
 						<?php for ($i = 0; $i < count($contact['ContactDetail']); ++$i) : ?>
 							<tr>
 								<td><small class="text-muted"><?php echo $contact['ContactDetail'][$i]['contact_detail_type']; ?></small></td>
-								<td><span class="truncate" data-truncate="100"><?php echo $contact['ContactDetail'][$i]['value']; ?></span></td>
+								<td><?php echo nl2br($contact['ContactDetail'][$i]['value']); ?></td>
 							</tr>
 						<?php endfor; ?>
 					</tbody>
