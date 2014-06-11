@@ -8,6 +8,10 @@
 .error-message, .error {
 	color: #C00;
 }
+/* Fixes google maps bad formatting of the zoom elements, good anywhere a google map is used */
+.gm-style img { max-width: none; }
+.gm-style label { width: auto; display: inline; }
+
 pre.prettyprint {
 	white-space: pre-wrap;
 	white-space: -moz-pre-wrap;
