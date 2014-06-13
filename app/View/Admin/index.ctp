@@ -239,6 +239,7 @@ if (empty($runUpdates)) : ?>
             <p>See and manage event listings.</p>
             <ul>
                 <li><?php echo $this->Html->link('Add Event', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'add')); ?></li>
+                <li><?php echo $this->Html->link('View Event Guests', array('admin' => true, 'plugin' => 'events', 'controller' => 'eventsGuests', 'action' => 'index')); ?></li>
             </ul>
         </div>
         <?php endif; ?>
