@@ -5,8 +5,8 @@
 
 	$userId = $this->Session->read('Auth.User.id');?>
 
-<?php if (!isset($userId)) {?>
-<script>
+<?php if (!isset($userId)) : ?>
+<script type="text/javascript">
 	$("#loginss").fancybox({
 		'scrolling'	: 'no',
 		'titleShow'	: false,
@@ -25,7 +25,7 @@
 			url	: "<?php echo $this->Html->url(array("plugin" => "users", "controller" => "users", "action" => "checkLogin")); ?>",
 			data : data,
 			success : function(data) {
-				if(data['login'] == "1"){
+				if(data['login'] === "1"){
 					$("#mesg").hide();
 					$('#login_form').submit();
 					return true;
@@ -41,7 +41,7 @@
 	$("#register_submit").live("click", function(e) {
 		$('.requiredFancyBoxField').each(function(){
 			$('#' + $(this).attr('id') + 'Error').hide();
-			if($(this).val() == '' && $(this).attr('id') != '') {
+			if($(this).val() === '' && $(this).attr('id') !== '') {
 				$('#' + $(this).attr('id') + 'Error').show();
 				e.preventDefault();
 			}
@@ -75,19 +75,13 @@
 					}
 		?>
 					<label> <b>EMAIL OR USERNAME :</b> </label>
-				<?php
-					echo $this->Form->input('User.username', array('label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
-				?>
+				<?php echo $this->Form->input('User.username', array('label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField')); ?>
 					<div id="UserUsernameError" style="display: none;"><font color="red"> Username Is Required. </font></div>
 					<label> <b>PASSWORD :</b> </label>
-				<?php
-					echo $this->Form->input('User.password', array('label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
-				?>
+				<?php echo $this->Form->input('User.password', array('label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField')); ?>
 					<div id="UserPasswordError" style="display: none;"><font color="red">  Password Is Required. </font></div>
 					<label> <b>CONFIRM PASSWORD :</b> </label>
-				<?php
-					echo $this->Form->input('User.confirm_password', array('type' => 'password', 'label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField'));
-				?>
+				<?php echo $this->Form->input('User.confirm_password', array('type' => 'password', 'label' => false, 'size' => 40, 'class' => 'requiredFancyBoxField')); ?>
 					<div id="UserConfirmPasswordError" style="display: none;"><font color="red"> Confirm Password Is Required. </font></div>
 				<?php
 					echo $this->Form->submit('Submit', array('id'=>'register_submit'));
@@ -98,8 +92,8 @@
 			}
 		?>
 		</fieldset>
-		<fieldset style="background-color: #E5E5E5; width:310 float:right; padding:20px 20px 70px ">
-			<h2><?php echo __('Already Registered?', true); ?></h1>
+		<fieldset style="background-color: #E5E5E5; width:310px; float:right; padding:20px 20px 70px ">
+			<h2><?php echo __('Already Registered?', true); ?></h2>
 			<h3><?php echo __('Please login here.', true); ?></h3>
 			<?php
 		    	echo $this->Form->create('User', array('id' => 'login_form', 'action' => 'login'));
@@ -118,20 +112,20 @@
 		</fieldset>
 	</div>
 </div>
-<script>
+<script type="text/javascript">
 $().ready(function() {
 
 	// Creating custom :internal selector
 	$.expr[':'].internal = function(obj){
 	    return !obj.href.match(/^mailto\:/)
-	            && (obj.hostname == location.hostname);
+	            && (obj.hostname === location.hostname);
 	};
 
 	$("a:internal").click(function (e) {
 		url = $(this).attr('href');
 
 		// if starts with '#' or is 'fancy box' dont show this
-		if ($(this).attr('id') == 'loginss' || url.charAt(0) == "#") {
+		if ($(this).attr('id') === 'loginss' || url.charAt(0) === "#") {
 			return true;
 		}
 
@@ -146,11 +140,11 @@ $().ready(function() {
 	        error:  function(){
 		    	$('#loginss').fancybox().trigger('click');
 		    	e.preventDefault();
-	        },
+	        }
 	    });
 
 	});
 
 });
 </script>
-<?php }?>
+<?php endif;
