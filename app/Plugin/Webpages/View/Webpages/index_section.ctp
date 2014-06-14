@@ -1,28 +1,29 @@
-<div class="webpages index list-group">
-	<div class="list-group-item clearfix">
-		<div class="media clearfix">
-			<div class="media-body">
-				<h4>
-					<?php echo $this->Html->link($webpage['Webpage']['name'], $webpage['Webpage']['_alias']); ?>
-					<?php echo $this->Html->link('Edit', array('action' => 'edit', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
-					<?php echo $this->Html->link('Add Sub Page', array('action' => 'add', 'sub', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
-				</h4>
-				<p>
-					<span class="label label-primary"><span class="glyphicon glyphicon-qrcode"></span> <?php echo $webpage['Webpage']['id']; ?></span>
-					<span class="label label-primary"><span class="glyphicon glyphicon-th"></span> <?php echo $webpage['Webpage']['type']; ?></span>
-					<span class="label label-primary"><span class="glyphicon glyphicon-time"></span> <?php echo ZuhaInflector::datify($webpage['Webpage']['created']); ?></span>
-				</p>
-			</div>
-		</div>
-				
+<div class="webpages index">
+	<h3>
+		<?php echo $webpage['Webpage']['name']; ?>
+		<?php echo $this->Html->link('View', array('action' => 'view', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+		<?php echo $this->Html->link('Edit', array('action' => 'edit', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+		<?php echo $this->Html->link('Add Sub Page', array('action' => 'add', 'sub', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+	</h3>
+	<p>
+		<span class="label label-primary"><span class="glyphicon glyphicon-qrcode"></span> <?php echo $webpage['Webpage']['id']; ?></span>
+		<span class="label label-primary"><span class="glyphicon glyphicon-th"></span> <?php echo $webpage['Webpage']['type']; ?></span>
+		<span class="label label-primary"><span class="glyphicon glyphicon-time"></span> <?php echo ZuhaInflector::datify($webpage['Webpage']['created']); ?></span>
+	</p>
+	<div class="list-group">
 		<?php foreach ($webpages as $child) : ?>
 		<div class="list-group-item clearfix">
 			<div class="media">
 				<?php echo $this->element('Galleries.thumb', array('thumbClass' => 'pull-left', 'model' => 'Webpage', 'foreignKey' => $child['Webpage']['id'])); ?>
 				<div class="media-body">
 					<h4>
-						<?php echo $this->Html->link($child['Webpage']['name'], array('admin' => false, 'action' => 'view', $child['Webpage']['id'])); ?>
+						<?php echo $child['Webpage']['name']; ?>
+						<?php echo $this->Html->link('View', $child['Webpage']['_alias'], array('class' => 'btn btn-default btn-xs')); ?>
 						<?php echo $this->Html->link('Edit', array('action' => 'edit', $child['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+						<?php echo $this->Html->link('<i class="glyphicon glyphicon-circle-arrow-up"></i>', array('action' => 'moveup', $child['Webpage']['id'], $this->Paginator->counter('{:count}')), array('title' => 'Move to Top', 'class' => 'btn btn-default btn-xs', 'escape' => false)); ?>
+						<?php echo $this->Html->link('<i class="glyphicon glyphicon-chevron-up"></i>', array('action' => 'moveup', $child['Webpage']['id'], 1), array('title' => 'Move Up One Place', 'class' => 'btn btn-default btn-xs', 'escape' => false)); ?>
+						<?php echo $this->Html->link('<i class="glyphicon glyphicon-chevron-down"></i>', array('action' => 'movedown', $child['Webpage']['id'], 1), array('title' => 'Move Down One Place', 'class' => 'btn btn-default btn-xs', 'escape' => false)); ?>
+						<?php echo $this->Html->link('<i class="glyphicon glyphicon-circle-arrow-down"></i>', array('action' => 'movedown', $child['Webpage']['id'], $this->Paginator->counter('{:count}')), array('title' => 'Move to Bottom', 'class' => 'btn btn-default btn-xs', 'escape' => false)); ?>
 					</h4>
 					<p class="truncate">
 						<?php echo strip_tags($child['Webpage']['content']); ?>
@@ -105,18 +106,10 @@ $this->set('forms_search', array(
     
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
-	// array(
-		// 'heading' => 'Sections',
-		// 'items' => $items,
-		// ),
 	array(
 		'heading' => 'Sections',
 		'items' => array(
-            $this->Html->link(__('Add Page'), array('controller' => 'webpages', 'action' => 'add', 'content'))
+            $this->Html->link('Add Sub Page', array('action' => 'add', 'sub', $webpage['Webpage']['id']))
             ),
 		),
-	// array(
-		// 'heading' => 'Page Types',
-		// 'items' => $typeMenuItems,
-		// ),
 	)));
