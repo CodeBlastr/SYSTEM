@@ -12,6 +12,33 @@
 <?php echo $this->element('paging'); ?>
 
 <?php
+// set contextual search options
+$this->set('forms_search', array(
+    'url' => '/aliases/index/', 
+	'inputs' => array(
+		array(
+			'name' => 'contains:name', 
+			'options' => array(
+				'label' => '', 
+				'placeholder' => 'Type Your Search and Hit Enter',
+				'value' => !empty($this->request->params['named']['contains']) ? substr($this->request->params['named']['contains'], strpos($this->request->params['named']['contains'], ':') + 1) : null,
+				)
+			),
+		/*array(
+			'name' => 'filter:contact_type', 
+			'options' => array(
+				'type' => 'select',
+				'empty' => '-- All --',
+				'options' => array(
+					'lead' => 'Lead',
+					'customer' => 'Customer',
+					),
+				'label' => '', 
+				'placeholder' => 'Type Your Search and Hit Enter'
+				)
+			)*/
+		)
+	));
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
