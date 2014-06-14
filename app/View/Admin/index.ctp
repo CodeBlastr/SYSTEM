@@ -157,6 +157,8 @@ if (empty($runUpdates)) : ?>
         <div class="masonryBox dashboardBox tagText tagAdmin">
             <h3 class="title"><i class="glyphicon glyphicon-tasks"></i> <?php echo $this->Html->link('Permanent URL\'s', array('admin' => 1, 'plugin' => false, 'controller' => 'aliases', 'action' => 'index')); ?></h3>
             <p>Manage your site's url aliases.</p>
+            <p><?php echo $this->Html->link('Build Sitemap', array('plugin' => false, 'controller' => 'aliases', 'action' => 'sitemap')); ?></p>
+           	<?php echo file_exists(ROOT . DS . SITE_DIR . DS . 'Locale' . DS .'View' . DS . 'webroot' . DS . 'sitemap.xml') ? $this->Html->link('<p>View Sitemap</p>', '/sitemap.xml', array('escape' => false)) : null; ?>
         </div>
 
 		<?php if (CakePlugin::loaded('Tags')) : ?>
