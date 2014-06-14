@@ -476,4 +476,63 @@ class AppModel extends Model {
 		return $return;
 	}
 
+/**
+ * Sitemap method
+ * Write the sitemap to the webroot folder
+ */
+	public function writeSitemap() {
+		App::uses('Folder', 'Utility');
+		App::uses('File', 'Utility');
+		$sitemap = array();
+		$models = App::objects($plugin . '.Model');
+		
+		$plugins = CakePlugin::loaded();
+	    foreach ($plugins as $plugin) {
+	    	// the else here was App::objects($pluginPath . '.Model')  // not totally sure the changing to just plugin, won't break something
+			$models = !empty($models) ? array_merge($models, App::objects($plugin . '.Model')) : App::objects($plugin . '.Model');
+	    }
+    	sort($models);
+	    foreach ($models as $model) {
+			strpos($model, 'AppModel') || strpos($model, 'AppModel') === 0 ? null : $return[$model] = $model;
+	    }
+		foreach (array_reverse($return) as $key => $model) {
+			$model = ZuhaInflector::pluginize($model) ? ZuhaInflector::pluginize($model).'.'.$model : $model;
+			try {
+				$Model = ClassRegistry::init($model);
+			} catch (Exception $e) {
+				$Model = false;
+				// ignore, we don't care about missing plugin exceptions here
+				// debug($e->getMessage());
+			}
+			
+			if( method_exists($Model,'sitemap') && is_callable(array($Model,'sitemap')) ) {
+				$map = $Model->sitemap(); 
+				$sitemap = is_array($map) ? array_merge($sitemap, $map) : $sitemap;
+			}
+		}
+		
+		// let's output the actual file here
+		$path = ROOT . DS . SITE_DIR . DS . 'Locale' . DS .'View' . DS . 'webroot';
+		
+		$dir = new Folder($path);
+		$file = new File($dir->pwd() . DS . 'sitemap.xml');
+		
+		$content = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+		foreach ($sitemap as $page) {
+			$content .= "\t<url>" . PHP_EOL . "\t\t";
+				$content .= '<loc>' . $page['url']['loc'] . '</loc>' . PHP_EOL . "\t\t";
+				$content .= '<lastmod>' . $page['url']['lastmod'] . '</lastmod>' . PHP_EOL . "\t\t";
+				$content .= '<changefreq>' . $page['url']['changefreq'] . '</changefreq>' . PHP_EOL . "\t\t";
+				$content .= '<priority>' . $page['url']['priority'] . '</priority>' . PHP_EOL . "\t";
+			$content .= '</url>' . PHP_EOL;
+		}
+		$content .= '</urlset>';
+		if ($file->write($content)) {
+			$file->close();
+			return true;
+		} else {
+			return false;
+		}
+ 	}
+
 }
