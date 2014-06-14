@@ -21,18 +21,6 @@
 echo $this->Form->end('Save Template'); ?>
 </div>
 
-<?php
-$menuItems = array(
-	$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index', 'template')),
-	$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add', 'template'), array('title' => 'Add Webpage')),
-	$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?'), $this->Form->value('Webpage.id'))),
-	);
-
-$this->set('context_menu', array('menus' => array(
-	  array('heading' => 'Webpages',
-		'items' => $menuItems
-			)
-	  ))); ?>
 
 <?php
 // CodeMirror !
@@ -183,3 +171,22 @@ function ajaxDraftSubmit(openwindow) {
 			$(".ajaxLoader").hide("slow");
 		}
 	}); */ ?>
+	
+
+<?php
+// set the contextual breadcrumb items
+$this->set('context_crumbs', array('crumbs' => array(
+	$this->Html->link(__('Admin Dashboard'), '/admin'),
+	$this->Html->link(__('All Templates'), array('action' => 'index', 'template')),
+	$page_title_for_layout,
+)));
+// set the contextual menu items
+$this->set('context_menu', array('menus' => array(
+	  array('heading' => 'Webpages',
+		'items' => array(
+			$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index', 'template')),
+			$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add', 'template'), array('title' => 'Add Webpage')),
+			$this->Html->link(__('Delete'), array('action' => 'delete', $this->Form->value('Webpage.id')), null, sprintf(__('Are you sure you want to delete # %s?'), $this->Form->value('Webpage.id'))),
+			)
+		)
+	)));
