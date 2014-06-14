@@ -108,4 +108,18 @@ class AliasesController extends AppController {
 		$this->set('alias', $this->Alias->find('count', array('conditions' => array('Alias.name' => $names), 'fields' => 'Alias.id')));
 	}
 
+/**
+ * Sitemap method
+ * Builds a sitemap file and saves it to the webroot
+ */
+ 	public function sitemap() {
+ 		if ($this->Alias->writeSitemap()) {  // function is in the App Model
+            $this->Session->setFlash(__('Sitemap file written.'));
+			$this->redirect($this->referer());
+ 		} else {
+            $this->Session->setFlash(__('Sitemap write failed, please try again.'));
+			$this->redirect($this->referer());
+ 		}
+ 	}
+
 }
