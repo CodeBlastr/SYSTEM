@@ -196,7 +196,7 @@ class MetableBehavior extends ModelBehavior {
 				
 			}
 			unset($result['Meta']);
-		} 
+		}
 		return $results;
 	}
 
