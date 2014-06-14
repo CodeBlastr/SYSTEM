@@ -25,7 +25,7 @@
 							</div>
 						<?php endif; ?>
 					</h4>
-					<code>/<?php echo $webpage['Webpage']['alias'] ?></code>
+					<code><?php echo $webpage['Webpage']['_alias'] ?></code>
 					<p class="truncate">
 						<?php echo strip_tags($webpage['Webpage']['content']); ?>
 					</p>
@@ -90,7 +90,7 @@ $this->set('context_crumbs', array('crumbs' => array(
   
 // set contextual search options
 $this->set('forms_search', array(
-    'url' => '/webpages/webpages/index/', 
+    'url' => $this->request->admin == true ? '/admin/webpages/webpages/index' : '/webpages/webpages/index/', 
 	'inputs' => array(
 		array(
 			'name' => 'contains:name', 
