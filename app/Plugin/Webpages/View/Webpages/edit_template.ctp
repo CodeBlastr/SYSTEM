@@ -103,6 +103,9 @@ echo $this->Html->css('/js/ckeditor/plugins/codemirror/css/codemirror.min');
 		margin-left: -8px;
 	    padding: 0 3px 0 0;
 	}
+	.CodeMirror .form-group {
+		margin-bottom: 0;
+	}
 </style>
 
 <script type="text/javascript">

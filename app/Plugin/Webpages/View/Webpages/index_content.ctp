@@ -27,7 +27,7 @@
 					</h4>
 					<code><?php echo $webpage['Webpage']['_alias'] ?></code>
 					<p class="truncate">
-						<?php echo strip_tags($webpage['Webpage']['content']); ?>
+						<?php echo $this->Text->truncate(strip_tags($webpage['Webpage']['content'])); ?>
 					</p>
 					<p>
 						<?php

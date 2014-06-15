@@ -4,9 +4,10 @@
 			<div class="media">
 				<?php //echo $this->element('Galleries.thumb', array('thumbClass' => 'pull-left', 'model' => 'Webpage', 'foreignKey' => $webpage['Webpage']['id'])); ?>
 				<div class="media-body">
-					<h4>
-						<?php echo $this->Html->link($webpage['Webpage']['name'], $webpage['Webpage']['_alias']); ?>
+					<h4 data-id="<?php echo $webpage['Webpage']['id']; ?>">
+						<?php echo $webpage['Webpage']['name']; ?>						
 						<?php echo $this->Html->link('Edit', array('action' => 'edit', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+					</h4>
 						<?php //echo $this->Html->link('Add Sub Page', array('action' => 'add', 'sub', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
 						<?php if (!empty($webpage['Child'][0])) : ?>
 							<div class="btn-group">
@@ -24,15 +25,12 @@
 								</ul>
 							</div>
 						<?php endif; ?>
-					</h4>
-					<p>
-						<small>Template or page tag, to show this element :</small> {<?php echo $webpage['Webpage']['name']; ?>}
-						<?php //echo strip_tags($webpage['Webpage']['content']); ?>
-					</p>
-					<p>
-						<span class="label label-primary"><span class="glyphicon glyphicon-qrcode"></span> <?php echo $webpage['Webpage']['id']; ?></span>
-						<!--span class="label label-primary"><span class="glyphicon glyphicon-th"></span> <?php echo $webpage['Webpage']['type']; ?></span>
-						<span class="label label-primary"><span class="glyphicon glyphicon-time"></span> <?php echo ZuhaInflector::datify($webpage['Webpage']['created']); ?></span-->
+					<p>						
+						<?php if (strpos($webpage['Webpage']['content'], '<?php')) : ?>
+						<span class="label label-warning"> Not WYSWIG Editable</span>  Template Tag : {element: <?php echo $webpage['Webpage']['name']; ?>}
+						<?php else : ?>
+						<span class="label label-success"> Inline Editing Capable</span> Template Tag : {page: <?php echo $webpage['Webpage']['name']; ?>}
+						<?php endif; ?>
 					</p>
 				</div>
 			</div>
@@ -46,7 +44,7 @@
 // set the contextual breadcrumb items
 $this->set('context_crumbs', array('crumbs' => array(
 	$this->Html->link(__('Admin Dashboard'), '/admin'),
-	$page_title_for_layout,
+	'Elements',
 )));
 
 // $items = '';
