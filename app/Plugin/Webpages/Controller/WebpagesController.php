@@ -214,7 +214,9 @@ class AppWebpagesController extends WebpagesAppController {
 				'Child'
 				)
 		    ));
-		
+		// trying router redirect instead
+		//$this->aliasCheck($page);
+
 		if ($webpage['Webpage']['type'] == 'template') {
 			// do nothing, we don't need to parse template pages, because if we're viewing a template page we want to see the template tags
 		} else {
@@ -234,6 +236,16 @@ class AppWebpagesController extends WebpagesAppController {
         $this->set('page', $page['Webpage']['content']); // an unparsed version of the page for the inline editor
        	$this->view = $this->_fileExistsCheck('view_' . $page['Webpage']['type'] . $this->ext) ? 'view_' . $page['Webpage']['type'] : 'view_content';
 	}
+
+	// lets try Router::redirect instead
+	// public function aliasCheck($data = null) {
+		// if (!empty($data['Alias']['name']) && $data['Alias']['name'] != $this->request->alias) {
+			// $this->redirect('/' . $this->request->alias);
+			// // debug($_SERVER['REQUEST_URI']);
+			// // debug($this->request);
+			// // debug($data);
+		// }
+	// }
 
 /**
  * Add method
@@ -303,7 +315,7 @@ class AppWebpagesController extends WebpagesAppController {
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Widget/Element Builder'));
-		$this->view = 'add_element';        
+		$this->view = $this->request->query['advanced'] ? 'add_element_advanced' : 'add_element';    
     }
     
 /**
@@ -332,7 +344,8 @@ class AppWebpagesController extends WebpagesAppController {
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
 		}
-		if (!empty($this->request->data)) {
+		// save the data
+		if ($this->request->is('post') || $this->request->is('put')) {
 			try {
 				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'), 'flash_success');
@@ -342,28 +355,51 @@ class AppWebpagesController extends WebpagesAppController {
 				$this->Session->setFlash($e->getMessage(), 'flash_warning');
 			}
 		}
-		
-		$templates = $this->Webpage->syncFiles('template');
-		$this->request->data = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id), 'contain' => array('Child', 'Alias', 'Parent')));
-		$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
+		// how do we move what's contained into the _edit[Type] methods???
+		$this->request->data = $this->Webpage->find('first', array(
+			'conditions' => array(
+				'Webpage.id' => $id
+				), 
+			'contain' => array(
+				'Child',
+				'Alias',
+				'Parent'
+			)));
+		$this->request->data = $this->Webpage->cleanOutputData($this->request->data); // this should be specific to the type, and/or afterFind()
 		
 		// required to have per page permissions
-		$userRoles = $this->Webpage->Creator->UserRole->find('list');
-		
-		$types = $this->Webpage->types();
-		
-		// these four lines should be for content only
+		$this->set('userRoles', $userRoles = $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('types', $types = $this->Webpage->types());
+		$this->set('type', $type = $this->request->data['Webpage']['type']);
+		// defaults (can be over ridden in _edit[Type] method)
+		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['Webpage']['name']));
+		$this->set('title_for_layout', __('Edit %s', $this->request->data['Webpage']['name']));
+		$this->view = $this->_fileExistsCheck('edit_' . $type . $this->ext) ? 'edit_' . $type : 'edit_content';
+		// run the type method
+        $edit = method_exists($this, '_edit' . ucfirst($type)) ? '_edit' . ucfirst($type) : '_editContent';
+        $this->$edit($id);
+	}
+
+	public function _editElement($id) {
+		if ($this->request->query['advanced']) {
+			$this->view = 'edit_element_advanced';
+		} else {
+			if (strpos($this->request->data['Webpage']['content'], '<?php')) {
+				// force the advanced editor
+				$this->redirect(array('action' => 'edit', $id, '?' => array('advanced' => true)));
+			}
+		}
+	}
+
+	public function _editTemplate($id) {
+		$templates = $this->Webpage->syncFiles('template');
+	}
+
+	public function _editContent($id) {
 		App::uses('WebpageMenu', 'Webpages.Model');
 		$WebpageMenu = new WebpageMenu();
 		$this->set('menus', $WebpageMenu->find('list', array('fields' => array('WebpageMenu.code', 'WebpageMenu.name'), 'conditions' => array('WebpageMenu.parent_id' => null))));
 		$this->set('parents', $this->Webpage->find('list', array('conditions' => array('Webpage.parent_id' => null, 'Webpage.type' => array('content', 'section'))))); 
-		
-		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['Webpage']['name']));
-		$this->set('title_for_layout', __('Edit %s', $this->request->data['Webpage']['name']));
-		$this->set(compact('userRoles', 'types'));
-		$type = $this->request->data['Webpage']['type'];
-		$this->view = $this->_fileExistsCheck('edit_' . $type . $this->ext) ? 'edit_' . $type : 'edit_content';
-        $this->layout = 'default';
 	}
 	
 /**
