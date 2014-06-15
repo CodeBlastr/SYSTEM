@@ -69,7 +69,7 @@ class AppWebpagesController extends WebpagesAppController {
 /**
  * Index method
  *
- * @param string $type content|section|template|sub
+ * @param string $type content|g|template|sub
  * @param string|int UUID or Int
  * @return void
  */
@@ -110,13 +110,12 @@ class AppWebpagesController extends WebpagesAppController {
  */
     protected function _indexSection($type, $id) {
 		$this->paginate['conditions']['Webpage.parent_id'] = $id;
-		//$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
-		//$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
+		$this->paginate['order'] = 'Webpage.lft'; 
 		$this->set('webpage', $webpage = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id))));
 		$this->set('webpages', $webpages = $this->paginate());
 		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
 		$this->set('displayName', 'title');
-		$this->set('page_title_for_layout', __('%s Section', $webpage['Webpage']['name']));
+		$this->set('page_title_for_layout', __('%s', $webpage['Webpage']['name']));
 		$this->view = 'index_section';
 		return $webpages;
     }
@@ -180,6 +179,7 @@ class AppWebpagesController extends WebpagesAppController {
  */
     protected function _indexTemplate() {
     	$this->redirect('admin');
+		$this->paginate['limit'] = 50;
 		$this->paginate['conditions']['Webpage.type'] = 'template';
 		$this->set('webpages', $this->paginate());
         
@@ -214,7 +214,9 @@ class AppWebpagesController extends WebpagesAppController {
 				'Child'
 				)
 		    ));
-		
+		// trying router redirect instead
+		//$this->aliasCheck($page);
+
 		if ($webpage['Webpage']['type'] == 'template') {
 			// do nothing, we don't need to parse template pages, because if we're viewing a template page we want to see the template tags
 		} else {
@@ -235,13 +237,23 @@ class AppWebpagesController extends WebpagesAppController {
        	$this->view = $this->_fileExistsCheck('view_' . $page['Webpage']['type'] . $this->ext) ? 'view_' . $page['Webpage']['type'] : 'view_content';
 	}
 
+	// lets try Router::redirect instead
+	// public function aliasCheck($data = null) {
+		// if (!empty($data['Alias']['name']) && $data['Alias']['name'] != $this->request->alias) {
+			// $this->redirect('/' . $this->request->alias);
+			// // debug($_SERVER['REQUEST_URI']);
+			// // debug($this->request);
+			// // debug($data);
+		// }
+	// }
+
 /**
  * Add method
  *
  * @param string
  * @return void
  */
-	public function add($type = 'content', $parentId = NULL) {
+	public function add($type = 'content', $parentId = null) {
 		$this->redirect('admin');
 		$this->type = $type;
 		if ($this->request->is('post')) {
@@ -266,13 +278,16 @@ class AppWebpagesController extends WebpagesAppController {
 /**
  * add content page
  */
-    protected function _addContent() {
+    protected function _addContent($type = 'content', $parentId = null) {
 		$this->request->data['Alias']['name'] = !empty($this->request->params['named']['alias']) ? rtrim(str_replace('+', '/', $this->request->params['named']['alias']), '/') : null;
 		// auto add to a webpage menu
 		App::uses('WebpageMenu', 'Webpages.Model');
 		$WebpageMenu = new WebpageMenu();
+		$this->set('parent', $parent = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $parentId), 'contain' => array('Child'))));
 		$this->set('parents', $WebpageMenu->generateTreeList(null, null, null, ' - - '));
 		$this->set('menus', $WebpageMenu->find('list', array('fields' => array('WebpageMenu.code', 'WebpageMenu.name'), 'conditions' => array('WebpageMenu.parent_id' => null))));
+		// used for converting individual pages to subs of sections
+		$this->set('sections', $this->Webpage->find('list', array('conditions' => array('Webpage.parent_id' => null, 'Webpage.type' => array('content', 'section')))));
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Page Builder'));
@@ -286,11 +301,9 @@ class AppWebpagesController extends WebpagesAppController {
  */
     protected function _addSub($parentId) {
 		//Set Parent Properties if parentID is given else creat a new Page Type
-		
-		$parent = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $parentId), 'contain' => array('Child')));
+		$this->set('parent', $parent = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $parentId), 'contain' => array('Child'))));
 		$this->request->data['Alias']['name'] = !empty($parent['Alias']['name']) ? $parent['Alias']['name'] . '/' : null;
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
-		$this->set('parent', $parent);
 		$this->set('page_title_for_layout', __('<small>Create a subpage of</small> %s', $parent['Webpage']['name']));
 		$this->view = 'add_sub';      
     }
@@ -302,7 +315,7 @@ class AppWebpagesController extends WebpagesAppController {
 		// reuquired to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
 		$this->set('page_title_for_layout', __('Widget/Element Builder'));
-		$this->view = 'add_element';        
+		$this->view = $this->request->query['advanced'] ? 'add_element_advanced' : 'add_element';    
     }
     
 /**
@@ -331,53 +344,62 @@ class AppWebpagesController extends WebpagesAppController {
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
 		}
-		if (!empty($this->request->data)) {
+		// save the data
+		if ($this->request->is('post') || $this->request->is('put')) {
 			try {
 				$this->Webpage->saveAll($this->request->data);
 				$this->Session->setFlash(__('Saved'), 'flash_success');
-				$this->request->data['Webpage']['type'] == 'template' ? null : $this->redirect(array('action' => 'view', $this->Webpage->id));
+				$redirect = !empty($this->request->data['Alias']['name']) ? '/' . $this->request->data['Alias']['name'] : array('admin' => false, 'action' => 'view', $this->Webpage->id);
+				$this->request->data['Webpage']['type'] == 'template' ? null : $this->redirect($redirect);
 			} catch(Exception $e) {
 				$this->Session->setFlash($e->getMessage(), 'flash_warning');
 			}
 		}
-		
-		$templates = $this->Webpage->syncFiles('template');
-		$this->request->data = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id), 'contain' => array('Child', 'Alias')));
-		$this->request->data = $this->Webpage->cleanOutputData($this->request->data);
+		// how do we move what's contained into the _edit[Type] methods???
+		$this->request->data = $this->Webpage->find('first', array(
+			'conditions' => array(
+				'Webpage.id' => $id
+				), 
+			'contain' => array(
+				'Child',
+				'Alias',
+				'Parent'
+			)));
+		$this->request->data = $this->Webpage->cleanOutputData($this->request->data); // this should be specific to the type, and/or afterFind()
 		
 		// required to have per page permissions
-		$userRoles = $this->Webpage->Creator->UserRole->find('list');
-		
-		$types = $this->Webpage->types();
+		$this->set('userRoles', $userRoles = $this->Webpage->Creator->UserRole->find('list'));
+		$this->set('types', $types = $this->Webpage->types());
+		$this->set('type', $type = $this->request->data['Webpage']['type']);
+		// defaults (can be over ridden in _edit[Type] method)
+		$this->set('page_title_for_layout', __('Edit %s', $this->request->data['Webpage']['name']));
+		$this->set('title_for_layout', __('Edit %s', $this->request->data['Webpage']['name']));
+		$this->view = $this->_fileExistsCheck('edit_' . $type . $this->ext) ? 'edit_' . $type : 'edit_content';
+		// run the type method
+        $edit = method_exists($this, '_edit' . ucfirst($type)) ? '_edit' . ucfirst($type) : '_editContent';
+        $this->$edit($id);
+	}
 
-		// don't believe this is used 03/23/2014 RK
-		// if ($this->request->data['Webpage']['type'] == 'template') {
-			// if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
-				// $cssFiles = unserialize(__WEBPAGES_DEFAULT_CSS_FILENAMES);
-				// $cssFile = $cssFiles['all'][0];
-			// } else {
-				// $cssFile = 'screen';
-			// }
-			// $this->set('ckeSettings', array(
-				// 'contentsCss' => '/theme/default/css/'.$cssFile.'.css',
-				// 'buttons' => array('Source')
-				// ));
-		// } else {
-			// unset($userRoles[1]);
-			// $this->set('ckeSettings', null);
-		// }
-		// 1/6/2012 rk - $this->set('templateUrls', $this->Webpage->templateUrls($this->request->data));
-		
-		// these three lines should be for content only
+	public function _editElement($id) {
+		if ($this->request->query['advanced']) {
+			$this->view = 'edit_element_advanced';
+		} else {
+			if (strpos($this->request->data['Webpage']['content'], '<?php')) {
+				// force the advanced editor
+				$this->redirect(array('action' => 'edit', $id, '?' => array('advanced' => true)));
+			}
+		}
+	}
+
+	public function _editTemplate($id) {
+		$templates = $this->Webpage->syncFiles('template');
+	}
+
+	public function _editContent($id) {
 		App::uses('WebpageMenu', 'Webpages.Model');
 		$WebpageMenu = new WebpageMenu();
 		$this->set('menus', $WebpageMenu->find('list', array('fields' => array('WebpageMenu.code', 'WebpageMenu.name'), 'conditions' => array('WebpageMenu.parent_id' => null))));
-		
-		$this->set('page_title_for_layout', __('%s Editor', Inflector::humanize($this->Webpage->types[$this->request->data['Webpage']['type']])));
-		$this->set(compact('userRoles', 'types'));
-		$type = $this->request->data['Webpage']['type'];
-		$this->view = $this->_fileExistsCheck('edit_' . $type . $this->ext) ? 'edit_' . $type : 'edit_content';
-        $this->layout = 'default';
+		$this->set('parents', $this->Webpage->find('list', array('conditions' => array('Webpage.parent_id' => null, 'Webpage.type' => array('content', 'section'))))); 
 	}
 	
 /**
@@ -398,6 +420,46 @@ class AppWebpagesController extends WebpagesAppController {
 			$this->Session->setFlash(__('Webpage could not be deleted.', true), 'flash_warning');
 			$this->redirect(array('action'=>'index'));
 		}
+	}
+	
+/**
+ * Move a webpage up in the tree (lft = 4, rght = 5  ...  becomes lft = 2, rght = 3)
+ */
+	public function moveup($id = null, $delta = null) {
+	    $this->Webpage->id = $id;
+	    if (!$this->Webpage->exists()) {
+	       throw new NotFoundException(__('Invalid webpage'));
+	    }
+	
+	    if ($delta > 0) {
+	        $this->Webpage->moveUp($this->Webpage->id, abs($delta));
+	    } else {
+	        $this->Session->setFlash(
+	          'Please provide the number of positions the field should be moved down.'
+	        );
+	    }
+	
+	    return $this->redirect($this->referer());
+	}
+	
+/**
+ * Move a webpage down in the tree (lft = 4, rght = 5  ...  becomes lft = 6, rght = 7)
+ */
+	public function movedown($id = null, $delta = null) {
+	    $this->Webpage->id = $id;
+	    if (!$this->Webpage->exists()) {
+	       throw new NotFoundException(__('Invalid webpage'));
+	    }
+	
+	    if ($delta > 0) {
+	        $this->Webpage->moveDown($this->Webpage->id, abs($delta));
+	    } else {
+	        $this->Session->setFlash(
+	          'Please provide the number of positions the field should be moved down.'
+	        );
+	    }
+	
+	    return $this->redirect($this->referer());
 	}
 	
 /**

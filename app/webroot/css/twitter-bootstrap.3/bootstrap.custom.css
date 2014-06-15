@@ -49,6 +49,10 @@ li.switch-mini.has-switch {
 	padding-left: 30px !important;
     padding-right: 30px !important;
 }
+.padding-xl {
+	padding-left: 60px !important;
+    padding-right: 60px !important;
+}
 /* index page */
 .list-group-item:hover {
 	background: #f5f5f5;

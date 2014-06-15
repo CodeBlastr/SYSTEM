@@ -24,10 +24,17 @@ class MetableBehavior extends ModelBehavior {
  * @todo bind the model here if not bound already
  */
 	public function beforeSave(Model $Model, $options = array()) {
+		// if ($Model->name == 'InvoiceItem') {
+			// debug($Model->data);
+		// }
 		if ( !empty($Model->data[$Model->alias]['Meta']) && is_array($Model->data[$Model->alias]['Meta']) ) {
 			$this->data = $Model->data[$Model->alias]['Meta'];
 			unset($Model->data[$Model->alias]['Meta']);
 		}
+		// if ($Model->name == 'InvoiceItem') {
+			// debug($this->data);
+			// exit;
+		// }
 		return true;
 	}
     
@@ -42,8 +49,7 @@ class MetableBehavior extends ModelBehavior {
 	public function afterSave(Model $Model, $created, $options = array()) {
 		if (!empty($this->data) && isset($this->data)) {
             $Meta = ClassRegistry::init('Meta');			
-			$existingMeta = $Meta->find( 'first', array('conditions' => array('model' => $Model->name, 'foreign_key' => $Model->id)) );
-			
+			$existingMeta = $Meta->find('first', array('conditions' => array('model' => $Model->name, 'foreign_key' => $Model->id)));
 			if (empty($existingMeta)) {
 				// adding a new meta record
 				$cleanMetadata = mysql_escape_string(serialize(ZuhaSet::array_filter_recursive($this->data)));
@@ -55,7 +61,6 @@ class MetableBehavior extends ModelBehavior {
 				// Meta already exists, update it. The incoming data, $metadata, needs to overwrite current values.
 				// extract array from $existingMeta['Meta']['value']
 				$existingMetaValue = unserialize($existingMeta['Meta']['value']);
-
 				foreach ($existingMetaValue as $k => $v) {
 					// clean out obsolete exclamation points
 					if (strstr($k, '!')) {
@@ -64,7 +69,6 @@ class MetableBehavior extends ModelBehavior {
 						unset($existingMetaValue[$k]);
 					}
 				}
-					
 				// merge that array with $metadata
 				//$updatedMetaValue = ZuhaSet::array_replace_r( $existingMetaValue, $this->data ); // this was not maintiaining the old meta data ^JB 12/19/2013
 				//$updatedMetaValue = Hash::merge($existingMetaValue, $this->data); // this doesn't either for multi-dimensional values ^ RK 2/9/2014
@@ -78,7 +82,6 @@ class MetableBehavior extends ModelBehavior {
 				");
 			}
 		}
-
 		parent::afterSave($Model, $created, $options);
 	}
     
@@ -196,7 +199,7 @@ class MetableBehavior extends ModelBehavior {
 				
 			}
 			unset($result['Meta']);
-		} 
+		}
 		return $results;
 	}
 

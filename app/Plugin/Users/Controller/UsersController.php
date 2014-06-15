@@ -108,6 +108,7 @@ class AppUsersController extends UsersAppController {
 		}
 		if ($forcePw > 0 || $forcePw === 'password' || !empty($this->request->params['named']['cpw'])) {
 			$this->view = 'password';
+			$this->User->autoLogin = false;
 		}
 		// looking for an existing user to edit
 		if (!empty($this->request->params['named']['user_id'])) {
@@ -145,6 +146,7 @@ class AppUsersController extends UsersAppController {
 			if ($this->User->saveAll($this->request->data)) {
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array(
+					'admin' => false,
 					'plugin' => 'users',
 					'controller' => 'users',
 					'action' => 'view',

@@ -44,6 +44,11 @@
 </div>
 
 <?php
+// set the contextual breadcrumb items
+$this->set('context_crumbs', array('crumbs' => array(
+	$this->Html->link(__('Admin Dashboard'), '/admin'),
+	$page_title_for_layout,
+)));
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
@@ -52,5 +57,5 @@ $this->set('context_menu', array('menus' => array(
 			$this->Paginator->sort('name', 'Sort by Name'),
 			$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add', 'template')),
 			)
-		),
+		)
 	)));
