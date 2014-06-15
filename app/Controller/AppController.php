@@ -733,16 +733,14 @@ class AppController extends Controller {
 	}
 
 /**
- * check if the selected template is available to the current url
+ * Url Template
+ * 
+ * Checks if the selected template is available to the current url
  *
- * @param {array}		Individual template data arrays from the settings.ini (or
- * defaults.ini) file.
+ * @param array Individual template data arrays from the settings.ini (or defaults.ini) file.
  */
 	private function _urlTemplate($data) {
-		// check if the url being requested matches any template settings for specific
-		// urls
 		if (!empty($data['urls'])) {
-			$i = 0;
 			foreach ($data['urls'] as $url) {
 				$urlString = str_replace('/', '\/', trim($url));
 				if (substr($urlString, -1) !== '/') {
@@ -750,13 +748,13 @@ class AppController extends Controller {
 				}
 				$urlRegEx = '/' . str_replace('*', '(.*)', $urlString) . '/';
 				$urlRegEx = strpos($urlRegEx, '\/') === 1 ? '/' . substr($urlRegEx, 3) : $urlRegEx;
-				$url = $this->request->action == 'index' ? $this->request->plugin . '/' . $this->request->controller . '/' . $this->request->action . '/' : $this->request->url . '/';
+				$url = Zuha::reverseParams($this->request->params);
+				$url = $this->request->action == 'index' ? $this->request->plugin . '/' . $this->request->controller . '/' . $this->request->action . '/' : $url . '/';
 				$urlCompare = strpos($url, '/') === 0 ? substr($url, 1) : $url;
 				$urlCompare = str_replace("//", "/", $urlCompare);
 				if ($urlRegEx !== '//' && preg_match($urlRegEx, $urlCompare)) {
 					$templateId = !empty($data['userRoles']) ? $this->_userTemplate($data) : $data['templateName'];
 				}
-				$i++;
 			}
 		}
 		if (!empty($templateId)) {
