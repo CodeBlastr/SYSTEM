@@ -5,7 +5,7 @@
  * its action called 'display', and we pass a param to select the view file
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
- 	Router::connect('/', array('controller' => '', 'home'));
+ 	//Router::connect('/', array('controller' => '', 'home'));
 	Router::parseExtensions('rss', 'xml', 'json', 'cal', 'csv');
 /**
  * Load all plugin routes.  See the CakePlugin documentation on 
