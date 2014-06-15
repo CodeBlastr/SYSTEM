@@ -30,7 +30,6 @@ if (empty($runUpdates)) : ?>
         <?php echo CakePlugin::loaded('Comments') ? $this->Html->link(__('Discussion'), '#tagDiscussion', array('class' => 'filterClick btn btn-default')) : null; ?>
         <?php echo $this->Html->link(__('Themes'), '#tagThemes', array('class' => 'filterClick btn btn-default')); ?>
         <?php echo $this->Html->link(__('Settings'), '#tagAdmin', array('class' => 'filterClick btn btn-default')); ?>
-        <?php echo CakePlugin::loaded('Products') ? $this->Html->link(__('<span class="glyphicon glyphicon-dashboard"></span> Ecommerce'), array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('class' => 'filterClick btn btn-default', 'escape' => false)) : null; ?>
     </div>
 
     <div class="masonry dashboard">
@@ -255,6 +254,24 @@ if (empty($runUpdates)) : ?>
 	            <hr>
 	            <?php echo $this->Html->link('Reusable Items', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoice_items', 'action' => 'index')); ?><br>
 	            <?php echo $this->Html->link('Add Reusable Item', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoice_items', 'action' => 'add')); ?>
+            </p>
+        </div>
+        <?php endif; ?>
+        
+        <?php if (CakePlugin::loaded('Products') && !CakePlugin::loaded('Transactions')) : ?>
+        <div class="masonryBox dashboardBox">
+            <h3 class="title"><i class="glyphicon glyphicon-barcode"></i> <?php echo $this->Html->link(__('Products'), array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard'), array('escape' => false)); ?> </h3>
+            <p>
+            	<?php echo $this->Html->link('Products Dashboard', array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'dashboard')); ?><br>
+	           	<?php echo $this->Html->link('Add Product', array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'add')); ?>
+            </p>
+        </div>
+        <?php elseif (CakePlugin::loaded('Transactions')) : ?>
+        <div class="masonryBox dashboardBox">
+            <h3 class="title"><i class="glyphicon glyphicon-barcode"></i> <?php echo $this->Html->link(__('Ecommerce Dashboard'), array('admin' => true, 'plugin' => 'transactions', 'controller' => 'transactions', 'action' => 'dashboard'), array('escape' => false)); ?> </h3>
+            <p>
+            	<?php echo $this->Html->link('Ecommerce Dashboard', array('admin' => true, 'plugin' => 'transactions', 'controller' => 'transactions', 'action' => 'dashboard')); ?><br>
+	           	<?php echo $this->Html->link('Add Product', array('admin' => true, 'plugin' => 'products', 'controller' => 'products', 'action' => 'add')); ?>
             </p>
         </div>
         <?php endif; ?>
