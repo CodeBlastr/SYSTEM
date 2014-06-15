@@ -399,11 +399,9 @@ class AppWebpage extends WebpagesAppModel {
  * @todo Clean out alias data for templates and elements.
  */
 	public function cleanOutputData($data) {
-        
 		if (!empty($data['Webpage']['user_roles'])) {
 			$data['Webpage']['user_roles'] = unserialize($data['Webpage']['user_roles']);
 		}
-		
 		// might not need this anymore 1/6/2012 rk, because of updates to how we handle template_urls
 		// Updated to probably only decode those that are encoded ^JB  (NOPE YOU WERE WRONG, STILL OVERWRITING NON-ENCODED, BECAUSE strpos can equal zero, and the string is still there)
 		// Updated to look for '==', because serialized strings should always end in '=='.  (I think, 4/21/2013)
