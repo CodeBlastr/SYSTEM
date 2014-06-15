@@ -204,6 +204,9 @@ class ZuhaSet {
 					// 'transaction_id' => 'a043572d-9040-43c9-85b1-22d400000002',
 					// 'quantity' => '1',
 					// 'price' => '10',
+					// 'SomeMode' => array(
+							// 'some-data' => 'some-value'
+							// )
 				// ),
 			// ),
 			// 1 => array(
@@ -226,13 +229,17 @@ class ZuhaSet {
 				// ),
 			// )
 		// );
-		
 		if (!empty($array[0])) {
-			$output = array();
-			for ($i = 0; $i < count($array); $i++) {
-				$output[key($array[$i])][] = $array[$i][key($array[$i])];
+			for ($i=0; $i < count($array); $i++) {
+				foreach (array_keys($array[$i]) as $key) {
+					if (key($array[$i]) == $key) {
+						$output[$key][$i] = $array[$i][$key];
+					} else {
+						$output[key($array[$i])][$i][$key] = $array[$i][$key];
+					}
+				}
 			}
-			$array = $output;
+			$array = $output; // here because sometimes the array coming in is empty, and we want to return the empty array
 		}
 		return $array;
 	}
