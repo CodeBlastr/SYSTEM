@@ -32,6 +32,41 @@ class Alias extends AppModel {
 		$this->data = $this->cleanInputData($this->data);
 		return parent::beforeValidate($options);
 	}
+
+/**
+ * afterSave
+ * 
+ * Write out the routes.php file
+ */
+ 	// public function afterSave($created, $options = array()) {
+ 		// $aliases = $this->find('all');
+		// $routes = '';
+		// foreach ($aliases as $alias) {
+			// $alias['Alias']['name'] = $alias['Alias']['name'] == 'home' ? '' : $alias['Alias']['name']; // keyword home is the homepage
+// 			
+			// $plugin = !empty($alias['Alias']['plugin']) ? '/' . $alias['Alias']['plugin'] : null;
+			// $controller = !empty($alias['Alias']['controller']) ? '/' . $alias['Alias']['controller'] : null;
+			// $action = !empty($alias['Alias']['action']) ? '/' . $alias['Alias']['action'] : null;
+			// $value = !empty($alias['Alias']['value']) ? '/' . $alias['Alias']['value'] : null;
+			// $url = $plugin . $controller . $action . $value;
+			// $routes .= 'Router::redirect(\'' . $url . '\', \'/' . $alias['Alias']['name'] . '\', array(\'status\' => 301));' . PHP_EOL;
+			// $routes .= 'Router::connect(\'/' . $alias['Alias']['name'] . '\', array(\'plugin\' => \'' . $alias['Alias']['plugin'] . '\', \'controller\' => \'' . $alias['Alias']['controller'] . '\', \'action\' => \'' . $alias['Alias']['action'] . '\', \'' . implode('\', \'', explode('/', $alias['Alias']['value'])) . '\'));' . PHP_EOL;
+		// }
+// 
+		// App::uses('File', 'Utility');
+		// $file = new File(ROOT . DS . SITE_DIR . DS . 'Config' . DS . 'routes.php');
+		// $currentRoutes = str_replace(array('<?php ', '<?php'), '', explode('// below this gets overwritten', $file->read()));
+		// $routes = '<?php ' . $currentRoutes[0] . '// below this gets overwritten' . PHP_EOL . PHP_EOL . $routes;
+		// if ($file->write($routes)) {
+			// $file->close();
+		// } else {
+			// $file->close(); // Be sure to close the file when you're done
+			// throw new Exception(__('Error writing routes file'));
+		// }
+		// // <?php
+		// // Router::redirect('/webpages/webpages/view/113', '/lenovo', array('status' => 301));
+		// // Router::connect('/lenovo', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'view', 113));
+ 	// }
 	
 /**
  * Clean Input Data
