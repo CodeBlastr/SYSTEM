@@ -428,6 +428,11 @@ class AppUser extends UsersAppModel {
  		return parent::saveAll($data, $options);
  	}
 
+/**
+ * Save user and contact
+ * 
+ * @param array
+ */
 	public function saveUserAndContact($data) {
 		$data = $this->_userContact($data);
 		$data = $this->save($data);
