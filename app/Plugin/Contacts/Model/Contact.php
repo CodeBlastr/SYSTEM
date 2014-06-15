@@ -589,7 +589,7 @@ class AppContact extends ContactsAppModel {
 				'order' => false
 				));
 			$salesStats[$person]['Assignee']['_leads'] = $stats[0][0]['leads']; // count of leads
-			$salesStats[$person]['Assignee']['_sales'] = $stats[0][0]['sales']; // count of sales
+			//$salesStats[$person]['Assignee']['_sales'] = $stats[0][0]['sales']; // count of sales // problem happens because the created date is older than the estimate created date, making this number pointless
 			if (CakePlugin::loaded('Estimates')) {
 				$estimates = $this->Estimate->find('all', array(
 					'fields' => array(
@@ -600,10 +600,10 @@ class AppContact extends ContactsAppModel {
 						),
 					'conditions' => array(
 						'Estimate.creator_id' => $person,
-						'Estimate.created >' => date('Y-m-d', strtotime('-6 months'))
+						'Estimate.created >' => date('Y-m-d', strtotime('-6 months')),
+						//'Estimate.foreign_key' => 
 						)
 					));
-				
 				$converted = $this->Estimate->find('all', array(
 					'conditions' => array(
 						'Estimate.is_accepted' => 1,
@@ -615,7 +615,7 @@ class AppContact extends ContactsAppModel {
 				foreach ($converted as $convert) {
 					$cycles[] = round((strtotime($convert['Estimate']['closed']) - strtotime($convert['Estimate']['created'])) / 86400);
 				}
-				
+				$salesStats[$person]['Assignee']['_sales'] = $estimates[0][0]['sales'];
 				$salesStats[$person]['Assignee']['_proposals'] = $estimates[0][0]['proposals']; // count of all proposals
 				$salesStats[$person]['Assignee']['_total'] = $estimates[0][0]['total']; // total of all proposals
 				$salesStats[$person]['Assignee']['_sold'] = $estimates[0][0]['sold']; // total of all sales
@@ -623,8 +623,8 @@ class AppContact extends ContactsAppModel {
 				//debug($cycles);
 				//debug($estimates);
 				// these two should match, if they don't then we're probably missing an is_accepted estimate which has a contact marked as customer
-				//debug($estimates[0][0]['sales']);
-				//debug($salesStats[$i]['Assignee']['_sales']);
+				// debug($estimates[0][0]['sales']);
+				// debug($salesStats[$person]['Assignee']['_sales']);
 			}
 			// btw, we supress warnings because of the division by zero thing
 			$salesStats[$person]['Assignee']['_averageProposal'] = @round($salesStats[$person]['Assignee']['_total'] / $salesStats[$person]['Assignee']['_proposals'], 2);
