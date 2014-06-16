@@ -188,7 +188,9 @@ if (empty($runUpdates)) : ?>
         <div class="masonryBox dashboardBox tagForms tagPages">
             <h3 class="title"><i class="glyphicon glyphicon-send"></i> <?php echo $this->Html->link('Custom Forms', array('plugin' => 'answers', 'controller' => 'answers', 'action' => 'index')); ?></h3>
             <p>Create custom forms using the Drag and Drop Form Buildrr.</p>
-            <li><?php echo $this->Html->link('View Form Submissions', array('plugin' => 'answers', 'controller' => 'answersSubmissions')) ?></li>
+			<ul>
+				<li><?php echo $this->Html->link('View Form Submissions', array('admin' => true, 'plugin' => 'answers', 'controller' => 'answersSubmissions')) ?></li>
+			</ul>
         </div>
         <?php endif; ?>
 
@@ -240,6 +242,7 @@ if (empty($runUpdates)) : ?>
             <p>See and manage event listings.</p>
             <ul>
                 <li><?php echo $this->Html->link('Add Event', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'add')); ?></li>
+                <li><?php echo $this->Html->link('View Event Guests', array('admin' => true, 'plugin' => 'events', 'controller' => 'eventsGuests', 'action' => 'index')); ?></li>
             </ul>
         </div>
         <?php endif; ?>
