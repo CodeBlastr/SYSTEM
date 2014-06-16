@@ -1,25 +1,5 @@
 <?php
 /**
- * This is core configuration file.
- *
- * Use it to configure core behavior of Cake.
- *
- * PHP 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.Config
- * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-
-/**
  * CakePHP Debug Level:
  *
  * Production Mode:
@@ -33,149 +13,11 @@
  * In development mode, you need to click the flash message to continue.
  */
  	$debugger = isset($_GET['debugger']) ? $_GET['debugger'] : 0;
-	#Configure::write('debug', 2);
 	Configure::write('debug', $debugger);
 	Configure::write('Config.language', 'en');
 
 /**
- * Configure the Error handler used to handle errors for your application.  By default
- * ErrorHandler::handleError() is used.  It will display errors using Debugger, when debug > 0
- * and log errors with CakeLog when debug = 0.
- *
- * Options:
- *
- * - `handler` - callback - The callback to handle errors. You can set this to any callback type,
- *    including anonymous functions.
- * - `level` - int - The level of errors you are interested in capturing.
- * - `trace` - boolean - Include stack traces for errors in log files.
- *
- * @see ErrorHandler for more information on error handling and configuration.
- */
-	Configure::write('Error', array(
-		'handler' => 'ErrorHandler::handleError',
-		'level' => E_ALL & ~E_DEPRECATED,
-		'trace' => true
-	));
-
-/**
- * Configure the Exception handler used for uncaught exceptions.  By default,
- * ErrorHandler::handleException() is used. It will display a HTML page for the exception, and
- * while debug > 0, framework errors like Missing Controller will be displayed.  When debug = 0,
- * framework errors will be coerced into generic HTTP errors.
- *
- * Options:
- *
- * - `handler` - callback - The callback to handle exceptions. You can set this to any callback type,
- *   including anonymous functions.
- * - `renderer` - string - The class responsible for rendering uncaught exceptions.  If you choose a custom class you
- *   should place the file for that class in app/Error. This class needs to implement a render method.
- * - `log` - boolean - Should Exceptions be logged?
- *
- * @see ErrorHandler for more information on exception handling and configuration.
- */
-	Configure::write('Exception', array(
-		'handler' => 'ErrorHandler::handleException',
-		'renderer' => 'AppExceptionRenderer',
-		'log' => true
-	));
-	#Configure::write('Exception.renderer', 'AppExceptionRenderer');
-	#Configure::write('Exception.handler', 'AppExceptionHandler::handle');
-
-/**
- * Application wide charset encoding
- */
-	Configure::write('App.encoding', 'UTF-8');
-
-/**
- * To configure CakePHP *not* to use mod_rewrite and to
- * use CakePHP pretty URLs, remove these .htaccess
- * files:
- *
- * /.htaccess
- * /app/.htaccess
- * /app/webroot/.htaccess
- *
- * And uncomment the App.baseUrl below:
- */
-	//Configure::write('App.baseUrl', env('SCRIPT_NAME'));
-
-/**
- * Uncomment the define below to use CakePHP prefix routes.
- *
- * The value of the define determines the names of the routes
- * and their associated controller actions:
- *
- * Set to an array of prefixes you want to use in your application. Use for
- * admin or other prefixed routes.
- *
- * 	Routing.prefixes = array('admin', 'manager');
- *
- * Enables:
- *	`admin_index()` and `/admin/controller/index`
-
- *	`manager_index()` and `/manager/controller/index`
- *
- */
-	Configure::write('Routing.prefixes', array('admin'));
-
-/**
- * Turn off all caching application-wide.
- *
- */
-	//Configure::write('Cache.disable', true);
-
-/**
- * Enable cache checking.
- *
- * If set to true, for view caching you must still use the controller
- * public $cacheAction inside your controllers to define caching settings.
- * You can either set it controller-wide by setting public $cacheAction = true,
- * or in each action using $this->cacheAction = true.
- *
- */
-	//Configure::write('Cache.check', true);
-
-/**
- * Defines the default error type when using the log() function. Used for
- * differentiating error logging and debugging. Currently PHP supports LOG_DEBUG.
- */
-	define('LOG_ERROR', 2);
-
-/**
  * Session configuration.
- *
- * Contains an array of settings to use for session configuration. The defaults key is
- * used to define a default preset to use for sessions, any settings declared here will override
- * the settings of the default config.
- *
- * ## Options
- *
- * - `Session.cookie` - The name of the cookie to use. Defaults to 'CAKEPHP'
- * - `Session.timeout` - The number of minutes you want sessions to live for. This timeout is handled by CakePHP
- * - `Session.cookieTimeout` - The number of minutes you want session cookies to live for.
- * - `Session.checkAgent` - Do you want the user agent to be checked when starting sessions? You might want to set the
- *    value to false, when dealing with older versions of IE, Chrome Frame or certain web-browsing devices and AJAX
- * - `Session.defaults` - The default configuration set to use as a basis for your session.
- *    There are four builtins: php, cake, cache, database.
- * - `Session.handler` - Can be used to enable a custom session handler.  Expects an array of of callables,
- *    that can be used with `session_save_handler`.  Using this option will automatically add `session.save_handler`
- *    to the ini array.
- * - `Session.autoRegenerate` - Enabling this setting, turns on automatic renewal of sessions, and
- *    sessionids that change frequently. See CakeSession::$requestCountdown.
- * - `Session.ini` - An associative array of additional ini values to set.
- *
- * The built in defaults are:
- *
- * - 'php' - Uses settings defined in your php.ini.
- * - 'cake' - Saves session files in CakePHP's /tmp directory.
- * - 'database' - Uses CakePHP's database sessions.
- * - 'cache' - Use the Cache class to save sessions.
- *
- * To define a custom session handler, save it at /app/Model/Datasource/Session/<name>.php.
- * Make sure the class implements `CakeSessionHandlerInterface` and set Session.handler to <name>
- *
- * To use database sessions, run the app/Config/Schema/sessions.php schema using
- * the cake shell command: cake schema create Sessions
  *
  */
 	Configure::write('Session', array(
@@ -222,18 +64,3 @@
  * To use, prefix your JavaScript link URLs with '/cjs/' instead of '/js/' or use JavaScriptHelper::link().
  */
 	//Configure::write('Asset.filter.js', 'custom_javascript_output_filter.php');
-
-/**
- * The classname and database used in CakePHP's
- * access control lists.
- */
-	Configure::write('Acl.classname', 'DbAcl');
-	Configure::write('Acl.database', 'default');
-
-/**
- * If you are on PHP 5.3 uncomment this line and correct your server timezone
- * to fix the date & time related errors.
- */
-	//date_default_timezone_set('UTC');
-	
-// cache settings are in app/Config/core.php

@@ -3,6 +3,21 @@
  * Core functions for zuha 
  */
 class Zuha {
+	
+/**
+ * reverse a request from the params
+ */
+ 	public static function reverseParams($request) {
+ 		 // it's annoying that there's no way to get a url from params
+ 		unset($request['alias']); // for backwards compatibility
+ 		$url = $request;
+ 		unset($url['pass']);
+		$passed = implode('/', $request['pass']);
+		$passed = !empty($passed) ? '/' . $passed : null;
+ 		unset($url['named']);
+		$named = str_replace(array('[]', '{"', '":"', '","', '"}'), array('', '/', ':', '/', ''), json_encode($request['named']));
+		return Router::normalize(implode('/', $url) . $passed . $named);
+ 	}
     
 /**
  * Is UUID
