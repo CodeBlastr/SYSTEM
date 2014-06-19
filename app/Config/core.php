@@ -92,7 +92,6 @@
 	  'trace' => true
 	  ));
 
-
 /**
  * Forced AppError Handler handler
  * 
