@@ -45,7 +45,7 @@ class UserGroupableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param boolean $created
  */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
 		if ( isset($this->settings[$Model->alias]['hasMany']) ) {
 			$this->_mainModelAfterSave($Model, $created);
 		} else {
