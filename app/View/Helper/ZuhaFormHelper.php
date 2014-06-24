@@ -281,7 +281,7 @@ EOD;
 		$this->View->Html->css('jquery-ui/jquery-ui-timepicker-addon', null, array('inline' => false));
 		$this->View->Html->script('jquery-ui/jquery-ui-1.10.3.custom', array('inline' => false, 'once' => true));
 		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false, 'once' => true));
-		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : '';
+		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : 'HH:MM:ss';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
 		$fieldhiddenname = $firstId . '_';
 		$code = '$(document).ready(function() {
@@ -333,6 +333,7 @@ EOD;
 		$this->View->Html->script('plugins/jquery-ui-timepicker-addon', array('inline' => false, 'once' => true));
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : 'hh:mm tt';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
+        $disable = isset($attributes['disablepast']) ? 'minDate: 0,' : '';
 		$fieldnameId = str_replace(' ', '', ucwords(str_replace('.', ' ', $fieldName))); // comment why, if you comment this line out
 		$fieldhiddenname = $fieldnameId . '_';
 		$code = '$(document).ready(function() {
@@ -341,12 +342,13 @@ EOD;
 			// $("#'.$fieldnameId.'").datetimepicker({
 			$("#' . $firstId . '").next().val("' . date('Y-m-d h:i:s', strtotime($attributes['value'])) . '");
 			$("#' . $firstId . '").datetimepicker({
-		    	timeFormat: "' . $jsTime . '", 
+		    	timeFormat: "' . $jsTime . '",
 		        dateFormat: "' . $jsDate . '",
 		        altField: "#' . $fieldhiddenname . '",
+		        '.$disable.'
 		        altFieldTimeOnly: false,
 		        altFormat: "yy-mm-dd",
-		        altTimeFormat: "hh:mm:ss",
+		        altTimeFormat: "HH:mm:ss",
 		        altSeparator: " "
 			});
 		});';
