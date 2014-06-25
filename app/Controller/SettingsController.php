@@ -134,6 +134,7 @@ class SettingsController extends AppController {
 		}
 		if (empty($this->request->data)) {
 			$this->request->data = $this->Setting->read(null, $id);
+			$this->request->data['Setting']['description'] = $this->Setting->getDescription($this->request->data['Setting']['type'], $this->request->data['Setting']['name']);
 		}
 		$types = $this->Setting->types();
 		$this->set(compact('types'));
