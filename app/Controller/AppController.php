@@ -944,63 +944,56 @@ class AppController extends Controller {
 	}
 
 /**
- * Make sending email available to all controllers (AppModel calls to this
- * function)
+ * Make sending email available to all controllers (AppModel calls to this function)
  *
- * @param string		String - address to send email to
- * @param sring			$subject: subject of email.
- * @param string		$message['html'] in the layout will be replaced with this text.
- * @param string		$template to be picked from folder for email. By default, if
- * $mail is given in any template.
- * @param array			address/name pairs (e.g.: array(example@address.com => name,
- * ...)
- * @param UNKNOWN		Have not used it don't know what it does or if it works.
- * @return bool
+ * @param mixed $toEmail	address to send email to
+ * @param string $subject	subject of email
+ * @param mixed $message	$message ['html'] in the layout will be replaced with this text
+ * @param string $template	to be picked from folder for email. By default, if $mail is given in any template.
+ * @param array $from		Seems to not be used.
+ * @param array $attachment	list of file paths to add as email attachments
+ * @return int				The return value is the number of recipients who were accepted for delivery.
+ * @throws Exception
  */
 	public function __sendMail($toEmail = null, $subject = null, $message = null, $template = 'default', $from = array(), $attachment = array()) {
 		$this->SwiftMailer = $this->Components->load('SwiftMailer');
-		if (defined('__SYSTEM_SMTP')) {
-			extract(unserialize(__SYSTEM_SMTP));
-			$smtp = base64_decode($smtp);
-			$smtp = Security::cipher($smtp, Configure::read('Security.salt'));
-			if (parse_ini_string($smtp)) {
-				if (isset($toEmail['to']) && is_array($toEmail)) {
-					$this->SwiftMailer->to = $toEmail['to'];
-				} else {
-					$this->SwiftMailer->to = $toEmail;
-				}
-				if (isset($toEmail['cc']) && is_array($toEmail)) {
-					$this->SwiftMailer->cc = $toEmail['cc'];
-				}
-				if (isset($toEmail['bcc']) && is_array($toEmail)) {
-					$this->SwiftMailer->bcc = $toEmail['bcc'];
-				}
-				if (isset($toEmail['replyTo']) && is_array($toEmail)) {
-					$this->SwiftMailer->replyTo = $toEmail['replyTo'];
-				}
-				$this->SwiftMailer->template = $template;
-				$this->SwiftMailer->attachments = $attachment;
-				$this->SwiftMailer->layout = 'email';
-				$this->SwiftMailer->sendAs = 'html';
-				if ($message) {
-					$this->SwiftMailer->content = $message . '<br><br>' . $_SERVER['REMOTE_ADDR'];
-					if (is_array($message) && isset($message['html'])) {
-						$this->SwiftMailer->content = $message['html'] . '<br><br>' . $_SERVER['REMOTE_ADDR'];
-					} else {
-						$message = array('html' => $message);
-					}
-					$this->set('message', $message);
-				}
-				if (!$subject) {
-					$subject = 'No Subject';
-				}
-				return $this->SwiftMailer->send($template, $subject);
-			} else {
-				throw new Exception(__('SMTP Ini parsing failed.'));
-			}
-		} else {
+		if (!defined('__SYSTEM_SMTP')) {
 			throw new Exception(__('SMTP Settings not defined.'));
 		}
+		extract(unserialize(__SYSTEM_SMTP));
+		$smtp = Security::cipher(base64_decode($smtp), Configure::read('Security.salt'));
+		if (!parse_ini_string($smtp)) {
+			throw new Exception(__('SMTP Ini parsing failed.'));
+		}
+		if (isset($toEmail['to']) && is_array($toEmail)) {
+			$this->SwiftMailer->to = $toEmail['to'];
+		} else {
+			$this->SwiftMailer->to = $toEmail;
+		}
+		if (isset($toEmail['cc']) && is_array($toEmail)) {
+			$this->SwiftMailer->cc = $toEmail['cc'];
+		}
+		if (isset($toEmail['bcc']) && is_array($toEmail)) {
+			$this->SwiftMailer->bcc = $toEmail['bcc'];
+		}
+		if (isset($toEmail['replyTo']) && is_array($toEmail)) {
+			$this->SwiftMailer->replyTo = $toEmail['replyTo'];
+		}
+		$this->SwiftMailer->template = $template;
+		$this->SwiftMailer->attachments = $attachment;
+		$this->SwiftMailer->layout = 'email';
+		$this->SwiftMailer->sendAs = 'html';
+		if ($message) {
+			$this->SwiftMailer->content = $message . '<br /><br />' . $_SERVER['REMOTE_ADDR'];
+			if (is_array($message) && isset($message['html'])) {
+				$this->SwiftMailer->content = $message['html'] . '<br /><br />' . $_SERVER['REMOTE_ADDR'];
+			} else {
+				$message = array('html' => $message);
+			}
+			$this->set('message', $message);
+		}
+		$subject = ($subject) ? $subject : 'No Subject';
+		return $this->SwiftMailer->send($template, $subject);
 	}
 
 /**
