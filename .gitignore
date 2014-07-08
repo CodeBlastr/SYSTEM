@@ -48,3 +48,4 @@ version
 /app/webroot/fonts/google
 logs/*
 *.iml
+conf
