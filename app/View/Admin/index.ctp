@@ -167,6 +167,13 @@ if (empty($runUpdates)) : ?>
         </div>
         <?php endif; ?>
 
+		<?php if (CakePlugin::loaded('Maps')) : ?>
+        <div class="masonryBox dashboardBox tagPages tagAdmin">
+            <h3 class="title"><i class="glyphicon glyphicon-flag"></i> <?php echo $this->Html->link('Maps', array('admin' => true, 'plugin' => 'maps', 'controller' => 'maps', 'action' => 'index')); ?></h3>
+            <p>Manage your map markers.</p>
+        </div>
+        <?php endif; ?>
+
         <div class="masonryBox dashboardBox tagPrivileges tagAdmin">
             <h3 class="title"><i class="glyphicon glyphicon-lock"></i> <?php echo $this->Html->link('Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index')); ?></h3>
             <p>Control what content your different user roles can see. <?php echo $this->Html->link('Manage Privileges', array('plugin' => 'privileges', 'controller' => 'privileges', 'action' => 'index'), array('class' => 'btn btn-default btn-mini btn-xs')); ?></p>
