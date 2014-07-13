@@ -39,7 +39,7 @@ class ThemeableBehavior extends ModelBehavior {
  * @param Model $Model
  * @param boolean $created The value of $created will be true if a new record was created (rather than an update).
  */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
 		if (!empty($Model->data['Template']['layout'])) {
 			$data['Template']['layout'] = $Model->data['Template']['layout'];
 			$data['Template']['model'] = $Model->name;
