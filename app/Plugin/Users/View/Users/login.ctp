@@ -22,22 +22,23 @@
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript">
-	$(function() {
-		$('a[data-parent]').click(function(e) {
-			var parent = $(this).attr('data-parent');
-			var self = $(this).attr('data-target');
+<?php $script =
+<<< EOT
+	jQuery(function() {
+		jQuery('a[data-parent]').click(function(e) {
+			var parent = jQuery(this).attr('data-parent');
+			var self = jQuery(this).attr('data-target');
 			console.log(parent + ' ' + self);
-			$(parent + ' .collapse').removeClass('in');
-			$(parent + ' ' + self).addClass('in');
+			jQuery(parent + ' .collapse').removeClass('in');
+			jQuery(parent + ' ' + self).addClass('in');
 		});
 
 		// link to /users/users/login/#register to show the register form
 		if (window.location.hash.length > 0) {
 			console.log(window.location.hash + '.collapse');
-			$('.collapse').removeClass('in');
-			$(window.location.hash + '.collapse').addClass('in');
+			jQuery('.collapse').removeClass('in');
+			jQuery(window.location.hash + '.collapse').addClass('in');
 		}
-	}); 
-</script>
+	});
+EOT;
+echo $this->Html->scriptBlock($script, array('inline' => false)); ?>

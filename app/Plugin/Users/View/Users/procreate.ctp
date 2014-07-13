@@ -7,6 +7,7 @@
 		<?php echo !empty($userRoleId) ? $this->Form->hidden('User.user_role_id', array('value' => $userRoleId)) : $this->Form->input('User.user_role_id'); ?>
 		<?php echo $this->Form->input('User.full_name', array('label' => 'Full Name')); ?>
 		<?php echo $this->Form->input('User.username', array('label' => 'Email (and username)')); ?>
+		<?php echo $this->Form->input('User.notify', array('label' => 'Notify (send email with password instructions?)', 'type' => 'checkbox')); ?>
 
 	</fieldset>
 	<?php echo $this->Form->end('Submit'); ?>

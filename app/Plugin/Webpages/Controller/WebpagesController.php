@@ -90,7 +90,7 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('webpages', $webpages = $this->paginate());
 		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
 		$this->set('displayName', 'title');
-		$this->set('displayDescription', 'content'); 
+		$this->set('displayDescription', 'content');
 		$this->set('page_title_for_layout', 'Pages');
 		$this->set('page_types', $this->Webpage->types());
 		$this->view = $this->_fileExistsCheck('index_' . $type . $this->ext) ? 'index_' . $type : 'index_content';
