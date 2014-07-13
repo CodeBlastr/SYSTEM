@@ -137,7 +137,7 @@
 }
 #adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
 	margin: 0 auto;
-    width: 1170px;
+    /*width: 1170px; doesn't match bootstrap well, reset to give a chance to redo when a mistake is found */
     font-size: 15px;
     line-height: inherit;
     background-image: none;
@@ -150,10 +150,14 @@
 	display: inline-block;
 }
 #adminNavFloManagr .nav-collapse {
-	float: left;
 	/* width: 1020px;*/
-	width: 930px; /* was the above, changed on steve hatch */
-	height: 0; /* put in with bootstrap 3, might need to come out if it breaks 2 */
+	/*width: 930px; doesn't match bootstrap well, reset to give a chance to redo when a mistake is found */ /* was the above, changed on steve hatch */
+	height: 0;
+}
+@media (max-width: 768px) {
+	#adminNavFloManagr .nav-collapse {
+		float: left;
+	}
 }
 #adminNavFloManagr .navbar-inner {
 	background: #222;
@@ -867,25 +871,53 @@ div.edit-message {
 
 
 
-/* tablet wide */
-@media (max-width:1200px){
+/* tablet wide and up */
+@media (min-width:1200px){
 	#adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
-        width: 959px;
+        /*width: 959px; doesn't match bootstrap well, reset to give a chance to redo when a mistake is found */
     }
     #adminNavFloManagr .nav-collapse {
-        width: 820px;
+        /*width: 820px; doesn't match bootstrap well, reset to give a chance to redo when a mistake is found */
     }
 }
-/* tablet tall */
-@media (min-width:768px) and (max-width:979px) {
-	
-    #adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
-        width: 737px;
-    }
+/* tablet tall and up */
+@media (min-width:768px) {
+	#adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
+		/*width: 750px; doesn't match bootstrap well, reset to give a chance to redo when a mistake is found */
+	}
     #adminNavFloManagr .nav-collapse {
-        width: 740px;
+        /*width: 740px; doesn't match bootstrap well, reset to give a chance to redo when a mistake is found */
 		overflow: hidden;
     }
+    body {
+        position: relative !important;
+        top: 0 !important;
+    }
+}
+/* mobile wide and down */
+@media (max-width:768px){
+    #adminNavFloManagr.navbar {
+        width: auto;
+    }
+    #adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
+        width: 460px;
+    }
+    #adminNavFloManagr .nav-collapse {
+        width: 280px;
+		overflow: hidden;
+		clear: left;
+    }
+    #adminNavFloManagr #edit-mode {
+    	padding: 0;
+    }
+    /*#adminNavFloManagr .btn-navbar {
+        display: inline-block;
+		margin-right: 10px;
+		margin-top: 9px;
+		height: 23px;
+		width: 30px;
+		padding: 0 7px;
+    }*/
     #adminNavFloManagr .btn-navbar {
         display: block;
 		margin-right: 10px;
@@ -904,43 +936,6 @@ div.edit-message {
         float: left !important;
         clear: both;
     }
-    body {
-        position: relative !important;
-        top: 0 !important;
-    }
-}
-/* mobile wide */
-@media (max-width:767px){
-    #adminNavFloManagr.navbar {
-        width: auto;
-    }
-    #adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
-        width: 460px;
-    }
-    #adminNavFloManagr .nav-collapse {
-        width: 280px;
-		overflow: hidden;
-		clear: left;
-    }
-    #adminNavFloManagr #edit-mode {
-    	padding: 0;
-    }
-    #adminNavFloManagr .btn-navbar {
-        display: inline-block;
-		margin-right: 10px;
-		margin-top: 9px;
-		height: 23px;
-		width: 30px;
-		padding: 0 7px;
-    }
-    #adminNavFloManagr ul li {
-        display: block;
-        clear: left;
-    }
-    #adminNavFloManagr ul.pull-right {
-        float: left !important;
-        clear: both;
-    }
     #adminNavFloManagr.navbar .nav > li > a {
         padding: 0;
     }
@@ -953,7 +948,7 @@ div.edit-message {
         top: 0 !important;
     }
 }
-/* mobile tall */
+/* mobile tall and down */
 @media (max-width: 480px) {
 	#adminNavFloManagr .navbar-inner, #adminNavFloManagr .container {
         width: 300px;
