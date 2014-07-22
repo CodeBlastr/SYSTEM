@@ -17,3 +17,5 @@ if (defined('__WEBPAGES_DEFAULT_CSS_FILENAMES')) {
 }
 
 echo $this->fetch('css');
+
+echo $css_for_layout;
