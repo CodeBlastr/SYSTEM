@@ -73,8 +73,8 @@ if (empty($runUpdates)) : ?>
                 <li><?php echo $this->Html->link('Templates', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'template')); ?></li>
                 <li><?php echo $this->Html->link('Menus', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'index')); ?></li>
                 <li><?php echo $this->Html->link('Widget Elements', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'element')); ?></li>
-                <li><?php echo $this->Html->link('Css Styles', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpage_csses', 'action' => 'index')); ?></li>
-                <li><?php echo $this->Html->link('Javascript', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpage_jses', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link('CSS Styles', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpage_csses', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link('JavaScript', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpage_jses', 'action' => 'index')); ?></li>
                 <?php if (CakePlugin::loaded('Media')) : ?>
                 <li><?php echo $this->Html->link('Image Files', array('admin' => true, 'plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
                 <li><?php echo $this->Html->link('Document Files', array('admin' => true, 'plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
@@ -84,7 +84,7 @@ if (empty($runUpdates)) : ?>
 
 		<?php if (CakePlugin::loaded('Blogs')) : ?>
         <div class="masonryBox dashboardBox tagBlogs tagPages">
-            <h3 class="title"><i class="glyphicon glyphicon-file"></i> <?php echo $this->Html->link('Blogs Dashboard', array('admin' => true, 'plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'dashboard')); ?></h3>
+            <h3 class="title"><i class="glyphicon glyphicon-book"></i> <?php echo $this->Html->link('Blogs Dashboard', array('admin' => true, 'plugin' => 'blogs', 'controller' => 'blogs', 'action' => 'dashboard')); ?></h3>
             <p>Create multiple blogs, and post new content.</p>
             <ul>
             	<?php if (!empty($blogs)) : ?>
@@ -148,14 +148,14 @@ if (empty($runUpdates)) : ?>
 
 		<?php if (CakePlugin::loaded('Categories')) : ?>
         <div class="masonryBox dashboardBox tagText tagAdmin">
-            <h3 class="title"><i class="glyphicon glyphicon-tasks"></i> <?php echo $this->Html->link('Categories', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'dashboard')); ?></h3>
+            <h3 class="title"><i class="glyphicon glyphicon-folder-open"></i> <?php echo $this->Html->link('Categories', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'dashboard')); ?></h3>
             <p>Categorize anything.  Move, reorder, add, edit categories. <?php echo $this->Html->link('Dashboard', array('admin' => 1, 'plugin' => 'categories', 'controller' => 'categories', 'action' => 'dashboard'), array('class' => 'btn btn-default btn-mini btn-xs')); ?></p>
         </div>
         <?php endif; ?>
         
         <div class="masonryBox dashboardBox tagText tagAdmin">
-            <h3 class="title"><i class="glyphicon glyphicon-tasks"></i> <?php echo $this->Html->link('Permanent URL\'s', array('admin' => 1, 'plugin' => false, 'controller' => 'aliases', 'action' => 'index')); ?></h3>
-            <p>Manage your site's url aliases.</p>
+            <h3 class="title"><i class="glyphicon glyphicon-link"></i> <?php echo $this->Html->link('Permanent URL\'s', array('admin' => 1, 'plugin' => false, 'controller' => 'aliases', 'action' => 'index')); ?></h3>
+            <p>Manage your site's URL aliases.</p>
             <p><?php echo $this->Html->link('Build Sitemap', array('plugin' => false, 'controller' => 'aliases', 'action' => 'sitemap')); ?></p>
            	<?php echo file_exists(ROOT . DS . SITE_DIR . DS . 'Locale' . DS .'View' . DS . 'webroot' . DS . 'sitemap.xml') ? $this->Html->link('<p>View Sitemap</p>', '/sitemap.xml', array('escape' => false)) : null; ?>
         </div>
