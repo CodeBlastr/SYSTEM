@@ -394,6 +394,7 @@ class Inflector {
  */
 	public static function singularize($word) {
 		if (isset(self::$_cache['singularize'][$word])) {
+			//debug(self::$_cache['singularize']);
 			return self::$_cache['singularize'][$word];
 		}
 

@@ -14,7 +14,7 @@
 						<?php echo $this->Html->link('<i class="glyphicon glyphicon-circle-arrow-down"></i>', array('action' => 'movedown', $webpage['Webpage']['id'], $this->Paginator->counter('{:count}')), array('title' => 'Move to Bottom', 'class' => 'btn btn-default btn-xs', 'escape' => false)); ?>
 						<?php if (!empty($webpage['Child'][0])) : ?>
 							<div class="btn-group">
-								<?php echo $this->Html->link('Subpages', array('action' => 'index', 'section', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+								<?php echo $this->Html->link('Subpages', array('action' => 'index', 'section', $webpage['Webpage']['id'], 'page' => 1), array('class' => 'btn btn-default btn-xs')); ?>
 								<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
 									<span class="caret"></span>
 									<span class="sr-only">Toggle Dropdown</span>

@@ -460,7 +460,7 @@ class AppUsersController extends UsersAppController {
  */
 	protected function _login($user = null, $options = array('forceUrl'=>false)) {
 		// log user in
-		if ($this->Auth->login($user)) {
+		if ($this->Auth->login($user['User'])) {
 			$forceUrl = isset($options['forceUrl']) ? $options['forceUrl'] : false;
 			$callback = isset($options['callback']) ? $options['callback'] : null;
 			try {
