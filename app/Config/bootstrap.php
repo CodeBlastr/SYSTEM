@@ -121,8 +121,22 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 *
 	 */
 
-    Inflector::rules('singular', array('irregular' => array('webpage_jses' => 'webpage_js')));
-    Inflector::rules('plural', array('irregular' => array('webpage_js' => 'webpage_jses')));
+    Inflector::rules(
+    	'singular', array(
+    		'irregular' => array(
+    			'webpage_jses' => 'webpage_js',
+    			'webpagejs' => 'WebpageJs',
+    			'canvas' => 'canvas'
+				)
+			)
+		);
+    Inflector::rules(
+    	'plural', array(
+    		'irregular' => array(
+    			'webpage_js' => 'webpage_jses'
+				)
+			)
+		);
 
 	/**
 	 * reads settings.ini (or defaults.ini if non-existent)
@@ -408,13 +422,13 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * @todo There must be a better way...
 		 * @see Zuha::getPluginControllerActions()
 		 */
-		public static function pluginize($name) {
+	public static function pluginize($name) {
            
 			//Array of things that need to return false for backwards
 			//compatabiliy, Especially when updating tables. 
 			//@todo Make it so this function doesn't get used for table upgrades
 			//lookups see App class
-			$name = Inflector::singularize(Inflector::camelize($name));
+			$check = Inflector::singularize(Inflector::camelize($name));
 			$unallowed = array(
 				'Aco' => false,
 				'Alias' => false,
@@ -433,23 +447,30 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'ZuhaSchema' => false,
 				'DebugKit' => false,
 				'TwigView' => false,
+				'CakeSession' => false,
 			);
+			
+			if(array_key_exists($check, $unallowed)) {
+				return $unallowed[$check];
+			}
 			
 			if(array_key_exists($name, $unallowed)) {
 				return $unallowed[$name];
 			}
 			
 			
-			
-			$plugins = CakePlugin::loaded();
-			foreach ($plugins as $plugin) {
-				$objects = App::objects($plugin.'.Model');
-				$i = array_search($name, $objects);
-				if($i) {
+			$plugins = CakePlugin::loaded ();
+			foreach ( $plugins as $plugin ) {
+				$objects = App::objects ( $plugin . '.Model' );
+				$i = array_search ( $name, $objects );
+				if ($i) {
+					return $plugin;
+				}
+				$i = array_search ( $check, $objects );
+				if ($i) {
 					return $plugin;
 				}
 			}
-			
             return Inflector::tableize($name);
 		}
 
