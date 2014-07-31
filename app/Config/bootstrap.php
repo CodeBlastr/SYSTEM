@@ -416,14 +416,12 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		}
 
 
-		/**
-		 * return a plugin name from a controller name
-		 *
-		 * @todo There must be a better way...
-		 * @see Zuha::getPluginControllerActions()
-		 */
+/**
+ * return a plugin name from a controller name
+ * @param string $name
+ * @return boolean|string
+ */
 	public static function pluginize($name) {
-           
 			//Array of things that need to return false for backwards
 			//compatabiliy, Especially when updating tables. 
 			//@todo Make it so this function doesn't get used for table upgrades
@@ -449,24 +447,33 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'TwigView' => false,
 				'CakeSession' => false,
 			);
-			
-			if(array_key_exists($check, $unallowed)) {
+
+			$namedWrong = array(
+				'answer_answers' => 'Answers',
+				'answer_submissions' => 'Answers',
+				'product_options' => 'Products',
+				'products_product_options' => 'Products',
+			);
+
+			if (array_key_exists($check, $unallowed)) {
 				return $unallowed[$check];
 			}
-			
-			if(array_key_exists($name, $unallowed)) {
+			if (array_key_exists($name, $unallowed)) {
 				return $unallowed[$name];
 			}
-			
-			
-			$plugins = CakePlugin::loaded ();
-			foreach ( $plugins as $plugin ) {
-				$objects = App::objects ( $plugin . '.Model' );
-				$i = array_search ( $name, $objects );
+
+			if (array_key_exists($name, $namedWrong)) {
+				return $namedWrong[$name];
+			}
+
+			$plugins = CakePlugin::loaded();
+			foreach ($plugins as $plugin) {
+				$objects = App::objects($plugin . '.Model');
+				$i = array_search($name, $objects);
 				if ($i) {
 					return $plugin;
 				}
-				$i = array_search ( $check, $objects );
+				$i = array_search($check, $objects);
 				if ($i) {
 					return $plugin;
 				}
