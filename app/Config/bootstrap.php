@@ -121,8 +121,22 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	 *
 	 */
 
-    Inflector::rules('singular', array('irregular' => array('webpage_jses' => 'webpage_js')));
-    Inflector::rules('plural', array('irregular' => array('webpage_js' => 'webpage_jses')));
+    Inflector::rules(
+    	'singular', array(
+    		'irregular' => array(
+    			'webpage_jses' => 'webpage_js',
+    			'webpagejs' => 'WebpageJs',
+    			'canvas' => 'canvas'
+				)
+			)
+		);
+    Inflector::rules(
+    	'plural', array(
+    		'irregular' => array(
+    			'webpage_js' => 'webpage_jses'
+				)
+			)
+		);
 
 	/**
 	 * reads settings.ini (or defaults.ini if non-existent)
@@ -284,7 +298,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	     * @param string $delimiter
 	     * @return string
 	     */
-        public function asciify($str, $replace = array(), $delimiter = '-') {
+        public static function asciify($str, $replace = array(), $delimiter = '-') {
             if(!empty($replace)) {
             	$str = str_replace((array)$replace, ' ', $str);
         	}
@@ -311,7 +325,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	     * @param string $delimiter
 	     * @return string
 	     */
-        public function urlify($str, $delimiter = '-') {
+        public static function urlify($str, $delimiter = '-') {
         	$strs = explode('+', $str);
 			$string = '';
 			for ($i = 0; $i < count($strs); $i++) {
@@ -326,7 +340,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * @param array $array
 		 * @param array $options
 		 */
-		public function flatten($array = array(), $options = array('separator' => ',')) {
+		public static function flatten($array = array(), $options = array('separator' => ',')) {
 			$json  = json_encode($array); // converts an object to an array
 			$array = json_decode($json, true);
 		    $return = array();
@@ -338,7 +352,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * Function for formatting the pricing of an item.
 		 *
 		 */
-		public function pricify($price, $options = array()) {
+		public static function pricify($price, $options = array()) {
 			$defaults['places'] = 2;
 			$defaults['decimal'] = '.';
 			$defaults['separator'] = ',';
@@ -370,7 +384,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * @todo	Have options for the time, like timeAgo and/or date format string.
 		 * @todo	Make a site setting to format dates site wide.
 		 */
-		public function datify($date, $options = array('format' => 'M j, Y')) {
+		public static function datify($date, $options = array('format' => 'M j, Y')) {
 			$options['format'] = $options['format'] == 'M j, Y' && defined('__APP_DATE_FORMAT') ? __APP_DATE_FORMAT : $options['format'];
 			if($date === NULL) {
 				return NULL;
@@ -385,7 +399,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * @todo	Have options for the time, like timeAgo and/or date format string.
 		 * @todo	Make a site setting to format dates site wide.
 		 */
-		public function timify($string = null) {
+		public static function timify($string = null) {
 			$format = defined('__APP_TIME_FORMAT') ? __APP_TIME_FORMAT : 'g:i a';
 			if($string === null) {
 				return null;
@@ -397,7 +411,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		/**
 		 * @deprecated
 		 */
-		public function dateize($date, $options = null) {
+		public static function dateize($date, $options = null) {
 			return self::datify($date);
 		}
 
@@ -467,7 +481,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
          *
          * @param type $invalidFields
          */
-        public function invalidate($invalidField = array()) {
+        public static function invalidate($invalidField = array()) {
             $one = key($invalidField);
             $two = key($invalidField[$one]);
             $return = '';
@@ -490,7 +504,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 *
 		 * @param string
 		 */
-		 public function numerate($string) {
+		 public static function numerate($string) {
 		 	return preg_replace("/[^0-9]/","",$string);;
 		 }
 

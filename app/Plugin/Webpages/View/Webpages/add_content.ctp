@@ -6,7 +6,7 @@
 		    	<?php echo $this->Form->input('Webpage.type', array('type' => 'hidden')); ?>
 				<?php echo $this->Form->input('Webpage.name', array('label' => 'Internal Page Name')); ?>
 				<?php echo CakePlugin::loaded('Media') ? __('<hr>%s<hr>', $this->Element('Media.selector', array('media' => $this->request->data['Media'], 'multiple' => true))): null; ?>
-				<?php echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'label' => false)); ?>
+				<?php echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'label' => '')); ?>
 			</fieldset>
 		</div>
 		<div class="col-md-3" id="webpages-sidebar">

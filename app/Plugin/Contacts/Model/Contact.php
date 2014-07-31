@@ -230,7 +230,7 @@ class AppContact extends ContactsAppModel {
 	}
 	
 /**
- * Aftersave method
+ * After save callback
  * 
  * @param bool $created
  */
@@ -238,6 +238,22 @@ class AppContact extends ContactsAppModel {
 		$this->notifyAssignee();
 		return parent::afterSave($created);
 	}
+
+/**
+ * After find calback
+ */
+ 	public function afterFind($results = array(), $primary = false) {
+ 		for ($i=0; $i < count($results); $i++) {
+	 		if (!empty($results[$i]['ContactDetail'][0])) {
+	 			// reformat details into easier to use contact fields
+	 			$details = Set::combine($results[$i]['ContactDetail'], '{n}.contact_detail_type', '{n}.value');
+				foreach ($details as $name => $value) {
+					$results[$i][$this->alias]['_' . Inflector::underscore($name)] = $value;
+				}
+	 		}
+		}
+		return $results;
+ 	}
  
 
 /**

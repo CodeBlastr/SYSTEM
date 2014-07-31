@@ -2,6 +2,17 @@
 App::uses('HtmlHelper', 'View/Helper');
 
 class ZuhaHtmlHelper extends HtmlHelper {
+	
+/**
+ * Copies the validationErrors variable from the View object into this instance
+ *
+ * @param View $View The View this helper is being attached to.
+ * @param array $settings Configuration settings for the helper.
+ */
+	public function __construct(View $View, $settings = array()) {
+		parent::__construct($View, $settings);
+		$this->View = $View;
+	}
 		
 /**
  * Creates an HTML link.
@@ -466,5 +477,15 @@ class ZuhaHtmlHelper extends HtmlHelper {
 		}
 		return array('name' => $name, 'variables' => $variables);
 	}
+
+/**
+ * Markdown formatting
+ * 
+ */
+ 	public function markdown($text) {
+ 		App::uses('ParsedownHelper', 'View/Helper');
+ 		$Parsedown = new ParsedownHelper($this->View);
+		return $Parsedown->text($text);
+ 	}
 
 }

@@ -1,6 +1,3 @@
-<?php echo $this->Html->script('http://code.highcharts.com/highcharts.js', array('inline' => false)); ?>
-<?php echo $this->Html->script('http://code.highcharts.com/modules/exporting.js', array('inline' => false)); ?>
-
 <div class="contacts dashboard">
 	
 	<div class="alert alert-success clearfix row">
@@ -179,6 +176,9 @@
     <?php endif; ?>
     
 </div>
+
+<?php echo $this->Html->script('http://code.highcharts.com/highcharts.js', array('inline' => false)); ?>
+<?php echo $this->Html->script('http://code.highcharts.com/modules/exporting.js', array('inline' => false)); ?>
 
 <?php
 // set the contextual menu items
