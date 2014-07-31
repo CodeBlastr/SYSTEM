@@ -117,3 +117,14 @@ body.contacts.view .table-fixed tr td:first-child {
 	display: table-cell;
 	float: none;
 }
+
+/** text display helper **/
+.ellipsis {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.no-overflow {
+	overflow: hidden;
+	word-wrap: break-word;
+}

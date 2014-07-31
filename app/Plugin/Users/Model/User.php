@@ -588,7 +588,7 @@ class AppUser extends UsersAppModel {
 				));
 			if (!empty($user)) {
 				$data['User']['id'] = $user['User']['id'];
-				$data['User']['last_login'] = date('Y-m-d h:i:s');
+				$data['User']['last_login'] = date('Y-m-d H:i:s');
 				$data['User']['last_ip'] = $_SERVER["REMOTE_ADDR"];
 				$data['User']['view_prefix'] = $user['UserRole']['view_prefix'];
 				$data['User']['user_role_id'] = $user['UserRole']['id'];
@@ -696,7 +696,7 @@ class AppUser extends UsersAppModel {
 			$user = $this->find('first', array(
 				'conditions' => array(
 					'User.forgot_key' => $key,
-					'User.forgot_key_created <=' => date('Y:m:d h:i:s', strtotime("+3 days")),
+					'User.forgot_key_created <=' => date('Y:m:d H:i:s', strtotime("+3 days")),
 					),
 				));
 			// if the user does exist, then reset user record forgot info, login and redirect to users/edit
@@ -812,7 +812,7 @@ class AppUser extends UsersAppModel {
 		// setup a verification key
 		if (empty($data[$this->alias]['forgot_key']) && defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 			$data[$this->alias]['forgot_key'] = $this->__uuid('W', array('User' => 'forgot_key'));
-			$data[$this->alias]['forgot_key_created'] = date('Y-m-d h:i:s');
+			$data[$this->alias]['forgot_key_created'] = date('Y-m-d H:i:s');
 		}
 
 		if(isset($data[$this->alias]['referal_code'])) {
@@ -958,7 +958,7 @@ class AppUser extends UsersAppModel {
 		$data['User']['password'] = $randompassword;
 		$data['User']['confirm_password'] = $randompassword;
 		$data['User']['forgot_key'] = $this->__uuid('F');
-		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+		$data['User']['forgot_key_created'] = date('Y-m-d H:i:s');
 
 
 		//Remove the user role validation so other users can create users
@@ -970,12 +970,14 @@ class AppUser extends UsersAppModel {
 			if ((!empty($data['User']['username']) || !empty($data['User']['email'])) && $options['dryrun'] == false) {
 				$email = !empty($data['User']['email']) ? $data['User']['email'] : $data['User']['username'];
 				$site = defined('SITE_NAME') ? SITE_NAME : 'New';
-				$url = Router::url(array('plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
+				$url = Router::url(array('admin' => false, 'plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
 				$message = __('You have a new user account. <br /><br /> username : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $url, $url);
-				if ($this->__sendMail($email, __('%s User Account Created', $site), $message)) {
-
-				} else {
-					throw new Exception(__('Failed to notify new user'));
+				if (!empty($data[$this->alias]['notify'])) {
+					if ($this->__sendMail($email, __('%s User Account Created', $site), $message)) {
+						// do nothing it's been sent
+					} else {
+						throw new Exception(__('Failed to notify new user'));
+					}
 				}
 			}
 			return true;
@@ -1114,7 +1116,7 @@ Thank you for registering with us and welcome to the community.";
 		unset($user['User']['username']);
 		$data['User']['id'] = $userid;
 		$data['User']['forgot_key'] = $this->__uuid('F');
-		$data['User']['forgot_key_created'] = date('Y-m-d h:i:s');
+		$data['User']['forgot_key_created'] = date('Y-m-d H:i:s');
 		$data['User']['forgot_tries'] = $user['User']['forgot_tries'] + 1;
 		$data['User']['user_role_id'] = $user['User']['user_role_id'];
 		$this->Behaviors->detach('Translate');

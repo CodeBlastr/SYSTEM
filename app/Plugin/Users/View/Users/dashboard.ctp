@@ -5,7 +5,7 @@
             <?php foreach ($users as $user) : ?>
                 <tr>
                     <td><?php echo $this->Html->link($user['User']['full_name'], array('action' => 'view', $user['User']['id'])); ?></td>
-                    <td><?php echo ZuhaInflector::datify($user['User']['created']); ?></td>
+                    <td><?php echo $this->Time->timeagoinwords($user['User']['last_login']); ?></td>
                     <td><?php echo $user['UserRole']['name']; ?></td>
                     <td>
                         <a class="btn btn-success btn-xs" href="<?php echo $this->Html->url(array('admin' => false, 'action' => 'view', $user['User']['id'])); ?>">
@@ -36,10 +36,16 @@
             	<?php echo $this->Html->link(__('Add %s', Inflector::humanize(Inflector::singularize($userRole))), array('action' => 'procreate', $userRoleId), array('class' => 'list-group-item')); ?>
             <?php endforeach; ?>
             <?php echo $this->Html->link('Manage User Roles', array('controller' => 'user_roles', 'action' => 'index'), array('class' => 'list-group-item')); ?>
+            <?php echo $this->Html->link('Manage Privileges', array('admin' => false, 'plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index'), array('class' => 'list-group-item')); ?>
         </div>
     </div>
 </div>
 <?php 
+// set the contextual breadcrumb items
+$this->set('context_crumbs', array('crumbs' => array(
+	$this->Html->link(__('Admin Dashboard'), '/admin'),
+	'User Dashboard',
+)));
 // set contextual search options
 $this->set('forms_search', array(
     'url' => '/admin/users/users/dashboard/',

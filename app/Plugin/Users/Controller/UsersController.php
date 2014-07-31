@@ -234,7 +234,7 @@ class AppUsersController extends UsersAppController {
 			$this->User->autoLogin = false;
 			try {
 				$this->User->procreate($this->request->data);
-				$this->Session->setFlash(__('User created, and email sent notifying them.'));
+				$this->Session->setFlash(__('User created.'));
 				$this->redirect(array('action' => 'dashboard'));
 			} catch (Exception $e) {
 				$this->Session->setFlash(__($e->getMessage()));
