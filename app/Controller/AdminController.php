@@ -29,7 +29,7 @@ class AdminController extends AppController {
 
 	public function index() {
 		if (!empty($this->request->data['Admin']['icon'])) {
-			$this->SiteExport->_saveFavicon();
+			$this->_saveFavicon();
 		}
 		if (!empty($this->request->data['Admin']['export'])) {
 			$this->SiteExport->_exportSite();
