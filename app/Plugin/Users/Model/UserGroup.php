@@ -177,6 +177,7 @@ class AppUserGroup extends UsersAppModel {
  * @return boolean
  */
 	public function user($data) {
+        $this->User->autoLogin = false;
 		return $this->User->procreate($data);
 	}
 
