@@ -2,7 +2,6 @@
 
 $navLinkClass = array();
 $navLinkClass[] = 'nav-link';
-$caret = ' ';
 $dataToggle = '';
 
 if ($this->request->here == $data['WebpageMenu']['item_url'] || $_SERVER['REQUEST_URI'] == $data['WebpageMenu']['item_url']) {
@@ -12,7 +11,7 @@ if ($this->request->here == $data['WebpageMenu']['item_url'] || $_SERVER['REQUES
 
 if (!empty($data['children'])) {
 	$navLinkClass[] = 'dropdown';
-	$caret .= '<b class="caret"></b>';
+	$caret = '<b class="caret"></b>';
 	$dataToggle = 'dropdown';
 	$this->Tree->addItemAttribute('class', false, implode(' ', $navLinkClass));
 }
@@ -20,6 +19,8 @@ if (!empty($data['children'])) {
 if (!empty($depth)) {
 	$this->Tree->addTypeAttribute('class', 'dropdown-menu', null, 'previous');
 }
+
+$caret = ($caret) ? ' ' . $caret : '';
 
 echo $this->Html->link($data['WebpageMenu']['item_text'] . $caret, $data['WebpageMenu']['item_url'], array(
 	'data-toggle' => $dataToggle,
