@@ -1,27 +1,29 @@
 <?php
-$navLinkClass = ' nav-link ';
+
+$navLinkClass = array();
+$navLinkClass[] = 'nav-link';
 $caret = ' ';
 $dataToggle = '';
 
 if ($this->request->here == $data['WebpageMenu']['item_url'] || $_SERVER['REQUEST_URI'] == $data['WebpageMenu']['item_url']) {
-    $navLinkClass .= ' active ';
-    $this->Tree->addItemAttribute('class', false, $navLinkClass);
+	$navLinkClass[] = 'active';
+	$this->Tree->addItemAttribute('class', false, implode(' ', $navLinkClass));
 }
 
 if (!empty($data['children'])) {
-    $navLinkClass .= ' dropdown ';
+	$navLinkClass[] = 'dropdown';
 	$caret .= '<b class="caret"></b>';
 	$dataToggle = 'dropdown';
-    $this->Tree->addItemAttribute('class', false, $navLinkClass);
+	$this->Tree->addItemAttribute('class', false, implode(' ', $navLinkClass));
 }
 
 if (!empty($depth)) {
-    $this->Tree->addTypeAttribute('class', 'dropdown-menu', null, 'previous');
+	$this->Tree->addTypeAttribute('class', 'dropdown-menu', null, 'previous');
 }
 
 echo $this->Html->link($data['WebpageMenu']['item_text'] . $caret, $data['WebpageMenu']['item_url'], array(
 	'data-toggle' => $dataToggle,
-	'class' => $navLinkClass,
+	'class' => implode(' ', $navLinkClass),
 	'escape' => false
 ));
 
