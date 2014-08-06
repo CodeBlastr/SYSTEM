@@ -123,7 +123,7 @@ if (empty($runUpdates)) : ?>
 
 		<?php if (CakePlugin::loaded('Jobs')) : ?>
         <div class="masonryBox dashboardBox tagPages">
-            <h3 class="title"><i class="glyphicon glyphicon-picture"></i> <?php echo $this->Html->link('Manage Jobs', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="glyphicon glyphicon-briefcase"></i> <?php echo $this->Html->link('Manage Jobs', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'index')); ?></h3>
             <p><?php echo $this->Html->link('Add Job', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'add')); ?></p>
         </div>
         <?php endif; ?>
@@ -186,14 +186,14 @@ if (empty($runUpdates)) : ?>
 
 		<?php if (CakePlugin::loaded('Forms')) : ?>
         <div class="masonryBox dashboardBox tagForms tagPages">
-            <h3 class="title"><i class="glyphicon glyphicon-send"></i> <?php echo $this->Html->link('Custom Forms <small>(old)</small>', array('plugin' => 'forms', 'controller' => 'forms', 'action' => 'index'), array('escape' => false)); ?></h3>
+            <h3 class="title"><i class="glyphicon glyphicon-send text-muted"></i> <?php echo $this->Html->link('Custom Forms <small>(v1)</small>', array('plugin' => 'forms', 'controller' => 'forms', 'action' => 'index'), array('escape' => false)); ?></h3>
             <p>Create custom forms, so users can interact with your site how you want them to..</p>
         </div>
         <?php endif; ?>
 
         <?php if (CakePlugin::loaded('Answers')) : ?>
         <div class="masonryBox dashboardBox tagForms tagPages">
-            <h3 class="title"><i class="glyphicon glyphicon-send"></i> <?php echo $this->Html->link('Custom Forms', array('plugin' => 'answers', 'controller' => 'answers', 'action' => 'index')); ?></h3>
+            <h3 class="title"><i class="glyphicon glyphicon-send"></i> <?php echo $this->Html->link('Custom Forms <small>(v2)</small>', array('plugin' => 'answers', 'controller' => 'answers', 'action' => 'index'),  array('escape' => false)); ?></h3>
             <p>Create custom forms using the Drag and Drop Form Buildrr.</p>
 			<ul>
 				<li><?php echo $this->Html->link('View Form Submissions', array('admin' => true, 'plugin' => 'answers', 'controller' => 'answersSubmissions')) ?></li>
@@ -256,7 +256,7 @@ if (empty($runUpdates)) : ?>
 
         <?php if (CakePlugin::loaded('Invoices')) : ?>
         <div class="masonryBox dashboardBox">
-            <h3 class="title"><i class="glyphicon glyphicon-barcode"></i> <?php echo $this->Html->link('Invoices', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'index')); ?> </h3>
+            <h3 class="title"><i class="glyphicon glyphicon-credit-card"></i> <?php echo $this->Html->link('Invoices', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'index')); ?> </h3>
             <p>
             	Manage invoices<br>
 	            <?php echo $this->Html->link('All Invoices', array('admin' => true, 'plugin' => 'invoices', 'controller' => 'invoices', 'action' => 'index')); ?><br>
