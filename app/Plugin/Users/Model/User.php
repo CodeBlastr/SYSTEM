@@ -594,6 +594,7 @@ class AppUser extends UsersAppModel {
 				$data['User']['user_role_id'] = $user['UserRole']['id'];
 				if (empty($user['User']['forgot_key']) || $user['User']['forgot_key'][0] != 'W') {
 					unset($data['User']['password']);
+					unset($data['User']['username']);
 					if ($this->save($data, array('validate' => false))) {
 						return $user;
 					} else {
