@@ -628,8 +628,10 @@ class AppUsersController extends UsersAppController {
 			if (!$this->User->exists()) {
 				throw new NotFoundException(__('Invalid user'));
 			}
+			unset($this->request->data['User']['username']);
 			if ($this->User->save($this->request->data)) {
 				$this->Session->setFlash('Password changed.');
+				$this->request->data = $this->User->read();
 				$this->_login();
 			} else {
 				$this->Session->setFlash('Password could not be changed.');
