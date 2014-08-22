@@ -6,7 +6,7 @@
 	echo $this->Form->input('User.id', array('type' => 'hidden'));
 	echo $this->Form->input('User.username', array('type' => 'hidden'));
 	echo $this->Form->input('User.user_role_id', array('type' => 'hidden'));
-	echo $this->Form->input('User.password', array('value' => ''));
+	echo $this->Form->input('User.password', array('value' => '', 'after' => '<small>Should be six characters, contain numbers and capital and lowercase letters.</small>'));
 	echo $this->Form->input('User.confirm_password', array('value' => '', 'type' => 'password'));
 	echo $this->Form->end('Change');
 ?>
