@@ -36,4 +36,7 @@
 			<?php endforeach; ?>
 		</div>
 	</div>
+	<div>
+		<?php echo $this->element('paging'); ?>
+	</div>
 </div>
