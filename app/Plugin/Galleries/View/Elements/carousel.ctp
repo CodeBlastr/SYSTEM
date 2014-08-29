@@ -8,7 +8,7 @@
 					echo '<iframe height="' . $gallery['GallerySettings']['largeImageHeight'] . '" width="100%" src="' . $gallery['GalleryImage'][$i]['_embed'] . '" frameborder="0" allowfullscreen></iframe>';
 				} else {
 					if (!empty($gallery['GalleryImage'][$i]['link'])) {
-						echo $this->Html->link($this->Html->image($gallery['GalleryImage'][$i]['dir'] . '/' . $gallery['GalleryImage'][$i]['filename']), $gallery['GalleryImage'][$i]['link']);
+						echo $this->Html->link($this->Html->image($gallery['GalleryImage'][$i]['dir'] . '/' . $gallery['GalleryImage'][$i]['filename']), $gallery['GalleryImage'][$i]['link'], array('escape'=>false));
 					} else {
 						echo $this->Html->image($gallery['GalleryImage'][$i]['dir'] . '/' . $gallery['GalleryImage'][$i]['filename']);
 					}
