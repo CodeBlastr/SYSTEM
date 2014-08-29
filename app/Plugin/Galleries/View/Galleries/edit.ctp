@@ -36,10 +36,10 @@
 						echo '<div class="media clearfix">';
 						echo !empty($image['_thumb']) ? $this->Html->image($image['_thumb'], array('class' => 'pull-left', 'width' => $this->request->data['GallerySettings']['smallImageWidth'], 'height' => $this->request->data['GallerySettings']['smallImageHeight'])) : $this->Html->link($this->Html->image($image['dir'] . 'thumb' . DS . 'small' . DS . $image['filename']), $image['dir'] . $image['filename'], array('class' => 'pull-left', 'escape' => false));
 						echo '<div class="media-body">';
-						echo $this->Html->link('<i class="icon-thumbs-up"></i>', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'make_thumb', $image['gallery_id'], $image['id']), array('title' => 'Make This Image the Thumbnail', 'escape' => false));
-						echo $this->Html->link('<i class="icon-arrow-down"></i>', array('plugin' => 'galleries', 'controller' => 'gallery_images', 'action' => 'down', $image['id']), array('title' => 'Move Order Down', 'escape' => false));
-						echo $this->Html->link('<i class="icon-edit"></i>', array('plugin' => 'galleries', 'controller' => 'gallery_images', 'action' => 'edit', $image['id']), array('title' => 'Edit Image', 'escape' => false));
-						echo $this->Form->postLink('<i class="icon-remove-sign"></i>', array('plugin' => 'galleries', 'controller' => 'gallery_images', 'action' => 'delete', $image['id']), array('title' => 'Delete Image', 'escape' => false), __('Are you sure?'));
+						echo $this->Html->link('<i class="icon-thumbs-up glyphicon glyphicon-thumbs-up"></i>', array('plugin' => 'galleries', 'controller' => 'galleries', 'action' => 'make_thumb', $image['gallery_id'], $image['id']), array('title' => 'Make This Image the Thumbnail', 'escape' => false));
+						echo $this->Html->link('<i class="icon-arrow-down glyphicon glyphicon-arrow-down"></i>', array('plugin' => 'galleries', 'controller' => 'gallery_images', 'action' => 'down', $image['id']), array('title' => 'Move Order Down', 'escape' => false));
+						echo $this->Html->link('<i class="icon-edit glyphicon glyphicon-edit"></i>', array('plugin' => 'galleries', 'controller' => 'gallery_images', 'action' => 'edit', $image['id']), array('title' => 'Edit Image', 'escape' => false));
+						echo $this->Form->postLink('<i class="icon-remove-sign glyphicon glyphicon-remove-sign"></i>', array('plugin' => 'galleries', 'controller' => 'gallery_images', 'action' => 'delete', $image['id']), array('title' => 'Delete Image', 'escape' => false), __('Are you sure?'));
 						echo '</div>';
 						echo '</div>';
 					} ?>
