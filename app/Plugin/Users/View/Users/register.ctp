@@ -7,8 +7,7 @@
 		<?php echo !empty($this->request->data['User']['user_role_id']) ? $this->Form->hidden('User.user_role_id') : $this->Form->input('User.user_role_id'); ?>
 		<?php echo $this->Form->input('User.full_name', array('label' => 'Name')); ?>
 		<?php echo $this->Form->input('User.username', array('label' => 'Email')); ?>
-		<?php echo $this->Form->input('User.password', array('value' => '', 'after' => '<small>Should be six characters, contain numbers and capital and lowercase letters.</small>')); ?>
-		<?php echo $this->Form->input('User.confirm_password', array('type' => 'password', 'value' => '')); ?>
+		<?php echo $this->Form->input('User.password', array('value' => '', 'after' => '<small>Please enter at least six characters, with capital, lowercase, and numeric characters.</small>', 'pattern' => '^((?=.*[^a-zA-Z])(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{6,})$', 'title' => 'Please enter at least six characters, with capital, lowercase, and numeric characters.')); ?>
 	</fieldset>
 	<?php echo $this->Form->end('Submit'); ?>
 </div>
