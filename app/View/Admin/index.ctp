@@ -123,8 +123,8 @@ if (empty($runUpdates)) : ?>
 
 		<?php if (CakePlugin::loaded('Jobs')) : ?>
         <div class="masonryBox dashboardBox tagPages">
-            <h3 class="title"><i class="glyphicon glyphicon-briefcase"></i> <?php echo $this->Html->link('Manage Jobs', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'index')); ?></h3>
-            <p><?php echo $this->Html->link('Add Job', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'add')); ?></p>
+            <h3 class="title"><i class="glyphicon glyphicon-briefcase"></i> <?php echo $this->Html->link('Jobs Dashboard', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'dashboard')); ?></h3>
+            <p>Administrate job posts. <?php echo $this->Html->link('Add Job', array('admin' => true,'plugin' => 'jobs','controller' => 'jobs', 'action' => 'add'), array('class' => 'btn btn-xs btn-default')); ?></p>
         </div>
         <?php endif; ?>
 
