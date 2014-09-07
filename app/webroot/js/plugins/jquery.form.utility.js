@@ -63,9 +63,9 @@ $(function() {
     // init form-split
     $('form.form-split .step').hide();
     $('form.form-split .step.first').show();
-    $('form.form-split .step.first').append('<div class="row clearfix"><div class="col-md-6"></div><div class="col-md-6 text-right"><a class="btn btn-primary next">Next</a></div></div>');
-    $('form.form-split .step.last').append('<div class="row clearfix"><div class="col-md-6"><a class="btn btn-primary prev">Back</a></div><div class="col-md-6 text-right"><input type="submit" value="Submit" class="btn btn-success"></div></div>');
-    $('form.form-split .step.mid').append('<div class="row clearfix"><div class="col-md-6"><a class="btn btn-primary prev">Back</a></div><div class="col-md-6 text-right"><a class="btn btn-primary next">Next</a></div></div>');
+    $('form.form-split .step.first').append('<div class="row clearfix"><div class="col-xs-6"></div><div class="col-xs-6 text-right"><a class="btn btn-primary next">Next</a></div></div>');
+    $('form.form-split .step.last').append('<div class="row clearfix"><div class="col-xs-6"><a class="btn btn-primary prev">Back</a></div><div class="col-xs-6 text-right"><input type="submit" value="Submit" class="btn btn-success"></div></div>');
+    $('form.form-split .step.mid').append('<div class="row clearfix"><div class="col-xs-6"><a class="btn btn-primary prev">Back</a></div><div class="col-xs-6 text-right"><a class="btn btn-primary next">Next</a></div></div>');
     $('form.form-split .step').each(function(index, value) {
     	$('a.next', this).attr('data-next-step', index + 1).attr('href', '#step' + (index + 1));
     	$('a.prev', this).attr('data-prev-step', index - 1).attr('href', '#step' + (index - 1));
