@@ -403,18 +403,23 @@ class AppWebpagesController extends WebpagesAppController {
  * @param string
  * @return void
  */
+	
 	public function delete($id = null) {
 		$this->Webpage->id = $id;
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
 		}
 		if ($this->Webpage->delete($id, true)) {
-			$this->Session->setFlash(__('Webpage deleted', true), 'flash_success');
-			$this->redirect(array('action'=>'index'));
+			$this->Session->setFlash(__('Deleted'), 'flash_success');
 		} else {
-			$this->Session->setFlash(__('Webpage could not be deleted.', true), 'flash_warning');
-			$this->redirect(array('action'=>'index'));
+			$this->Session->setFlash(__('Error, could not be deleted.'), 'flash_warning');
 		}
+		$this->redirect(array('action'=>'index'));
+	}
+	
+	public function delete_element($id = null) {
+		$this->request->data['Override']['redirect'] = array('action' => 'index', 'element');
+		return $this->delete($id);
 	}
 	
 /**
