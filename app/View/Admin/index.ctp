@@ -25,7 +25,7 @@ if (empty($runUpdates)) : ?>
 
     <div class="btn-group">
         <a href="#masonryBox" class="filterClick btn btn-default">All</a>
-        <?php echo $this->Html->link(__('Pages'), '#tagPages', array('class' => 'filterClick btn btn-default')); ?>
+        <?php echo $this->Html->link(__('Forums'), '#tagPages', array('class' => 'filterClick btn btn-default')); ?>
         <?php echo CakePlugin::loaded('Media') ? $this->Html->link(__('Media'), '#tagMedia', array('class' => 'filterClick btn btn-default')) : null; ?>
         <?php echo CakePlugin::loaded('Comments') ? $this->Html->link(__('Discussion'), '#tagDiscussion', array('class' => 'filterClick btn btn-default')) : null; ?>
         <?php echo $this->Html->link(__('Themes'), '#tagThemes', array('class' => 'filterClick btn btn-default')); ?>
@@ -33,6 +33,20 @@ if (empty($runUpdates)) : ?>
     </div>
 
     <div class="masonry dashboard">
+        
+        <?php if (CakePlugin::loaded('Forums')) : ?>
+        <div class="masonryBox dashboardBox tagDiscussion">
+            <h3 class="title"><i class="glyphicon glyphicon-file"></i> <?php echo $this->Html->link('Forums', array('admin' => true, 'plugin' => 'forums', 'controller' => 'forums', 'action' => 'index')); ?></h3>
+            <p>View, edit, delete, and create static content pages with text, graphics, video and/or audio. </p>
+            <ul>
+            	<li><?php echo $this->Html->link('List Pages', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></li>
+            	<li><?php echo $this->Html->link('Add Page', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'content')); ?></li>
+            	<li><?php echo $this->Html->link('Add Section', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'section')); ?> (eg. page with multiple pages)</li>
+            	<li><?php echo $this->Html->link('Email Templates', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'email')); ?></li>
+            </ul>
+        </div>
+       	<?php endif; ?>
+        
         <div class="masonryBox dashboardBox tagPages">
             <h3 class="title"><i class="glyphicon glyphicon-file"></i> <?php echo $this->Html->link('Pages', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>View, edit, delete, and create static content pages with text, graphics, video and/or audio. </p>
