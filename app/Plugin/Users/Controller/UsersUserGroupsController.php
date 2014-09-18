@@ -1,5 +1,5 @@
 <?php
-class AppUsersUserGroupsController extends UsersAppController {
+class AppUsersUserGroupsController extends UsersAppController{
 
 	public $name = 'UsersUserGroups';
 	
@@ -84,7 +84,6 @@ class AppUsersUserGroupsController extends UsersAppController {
 		$this->redirect($this->referer());
 	}
 }
-
 
 if (!isset($refuseInit)) {
     class UsersUserGroupsController extends AppUsersUserGroupsController {}
