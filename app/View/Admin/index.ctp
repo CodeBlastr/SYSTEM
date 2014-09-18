@@ -59,11 +59,11 @@ if (empty($runUpdates)) : ?>
         </div>
 
         <div class="masonryBox dashboardBox tagThemes tagElements">
-            <h3 class="title"><i class="glyphicon glyphicon-th-large"></i> <?php echo $this->Html->link('Widget Elements', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'element')); ?></h3>
+            <h3 class="title"><i class="glyphicon glyphicon-th-large"></i> <?php echo $this->Html->link('Widget Elements', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'element')); ?></h3>
             <p>Edit, delete, and create pages and multi-page elements. </p>
             <ul>
-                <li><?php echo $this->Html->link('Widget Elements', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'element')); ?></li>
-                <li><?php echo $this->Html->link('Menus', array('plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'index')); ?></li>
+                <li><?php echo $this->Html->link('Widget Elements', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'element')); ?></li>
+                <li><?php echo $this->Html->link('Menus', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpage_menus', 'action' => 'index')); ?></li>
             </ul>
         </div>
 

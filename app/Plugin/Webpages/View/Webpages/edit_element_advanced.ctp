@@ -2,7 +2,7 @@
 	<?php echo $this->Form->create('Webpage');?>
 	<fieldset>
 	    <?php echo $this->Form->input('Webpage.id'); ?>
-	    <?php echo $this->Form->hidden('Override.redirect', array('value' => '/admin/webpages/webpages/index/element')); ?>
+	    <?php echo $this->Form->input('Override.redirect', array('value' => '/admin/webpages/webpages/index/element/sort:modified/direction:desc', 'type' => 'hidden')); ?>
 	    <?php echo $this->Form->hidden('Webpage.type', array('value' => 'element')); ?>
 	    <?php echo $this->Form->input('Webpage.name', array('label' => 'Internal Element Name')); ?>
 		<?php echo $this->Form->input('Webpage.content'); ?>
