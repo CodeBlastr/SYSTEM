@@ -234,7 +234,7 @@ class AppUsersController extends UsersAppController {
 			$this->User->autoLogin = false;
 			try {
 				$this->User->procreate($this->request->data);
-				$this->Session->setFlash(__('User created, and email sent notifying them.'));
+				$this->Session->setFlash(__('User created.'));
 				$this->redirect(array('action' => 'dashboard'));
 			} catch (Exception $e) {
 				$this->Session->setFlash(__($e->getMessage()));
@@ -432,7 +432,7 @@ class AppUsersController extends UsersAppController {
 					'order' => array('User.created' => 'ASC')
 				));
 				if (!empty($user)) {
-					$this->_login($user,$options);
+					$this->_login($user, $options);
 				} else {
 					throw new Exception(__('There is no admin user installed.'));
 				}
@@ -456,11 +456,11 @@ class AppUsersController extends UsersAppController {
  * Protected Login method
  *
  * @param array $user
- * @param bool $forceUrl forces login redirect url
+ * @param array $options ['forceUrl'] forces login redirect url
  */
 	protected function _login($user = null, $options = array('forceUrl'=>false)) {
 		// log user in
-		if ($this->Auth->login($user)) {
+		if ($this->Auth->login($user['User'])) {
 			$forceUrl = isset($options['forceUrl']) ? $options['forceUrl'] : false;
 			$callback = isset($options['callback']) ? $options['callback'] : null;
 			try {
@@ -628,8 +628,10 @@ class AppUsersController extends UsersAppController {
 			if (!$this->User->exists()) {
 				throw new NotFoundException(__('Invalid user'));
 			}
+			unset($this->request->data['User']['username']);
 			if ($this->User->save($this->request->data)) {
 				$this->Session->setFlash('Password changed.');
+				$this->request->data = $this->User->read();
 				$this->_login();
 			} else {
 				$this->Session->setFlash('Password could not be changed.');

@@ -5,7 +5,7 @@
 	} else {
 	
 		$content = !empty($content) ? $content : __('<h2>%s</h2><p class="error">The requested address <strong>\'%s\'</strong> was not found on this server.</p>', $name, $url);
-		echo __('<div class="span4"> %s </div>', $content);
+		echo __('<div class="col-sm-4 span4"> %s </div>', $content);
 	}
 	
 	

@@ -14,7 +14,7 @@
 <?php
 // set contextual search options
 $this->set('forms_search', array(
-    'url' => '/aliases/index/', 
+    'url' => '/admin/aliases/index/', 
 	'inputs' => array(
 		array(
 			'name' => 'contains:name', 

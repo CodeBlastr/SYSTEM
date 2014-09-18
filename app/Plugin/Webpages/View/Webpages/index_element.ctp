@@ -6,7 +6,7 @@
 				<div class="media-body">
 					<h4 data-id="<?php echo $webpage['Webpage']['id']; ?>">
 						<?php echo $webpage['Webpage']['name']; ?>						
-						<?php echo $this->Html->link('Edit', array('action' => 'edit', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+						<?php echo $this->Html->link('Edit', array('admin' => true, 'action' => 'edit', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
 					</h4>
 						<?php //echo $this->Html->link('Add Sub Page', array('action' => 'add', 'sub', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
 						<?php if (!empty($webpage['Child'][0])) : ?>

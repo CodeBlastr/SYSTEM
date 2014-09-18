@@ -1,5 +1,6 @@
 <?php
 class AppUsersUserGroupsController extends UsersAppController{
+
 	public $name = 'UsersUserGroups';
 	
 	public $uses = 'Users.UsersUserGroup';

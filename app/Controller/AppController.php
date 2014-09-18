@@ -327,9 +327,9 @@ class AppController extends Controller {
  */
 	private function _getPaginatorVars($object, $field) {
 		$ModelName = $this->modelClass;
-		if ($this->$object->name) {
+		if (is_string($object) && $this->$object->name) {
 			$Object = $this->$object;
-		} else if ($this->$ModelName->$object->name) {
+		} else if (is_string($object) && $this->$ModelName->$object->name) {
 			$Object = $this->$ModelName->$object;
 		} else if ($this->$ModelName->name) {
 			$Object = $this->$ModelName;
