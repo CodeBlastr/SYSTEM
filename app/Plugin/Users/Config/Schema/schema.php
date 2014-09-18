@@ -145,7 +145,7 @@ class UsersSchema extends CakeSchema {
 		'totalTopics' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10),
 		'currentLogin' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'lastLogin' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
-		'facebook_id' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 20),
+		'facebook_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 255),
 		'is_active' => array('type' => 'integer', 'null' => true, 'default' => '0', 'length' => 2),
 		'birthday' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 155, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'location' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
