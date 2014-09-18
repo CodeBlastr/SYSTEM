@@ -1,6 +1,6 @@
 <div class="webpages form">
 	<?php echo $this->Form->create('Webpage');?>
-	<?php echo $this->Form->hidden('Override.redirect', array('value' => '/admin/webpages/webpages/index/element')); ?>
+	<?php echo $this->Form->input('Override.redirect', array('value' => '/admin/webpages/webpages/index/element/sort:modified/direction:desc', 'type' => 'hidden')); ?>
 	<fieldset>
     	<?php echo $this->Form->input('Webpage.type', array('type' => 'hidden', 'value' => 'element')); ?>
     	<?php echo $this->Form->input('Webpage.name', array('label' => 'Internal Element Name')); ?>
