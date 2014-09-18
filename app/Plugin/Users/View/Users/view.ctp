@@ -9,6 +9,12 @@
 </div>
 
 <?php 
+// set the contextual breadcrumb items
+$this->set('context_crumbs', array('crumbs' => array(
+	$this->Html->link(__('Admin Dashboard'), '/admin'),
+	$this->Html->link('User Dashboard', array('action' => 'dashboard')),
+	$this->request->data['User']['full_name']
+)));
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(

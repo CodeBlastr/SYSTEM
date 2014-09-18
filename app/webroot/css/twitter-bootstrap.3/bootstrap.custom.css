@@ -117,3 +117,21 @@ body.contacts.view .table-fixed tr td:first-child {
 	display: table-cell;
 	float: none;
 }
+
+/** text display helper **/
+.ellipsis {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.no-overflow {
+	overflow: hidden;
+	word-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+	/* seems to fix a problem with core bootstrap 3, where the right nav bar has no padding on the right */
+	.navbar-nav.navbar-right:last-child {
+		margin-right: 0;
+	}
+}

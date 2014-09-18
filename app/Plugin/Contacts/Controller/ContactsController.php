@@ -13,7 +13,7 @@ class AppContactsController extends ContactsAppController {
 	
 	public $helpers = array('Contacts.Chart');
 	
-	public $allowedActions = array();
+	public $allowedActions = array('proposal');
 	
 	
 	public function __construct($request = null, $response = null) {
@@ -159,7 +159,7 @@ class AppContactsController extends ContactsAppController {
 		
 		// vars for opportunities
 		unset($this->paginate);
-		$this->paginate = array('fields' => array('Estimate.id', 'Estimate.name', 'Estimate.created', 'Estimate.creator_id', 'Creator.id', 'Creator.full_name'), 'contain' => array('Creator'));
+		$this->paginate = array('fields' => array('Estimate.id', 'Estimate.name', 'Estimate.created', 'Estimate.total', 'Estimate.creator_id', 'Creator.id', 'Creator.full_name'), 'contain' => array('Creator'));
 		$this->set('estimates', in_array('Estimates', CakePlugin::loaded()) ? $this->paginate('Contact.Estimate', array('Estimate.foreign_key' => $id, 'Estimate.model' => 'Contact')) : null);
 		
 		// vars for activities
@@ -261,10 +261,10 @@ class AppContactsController extends ContactsAppController {
 		
 		if ($this->Contact->delete($id)) {
 			$this->Session->setFlash(__('Contact deleted'));
-			$this->redirect(array('action'=>'index'));
+			$this->redirect(array('action'=>'dashboard'));
 		}
 		$this->Session->setFlash(__('Contact was not deleted'));
-		$this->redirect(array('action' => 'index'));
+		$this->redirect(array('action' => 'view', $id));
 	}
 	
 /**
@@ -273,28 +273,57 @@ class AppContactsController extends ContactsAppController {
  * @throws MissingPluginException
  * @throws NotFoundException
  */
-	public function estimate($contactId = null) {
+	public function estimate($contactId = null, $estimateId = null) {
 		if (CakePlugin::loaded('Tasks')) {
 			$this->Contact->id = $contactId;
 			if (!$this->Contact->exists()) {
 				throw new NotFoundException(__('Contact not found'));
 			}
-			if (!empty($this->request->data)) {
-				try {
-					$this->Contact->Estimate->save($this->request->data);
-					$this->Session->setFlash('Opportunity Added');
-					$this->redirect(array('action' => 'view', $contactId));
-				} catch (Exception $e) {
-					$this->Session->setFlash($e->getMessage());			
+			if ($this->request->is('post') || $this->request->is('put')) {
+				if ($this->Contact->Estimate->saveAll($this->request->data)) {
+					$this->Session->setFlash('Proposal Saved');
+					
+					// send will email and redirect to view
+					//$send = strpos($this->request->data['Estimate']['submit'], 'Send') ? true : false;
+					// continue brings you to edit estimate, else go to view the estimate
+					//$redirect = strpos($this->request->data['Estimate']['submit'], 'Continue') ? array('actions' => 'estimate', $this->Contact->Estimate->id) : array('actions' => 'proposal', $this->Contact->Estimate->id); 
+					
+					$this->redirect(array('action' => 'estimate', $contactId, $this->Contact->Estimate->id));
+				} else {
+					$this->Session->setFlash('Error saving, please check required fields.');
 				}
 			}
-			$contact = $this->Contact->read(null, $contactId);
-			$this->set(compact('contact')); 
-			$this->set('page_title_for_layout', __('Create an opportunity for %s', $contact['Contact']['name']));
+			$this->Contact->contain('ContactDetail');
+			$this->set('contact', $this->request->data = $this->Contact->read(null, $contactId));
+			
+			// get estimate data if available
+			if (!empty($estimateId)) {
+				$estimate = $this->Contact->Estimate->find('first', array('conditions' => array('Estimate.id' => $estimateId), 'contain' => array('EstimateKey')));
+				$this->set('estimate', $this->request->data = array_merge($this->request->data, $estimate));
+			}
+			$this->set('page_title_for_layout', __('Build proposal for %s', $this->request->data['Contact']['name']));
 		} else {
 			throw new MissingPluginException('Estimates Plugin Not Installed');
 		}
-	}
+	} 
+
+/**
+ * Estimated method
+ * The view method for contact estimates
+ */
+ 	public function estimated($estimateId = null) {
+ 		// $estimateId could be an estimate Key as well
+ 		$this->set('estimate', $this->request->data = $this->Contact->Estimate->find('first', array('conditions' => array('Estimate.id' => $estimateId), 'contain' => array('Contact', 'EstimateKey'))));
+ 	}
+
+/**
+ * Propsal method
+ * The view method for contact estimates
+ */
+ 	public function proposal($key = null) {
+ 		// $estimateId could be an estimate Key as well
+ 		$this->set('estimate', $this->request->data = $this->Contact->Estimate->find('first', array('conditions' => array('Estimate.id' => $key), 'contain' => array('Contact'))));
+ 	}
 
 /**
  * Estimates method
@@ -303,7 +332,30 @@ class AppContactsController extends ContactsAppController {
  * @throws MissingPluginException
  */
 	public function estimates() {
-		if (CakePlugin::loaded('Tasks')) {
+		if (CakePlugin::loaded('Estimates')) {
+			debug('hello');
+		} else {
+			throw new MissingPluginException('Estimates Plugin Not Installed');
+		}
+	}
+
+/**
+ * Unestimate method
+ * Delete the estimate
+ */
+	public function unestimate($estimateId = null, $contactId = null) {
+		if (CakePlugin::loaded('Estimates')) {
+			$this->Contact->Estimate->id = $estimateId;
+			if (!$this->Contact->Estimate->exists()) {
+				throw new NotFoundException(__('Contact not found'));
+			}
+			
+			if ($this->Contact->Estimate->delete($id)) {
+				$this->Session->setFlash(__('Proposal deleted'));
+				!empty($contactId) ? $this->redirect(array('action' => 'view', $contactId)) : $this->redirect(array('action'=>'dashboard'));
+			}
+			$this->Session->setFlash(__('Proposal was not deleted'));
+			$this->redirect(array('action' => 'estimate', $estimateId));
 		} else {
 			throw new MissingPluginException('Estimates Plugin Not Installed');
 		}
@@ -358,7 +410,7 @@ class AppContactsController extends ContactsAppController {
 			if (!$this->Contact->exists()) {
 				throw new NotFoundException(__('Contact not found'));
 			}
-			if (!empty($this->request->data)) {
+			if ($this->request->is('post')) {
 				try {
 					$this->Contact->Activity->save($this->request->data);
 					$this->Session->setFlash('Activity Logged');
@@ -415,10 +467,10 @@ class AppContactsController extends ContactsAppController {
 			if (!$this->Contact->exists()) {
 				throw new NotFoundException(__('Contact not found'));
 			}
-			if (!empty($this->request->data)) {
+			if ($this->request->is('post')) {
 				try {
 					$this->Contact->Task->save($this->request->data);
-					$this->Session->setFlash('Activity Logged');
+					$this->Session->setFlash('Reminder added');
 					$this->redirect(array('action' => 'view', $contactId));
 				} catch (Exception $e) {
 					$this->Session->setFlash($e->getMessage());			
@@ -432,7 +484,28 @@ class AppContactsController extends ContactsAppController {
 			throw new MissingPluginException('Tasks Plugin Not Installed');
 		}
 	}
-	
+
+/**
+ * Rate method
+ * 
+ * @param string
+ */
+	public function rate($id = null, $rating = 'hot') {	
+		$this->Contact->id = $id;
+		if (!$this->Contact->exists()) {
+			$this->Session->setFlash(__('Contact not found'));
+			$this->redirect($this->referer());
+		}
+		
+		$data['Contact']['id'] = $id;
+		$data['Contact']['contact_rating'] = $rating;
+		if ($this->Contact->save($data)) {
+			$this->Session->setFlash(__('Rating updated'));
+		} else {
+			$this->Session->setFlash(__('Rating could not be updated. Please, try again.'));
+		}
+		$this->redirect($this->referer());
+	}
 	
 /**
  *  Dashboard method

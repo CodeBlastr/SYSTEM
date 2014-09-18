@@ -40,9 +40,7 @@ class AppWebpagesController extends WebpagesAppController {
  * 
  * @var array
  */
-	public $paginate = array('limit' => 10, 'order' => array('Webpage.created' => 'desc'));
-	
-    // public $components = array('Comments.Comments' => array('userModelClass' => 'User'));
+	public $paginate = array('limit' => 10, 'order' => array('Webpage.lft' => 'ASC'));
 
 /**
  * Helpers
@@ -88,14 +86,11 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->paginate['conditions']['Webpage.type'] = $type;
 		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = 0;
 		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = null;
-		$this->paginate['order']['Webpage.parent_id'] = 'DESC';
-		//$this->paginate['conditions'][] = 'Webpage.lft + 1 =  Webpage.rght'; // find leaf nodes (childless parents) only
 		$this->paginate['contain'][] = 'Child';
-		//$this->paginate['fields'] = array('id', 'name', 'content', 'modified');
 		$this->set('webpages', $webpages = $this->paginate());
 		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
 		$this->set('displayName', 'title');
-		$this->set('displayDescription', 'content'); 
+		$this->set('displayDescription', 'content');
 		$this->set('page_title_for_layout', 'Pages');
 		$this->set('page_types', $this->Webpage->types());
 		$this->view = $this->_fileExistsCheck('index_' . $type . $this->ext) ? 'index_' . $type : 'index_content';
@@ -408,18 +403,23 @@ class AppWebpagesController extends WebpagesAppController {
  * @param string
  * @return void
  */
+	
 	public function delete($id = null) {
 		$this->Webpage->id = $id;
 		if (!$this->Webpage->exists()) {
 			throw new NotFoundException(__('Page not found'));
 		}
 		if ($this->Webpage->delete($id, true)) {
-			$this->Session->setFlash(__('Webpage deleted', true), 'flash_success');
-			$this->redirect(array('action'=>'index'));
+			$this->Session->setFlash(__('Deleted'), 'flash_success');
 		} else {
-			$this->Session->setFlash(__('Webpage could not be deleted.', true), 'flash_warning');
-			$this->redirect(array('action'=>'index'));
+			$this->Session->setFlash(__('Error, could not be deleted.'), 'flash_warning');
 		}
+		$this->redirect(array('action'=>'index'));
+	}
+	
+	public function delete_element($id = null) {
+		$this->request->data['Override']['redirect'] = array('action' => 'index', 'element');
+		return $this->delete($id);
 	}
 	
 /**
@@ -432,11 +432,13 @@ class AppWebpagesController extends WebpagesAppController {
 	    }
 	
 	    if ($delta > 0) {
-	        $this->Webpage->moveUp($this->Webpage->id, abs($delta));
+	        if ($this->Webpage->moveUp($this->Webpage->id, abs($delta))){
+	        	$this->Session->setFlash('Moved up');
+	        } else {
+	        	$this->Session->setFlash('Error moving, please try again.');
+	        }
 	    } else {
-	        $this->Session->setFlash(
-	          'Please provide the number of positions the field should be moved down.'
-	        );
+	        $this->Session->setFlash('Please provide the number of positions the field should be moved down.');
 	    }
 	
 	    return $this->redirect($this->referer());
@@ -452,11 +454,13 @@ class AppWebpagesController extends WebpagesAppController {
 	    }
 	
 	    if ($delta > 0) {
-	        $this->Webpage->moveDown($this->Webpage->id, abs($delta));
+	        if ($this->Webpage->moveDown($this->Webpage->id, abs($delta))){
+	        	$this->Session->setFlash('Moved down');
+	        } else {
+	        	$this->Session->setFlash('Error moving, please try again.');
+	        }
 	    } else {
-	        $this->Session->setFlash(
-	          'Please provide the number of positions the field should be moved down.'
-	        );
+	        $this->Session->setFlash('Please provide the number of positions the field should be moved down.');
 	    }
 	
 	    return $this->redirect($this->referer());

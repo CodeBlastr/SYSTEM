@@ -139,7 +139,7 @@ class phpthumb {
 	var $config_high_security_enabled                = false;
 	var $config_high_security_password               = null;
 	var $config_disable_debug                        = false;
-	var $config_allow_src_above_docroot              = false;
+	var $config_allow_src_above_docroot              = true;
 	var $config_allow_src_above_phpthumb             = true;
 	var $config_allow_parameter_file                 = false;
 	var $config_allow_parameter_goto                 = false;
@@ -1240,7 +1240,7 @@ class phpthumb {
 			// $UnAllowedParameters contains options that can only be processed in GD, not ImageMagick
 			// note: 'fltr' *may* need to be processed by GD, but we'll check that in more detail below
 			$UnAllowedParameters = array('xto', 'ar', 'bg', 'bc');
-			// 'ra' may be part of this list, if not a multiple of 90°
+			// 'ra' may be part of this list, if not a multiple of 90ï¿½
 			foreach ($UnAllowedParameters as $parameter) {
 				if (isset($this->$parameter)) {
 					$this->DebugMessage('$this->useRawIMoutput=false because "'.$parameter.'" is set', __FILE__, __LINE__);

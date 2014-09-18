@@ -1135,6 +1135,10 @@ class AppWebpage extends WebpagesAppModel {
  * Token Replacement function. This will search a string from "tokens" and replace them with the 
  * data provided
  * 
+ * ex. string = Some html or text where this gets replaced *| SomeModel.some_field |*
+ * ex. data = array('SomeModel' => array('some_field' => 'some_value'));
+ * ex. output = Some html or text where this gets replaced some_value
+ * 
  * @param string $string
  * @param array $data
  * @throws Exception

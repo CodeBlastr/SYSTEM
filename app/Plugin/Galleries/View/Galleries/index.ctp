@@ -1,8 +1,7 @@
-<div class="galleries index row-fluid">
+<div class="galleries index row">
 	<?php foreach ($galleries as $gallery) { ?>
-		<div class="media span3 pull-left well">
+		<div class="media span3 col-md-3 well">
 		<?php
-		debug($gallery);
 		$foreignKey = !empty($gallery['Gallery']['foreign_key']) ? $gallery['Gallery']['foreign_key'] : $gallery['Gallery']['id'];
 		$model = !empty($gallery['Gallery']['model']) ? $gallery['Gallery']['model'] : 'Gallery';
 		echo $this->Html->link($this->Element('Galleries.thumb', array('model' => $model, 'foreignKey' => $foreignKey)), array('action' => 'view', $model, $foreignKey), array('escape' => false)); ?>

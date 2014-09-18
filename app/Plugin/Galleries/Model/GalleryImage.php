@@ -60,7 +60,7 @@ class GalleryImage extends GalleriesAppModel {
 /**
  * Afterfind callback
  */
-	public function afterFind($results) {
+	public function afterFind($results, $primary = false) {
 		$results = $this->_videoOutput($results);
 		return $results;
 	}
@@ -93,7 +93,7 @@ class GalleryImage extends GalleriesAppModel {
  *
  * @param bool
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if (!empty($this->data['GalleryImage']['is_thumb'])) {
 			try {
 				$data['Gallery']['id'] = $this->data['GalleryImage']['gallery_id'];
@@ -333,7 +333,7 @@ class GalleryImage extends GalleriesAppModel {
  * @param string
  * @return bool
  */
- 	public function delete($id) {
+ 	public function delete($id = null, $cascade = true) {
 		$this->id = $id;
 		if (!$this->exists()) {
 			throw new Exception(__('Invalid file'));

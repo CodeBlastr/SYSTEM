@@ -1,10 +1,9 @@
 <?php
+
 /**
  * Extension Code
  * $refuseInit = true; require_once(ROOT.DS.'app'.DS.'Plugin'.DS.'Contacts'.DS.'Model'.DS.'Contact.php');
  */
-
-
 App::uses('ContactsAppModel', 'Contacts.Model');
 
 class AppContact extends ContactsAppModel {
@@ -29,7 +28,6 @@ class AppContact extends ContactsAppModel {
  * @var bool
  */
 	public $notifyAssignee = false;
-	
 
 /**
  * Validate
@@ -42,9 +40,9 @@ class AppContact extends ContactsAppModel {
 				'rule' => array('notempty'),
 				'message' => 'Contact requires a name.',
 				'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			//'required' => false,
+			//'last' => false, // Stop validation after this rule
+			//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
 	);
@@ -70,7 +68,6 @@ class AppContact extends ContactsAppModel {
 			'order' => ''
 		),
 	);
-
 
 /**
  * Has many
@@ -105,7 +102,6 @@ class AppContact extends ContactsAppModel {
 			'counterQuery' => ''
 		),
 	);
-
 
 /**
  * Has and belongs to many
@@ -145,7 +141,6 @@ class AppContact extends ContactsAppModel {
 		),
 	);
 
-
 /**
  * Construct
  *
@@ -153,7 +148,7 @@ class AppContact extends ContactsAppModel {
  */
 	public function __construct($id = false, $table = null, $ds = null) {
 
-		if (in_array('Tasks', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Tasks')) {
 			$this->hasMany['Task'] = array(
 				'className' => 'Tasks.Task',
 				'foreignKey' => 'foreign_key',
@@ -168,7 +163,7 @@ class AppContact extends ContactsAppModel {
 				'counterQuery' => ''
 			);
 		}
-		if (in_array('Activities', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Activities')) {
 			$this->hasMany['Activity'] = array(
 				'className' => 'Activities.Activity',
 				'foreignKey' => 'foreign_key',
@@ -183,7 +178,7 @@ class AppContact extends ContactsAppModel {
 				'counterQuery' => ''
 			);
 		}
-		if (in_array('Estimates', CakePlugin::loaded())) {
+		if (CakePlugin::loaded('Estimates')) {
 			$this->hasMany['Estimate'] = array(
 				'className' => 'Estimates.Estimate',
 				'foreignKey' => 'foreign_key',
@@ -198,9 +193,9 @@ class AppContact extends ContactsAppModel {
 				'counterQuery' => ''
 			);
 		}
-    	parent::__construct($id, $table, $ds);
+		parent::__construct($id, $table, $ds);
 		$this->order = array("{$this->alias}.name");
-    }
+	}
 
 /**
  * Before validate method
@@ -209,7 +204,7 @@ class AppContact extends ContactsAppModel {
 		$this->data = $this->_cleanContactData($this->data);
 		return parent::beforeValidate($options);
 	}
-	
+
 /**
  * Before save
  */
@@ -218,19 +213,19 @@ class AppContact extends ContactsAppModel {
 		if (CakePlugin::loaded('Activities') && !empty($this->data['Contact']['contact_type']) && $this->data['Contact']['contact_type'] == 'lead') {
 			// log when leads are created
 			$this->Behaviors->attach('Activities.Loggable', array(
-				'nameField' => 'name', 
+				'nameField' => 'name',
 				'descriptionField' => '',
-				'actionDescription' => 'lead created', 
-				'userField' => '', 
+				'actionDescription' => 'lead created',
+				'userField' => '',
 				'parentForeignKey' => ''
-				));
+			));
 		}
 		$this->checkAssigneeChange();
 		return parent::beforeSave($options);
 	}
-	
+
 /**
- * Aftersave method
+ * After save callback
  * 
  * @param bool $created
  */
@@ -238,7 +233,22 @@ class AppContact extends ContactsAppModel {
 		$this->notifyAssignee();
 		return parent::afterSave($created);
 	}
- 
+
+/**
+ * After find calback
+ */
+	public function afterFind($results = array(), $primary = false) {
+		for ($i = 0; $i < count($results); $i++) {
+			if (!empty($results[$i]['ContactDetail'][0])) {
+				// reformat details into easier to use contact fields
+				$details = Set::combine($results[$i]['ContactDetail'], '{n}.contact_detail_type', '{n}.value');
+				foreach ($details as $name => $value) {
+					$results[$i][$this->alias]['_' . Inflector::underscore($name)] = $value;
+				}
+			}
+		}
+		return $results;
+	}
 
 /**
  * Add method
@@ -257,7 +267,7 @@ class AppContact extends ContactsAppModel {
 	public function findCompanies($type = 'list', $params = null) {
 		$params['conditions'] = array(
 			"{$this->alias}.is_company" => 1,
-			);
+		);
 		$params['order'] = empty($params['order']) ? "{$this->alias}.name" : $params['order'];
 
 		return $this->find($type, $params);
@@ -271,7 +281,7 @@ class AppContact extends ContactsAppModel {
 	public function findPeople($type = 'list', $params = null) {
 		$params['conditions'] = array(
 			"{$this->alias}.is_company" => 0,
-			);
+		);
 		$params['order'] = empty($params['order']) ? "{$this->alias}.name" : $params['order'];
 
 		return $this->find($type, $params);
@@ -288,15 +298,15 @@ class AppContact extends ContactsAppModel {
 			'conditions' => array(
 				'Contact.user_id is NOT NULL',
 				'Contact.is_company' => 0,
-				),
-			));
+			),
+		));
 		// I could contain Relator here, but I want to preserve the $type attributes
 		// so we do an extra query to get the companies.
 		$companies = $this->ContactsContact->find('all', array(
 			'conditions' => array(
 				'ContactsContact.child_contact_id' => array_flip($people),
-				),
-			));
+			),
+		));
 
 		$companies = Set::extract('/ContactsContact/parent_contact_id', $companies);
 		$params['conditions']['Contact.id'] = $companies;
@@ -304,36 +314,35 @@ class AppContact extends ContactsAppModel {
 		return $this->find($type, $params);
 	}
 
-
 /**
  * Clean data for saving
- *
+ * @param array $data
  * @return array
  */
 	protected function _cleanContactData($data) {
-		
+
 		if (!empty($data['Contact']['contact_type'])) {
-			 $data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']);
+			$data['Contact']['contact_type'] = strtolower($this->data['Contact']['contact_type']);
 		}
-		
+
 		// get rid of the name field so it can be merged from existing data if empty
 		if (isset($data['Contact']['name']) && empty($data['Contact']['name'])) {
-			unset($data['Contact']['name']); 
+			unset($data['Contact']['name']);
 		}
-		
+
 		// if id is here, then merge the data with the existing data (new data over writes old)
 		if (!empty($data['Contact']['id'])) {
 			$contact = $this->find('first', array(
 				'conditions' => array(
 					'Contact.id' => $data['Contact']['id'],
-					),
+				),
 				'contain' => array(
 					'User' => array(
 						'fields' => array('User.id', 'User.email', 'User.full_name', 'User.username')
 					),
 					'Employer',
-					),
-				));
+				),
+			));
 			$data = Set::merge($contact, $data);
 			unset($data['Contact']['modified']);
 		} else if (!empty($data['User']['id']) && empty($data['Contact']['user_id'])) {
@@ -341,16 +350,16 @@ class AppContact extends ContactsAppModel {
 			$user = $this->User->find('first', array(
 				'conditions' => array(
 					'User.id' => $data['User']['id']
-					),
+				),
 				'fields' => array(
 					'User.id'
-					)
-				));
+				)
+			));
 			$data['Contact']['user_id'] = !empty($user) ? $data['User']['id'] : null;
 			// unset User because we can't run callbacks using saveAll (so validation fails for user)
 			unset($data['User']);
 		}
-		
+
 		// belongsTo records return null values when there is nothing to contain (guest checkout gives you some data with no id)
 		if (empty($data['User']['id']) && empty($data['User']['email'])) {
 			unset($data['User']);
@@ -363,7 +372,7 @@ class AppContact extends ContactsAppModel {
 			$data['Employer']['Employer'] = $mergedEmployers;
 		}
 
-		if (!empty($data['User'])){
+		if (!empty($data['User'])) {
 			foreach ($data['User'] as $key => $userData) {
 				if (is_array($userData)) {
 					$data['User'][$key] = implode(',', $userData);
@@ -380,7 +389,7 @@ class AppContact extends ContactsAppModel {
 		// remove empty contact detail values, because the form sets the array which makes a save attempt
 		if (!empty($data['ContactDetail'])) {
 			$i = 0;
-			$data['ContactDetail'] = array_values($data['ContactDetail']);			
+			$data['ContactDetail'] = array_values($data['ContactDetail']);
 			foreach ($data['ContactDetail'] as $detail) {
 				if (empty($detail['value'])) {
 					unset($data['ContactDetail'][$i]);
@@ -392,7 +401,7 @@ class AppContact extends ContactsAppModel {
 		// remove empty related models
 		if (!empty($data['Estimate'])) {
 			$i = 0;
-			$data['Estimate'] = array_values($data['Estimate']);			
+			$data['Estimate'] = array_values($data['Estimate']);
 			foreach ($data['Estimate'] as $estimate) {
 				if (empty($estimate['total'])) {
 					unset($data['Estimate'][$i]);
@@ -404,7 +413,7 @@ class AppContact extends ContactsAppModel {
 		// remove empty related models
 		if (!empty($data['Activity'])) {
 			$i = 0;
-			$data['Activity'] = array_values($data['Activity']);			
+			$data['Activity'] = array_values($data['Activity']);
 			foreach ($data['Activity'] as $activity) {
 				if (empty($activity['name'])) {
 					unset($data['Activity'][$i]);
@@ -416,7 +425,7 @@ class AppContact extends ContactsAppModel {
 		// remove empty related models
 		if (!empty($data['Task'])) {
 			$i = 0;
-			$data['Task'] = array_values($data['Task']);			
+			$data['Task'] = array_values($data['Task']);
 			foreach ($data['Task'] as $task) {
 				if (empty($task['name'])) {
 					unset($data['Task'][$i]);
@@ -424,7 +433,7 @@ class AppContact extends ContactsAppModel {
 				$i++;
 			}
 		}
-		
+
 		if ($data['Contact']['user_id'] == '') {
 			unset($data['Contact']['user_id']);
 		}
@@ -437,121 +446,117 @@ class AppContact extends ContactsAppModel {
  *
  * @return array
  */
-    public function types() {
-        $types = array();
-        foreach (Zuha::enum('CONTACT_TYPE') as $type) {
-            $types[Inflector::underscore($type)] = $type;
-        }
-        return array_merge(array('lead' => 'Lead', 'customer' => 'Customer'), $types);
-    }
-
+	public function types() {
+		$types = array();
+		foreach (Zuha::enum('CONTACT_TYPE') as $type) {
+			$types[Inflector::underscore($type)] = $type;
+		}
+		return array_merge(array('lead' => 'Lead', 'customer' => 'Customer'), $types);
+	}
 
 /**
  * Sources for contacts
  *
  * @return array
  */
-    public function sources() {
-        $sources = array();
-        foreach (Zuha::enum('CONTACT_SOURCE') as $source) {
-            $sources[Inflector::underscore($source)] = $source;
-        }
-        return $sources;
-    }
-
+	public function sources() {
+		$sources = array();
+		foreach (Zuha::enum('CONTACT_SOURCE') as $source) {
+			$sources[Inflector::underscore($source)] = $source;
+		}
+		return $sources;
+	}
 
 /**
  * Industries for contacts
  *
  * @return array
  */
-    public function industries() {
-        $industries = array();
-        foreach (Zuha::enum('CONTACT_INDUSTRY') as $industry) {
-            $industries[Inflector::underscore($industry)] = $industry;
-        }
-        return $industries;
-    }
-
+	public function industries() {
+		$industries = array();
+		foreach (Zuha::enum('CONTACT_INDUSTRY') as $industry) {
+			$industries[Inflector::underscore($industry)] = $industry;
+		}
+		return $industries;
+	}
 
 /**
  * Ratings for contacts
  *
  * @return array
  */
-    public function ratings() {
-        $ratings = array();
-        foreach (Zuha::enum('CONTACT_RATING') as $rating) {
-            $ratings[Inflector::underscore($rating)] = $rating;
-        }
-        return array_merge(array('hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold'), $ratings);
-    }
+	public function ratings() {
+		$ratings = array();
+		foreach (Zuha::enum('CONTACT_RATING') as $rating) {
+			$ratings[Inflector::underscore($rating)] = $rating;
+		}
+		return array_merge(array('hot' => 'Hot', 'warm' => 'Warm', 'cold' => 'Cold'), $ratings);
+	}
 
-	
 /**
  * Get leads
  *
  * @return array
  */
- 	public function leads() {
+	public function leads() {
 		return $this->find('all', array(
-			'conditions' => array(
-				'Contact.contact_type' => 'lead',
-				'Contact.assignee_id' => null, 
-				),
-			'limit' => 5,
-			'order' => array(
-				'Contact.created' => 'DESC',
-				),
-			));
+					'conditions' => array(
+						'Contact.contact_type' => 'lead',
+						'Contact.assignee_id' => null,
+					),
+					'limit' => 5,
+					'order' => array(
+						'Contact.created' => 'DESC',
+					),
+		));
 	}
-	
+
 /**
  * Get leads logged over time
  *
  * @return array
  */
- 	public function leadActivities() {
+	public function leadActivities() {
 		$return = null;
 		if (CakePlugin::loaded('Activities')) {
-			$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'lead created' AND `Activity`.`model` = 'Contact' ".$foreignKeyQuery." GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
-			for ($i=0; $i < count($results); $i++) {
+			$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '" . $startDate . "' AND `Activity`.`action_description` = 'lead created' AND `Activity`.`model` = 'Contact' " . $foreignKeyQuery . " GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
+			for ($i = 0; $i < count($results); $i++) {
 				$return[] = $results[$i][0];
 				// $key = array_search($emptyDate, Set::extract('/0/formatted', $result));
 				// if ($key === 0 || $key > 0) {
-					// $return[] = $result[$key];
+				// $return[] = $result[$key];
 				// } else {
-					// $return[] = array(0 => array('count' => 0), 'Activity' => array('created' => $emptyDate));
+				// $return[] = array(0 => array('count' => 0), 'Activity' => array('created' => $emptyDate));
 				// }
 			}
-			
+
 			// $return = $this->Activity->find('all', array(
-				// 'conditions' => array(
-					// 'Activity.action_description' => 'lead created',
-					// 'Activity.model' => 'Contact',
-					// 'Activity.created >' => date('Y-m-d', strtotime('-6 months'))
-					// ),
-				// 'fields' => array(
-					// 'COUNT(Activity.created)',
-					// 'Activity.created',
-					// ),
-				// 'group' =>  array(
-					// 'DATE(Activity.created)',
-					// ),
-				// 'order' => array(
-					// 'Activity.created' => 'ASC',
-					// )
-				// ));
+			// 'conditions' => array(
+			// 'Activity.action_description' => 'lead created',
+			// 'Activity.model' => 'Contact',
+			// 'Activity.created >' => date('Y-m-d', strtotime('-6 months'))
+			// ),
+			// 'fields' => array(
+			// 'COUNT(Activity.created)',
+			// 'Activity.created',
+			// ),
+			// 'group' =>  array(
+			// 'DATE(Activity.created)',
+			// ),
+			// 'order' => array(
+			// 'Activity.created' => 'ASC',
+			// )
+			// ));
 		}
 		return $return;
 	}
-	
+
 /**
  * Get tasks assigned to the current user, and are related to contacts
  *
  * @return array
  */
- 	public function myTasks() {
+	public function myTasks() {
 		$return = null;
 		if (in_array('Tasks', CakePlugin::loaded())) {
 			$return = $this->Task->find('all', array(
@@ -559,20 +564,21 @@ class AppContact extends ContactsAppModel {
 					'Task.assignee_id' => CakeSession::read('Auth.User.id'),
 					'Task.model' => 'Contact',
 					'Task.is_completed' => false,
-					),
+				),
 				'order' => array(
 					'Task.due_date' => 'ASC',
-					)
-				));
+				)
+			));
 		}
 		return $return;
 	}
-	
+
 /**
- * My ratings
+ * 
+ * @return array
  */
- 	public function myRatings() {
- 		$excludeAssignees = array(0, 1, 101); // this needs to be changed to a site setting or something
+	public function myRatings() {
+		$excludeAssignees = array(0, 1, 101); // this needs to be changed to a site setting or something
 		$salesPeople = $this->find('all', array('conditions' => array('Contact.assignee_id NOT' => null, 'Contact.assignee_id !=' => '', 'Contact.assignee_id NOT IN' => $excludeAssignees, 'Contact.contact_type !=' => 'vendor'), 'group' => 'Contact.assignee_id', 'contain' => array('Assignee')));
 		$salesPerson = Set::extract('/Contact/assignee_id', $salesPeople);
 		foreach ($salesPerson as $key => $person) {
@@ -581,13 +587,13 @@ class AppContact extends ContactsAppModel {
 				'fields' => array(
 					'SUM(`Contact`.`contact_type` = "lead") AS `leads`',
 					'SUM(`Contact`.`contact_type` = "customer") AS `sales`'
-					),
+				),
 				'conditions' => array(
 					'Contact.assignee_id' => $person,
 					'Contact.created >' => date('Y-m-d', strtotime('-6 months'))
-					),
+				),
 				'order' => false
-				));
+			));
 			$salesStats[$person]['Assignee']['_leads'] = $stats[0][0]['leads']; // count of leads
 			//$salesStats[$person]['Assignee']['_sales'] = $stats[0][0]['sales']; // count of sales // problem happens because the created date is older than the estimate created date, making this number pointless
 			if (CakePlugin::loaded('Estimates')) {
@@ -597,21 +603,21 @@ class AppContact extends ContactsAppModel {
 						'SUM(`Estimate`.`is_accepted` = 1) AS `sales`',
 						'SUM(`Estimate`.`total`) AS `total`',
 						'SUM(IF(`Estimate`.`is_accepted` = 1, `Estimate`.`total`, 0)) AS `sold`',
-						),
+					),
 					'conditions' => array(
 						'Estimate.creator_id' => $person,
 						'Estimate.created >' => date('Y-m-d', strtotime('-6 months')),
-						//'Estimate.foreign_key' => 
-						)
-					));
+					//'Estimate.foreign_key' => 
+					)
+				));
 				$converted = $this->Estimate->find('all', array(
 					'conditions' => array(
 						'Estimate.is_accepted' => 1,
 						'Estimate.model' => 'Contact',
 						'Estimate.creator_id' => $person,
 						'Estimate.created >' => date('Y-m-d', strtotime('-6 months'))
-						)
-					));
+					)
+				));
 				foreach ($converted as $convert) {
 					$cycles[] = round((strtotime($convert['Estimate']['closed']) - strtotime($convert['Estimate']['created'])) / 86400);
 				}
@@ -645,31 +651,31 @@ class AppContact extends ContactsAppModel {
 		$salesStats = $this->getRank($salesStats, '_leadToProposal');
 		$salesStats = $this->getRank($salesStats, '_leadToSale');
 		$salesStats = $this->getRank($salesStats, '_proposalToSale');
-		
-		return $salesStats; 
- 	}
-	
+
+		return $salesStats;
+	}
+
 /**
- * Get rank method
  * 
+ * @param array $data
  * @param string $field
  * @param string $function
  * @return array
  */
- 	public function getRank($data, $field, $function = 'arsort') {
- 		$rank = Set::combine($data, '{n}.Assignee.id', '{n}.Assignee.' . $field);
- 		$function($rank);
-		$n=1; 
+	public function getRank($data, $field, $function = 'arsort') {
+		$rank = Set::combine($data, '{n}.Assignee.id', '{n}.Assignee.' . $field);
+		$function($rank);
+		$n = 1;
 		foreach ($rank as $p => $r) {
-			$data[$p]['Assignee'][$field . '_rank'] = $n; 
+			$data[$p]['Assignee'][$field . '_rank'] = $n;
 			$n++;
 		}
 		return $data;
- 	}
+	}
 
 /**
- * Estimates method
- *
+ * 
+ * @param int $foreignKey
  * @return array
  */
 	public function estimates($foreignKey = null) {
@@ -683,31 +689,31 @@ class AppContact extends ContactsAppModel {
 				'conditions' => array(
 					'Estimate.is_accepted' => 1,
 					'Estimate.model' => 'Contact'
-					)
-				));
+				)
+			));
 			foreach ($converted as $convert) {
 				$cycles[] = round((strtotime($convert['Estimate']['closed']) - strtotime($convert['Estimate']['created'])) / 86400);
 			}
 			$cycle = round(array_sum($cycles) / count($cycles));
-			
-			$conditions['Estimate.created >'] = date('Y-m-d', strtotime('-'.$cycle.' day'));
+
+			$conditions['Estimate.created >'] = date('Y-m-d', strtotime('-' . $cycle . ' day'));
 			// total estimates within the cycle
 			$return = $this->Estimate->find('all', array(
 				'conditions' => $conditions,
 				'contain' => array(
 					'Contact'
-					)
-				));
-				
+				)
+			));
+
 
 			$dead = $this->Estimate->find('count', array(
 				'conditions' => array(
 					'Estimate.is_accepted' => 0,
 					'Estimate.is_archived' => 1,
 					'Estimate.model' => 'Contact',
-					)
-				));
-			
+				)
+			));
+
 			$ratings['hot'] = 85;
 			$ratings['warm'] = 30;
 			$ratings['cold'] = 10;
@@ -723,97 +729,96 @@ class AppContact extends ContactsAppModel {
 		}
 		return $return;
 	}
-	
+
 /**
  * Estimate Groups method
  *
+ * @param int $foreignKey
  * @return array
  */
 	public function estimateActivities($foreignKey = null) {
 		$return = null;
-		
+
 		if (CakePlugin::loaded('Activities')) {
-			$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'estimate created' AND `Activity`.`model` = 'Estimate' ".$foreignKeyQuery." GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
-				for ($i=0; $i < count($results); $i++) {
-					$return[] = $results[$i][0];
-				}
+			$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '" . $startDate . "' AND `Activity`.`action_description` = 'estimate created' AND `Activity`.`model` = 'Estimate' " . $foreignKeyQuery . " GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
+			for ($i = 0; $i < count($results); $i++) {
+				$return[] = $results[$i][0];
+			}
 			// if (in_array('Activities', CakePlugin::loaded())) {
-				// $return = $this->Activity->find('all', array(
-					// 'conditions' => array(
-						// 'Activity.action_description' => 'estimate created',
-						// 'Activity.model' => 'Estimate',
-						// ),
-					// 'fields' => array(
-						// 'COUNT(Activity.created)',
-						// 'Activity.created',
-						// ),
-					// 'group' =>  array(
-						// 'DATE(Activity.created)',
-						// ),
-					// 'order' => array(
-						// 'Activity.created' => 'ASC',
-						// )
-					// ));
+			// $return = $this->Activity->find('all', array(
+			// 'conditions' => array(
+			// 'Activity.action_description' => 'estimate created',
+			// 'Activity.model' => 'Estimate',
+			// ),
+			// 'fields' => array(
+			// 'COUNT(Activity.created)',
+			// 'Activity.created',
+			// ),
+			// 'group' =>  array(
+			// 'DATE(Activity.created)',
+			// ),
+			// 'order' => array(
+			// 'Activity.created' => 'ASC',
+			// )
+			// ));
 			// }
 		}
-		
+
 		return $return;
 	}
-	
+
 /**
  * Activities method
  * 
  * Returns the last 60 days of activity.
  *
+ * @param array $conditions
  * @return array
  */
 	public function activities($conditions = array()) {
 		$return = null;
-		if (in_array('Activities', CakePlugin::loaded())) {
-			/*$conditions['Activity.action_description'] = 'contact activity';
-			$conditions['Activity.model'] = 'Contact';
-			!empty($foreignKey) ? $conditions['Activity.foreign_key'] = $foreignKey : null;
-			$return = $this->Activity->find('all', array(
-				'conditions' => $conditions,
-				'fields' => array(
-					'*',
-					"COUNT(Activity.created) AS count", // only one of these two will work
-					"DATE_FORMAT(Activity.created, '%Y-%m-%d') AS created", // only one of these two will work
-					),
-				'group' =>  array(
-					'DATE(Activity.created)',
-					),
-				'order' => array(
-					'Activity.created' => 'ASC',
-					)
-				));*/  // might try to fix the Model::_filterResults() function at some point and submit it back to CakePHP devs.
-				
-			!empty($conditions['foreign_key']) ? $foreignKeyQuery = "AND `Activity`.`foreign_key` = '". $conditions['foreign_key'] . "'" : $foreignKeyQuery = null;
+		if (CakePlugin::loaded('Activities')) {
+			/* $conditions['Activity.action_description'] = 'contact activity';
+			  $conditions['Activity.model'] = 'Contact';
+			  !empty($foreignKey) ? $conditions['Activity.foreign_key'] = $foreignKey : null;
+			  $return = $this->Activity->find('all', array(
+			  'conditions' => $conditions,
+			  'fields' => array(
+			  '*',
+			  "COUNT(Activity.created) AS count", // only one of these two will work
+			  "DATE_FORMAT(Activity.created, '%Y-%m-%d') AS created", // only one of these two will work
+			  ),
+			  'group' =>  array(
+			  'DATE(Activity.created)',
+			  ),
+			  'order' => array(
+			  'Activity.created' => 'ASC',
+			  )
+			  )); */  // might try to fix the Model::_filterResults() function at some point and submit it back to CakePHP devs.
+			!empty($conditions['foreign_key']) ? $foreignKeyQuery = "AND `Activity`.`foreign_key` = '" . $conditions['foreign_key'] . "'" : $foreignKeyQuery = null;
 			$startDate = !empty($conditions['start_date']) ? $conditions['start_date'] : date('Y-m-d', strtotime('-26 weeks'));
-			$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'contact activity' AND `Activity`.`model` = 'Contact' ".$foreignKeyQuery." GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
+			$results = $this->query("SELECT CONCAT(YEAR(`Activity`.`created`), '/', WEEK(`Activity`.`created`)) AS `formatted`, YEAR(`Activity`.`created`) as `year`, MONTH(`Activity`.`created`) as `month`, DAY(`Activity`.`created`) as `day`, WEEK(`Activity`.`created`) as `week`, COUNT(*) AS `count` FROM `activities` AS `Activity` WHERE `Activity`.`created` > '" . $startDate . "' AND `Activity`.`action_description` = 'contact activity' AND `Activity`.`model` = 'Contact' " . $foreignKeyQuery . " GROUP BY `formatted` ORDER BY `year` ASC, `week` ASC");
 			// daily // $result = $this->query("SELECT *, DATE_FORMAT(Activity.created, '%Y-%m-%d') AS formatted, COUNT(`Activity`.`created`) AS count FROM `activities` AS `Activity` WHERE `Activity`.`created` > '".$startDate."' AND `Activity`.`action_description` = 'contact activity' AND `Activity`.`model` = 'Contact' ".$foreignKeyQuery." GROUP BY DATE(`Activity`.`created`) ORDER BY `Activity`.`created` ASC");
 			//$emptyDates = Zuha::date_slice($startDate, null, array('format' => 'Y-m-d'));
-			for ($i=0; $i < count($results); $i++) {
+			for ($i = 0; $i < count($results); $i++) {
 				$return[] = $results[$i][0];
 				// $key = array_search($emptyDate, Set::extract('/0/formatted', $result));
 				// if ($key === 0 || $key > 0) {
-					// $return[] = $result[$key];
+				// $return[] = $result[$key];
 				// } else {
-					// $return[] = array(0 => array('count' => 0), 'Activity' => array('created' => $emptyDate));
+				// $return[] = array(0 => array('count' => 0), 'Activity' => array('created' => $emptyDate));
 				// }
 			}
 		}
 		return $return;
 	}
-	
 
 /**
  * Check Assignee Change Method
  * 
- * @param
  * @return void
  */
- 	public function checkAssigneeChange() {
+	public function checkAssigneeChange() {
 		if (!empty($this->data['Contact']['assignee_id'])) {
 			if (!empty($this->data['Contact']['id'])) {
 				// check to see if assignee has been updated
@@ -821,8 +826,8 @@ class AppContact extends ContactsAppModel {
 					'conditions' => array(
 						'Contact.id' => $this->data['Contact']['id'],
 						'Contact.assignee_id' => $this->data['Contact']['assignee_id']
-						)
-					));
+					)
+				));
 				if (empty($result)) {
 					// assignee has changed
 					$this->notifyAssignee = true;
@@ -832,29 +837,28 @@ class AppContact extends ContactsAppModel {
 				$this->notifyAssignee = true;
 			}
 		}
- 	}
- 
+	}
+
 /**
  * Notify Assignee Method
  * sends an email to the assignee
  * 
  * @return void
  */
- 	public function notifyAssignee() {
+	public function notifyAssignee() {
 		if (!empty($this->data['Contact']['assignee_id']) && !empty($this->notifyAssignee)) {
 			$this->Assignee->id = $this->data['Contact']['assignee_id'];
 			$assignee = $this->Assignee->read();
 			$recipient = $assignee['Assignee']['email'];
 			$subject = 'New Assignment : ' . $this->data['Contact']['name'];
-			$message = 'Congratulations, you have received a new business opportunity.  <br /><br /> View ' . $this->data['Contact']['contact_type'] . ' <a href="http://' . $_SERVER['HTTP_HOST'] . '/contacts/contacts/view/' . $this->data['Contact']['id'] .'">' . $this->data['Contact']['name'] .'</a> here.  Where you can track activity, change the status, create an estimate, or set a reminder to follow up.'; 
+			$message = 'Congratulations, you have received a new business opportunity.  <br /><br /> View ' . $this->data['Contact']['contact_type'] . ' <a href="http://' . $_SERVER['HTTP_HOST'] . '/contacts/contacts/view/' . $this->data['Contact']['id'] . '">' . $this->data['Contact']['name'] . '</a> here.  Where you can track activity, change the status, create an estimate, or set a reminder to follow up.';
 			if ($this->__sendMail($recipient, $subject, $message)) {
 				return true;
 			} else {
 				throw Exception(__('Assignee could not be notified.'));
 			}
 		}
- 	}
-	
+	}
 
 /**
  * origin_afterFind callback
@@ -863,42 +867,45 @@ class AppContact extends ContactsAppModel {
  * 
  * @param array $results
  */
-    public function origin_afterFind(Model $Model, $results = array(), $primary = false) {
-    	if ($Model->name == 'Task') {
-	        $ids = Set::extract('/Task/foreign_key', $results);
-	        $contacts = $this->find('all', array('conditions' => array('Contact.id' => $ids)));
-	        $names = Set::combine($contacts, '{n}.Contact.id', '{n}.Contact.name');
-	        $i = 0;
-	        foreach ($results as $result) {
-	            if ($names[$result['Task']['foreign_key']]) {
-	                $results[$i]['Task']['name'] = !strpos($results[$i]['Task']['name'], $names[$result['Task']['foreign_key']]) ? __('%s %s', $results[$i]['Task']['name'], $names[$result['Task']['foreign_key']]) : $results[$i]['Task']['name'];
-	                $results[$i]['Task']['_associated']['name'] = $names[$result['Task']['foreign_key']];
-	                $results[$i]['Task']['_associated']['viewLink'] = __('/contacts/contacts/view/%s', $result['Task']['foreign_key']);
-	            }
+	public function origin_afterFind(Model $Model, $results = array(), $primary = false) {
+		if ($Model->name == 'Task') {
+			$ids = Set::extract('/Task/foreign_key', $results);
+			$contacts = $this->find('all', array('conditions' => array('Contact.id' => $ids)));
+			$names = Set::combine($contacts, '{n}.Contact.id', '{n}.Contact.name');
+			$i = 0;
+			foreach ($results as $result) {
+				if ($names[$result['Task']['foreign_key']]) {
+					$results[$i]['Task']['name'] = !strpos($results[$i]['Task']['name'], $names[$result['Task']['foreign_key']]) ? __('%s %s', $results[$i]['Task']['name'], $names[$result['Task']['foreign_key']]) : $results[$i]['Task']['name'];
+					$results[$i]['Task']['_associated']['name'] = $names[$result['Task']['foreign_key']];
+					$results[$i]['Task']['_associated']['viewLink'] = __('/contacts/contacts/view/%s', $result['Task']['foreign_key']);
+				}
 				$i++;
-	        }
-	        return $results;
-    	}
-    	if ($Model->name == 'Estimate') {
-	        $ids = Set::extract('/Estimate/foreign_key', $results);
-	        $contacts = $this->find('all', array('conditions' => array('Contact.id' => $ids)));
-	        $names = Set::combine($contacts, '{n}.Contact.id', '{n}.Contact.name');
-	        $i = 0;
-	        foreach ($results as $result) {
-	            if ($names[$result['Estimate']['foreign_key']]) {
-	                $results[$i]['Estimate']['name'] = !strpos($results[$i]['Estimate']['name'], $names[$result['Estimate']['foreign_key']]) ? __('%s %s', $results[$i]['Estimate']['name'], $names[$result['Estimate']['foreign_key']]) : $results[$i]['Estimate']['name'];
-	                $results[$i]['Estimate']['_associated']['name'] = $names[$result['Estimate']['foreign_key']];
-	                $results[$i]['Estimate']['_associated']['viewLink'] = __('/contacts/contacts/view/%s', $result['Estimate']['foreign_key']);
-	            }
+			}
+			return $results;
+		}
+		if ($Model->name == 'Estimate') {
+			$ids = Set::extract('/Estimate/foreign_key', $results);
+			$contacts = $this->find('all', array('conditions' => array('Contact.id' => $ids)));
+			$names = Set::combine($contacts, '{n}.Contact.id', '{n}.Contact.name');
+			$i = 0;
+			foreach ($results as $result) {
+				if ($names[$result['Estimate']['foreign_key']]) {
+					$results[$i]['Estimate']['name'] = !strpos($results[$i]['Estimate']['name'], $names[$result['Estimate']['foreign_key']]) ? __('%s %s', $results[$i]['Estimate']['name'], $names[$result['Estimate']['foreign_key']]) : $results[$i]['Estimate']['name'];
+					$results[$i]['Estimate']['_associated']['name'] = $names[$result['Estimate']['foreign_key']];
+					$results[$i]['Estimate']['_associated']['viewLink'] = __('/contacts/contacts/view/%s', $result['Estimate']['foreign_key']);
+				}
 				$i++;
-	        }
-	        return $results;
-    	}
-    }
+			}
+			return $results;
+		}
+	}
 
 }
 
 if (!isset($refuseInit)) {
-	class Contact extends AppContact {}
-}
 
+	class Contact extends AppContact {
+		
+	}
+
+}
