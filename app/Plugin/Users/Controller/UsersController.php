@@ -630,9 +630,8 @@ class AppUsersController extends UsersAppController {
 			}
 			unset($this->request->data['User']['username']);
 			if ($this->User->save($this->request->data)) {
-				$this->Session->setFlash('Password changed.');
-				$this->request->data = $this->User->read();
-				$this->_login();
+				$this->Session->setFlash('Password successfully changed, please login.');
+				$this->redirect(array('action' => 'login'));
 			} else {
 				$this->Session->setFlash('Password could not be changed.');
 				$this->redirect(array('action' => 'forgot_password'));

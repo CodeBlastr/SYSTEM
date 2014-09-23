@@ -114,11 +114,7 @@ window.prettyPrint && prettyPrint();
 })(jQuery);
 
 
-$(function() {
-	
-    // Default tooltip selector 
-    $("a[rel=tooltip]").tooltip();
-    
+$(function() {    
     // tables
 	$('.container table:not(#webpage_content table)').addClass('table');
 	

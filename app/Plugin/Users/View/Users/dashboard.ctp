@@ -1,11 +1,16 @@
 <div class="users dashboard row">
     <div class="col-md-8 ">
         <table>
-            <thead><th>Name</th><th>Date Registered</th><th>Role</th><th>Actions</th></thead>
+            <thead>
+            	<th><?php echo $this->Paginator->sort('last_name', 'Name'); ?></th>
+            	<th><?php echo $this->Paginator->sort('last_login', 'Last Login'); ?></th>
+            	<th><?php echo $this->Paginator->sort('user_role_id', 'Role'); ?></th>
+            	<th>Actions</th>
+            </thead>
             <?php foreach ($users as $user) : ?>
                 <tr>
-                    <td><?php echo $this->Html->link($user['User']['full_name'], array('action' => 'view', $user['User']['id'])); ?></td>
-                    <td><?php echo $this->Time->timeagoinwords($user['User']['last_login']); ?></td>
+                    <td><?php echo $this->Html->link(__('%s, %s', $user['User']['last_name'], $user['User']['first_name']), array('action' => 'view', $user['User']['id'])); ?></td>
+                    <td><?php echo !empty($user['User']['last_login']) ? $this->Time->timeagoinwords($user['User']['last_login']) : 'Never logged in'; ?></td>
                     <td><?php echo $user['UserRole']['name']; ?></td>
                     <td>
                         <a class="btn btn-success btn-xs" href="<?php echo $this->Html->url(array('admin' => false, 'action' => 'view', $user['User']['id'])); ?>">

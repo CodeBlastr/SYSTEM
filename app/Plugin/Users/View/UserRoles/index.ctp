@@ -29,7 +29,7 @@
 	    <h3>Quick Links</h3>
 	    <div class="list-group">
 	    	<?php foreach ($userRoles as $userRole) : ?>
-	        	<?php echo $userRole['UserRole']['name'] != 'guests' ? $this->Html->link(__('Add %s', Inflector::humanize(Inflector::singularize($userRole['UserRole']['name']))), array('action' => 'procreate', $userRoleId), array('class' => 'list-group-item')) : null; ?>
+	        	<?php echo $userRole['UserRole']['name'] != 'guests' ? $this->Html->link(__('Add %s', Inflector::humanize(Inflector::singularize($userRole['UserRole']['name']))), array('controller' => 'users', 'action' => 'procreate', $userRole['UserRole']['id']), array('class' => 'list-group-item')) : null; ?>
 	        <?php endforeach; ?>
 	        <?php echo $this->Html->link('Manage Privileges', array('admin' => false, 'plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index'), array('class' => 'list-group-item')); ?>
 	    </div>

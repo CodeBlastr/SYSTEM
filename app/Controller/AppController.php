@@ -384,10 +384,10 @@ class AppController extends Controller {
 			$options = $this->_getPaginatorVars($object, $filterField);
 			if (!empty($options['fieldName'])) {
 				if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {
-					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >'] = $options['fieldValue'];
+					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >'] = $options['fieldValue'];
 				} else {
 					// this line
-					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName']] = $options['fieldValue'];
+					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName']] = $options['fieldValue'];
 					// was this, but the [] at the end of fielName made null not work (not sure if it
 					// broke anything to change) (works on bakkenbook homepage category_search)
 					//$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']][] =
@@ -445,7 +445,7 @@ class AppController extends Controller {
 			$starterField = urldecode($starterField);
 			$options = $this->_getPaginatorVars($object, $starterField);
 			if (!empty($options['fieldName'])) {
-				$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = $options['fieldValue'] . '%';
+				$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = $options['fieldValue'] . '%';
 				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 			} else {
 				// no matching field don't filter anything
@@ -476,9 +476,9 @@ class AppController extends Controller {
 			$options = $this->_getPaginatorVars($object, $containField);
 			if (!empty($options['fieldName'])) {
 				if (count($contains > 1)) {
-					$this->paginate['conditions']['OR'][][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
+					$this->Paginator->settings['conditions']['OR'][][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
 				} else {
-					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
+					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
 				}
 				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 			} else {
@@ -508,9 +508,9 @@ class AppController extends Controller {
 			$options = $this->_getPaginatorVars($object, $rangeField);
 			$range = explode(';', $options['fieldValue']);
 			if (!empty($options['fieldName'])) {
-				$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >='] = $range[0];
+				$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >='] = $range[0];
 				if (!empty($range[1])) {
-					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' <='] = $range[1];
+					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' <='] = $range[1];
 				}
 				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 			} else {
