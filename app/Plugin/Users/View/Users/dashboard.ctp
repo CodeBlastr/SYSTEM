@@ -1,7 +1,14 @@
 <div class="users dashboard row">
     <div class="col-md-8 ">
         <table>
-            <thead><th>Name</th><th>Date Registered</th><th>Role</th><th>Actions</th></thead>
+            <thead>
+            	<tr>
+            		<th><?php echo $this->Paginator->sort('last_name', 'Name'); ?></th>
+            		<th><?php echo $this->Paginator->sort('last_login', 'Last Login'); ?></th>
+            		<th>Role</th>
+            		<th>Actions</th>
+            	</tr>
+            </thead>
             <?php foreach ($users as $user) : ?>
                 <tr>
                     <td><?php echo $this->Html->link($user['User']['full_name'], array('action' => 'view', $user['User']['id'])); ?></td>
