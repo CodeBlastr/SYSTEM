@@ -128,6 +128,87 @@ body.contacts.view .table-fixed tr td:first-child {
 	overflow: hidden;
 	word-wrap: break-word;
 }
+.text-left-not-xs, .text-left-not-sm, .text-left-not-md, .text-left-not-lg {
+    text-align: left;
+}
+.text-center-not-xs, .text-center-not-sm, .text-center-not-md, .text-center-not-lg {
+    text-align: center;
+}
+.text-right-not-xs, .text-right-not-sm, .text-right-not-md, .text-right-not-lg {
+    text-align: right;
+}
+.text-justify-not-xs, .text-justify-not-sm, .text-justify-not-md, .text-justify-not-lg {
+    text-align: justify;
+}
+
+@media (max-width: 767px) {
+    .text-left-not-xs, .text-not-xs-center, .text-right-not-xs, .text-justify-not-xs {
+        text-align: inherit;
+    }
+    .text-xs-left {
+        text-align: left;
+    }
+    .text-xs-center {
+        text-align: center;
+    }
+    .text-xs-right {
+        text-align: right;
+    }
+    .text-xs-justify {
+        text-align: justify;
+    }
+}
+@media (min-width: 768px) {
+    .text-left-not-sm, .text-center-not-sm, .text-right-not-sm, .text-justify-not-sm {
+        text-align: inherit;
+    }
+    .text-sm-left {
+        text-align: left;
+    }
+    .text-sm-center {
+        text-align: center;
+    }
+    .text-sm-right {
+        text-align: right;
+    }
+    .text-sm-justify {
+        text-align: justify;
+    }
+}
+@media (min-width: 992px) {
+    .text-left-not-md, .text-center-not-md, .text-right-not-md, .text-justify-not-md {
+        text-align: inherit;
+    }
+    .text-md-left {
+        text-align: left;
+    }
+    .text-md-center {
+        text-align: center;
+    }
+    .text-md-right {
+        text-align: right;
+    }
+    .text-md-justify {
+        text-align: justify;
+    }
+}
+@media (min-width: 1200px) {
+    .text-left-not-lg, .text-center-not-lg, .text-right-not-lg, .text-justify-not-lg {
+        text-align: inherit;
+    }
+    .text-lg-left {
+        text-align: left;
+    }
+    .text-lg-center {
+        text-align: center;
+    }
+    .text-lg-right {
+        text-align: right;
+    }
+    .text-lg-justify {
+        text-align: justify;
+    }
+}
 
 @media (min-width: 768px) {
 	/* seems to fix a problem with core bootstrap 3, where the right nav bar has no padding on the right */
