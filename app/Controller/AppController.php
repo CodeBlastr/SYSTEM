@@ -1099,7 +1099,7 @@ class AppController extends Controller {
 			// debug($this->Session->read());
 			// debug($aro);
 			// debug($aco);
-			// break;
+			// exit;
 			//Sets the response status code to 401 needed for ajax calls
 			//Otherwise it will return 200 calling any success callback
 			$this->response->statusCode(401);
