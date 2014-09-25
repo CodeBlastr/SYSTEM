@@ -104,6 +104,17 @@ $(function() {
 	   		e.preventDefault();
 	   }
     });
+    // handle form-split submit stop
+    $('.form-split').on('submit', function(event) {
+    	that = this;
+		if ($('.last.step', that).is(':visible')) {
+			return true; // submit the form as normal
+		} else {
+			$('.next:visible', that).trigger('click');
+			event.preventDefault();
+		}
+    });
+
     // navigation element for a split form
     $('.form-split-navigation').on('click', 'a', function(e) {
     	if ($('form.form-split').valid()) {
