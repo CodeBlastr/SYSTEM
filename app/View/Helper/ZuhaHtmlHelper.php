@@ -97,6 +97,9 @@ class ZuhaHtmlHelper extends HtmlHelper {
 		if ($url) {
 			return sprintf($this->_tags['link'], $this->url($url), null, $image);
 		}
+		$image = $options['responsive'] ? preg_replace('/height=".*?"/', '', $image) : $image;
+		$image = $options['responsive'] ? preg_replace('/width=".*?"/', '', $image) : $image;
+		$image = $options['responsive'] ? preg_replace('/responsive=".*?"/', '', $image) : $image;
 		return $image;
 	}
 
@@ -485,6 +488,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
  	public function markdown($text) {
  		App::uses('ParsedownHelper', 'View/Helper');
  		$Parsedown = new ParsedownHelper($this->View);
+		$Parsedown->setBreaksEnabled(true);
 		return $Parsedown->text($text);
  	}
 
