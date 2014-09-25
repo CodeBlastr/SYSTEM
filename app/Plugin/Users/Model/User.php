@@ -67,7 +67,7 @@ class AppUser extends UsersAppModel {
 				),
 			),
 			'email' => array(
-        		'rule'    => array('email', true),
+        		'rule'    => 'email',
         		'message' => 'Please supply a valid email address.',
 				'allowEmpty' => true
     		),
@@ -199,23 +199,17 @@ class AppUser extends UsersAppModel {
 				'foreign_key' => 'user_id'
 				);
 		}
-		if (CakePlugin::loaded('Products')) {
-			$this->hasMany['ProductBrand'] = array(
-				'className' => 'Products.ProductBrand',
-				'foreignKey' => 'owner_id',
-				'dependent' => false
-				);
-		}
+		// commenting to test and see if we can remove this 9/9/2014 - RK
+		// if (CakePlugin::loaded('Products')) {
+			// $this->hasMany['ProductBrand'] = array(
+				// 'className' => 'Products.ProductBrand',
+				// 'foreignKey' => 'owner_id',
+				// 'dependent' => false
+				// );
+		// }
 		if (CakePlugin::loaded('Connections')) {
 			$this->hasMany['Connection'] = array(
 				'className' => 'Connections.Connection',
-				'foreignKey' => 'user_id',
-				'dependent' => true
-				);
-		}
-		if (CakePlugin::loaded('Estimates')) {
-			$this->hasMany['Estimates'] = array(
-				'className' => 'Estimates.Estimate',
 				'foreignKey' => 'user_id',
 				'dependent' => true
 				);
@@ -347,12 +341,10 @@ class AppUser extends UsersAppModel {
 		if (isset($this->data[$this->alias]['username']) && strpos($this->data[$this->alias]['username'], '@') && empty($this->data[$this->alias]['email'])) {
 			$this->data[$this->alias]['email'] = $this->data[$this->alias]['username'];
 		}
-
 		if (!empty($this->data[$this->alias]['password'])) {
 			App::uses('AuthComponent', 'Controller/Component');
 	        $this->data[$this->alias]['password'] = AuthComponent::password($this->data[$this->alias]['password']);
 		}
-
     	if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
 			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
 		}
@@ -592,9 +584,10 @@ class AppUser extends UsersAppModel {
 				$data['User']['last_ip'] = $_SERVER["REMOTE_ADDR"];
 				$data['User']['view_prefix'] = $user['UserRole']['view_prefix'];
 				$data['User']['user_role_id'] = $user['UserRole']['id'];
-				if (empty($user['User']['forgot_key']) || $user['User']['forgot_key'][0] != 'W') {
-					unset($data['User']['password']);
-					unset($data['User']['username']);
+				if (empty($user[$this->alias]['forgot_key']) || $user[$this->alias]['forgot_key'][0] != 'W') {
+					unset($data[$this->alias]['password']);
+					unset($data[$this->alias]['username']);
+					$this->create(); // have to have this!!!! so that passwords don't et rehashed (because $this->data could still be set)
 					if ($this->save($data, array('validate' => false))) {
 						return $user;
 					} else {
@@ -711,6 +704,8 @@ class AppUser extends UsersAppModel {
 				} else {
 					throw new Exception(__('Verfication key failed to update.'));
 				}
+			} else {
+				throw new Exception(__('No user found.'));
 			}
 		}
 		return $user;
@@ -856,7 +851,7 @@ class AppUser extends UsersAppModel {
 				$this->generateReferalCode($data);
 			} else {
 				$data['User']['reference_code'] = $code;
-				if($this->save($data, false)){
+				if ($this->save($data, false)) {
 					return $code;
 				} else {
 					return false;
