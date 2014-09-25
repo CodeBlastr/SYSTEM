@@ -231,7 +231,7 @@ class AppContact extends ContactsAppModel {
  */
 	public function afterSave($created, $options = array()) {
 		$this->notifyAssignee();
-		return parent::afterSave($created);
+		return parent::afterSave($created, $options);
 	}
 
 /**

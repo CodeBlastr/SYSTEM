@@ -86,7 +86,7 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->paginate['conditions']['Webpage.type'] = $type;
 		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = 0;
 		$this->paginate['conditions']['AND']['OR'][]['Webpage.parent_id'] = null;
-		$this->paginate['contain'][] = 'Child';
+		$this->paginate['contain']['Child'] = array('order' => array('Child.lft' => 'ASC'));
 		$this->set('webpages', $webpages = $this->paginate());
 		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
 		$this->set('displayName', 'title');
@@ -264,6 +264,7 @@ class AppWebpagesController extends WebpagesAppController {
 		if (!$this->Webpage->types($type)) {
 			throw new NotFoundException(__('Invalid content type'));
 		}
+		$this->set('types', $types = $this->Webpage->types());
 		$this->request->data['Webpage']['type'] = $type;
         $add = method_exists($this, '_add' . ucfirst($type)) ? '_add' . ucfirst($type) : '_addContent';
         $this->$add($parentId);
