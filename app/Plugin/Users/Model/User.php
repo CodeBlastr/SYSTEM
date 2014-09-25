@@ -26,7 +26,7 @@ class AppUser extends UsersAppModel {
 		'password' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => true,
+				'allowEmpty' => false,
 				'message' => 'Please enter a value for password',
 				'required' => 'create'
 				),
@@ -49,7 +49,7 @@ class AppUser extends UsersAppModel {
 		'username' => array(
 			'notempty' => array(
 				'rule' => 'notEmpty',
-				'allowEmpty' => true,
+				'allowEmpty' => false,
 				'message' => 'Please enter a value for username/email',
 				'required' => 'create' // field key User.username must be present during User::create
 				),
@@ -338,6 +338,22 @@ class AppUser extends UsersAppModel {
 	}
 
 /**
+ * After find
+ * 
+ */
+ 	public function afterFind($results = array(), $primary = false) {
+		if (!empty($results[$i][$this->alias]['first_name'])) {
+			for ($i=0; $i < count($results); $i++) {
+				$results[$i][$this->alias]['full_name'] = $results[$i][$this->alias]['first_name'] . ' ' . $results[$i][$this->alias]['last_name'];
+			}
+		}
+		if (!empty($results['first_name'])) {
+			$results['full_name'] = $results['first_name'] . ' ' . $results['last_name'];
+		}
+		return parent::afterFind($results, $primary);
+ 	}
+
+/**
  * before save callback
  *
  * @todo move all of the items in beforeSave() into _cleanData() and put $this->data = $this->_cleanData($this->data) here. Then we can get rid of the add() function all together.
@@ -370,18 +386,16 @@ class AppUser extends UsersAppModel {
 		if (!empty($this->data['UserGroup']['UserGroup']['id'])) {
 			$this->UserGroup->UsersUserGroup->add($this->data);
 		}
-
 		if ($created) {
 			$this->data = $this->__afterCreation($this->data);
 		}
-
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
 		if($this->autoLogin && CakeSession::read('Auth.User.id') == $this->data[$this->alias]['id']) {
 			CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
 		}
-		return parent::afterSave($created);
+		return parent::afterSave($created, $options);
 	}
 
 /**
@@ -422,34 +436,26 @@ class AppUser extends UsersAppModel {
  * @deprecated
  *
  * @todo should probably be declared deprecated, as saveUserAndContact() seems more appropriate than overriding the saveAll ^JB
+ * @todo Done, left to see if it messes stuff up ^RK
  */
- 	public function saveAll($data = null, $options = array()) {
-		//$data = $this->_userContact($data);
- 		return parent::saveAll($data, $options);
- 	}
+ 	// public function saveAll($data = null, $options = array()) {
+		// //$data = $this->_userContact($data);
+ 		// return parent::saveAll($data, $options);
+ 	// }
 
 /**
  * Save user and contact
  * 
+ * REMOVED : It's Too Complicated, Needs to be Simplified (maybe a callback or something that the contact model can hook into)
  * @param array
  */
-	public function saveUserAndContact($data) {
-		$data = $this->_userContact($data);
-		$data = $this->save($data);
-		return $data;
-	}
-
-/**
- * Handles the data of adding of a user // DEPRECATED WILL BE REMOVED 07/18/2013 RK
- *
- * @deprecated
- *
- * @param {array}		An array in the array(model => array(field)) format
- * @todo		 		Not sure the rollback for user_id works in all cases (Line 66)
- */
-	public function add($data = null, $options = array()) {
-		return $this->saveAll($data, $options);
-	}
+	// public function saveUserAndContact($data) {
+		// $data = $this->_userContact($data);
+		// $data = $this->save($data);
+		// debug($data);
+		// exit;
+		// return $data;
+	// }
 
 
 /**
@@ -473,38 +479,39 @@ class AppUser extends UsersAppModel {
  *
  * @todo	Finish the contact adding in the case where the data field exists.
  * @todo	We need to have be able to specify default contact details, like status, industry settings.
+ * @todo	Remove this and make it a callback of some kind that the contact model can hook into
  */
-	protected function _userContact($data) {
-		if (!empty($data['Contact']['id'])) {
-			$contact = $this->Contact->findById($data['Contact']['id']);
-			$data['Contact'] = Set::merge($contact['Contact'], $data['Contact']);
-		} else if (!empty($data[$this->alias]['id'])) {
-			$contact = $this->Contact->findByUserId($data[$this->alias]['id']);
-			if (!empty($contact)) {
-				$data['Contact'] = $contact['Contact'];
-				$data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : $contact['Contact']['name'];
-			} else {
-				$data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'N/A';
-			}
-		} else if (!empty($data['Contact']['user_id'])) {
-			debug($this->Contact->findByUserId($data['Contact']['user_id']));
-			exit;
-		} else {
-			$data['Contact']['name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'Not Provided';
-		}
-		$contactData = $data;
-		unset($contactData['User']); // we will save this in the user model not from the contact model
-
-		if ($this->Contact->saveAll($contactData)) {
-			unset($data['Contact']);
-			if ( $this->Contact->id ) {
-				$data['Contact']['id'] = $this->Contact->id;
-			}
-		}
-		$data = $this->_cleanAddData($data);
-
-		return $data;
-	}
+	// protected function _userContact($data) {
+		// if (!empty($data['Contact']['id'])) {
+			// $contact = $this->Contact->findById($data['Contact']['id']);
+			// $data['Contact'] = Set::merge($contact['Contact'], $data['Contact']);
+		// } else if (!empty($data[$this->alias]['id'])) {
+			// $contact = $this->Contact->findByUserId($data[$this->alias]['id']);
+			// if (!empty($contact)) {
+				// $data['Contact'] = $contact['Contact'];
+				// $data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : $contact['Contact']['name'];
+			// } else {
+				// $data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'N/A';
+			// }
+		// } else if (!empty($data['Contact']['user_id'])) {
+			// debug($this->Contact->findByUserId($data['Contact']['user_id']));
+			// exit;
+		// } else {
+			// $data['Contact']['name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'Not Provided';
+		// }
+		// $contactData = $data;
+		// unset($contactData['User']); // we will save this in the user model not from the contact model
+// 
+		// if ($this->Contact->saveAll($contactData)) {
+			// unset($data['Contact']);
+			// if ( $this->Contact->id ) {
+				// $data['Contact']['id'] = $this->Contact->id;
+			// }
+		// }
+		// $data = $this->_cleanAddData($data);
+// 
+		// return $data;
+	// }
 
 /**
  * Function to change the role of the user submitted
@@ -805,10 +812,10 @@ class AppUser extends UsersAppModel {
 			$data[$this->alias]['last_name'] = trim(preg_replace('/(.*)[ ]/i', '', $data[$this->alias]['full_name']));
 		}
 
-		// update first name and last name into full_name
-		if (!empty($data[$this->alias]['first_name']) && !empty($data[$this->alias]['last_name']) && empty($data[$this->alias]['full_name'])) {
-			$data[$this->alias]['full_name'] = $data[$this->alias]['first_name'] . ' ' . $data[$this->alias]['last_name'];
-		}
+		// Getting rid of this, and making this a virtual field on output
+		// if (!empty($data[$this->alias]['first_name']) && !empty($data[$this->alias]['last_name']) && empty($data[$this->alias]['full_name'])) {
+			// $data[$this->alias]['full_name'] = $data[$this->alias]['first_name'] . ' ' . $data[$this->alias]['last_name'];
+		// }
 
 		// setup a verification key
 		if (empty($data[$this->alias]['forgot_key']) && defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
