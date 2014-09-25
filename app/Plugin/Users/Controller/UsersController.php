@@ -232,12 +232,11 @@ class AppUsersController extends UsersAppController {
 	public function procreate($userRoleId = null) {
 		if ($this->request->is('post')) {
 			$this->User->autoLogin = false;
-			try {
-				$this->User->procreate($this->request->data);
+			if ($this->User->procreate($this->request->data)) {
 				$this->Session->setFlash(__('User created.'));
 				$this->redirect(array('action' => 'dashboard'));
-			} catch (Exception $e) {
-				$this->Session->setFlash(__($e->getMessage()));
+			} else {
+				$this->Session->setFlash(__('Error, user save failed ' . ZuhaInflector::flatten($this->User->invalidFields())));
 			}
 		}
 		$userRoles = $this->User->UserRole->find('list', array('conditions' => array(
@@ -632,7 +631,7 @@ class AppUsersController extends UsersAppController {
 			if ($this->User->save($this->request->data)) {
 				$this->Session->setFlash('Password changed.');
 				$this->request->data = $this->User->read();
-				$this->_login();
+				$this->_login($this->request->data);
 			} else {
 				$this->Session->setFlash('Password could not be changed.');
 				$this->redirect(array('action' => 'forgot_password'));
