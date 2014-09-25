@@ -1,8 +1,8 @@
-<h1><?php echo __('Reset Password'); ?></h1>
+<h1><?php echo __('Reset Password Request'); ?></h1>
 <div class="users form" id="forgotPassword">
 <?php
     echo $this->Form->create('User');
-    echo $this->Form->input('username', array('label' => 'Username or Email'));
+    echo $this->Form->input('username', array('label' => 'Enter your Username or Email to receive a, one time use, password reset link. '));
     echo $this->Form->end('Submit');
 ?>
 </div>

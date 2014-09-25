@@ -232,12 +232,11 @@ class AppUsersController extends UsersAppController {
 	public function procreate($userRoleId = null) {
 		if ($this->request->is('post')) {
 			$this->User->autoLogin = false;
-			try {
-				$this->User->procreate($this->request->data);
+			if ($this->User->procreate($this->request->data)) {
 				$this->Session->setFlash(__('User created.'));
 				$this->redirect(array('action' => 'dashboard'));
-			} catch (Exception $e) {
-				$this->Session->setFlash(__($e->getMessage()));
+			} else {
+				$this->Session->setFlash(__('Error, user save failed ' . ZuhaInflector::flatten($this->User->invalidFields())));
 			}
 		}
 		$userRoles = $this->User->UserRole->find('list', array('conditions' => array(
