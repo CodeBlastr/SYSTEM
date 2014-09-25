@@ -187,7 +187,7 @@ class AppUsersController extends UsersAppController {
 				$this->request->data['User']['user_role_id'] = defined('__APP_DEFAULT_USER_REGISTRATION_ROLE_ID') ? __APP_DEFAULT_USER_REGISTRATION_ROLE_ID : null;
 			}
 
-			if ($this->User->saveUserAndContact($this->request->data)) {
+			if ($this->User->save($this->request->data)) {
 				if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 					$this->Session->setFlash(__('Success, please check your email'), 'flash_success');
 					$this->Auth->logout();
@@ -265,10 +265,10 @@ class AppUsersController extends UsersAppController {
 		}
 		if ($this->User->delete($id)) {
 			$this->Session->setFlash(__('User #'.$id.' deleted'), 'flash_success');
-			$this->redirect($this->referer());
 		} else {
 			$this->Session->setFlash(__('Error deleting user'), 'flash_danger');
 		}
+		$this->redirect($this->referer());
 	}
 
 /**
