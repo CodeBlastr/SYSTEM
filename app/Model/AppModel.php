@@ -322,6 +322,7 @@ class AppModel extends Model {
 				$Webpage = new Webpage();
 				$webpage = $Webpage->findByName($name);
 				if (!empty($webpage)) {
+					// $message should be something like this : array('SomeModel' => array('some_field' => 'some_value'));
 					$message = $Webpage->replaceTokens($webpage['Webpage']['content'], $message);	
 					$subject = $webpage['Webpage']['title'];
 				} else {

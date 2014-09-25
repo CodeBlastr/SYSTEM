@@ -13,8 +13,14 @@
 			</fieldset>
 		</div>
 		<div class="col-md-3" id="webpages-sidebar">
-			<div class="panel">
-			</div>
+			<strong>Example content</strong>
+			<p>
+				You can mix static and dynamic content by using special delimeters 
+				in your text. For example you might have a product email, and need
+				to use the *| Product.name |*.   In which case that piece of 
+				text would be replaced with the actual Product name.  Maybe you need
+				the to say, thank you  *| User.full_name |* too. Well that's how it's done.
+			</p>
 		</div>
 	</div>
 	<?php echo $this->Form->submit('Save'); ?>

@@ -55,6 +55,12 @@ foreach ($menus as $menu) { ?>
 <?php echo $this->Element('paging'); ?>
 
 <?php
+// set the contextual breadcrumb items
+$this->set('context_crumbs', array('crumbs' => array(
+	$this->Html->link(__('Admin Dashboard'), '/admin'),
+	$this->Html->link(__('Appearance Dashboard'), '/admin#tagThemes'),
+	$page_title_for_layout,
+)));
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
     array(

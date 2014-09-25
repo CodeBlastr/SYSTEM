@@ -3,11 +3,10 @@
 	<div class="clearfix">
 		<div class="webpages form col-md-9">
 			<fieldset>
-		    	<?php
-				echo $this->Form->input('Webpage.type', array('type' => 'hidden', 'value' => $parent['Webpage']['type']));
-				echo $this->Form->input('Webpage.parent_id', array('type' => 'hidden', 'value' => $parent['Webpage']['id']));
-				echo $this->Form->input('Webpage.name', array('label' => 'Internal Page Name'));
-				echo $this->Form->input('Webpage.content', array('type' => 'richtext')); ?>
+		    	<?php echo $this->Form->input('Webpage.parent_id', array('type' => 'hidden', 'value' => $parent['Webpage']['id'])); ?>
+		    	<?php echo $this->Form->input('Webpage.name', array('label' => 'Internal Page Name')); ?>
+				<?php echo $this->Form->input('Webpage.content', array('type' => 'richtext')); ?>
+		    	<?php echo $this->Form->input('Webpage.type', array('label' => 'Page Type', 'value' => $parent['Webpage']['type'])); ?>
 			</fieldset>
 		</div>
 		<div class="col-md-3" id="webpages-sidebar">
