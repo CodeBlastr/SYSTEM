@@ -450,6 +450,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 
 			$namedWrong = array(
 				'answer_answers' => 'Answers',
+				'answers_results' => 'Answers',
 				'answer_submissions' => 'Answers',
 				'product_options' => 'Products',
 				'products_product_options' => 'Products',
