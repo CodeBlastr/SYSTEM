@@ -89,6 +89,10 @@ class AppController extends Controller {
  */
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
+		// get rid of double slashes in the url (there may be a better spot for this, like htaccess, so move it there if you're so inclined)
+		if (strpos($this->request->here, '//') === 0 || strpos($this->request->here, '//') > 0) {
+			$this->redirect(str_replace('//', '/',$this->request->here));	
+		}
 		//Set the adminbar view var so it can be overridden later
 		$this->set('adminbar', true);
 		$this->_getComponents();
