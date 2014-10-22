@@ -62,7 +62,7 @@ class OptimizableBehavior extends ModelBehavior {
                     'className' => 'Alias',
                     'foreignKey' => 'value',
                     'dependent' => true,
-                    'conditions' => '',
+                    'conditions' => array('Alias.controller' => Inflector::tableize($Model->name)),
                     'fields' => '',
                     'order' => 'Alias.modified DESC'
                     )
