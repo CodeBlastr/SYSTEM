@@ -476,9 +476,10 @@ class AppController extends Controller {
 			$options = $this->_getPaginatorVars($object, $containField);
 			if (!empty($options['fieldName'])) {
 				if (count($contains > 1)) {
-					$this->Paginator->settings['conditions']['OR'][][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
+					// do not change this to $this->Paginator->settings[] without discussion ^ RK (note: didn't work on contacts dashboard)
+					$this->paginate['conditions']['OR'][][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
 				} else {
-					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
 				}
 				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 			} else {
