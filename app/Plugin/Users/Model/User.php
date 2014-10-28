@@ -384,6 +384,7 @@ class AppUser extends UsersAppModel {
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
+		$this->save($data[$this->alias], array('callbacks' => false));
 		if($this->autoLogin && CakeSession::read('Auth.User.id') == $this->data[$this->alias]['id']) {
 			CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
 		}
