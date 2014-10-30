@@ -61,6 +61,20 @@ $this->set('context_crumbs', array('crumbs' => array(
 	$this->Html->link(__('Appearance Dashboard'), '/admin#tagThemes'),
 	$page_title_for_layout,
 )));
+// set contextual search options
+$this->set('forms_search', array(
+    'url' => '/admin/webpages/webpage_menus/index/', 
+	'inputs' => array(
+		array(
+			'name' => 'contains:name', 
+			'options' => array(
+				'label' => '', 
+				'placeholder' => 'Type Your Search and Hit Enter',
+				'value' => !empty($this->request->params['named']['contains']) ? substr($this->request->params['named']['contains'], strpos($this->request->params['named']['contains'], ':') + 1) : null,
+				)
+			)
+		)
+	));
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
     array(
