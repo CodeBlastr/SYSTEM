@@ -18,6 +18,13 @@
 </div>
 
 <?php
+// set the contextual breadcrumb items
+$this->set('context_crumbs', array('crumbs' => array(
+	$this->Html->link(__('Admin Dashboard'), '/admin'),
+	$this->Html->link(__('All Elements'), array('action' => 'index', 'element')),
+	'Element Builder'
+)));
+// set the contextual menu items
 $menuItems = array(
 	$this->Html->link(__('List'), array('controller' => 'webpages', 'action' => 'index', 'element')),
 	$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add', 'element'), array('title' => 'Add Webpage')),
