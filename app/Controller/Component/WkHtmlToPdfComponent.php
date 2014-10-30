@@ -28,7 +28,7 @@ class WkHtmlToPdfComponent extends Component {
 	public function rasterizePdf($autoDownload = true, $options = array(), $filename = 'rasterize', $renderfile = false, $force = true) {
 
 		$this->controller->autoRender = false;
-		
+
 		//Check if output name is supplied if not generates a random filename
 		if(!$renderfile) {
 			$output = "output{$this->randomNumber}.pdf";
@@ -36,7 +36,7 @@ class WkHtmlToPdfComponent extends Component {
 			$output = "{$renderfile}.pdf";
 		}
 		$output = $this->filepath . DS . $output;
-		
+
 		//If filename is send and force is false checks if file exists,
 		//If it does send that instead
 		if((!$force && $renderfile) && file_exists($output)) {
@@ -50,7 +50,7 @@ class WkHtmlToPdfComponent extends Component {
 				return $output;
 			}
 		}
-		
+
 		$this->controller->render();
 		$view = $this->controller->View->output;
 		$output = str_replace(' ','_',$output);
@@ -63,7 +63,7 @@ class WkHtmlToPdfComponent extends Component {
 			$this->viewFile->close();
 
 			$url = 'http://' . $_SERVER ['HTTP_HOST'] . '/theme/Default/upload/pdf/' . $this->viewFile->name;
-			
+
 			$commands = ' "letter" ';
 
 			if (PHP_OS === 'Darwin') {
@@ -84,7 +84,7 @@ class WkHtmlToPdfComponent extends Component {
 				}
 			}
 			exec($cmd);
-			
+
 			if ($autoDownload) {
 				// send file to browser and trigger download dialogue box
 				if(isset($options['downloadFileName'])){
