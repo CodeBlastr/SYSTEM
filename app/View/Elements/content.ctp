@@ -121,7 +121,7 @@ if (!empty($defaultTemplate)) {
 		$vars = array('id' => $menu['name']) + $menu['variables'];
 		// removed cache temporarily
 		// $menuCfg['cache'] = array('key' => 'menu-'.$menuCfg['id'], 'time' => '+999 days');
-		$content = str_replace($menuMatch, $this->Element('Webpages.menus', $vars), $content);
+		$content = str_replace($menuMatch, $this->element('Webpages.menus', $vars), $content);
 		$i++;
 	}
 

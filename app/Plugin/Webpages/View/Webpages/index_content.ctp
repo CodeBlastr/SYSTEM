@@ -7,6 +7,7 @@
 					<h4>
 						<?php echo $this->Html->link($webpage['Webpage']['name'], $webpage['Webpage']['_alias']); ?>
 						<?php echo $this->Html->link('Edit', array('action' => 'edit', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+						<?php echo $this->Html->link('Copy', array('action' => 'copy', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
 						<?php echo $this->Html->link('Add Sub Page', array('action' => 'add', 'sub', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
 						<?php echo $this->Html->link('<i class="glyphicon glyphicon-circle-arrow-up"></i>', array('action' => 'moveup', $webpage['Webpage']['id'], $this->Paginator->counter('{:count}')), array('title' => 'Move to Top', 'class' => 'btn btn-default btn-xs', 'escape' => false)); ?>
 						<?php echo $this->Html->link('<i class="glyphicon glyphicon-chevron-up"></i>', array('action' => 'moveup', $webpage['Webpage']['id'], 1), array('title' => 'Move Up One Place', 'class' => 'btn btn-default btn-xs', 'escape' => false)); ?>
