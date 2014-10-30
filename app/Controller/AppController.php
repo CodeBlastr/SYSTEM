@@ -89,6 +89,10 @@ class AppController extends Controller {
  */
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
+		// get rid of double slashes in the url (there may be a better spot for this, like htaccess, so move it there if you're so inclined)
+		if (strpos($this->request->here, '//') === 0 || strpos($this->request->here, '//') > 0) {
+			$this->redirect(str_replace('//', '/',$this->request->here));	
+		}
 		//Set the adminbar view var so it can be overridden later
 		$this->set('adminbar', true);
 		$this->_getComponents();
@@ -481,7 +485,7 @@ class AppController extends Controller {
 					// THIS CANNOT BE Paginator->settings ^ 10/13/14 RK
 					$this->paginate['conditions']['OR'][][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
 				} else {
-					// THIS CANNOT BE Paginator->settings ^ 10/13/14 RK
+					// THIS CANNOT BE Paginator->settings ^ 10/13/14 RK (note: didn't work on contacts dashboard)
 					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
 				}
 				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
