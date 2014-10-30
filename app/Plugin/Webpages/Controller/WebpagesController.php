@@ -547,6 +547,44 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('title_for_layout', __('Export %s', $this->request->data['Template']['layout']));
  	}
 
+/**
+ * Copy a page
+ */
+ 	public function copy($id) {
+ 		$record = $this->Webpage->find('first', array('conditions' => array('Webpage.id' => $id)));
+		$newName = $record['Webpage']['name'] . ' (copy)';
+		$newAlias = $record['Alias']['name'] . '-copy';
+		$fields = array('id', 'name', 'lft', 'rght', 'created', 'modified');
+		$record['Webpage'] = $this->_stripFields($record['Webpage'], $fields);
+		$record['Alias'] = $this->_stripFields($record['Alias'], $fields);
+		$record['Webpage']['name'] = $newName;
+		$record['Alias']['name'] = $newAlias;
+		if ($this->Webpage->save($record)) {
+			$this->Session->setFlash(__('Copied'), 'flash_success');
+		} else {
+			$this->Session->setFlash(__('Copy failed, please try again.'), 'flash_success');
+		}
+		$this->redirect($this->referer()); 
+ 	}
+
+/**
+ * Strips unwanted fields from $record, taken from
+ * the 'stripFields' setting.
+ *
+ * @param object $Model Model object
+ * @param array $record
+ * @return array
+ */
+	protected function _stripFields($record, $fields) {
+		foreach ($fields as $field) {
+			if (array_key_exists($field, $record)) {
+				unset($record[$field]);
+			}
+		}
+
+		return $record;
+	}
+
  
  /**
   * Convience Function checks if files exists in sites pat.
