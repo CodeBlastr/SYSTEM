@@ -388,10 +388,10 @@ class AppController extends Controller {
 			$options = $this->_getPaginatorVars($object, $filterField);
 			if (!empty($options['fieldName'])) {
 				if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {
-					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >'] = $options['fieldValue'];
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >'] = $options['fieldValue'];
 				} else {
 					// this line
-					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName']] = $options['fieldValue'];
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName']] = $options['fieldValue'];
 					// was this, but the [] at the end of fielName made null not work (not sure if it
 					// broke anything to change) (works on bakkenbook homepage category_search)
 					//$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']][] =
