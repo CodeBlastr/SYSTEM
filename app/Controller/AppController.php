@@ -89,6 +89,10 @@ class AppController extends Controller {
  */
 	public function __construct($request = null, $response = null) {
 		parent::__construct($request, $response);
+		// get rid of double slashes in the url (there may be a better spot for this, like htaccess, so move it there if you're so inclined)
+		if (strpos($this->request->here, '//') === 0 || strpos($this->request->here, '//') > 0) {
+			$this->redirect(str_replace('//', '/',$this->request->here));	
+		}
 		//Set the adminbar view var so it can be overridden later
 		$this->set('adminbar', true);
 		$this->_getComponents();
@@ -384,10 +388,11 @@ class AppController extends Controller {
 			$options = $this->_getPaginatorVars($object, $filterField);
 			if (!empty($options['fieldName'])) {
 				if ($options['schema'][$options['fieldName']]['type'] == 'datetime' || $options['schema'][$options['fieldName']]['type'] == 'date') {
-					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >'] = $options['fieldValue'];
+					// THIS CANNOT BE Paginator->settings ^ 10/13/14 RK
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >'] = $options['fieldValue'];
 				} else {
-					// this line
-					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName']] = $options['fieldValue'];
+					// THIS CANNOT BE Paginator->settings ^ 10/13/14 RK
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName']] = $options['fieldValue'];
 					// was this, but the [] at the end of fielName made null not work (not sure if it
 					// broke anything to change) (works on bakkenbook homepage category_search)
 					//$this->paginate['conditions'][$options['alias'].'.'.$options['fieldName']][] =
@@ -445,7 +450,8 @@ class AppController extends Controller {
 			$starterField = urldecode($starterField);
 			$options = $this->_getPaginatorVars($object, $starterField);
 			if (!empty($options['fieldName'])) {
-				$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = $options['fieldValue'] . '%';
+				// THIS CANNOT BE Paginator->settings ^ 10/13/14 RK
+				$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = $options['fieldValue'] . '%';
 				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 			} else {
 				// no matching field don't filter anything
@@ -476,9 +482,11 @@ class AppController extends Controller {
 			$options = $this->_getPaginatorVars($object, $containField);
 			if (!empty($options['fieldName'])) {
 				if (count($contains > 1)) {
-					$this->Paginator->settings['conditions']['OR'][][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
+					// THIS CANNOT BE Paginator->settings ^ 10/13/14 RK
+					$this->paginate['conditions']['OR'][][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
 				} else {
-					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
+					// THIS CANNOT BE Paginator->settings ^ 10/13/14 RK (note: didn't work on contacts dashboard)
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' LIKE'] = '%' . $options['fieldValue'] . '%';
 				}
 				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 			} else {

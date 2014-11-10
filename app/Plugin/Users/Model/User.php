@@ -384,6 +384,7 @@ class AppUser extends UsersAppModel {
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
+		$this->save($data[$this->alias], array('callbacks' => false));
 		if($this->autoLogin && CakeSession::read('Auth.User.id') == $this->data[$this->alias]['id']) {
 			CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
 		}
@@ -594,7 +595,11 @@ class AppUser extends UsersAppModel {
 				if (empty($user[$this->alias]['forgot_key']) || $user[$this->alias]['forgot_key'][0] != 'W') {
 					unset($data[$this->alias]['password']);
 					unset($data[$this->alias]['username']);
-					$this->create(); // have to have this!!!! so that passwords don't et rehashed (because $this->data could still be set)
+					// have to have this!!!! so that passwords don't et rehashed (because $this->data could still be set)
+					// 
+					// Calling create() re-initialized this->data, so any database defaults are being set here.. and overwriting current values (like User.locale)
+					// Unsetting the password before save() is enough to prevent password hashing. ^JB
+					//$this->create();
 					if ($this->save($data, array('validate' => false))) {
 						return $user;
 					} else {
