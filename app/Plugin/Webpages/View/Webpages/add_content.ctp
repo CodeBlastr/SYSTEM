@@ -40,6 +40,12 @@
 					<p>Check these boxes to restrict access to only the chosen group(s) for this specific page.</p>
 			    	<?php echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => 'User Roles', 'type' => 'select', 'multiple' => 'checkbox', 'options' => $userRoles)); ?>
 				</div>
+				
+				<h4 data-toggle="collapse" data-target=".template-group" data-parent="#webpages-sidebar">Template Settings</h4>
+				<hr />
+				<div class="template-group collapse">
+					<?php echo $this->Form->input('Webpage.template_id', array('empty' => '-- Select Template --', 'label' => __('Choose Template <small>(Leave blank for default)</small>'))); ?>
+				</div>
 			</div>
 		</div>
 	</div>

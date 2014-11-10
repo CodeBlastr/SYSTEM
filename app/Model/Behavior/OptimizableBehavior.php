@@ -19,7 +19,7 @@ class OptimizableBehavior extends ModelBehavior {
  * 
  * @var bool
  */
-	public $trigger = false;
+	public $trigger = true;
 
 /**
  * Default settings
@@ -107,8 +107,10 @@ class OptimizableBehavior extends ModelBehavior {
 
 /**
  * beforeValidate callback
- *
- * @param object $Model
+ * 
+ * @param Model $Model
+ * @param type $options
+ * @return boolean
  */
 	public function beforeValidate(Model $Model, $options = array()) {
 		if (!empty($Model->data['Alias']['name'])) {
@@ -130,13 +132,12 @@ class OptimizableBehavior extends ModelBehavior {
 		$newAlias = !empty($Model->data['Alias']['name']) ? $Model->data['Alias']['name'] : $Model->data[$Model->alias]['alias'];
 		
 		// this keeps us from trying to save an alias twice (we tried removing it, and it throws an error)
-		$this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
+		//$this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
 		
 		//Added check for the alias won't save if they match
 		if($oldAlias['Alias']['name'] == $newAlias) {
 			$this->trigger = false;
 		}
-		
 		$this->data['Alias'] = $Model->data['Alias'];
         $this->data['Alias']['name'] = $newAlias;
         $this->data[$Model->alias]['alias'] = $newAlias;
@@ -155,13 +156,16 @@ class OptimizableBehavior extends ModelBehavior {
  */
     public function afterSave(Model $Model, $created, $options = array()) {
         if (!empty($this->data['Alias']['name']) && $this->trigger) {
-            $settings = $this->settings[$Model->alias];
             $Alias = ClassRegistry::init('Alias');
-            $data['Alias']['value'] = $Model->data[$Model->alias][$settings['foreignKey']];
-            $data['Alias']['name'] = $this->makeUniqueSlug($Model, $this->data['Alias']['name']);
-			$data['Alias']['plugin'] = $settings['plugin'];
-			$data['Alias']['controller'] = $settings['controller'];
-			$data['Alias']['action'] = $settings['action'];
+			$data = array(
+				'Alias' => array(
+					'value' => $Model->data[$Model->alias][$this->settings[$Model->alias]['foreignKey']],
+					'name' => $this->makeUniqueSlug($Model, $this->data['Alias']['name']),
+					'plugin' => $this->settings[$Model->alias]['plugin'],
+					'controller' => $this->settings[$Model->alias]['controller'],
+					'action' => $this->settings[$Model->alias]['action']
+				)
+			);
 			$Alias->create();
             if ($Alias->save($data)) {
                 return true;
@@ -181,7 +185,7 @@ class OptimizableBehavior extends ModelBehavior {
     public function makeUniqueSlug(Model $Model, $name) {
 		$this->Alias = ClassRegistry::init('Alias');
         $names[] = $name;
-        for($i = 0; $i < 10; $i++){
+        for ($i = 0; $i < 10; $i++){
             $names[] = $name . $i;
         }
 		

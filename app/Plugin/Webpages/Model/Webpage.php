@@ -134,6 +134,8 @@ class AppWebpage extends WebpagesAppModel {
  */
     public $tokens = array();
 	
+    private $_oldTemplateId = false;	
+	
 /**
  * Constructor
  */
@@ -162,9 +164,24 @@ class AppWebpage extends WebpagesAppModel {
  */
 	public function beforeSave($options = array()) {
 		$this->_saveTemplateFiles(); // does not save to the database, so doesn't come back to this beforeSave()
+		$this->data = $this->_cleanData($this->data);
+		//Need to get the old template id before we overwrite it
+		if (!empty($this->data['Webpage']['template_id']) && isset($this->data['Webpage']['id'])) {
+			$this->_oldTemplateId = $this->field('template_id', array('id' => $this->data['Webpage']['id']));
+		}
 		return parent::beforeSave($options);
 	}
 
+/**
+ * Clean Data method
+ */
+    public function _cleanData($data) {
+        if (!empty($data[$this->alias]['data']) && is_array($data[$this->alias]['data'])) {
+            $data[$this->alias]['data'] = json_encode($data[$this->alias]['data']);
+        }
+        return $data;
+    }
+	
 /**
  * After Save
  *
@@ -173,10 +190,12 @@ class AppWebpage extends WebpagesAppModel {
  * @access public
  */
 	public function afterSave($created, $options = array()) {
-        if ($this->data['Webpage']['type'] == 'template') {
-            // template settings are special
-            $this->_syncTemplateSettings($this->id, $this->data);
-        }
+        $id = $this->id; // we do some saving between now and the end so we need to restate $this->id;
+		$this->_saveTemplateSettings();
+//        if ($this->data['Webpage']['type'] == 'template') {
+//            // template settings are special
+//            $this->_syncTemplateSettings($this->id, $this->data);
+//        }
 		if ($created && !empty($this->data['WebpageMenuItem']['parent_id'])) {
 			App::uses('WebpageMenuItem', 'Webpages.Model');
 			$WebpageMenuItem = new WebpageMenuItem();
@@ -185,6 +204,7 @@ class AppWebpage extends WebpagesAppModel {
 				throw new Exception(__('Problem adding menu item for this page.'));
 			}
 		}
+		$this->id = $id;
 		return parent::afterSave($created, $options);
 	}
 
@@ -599,6 +619,7 @@ class AppWebpage extends WebpagesAppModel {
 /**
  * Parse a serialized template url from $this->request
  * 
+ * @deprecated Might be replaced by _url()
  * @param string $request - A serialized $this->request->params string.
  */
     public function serializedTemplateRequest($request) {
@@ -617,24 +638,51 @@ class AppWebpage extends WebpagesAppModel {
         }
         return $url;
     }
+	
+/**
+ * This is used instead of the above on one site who's feature I'm integrating.
+ * I only see serializedTemplateRequest() being used in updateTemplateSettings() anyway.. so might be able to just use this.
+ */
+    public function _url($data) {
+		if (empty($data['Webpage']['url']) && !empty($data['Webpage']['id'])) {
+ 			$data = array('admin' => false, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'view',  $data['Webpage']['id']);
+ 		}
+		
+		if ($data['plugin'] == 'webpages' && $data['controller'] == 'webpages' && $data['action'] == 'view') {
+			return 'webpages/webpages/view/'.$data[0].'/';
+            // webpages get special treatment
+            $url = @Router::reverse($data);
+            $url = strpos($url, '/') === 0 ? substr($url, 1) . '/' : $url . '/';
+        } elseif ($data['action'] ==  'index') {
+            $url = $data['plugin'] . '/' . $data['controller'] . '/' . $data['action'] . '*';
+        } else {
+            unset($data['pass']);
+            unset($data['named']);
+            $url = @Router::reverse($data) . '/*';
+        }
+        return $url;
+    }
 
 /**
  * Update template settings
  * Runs the remove and add settings as needed for a template url change
  * 
+ * NOTE : There might be two use cases conflicting here.  I'm not sure yet. 
+ * 1. Is when you want to save a Webpage, with template_id, so that it auto-adds the url to the template
+ * 2. Is when you want to update a template (this is the one I'm not sure is even a use case)
  * @params array $data
  */
     public function updateTemplateSettings($data) {
-        $data = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']))), $data);
+        $data = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']), 'callbacks' => false)), $data);
         $remove['Webpage']['id'] = $data['Webpage']['template_id'];
-        $remove['Webpage']['url'] = $this->serializedTemplateRequest($data);
+        $remove['Webpage']['url'] = $this->_url($data);
         if ($this->removeTemplateSetting($remove)) {
             // good
         } else {
             throw new Exception(__('Removal of previous template setting failed'));
         }
         if (empty($data['Webpage']['is_default'])) {
-            $data['Webpage']['url'] = $this->serializedTemplateRequest($data);
+        	$data['Webpage']['url'] = $this->_url($data);
             if ($this->addTemplateSetting($data)) {
                 // good
             } else {
@@ -654,11 +702,13 @@ class AppWebpage extends WebpagesAppModel {
  * @param array $data
  */
     public function addTemplateSetting($data) {
-        $template = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']))), $data);
+        // was this, and changed it because we don't need to merge, that I can see : $template = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']))), $data);
+        $template = $this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['template_id'])));
         $urls = $this->templateUrls($template, true);
-        $cleaned['Webpage']['template_urls'] = !empty($urls) ? $urls . PHP_EOL . $template['Webpage']['url'] : $template['Webpage']['url'];
-        $page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);                
-        if ($this->save($page)) {
+        $cleaned['Webpage']['template_urls'] = !empty($urls) ? $urls . PHP_EOL . $data['Webpage']['url'] : $data['Webpage']['url'];
+        $page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);
+        $this->create();
+        if ($this->save($page, array('callbacks' => false))) {
             return true;
         } else {
             return false;
@@ -675,18 +725,38 @@ class AppWebpage extends WebpagesAppModel {
  * @param array $data
  */
     public function removeTemplateSetting($data) {
-        $template = $this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id'])));
-        $urls = $this->templateUrls($template, true);
-        $cleaned['Webpage']['template_urls'] = str_replace("\r\n", '', trim(str_replace($data['Webpage']['url'], '', $urls)));
-        $page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);
-        if ($this->save($page)) {
-            return true;
-        } else {
-            return false;
-        }
+    	if($this->_oldTemplateId) {
+	        $template = $this->find('first', array('conditions' => array('Webpage.id' => $this->_oldTemplateId)));
+			$urls = $this->templateUrls($template, true);
+			$cleaned['Webpage']['template_urls'] = trim(str_replace($data['Webpage']['url'], '', $urls));
+			$page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);
+			$this->create();
+	        if ($this->save($page, array('callbacks' => false))) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+    	}else {
+    		//There was no old settings
+    		return true;
+    	}
     }
 
-    
+/**
+ * Sync the template settings.  Usually when a template is updated.
+ *
+ */
+    private function _saveTemplateSettings() {
+    	if ($this->data['Webpage']['type'] == 'template') {
+    		$this->_syncTemplateSettings();
+		}
+		if (!empty($this->data['Webpage']['template_id'])) {
+			$this->updateTemplateSettings($this->data);
+    		$this->_syncTemplateSettings();
+		}
+		return true;
+    }
+
 /**
  * Sync the template settings.  Usually when a template is updated.
  *
@@ -696,20 +766,12 @@ class AppWebpage extends WebpagesAppModel {
     private function _syncTemplateSettings() {
         $templates = $this->find('all', array(
             'conditions' => array(
-                'Webpage.type' => 'template'
-                ), 
-            'fields' => array(
-                'Webpage.id',
-                'Webpage.name',
-                'Webpage.is_default',
-                'Webpage.template_urls',
-                'Webpage.user_roles',
-                'Webpage.modified'
+                $this->alias . '.type' => 'template'
                 ),
             'order' => array(
-				'Webpage.modified' => 'DESC'
+				$this->alias . '.modified' => 'DESC'
 				)
-            ));	
+            ));
 		// might need to move this to it's own function if to be used anywhere else.
 		// checks for more than one default template being set
 		// @todo do it on a per user_role basis, so that you can have defaults per user role
