@@ -158,7 +158,7 @@ class AppWebpage extends WebpagesAppModel {
 /**
  * Before Save
  *
- * @param boolean $created
+ * @param array $options
  * @return boolean
  * @access public
  */
@@ -651,7 +651,7 @@ class AppWebpage extends WebpagesAppModel {
 		if ($data['plugin'] == 'webpages' && $data['controller'] == 'webpages' && $data['action'] == 'view') {
 			return 'webpages/webpages/view/'.$data[0].'/';
             // webpages get special treatment
-            $url = @Router::reverse($data);
+            $url = @Router::reverse($data); // seems to be returning the slug URL; possibly because we are now using routes.php
             $url = strpos($url, '/') === 0 ? substr($url, 1) . '/' : $url . '/';
         } elseif ($data['action'] ==  'index') {
             $url = $data['plugin'] . '/' . $data['controller'] . '/' . $data['action'] . '*';
@@ -674,8 +674,12 @@ class AppWebpage extends WebpagesAppModel {
  */
     public function updateTemplateSettings($data) {
         $data = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']), 'callbacks' => false)), $data);
-        $remove['Webpage']['id'] = $data['Webpage']['template_id'];
-        $remove['Webpage']['url'] = $this->_url($data);
+		$remove = array(
+			'Webpage' => array(
+				'id' => $data['Webpage']['template_id'],
+				'url' => $this->_url($data)
+			)
+		);
         if ($this->removeTemplateSetting($remove)) {
             // good
         } else {
@@ -700,10 +704,15 @@ class AppWebpage extends WebpagesAppModel {
  * And add the url given by $data[Webpage][url] to it.
  * 
  * @param array $data
+ * @return boolean
  */
     public function addTemplateSetting($data) {
         // was this, and changed it because we don't need to merge, that I can see : $template = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']))), $data);
         $template = $this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['template_id'])));
+		// don't need to add the setting if it's the default template
+		if ($template['Webpage']['is_default'] == 1) {
+			return true;
+		}
         $urls = $this->templateUrls($template, true);
         $cleaned['Webpage']['template_urls'] = !empty($urls) ? $urls . PHP_EOL . $data['Webpage']['url'] : $data['Webpage']['url'];
         $page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);
@@ -723,6 +732,7 @@ class AppWebpage extends WebpagesAppModel {
  * And removes the url given by $data[Webpage][url] from it.
  * 
  * @param array $data
+ * @return boolean
  */
     public function removeTemplateSetting($data) {
     	if($this->_oldTemplateId) {
@@ -749,11 +759,11 @@ class AppWebpage extends WebpagesAppModel {
     private function _saveTemplateSettings() {
     	if ($this->data['Webpage']['type'] == 'template') {
     		$this->_syncTemplateSettings();
-		}
-		if (!empty($this->data['Webpage']['template_id'])) {
+		} elseif (!empty($this->data['Webpage']['template_id'])) {
 			$this->updateTemplateSettings($this->data);
     		$this->_syncTemplateSettings();
 		}
+		
 		return true;
     }
 

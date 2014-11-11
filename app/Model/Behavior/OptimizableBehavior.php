@@ -19,7 +19,7 @@ class OptimizableBehavior extends ModelBehavior {
  * 
  * @var bool
  */
-	public $trigger = true;
+	public $trigger = false;
 
 /**
  * Default settings
@@ -132,7 +132,7 @@ class OptimizableBehavior extends ModelBehavior {
 		$newAlias = !empty($Model->data['Alias']['name']) ? $Model->data['Alias']['name'] : $Model->data[$Model->alias]['alias'];
 		
 		// this keeps us from trying to save an alias twice (we tried removing it, and it throws an error)
-		//$this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
+		$this->trigger = isset($options['atomic']) ? false : true; // test for whether this is a saveAll() or save()
 		
 		//Added check for the alias won't save if they match
 		if($oldAlias['Alias']['name'] == $newAlias) {

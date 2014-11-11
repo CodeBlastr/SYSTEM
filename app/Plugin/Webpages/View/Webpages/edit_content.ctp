@@ -48,7 +48,7 @@
 				<h4 data-toggle="collapse" data-target=".template-group" data-parent="#webpages-sidebar">Template Settings</h4>
 				<hr />
 				<div class="template-group collapse">
-					<?php echo $this->Form->input('Webpage.template_id', array('empty' => '-- Select Template --', 'label' => __('Choose Template <small>(Leave blank for default)</small>'))); ?>
+					<?php echo $this->Form->input('Webpage.template_id', array('empty' => $defaultTemplate, 'label' => __('Choose Template'))); ?>
 				</div>
 			</div>
 		</div>
