@@ -59,7 +59,7 @@ class AppWebpagesController extends WebpagesAppController {
 		parent::beforeFilter();
 		// $this->passedArgs['comment_view_type'] = 'flat';  11/11/RK 
 		
-		if (in_array('Drafts', CakePlugin::loaded()) && !empty($this->request->params['named']['draft'])) { 
+		if (CakePlugin::loaded('Drafts') && !empty($this->request->params['named']['draft'])) { 
 			$this->Webpage->Behaviors->attach('Drafts.Draftable', array('returnVersion' => $this->request->params['named']['draft']));
 		}
 	}
@@ -78,9 +78,8 @@ class AppWebpagesController extends WebpagesAppController {
 	
 /**
  * Index of type Content
- * 
- * @param type $id
- * @return void
+ * @param string $type
+ * @return array
  */
     protected function _indexContent($type) {
 		$this->paginate['conditions']['Webpage.type'] = $type;
@@ -100,8 +99,9 @@ class AppWebpagesController extends WebpagesAppController {
 /**
  * Index of type Section
  * 
- * @param type $id
- * @return void
+ * @param string $type
+ * @param int $id
+ * @return array
  */
     protected function _indexSection($type, $id) {
 		$this->paginate['conditions']['Webpage.parent_id'] = $id;
@@ -117,10 +117,6 @@ class AppWebpagesController extends WebpagesAppController {
     
 /**
  * Index of type Sub of Content
- * 
- * @param type $id
- * @return void
- * @throws NotFoundException
  */
     protected function _indexSub() {
 		$this->paginate['conditions']['Webpage.type'] = 'content';
@@ -137,10 +133,6 @@ class AppWebpagesController extends WebpagesAppController {
     
 /**
  * Index of type Element
- * 
- * @param type $id
- * @return void
- * @throws NotFoundException
  */
     protected function _indexElement() {
 		$this->paginate['conditions']['Webpage.type'] = 'element';
@@ -154,7 +146,6 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->view = 'index_element';
     }
 
-
     protected function _indexEmail() {
 		$this->paginate['conditions']['Webpage.type'] = 'email';
 		$this->set('webpages', $this->paginate());
@@ -166,7 +157,7 @@ class AppWebpagesController extends WebpagesAppController {
     }
     
 /**
- * Index pf type Template
+ * Index of type Template
  * 
  * @param type $id
  * @return void
