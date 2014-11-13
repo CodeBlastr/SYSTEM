@@ -173,7 +173,9 @@ class AppWebpage extends WebpagesAppModel {
 	}
 
 /**
- * Clean Data method
+ * 
+ * @param array $data
+ * @return array
  */
     public function _cleanData($data) {
         if (!empty($data[$this->alias]['data']) && is_array($data[$this->alias]['data'])) {
@@ -434,9 +436,9 @@ class AppWebpage extends WebpagesAppModel {
 /**
  * Handle Error
  * 
- * @param array
- * @param object
- * @return array
+ * @param array $webpage
+ * @param object $request
+ * @return string
  */
 	public function handleError($webpage, $request) {
 		$userRole = CakeSession::read('Auth.User.user_role_id');
@@ -587,6 +589,7 @@ class AppWebpage extends WebpagesAppModel {
  * Template Content Results
  * If there is a file, return the file contents instead of the db contents
  * 
+ * @param array $results
  * @return array
  */
  	protected function _templateContentResults($results) {
@@ -622,6 +625,7 @@ class AppWebpage extends WebpagesAppModel {
  * 
  * @deprecated Might be replaced by _url()
  * @param string $request - A serialized $this->request->params string.
+ * @return string
  */
     public function serializedTemplateRequest($request) {
         $request = unserialize($request['Webpage']['url']);
@@ -643,6 +647,9 @@ class AppWebpage extends WebpagesAppModel {
 /**
  * This is used instead of the above on one site who's feature I'm integrating.
  * I only see serializedTemplateRequest() being used in updateTemplateSettings() anyway.. so might be able to just use this.
+ * 
+ * @param array $data
+ * @return string
  */
     public function _url($data) {
 		if (empty($data['Webpage']['url']) && !empty($data['Webpage']['id'])) {
@@ -671,7 +678,10 @@ class AppWebpage extends WebpagesAppModel {
  * NOTE : There might be two use cases conflicting here.  I'm not sure yet. 
  * 1. Is when you want to save a Webpage, with template_id, so that it auto-adds the url to the template
  * 2. Is when you want to update a template (this is the one I'm not sure is even a use case)
- * @params array $data
+ * 
+ * @param array $data
+ * @return boolean
+ * @throws Exception
  */
     public function updateTemplateSettings($data) {
         $data = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']), 'callbacks' => false)), $data);
@@ -754,7 +764,7 @@ class AppWebpage extends WebpagesAppModel {
 
 /**
  * Sync the template settings.  Usually when a template is updated.
- *
+ * @return boolean
  */
     private function _saveTemplateSettings() {
     	if ($this->data['Webpage']['type'] == 'template') {
@@ -826,6 +836,7 @@ class AppWebpage extends WebpagesAppModel {
  * If null user roles get all user roles and set it to all.
  * 
  * @param mixed $roles 
+ * @todo Why is this checking a variable that isn't passed?
  */
  	protected function _templateUserRoles($roles) {
  		if ($template['Webpage']['user_roles'] === null) {
@@ -1214,6 +1225,7 @@ class AppWebpage extends WebpagesAppModel {
  * @param array $data
  * @throws Exception
  * @return $string with all the tokens replaced
+ * @todo Why is this checking an unused variable?
  */
 	public function replaceTokens($string, $data = array()) {
 		if(!empty($tokens)) {
