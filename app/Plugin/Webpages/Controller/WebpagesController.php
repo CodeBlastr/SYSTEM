@@ -284,8 +284,13 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('menus', $WebpageMenu->find('list', array('fields' => array('WebpageMenu.code', 'WebpageMenu.name'), 'conditions' => array('WebpageMenu.parent_id' => null))));
 		// used for converting individual pages to subs of sections
 		$this->set('sections', $this->Webpage->find('list', array('conditions' => array('Webpage.parent_id' => null, 'Webpage.type' => array('content', 'section')))));
-		// reuquired to have per page permissions
+		// required to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		// required to have easy template settings
+		$this->set('templates', $this->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template', 'Webpage.is_default' => 0))));
+		$defaultTemplate = $this->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template', 'Webpage.is_default' => 1)));
+		$defaultTemplate[key($defaultTemplate)] .= ' (default)';
+		$this->set(compact('defaultTemplate'));
 		$this->set('page_title_for_layout', __('Page Builder'));
 		$this->view = $this->_fileExistsCheck('add_' . $this->type . $this->ext) ? 'add_' . $this->type : 'add_content';       
     }
@@ -395,7 +400,12 @@ class AppWebpagesController extends WebpagesAppController {
 		App::uses('WebpageMenu', 'Webpages.Model');
 		$WebpageMenu = new WebpageMenu();
 		$this->set('menus', $WebpageMenu->find('list', array('fields' => array('WebpageMenu.code', 'WebpageMenu.name'), 'conditions' => array('WebpageMenu.parent_id' => null))));
-		$this->set('parents', $this->Webpage->find('list', array('conditions' => array('Webpage.parent_id' => null, 'Webpage.type' => array('content', 'section'))))); 
+		$this->set('parents', $this->Webpage->find('list', array('conditions' => array('Webpage.parent_id' => null, 'Webpage.type' => array('content', 'section')))));
+		// required to have easy template settings
+		$this->set('templates', $this->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template', 'Webpage.is_default' => 0))));
+		$defaultTemplate = $this->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template', 'Webpage.is_default' => 1)));
+		$defaultTemplate[key($defaultTemplate)] .= ' (default)';
+		$this->set(compact('defaultTemplate'));
 	}
 	
 /**

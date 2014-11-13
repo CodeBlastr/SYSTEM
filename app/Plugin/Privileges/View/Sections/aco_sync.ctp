@@ -13,7 +13,7 @@
 			<?php if (in_array($plugin, CakeSession::read('Privileges.lastPlugin'))) : ?>
 				<span class="label label-success"><?php echo $plugin; ?></span>
 			<?php else : ?>
-				<span class="label"><?php echo $plugin; ?></span>
+				<span class="label label-default"><?php echo $plugin; ?></span>
 			<?php endif; ?>
 		<?php endforeach; ?>
 	<?php else : ?>
