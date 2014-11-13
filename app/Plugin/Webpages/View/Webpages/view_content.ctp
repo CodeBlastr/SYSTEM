@@ -1,17 +1,10 @@
-<?php $this->set('title_for_layout', $webpage['Webpage']['title']); ?>
-<?php echo $this->Html->meta('keywords', $webpage['Webpage']['keywords'], array('inline' => false)); ?>
-<?php echo $this->Html->meta('description', $webpage['Webpage']['description'], array('inline' => false)); ?>  
-
-<?php echo $webpage['Webpage']['content']; ?>
-
 <?php
-/*
-<div id="post-comments">
-	<?php /* $this->CommentWidget->options(array('allowAnonymousComment' => false));?>
-	<?php // echo $this->CommentWidget->display();?>
-</div> */ ?>
+$this->set('title_for_layout', $webpage['Webpage']['title']);
+echo $this->Html->meta('keywords', $webpage['Webpage']['keywords'], array('inline' => false));
+echo $this->Html->meta('description', $webpage['Webpage']['description'], array('inline' => false));
 
-<?php 
+echo $webpage['Webpage']['content'];
+ 
 // set the contextual menu items      
 $this->set('context_menu', array('menus' => array(
 	array(
