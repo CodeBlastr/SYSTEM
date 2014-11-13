@@ -62,6 +62,13 @@ class AppWebpagesController extends WebpagesAppController {
 		if (CakePlugin::loaded('Drafts') && !empty($this->request->params['named']['draft'])) { 
 			$this->Webpage->Behaviors->attach('Drafts.Draftable', array('returnVersion' => $this->request->params['named']['draft']));
 		}
+		
+		// Nov 13, 2014: TEMPORARILY ENSURE THAT WEBPAGE.TEMPLATE_ID EXISTS
+		try {
+			$this->Webpage->query('ALTER TABLE webpages ADD template_id VARCHAR(36) AFTER is_default;');
+		} catch (Exception $e) {
+			// do nothing
+		}
 	}
 
 /**

@@ -430,6 +430,9 @@ class AppWebpage extends WebpagesAppModel {
         if (!empty($data['Webpage']['template_urls']) && strpos($data['Webpage']['template_urls'], '==')) {
 			$data['Webpage']['template_urls'] = implode(PHP_EOL, unserialize(gzuncompress(base64_decode($data['Webpage']['template_urls']))));
 		}
+		if (in_array($data['Webpage']['type'], array('content', 'sub')) && empty($data['Webpage']['template_id'])) {
+			$data['Webpage']['template_id'] = $this->detectTemplateId($data);
+		}
 		return $data;
 	}
 	
@@ -1291,6 +1294,24 @@ class AppWebpage extends WebpagesAppModel {
 		return array_values($sitemap);
 	}
 
+/**
+ * Checks the database to find the template that the given webpage uses.
+ * @param int|array $data A webpage array w/ Webpage.id or just the id number alone.
+ * @return int
+ */
+	public function detectTemplateId($data) {
+		$webpageId = (is_numeric($data)) ? $data : $data['Webpage']['id'];
+		$templates = $this->find('all', array('conditions' => array('Webpage.type' => 'template')));
+		// check Webpage.template_url for this webpage
+		foreach ($templates as $template) {
+			if (strpos($template['Webpage']['template_urls'], 'webpages/view/'.$webpageId) !== false) {
+				return $template['Webpage']['id'];
+			}
+		}
+		// this webpage's view URL wasn't found in the template_url's.. return the default template ID.
+		$defaultTemplateId = Hash::extract($templates, '{n}.Webpage[is_default=true].id');
+		return $defaultTemplateId[0];
+	}
 	
 }
 if (!isset($refuseInit)) {
