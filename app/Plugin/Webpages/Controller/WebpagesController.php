@@ -601,12 +601,12 @@ class AppWebpagesController extends WebpagesAppController {
 		App::uses('File', 'Utility');
 		$return = false;
 		if(isset($filename)) {
-		 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
+		 	$path = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'Plugin' . DS . $this->plugin . DS . 'View' . DS . $this->viewPath . DS;
 			$file = new File($path . $filename);
 			$return =  $file->exists();
 		}
 		if($return == false) {
-		 	$path = App::pluginPath($this->plugin) . '/View/' . $this->viewPath . '/';
+		 	$path = App::pluginPath($this->plugin) . DS . 'View' . DS . $this->viewPath . DS;
 			$file = new File($path . $filename);
 			$return = $file->exists();
 		}
