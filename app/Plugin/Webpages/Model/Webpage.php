@@ -460,83 +460,84 @@ class AppWebpage extends WebpagesAppModel {
  * @todo This function could be tightened up by abstracting the model name.  It's very repetitive with the only change being the model name.
  */
 	public function installTemplate($data = array(), $options = array()) {
-		if (!empty($data)) {
-			for ($i = 0; $i < count($data); $i++) {
-				if (key($data[$i]) == 'Webpage') {
-					if ($data[$i]['Webpage']['type'] == 'template') {
-						// put template settings in
-						if ($options['type'] == 'default') {
-							// add default if set in options
-							$data[$i]['Webpage']['is_default'] = 1;
-						}
-					}
-					// validate first, because we may want to save even if it fails (with some updated info)
-					$this->set($data[$i]);
-					if ($this->validates()) {
-						$this->create();
-						if ($this->save($data[$i])) {
-							$data[$i]['Webpage']['type'] == 'template' ? $templateId = $this->id : null;
-							continue;
-						} 
-        			} else {
-						// we seem to be installing a template that as already been installed (or two templates have a name conflict)
-						// we're going to overwrite the existing file if it is of the same type with the same name. 
-   						$errors = $this->validationErrors;
-						if ($errors['name'][0] == $this->validate['name']['uniqueRule']['message']) {
-							$data[$i]['Webpage']['id'] = $this->field('id', array('type' => $data[$i]['Webpage']['type'], 'name' => $data[$i]['Webpage']['name']));
-							$i = $i - 1; continue; // re-run the loop for the current $i
-						}
-					}
-					throw new Exception(__('%s template file saved failed', $data[$i]['Webpage']['name']));
-				}
-
-				if (key($data[$i]) == 'WebpageCss') {
-					$WebpageCss = ClassRegistry::init('Webpages.WebpageCss');
-					$data[$i]['WebpageCss']['webpage_id'] = $templateId;
-					// validate first, because we may want to save even if it fails (with some updated info)
-					$WebpageCss->set($data[$i]);
-					if ($WebpageCss->validates()) {
-						$WebpageCss->create();
-						if ($WebpageCss->save($data[$i])) {
-							continue;
-						}
-					} else {
-						// we seem to be installing a template that as already been installed (or two templates have a name conflict)
-						// we're going to overwrite the existing file if it is of the same type with the same name. 
-						$errors = $WebpageCss->validationErrors;
-						if ($errors['name'][0] == $WebpageCss->validate['name']['uniqueRule']['message']) {
-							$data[$i]['WebpageCss']['id'] = $WebpageCss->field('id', array('name' => $data[$i]['WebpageCss']['name']));
-							$i = $i - 1; continue; // re-run the loop for the current $i
-						}
-					}
-					throw new Exception(__('%s css save failed', $data[$i]['WebpageCss']['name']));
-				}
-				
-				if (key($data[$i]) == 'WebpageJs') {
-					$WebpageJs = ClassRegistry::init('Webpages.WebpageJs');
-					$data[$i]['WebpageJs']['webpage_id'] = $templateId;
-					// validate first, because we may want to save even if it fails (with some updated info)
-					$WebpageJs->set($data[$i]);
-					if ($WebpageJs->validates()) {
-						$WebpageJs->create();
-						if ($WebpageJs->save($data[$i])) {
-							continue;
-						}
-					} else {
-						// we seem to be installing a template that as already been installed (or two templates have a name conflict)
-						// we're going to overwrite the existing file if it is of the same type with the same name. 
-						$errors = $WebpageJs->validationErrors;
-						if ($errors['name'][0] == $WebpageJs->validate['name']['uniqueRule']['message']) {
-							$data[$i]['WebpageJs']['id'] = $WebpageJs->field('id', array('name' => $data[$i]['WebpageJs']['name']));
-							$i = $i - 1; continue; // re-run the loop for the current $i
-						}
-					}
-					throw new Exception(__('%s js save failed', $data[$i]['WebpageCss']['name']));
-				}
-			}
-		} else {
+		if (empty($data)) {
 			throw new Exception(__('Template data is corrupt.'));
 		}
+	
+		for ($i = 0; $i < count($data); $i++) {
+			if (key($data[$i]) == 'Webpage') {
+				if ($data[$i]['Webpage']['type'] == 'template') {
+					// put template settings in
+					if ($options['type'] == 'default') {
+						// add default if set in options
+						$data[$i]['Webpage']['is_default'] = 1;
+					}
+				}
+				// validate first, because we may want to save even if it fails (with some updated info)
+				$this->set($data[$i]);
+				if ($this->validates()) {
+					$this->create();
+					if ($this->save($data[$i])) {
+						$data[$i]['Webpage']['type'] == 'template' ? $templateId = $this->id : null;
+						continue;
+					} 
+				} else {
+					// we seem to be installing a template that as already been installed (or two templates have a name conflict)
+					// we're going to overwrite the existing file if it is of the same type with the same name. 
+					$errors = $this->validationErrors;
+					if ($errors['name'][0] == $this->validate['name']['uniqueRule']['message']) {
+						$data[$i]['Webpage']['id'] = $this->field('id', array('type' => $data[$i]['Webpage']['type'], 'name' => $data[$i]['Webpage']['name']));
+						$i = $i - 1; continue; // re-run the loop for the current $i
+					}
+				}
+				throw new Exception(__('%s template file saved failed', $data[$i]['Webpage']['name']));
+			}
+
+			if (key($data[$i]) == 'WebpageCss') {
+				$WebpageCss = ClassRegistry::init('Webpages.WebpageCss');
+				$data[$i]['WebpageCss']['webpage_id'] = $templateId;
+				// validate first, because we may want to save even if it fails (with some updated info)
+				$WebpageCss->set($data[$i]);
+				if ($WebpageCss->validates()) {
+					$WebpageCss->create();
+					if ($WebpageCss->save($data[$i])) {
+						continue;
+					}
+				} else {
+					// we seem to be installing a template that as already been installed (or two templates have a name conflict)
+					// we're going to overwrite the existing file if it is of the same type with the same name. 
+					$errors = $WebpageCss->validationErrors;
+					if ($errors['name'][0] == $WebpageCss->validate['name']['uniqueRule']['message']) {
+						$data[$i]['WebpageCss']['id'] = $WebpageCss->field('id', array('name' => $data[$i]['WebpageCss']['name']));
+						$i = $i - 1; continue; // re-run the loop for the current $i
+					}
+				}
+				throw new Exception(__('%s css save failed', $data[$i]['WebpageCss']['name']));
+			}
+
+			if (key($data[$i]) == 'WebpageJs') {
+				$WebpageJs = ClassRegistry::init('Webpages.WebpageJs');
+				$data[$i]['WebpageJs']['webpage_id'] = $templateId;
+				// validate first, because we may want to save even if it fails (with some updated info)
+				$WebpageJs->set($data[$i]);
+				if ($WebpageJs->validates()) {
+					$WebpageJs->create();
+					if ($WebpageJs->save($data[$i])) {
+						continue;
+					}
+				} else {
+					// we seem to be installing a template that as already been installed (or two templates have a name conflict)
+					// we're going to overwrite the existing file if it is of the same type with the same name. 
+					$errors = $WebpageJs->validationErrors;
+					if ($errors['name'][0] == $WebpageJs->validate['name']['uniqueRule']['message']) {
+						$data[$i]['WebpageJs']['id'] = $WebpageJs->field('id', array('name' => $data[$i]['WebpageJs']['name']));
+						$i = $i - 1; continue; // re-run the loop for the current $i
+					}
+				}
+				throw new Exception(__('%s js save failed', $data[$i]['WebpageCss']['name']));
+			}
+		}
+
 		return true;
 	}
 
@@ -735,21 +736,20 @@ class AppWebpage extends WebpagesAppModel {
  * @return boolean
  */
     public function removeTemplateSetting($data) {
-    	if($this->_oldTemplateId) {
-	        $template = $this->find('first', array('conditions' => array('Webpage.id' => $this->_oldTemplateId)));
-			$urls = $this->templateUrls($template, true);
-			$cleaned['Webpage']['template_urls'] = trim(str_replace($data['Webpage']['url'], '', $urls));
-			$page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);
-			$this->create();
-	        if ($this->save($page, array('callbacks' => false))) {
-	            return true;
-	        } else {
-	            return false;
-	        }
-    	}else {
-    		//There was no old settings
-    		return true;
-    	}
+    	if (!$this->_oldTemplateId) {
+			//There was no old settings
+			return true;
+		}
+		$template = $this->find('first', array('conditions' => array('Webpage.id' => $this->_oldTemplateId)));
+		$urls = $this->templateUrls($template, true);
+		$cleaned['Webpage']['template_urls'] = trim(str_replace($data['Webpage']['url'], '', $urls));
+		$page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);
+		$this->create();
+		if ($this->save($page, array('callbacks' => false))) {
+			return true;
+		} else {
+			return false;
+		}
     }
 
 /**
@@ -763,7 +763,6 @@ class AppWebpage extends WebpagesAppModel {
 			$this->updateTemplateSettings($this->data);
     		$this->_syncTemplateSettings();
 		}
-		
 		return true;
     }
 
