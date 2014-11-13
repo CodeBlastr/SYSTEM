@@ -38,7 +38,7 @@ echo $this->Form->input(key($aliasName), $inputOptions); ?>
     
     var formId = '<?php echo $formId; ?>';
     var aliasId = $("#AliasId");
-    var aliasValue = $('<?php echo $nameInput; ?>').val().replace(/\s+/g, '-').toLowerCase()
+    var aliasValue = $('<?php echo $nameInput; ?>').val().replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase()
     var permaLinkHtml = '<?php echo __('&nbsp;&nbsp; &nbsp;<small><strong>Permalink: </strong>%s/<span id="permaLink" title="Change">%s</span> <a class="btn btn-primary btn-xs" id="permaLinkEdit">Change</a></small>', $_SERVER['HTTP_HOST'], $this->request->data['Alias']['name']); ?>'.replace('></span>', aliasValue + '></span>');
    	var prefix = '<?php echo $prefix; ?>';
    	var newPermaLink = null;
@@ -82,11 +82,11 @@ echo $this->Form->input(key($aliasName), $inputOptions); ?>
     $(document).on('keyup', '<?php echo $nameInput; ?>', function () {
         <?php if (!empty($parent)) { ?>
         if ($('<?php echo $aliasInput; ?>').val() == '<?php echo $this->request->data['Alias']['name']; ?>') {
-            $('#permaLink').html(prefix + '<?php echo $this->request->data['Alias']['name']; ?>' + $(this).val().replace(/\s+/g, '-').toLowerCase());
+            $('#permaLink').html(prefix + '<?php echo $this->request->data['Alias']['name']; ?>' + $(this).val().replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase());
         }
         <?php } else { ?> 
         if (!$('<?php echo $aliasInput; ?>').val()) {
-            $('#permaLink').html(prefix + $(this).val().replace(/\s+/g, '-').toLowerCase());
+            $('#permaLink').html(prefix + $(this).val().replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase());
         }
         <?php } ?>
     });
@@ -96,8 +96,8 @@ echo $this->Form->input(key($aliasName), $inputOptions); ?>
     <?php } ?>
     
     $(document).on('keyup', '<?php echo $aliasInput; ?>', function () {
-        $(this).val($(this).val().replace(/\s+/g, '-').toLowerCase());
-        $('#permaLink').html($(this).val().replace(/\s+/g, '-').toLowerCase());
+        $(this).val($(this).val().replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase());
+        $('#permaLink').html($(this).val().replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase());
     });
     $(document).on('blur', '<?php echo $aliasInput; ?>', function () {
         checkAvailability();
