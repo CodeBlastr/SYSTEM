@@ -134,6 +134,8 @@ class AppWebpage extends WebpagesAppModel {
  */
     public $tokens = array();
 	
+    private $_oldTemplateId = false;	
+	
 /**
  * Constructor
  */
@@ -156,15 +158,32 @@ class AppWebpage extends WebpagesAppModel {
 /**
  * Before Save
  *
- * @param boolean $created
+ * @param array $options
  * @return boolean
  * @access public
  */
 	public function beforeSave($options = array()) {
 		$this->_saveTemplateFiles(); // does not save to the database, so doesn't come back to this beforeSave()
+		$this->data = $this->_cleanData($this->data);
+		//Need to get the old template id before we overwrite it
+		if (!empty($this->data['Webpage']['template_id']) && isset($this->data['Webpage']['id'])) {
+			$this->_oldTemplateId = $this->field('template_id', array('id' => $this->data['Webpage']['id']));
+		}
 		return parent::beforeSave($options);
 	}
 
+/**
+ * 
+ * @param array $data
+ * @return array
+ */
+    public function _cleanData($data) {
+        if (!empty($data[$this->alias]['data']) && is_array($data[$this->alias]['data'])) {
+            $data[$this->alias]['data'] = json_encode($data[$this->alias]['data']);
+        }
+        return $data;
+    }
+	
 /**
  * After Save
  *
@@ -173,10 +192,12 @@ class AppWebpage extends WebpagesAppModel {
  * @access public
  */
 	public function afterSave($created, $options = array()) {
-        if ($this->data['Webpage']['type'] == 'template') {
-            // template settings are special
-            $this->_syncTemplateSettings($this->id, $this->data);
-        }
+        $id = $this->id; // we do some saving between now and the end so we need to restate $this->id;
+		$this->_saveTemplateSettings();
+//        if ($this->data['Webpage']['type'] == 'template') {
+//            // template settings are special
+//            $this->_syncTemplateSettings($this->id, $this->data);
+//        }
 		if ($created && !empty($this->data['WebpageMenuItem']['parent_id'])) {
 			App::uses('WebpageMenuItem', 'Webpages.Model');
 			$WebpageMenuItem = new WebpageMenuItem();
@@ -185,6 +206,7 @@ class AppWebpage extends WebpagesAppModel {
 				throw new Exception(__('Problem adding menu item for this page.'));
 			}
 		}
+		$this->id = $id;
 		return parent::afterSave($created, $options);
 	}
 
@@ -408,15 +430,18 @@ class AppWebpage extends WebpagesAppModel {
         if (!empty($data['Webpage']['template_urls']) && strpos($data['Webpage']['template_urls'], '==')) {
 			$data['Webpage']['template_urls'] = implode(PHP_EOL, unserialize(gzuncompress(base64_decode($data['Webpage']['template_urls']))));
 		}
+		if (in_array($data['Webpage']['type'], array('content', 'sub')) && empty($data['Webpage']['template_id'])) {
+			$data['Webpage']['template_id'] = $this->detectTemplateId($data);
+		}
 		return $data;
 	}
 	
 /**
  * Handle Error
  * 
- * @param array
- * @param object
- * @return array
+ * @param array $webpage
+ * @param object $request
+ * @return string
  */
 	public function handleError($webpage, $request) {
 		$userRole = CakeSession::read('Auth.User.user_role_id');
@@ -440,83 +465,84 @@ class AppWebpage extends WebpagesAppModel {
  * @todo This function could be tightened up by abstracting the model name.  It's very repetitive with the only change being the model name.
  */
 	public function installTemplate($data = array(), $options = array()) {
-		if (!empty($data)) {
-			for ($i = 0; $i < count($data); $i++) {
-				if (key($data[$i]) == 'Webpage') {
-					if ($data[$i]['Webpage']['type'] == 'template') {
-						// put template settings in
-						if ($options['type'] == 'default') {
-							// add default if set in options
-							$data[$i]['Webpage']['is_default'] = 1;
-						}
-					}
-					// validate first, because we may want to save even if it fails (with some updated info)
-					$this->set($data[$i]);
-					if ($this->validates()) {
-						$this->create();
-						if ($this->save($data[$i])) {
-							$data[$i]['Webpage']['type'] == 'template' ? $templateId = $this->id : null;
-							continue;
-						} 
-        			} else {
-						// we seem to be installing a template that as already been installed (or two templates have a name conflict)
-						// we're going to overwrite the existing file if it is of the same type with the same name. 
-   						$errors = $this->validationErrors;
-						if ($errors['name'][0] == $this->validate['name']['uniqueRule']['message']) {
-							$data[$i]['Webpage']['id'] = $this->field('id', array('type' => $data[$i]['Webpage']['type'], 'name' => $data[$i]['Webpage']['name']));
-							$i = $i - 1; continue; // re-run the loop for the current $i
-						}
-					}
-					throw new Exception(__('%s template file saved failed', $data[$i]['Webpage']['name']));
-				}
-
-				if (key($data[$i]) == 'WebpageCss') {
-					$WebpageCss = ClassRegistry::init('Webpages.WebpageCss');
-					$data[$i]['WebpageCss']['webpage_id'] = $templateId;
-					// validate first, because we may want to save even if it fails (with some updated info)
-					$WebpageCss->set($data[$i]);
-					if ($WebpageCss->validates()) {
-						$WebpageCss->create();
-						if ($WebpageCss->save($data[$i])) {
-							continue;
-						}
-					} else {
-						// we seem to be installing a template that as already been installed (or two templates have a name conflict)
-						// we're going to overwrite the existing file if it is of the same type with the same name. 
-						$errors = $WebpageCss->validationErrors;
-						if ($errors['name'][0] == $WebpageCss->validate['name']['uniqueRule']['message']) {
-							$data[$i]['WebpageCss']['id'] = $WebpageCss->field('id', array('name' => $data[$i]['WebpageCss']['name']));
-							$i = $i - 1; continue; // re-run the loop for the current $i
-						}
-					}
-					throw new Exception(__('%s css save failed', $data[$i]['WebpageCss']['name']));
-				}
-				
-				if (key($data[$i]) == 'WebpageJs') {
-					$WebpageJs = ClassRegistry::init('Webpages.WebpageJs');
-					$data[$i]['WebpageJs']['webpage_id'] = $templateId;
-					// validate first, because we may want to save even if it fails (with some updated info)
-					$WebpageJs->set($data[$i]);
-					if ($WebpageJs->validates()) {
-						$WebpageJs->create();
-						if ($WebpageJs->save($data[$i])) {
-							continue;
-						}
-					} else {
-						// we seem to be installing a template that as already been installed (or two templates have a name conflict)
-						// we're going to overwrite the existing file if it is of the same type with the same name. 
-						$errors = $WebpageJs->validationErrors;
-						if ($errors['name'][0] == $WebpageJs->validate['name']['uniqueRule']['message']) {
-							$data[$i]['WebpageJs']['id'] = $WebpageJs->field('id', array('name' => $data[$i]['WebpageJs']['name']));
-							$i = $i - 1; continue; // re-run the loop for the current $i
-						}
-					}
-					throw new Exception(__('%s js save failed', $data[$i]['WebpageCss']['name']));
-				}
-			}
-		} else {
+		if (empty($data)) {
 			throw new Exception(__('Template data is corrupt.'));
 		}
+	
+		for ($i = 0; $i < count($data); $i++) {
+			if (key($data[$i]) == 'Webpage') {
+				if ($data[$i]['Webpage']['type'] == 'template') {
+					// put template settings in
+					if ($options['type'] == 'default') {
+						// add default if set in options
+						$data[$i]['Webpage']['is_default'] = 1;
+					}
+				}
+				// validate first, because we may want to save even if it fails (with some updated info)
+				$this->set($data[$i]);
+				if ($this->validates()) {
+					$this->create();
+					if ($this->save($data[$i])) {
+						$data[$i]['Webpage']['type'] == 'template' ? $templateId = $this->id : null;
+						continue;
+					} 
+				} else {
+					// we seem to be installing a template that as already been installed (or two templates have a name conflict)
+					// we're going to overwrite the existing file if it is of the same type with the same name. 
+					$errors = $this->validationErrors;
+					if ($errors['name'][0] == $this->validate['name']['uniqueRule']['message']) {
+						$data[$i]['Webpage']['id'] = $this->field('id', array('type' => $data[$i]['Webpage']['type'], 'name' => $data[$i]['Webpage']['name']));
+						$i = $i - 1; continue; // re-run the loop for the current $i
+					}
+				}
+				throw new Exception(__('%s template file saved failed', $data[$i]['Webpage']['name']));
+			}
+
+			if (key($data[$i]) == 'WebpageCss') {
+				$WebpageCss = ClassRegistry::init('Webpages.WebpageCss');
+				$data[$i]['WebpageCss']['webpage_id'] = $templateId;
+				// validate first, because we may want to save even if it fails (with some updated info)
+				$WebpageCss->set($data[$i]);
+				if ($WebpageCss->validates()) {
+					$WebpageCss->create();
+					if ($WebpageCss->save($data[$i])) {
+						continue;
+					}
+				} else {
+					// we seem to be installing a template that as already been installed (or two templates have a name conflict)
+					// we're going to overwrite the existing file if it is of the same type with the same name. 
+					$errors = $WebpageCss->validationErrors;
+					if ($errors['name'][0] == $WebpageCss->validate['name']['uniqueRule']['message']) {
+						$data[$i]['WebpageCss']['id'] = $WebpageCss->field('id', array('name' => $data[$i]['WebpageCss']['name']));
+						$i = $i - 1; continue; // re-run the loop for the current $i
+					}
+				}
+				throw new Exception(__('%s css save failed', $data[$i]['WebpageCss']['name']));
+			}
+
+			if (key($data[$i]) == 'WebpageJs') {
+				$WebpageJs = ClassRegistry::init('Webpages.WebpageJs');
+				$data[$i]['WebpageJs']['webpage_id'] = $templateId;
+				// validate first, because we may want to save even if it fails (with some updated info)
+				$WebpageJs->set($data[$i]);
+				if ($WebpageJs->validates()) {
+					$WebpageJs->create();
+					if ($WebpageJs->save($data[$i])) {
+						continue;
+					}
+				} else {
+					// we seem to be installing a template that as already been installed (or two templates have a name conflict)
+					// we're going to overwrite the existing file if it is of the same type with the same name. 
+					$errors = $WebpageJs->validationErrors;
+					if ($errors['name'][0] == $WebpageJs->validate['name']['uniqueRule']['message']) {
+						$data[$i]['WebpageJs']['id'] = $WebpageJs->field('id', array('name' => $data[$i]['WebpageJs']['name']));
+						$i = $i - 1; continue; // re-run the loop for the current $i
+					}
+				}
+				throw new Exception(__('%s js save failed', $data[$i]['WebpageCss']['name']));
+			}
+		}
+
 		return true;
 	}
 
@@ -566,6 +592,7 @@ class AppWebpage extends WebpagesAppModel {
  * Template Content Results
  * If there is a file, return the file contents instead of the db contents
  * 
+ * @param array $results
  * @return array
  */
  	protected function _templateContentResults($results) {
@@ -599,7 +626,9 @@ class AppWebpage extends WebpagesAppModel {
 /**
  * Parse a serialized template url from $this->request
  * 
+ * @deprecated Might be replaced by _url()
  * @param string $request - A serialized $this->request->params string.
+ * @return string
  */
     public function serializedTemplateRequest($request) {
         $request = unserialize($request['Webpage']['url']);
@@ -617,24 +646,61 @@ class AppWebpage extends WebpagesAppModel {
         }
         return $url;
     }
+	
+/**
+ * This is used instead of the above on one site who's feature I'm integrating.
+ * I only see serializedTemplateRequest() being used in updateTemplateSettings() anyway.. so might be able to just use this.
+ * 
+ * @param array $data
+ * @return string
+ */
+    public function _url($data) {
+		if (empty($data['Webpage']['url']) && !empty($data['Webpage']['id'])) {
+ 			$data = array('admin' => false, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'view',  $data['Webpage']['id']);
+ 		}
+		
+		if ($data['plugin'] == 'webpages' && $data['controller'] == 'webpages' && $data['action'] == 'view') {
+			return 'webpages/webpages/view/'.$data[0].'/';
+            // webpages get special treatment
+            $url = @Router::reverse($data); // seems to be returning the slug URL; possibly because we are now using routes.php
+            $url = strpos($url, '/') === 0 ? substr($url, 1) . '/' : $url . '/';
+        } elseif ($data['action'] ==  'index') {
+            $url = $data['plugin'] . '/' . $data['controller'] . '/' . $data['action'] . '*';
+        } else {
+            unset($data['pass']);
+            unset($data['named']);
+            $url = @Router::reverse($data) . '/*';
+        }
+        return $url;
+    }
 
 /**
  * Update template settings
  * Runs the remove and add settings as needed for a template url change
  * 
- * @params array $data
+ * NOTE : There might be two use cases conflicting here.  I'm not sure yet. 
+ * 1. Is when you want to save a Webpage, with template_id, so that it auto-adds the url to the template
+ * 2. Is when you want to update a template (this is the one I'm not sure is even a use case)
+ * 
+ * @param array $data
+ * @return boolean
+ * @throws Exception
  */
     public function updateTemplateSettings($data) {
-        $data = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']))), $data);
-        $remove['Webpage']['id'] = $data['Webpage']['template_id'];
-        $remove['Webpage']['url'] = $this->serializedTemplateRequest($data);
+        $data = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']), 'callbacks' => false)), $data);
+		$remove = array(
+			'Webpage' => array(
+				'id' => $data['Webpage']['template_id'],
+				'url' => $this->_url($data)
+			)
+		);
         if ($this->removeTemplateSetting($remove)) {
             // good
         } else {
             throw new Exception(__('Removal of previous template setting failed'));
         }
         if (empty($data['Webpage']['is_default'])) {
-            $data['Webpage']['url'] = $this->serializedTemplateRequest($data);
+        	$data['Webpage']['url'] = $this->_url($data);
             if ($this->addTemplateSetting($data)) {
                 // good
             } else {
@@ -652,13 +718,20 @@ class AppWebpage extends WebpagesAppModel {
  * And add the url given by $data[Webpage][url] to it.
  * 
  * @param array $data
+ * @return boolean
  */
     public function addTemplateSetting($data) {
-        $template = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']))), $data);
+        // was this, and changed it because we don't need to merge, that I can see : $template = Set::merge($this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id']))), $data);
+        $template = $this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['template_id'])));
+		// don't need to add the setting if it's the default template
+		if ($template['Webpage']['is_default'] == 1) {
+			return true;
+		}
         $urls = $this->templateUrls($template, true);
-        $cleaned['Webpage']['template_urls'] = !empty($urls) ? $urls . PHP_EOL . $template['Webpage']['url'] : $template['Webpage']['url'];
-        $page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);                
-        if ($this->save($page)) {
+        $cleaned['Webpage']['template_urls'] = !empty($urls) ? $urls . PHP_EOL . $data['Webpage']['url'] : $data['Webpage']['url'];
+        $page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);
+        $this->create();
+        if ($this->save($page, array('callbacks' => false))) {
             return true;
         } else {
             return false;
@@ -673,20 +746,39 @@ class AppWebpage extends WebpagesAppModel {
  * And removes the url given by $data[Webpage][url] from it.
  * 
  * @param array $data
+ * @return boolean
  */
     public function removeTemplateSetting($data) {
-        $template = $this->find('first', array('conditions' => array('Webpage.id' => $data['Webpage']['id'])));
-        $urls = $this->templateUrls($template, true);
-        $cleaned['Webpage']['template_urls'] = str_replace("\r\n", '', trim(str_replace($data['Webpage']['url'], '', $urls)));
-        $page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);
-        if ($this->save($page)) {
-            return true;
-        } else {
-            return false;
-        }
+    	if (!$this->_oldTemplateId) {
+			//There was no old settings
+			return true;
+		}
+		$template = $this->find('first', array('conditions' => array('Webpage.id' => $this->_oldTemplateId)));
+		$urls = $this->templateUrls($template, true);
+		$cleaned['Webpage']['template_urls'] = trim(str_replace($data['Webpage']['url'], '', $urls));
+		$page['Webpage'] = Set::merge($template['Webpage'], $cleaned['Webpage']);
+		$this->create();
+		if ($this->save($page, array('callbacks' => false))) {
+			return true;
+		} else {
+			return false;
+		}
     }
 
-    
+/**
+ * Sync the template settings.  Usually when a template is updated.
+ * @return boolean
+ */
+    private function _saveTemplateSettings() {
+    	if ($this->data['Webpage']['type'] == 'template') {
+    		$this->_syncTemplateSettings();
+		} elseif (!empty($this->data['Webpage']['template_id'])) {
+			$this->updateTemplateSettings($this->data);
+    		$this->_syncTemplateSettings();
+		}
+		return true;
+    }
+
 /**
  * Sync the template settings.  Usually when a template is updated.
  *
@@ -696,20 +788,12 @@ class AppWebpage extends WebpagesAppModel {
     private function _syncTemplateSettings() {
         $templates = $this->find('all', array(
             'conditions' => array(
-                'Webpage.type' => 'template'
-                ), 
-            'fields' => array(
-                'Webpage.id',
-                'Webpage.name',
-                'Webpage.is_default',
-                'Webpage.template_urls',
-                'Webpage.user_roles',
-                'Webpage.modified'
+                $this->alias . '.type' => 'template'
                 ),
             'order' => array(
-				'Webpage.modified' => 'DESC'
+				$this->alias . '.modified' => 'DESC'
 				)
-            ));	
+            ));
 		// might need to move this to it's own function if to be used anywhere else.
 		// checks for more than one default template being set
 		// @todo do it on a per user_role basis, so that you can have defaults per user role
@@ -755,6 +839,7 @@ class AppWebpage extends WebpagesAppModel {
  * If null user roles get all user roles and set it to all.
  * 
  * @param mixed $roles 
+ * @todo Why is this checking a variable that isn't passed?
  */
  	protected function _templateUserRoles($roles) {
  		if ($template['Webpage']['user_roles'] === null) {
@@ -1143,6 +1228,7 @@ class AppWebpage extends WebpagesAppModel {
  * @param array $data
  * @throws Exception
  * @return $string with all the tokens replaced
+ * @todo Why is this checking an unused variable?
  */
 	public function replaceTokens($string, $data = array()) {
 		if(!empty($tokens)) {
@@ -1208,6 +1294,24 @@ class AppWebpage extends WebpagesAppModel {
 		return array_values($sitemap);
 	}
 
+/**
+ * Checks the database to find the template that the given webpage uses.
+ * @param int|array $data A webpage array w/ Webpage.id or just the id number alone.
+ * @return int
+ */
+	public function detectTemplateId($data) {
+		$webpageId = (is_numeric($data)) ? $data : $data['Webpage']['id'];
+		$templates = $this->find('all', array('conditions' => array('Webpage.type' => 'template')));
+		// check Webpage.template_url for this webpage
+		foreach ($templates as $template) {
+			if (strpos($template['Webpage']['template_urls'], 'webpages/view/'.$webpageId) !== false) {
+				return $template['Webpage']['id'];
+			}
+		}
+		// this webpage's view URL wasn't found in the template_url's.. return the default template ID.
+		$defaultTemplateId = Hash::extract($templates, '{n}.Webpage[is_default=true].id');
+		return $defaultTemplateId[0];
+	}
 	
 }
 if (!isset($refuseInit)) {

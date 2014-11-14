@@ -59,8 +59,15 @@ class AppWebpagesController extends WebpagesAppController {
 		parent::beforeFilter();
 		// $this->passedArgs['comment_view_type'] = 'flat';  11/11/RK 
 		
-		if (in_array('Drafts', CakePlugin::loaded()) && !empty($this->request->params['named']['draft'])) { 
+		if (CakePlugin::loaded('Drafts') && !empty($this->request->params['named']['draft'])) { 
 			$this->Webpage->Behaviors->attach('Drafts.Draftable', array('returnVersion' => $this->request->params['named']['draft']));
+		}
+		
+		// Nov 13, 2014: TEMPORARILY ENSURE THAT WEBPAGE.TEMPLATE_ID EXISTS
+		try {
+			$this->Webpage->query('ALTER TABLE webpages ADD template_id VARCHAR(36) AFTER is_default;');
+		} catch (Exception $e) {
+			// do nothing
 		}
 	}
 
@@ -78,9 +85,8 @@ class AppWebpagesController extends WebpagesAppController {
 	
 /**
  * Index of type Content
- * 
- * @param type $id
- * @return void
+ * @param string $type
+ * @return array
  */
     protected function _indexContent($type) {
 		$this->paginate['conditions']['Webpage.type'] = $type;
@@ -100,8 +106,9 @@ class AppWebpagesController extends WebpagesAppController {
 /**
  * Index of type Section
  * 
- * @param type $id
- * @return void
+ * @param string $type
+ * @param int $id
+ * @return array
  */
     protected function _indexSection($type, $id) {
 		$this->paginate['conditions']['Webpage.parent_id'] = $id;
@@ -117,10 +124,6 @@ class AppWebpagesController extends WebpagesAppController {
     
 /**
  * Index of type Sub of Content
- * 
- * @param type $id
- * @return void
- * @throws NotFoundException
  */
     protected function _indexSub() {
 		$this->paginate['conditions']['Webpage.type'] = 'content';
@@ -137,10 +140,6 @@ class AppWebpagesController extends WebpagesAppController {
     
 /**
  * Index of type Element
- * 
- * @param type $id
- * @return void
- * @throws NotFoundException
  */
     protected function _indexElement() {
 		$this->paginate['conditions']['Webpage.type'] = 'element';
@@ -154,7 +153,6 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->view = 'index_element';
     }
 
-
     protected function _indexEmail() {
 		$this->paginate['conditions']['Webpage.type'] = 'email';
 		$this->set('webpages', $this->paginate());
@@ -166,7 +164,7 @@ class AppWebpagesController extends WebpagesAppController {
     }
     
 /**
- * Index pf type Template
+ * Index of type Template
  * 
  * @param type $id
  * @return void
@@ -284,8 +282,13 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('menus', $WebpageMenu->find('list', array('fields' => array('WebpageMenu.code', 'WebpageMenu.name'), 'conditions' => array('WebpageMenu.parent_id' => null))));
 		// used for converting individual pages to subs of sections
 		$this->set('sections', $this->Webpage->find('list', array('conditions' => array('Webpage.parent_id' => null, 'Webpage.type' => array('content', 'section')))));
-		// reuquired to have per page permissions
+		// required to have per page permissions
 		$this->set('userRoles', $this->Webpage->Creator->UserRole->find('list'));
+		// required to have easy template settings
+		$this->set('templates', $this->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template', 'Webpage.is_default' => 0))));
+		$defaultTemplate = $this->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template', 'Webpage.is_default' => 1)));
+		$defaultTemplate[key($defaultTemplate)] .= ' (default)';
+		$this->set(compact('defaultTemplate'));
 		$this->set('page_title_for_layout', __('Page Builder'));
 		$this->view = $this->_fileExistsCheck('add_' . $this->type . $this->ext) ? 'add_' . $this->type : 'add_content';       
     }
@@ -395,7 +398,12 @@ class AppWebpagesController extends WebpagesAppController {
 		App::uses('WebpageMenu', 'Webpages.Model');
 		$WebpageMenu = new WebpageMenu();
 		$this->set('menus', $WebpageMenu->find('list', array('fields' => array('WebpageMenu.code', 'WebpageMenu.name'), 'conditions' => array('WebpageMenu.parent_id' => null))));
-		$this->set('parents', $this->Webpage->find('list', array('conditions' => array('Webpage.parent_id' => null, 'Webpage.type' => array('content', 'section'))))); 
+		$this->set('parents', $this->Webpage->find('list', array('conditions' => array('Webpage.parent_id' => null, 'Webpage.type' => array('content', 'section')))));
+		// required to have easy template settings
+		$this->set('templates', $this->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template', 'Webpage.is_default' => 0))));
+		$defaultTemplate = $this->Webpage->find('list', array('conditions' => array('Webpage.type' => 'template', 'Webpage.is_default' => 1)));
+		$defaultTemplate[key($defaultTemplate)] .= ' (default)';
+		$this->set(compact('defaultTemplate'));
 	}
 	
 /**
@@ -600,12 +608,12 @@ class AppWebpagesController extends WebpagesAppController {
 		App::uses('File', 'Utility');
 		$return = false;
 		if(isset($filename)) {
-		 	$path = ROOT . '/' . SITE_DIR . '/Locale/Plugin/' . $this->plugin . '/View/' . $this->viewPath . '/';
+		 	$path = ROOT . DS . SITE_DIR . DS . 'Locale' . DS . 'Plugin' . DS . $this->plugin . DS . 'View' . DS . $this->viewPath . DS;
 			$file = new File($path . $filename);
 			$return =  $file->exists();
 		}
 		if($return == false) {
-		 	$path = App::pluginPath($this->plugin) . '/View/' . $this->viewPath . '/';
+		 	$path = App::pluginPath($this->plugin) . DS . 'View' . DS . $this->viewPath . DS;
 			$file = new File($path . $filename);
 			$return = $file->exists();
 		}

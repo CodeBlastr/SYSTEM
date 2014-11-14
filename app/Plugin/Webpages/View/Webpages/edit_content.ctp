@@ -44,6 +44,12 @@
 			    	<?php echo $this->Form->input('RecordLevelAccess.UserRole', array('label' => 'User Roles', 'type' => 'select', 'multiple' => 'checkbox', 'options' => $userRoles)); ?>
 			    	<?php echo $this->Form->input('Webpage.parent_id', array('label' => 'Convert to Subpage', 'empty' => '-- Select --')); ?>
 				</div>
+				
+				<h4 data-toggle="collapse" data-target=".template-group" data-parent="#webpages-sidebar">Template Settings</h4>
+				<hr />
+				<div class="template-group collapse">
+					<?php echo $this->Form->input('Webpage.template_id', array('empty' => $defaultTemplate, 'label' => __('Choose Template'))); ?>
+				</div>
 			</div>
 		</div>
 	</div>
