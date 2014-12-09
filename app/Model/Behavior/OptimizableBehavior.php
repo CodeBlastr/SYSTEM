@@ -138,9 +138,15 @@ class OptimizableBehavior extends ModelBehavior {
 		if($oldAlias['Alias']['name'] == $newAlias) {
 			$this->trigger = false;
 		}
+
 		$this->data['Alias'] = $Model->data['Alias'];
-        $this->data['Alias']['name'] = $newAlias;
+        !empty($newAlias) ? $this->data['Alias']['name'] = $newAlias : null;
         $this->data[$Model->alias]['alias'] = $newAlias;
+		
+		// Check for SEO Meta values
+		if (!empty($this->data['Alias']['title']) || !empty($this->data['Alias']['keywords']) || !empty($this->data['Alias']['description'])) {
+			$this->meta = true;
+		}
         		
 		return parent::beforeSave($Model, $options);
 	}
@@ -155,24 +161,37 @@ class OptimizableBehavior extends ModelBehavior {
  * @param bool $created
  */
     public function afterSave(Model $Model, $created, $options = array()) {
-        if (!empty($this->data['Alias']['name']) && $this->trigger) {
+        $settings = $this->settings[$Model->alias];
+    	// check for existing and set the id for overwrite in case this is an edit
+    	if (!empty($this->trigger) || !empty($this->meta)) {
             $Alias = ClassRegistry::init('Alias');
-			$data = array(
-				'Alias' => array(
-					'value' => $Model->data[$Model->alias][$this->settings[$Model->alias]['foreignKey']],
-					'name' => $this->makeUniqueSlug($Model, $this->data['Alias']['name']),
-					'plugin' => $this->settings[$Model->alias]['plugin'],
-					'controller' => $this->settings[$Model->alias]['controller'],
-					'action' => $this->settings[$Model->alias]['action']
-				)
-			);
+            $existingId = $Alias->field('id', array('value' => $Model->data[$Model->alias][$settings['foreignKey']]));
+			!empty($existingId) ? $data['Alias']['id'] = $existingId : null;
+			$data['Alias']['plugin'] = $settings['plugin'];
+			$data['Alias']['controller'] = $settings['controller'];
+			$data['Alias']['action'] = $settings['action'];
+    	}
+    	// setup the alias data
+        if (!empty($this->data['Alias']['name']) && $this->trigger) {
+            $data['Alias']['value'] = $Model->data[$Model->alias][$settings['foreignKey']];
+            $data['Alias']['name'] = $this->makeUniqueSlug($Model, $this->data['Alias']['name']);
+        }
+		// setup meta data
+        if (!empty($this->meta)) {
+            $data['Alias']['value'] = $Model->data[$Model->alias][$settings['foreignKey']];
+            $data['Alias']['title'] = $this->data['Alias']['title'];
+			$data['Alias']['keywords'] = $this->data['Alias']['keywords'];
+			$data['Alias']['description'] = $this->data['Alias']['description'];
+        }
+
+		if (!empty($data['Alias'])) {
 			$Alias->create();
             if ($Alias->save($data)) {
                 return true;
             } else {
                 throw new Exception(__('Alias save failed after %s was saved.', $Model->alias));
             }
-        }
+		}
         parent::afterSave($Model, $created);
     }
 
