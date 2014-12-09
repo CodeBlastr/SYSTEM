@@ -422,7 +422,7 @@ class ZuhaSet {
  * @param array $in
  * @param int|string $pos
  */
-	function array_splice_after($array, $insert, $position) {
+	public function array_splice_after($array, $insert, $position) {
 	    if(is_int($position)) {
 	    	$r = array_merge(array_slice($array, 0, $position + 1), $insert, array_slice($array, $position + 1));
 		} else {
@@ -442,7 +442,7 @@ class ZuhaSet {
  * @param array $in
  * @param int|string $pos
  */
-	function array_splice_before($array, $insert, $position) {
+	public function array_splice_before($array, $insert, $position) {
 	    if(is_int($position)) {
 	    	$r = array_merge(array_slice($array, 0, $position), $insert, array_slice($array, $position));
 		} else {
@@ -459,7 +459,7 @@ class ZuhaSet {
 /**
  * Recursively remove empty values from an array
  */
-	function array_filter_recursive($haystack) {
+	public function array_filter_recursive($haystack) {
 	    foreach ($haystack as $key => $value) {
 	        if (is_array($value)) {
 	            $haystack[$key] = ZuhaSet::array_filter_recursive($haystack[$key]);
@@ -470,5 +470,21 @@ class ZuhaSet {
 	    }
 	    return is_numeric(key($haystack)) ? array_values($haystack) : $haystack; // reindex if keys are sequential instead of associative
 	}
+
+/**
+ * Recursively search an array for a key, and return the value of that key
+ * 
+ * @param array
+ * @param string
+ */
+ 	public function find_key($array = array(), $needle) {
+ 		$iterator  = new RecursiveArrayIterator($array);
+	    $recursive = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
+	    foreach ($recursive as $key => $value) {
+	        if ($key === $needle) {
+	            return $value;
+	        }
+	    }
+ 	}
 
 }
