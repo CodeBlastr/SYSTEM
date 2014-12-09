@@ -182,9 +182,6 @@ class AppController extends Controller {
 		$this->_siteTemplate();
 		// move this
 		$this->viewClass = $this->RequestHandler->ext == 'csv' ? 'Csv' : $this->viewClass;
-		// order is important for these automatic view vars
-		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
-		$this->set('title_for_layout', $this->_titleForLayout());
 		$this->set('__userRoleId', $this->userRoleId);
 		$this->set('__userId', $this->userId);
 	}
@@ -207,6 +204,12 @@ class AppController extends Controller {
 			// set in the themeable behavior
 			$this->Acl->check(array('permission' => true), $this->$modelName->permissionData);
 		}
+		// order is important for these automatic view vars
+		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
+		$alias = ZuhaSet::find_key($this->viewVars, 'Alias');
+		$this->set('title_for_layout', !empty($alias) ? $alias['title'] : $this->_titleForLayout());
+		$this->set('keywords_for_layout', !empty($alias['keywords']) ? $alias['keywords'] : null);
+		$this->set('description_for_layout', !empty($alias['description']) ? $alias['description'] : null);
 	}
 
 /**
