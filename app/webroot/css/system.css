@@ -3,8 +3,10 @@
  The css placed here should be easily over written even with simple css rules for site css.
  Note that the class names could be updated and change often.
  
-
 /* Site Errors */
+#buildrr {
+	display: none; /* hide links to buildrr.com */
+}
 .error-message, .error {
 	color: #C00;
 }
