@@ -77,7 +77,7 @@ class Alias extends AppModel {
  * @todo Clean out alias data for templates and elements.
  */
 	public function cleanInputData($data) {
-		if (empty($data['Alias']['name'])) {
+		if (empty($data['Alias']['name']) && empty($data['Alias']['title']) && empty($data['Alias']['keywords']) && empty($data['Alias']['description'])) {
 			// remove the alias if the name is blank
 			unset($data['Alias']);
 		}
