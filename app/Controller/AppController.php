@@ -192,6 +192,18 @@ class AppController extends Controller {
  * sets a few variables needed for all views
  */
 	public function beforeRender() {
+		// trying to find a bot that is spamming analytics (but it seems to kill real error log reporting - fyi)
+		// CakeLog::write('error', $_SERVER['REMOTE_ADDR']);
+		// CakeLog::write('error', $_SERVER['HTTP_USER_AGENT']);
+		// CakeLog::write('error', $_SERVER['REQUEST_URI']);
+		// CakeLog::write('error', $_SERVER['REQUEST_URI']);
+		// CakeLog::write('error', '...
+		// ...
+		// ...
+		// ...
+		// ');
+		
+		//CakeLog::write('error', print_r($_SERVER, true));
 		parent::beforeRender();
 		$this->set('referer', $this->referer());
 		// used for back button links, could be useful for breadcrumbs possibly
