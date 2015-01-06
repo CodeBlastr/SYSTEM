@@ -6,7 +6,7 @@
 		    	<?php echo $this->Form->input('Webpage.id'); ?>
 		    	<?php echo $this->Form->input('Webpage.type', array('type' => 'hidden')); ?>
 				<?php echo $this->Form->input('Webpage.name', array('label' => 'Internal Page Name')); ?>
-				<?php echo CakePlugin::loaded('Media') ? __('<hr>%s</h4>', $this->Element('Media.selector', array('media' => $this->request->data['Media'], 'multiple' => true))): null; ?>
+				<?php echo CakePlugin::loaded('Media') ? __('<hr>%s</h4>', $this->element('Media.selector', array('media' => $this->request->data['Media'], 'multiple' => true))): null; ?>
 				<?php echo $this->Form->input('Webpage.content', array('type' => 'richtext', 'label' => '')); ?>
 			</fieldset>
 		</div>

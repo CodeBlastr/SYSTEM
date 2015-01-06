@@ -118,6 +118,7 @@ class AppWebpagesController extends WebpagesAppController {
 		$this->set('sections', $this->Webpage->find('all', array('conditions' => array('Webpage.parent_id NOT' => 0), 'group' => 'Webpage.parent_id', 'contain' => array('Parent'))));
 		$this->set('displayName', 'title');
 		$this->set('page_title_for_layout', __('%s', $webpage['Webpage']['name']));
+		$this->set('description_for_layout', __('%s, %s', __SITE_NAME, $webpage['Webpage']['name']));
 		$this->view = 'index_section';
 		return $webpages;
     }
@@ -225,6 +226,8 @@ class AppWebpagesController extends WebpagesAppController {
 			$webpage = $this->Webpage->handleError($webpage, $this->request);
 		}
 		$this->set(compact('webpage'));
+		$this->set('title_for_layout', !empty($webpage['Webpage']['title']) ? $webpage['Webpage']['title'] : $webpage['Webpage']['name']);
+		$this->set('description_for_layout', !empty($webpage['Webpage']['description']) ? $webpage['Webpage']['description'] : substr(strip_tags($webpage['Webpage']['content']), 0, 140)); 
 		$this->set('page_title_for_layout', $webpage['Webpage']['name']);
         $this->set('page', $page['Webpage']['content']); // an unparsed version of the page for the inline editor
        	$this->view = $this->_fileExistsCheck('view_' . $page['Webpage']['type'] . $this->ext) ? 'view_' . $page['Webpage']['type'] : 'view_content';

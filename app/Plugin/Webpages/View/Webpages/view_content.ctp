@@ -1,5 +1,4 @@
 <?php
-$this->set('title_for_layout', $webpage['Webpage']['title']);
 echo $this->Html->meta('keywords', $webpage['Webpage']['keywords'], array('inline' => false));
 echo $this->Html->meta('description', $webpage['Webpage']['description'], array('inline' => false));
 

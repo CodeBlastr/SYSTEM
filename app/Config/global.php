@@ -472,7 +472,7 @@ class ZuhaSet {
 	}
 
 /**
- * Recursively search an array for a key, and return the value of that key
+ * Recursively search an array for a key, and return all the values with that key
  * 
  * @param array
  * @param string
@@ -480,11 +480,13 @@ class ZuhaSet {
  	public function find_key($array = array(), $needle) {
  		$iterator  = new RecursiveArrayIterator($array);
 	    $recursive = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
+	    $aHitList = array();
 	    foreach ($recursive as $key => $value) {
 	        if ($key === $needle) {
-	            return $value;
+	            array_push($aHitList, $value);
 	        }
 	    }
+	    return $aHitList;
  	}
 
 }

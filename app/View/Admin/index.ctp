@@ -72,7 +72,7 @@ if (empty($runUpdates)) : ?>
             <h3 class="title"><i class="glyphicon glyphicon-cloud"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>Edit, delete, and create images, documents, audio and video. </p>
             <ul>
-                <li><?php echo $this->Html->link('Media Browser', array('plugin' => 'media', 'controller' => 'media_browser', 'action' => 'filebrowser')); ?>
+                <li><?php echo $this->Html->link('Media Browser', array('plugin' => 'media', 'controller' => 'media_browser', 'action' => 'filebrowser', 'admin' => true)); ?>
                 	<br><p>Create, Edit, Delete all Media that has been uploaded to the site</p></li>
                 <li><?php echo $this->Html->link('Media Galleries', array('admin' => true, 'plugin' => 'media', 'controller' => 'media_galleries', 'action' => 'index')); ?>
       				<br><p>Create, Edit, manage your media galleries</p></li>

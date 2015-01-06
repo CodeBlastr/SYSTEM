@@ -218,10 +218,10 @@ class AppController extends Controller {
 		}
 		// order is important for these automatic view vars
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
-		$alias = ZuhaSet::find_key($this->viewVars, 'Alias');
-		$this->set('title_for_layout', !empty($alias) ? $alias['title'] : $this->_titleForLayout());
+		$alias = end(ZuhaSet::find_key($this->viewVars, 'Alias'));
+		$this->set('title_for_layout', !empty($alias['title']) ? $alias['title'] : $this->_titleForLayout());
 		$this->set('keywords_for_layout', !empty($alias['keywords']) ? $alias['keywords'] : null);
-		$this->set('description_for_layout', !empty($alias['description']) ? $alias['description'] : null);
+		$this->set('description_for_layout', !empty($alias['description']) ? $alias['description'] : $this->_descriptionForLayout());
 	}
 
 /**
@@ -959,11 +959,15 @@ class AppController extends Controller {
  * Easily over ridden by individual controllers.
  */
 	private function _pageTitleForLayout() {
-		return $this->pageTitleForLayout = Inflector::humanize(Inflector::underscore(strtolower($this->pageTitleForLayout)));
+		return $this->pageTitleForLayout = !empty($this->viewVars['page_title_for_layout']) ? $this->viewVars['page_title_for_layout'] : Inflector::humanize(Inflector::underscore(strtolower($this->request->controller)));
 	}
 
-	private function _titleForLayout() {
-		return $this->titleForLayout = Inflector::humanize(Inflector::underscore($this->titleForLayout));
+	private function _titleForLayout() {		
+		return $this->titleForLayout = !empty($this->viewVars['title_for_layout']) ? $this->viewVars['title_for_layout'] : Inflector::humanize(Inflector::underscore($this->request->controller));
+	}
+	
+	private function _descriptionForLayout() {
+		return $this->descriptionForLayout = !empty($this->viewVars['description_for_layout']) ? $this->viewVars['description_for_layout'] : Inflector::humanize(Inflector::underscore($this->request->controller));
 	}
 
 /**

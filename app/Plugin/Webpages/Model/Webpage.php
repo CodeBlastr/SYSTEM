@@ -1275,20 +1275,21 @@ class AppWebpage extends WebpagesAppModel {
  * 
  * @return array
  */
-	public function sitemap() {
-		App::uses('Alias', 'Model');
-		$Alias = new Alias();
-		$pages = $Alias->find('all', array('conditions' => array('Alias.controller' => 'webpages'), 'order' => array('Alias.created' => 'ASC')));
+	public function sitemap() {		
+		$pages = $this->find('all', array('conditions' => array('NOT' => array('Webpage.type' => array('element', 'template'))), 'order' => array('Webpage.created' => 'ASC')));
+		$sitemap = array();
 		for ($i=0; $i < count($pages); $i++) {
-			$sitemap[$i]['url']['loc'] = 'http://' . $_SERVER['HTTP_HOST'] . DS . $pages[$i]['Alias']['name'];
-			$sitemap[$i]['url']['lastmod'] = is_numeric($pages[$i]['Alias']['value']) ? date('Y-m-d', strtotime($this->field('modified', array('Webpage.id' => $pages[$i]['Alias']['value'])))) : date('Y-m-d', strtotime($pages[$i]['Alias']['modified']));
-			$sitemap[$i]['url']['changefreq'] = 'monthly';
-			$sitemap[$i]['url']['priority'] = 1;
-			
-			if ($pages[$i]['Alias']['name'] == 'home') {
-				$sitemap[$i]['url']['loc'] = 'http://' . $_SERVER['HTTP_HOST'];
-			} elseif ($pages[$i]['Alias']['name'] == 'error') {
-				unset($sitemap[$i]);
+			if (!empty($pages[$i]['Alias']['in_sitemap'])) {
+				$sitemap[$i]['url']['loc'] = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . DS . $pages[$i]['Alias']['name'];
+				$sitemap[$i]['url']['lastmod'] = is_numeric($pages[$i]['Alias']['value']) ? date('Y-m-d', strtotime($this->field('modified', array('Webpage.id' => $pages[$i]['Alias']['value'])))) : date('Y-m-d', strtotime($pages[$i]['Alias']['modified']));
+				$sitemap[$i]['url']['changefreq'] = 'monthly';
+				$sitemap[$i]['url']['priority'] = 1;
+	
+				if ($pages[$i]['Alias']['name'] == 'home') {
+					$sitemap[$i]['url']['loc'] =  $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+				} elseif ($pages[$i]['Alias']['name'] == 'error') {
+					unset($sitemap[$i]);
+				}
 			}
 		}
 		return array_values($sitemap);
