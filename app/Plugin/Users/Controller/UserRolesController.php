@@ -54,7 +54,7 @@ class UserRolesController extends UsersAppController {
  */
 	public function view($id = null) {
 		if (!$id) {
-			$this->Session->setFlash(__('Invalid UserRole.', true));
+			$this->Session->setFlash(__('Invalid UserRole.', true), 'flash_danger');
 			$this->redirect(array('action'=>'index'));
 		}
 		$this->set('userRole', $this->UserRole->read(null, $id));
@@ -69,10 +69,10 @@ class UserRolesController extends UsersAppController {
 		if (!empty($this->request->data)) {
 			$this->UserRole->create();
 			if ($this->UserRole->save($this->request->data)) {
-				$this->Session->setFlash(__('The UserRole has been saved', true));
+				$this->Session->setFlash(__('The UserRole has been saved', true), 'flash_success');
 				$this->redirect(array('action'=>'index'));
 			} else {
-				$this->Session->setFlash(__('The UserRole could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The UserRole could not be saved. Please, try again.', true), 'flash_warning');
 			}
 		}
 		$this->request->data['UserRole']['duplicate'] = $duplicateId;
@@ -88,15 +88,15 @@ class UserRolesController extends UsersAppController {
  */
 	public function edit($id = null) {
 		if (!$id && empty($this->request->data)) {
-			$this->Session->setFlash(__('Invalid UserRole', true));
+			$this->Session->setFlash(__('Invalid UserRole', true), 'flash_danger');
 			$this->redirect(array('action'=>'index'));
 		}
 		if (!empty($this->request->data)) {
 			if ($this->UserRole->save($this->request->data)) {
-				$this->Session->setFlash(__('The UserRole has been saved', true));
+				$this->Session->setFlash(__('The UserRole has been saved', true), 'flash_success');
 				$this->redirect(array('action'=>'index'));
 			} else {
-				$this->Session->setFlash(__('The UserRole could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('The UserRole could not be saved. Please, try again.', true), 'flash_warning');
 			}
 		}
 		if (empty($this->request->data)) {
@@ -112,11 +112,11 @@ class UserRolesController extends UsersAppController {
  */
 	public function delete($id = null) {
 		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for UserRole', true));
+			$this->Session->setFlash(__('Invalid id for UserRole', true), 'flash_danger');
 			$this->redirect(array('action'=>'index'));
 		}
 		if ($this->UserRole->delete($id)) {
-			$this->Session->setFlash(__('UserRole deleted', true));
+			$this->Session->setFlash(__('UserRole deleted', true), 'flash_success');
 			$this->redirect(array('action'=>'index'));
 		}
 	}
