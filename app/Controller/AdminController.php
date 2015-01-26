@@ -32,7 +32,7 @@ class AdminController extends AppController {
 			$this->_saveFavicon();
 		}
 		if (!empty($this->request->data['Admin']['export'])) {
-			$this->SiteExport->_exportSite();
+			$this->SiteExport->_exportSite($this->request->data['Admin']['export']);
 		}
 		if (!empty($this->request->data['Upgrade']['all'])) {
 			$this->SiteUpdate->_runUpdates();
