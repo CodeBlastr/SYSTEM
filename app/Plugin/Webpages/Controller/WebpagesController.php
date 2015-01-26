@@ -155,7 +155,7 @@ class AppWebpagesController extends WebpagesAppController {
     }
 
     protected function _indexEmail() {
-		$this->paginate['conditions']['Webpage.type'] = 'email';
+		$this->paginate['conditions']['Webpage.type'] = array('email', 'email_template');
 		$this->set('webpages', $this->paginate());
 		$this->set('displayName', 'title');
 		$this->set('displayDescription', 'content');
