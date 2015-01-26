@@ -23,8 +23,10 @@ class ZuhaHtmlHelper extends HtmlHelper {
  */
  	public function link($title, $url = null, $options = array(), $confirmMessage = false) {
 		// zuha added - absolute option
-		if (is_string($url) && $options['absolute'] === true && strpos($url, 'http') === false) {
+		if (isset($options['absolute'])) {
+			if (is_string($url) && $options['absolute'] === true && strpos($url, 'http') === false) {
 				$url = 'http://' . $url; 
+			}
 		}
 		// zuha added - remove links if the plugin isn't installed
 		if (is_array($url) && !empty($url['plugin']) && $url['plugin'] != '/' && !in_array(Inflector::camelize($url['plugin']), CakePlugin::loaded())) {
