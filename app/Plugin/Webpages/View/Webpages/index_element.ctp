@@ -6,7 +6,9 @@
 				<div class="media-body">
 					<h4 data-id="<?php echo $webpage['Webpage']['id']; ?>">
 						<?php echo $webpage['Webpage']['name']; ?>						
-						<?php echo $this->Html->link('Edit', array('admin' => true, 'action' => 'edit', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
+						<?php echo strpos($webpage['Webpage']['content'], '<?php') !== false ? null : $this->Html->link('Edit w/ WYSIWYG', array('admin' => true, 'action' => 'edit', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-success btn-xs')); ?>
+						<?php echo $this->Html->link('Edit HTML', array('admin' => true, 'action' => 'edit', $webpage['Webpage']['id'], '?' => array('advanced' => 1)), array('class' => 'btn btn-default btn-warning btn-xs')); ?>
+						<?php //strpos($webpage['Webpage']['content'], '<?php') !== false) ? ?>
 					</h4>
 						<?php //echo $this->Html->link('Add Sub Page', array('action' => 'add', 'sub', $webpage['Webpage']['id']), array('class' => 'btn btn-default btn-xs')); ?>
 						<?php if (!empty($webpage['Child'][0])) : ?>
@@ -26,7 +28,7 @@
 							</div>
 						<?php endif; ?>
 					<p>						
-						<?php if (strpos($webpage['Webpage']['content'], '<?php')) : ?>
+						<?php if (strpos($webpage['Webpage']['content'], '<?php') !== false) : ?>
 						<span class="label label-warning"> Not WYSWIG Editable</span>  Template Tag : {element: <?php echo $webpage['Webpage']['name']; ?>}
 						<?php else : ?>
 						<span class="label label-success"> Inline Editing Capable</span> Template Tag : {page: <?php echo $webpage['Webpage']['name']; ?>}
