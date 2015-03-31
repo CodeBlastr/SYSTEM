@@ -408,6 +408,14 @@ class Setting extends AppModel {
 					. PHP_EOL . 'like = true'
 				),
 			),
+			'Tracker' => array(
+				array(
+					'name' => 'CLIENT_TOKEN',
+					'description' => 'The api token for the catch all client account, setup through pivotal tracker. <a target="_blank" href="https://www.evernote.com/shard/s13/sh/4e548588-6451-4e6f-8747-a9367a9c1c3b/11bde007e867a790bcb4dcd8bae9b555">Screenshot</a>' . PHP_EOL . PHP_EOL . 'example value...' . PHP_EOL . '8dan9s8dn90bqyer0987as09d87fb7'),
+				array(
+					'name' => 'CLIENT_USERNAME',
+					'description' => 'The username for the catch all client account, setup through pivotal tracker. <a target="_blank" href="https://www.evernote.com/shard/s13/sh/81e39c34-f6a7-4bdc-b5d8-41f704fcdecd/9d9acfa721c014e5a9d5fdabfb2322a6">Screenshot</a>' . PHP_EOL . PHP_EOL . 'example value...' . PHP_EOL . 'allclient')
+			),
 		);
 		ksort($settings);
 		$this->settings = $settings;
