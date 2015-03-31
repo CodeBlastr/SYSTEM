@@ -275,9 +275,7 @@ class AppUsersController extends UsersAppController {
  * Dashboard method
  */
 	public function dashboard() {
-	
 		$this->redirect('admin');
-		
 		$this->paginate['order'] = array('User.created' => 'DESC');
 		$this->paginate['contain'] = array('UserRole');
 		$this->set('users', $this->paginate('User'));
