@@ -20,7 +20,7 @@
 	<?php echo $this->Html->script('twitter-bootstrap.3/bootstrap.custom'); ?>
 	<?php echo $this->Html->script('twitter-bootstrap.3/bootstrap.switch.min'); ?>
 	<?php echo $scripts_for_layout; ?>
-	<?php echo defined('__REPORTS_ANALYTICS') ? $this->Element('analytics', array(), array('plugin' => 'webpages')) : null; ?>
+	<?php echo defined('__REPORTS_ANALYTICS') ? $this->element('analytics', array(), array('plugin' => 'webpages')) : null; ?>
 	<style type="text/css">
 		body {
 			padding: 70px 0;
@@ -28,8 +28,8 @@
 	</style>
 </head>
 <body <?php echo $this->element('body_attributes'); ?>>
-	<?php echo $this->Element('twitter-bootstrap/header'); ?>
-	<?php echo $this->Element('twitter-bootstrap/page_title'); ?>
+	<?php echo $this->element('twitter-bootstrap/header'); ?>
+	<?php //echo $this->element('twitter-bootstrap/page_title'); ?>
     <div class="container">
         <?php echo $this->Session->flash(); ?>
 		<?php echo $this->Session->flash('auth'); ?>
@@ -40,7 +40,7 @@
             <?php echo defined('__SYSTEM_SITE_NAME') ? __('<p>&copy; %s %s</p>', __SYSTEM_SITE_NAME, date('Y')) : __('<p>&copy; Company %s</p>', date('Y')); ?>
         </footer>
 		
-		<?php echo $this->Element('sql_dump'); ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> 
+		<?php echo $this->element('sql_dump'); ?> <?php echo !empty($dbSyncError) ? $dbSyncError : null; ?> 
     </div> <!-- /container -->
 </body>
 </html>
