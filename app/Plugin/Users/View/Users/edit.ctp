@@ -3,7 +3,7 @@
     <?php $editLink = empty($this->request->params['named']['cpw']) ? $this->Html->link('Change Password', array('action' => 'edit', $this->request->data['User']['id'], 'password'), array('class' => 'btn')) : $this->Html->link('Change Details', array('action' => 'edit', $this->request->data['User']['id']), array('class' => 'btn')); ?>
     <?php echo __('<legend><h2>Edit User Profile %s</h2></legend>', $editLink); ?>
 	<?php echo '<div id="userEditThumb">'; ?>
-    <?php echo $this->element('thumb', array('thumbLink' => '', 'thumbLinkOptions' => array('style' => 'color: #333;font-size: 10px;'), 'model' => 'User', 'foreignKey' => $this->request->data['User']['id']), array('plugin' => 'galleries')); ?>
+    <?php echo $this->element('Galleries.thumb', array('thumbClass' => 'img-responsive', 'thumbSize' => 'large', 'thumbLink' => '', 'thumbLinkOptions' => array('style' => 'color: #333;font-size: 10px;'), 'model' => 'User', 'foreignKey' => $this->request->data['User']['id'])); ?>
 	<?php echo $this->Html->link('Change Photo', '/', array('id' => 'userEditThumbLink', 'class' => 'toggleClick', 'data-target' => '#GalleryEditForm')); ?>
 	<?php echo '</div>'; ?>
 	<?php echo $this->Form->create('Gallery', array('url' => '/galleries/galleries/mythumb', 'enctype' => 'multipart/form-data')); ?>
