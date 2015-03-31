@@ -449,7 +449,7 @@ class ZuhaHtmlHelper extends HtmlHelper {
  */
 	public function tagElement($View, $content, $options = array()) {
 		// matches element template tags like {element: plugin.name}
-		preg_match_all ("/(\{element: (.*?)([^\}]*)\})/", $content, $matches); // a little shorter
+		preg_match_all("/(\{element: (.*?)([^\}]*)\})/", $content, $matches); // a little shorter
 		$i=0;
 		foreach ($matches[0] as $elementMatch) {
 			$element = $this->parseTag(trim($matches[3][$i]));
