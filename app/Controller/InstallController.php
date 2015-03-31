@@ -7,7 +7,7 @@ App::uses('CakeSchema', 'Model');
  * 
  * Note: that we extend controller and NOT AppController
  */
-class InstallController extends Controller {
+class AppInstallController extends Controller {
 
     public $name = 'Install';
     public $uses = array();
@@ -21,6 +21,11 @@ class InstallController extends Controller {
     public $allowedActions = array('index', 'site', 'login', 'plugin');
 	public $local = false;
 	public $installFile = '';
+	public $redirect = '/install/build';
+	public $success = false; // was a full site install ultimately successful ?
+	public $errors = array(
+		'db_name_conflict' => 'Cannot use db name : %s'
+		);
 
 /**
  * Schema class being used.
@@ -34,11 +39,8 @@ class InstallController extends Controller {
  * 
  */
     public function __construct($request = null, $response = null) {
-    	
     	$this->helpers[] = 'Utils.Tree';
-		
         parent::__construct($request, $response);
-
         $this->_handleSitesDirectory();
         if ($request->controller == 'install' || $request->action == 'site') {
             Configure::write('Session', array(
@@ -46,23 +48,19 @@ class InstallController extends Controller {
                 'cookie' => 'PHPSESSID'
             ));
         }
-
         $name = $path = $connection = $plugin = null;
         if (!empty($this->params['name'])) {
             $name = $this->params['name'];
         } elseif (!empty($this->args[0])) {
             $name = $this->params['name'] = $this->args[0];
         }
-
         if (strpos($name, '.')) {
             list($this->params['plugin'], $splitName) = pluginSplit($name);
             $name = $this->params['name'] = $splitName;
         }
-
         if ($name) {
             $this->params['file'] = Inflector::underscore($name);
         }
-
         if (empty($this->params['file'])) {
             $this->params['file'] = 'schema.php';
         }
@@ -74,7 +72,6 @@ class InstallController extends Controller {
         if (!empty($this->params['path'])) {
             $path = $this->params['path'];
         }
-
         if (!empty($this->params['connection'])) {
             $connection = $this->params['connection'];
         }
@@ -137,7 +134,7 @@ class InstallController extends Controller {
         }
 
         if (is_dir($this->newDir)) {
-            $this->message[] = __('That domain already exists, please try again.');
+            $this->message[] = __('That folder already exists, please try again.');
             $this->_redirect($this->referer());
         }
     }
@@ -147,9 +144,8 @@ class InstallController extends Controller {
  * 
  */
  	protected function _createDatabase() {
-		require($this->installFile);
+		require_once($this->installFile);
 		$Install = new INSTALL_CONFIG;
-		
 	    $this->config['datasource'] = 'Database/Mysql';
 	    $this->config['host'] = $Install->default['host'];
 	    $this->config['login'] = $Install->default['login'];
@@ -168,7 +164,7 @@ class InstallController extends Controller {
 		// See if database exists
 		$dbTest = mysqli_select_db($connection, $this->config['database']);
 		if ($dbTest) {
-			$this->Session->setFlash(__('Cannot use db name : %s', $this->config['database']));
+			$this->Session->setFlash(__($this->errors['db_name_conflict'], $this->config['database']));
 			$this->redirect('/install/site');
 		} else {
 			// Create database
@@ -293,7 +289,7 @@ class InstallController extends Controller {
         $this->_handleSecurity();
         $this->set('local', $this->_local());
 		
-        if (!empty($this->request->data)) {
+        if (!empty($this->request->data)) {			
           	$this->_handleInputVars($this->request->data);
             // move everything here down to its own function
             try {
@@ -341,7 +337,8 @@ class InstallController extends Controller {
                             }
 
                             try {
-                                $this->_installCoreFiles();
+                                $this->_installFiles();
+								$this->_notify();
                                 // success!!!
                                 $this->message[] = __('Success');
                                 $this->_redirect('http://' . $this->options['siteDomain'] . '/settings/install');
@@ -375,14 +372,32 @@ class InstallController extends Controller {
         $this->layout = false;
     }
 
+	protected function _notify() {
+		require_once($this->installFile);
+		$Install = new INSTALL_CONFIG;
+		if (!empty($Install->default['notify'])) {
+	    	mail($Install->default['notify'], '<pre>' . 'New Install', print_r($this->request, true) . '<br><br>' . print_r(get_defined_vars(), true) . '</pre>');
+		}
+	}
+
 /**
  * Local method
  * Checks for .install.php file and if exists, returns true
  * 
  */
  	protected function _local() {
- 		$file = ROOT . DS . APP_DIR . DS . 'Config' . DS . '.install.php';
- 		if (file_exists($file)) {
+ 		$installConfigFiles = array(
+ 			ROOT . DS . SITE_DIR . DS . 'Config' . DS . '.install.php',
+ 			ROOT . DS . APP_DIR . DS . 'Config' . DS . '.install.php',
+ 			);
+ 		$file = false;
+ 		foreach ($installConfigFiles as $configFile) {
+ 			if (file_exists($configFile)) {
+ 				$file = $configFile;
+				break;
+ 			}
+ 		}
+ 		if ($file) {
  			$this->installFile = $file;
  			$this->local = true;
  			$this->view = 'local';
@@ -393,40 +408,46 @@ class InstallController extends Controller {
 /**
  * Copies example.com, creates the database.php, and core.php files.
  *
- * @todo     Probably should change this to catch throw syntax because there are a lot of errors with no feedback.
  */
-    protected function _installCoreFiles() {
+    protected function _installFiles() {
         if (!empty($this->options['siteDomain']) && !empty($this->config)) {
             // copy example.com
             $templateDir = ROOT . DS . 'sites' . DS . 'example.com';
 
-            if ($this->_copy_directory($templateDir, $this->newDir)) {
+            if ($this->_copyDirectory($templateDir, $this->newDir)) {
                 // create database.php
                 $fileName = $this->newDir . DS . 'Config' . DS . 'database.php';
                 $contents = "<?php" . PHP_EOL . PHP_EOL . "class DATABASE_CONFIG {" . PHP_EOL . PHP_EOL . "\tpublic \$default = array(" . PHP_EOL . "\t\t'datasource' => 'Database/Mysql'," . PHP_EOL . "\t\t'persistent' => false," . PHP_EOL . "\t\t'host' => '" . $this->config['host'] . "'," . PHP_EOL . "\t\t'login' => '" . $this->config['login'] . "'," . PHP_EOL . "\t\t'password' => '" . $this->config['password'] . "'," . PHP_EOL . "\t\t'database' => '" . $this->config['database'] . "'," . PHP_EOL . "\t\t'prefix' => ''," . PHP_EOL . "\t\t//'encoding' => 'utf8'," . PHP_EOL . "\t);" . PHP_EOL . "}";
                 if ($this->_createFile($fileName, $contents)) {
                     // update sites/bootstrap.php
                     if ($this->_updateBootstrapPhp()) {
-                        // run settings
+                    	// check if there are some custom files to install...
+                    	$customInstallDir = ROOT . DS . SITE_DIR . DS . 'Install'; 
+						if (file_exists($customInstallDir)) {
+							if ($this->_copyDirectory($customInstallDir, $this->newDir)) {
+								return true;
+							} else {
+                    			throw new Exception(__('Custom install files update failed.'));
+							}
+						} 
                         return true;
                     } else {
-                        $this->message[] = __('Update bootstrap failed');
-                        $this->_redirect($this->referer());
+                        throw new Exception(__('Update bootstrap failed'));
                     }
                 } else {
-                    $this->message[] = __('Database file update failed.');
-                    $this->_redirect($this->referer());
+                    throw new Exception(__('Database file update failed.'));
                 }
             } else {
-                $this->message[] = __('Copy site directory failed.');
-                $this->_redirect($this->referer());
+                throw new Exception(__('Copy site directory failed.'));
             }
         } else {
-            $this->message[] = __('Empty site domain, or empty config');
-            $this->_redirect($this->referer());
+            throw new Exception(__('Empty site domain, or empty config'));
         }
     }
 
+/**
+ * Update the bootstrap.php file in the sites directory
+ */
     protected function _updateBootstrapPhp() {
         $filename = ROOT . DS . 'sites' . DS . 'bootstrap.php';
         $filesize = filesize($filename);
@@ -687,7 +708,7 @@ class InstallController extends Controller {
         }
 
         if (file_exists(ROOT . DS . 'sites.default') && !file_exists(ROOT . DS . 'sites/example.com')) {
-            if ($this->_copy_directory(ROOT . DS . 'sites.default', ROOT . DS . 'sites')) {
+            if ($this->_copyDirectory(ROOT . DS . 'sites.default', ROOT . DS . 'sites')) {
                 
             } else {
                 echo 'Please update write permissions for the "sites" directory.';
@@ -701,13 +722,13 @@ class InstallController extends Controller {
  *
  * @todo     Needs an error to return false
  */
-    protected function _copy_directory($src, $dst) {
+    protected function _copyDirectory($src, $dst) {
         $dir = opendir($src);
         @mkdir($dst);
         while (false !== ( $file = readdir($dir))) {
             if (( $file != '.' ) && ( $file != '..' )) {
                 if (is_dir($src . '/' . $file)) {
-                    $this->_copy_directory($src . '/' . $file, $dst . '/' . $file);
+                    $this->_copyDirectory($src . '/' . $file, $dst . '/' . $file);
                 } else {
                     if (copy($src . '/' . $file, $dst . '/' . $file)) {
                         
@@ -778,16 +799,16 @@ class InstallController extends Controller {
  * If it is not the first upload then we want access to index() and site() to be restricted.
  */
     protected function _handleSecurity() {
-    	//this is here to handle post install redirect (so that it wouldn't come back to the install page)
     	if (defined('SITE_DIR') && SITE_DIR == 'sites/'.$_SERVER['HTTP_HOST'] && $this->request->action != 'index' && $this->request->action != 'plugin' && $this->request->action != 'build' && $this->request->action != 'client') {
-			$this->Session->setFlash(__('Site installed successfully.'));
-			$this->_local();
-			require_once($this->installFile);
-			$Install = new INSTALL_CONFIG;
-			$url =  !empty($Install->default['redirect']) ? $Install->default['redirect'] : '/install/build';
-			$this->redirect($url);
+			// $this->Session->setFlash(__('Site installed successfully.'));
+			// $this->_local();
+			// require_once($this->installFile);
+			// $Install = new INSTALL_CONFIG;
+			// $url =  !empty($Install->default['redirect']) ? $Install->default['redirect'] : $this->redirect;
+			// $this->redirect($url);
 		}
 		
+    	// Use this if / when some site should have the ability to install other sites	
     	if (Configure::read('Install') === true) {
     		return true;
     	}
@@ -824,7 +845,7 @@ class InstallController extends Controller {
 ('50dd24cc-2c50-50c0-a96b-4cf745a3a949', 'System', 'GUESTS_USER_ROLE_ID', '5', '', NULL, NULL, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'),
 ('50dd24cc-2c50-51c0-a96b-4cf745a3a949', 'System', 'LOAD_PLUGINS', '" . $installedPlugins . "', '', NULL, NULL, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'),
 ('50dd24cc-2c50-52c0-a96b-4cf745a3a949', 'System', 'SITE_NAME', '" . $options['siteName'] . "', '', NULL, NULL, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "'),
-('50e08ff5-d88c-42d3-9c99-726745a3a949', 'System', 'SMTP', 'smtp = \"K7qTTLH17Ja5XTUiHLtnNiY2i8kg0XnVvnYli5MYtZJViOL7lvlfNyoxjDQ1Myi0hiuXOIj0PGfZx3q/0RnO1bCJ6h5VTU/rMygPN5eTeNlvlOssN8qANbaOUMrl5onaNisqSPYXNzUsxNp40HnSi1Ihlog199ociufni/lEbXEOvmk6KCykhS2NI4P0KmmHiDXa7VqW6eSqtlE9ZwGmZRoyMYiDKpZvqucxK8Y=\"', 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.\r\n\r\nExample value : \r\nsmtpUsername = xyz@example.com\r\nsmtpPassword = \"XXXXXXX\"\r\nsmtpHost = smtp.example.com\r\nsmtpPort = XXX\r\nfrom = myemail@example.com\r\nfromName = \"My Name\"', NULL, NULL, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "');";
+('50e08ff5-d88c-42d3-9c99-726745a3a949', 'System', 'SMTP', 'smtp = \"8Bs1AlX6ks2uyw7V6e8QSQX2Fd7EX7uMzUJK/uAgx1+WfEANcW6V48nLTdM7VpqVKKtRUDDSNfbsG0CNYZaKTVHhm0MeW653Qp/OT0E+i1dL1kLIit4VN5VUuOrmEz9tpvrEAM/KZh3obD0UBlq85N9qRoLM8+xAuIiuS/M7UFE81yQDPoxHBi9ovvc4pQmCRuYVGsI+c1q2gej3tCmk2/p9qA==\"', 'Defines email configuration settings so that sending email is possible. Please note that these values will be encrypted during entry, and cannot be retrieved.\r\n\r\nExample value : \r\nsmtpUsername = xyz@example.com\r\nsmtpPassword = \"XXXXXXX\"\r\nsmtpHost = smtp.example.com\r\nsmtpPort = XXX\r\nfrom = myemail@example.com\r\nfromName = \"My Name\"', NULL, NULL, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "');";
 
         $dataStrings[] = "INSERT INTO `users` (`id`, `full_name`, `first_name`, `last_name`, `username`, `password`, `email`, `view_prefix`, `user_role_id`, `created`, `modified`) VALUES
 ('1', '" . $this->options['siteName'] . "', '" . $this->options['first_name'] . "', '" . $this->options['last_name'] . "', '" . $this->options['username'] . "', '" . $this->options['password'] . "', '" . $this->options['username'] . "', 'admin', 1, '" . date('Y-m-d h:i:s') . "', '" . date('Y-m-d h:i:s') . "');";
@@ -1034,7 +1055,7 @@ class InstallController extends Controller {
  		require_once($this->installFile);
 		$Install = new INSTALL_CONFIG;
 		$mail = $Install->default['notify'];
-		if ($this->Install->__sendMail('richard@buildrr.com', $_SERVER['HTTP_HOST'] . ' Approved', 'Approved project scope, check it out. http://' . $_SERVER['HTTP_HOST'])) {
+		if ($this->Install->__sendMail($mail, $_SERVER['HTTP_HOST'] . ' Approved', 'Approved project scope, check it out. http://' . $_SERVER['HTTP_HOST'])) {
 			$this->Session->setFlash(__('Approval notification sent, thank you!'));
 			$this->redirect($this->referer());
 		} else {
@@ -1043,4 +1064,8 @@ class InstallController extends Controller {
 		}
  	}
 
+}
+
+if (!isset($refuseInit)) {
+	class InstallController extends AppInstallController {}
 }
