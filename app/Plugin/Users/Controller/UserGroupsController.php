@@ -93,6 +93,7 @@ class AppUserGroupsController extends UsersAppController {
 						'id',
 						'username',
 						'full_name',
+						'facebook_id'
 						)
 					),
 				'UserGroupWallPost' => array(
