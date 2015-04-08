@@ -67,12 +67,21 @@ if (empty($runUpdates)) : ?>
             </ul>
         </div>
 
-        <?php if (CakePlugin::loaded('Media')) : ?>
+        <?php if (CakePlugin::loaded('FileStorage')) : ?>
+        <div class="masonryBox dashboardBox tagMedia tagThemes">
+            <h3 class="title"><i class="glyphicon glyphicon-cloud"></i> <?php echo $this->Html->link('Media Manager', array('plugin' => 'file_storage', 'controller' => 'file_storage', 'action' => 'browser', 'admin' => true)); ?></h3>
+            <p>Edit, delete, and create images, documents, audio and video. </p>
+            <ul>
+                <li><?php echo $this->Html->link('Images', array('plugin' => 'file_storage', 'controller' => 'file_storage', 'action' => 'browser', 'admin' => true, '?' => array('type' => 'Image'))); ?>
+                <li><?php echo $this->Html->link('Documents', array('plugin' => 'file_storage', 'controller' => 'file_storage', 'action' => 'browser', 'admin' => true, '?' => array('type' => 'File'))); ?>
+            </ul>
+        </div>
+        <?php elseif (CakePlugin::loaded('Media')) : ?>
         <div class="masonryBox dashboardBox tagMedia tagThemes">
             <h3 class="title"><i class="glyphicon glyphicon-cloud"></i> <?php echo $this->Html->link('File Managers', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></h3>
             <p>Edit, delete, and create images, documents, audio and video. </p>
             <ul>
-                <li><?php echo $this->Html->link('Media Browser', array('plugin' => 'media', 'controller' => 'media_browser', 'action' => 'filebrowser', 'admin' => true)); ?>
+                <li><?php echo $this->Html->link('Media Browser', array('plugin' => 'media', 'controller' => 'media_browser', 'action' => 'filebrowser')); ?>
                 	<br><p>Create, Edit, Delete all Media that has been uploaded to the site</p></li>
                 <li><?php echo $this->Html->link('Media Galleries', array('admin' => true, 'plugin' => 'media', 'controller' => 'media_galleries', 'action' => 'index')); ?>
       				<br><p>Create, Edit, manage your media galleries</p></li>
@@ -89,7 +98,10 @@ if (empty($runUpdates)) : ?>
                 <li><?php echo $this->Html->link('Widget Elements', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'element')); ?></li>
                 <li><?php echo $this->Html->link('CSS Styles', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpage_csses', 'action' => 'index')); ?></li>
                 <li><?php echo $this->Html->link('JavaScript', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpage_jses', 'action' => 'index')); ?></li>
-                <?php if (CakePlugin::loaded('Media')) : ?>
+        		<?php if (CakePlugin::loaded('FileStorage')) : ?>
+                <li><?php echo $this->Html->link('Image Files', array('plugin' => 'file_storage', 'controller' => 'file_storage', 'action' => 'browser', 'admin' => true, '?' => array('type' => 'Image'))); ?></li>
+                <li><?php echo $this->Html->link('Document Files', array('plugin' => 'file_storage', 'controller' => 'file_storage', 'action' => 'browser', 'admin' => true, '?' => array('type' => 'File'))); ?></li>        			
+                <?php elseif (CakePlugin::loaded('Media')) : ?>
                 <li><?php echo $this->Html->link('Image Files', array('admin' => true, 'plugin' => 'media', 'controller' => 'media', 'action' => 'images')); ?></li>
                 <li><?php echo $this->Html->link('Document Files', array('admin' => true, 'plugin' => 'media', 'controller' => 'media', 'action' => 'files')); ?></li>
                 <?php endif; ?>
