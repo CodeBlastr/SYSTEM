@@ -196,6 +196,11 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	if (defined('__SYSTEM_LOAD_PLUGINS')) {
 		//CakePlugin::loadAll();
 		extract(unserialize(__SYSTEM_LOAD_PLUGINS));
+		// check if FileStorage is installed and use the bootstrap file there???
+		$fs = array_search('FileStorage', $plugins);
+		if($fs !== false) {
+			$plugins[$fs] = array('FileStorage' => array('bootstrap' => true));
+		}
 		CakePlugin::load($plugins);
 	} elseif (SITE_DIR === NULL){
     	CakePlugin::loadAll(); // Loads all plugins at once
