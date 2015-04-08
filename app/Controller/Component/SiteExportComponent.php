@@ -6,7 +6,11 @@ class SiteExportComponent extends Component {
 
 	public $components = array('Session');
 
-	public function _exportSite() {
+/**
+ * 
+ * @param type $option Allows to configure type of export
+ */
+	public function _exportSite($option = 1) {
 		$tmpdir = TMP . 'backup';
 		$plugins = CakePlugin::loaded();
 		$includes = array();
@@ -22,6 +26,27 @@ class SiteExportComponent extends Component {
 
 		$filename = strtolower(str_replace(' ', '_', __SYSTEM_SITE_NAME));
 
+		$fileInclusionRules = array(
+			'*' => true,
+			'Config' => array(
+				'defaults.ini' => true,
+				'database.php' => false,
+				'core.php' => true,
+				'settings.ini' => true
+			),
+			'tmp' => false
+		);
+		
+		if ($option === 'noMedia') {
+			$fileInclusionRules['Locale'] = array(
+				'View' => array(
+					'webroot' => array(
+						'media' => false,
+					)
+				)
+			);
+		}
+		
 		try {
 			//Create backup directory
 			mkdir($tmpdir, 0777);
@@ -30,7 +55,7 @@ class SiteExportComponent extends Component {
 			$this->copyr(ROOT, $tmpdir, $includes);
 			//Copy the site seperate
 			$sourcefolder = basename(ROOT);
-			$this->copyr(ROOT . DS . SITE_DIR, $tmpdir . DS . $sourcefolder . DS . 'sites', array('*' => true, 'Config' => array('defaults.ini' => true, 'database.php' => false, 'core.php' => true, 'settings.ini' => true), 'tmp' => false));
+			$this->copyr(ROOT . DS . SITE_DIR, $tmpdir . DS . $sourcefolder . DS . 'sites', $fileInclusionRules);
 			//dump the database
 			$db = ConnectionManager::getDataSource('default');
 			$dbname = $db->config['database'];

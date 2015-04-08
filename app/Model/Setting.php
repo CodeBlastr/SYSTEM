@@ -109,6 +109,10 @@ class Setting extends AppModel {
 					'description' => 'environment = sandbox' . PHP_EOL . 'apiUsername = APIUserXXXXX' . PHP_EOL . 'sharedSecret = FdNcOBCgngMkvJ...'
 				),
 				array(
+					'name' => 'USAEPAY',
+					'description' => 'environment = sandbox' . PHP_EOL . 'sourceKey = FdNcOBCgngMkvJ...' . PHP_EOL . 'sourceKeyPin = 12345'
+				),
+				array(
 					'name' => 'BRAINTREE',
 					'description' => 'environment = sandbox or production' . PHP_EOL . 'merchantId = FdNcOBCgngMkvJ...' . PHP_EOL . '	publicKey = F20uf0293...' . PHP_EOL . 'privateKey = j2f3o88...'
 				),
