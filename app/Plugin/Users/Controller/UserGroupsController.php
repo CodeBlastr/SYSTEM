@@ -97,6 +97,7 @@ class AppUserGroupsController extends UsersAppController {
 						)
 					),
 				'UserGroupWallPost' => array(
+					'order' => array('UserGroupWallPost.created' => 'DESC'),
 					'Creator',
 					'Comment' => array(
 						'User' => array('fields' => array('User.id', 'User.full_name'))
