@@ -259,7 +259,9 @@ class AppUsersController extends UsersAppController {
 	public function delete($id) {
 		$this->User->id = $id;
 		if (!$this->User->exists()) {
-			throw new NotFoundException(__('Invalid user'));
+//			throw new NotFoundException(__('Invalid user'));
+			$this->Session->setFlash(__('Invalid user'), 'flash_success');
+			$this->redirect($this->referer());
 		}
 		if ($this->User->delete($id)) {
 			$this->Session->setFlash(__('User #'.$id.' deleted'), 'flash_success');
@@ -273,9 +275,7 @@ class AppUsersController extends UsersAppController {
  * Dashboard method
  */
 	public function dashboard() {
-	
 		$this->redirect('admin');
-		
 		$this->paginate['order'] = array('User.created' => 'DESC');
 		$this->paginate['contain'] = array('UserRole');
 		$this->set('users', $this->paginate('User'));

@@ -570,7 +570,7 @@ class AppWebpage extends WebpagesAppModel {
 				throw new Exception($e->getMessage());
 			}
 		}
-		
+
 		if (!empty($this->data['Webpage']['name']) && $this->data['Webpage']['type'] == 'element') {
 			// create files for elements too
 			$filename = $this->data['Webpage']['name'] = strtolower(trim(preg_replace('/[^a-zA-Z0-9.]+/', '-', $this->data['Webpage']['name']), '-'));

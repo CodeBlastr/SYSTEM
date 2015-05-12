@@ -383,10 +383,15 @@ class AppWebpagesController extends WebpagesAppController {
 	}
 
 	public function _editElement($id) {
+		if (Configure::read('Config.deployment') === 'multi') {
+			debug('Elements cannot be edited on a multi-server deployment.');
+			exit;
+		}
 		if ($this->request->query['advanced']) {
+			$this->Session->setFlash('Warning! Editing with this tool is for advanced users. We do <strong>not</strong> support edits you make here, and it is possible to break the entire site.');
 			$this->view = 'edit_element_advanced';
 		} else {
-			if (strpos($this->request->data['Webpage']['content'], '<?php')) {
+			if (strpos($this->request->data['Webpage']['content'], '<?php') !== false) {
 				// force the advanced editor
 				$this->redirect(array('action' => 'edit', $id, '?' => array('advanced' => true)));
 			}
@@ -394,6 +399,11 @@ class AppWebpagesController extends WebpagesAppController {
 	}
 
 	public function _editTemplate($id) {
+		if (Configure::read('Config.deployment') === 'multi') {
+			debug('Templates cannot be edited on a multi-server deployment');
+			exit;
+		}
+		$this->Session->setFlash('Warning! Editing with this tool is for advanced users. We do <strong>not</strong> support edits you make here, and it is possible to break the entire site.');
 		$templates = $this->Webpage->syncFiles('template');
 	}
 

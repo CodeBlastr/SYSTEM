@@ -48,7 +48,6 @@
 		display: block;
 	}
 	.brand .name .rr {
-		bac.kground: none repeat scroll 0 0 #85B13F;
 		background: #85B13F; /* Old browsers */
 		background: -moz-linear-gradient(top,  #85B13F 0%, #85B13F 100%); /* FF3.6+ */
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#85B13F), color-stop(100%,#85B13F)); /* Chrome,Safari4+ */
@@ -84,7 +83,8 @@
     	<?php echo $this->Session->flash(); ?>
     	<div class="contentSection"> 
 		<?php echo $this->Form->create('User', array('url' => array('plugin' => 'users', 'controller' => 'users', 'action' => 'login')));  ?>
-	    <?php echo $this->Form->input('Override.redirect', array('type' => 'hidden', 'value' => '/install/client')); ?>
+	    <?php // taken out because we have other sites that need to do install besides the catch all.  It needs to find it's way into the controller... not here for a fix.  Maybe something like the $this->redirect var???  Not sure at all. 
+	    // echo $this->Form->input('Override.redirect', array('type' => 'hidden', 'value' => '/install/client')); ?>
 	    <?php echo $this->Form->input('User.username', array('label' => false, 'div' => false, 'placeholder' => 'Enter Your Email', 'autofocus' => 'autofocus')); ?>
 	    <?php echo $this->Form->input('User.password', array('label' => false, 'value' => false, 'div' => false, 'placeholder' => 'Password')); ?>
 		<?php echo $this->Form->end(array('div' => false, 'label' => 'Login', 'class' => 'btn btn-success')); ?>

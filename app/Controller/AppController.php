@@ -665,7 +665,7 @@ class AppController extends Controller {
  * This function parses the settings for templates, in order to decide which
  * template to use, based on url, and user role.
  *
- * @todo 		Move this to the webpage model and optimize it.. looks a bit overcomplicated
+ * @todo Move this to the webpage model and optimize it.. looks a bit overcomplicated
  */
 	public function _getTemplate() {
 		if (defined('__APP_TEMPLATES')) {

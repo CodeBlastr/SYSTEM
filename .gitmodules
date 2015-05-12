@@ -136,3 +136,6 @@
 [submodule "app/Plugin/GenericAuth"]
 	path = app/Plugin/GenericAuth
 	url = git@github.com:zuha/GenericAuth-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Tracker"]
+	path = app/Plugin/Tracker
+	url = git@github.com:zuha/Tracker-Zuha-Cakephp-Plugin.git

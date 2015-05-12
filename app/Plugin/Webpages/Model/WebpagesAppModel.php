@@ -90,7 +90,7 @@ class WebpagesAppModel extends AppModel {
 					}
 				}
 			}
-		}		
+		}	
 		
 		if ($type == 'css') {
 			$dir = new Folder( $this->cssDirectory );
@@ -161,7 +161,44 @@ class WebpagesAppModel extends AppModel {
 					}
 				}
 			}
-		}		
+		}
+		
+		if ($type == 'element') {
+			// not recursive into sub folders of the elements directory
+			$dir = new Folder($this->elementsDirectory);
+			$files = $dir->find('.*\.ctp');
+
+			if (!empty($files)) {
+				foreach ($files as $file) {
+					$file = new File($dir->pwd() . DS . $file);
+					$elements[] = array('name' => str_replace(array($this->elementsDirectory, '.ctp'), '', $file->path), 'content' => $file->read(), 'modified' => date('Y-m-d h:i:s', $file->lastChange()));
+					$file->close(); // Be sure to close the file when you're done
+				}
+			}
+			if (!empty($elements)) {
+				foreach ($elements as $element) {			
+					$id = $this->field('id', array('Webpage.name' => $element['name']));				
+					if (!empty($id)) {
+						try {
+							$this->id = $id;
+							$this->saveField('content', $element['content'], array('callbacks' => false));
+						} catch (Exception $e) {
+							debug($e->getMessage());
+							break;
+						}
+					} else {
+						try {
+							$element['type'] = 'element';
+							$this->create();
+							$this->save($element);
+						} catch (Exception $e) {
+							debug($e->getMessage());
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 /**

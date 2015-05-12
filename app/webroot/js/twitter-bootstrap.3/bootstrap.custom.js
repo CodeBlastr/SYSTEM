@@ -187,7 +187,7 @@ $(function() {
         $(this).addClass('toggle');
 	});
 	
-	$(".toggleClick[data-target]").click(function (e) {
+	$("body").on('click', '.toggleClick', function (e) {
 		var link = $(this);
 		var currentName = $(this).attr('data-target');
 		$(currentName).toggle('easing', function() {
@@ -222,8 +222,26 @@ $(function() {
 	// });
 });
 
-// hmm.. only place I see this used is on the privileges page
 
+(function( $ ){
+  $.fn.toggler = function( fn, fn2 ) {
+    var args = arguments,guid = fn.guid || $.guid++,i=0,
+    toggler = function( event ) {
+      var lastToggle = ( $._data( this, "lastToggle" + fn.guid ) || 0 ) % i;
+      $._data( this, "lastToggle" + fn.guid, lastToggle + 1 );
+      event.preventDefault();
+      return args[ lastToggle ].apply( this, arguments ) || false;
+    };
+    toggler.guid = guid;
+    while ( i < args.length ) {
+      args[ i++ ].guid = guid;
+    }
+    return this.click( toggler );
+  };
+})( jQuery );
+
+
+// hmm.. only place I see this used is on the privileges page
 function applyCheckboxToggles () {
     $('.checkboxToggleDiv').each(function () {
         var c = $(this).children('input[type=checkbox]').first();

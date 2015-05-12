@@ -93,9 +93,11 @@ class AppUserGroupsController extends UsersAppController {
 						'id',
 						'username',
 						'full_name',
+						'facebook_id'
 						)
 					),
 				'UserGroupWallPost' => array(
+					'order' => array('UserGroupWallPost.created' => 'DESC'),
 					'Creator',
 					'Comment' => array(
 						'User' => array('fields' => array('User.id', 'User.full_name'))
@@ -172,15 +174,15 @@ class AppUserGroupsController extends UsersAppController {
 
 	public function edit($id = null) {
 		if (!$id && empty($this->request->data)) {
-			$this->Session->setFlash(__('Invalid user role', true));
+			$this->Session->setFlash(__('Invalid user role', true), 'flash_danger');
 			$this->redirect(array('action' => 'index'));
 		}
 		if (!empty($this->request->data)) {
 			if ($this->UserGroup->save($this->request->data)) {
-				$this->Session->setFlash(__('Group has been saved', true));
+				$this->Session->setFlash(__('Group has been saved', true), 'flash_success');
 				$this->redirect(array('action' => 'view', $this->request->data['UserGroup']['id']));
 			} else {
-				$this->Session->setFlash(__('Group could not be saved. Please, try again.', true));
+				$this->Session->setFlash(__('Group could not be saved. Please, try again.', true), 'flash_warning');
 			}
 		}
 		
@@ -191,7 +193,7 @@ class AppUserGroupsController extends UsersAppController {
 			$users = $this->UserGroup->User->find('list');
 			$this->set(compact('users', 'userGroups')); 
 		} else {
-			$this->Session->setFlash('Invalid Group Credentials');
+			$this->Session->setFlash('Invalid Group Credentials', 'flash_warning');
 			$this->redirect(array('plugin' => 'users', 'controller' => 'user_groups', 'action' => 'view', $groupId));
 		}
 	}
@@ -201,14 +203,14 @@ class AppUserGroupsController extends UsersAppController {
  */
 	public function delete($id = null) {
 		if (!$id) {
-			$this->Session->setFlash(__('Invalid id for group', true));
+			$this->Session->setFlash(__('Invalid id for group', true), 'flash_danger');
 			$this->redirect(array('action'=>'index'));
 		}
 		if ($this->UserGroup->delete($id)) {
-			$this->Session->setFlash(__('Group deleted', true));
+			$this->Session->setFlash(__('Group deleted', true), 'flash_success');
 			$this->redirect(array('action'=>'index'));
 		}
-		$this->Session->setFlash(__('Group was not deleted', true));
+		$this->Session->setFlash(__('Group was not deleted', true), 'flash_warning');
 		$this->redirect(array('action' => 'index'));
 	}
 	
@@ -227,10 +229,10 @@ class AppUserGroupsController extends UsersAppController {
  	public function user($groupId) {
  		if ($this->request->is('post')) {
  			if ($this->UserGroup->user($this->request->data)) {
- 				$this->Session->setFlash(__('User created, and added to group.'));
+ 				$this->Session->setFlash(__('User created, and added to group.'), 'flash_success');
 				$this->redirect(array('plugin' => 'users', 'controller' => 'user_groups', 'action' => 'view', $groupId));
  			} else {
- 				$this->Session->setFlash(__('Could not create user.'));
+ 				$this->Session->setFlash(__('Could not create user.'), 'flash_warning');
  			}
  		}
  		$this->set('userGroup', $this->UserGroup->read(null, $groupId));

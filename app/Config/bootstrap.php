@@ -451,6 +451,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'DebugKit' => false,
 				'TwigView' => false,
 				'CakeSession' => false,
+				'Review' => false,
 			);
 
 			$namedWrong = array(

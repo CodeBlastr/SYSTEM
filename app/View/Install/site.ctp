@@ -126,25 +126,21 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 			<div class="span3 pull-left">
 			  	<fieldset>
 			      	<legend><?php echo __('Site Info'); ?></legend>
-			        <?php
-				    echo $this->Form->input('Install.site_name');
-				    echo $this->Form->input('Install.site_domain', array('type' => 'hidden', 'value' => $_SERVER['HTTP_HOST'], 'label' => 'Domain Name (ex. buildrr.com)')); ?>
-			    
+			        <?php echo $this->Form->input('Install.site_name'); ?>
+				    <?php echo $this->Form->input('Install.site_domain', array('type' => 'hidden', 'value' => $_SERVER['HTTP_HOST'], 'label' => 'Domain Name (ex. buildrr.com)')); ?>
 				    <legend><?php echo __('Admin Login'); ?></legend>
-				    <?php
-				    echo $this->Form->input('User.username');
-				    echo $this->Form->input('User.password'); ?>
+				    <?php echo $this->Form->input('User.username'); ?>
+				    <?php echo $this->Form->input('User.password'); ?>
 				</fieldset>
 			</div>
 			
 			<div class="span3 pull-left">
 				<fieldset>
 				    <legend><?php echo __('Database Information');?></legend>
-				    <?php
-				    echo $this->Form->input('Database.host', array('value' => 'localhost'));
-				    echo $this->Form->input('Database.username');
-				    echo $this->Form->input('Database.password', array('type' => 'password'));
-				    echo $this->Form->input('Database.name', array('label' => 'DB Name'));?>
+				    <?php echo $this->Form->input('Database.host', array('value' => 'localhost')); ?>
+				    <?php echo $this->Form->input('Database.username'); ?>
+				    <?php echo $this->Form->input('Database.password', array('type' => 'password')); ?>
+				    <?php echo $this->Form->input('Database.name', array('label' => 'DB Name'));?>
 			  	</fieldset>
 			</div>
 			

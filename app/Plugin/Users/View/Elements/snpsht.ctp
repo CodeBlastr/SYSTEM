@@ -51,10 +51,13 @@ $thumbLinkOptions = array_merge($thumbTitle, $thumbClass, $thumbId);
 
 $cfg['model'] = 'User';
 $cfg['foreignKey'] = $userId;
+$cfg['thumbWidth'] = $thumbWidth['width'];
+$cfg['thumbHeight'] = $thumbHeight['height'];
 $cfg['thumbSize'] = $thumbSize;
 $cfg['thumbLink'] = (!empty($thumbLink) ? $thumbLink : null);
 $cfg['thumbLinkOptions'] = $thumbLinkOptions;
 $cfg['thumbImageOptions'] = $thumbImageOptions;
+$cfg['facebookId'] = isset($facebookId) ? $facebookId : false;
 
 $user = null;
 if (!empty($userId)) {

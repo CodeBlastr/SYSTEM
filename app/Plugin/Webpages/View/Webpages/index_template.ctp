@@ -1,19 +1,5 @@
 <div class="row">
-	<div class="col-md-8">
-		<legend class="lead">Installed Templates</legend>
-		<div class="list-group">
-			<?php foreach ($webpages as $template) : ?>
-				<div class="list-group-item">
-					<?php echo $this->Html->link($template['Webpage']['name'], array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'edit', $template['Webpage']['id'])); ?>
-					<?php echo $this->Html->link('Export', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'export', $template['Webpage']['id']), array('class' => 'badge')); ?>
-					<?php echo $this->Html->link('Edit', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'edit', $template['Webpage']['id']), array('class' => 'badge')); ?>
-					<span class="badge"><?php echo $template['Webpage']['_usage']; ?></span>
-				</div>
-			<?php endforeach; ?>
-		</div>
-	</div>
-	
-	<div class="col-md-4">
+	<div class="col-md-6">
 		<legend class="lead">Change the Default Template</legend>
 	  	<fieldset>			        	
 	        <?php foreach ($templates as $template) : ?>
@@ -41,14 +27,30 @@
 	        <?php endforeach; ?>
 		</fieldset>
 	</div>
+	
+	<div class="col-md-6">
+		<legend class="lead">Installed Templates</legend>
+		<div class="list-group">
+			<?php foreach ($webpages as $template) : ?>
+				<div class="list-group-item">
+					<?php echo $this->Html->link($template['Webpage']['name'], array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'edit', $template['Webpage']['id'])); ?>
+					<?php echo $this->Html->link('<i class="glyphicon glyphicon-floppy-save"></i>', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'export', $template['Webpage']['id']), array('class' => 'badge', 'escape' => false, 'title' => 'Export')); ?>
+					<?php echo $this->Html->link('<i class="glyphicon glyphicon-pencil"></i>', array('plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'edit', $template['Webpage']['id']), array('class' => 'badge', 'escape' => false, 'title' => 'Edit')); ?>
+					<?php
+					$badgeClass = array(
+						'Not Used' => 'alert-danger',
+						'Default' => 'alert-success',
+						'Specific Pages' => 'alert-info'
+					)
+					?>
+					<span class="badge <?echo $badgeClass[$template['Webpage']['_usage']] ?>"><?php echo $template['Webpage']['_usage']; ?></span>
+				</div>
+			<?php endforeach; ?>
+		</div>
+	</div>
 </div>
 
 <?php
-// set the contextual breadcrumb items
-$this->set('context_crumbs', array('crumbs' => array(
-	$this->Html->link(__('Admin Dashboard'), '/admin'),
-	$page_title_for_layout,
-)));
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
 	array(
@@ -57,5 +59,5 @@ $this->set('context_menu', array('menus' => array(
 			$this->Paginator->sort('name', 'Sort by Name'),
 			$this->Html->link(__('Add'), array('controller' => 'webpages', 'action' => 'add', 'template')),
 			)
-		)
+		),
 	)));

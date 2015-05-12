@@ -19,7 +19,7 @@ $formsSearch = !empty($forms_search) ? $forms_search : @$formsSearch; // depreca
   <!-- Collect the nav links, forms, and other content for toggling -->
   <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     <?php echo !empty($formsSearch) ? $this->Element('forms/search', array('formOptions' => array('class' => 'navbar-form navbar-left'))) : null; ?>
-    <?php echo $this->Element('twitter-bootstrap/context_menu'); ?>
+    <?php echo $this->element('twitter-bootstrap/context_menu'); ?>
   </div><!-- /.navbar-collapse -->
 </nav>
 

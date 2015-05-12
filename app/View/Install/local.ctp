@@ -116,13 +116,12 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 			<div class="row-fluid well">
 			  	<fieldset>
 			      	<legend>Let's build your <span class="brand active" style="font-size: 0.055em; display: inline;"><span class="name" style=" display: inline;">build<span class="rr">r</span>r</span></span> account.</legend>
-			        <?php
-					echo $this->Form->create(false, array('type' => 'file', 'class' => 'form-inline'));
-				    echo $this->Form->input('Install.site_name', array('div' => false, 'label' => false, 'placeholder' => 'Company Name'));
-				    echo $this->Form->input('Install.site_domain', array('type' => 'hidden', 'value' => $_SERVER['HTTP_HOST'], 'label' => 'Domain Name (ex. buildrr.com)'));
-				    echo $this->Form->input('User.username', array('div' => false, 'label' => false, 'placeholder' => 'Email Address'));
-				    echo $this->Form->input('User.password', array('div' => false, 'label' => false, 'placeholder' => 'Password'));
-					echo $this->Form->end(array('div' => false, 'label' => 'Create Account', 'class' => 'btn btn-success')); ?>
+			        <?php echo $this->Form->create(false, array('type' => 'file', 'class' => 'form-inline')); ?>
+				    <?php echo $this->Form->input('Install.site_name', array('div' => false, 'label' => false, 'placeholder' => 'Company Name')); ?>
+				    <?php echo $this->Form->input('Install.site_domain', array('type' => 'hidden', 'value' => $_SERVER['HTTP_HOST'], 'label' => 'Domain Name (ex. buildrr.com)')); ?>
+				    <?php echo $this->Form->input('User.username', array('div' => false, 'label' => false, 'placeholder' => 'Email Address')); ?>
+				    <?php echo $this->Form->input('User.password', array('div' => false, 'label' => false, 'placeholder' => 'Password')); ?>
+					<?php echo $this->Form->end(array('div' => false, 'label' => 'Create Account', 'class' => 'btn btn-success')); ?>
 				</fieldset>
 			</div>
 			

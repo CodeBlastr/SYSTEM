@@ -330,7 +330,17 @@ if (empty($runUpdates)) : ?>
             </ul>
         </div>
         <?php endif; ?>
-
+		<?php if (CakePlugin::loaded('Newsletters')) : ?>
+			<div class="masonryBox dashboardBox tagThemes">
+				<h3 class="title"><i class="glyphicon glyphicon-bullhorn"></i> <?php echo $this->Html->link('Newsletters', array('admin' => true, 'plugin' => 'newsletters', 'controller' => 'newsletters', 'action' => 'index', 'template')); ?></h3>
+				<p>Manage your site's Newsletters &amp; Subscribers.</p>
+				<ul>
+					<li><?php echo $this->Html->link('Dashboard', array('admin' => true, 'plugin' => 'newsletters', 'controller' => 'newsletters', 'action' => 'index', 'template')); ?></li>
+					<li><?php echo $this->Html->link('Create Newsletter', array('admin' => true, 'plugin' => 'newsletters', 'controller' => 'newsletters', 'action' => 'add')); ?></li>
+					<li><?php echo $this->Html->link('Subscribers', array('admin' => true, 'plugin' => 'newsletters', 'controller' => 'newsletters', 'action' => 'subscribers')); ?></li>
+				</ul>
+			</div>
+		<?php endif; ?>
     </div>
 <?php else : ?>
 	<div id="databaseUpgrades">
