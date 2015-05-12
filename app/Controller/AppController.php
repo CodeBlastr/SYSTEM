@@ -159,6 +159,7 @@ class AppController extends Controller {
 		$this->request->params = array_merge($this->request->params, Router::parse(urldecode($this->request->here)));
 		$this->_handlePaginatorSorting();
 		$this->_handlePaginatorFiltering($object);
+		$this->Paginator->settings = $this->paginate;
 		return parent::paginate($object, $scope, $whitelist);
 	}
 
@@ -218,7 +219,8 @@ class AppController extends Controller {
 		}
 		// order is important for these automatic view vars
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
-		$alias = end(ZuhaSet::find_key($this->viewVars, 'Alias'));
+		$alias = ZuhaSet::find_key($this->viewVars, 'Alias');
+		$alias = end($alias);
 		$this->set('title_for_layout', !empty($alias['title']) ? $alias['title'] : $this->_titleForLayout());
 		$this->set('keywords_for_layout', !empty($alias['keywords']) ? $alias['keywords'] : null);
 		$this->set('description_for_layout', !empty($alias['description']) ? $alias['description'] : $this->_descriptionForLayout());
