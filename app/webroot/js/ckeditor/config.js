@@ -31,12 +31,23 @@ CKEDITOR.editorConfig = function( config ) {
         }
 	  ];
 	config.skin = 'moono';
-	
-	config.filebrowserBrowseUrl = '/js/kcfinder/browse.php?type=files';
-	config.filebrowserImageBrowseUrl = '/js/kcfinder/browse.php?type=img';
-	config.filebrowserFlashBrowseUrl = '/js/kcfinder/browse.php?type=flash';
-	config.filebrowserUploadUrl = '/js/kcfinder/upload.php?type=files';
-	config.filebrowserImageUploadUrl = '/js/kcfinder/upload.php?type=img';
-	config.filebrowserFlashUploadUrl = '/js/kcfinder/upload.php?type=flash';
-	config.allowedContent = true;
+
+	// temporary while transition to FileStorage is completed
+	if (window.location.host == 'www.lenovopartnernetwork.com' || window.location.host == 'www.apca.com') {
+		config.filebrowserBrowseUrl = '/file_storage/file_storage/browser';
+		config.filebrowserImageBrowseUrl = '/file_storage/file_storage/browser?type=Image';
+		//config.filebrowserFlashBrowseUrl = '/file_storage/file_storage/browser?type=flash';
+		config.filebrowserUploadUrl = '/file_storage/file_storage/uploader';
+		//config.filebrowserFlashUploadUrl = '/file_storage/file_storage/uploader?type=flash';
+		config.allowedContent = true;
+	} else {
+		config.filebrowserBrowseUrl = '/js/kcfinder/browse.php?type=files';
+		config.filebrowserImageBrowseUrl = '/js/kcfinder/browse.php?type=img';
+		config.filebrowserFlashBrowseUrl = '/js/kcfinder/browse.php?type=flash';
+		config.filebrowserUploadUrl = '/js/kcfinder/upload.php?type=files';
+		config.filebrowserImageUploadUrl = '/js/kcfinder/upload.php?type=img';
+		config.filebrowserFlashUploadUrl = '/js/kcfinder/upload.php?type=flash';
+		config.allowedContent = true;
+	}
+    
 };
