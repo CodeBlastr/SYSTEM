@@ -1,6 +1,5 @@
 <?php
-// @todo One of these variables is not set often, and fills the logs with warnings
-$formsSearch = !empty($forms_search) ? $forms_search : $formsSearch; // deprecated var name 2013-08-31 RK
+$formsSearch = !empty($forms_search) ? $forms_search : @$formsSearch; // deprecated var name 2013-08-31 RK
 ?>
 
 <nav class="page-title navbar navbar-default navbar-fixed-top" role="navigation">
