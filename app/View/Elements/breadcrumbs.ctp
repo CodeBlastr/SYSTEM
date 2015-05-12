@@ -1,4 +1,4 @@
-<?php 
+<?php
 if (isset($context_crumbs) && !empty($context_crumbs['crumbs'])) {
 	$count = count($context_crumbs['crumbs']);
 	echo '<ul class="breadcrumb">';
