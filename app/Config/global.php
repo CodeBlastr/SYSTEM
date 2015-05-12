@@ -40,7 +40,7 @@ class Zuha {
  * @param date $toDate
  * @param array $options array('type' => 'days OR months', 'format' => 'Y-m-d') 
  */
- 	public function date_slice($fromDate = '2007-07-07', $toDate = null, $options = array()) {
+ 	public static function date_slice($fromDate = '2007-07-07', $toDate = null, $options = array()) {
 		$toDate = !empty($toDate) ? $toDate : date('Y-m-d'); 
 		$options['type'] = !empty($options['type']) ? $options['type'] : 'days';
 		$options['format'] = !empty($options['format']) ? $options['format'] : 'Y-m-d';
@@ -78,7 +78,7 @@ class Zuha {
  * @param {mixed} 		The type string (ie. PRICE_TYPE, SETTING_TYPE), if null we find all enumerations. If an integer then we return the single exact enum being called.
  * @param {mixed}		A string or an array of names to find.  If null we find all for the type, if string we find a single enum, if an array we find all which match both the type and the array of names.
  */
-	public function enum($key = null, $name = null, $options = array()) {
+	public static function enum($key = null, $name = null, $options = array()) {
 		$Enum = ClassRegistry::init('Enumeration');
 		if (!empty($key)) {
 			if (is_numeric($key)) {
@@ -130,7 +130,7 @@ class Zuha {
  * @param array $plugin Array with Plugin name(s) to return Controllers and Actions for
  * @return array an array of all [PLUGINS][CONTROLLERS][ACTIONS] that are currently loaded
  */
-	public function getPluginControllerActions($plugin = array('all')) {
+	public static function getPluginControllerActions($plugin = array('all')) {
 		$allActions = ($plugin == array('all')) ? CakePlugin::loaded() : $plugin;
 
 		// filter out Plugins that we will never want to see here
@@ -209,7 +209,7 @@ class ZuhaSet {
  * 		)
  * )
  */
-	public function manyize($array) {
+	public static function manyize($array) {
 		// test data... left here, because it needs to be moved into a unit test
 		// $array = array(
 			// 0 => array(
@@ -262,7 +262,7 @@ class ZuhaSet {
 /**
  * Recursive removal of a key from an array
  */
-	public function remove(&$array, $unwantedKey) {
+	public static function remove(&$array, $unwantedKey) {
     	unset($array[$unwantedKey]);
 	    foreach ($array as &$value) {
 	        if (is_array($value)) {
@@ -275,7 +275,7 @@ class ZuhaSet {
 /**
  * Remove a value from an array and reindex (if keepKeys is false)
  */
-	public function devalue($array, $unwantedValue, $keepKeys = false) {
+	public static function devalue($array, $unwantedValue, $keepKeys = false) {
 		foreach($array as $key => $value) {
 			if ($value != $unwantedValue) {
 				$newArray[$key] = $value;
@@ -287,7 +287,7 @@ class ZuhaSet {
 /**
  * parse the ini within an ini string
  */
-	public function parse_ini_r($arg) {
+	public static function parse_ini_r($arg) {
 		if (strpos($arg, '[')) {
 			return parse_ini_string($arg, true);
 		} else {
@@ -300,7 +300,7 @@ class ZuhaSet {
  * takes an array as the first argument, and functions as the other arguments. 
  * it applies those functions recursively to the array
  */
-	public function array_map_r() {
+	public static function array_map_r() {
     	$args = func_get_args();
 	    $arr = array_shift($args);
    
@@ -320,7 +320,7 @@ class ZuhaSet {
  * @param  array        array that has the keys which should be kept in the master array
  * @return array/mixed  cleand master array
  */
-    public function array_intersect_r($master, $mask) {
+    public static function array_intersect_r($master, $mask) {
         if (!is_array($master)) { return $master; }
         foreach ($master as $k => $v) {
             if (!isset($mask[$k])) { unset ($master[$k]); continue; } // remove value from $master if the key is not present in $mask
@@ -347,7 +347,7 @@ class ZuhaSet {
  * @return array	When parse is false (default) you get a flattened array returned.  Where you can specifiy the separator.  $options['separator'].  The output is array(key1[$options['separator']key2 => value);
  * @return string 	When parse is true, by default you get an unordered list returned, but you can also control each piece of html surrounding the values. Default is <ul><li>key1.key2 : value</li></ul>  																																					
  */
-	public function keyAsPaths($data, $options = null, $index = null) {
+	public static function keyAsPaths($data, $options = null, $index = null) {
 		$options['separator'] = empty($options['separator']) ? '.' : $options['separator'];
 		$options['parse'] = empty($options['parse']) ? false : true;
 		$options['start'] = empty($options['start']) ? '<ul>' : $options['start'];
@@ -388,7 +388,7 @@ class ZuhaSet {
  * @param string
  * @return string
  */
- 	public function webrootSubPath($relativePath) {
+ 	public static function webrootSubPath($relativePath) {
 		$path = str_replace('/', DS, $relativePath); // get webroot directory
 		$path = str_replace('theme'.DS.'default'.DS, '', $path); // get webroot directory
 		return $path;
@@ -403,7 +403,7 @@ class ZuhaSet {
  * 
  * @return $array_b with all the values from array_a
  */
-    public function array_replace_r($array_a, $array_b) {
+    public static function array_replace_r($array_a, $array_b) {
 		foreach ($array_b as $k => $v) {
 			if ($array_b[$k] != $array_a[$k]) {
 				if (is_array($array_a[$k])) {
@@ -422,7 +422,7 @@ class ZuhaSet {
  * @param array $in
  * @param int|string $pos
  */
-	public function array_splice_after($array, $insert, $position) {
+	public static function array_splice_after($array, $insert, $position) {
 	    if(is_int($position)) {
 	    	$r = array_merge(array_slice($array, 0, $position + 1), $insert, array_slice($array, $position + 1));
 		} else {
@@ -442,7 +442,7 @@ class ZuhaSet {
  * @param array $in
  * @param int|string $pos
  */
-	public function array_splice_before($array, $insert, $position) {
+	public static function array_splice_before($array, $insert, $position) {
 	    if(is_int($position)) {
 	    	$r = array_merge(array_slice($array, 0, $position), $insert, array_slice($array, $position));
 		} else {
@@ -459,7 +459,7 @@ class ZuhaSet {
 /**
  * Recursively remove empty values from an array
  */
-	public function array_filter_recursive($haystack) {
+	public static function array_filter_recursive($haystack) {
 	    foreach ($haystack as $key => $value) {
 	        if (is_array($value)) {
 	            $haystack[$key] = ZuhaSet::array_filter_recursive($haystack[$key]);
@@ -477,7 +477,7 @@ class ZuhaSet {
  * @param array
  * @param string
  */
- 	public function find_key($array = array(), $needle) {
+ 	public static function find_key($array = array(), $needle) {
  		$iterator  = new RecursiveArrayIterator($array);
 	    $recursive = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
 	    $aHitList = array();
