@@ -86,16 +86,15 @@ $(function () {
 				
 				'photos': function () {
 					configEditor(['Image'], function (editor) {
-						customDialog(['info', 'Link', 'advanced'], function (dialogName, dialogDefinition) {
+						customDialog(['Link', 'advanced'], function (dialogName, dialogDefinition) {
 							if (dialogName === 'image') {
-								console.log(dialogDefinition);
-								var uploadButton = dialogDefinition.getContents('Upload').get('uploadButton');
+								var uploadButton = dialogDefinition.getContents('info').get('txtUrl');
 								dialogDefinition.onShow = function () {
 								};//overwrite onShow function
 								if (uploadButton) {
-									uploadButton['filebrowser']['onSelect'] = function (fileUrl, errorMessage) {
+									uploadButton['onChange'] = function (fileUrl, errorMessage) {
 										if (!errorMessage) {
-											editor.insertHtml('<img src="' + fileUrl + '" />');
+											editor.insertHtml('<img src="' + fileUrl.data.value + '" />');
 											CKEDITOR.dialog.getCurrent().hide();
 										}
 									};
@@ -141,13 +140,13 @@ $(function () {
 				'documents': function () {
 					configEditor(['Link'], function (editor) {
 						editor.commands.link.exec();
-						customDialog(['info', 'target', 'advanced'], function (dialogName, dialogDefinition) {
+						customDialog(['target', 'advanced'], function (dialogName, dialogDefinition) {
 							if (dialogName === 'link') {
-								var uploadButton = dialogDefinition.getContents('upload').get('uploadButton');
+								var uploadButton = dialogDefinition.getContents('info').get('txtUrl');
 								if (uploadButton) {
-									uploadButton['filebrowser']['onSelect'] = function (fileUrl, errorMessage) {
+									uploadButton['onChange'] = function (fileUrl, errorMessage) {
 										if (!errorMessage) {
-											editor.insertHtml('<p><a href="' + fileUrl + '">' + fileUrl + '</a></p>');
+											editor.insertHtml('<p><a href="' + fileUrl + '">' + fileUrl.data.value + '</a></p>');
 											CKEDITOR.dialog.getCurrent().hide();
 										}
 									};
