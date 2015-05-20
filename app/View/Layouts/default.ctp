@@ -29,7 +29,7 @@
 </head>
 <body <?php echo $this->element('body_attributes'); ?>>
 	<?php echo $this->element('twitter-bootstrap/header'); ?>
-	<?php //echo $this->element('twitter-bootstrap/page_title'); ?>
+	<?php echo $this->element('twitter-bootstrap/page_title'); ?>
     <div class="container">
         <?php echo $this->Session->flash(); ?>
 		<?php echo $this->Session->flash('auth'); ?>
