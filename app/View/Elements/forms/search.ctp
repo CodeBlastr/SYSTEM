@@ -24,26 +24,36 @@ if (!empty($formsSearch)) {
 	echo $this->Form->end(); ?> 
 		
 	<script type="text/javascript">
-	$(function() {
-		$('#<?php echo $formOptions['id']; ?>').submit(function() {
-			var $url = '';
-			var $href = $(this).attr("action");
-			$('#<?php echo $formOptions['id']; ?> input[type=text], #<?php echo $formOptions['id']; ?> select').each(function(index) {
-				if (!$(this).val()) {
-					$href = $href.replace($(this).attr('name') + ':', '');
-				} else if ($href.indexOf($(this).attr('name')) != -1) {
-					$pattern = $(this).attr('name') + '([^/]*)';
-					$href = $href.replace(new RegExp($pattern, 'g'), $(this).attr('name') + ':' + $(this).val() + '/');
-				} else {
-					$url = $url + $(this).attr('name') + ':' + $(this).val() + '/';	
-				}
+		$(function() {
+			$('#<?php echo $formOptions['id']; ?>').submit(function() {
+				$(this).submitSearch();
+				return false;
 			});
-			$location = $href + '/' + $url;
-			$location = $location.replace(new RegExp('//', 'g'), '/'); // normalize the url
-			window.location = $location;
-			return false;
+			
 		});
-	});
+		
+		// a little mini jquery function
+		(function( $ ){
+	   		$.fn.submitSearch = function() {
+				var $url = '';
+				var $href = this.attr("action");
+				var $id = this.attr("id");
+				$('#' + $id + ' input[type=text], #' + $id + ' select').each(function(index) {
+					if (!$(this).val()) {
+						$href = $href.replace($(this).attr('name') + ':', '');
+					} else if ($href.indexOf($(this).attr('name')) != -1) {
+						$pattern = $(this).attr('name') + '([^/]*)';
+						$href = $href.replace(new RegExp($pattern, 'g'), $(this).attr('name') + ':' + $(this).val() + '/');
+					} else {
+						$url = $url + $(this).attr('name') + ':' + $(this).val() + '/';	
+					}
+				});
+				$location = $href + '/' + $url;
+				$location = $location.replace(new RegExp('//', 'g'), '/'); // normalize the url
+				window.location = $location;
+				return false;
+	   		}; 
+		})( jQuery );
 	</script>
 <?php
 } 

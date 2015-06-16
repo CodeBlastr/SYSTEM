@@ -2,7 +2,7 @@
 	<div id="register" class="collapse">
 		<div class="row table">
 			<div class="col-sm-6 table-cell">
-				<?php echo $this->element('register'); ?>
+				<?php echo $this->element('Users.register'); ?>
 			</div>
 			<div class="col-sm-6 text-center vertical-center table-cell">
 				<a href="#login" class="btn btn-default" data-parent="#content" data-target="#login">I already have an account</a>
@@ -17,7 +17,7 @@
 			</div>
 			<div class="col-sm-6 table-cell">
 				<h2>Login</h2>
-				<?php echo $this->element('login-form'); ?>
+				<?php echo $this->element('Users.login-form'); ?>
 			</div>
 		</div>
 	</div>

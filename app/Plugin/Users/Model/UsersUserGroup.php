@@ -35,19 +35,28 @@ class AppUsersUserGroup extends UsersAppModel {
 	);
 	
 	public function add($data) {
+		
 		$groupId = $this->_groupId($data);
 		$userId =  $this->_userId($data);
 		$approved =  $this->_isApproved($data);
 		$moderator =  $this->_isModerator($data);
-		// check if user is already in this grpoup or not
+		// check if user is already in this group
 		$userCount = $this->find('count' , array(
 			'conditions'=>array(
 				'user_group_id' => $groupId,
-				'user_id' => $userId
+				'user_id' => $userId,
+				),
+			'contain'=> array()
+		));
+		// check if user is already in this group AND NOT approved (eg. a pending request)
+		$user = $this->find('first' , array(
+			'conditions'=>array(
+				'user_group_id' => $groupId,
+				'user_id' => $userId,
+				'is_approved' => 0
 				),
 			'contain'=>array()
 		));
-		
 		if($userCount == 0) {
 			$data = array(
 				'UsersUserGroup' => array(
@@ -61,7 +70,23 @@ class AppUsersUserGroup extends UsersAppModel {
 				return true;
 			} else {
 				throw new Exception(__d('users', 'User could not be added to group.'));
-			}				
+			}
+		} else if (!empty($user)) {
+			// user is pending get the id so we don't create duplicate records
+			$data = array(
+				'UsersUserGroup' => array(
+					'id' => $user['UsersUserGroup']['id'],
+					'user_group_id' => $groupId,
+					'user_id' => $userId,
+					'is_approved' => $approved,
+					'is_moderator' => $moderator,
+					),
+				);
+			if ($this->save($data)) {
+				return true;
+			} else {
+				throw new Exception(__d('users', 'User could not be approved.'));
+			}
 		} else {
 			throw new Exception(__d('users', 'User is already in this group.'));
 		}

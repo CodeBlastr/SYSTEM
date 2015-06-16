@@ -270,9 +270,10 @@ EOD;
 		}
 		if (!empty($attributes['value'])) {
 			$attributes['value'] = date($dateFormat, strtotime($attributes['value']));
-		} else {
-			$attributes['value'] = $attributes['value'] === null ? date($dateFormat) : $attributes['value'];
-		}
+		} 
+		// else {  WE SHOULD NOT FORCE TODAY'S DATE, ONTO THE FIELD, IF YOU WANT TODAY'S DATE AS DEFAULT USE default = date() in the Form->input() function.
+			// $attributes['value'] = $attributes['value'] === null ? date($dateFormat) : $attributes['value'];
+		// }
 		
 		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
 		
@@ -284,16 +285,22 @@ EOD;
 		$jsTime = isset($attributes['jsTimeFormat']) ? $attributes['jsTimeFormat'] : 'HH:MM:ss';
 		$jsDate = isset($attributes['jsDateFormat']) ? $attributes['jsDateFormat'] : 'mm/dd/yy';
 		$fieldhiddenname = $firstId . '_';
+		$value = !empty($attributes['value']) ? date('Y-m-d', strtotime($attributes['value'])) : null;
 		$code = '$(document).ready(function() {
-			$("#' . $firstId . '").next().val("' . date('Y-m-d', strtotime($attributes['value'])) . '");
+			$("#' . $firstId . '").next().val("' . $value . '");
 			$("#' . $firstId . '").datepicker({
+				onClose: function(dateText,datePickerInstance) {
+					if (!$(this).val()) {
+						$.datepicker._clearDate(this);
+					}
+				},
 		    	timeFormat: "' . $jsTime . '", 
 		        dateFormat: "' . $jsDate . '",
 		        altField: "#' . $fieldhiddenname . '",
 		        altFormat: "yy-mm-dd",
 		        changeMonth:true,
 		        changeYear:true
-			});
+			}); 
 		});';
 
 		$this->View->Html->scriptBlock($code, array('inline' => false, 'once' => false));
