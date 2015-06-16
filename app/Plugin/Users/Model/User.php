@@ -199,14 +199,6 @@ class AppUser extends UsersAppModel {
 				'foreign_key' => 'user_id'
 				);
 		}
-		// commenting to test and see if we can remove this 9/9/2014 - RK
-		// if (CakePlugin::loaded('Products')) {
-			// $this->hasMany['ProductBrand'] = array(
-				// 'className' => 'Products.ProductBrand',
-				// 'foreignKey' => 'owner_id',
-				// 'dependent' => false
-				// );
-		// }
 		if (CakePlugin::loaded('Connections')) {
 			$this->hasMany['Connection'] = array(
 				'className' => 'Connections.Connection',
@@ -216,13 +208,6 @@ class AppUser extends UsersAppModel {
 		}
 		if (CakePlugin::loaded('Categories')) {
 			$this->actsAs[] = 'Categories.Categorizable';
-			// commented out: this happens in the behavior, as it should.
-			// $this->hasAndBelongsToMany['Category'] = array(
-				// 'className' => 'Categories.Category',
-				// 'foreignKey' => 'foreign_key',
-				// 'associationForeignKey' => 'category_id',
-				// 'with' => 'Categories.Categorized'
-			// );
 		}
 		parent::__construct($id, $table, $ds);
 		
@@ -364,8 +349,7 @@ class AppUser extends UsersAppModel {
     	if (!empty($this->data[$this->alias]['first_name']) && !empty($this->data[$this->alias]['last_name']) && empty($this->data[$this->alias]['full_name'])) {
 			$this->data[$this->alias]['full_name'] = __('%s %s', $this->data[$this->alias]['first_name'], $this->data[$this->alias]['last_name']);
 		}
-		//$this->data = $this->_cleanData($this->data); // who ever made this function didn't do anything of value in the function
-        return true;
+		return true;
     }
 
 /**

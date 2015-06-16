@@ -38,7 +38,7 @@ class AppUsersUserGroupsController extends UsersAppController{
 			}
 		} 
 		
-		# handle the finding of user groups related to the logged in user (you must be a moderator to manage members)
+		// handle the finding of user groups related to the logged in user (you must be a moderator to manage members)
 		if ($userGroups = $this->UsersUserGroup->UserGroup->findUserGroupsByModerator('list')) {
 			$users = $this->UsersUserGroup->User->find('list');
 			$this->set(compact('users', 'userGroups')); 

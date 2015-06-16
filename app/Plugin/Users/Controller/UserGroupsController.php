@@ -30,13 +30,12 @@ class AppUserGroupsController extends UsersAppController {
  * This action returns data for an element
  *
  * @todo make a proper settings array merge
+ * @todo get rid of this and use a helper 
  */
 	public function groupActivity ($id = null, $options = array()) {
-
 		if ( !isset($options['limit']) ) {
 			$options['limit'] = 3;
 		}
-
 		$userGroup  = $this->UserGroup->find('first', array(
 			'conditions'=>array(
 				'UserGroup.id' => $id
@@ -64,12 +63,14 @@ class AppUserGroupsController extends UsersAppController {
 			),
 			'limit' => $options['limit']
 		));
-
 		return $userGroup;
-
 	}
 
-	public function view($id = null) {
+/**
+ * View method
+ * 
+ */
+	public function view($id = null, $redirect = true) {
 		$this->UserGroup->id = $id;
 
 		if (!$this->UserGroup->exists()) {
@@ -114,6 +115,12 @@ class AppUserGroupsController extends UsersAppController {
 				),
 			));
 		$this->set(compact('status'));
+		// some user groups are password protected and we need to stop people from getting in if they aren't an approved member
+		if ($redirect == true && $userGroup['UserGroup']['password'] !== '0' && ($status === null || $status == 'pending')) {
+			$this->Session->setFlash(__('Private group, please request membership first.'), 'flash_warning');
+			$this->redirect(array('action' => 'restricted', $id));
+		}
+		
 		$this->set('page_title_for_layout' , $userGroup['UserGroup']['title'] . ' < ' . __('User Group') . ' | '. __SYSTEM_SITE_NAME);
 	}
 
@@ -212,6 +219,24 @@ class AppUserGroupsController extends UsersAppController {
 		}
 		$this->Session->setFlash(__('Group was not deleted', true), 'flash_warning');
 		$this->redirect(array('action' => 'index'));
+	}
+
+/**
+ * Private method
+ * Show a private view of a group (less information than if you are a member, for example)
+ * 
+ */
+ 	public function restricted($id = null) {
+		// get the logged in users group status
+		$status = $this->UserGroup->findUserGroupStatus('first', array(
+			'conditions' => array(
+				'UsersUserGroup.user_group_id' => $id,
+				),
+			));
+		if ($status == 'approved' || $status == 'moderator') {
+			$this->redirect(array('action' => 'view', $id));
+		}
+ 		$this->view($id, 0);
 	}
 	
 /**

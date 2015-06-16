@@ -143,7 +143,7 @@ $(function() {
     $('input[type=submit]').addClass('btn btn-default');
     $('.required').attr('required', true);
     $('label').addClass('control-label');
-    $('input:not([type=submit], [type=checkbox], [type=radio], .input-sm), select, textarea').addClass('form-control').parent().addClass('form-group');
+    $('input:not([type=submit], [type=checkbox], [type=radio], [type=hidden], .input-sm), select, textarea').addClass('form-control').parent().addClass('form-group');
 
 /**
  * Hides form elements that come after a legend with the class toggleClick

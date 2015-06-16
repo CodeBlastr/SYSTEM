@@ -159,7 +159,7 @@ class AppController extends Controller {
 		$this->request->params = array_merge($this->request->params, Router::parse(urldecode($this->request->here)));
 		$this->_handlePaginatorSorting();
 		$this->_handlePaginatorFiltering($object);
-		$this->Paginator->settings = $this->paginate;
+		is_object($this->Paginator) ? $this->Paginator->settings = $this->paginate : null;
 		return parent::paginate($object, $scope, $whitelist);
 	}
 
@@ -193,18 +193,6 @@ class AppController extends Controller {
  * sets a few variables needed for all views
  */
 	public function beforeRender() {
-		// trying to find a bot that is spamming analytics (but it seems to kill real error log reporting - fyi)
-		// CakeLog::write('error', $_SERVER['REMOTE_ADDR']);
-		// CakeLog::write('error', $_SERVER['HTTP_USER_AGENT']);
-		// CakeLog::write('error', $_SERVER['REQUEST_URI']);
-		// CakeLog::write('error', $_SERVER['REQUEST_URI']);
-		// CakeLog::write('error', '...
-		// ...
-		// ...
-		// ...
-		// ');
-		
-		//CakeLog::write('error', print_r($_SERVER, true));
 		parent::beforeRender();
 		$this->set('referer', $this->referer());
 		// used for back button links, could be useful for breadcrumbs possibly
@@ -219,8 +207,9 @@ class AppController extends Controller {
 		}
 		// order is important for these automatic view vars
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
-		$alias = ZuhaSet::find_key($this->viewVars, 'Alias');
-		$alias = end($alias);
+		
+		//$alias = ZuhaSet::find_key($this->viewVars, 'Alias'); // can't use find_key because recursive iterator wasn't playing nice with some viewVars (eg. object type datetime)
+		$alias = $this->viewVars[Inflector::singularize(Inflector::variable($this->request->controller))]['Alias']; // blog_posts controller becomes blogPost['Alias]
 		$this->set('title_for_layout', !empty($alias['title']) ? $alias['title'] : $this->_titleForLayout());
 		$this->set('keywords_for_layout', !empty($alias['keywords']) ? $alias['keywords'] : null);
 		$this->set('description_for_layout', !empty($alias['description']) ? $alias['description'] : $this->_descriptionForLayout());
@@ -234,14 +223,6 @@ class AppController extends Controller {
 		// order is important for these
 		$this->userId = $this->Session->read('Auth.User.id');
 		$this->userRoleId = $this->Session->read('Auth.User.user_role_id');
-		/**
-		 * @todo This is not working. Fix it.
-		 * @since 7/24/2013
-		 * @author Joel Byrnes <joel@buildrr.com>
-		 */
-		//		$this->userRoleName = $this->Session->read('Auth.UserRole.name');
-		//		$this->userRoleName = !empty($this->userRoleName) ? $this->userRoleName :
-		// 'guests';
 		$this->userRoleId = !empty($this->userRoleId) ? $this->userRoleId : (defined('__SYSTEM_GUESTS_USER_ROLE_ID') ? __SYSTEM_GUESTS_USER_ROLE_ID : 5);
 	}
 
