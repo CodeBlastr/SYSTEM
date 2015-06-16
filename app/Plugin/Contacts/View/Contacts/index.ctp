@@ -11,7 +11,17 @@
 					<div class="col-sm-6 text-right">
 						<span class="label label-default"><?php echo ZuhaInflector::datify($contact['Contact']['created']); ?></span>
 						<?php echo $this->Html->link($contact['Assignee']['full_name'], array('action' => 'index', 'filter' => 'assignee_id:' . $contact['Assignee']['id']), array('class' => 'label label-default')); ?>
-						<span class="label label-default"><?php echo $contact['Contact']['contact_rating']; ?></span>
+						<?php 
+						if ($contact['Contact']['contact_rating'] == 'dead') : 
+							$ratingLabel = 'danger';
+						elseif ($contact['Contact']['contact_rating'] == 'active') : 
+							$ratingLabel = 'info';
+						elseif ($contact['Contact']['contact_rating'] == 'hot') : 
+							$ratingLabel = 'success';
+						else :
+							$ratingLabel = 'default';
+						endif; ?>
+						<span class="label label-<?php echo $ratingLabel; ?>"><?php echo $contact['Contact']['contact_rating']; ?></span>
 						<span class="label label-default"><?php echo $contact['Contact']['contact_type']; ?></span>
 					</div>
 				</div>
@@ -87,6 +97,12 @@ $this->set('forms_search', array(
     )
   ));
     
+// set the contextual breadcrumb items
+$this->set('context_crumbs', array('crumbs' => array(
+	$this->Html->link(__('Dashboard'), array('action' => 'dashboard')),
+	'Contact Search'
+)));
+
 // set the contextual menu items
 $this->set('context_menu', array('menus' => array(
   array(

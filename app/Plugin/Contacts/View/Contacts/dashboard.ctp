@@ -39,24 +39,6 @@
 	
 	    <div class="col-sm-8">
 		    <?php if (!empty($leadActivities)) : ?>
-				<?php //$__userId = 67; ?>
-				<?php if (!empty($myRatings[$__userId])) : ?>
-					<h5><?php echo $myRatings[$__userId]['Assignee']['full_name']; ?>'s Trailing Six Month Stats</h5>
-					<?php $ratings = $myRatings[$__userId]; ?>
-					<ul class="list-group">
-						<?php echo __('<li class="list-group-item">%s leads <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leads'], $ratings['Assignee']['_leads_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s sales <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_sales'], $ratings['Assignee']['_sales_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s proposals <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_proposals'], $ratings['Assignee']['_proposals_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s dollars proposed <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_total'], array('currency' => 'USD')), $ratings['Assignee']['_total_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s dollars sold <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_sold'], array('currency' => 'USD')), $ratings['Assignee']['_sold_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s days average cycle <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_cycle'], $ratings['Assignee']['_cycle_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s average prop <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageProposal'], array('currency' => 'USD')), $ratings['Assignee']['_averageProposal_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s average sale <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageSale'], array('currency' => 'USD')), $ratings['Assignee']['_averageSale_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s&#37; lead to prop <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leadToProposal'], $ratings['Assignee']['_leadToProposal_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s&#37; prop to sale <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_proposalToSale'], $ratings['Assignee']['_proposalToSale_rank'], count($myRatings)); ?>
-						<?php echo __('<li class="list-group-item">%s&#37; lead to sale <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leadToSale'], $ratings['Assignee']['_leadToSale_rank'], count($myRatings)); ?>
-					</ul>
-				<?php endif; ?>
 	
 				<?php if ($__userId == 1) : ?>
 					<div class="row">
@@ -79,6 +61,25 @@
 						</div>
 					<?php endforeach; ?>
 					</div>
+				<?php else : ?>
+					<?php //$__userId = 67; ?>
+					<?php if (!empty($myRatings[$__userId])) : ?>
+						<h5><?php echo $myRatings[$__userId]['Assignee']['full_name']; ?>'s Trailing Six Month Stats</h5>
+						<?php $ratings = $myRatings[$__userId]; ?>
+						<ul class="list-group">
+							<?php echo __('<li class="list-group-item">%s leads <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leads'], $ratings['Assignee']['_leads_rank'], count($myRatings)); ?>
+							<?php echo __('<li class="list-group-item">%s sales <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_sales'], $ratings['Assignee']['_sales_rank'], count($myRatings)); ?>
+							<?php echo __('<li class="list-group-item">%s proposals <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_proposals'], $ratings['Assignee']['_proposals_rank'], count($myRatings)); ?>
+							<?php echo __('<li class="list-group-item">%s dollars proposed <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_total'], array('currency' => 'USD')), $ratings['Assignee']['_total_rank'], count($myRatings)); ?>
+							<?php echo __('<li class="list-group-item">%s dollars sold <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_sold'], array('currency' => 'USD')), $ratings['Assignee']['_sold_rank'], count($myRatings)); ?>
+							<?php echo __('<li class="list-group-item">%s days average cycle <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_cycle'], $ratings['Assignee']['_cycle_rank'], count($myRatings)); ?>
+							<?php echo __('<li class="list-group-item">%s average prop <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageProposal'], array('currency' => 'USD')), $ratings['Assignee']['_averageProposal_rank'], count($myRatings)); ?>
+							<?php echo __('<li class="list-group-item">%s average sale <span class="badge">%s of %s</span></li>', ZuhaInflector::pricify($ratings['Assignee']['_averageSale'], array('currency' => 'USD')), $ratings['Assignee']['_averageSale_rank'], count($myRatings)); ?>
+							<?php echo __('<li class="list-group-item">%s&#37; lead to prop <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leadToProposal'], $ratings['Assignee']['_leadToProposal_rank'], count($myRatings)); ?>
+							<?php echo __('<li class="list-group-item">%s&#37; prop to sale <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_proposalToSale'], $ratings['Assignee']['_proposalToSale_rank'], count($myRatings)); ?>
+							<?php echo __('<li class="list-group-item">%s&#37; lead to sale <span class="badge">%s of %s</span></li>', $ratings['Assignee']['_leadToSale'], $ratings['Assignee']['_leadToSale_rank'], count($myRatings)); ?>
+						</ul>
+					<?php endif; ?>
 				<?php endif; ?>
 		    <?php else : ?>
 		    	<h2>No sales data to show.</h2>
@@ -113,7 +114,7 @@
     	<?php foreach ($myContacts as $contact) : ?>
       		<?php echo '<p>' . $this->Html->link($contact['Contact']['name'], array('action' => 'view', $contact['Contact']['id'])) . '</p>'; ?>
    		<?php endforeach; ?>
-    	<p class="pull-right"><?php echo $this->Html->link('View all of your contacts here', array('action' => 'index', 'filter' => 'assignee_id:' . $this->Session->read('Auth.User.id'))); ?></p>
+    	<p class="pull-right"><?php echo $this->Html->link('View all of your contacts here', array('action' => 'index', 'sort' => 'created', 'direction' => 'desc', 'filter' => 'assignee_id:' . $this->Session->read('Auth.User.id'))); ?></p>
 	</div>
 	<?php endif; ?>
 	

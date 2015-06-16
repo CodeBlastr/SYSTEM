@@ -501,10 +501,10 @@ class AppContactsController extends ContactsAppController {
 	public function dashboard() {
 		
 		// the needs attention, new leads box
-		$this->set('leads', $this->Contact->leads());
+		$this->set('leads', $leads = $this->Contact->leads());
 		
 		// leads over time
-		$this->set('leadActivities', $this->Contact->leadActivities());
+		$this->set('leadActivities', $leadActivities = $this->Contact->leadActivities());
 		
 		// upcoming follow ups
 		$this->set('tasks', $this->Contact->myTasks());
