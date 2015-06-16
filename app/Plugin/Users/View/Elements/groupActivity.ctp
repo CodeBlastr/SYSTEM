@@ -1,6 +1,6 @@
 <?php
 
-$userGroup = $this->requestAction("/users/userGroups/groupActivity/$id");
+$userGroup = $this->requestAction("/users/user_groups/groupActivity/$id");
 $output = '';
 
 if ( !empty($userGroup['UserGroupWallPost']) ) {
