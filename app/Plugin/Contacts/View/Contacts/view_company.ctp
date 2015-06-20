@@ -58,9 +58,9 @@
 		<div class="row table">
 			<div class="col-xs-4 table-cell vertical-center text-center">
 				<?php if ($contact['Contact']['contact_rating'] == 'hot') : ?>
-					<?php $icon = $this->Html->link('<span class="glyphicon glyphicon-heart" style="font-size: 100px; color: #FF6677;text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"></span>', array('action' => 'rate', $contact['Contact']['id'], 'warm'), array('escape' => false)); ?>
-				<?php elseif ($contact['Contact']['contact_rating'] == 'warm') : ?>
-					<?php $icon = $this->Html->link('<span class="glyphicon glyphicon-bullhorn" style="font-size: 100px; color: #bb1111; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"></span>', array('action' => 'rate', $contact['Contact']['id'], 'cold'), array('escape' => false)); ?>
+					<?php $icon = $this->Html->link('<span class="glyphicon glyphicon-heart" style="font-size: 100px; color: #FF6677;text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"></span>', array('action' => 'rate', $contact['Contact']['id'], 'cold'), array('escape' => false)); ?>
+				<?php //elseif ($contact['Contact']['contact_rating'] == 'warm') : ?>
+					<?php //$icon = $this->Html->link('<span class="glyphicon glyphicon-bullhorn" style="font-size: 100px; color: #bb1111; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"></span>', array('action' => 'rate', $contact['Contact']['id'], 'cold'), array('escape' => false)); ?>
 				<?php elseif ($contact['Contact']['contact_rating'] == 'cold') : ?>
 					<?php $icon = $this->Html->link('<span class="glyphicon glyphicon-certificate" style="font-size: 100px;text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;"></span>', array('action' => 'rate', $contact['Contact']['id'], 'active'), array('escape' => false)); ?>
 				<?php elseif ($contact['Contact']['contact_rating'] == 'active') : ?>

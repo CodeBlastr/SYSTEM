@@ -578,7 +578,7 @@ class AppContact extends ContactsAppModel {
  * @return array
  */
 	public function myRatings() {
-		$excludeAssignees = array(0, 1, 101); // this needs to be changed to a site setting or something
+		$excludeAssignees = array(0, 67, 101); // this needs to be changed to a site setting or something (old / archived employees or something)
 		$salesPeople = $this->find('all', array('conditions' => array('Contact.assignee_id NOT' => null, 'Contact.assignee_id !=' => '', 'Contact.assignee_id NOT IN' => $excludeAssignees, 'Contact.contact_type !=' => 'vendor'), 'group' => 'Contact.assignee_id', 'contain' => array('Assignee')));
 		$salesPerson = Set::extract('/Contact/assignee_id', $salesPeople);
 		foreach ($salesPerson as $key => $person) {
