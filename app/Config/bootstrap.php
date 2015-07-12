@@ -345,7 +345,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 		 * @param array $array
 		 * @param array $options
 		 */
-		public static function flatten($array = array(), $options = array('separator' => ',')) {
+		public static function flatten($array = array(), $options = array('separator' => ', ')) {
 			$json  = json_encode($array); // converts an object to an array
 			$array = json_decode($json, true);
 		    $return = array();
