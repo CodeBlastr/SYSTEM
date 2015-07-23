@@ -18,6 +18,7 @@
 			<div class="col-sm-6 table-cell">
 				<h2>Login</h2>
 				<?php echo $this->element('Users.login-form'); ?>
+				<p><small>(By using this site, you agree to be bound by the Terms of Service and Privacy Policy)</small></p>
 			</div>
 		</div>
 	</div>
