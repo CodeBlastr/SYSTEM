@@ -339,6 +339,7 @@ class AppUser extends UsersAppModel {
  */
 	public function beforeSave($options = array()) {
 		// I don't know why __cleanAddData was moved so that it doesn't actually "Clean Add Data", but this is necessary!
+		
 		if (isset($this->data[$this->alias]['username']) && strpos($this->data[$this->alias]['username'], '@') && empty($this->data[$this->alias]['email'])) {
 			$this->data[$this->alias]['email'] = $this->data[$this->alias]['username'];
 		}
@@ -364,11 +365,19 @@ class AppUser extends UsersAppModel {
 		}
 		if ($created) {
 			$this->data = $this->__afterCreation($this->data);
+			$welcomeData = $this->data; // need this for the welcome email (gets rewritten after the second save below)
 		}
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
 		$this->save($data[$this->alias], array('callbacks' => false));
+		
+		if ($created) {
+			// Send a Welcome Email (moved to after the second save because the forgot_key is if we don't)
+			if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
+				$this->welcome($welcomeData[$this->alias]['username']);
+			}
+		}
 		if($this->autoLogin && CakeSession::read('Auth.User.id') == $this->data[$this->alias]['id']) {
 			CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
 		}
@@ -393,11 +402,6 @@ class AppUser extends UsersAppModel {
 
 		// Initialize some fields
 		$data = $this->_cleanAddData($data);
-
-		// Send a Welcome Email (moved to after __cleanAddData because sometimes the email field is empty)
-		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-			$this->welcome($this->data[$this->alias]['username']);
-		}
 
 		if (defined('__APP_REGISTRATION_HELLO')) {
 			$this->sendHelloEmail();

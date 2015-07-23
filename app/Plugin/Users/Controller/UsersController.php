@@ -37,7 +37,7 @@ class AppUsersController extends UsersAppController {
 		'Ssl'
 	);
 
-	public $allowedActions = array(
+	static $allowedActions = array(
 		'login',
 		'desktop_login',
 		'logout',
@@ -175,7 +175,7 @@ class AppUsersController extends UsersAppController {
  *
  * @param int $userRoleId
  */
-	public function register($userRoleId = null,$options = array()) {
+	public function register($userRoleId = null, $options = array()) {
 		// force ssl for PCI compliance during regristration and login
 		if (defined('__TRANSACTIONS_SSL') && !strpos($_SERVER['HTTP_HOST'], 'localhost')) {
 			$this->Ssl->force();
