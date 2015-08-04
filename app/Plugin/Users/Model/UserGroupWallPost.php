@@ -31,6 +31,13 @@ class UserGroupWallPost extends UsersAppModel {
 				'conditions' => array('Comment.model' => 'UserGroupWallPost')
 			);
 		}
+		if (CakePlugin::loaded('Categories')) {
+			$this->actsAs[] = 'Categories.Categorizable';
+		}
+		
+		if (CakePlugin::loaded('FileStorage')) {
+			$this->actsAs[] = 'FileStorage.FileAttach';
+		}
 		parent::__construct($id, $table, $ds);
 	}
 }

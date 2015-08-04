@@ -1,5 +1,7 @@
 <?php
-class UserGroupWallPostsController extends UsersAppController {
+App::uses('UsersAppController', 'Users.Controller');
+
+class AppUserGroupWallPostsController extends UsersAppController {
 
 	public $name = 'UserGroupWallPosts';
 	public $uses = 'Users.UserGroupWallPost';
@@ -21,13 +23,13 @@ class UserGroupWallPostsController extends UsersAppController {
 	 * @param {int} group_id 
 	 * 
 	 */
-	function add($group_id) {
-		if (!empty($this->request->data)) {
-			$this->request->data["UserGroupWallPost"]["creator_id"] = $this->Auth->user('id');
-			$this->request->data["UserGroupWallPost"]["user_group_id"] = $group_id;
+	function add($groupId = null) {
+		if ($this->request->is('post')) {
+			$this->request->data['UserGroupWallPost']['creator_id'] = $this->Auth->user('id');
+			$this->request->data['UserGroupWallPost']['user_group_id'] = !empty($this->request->data['UserGroupWallPost']['user_group_id']) ? $this->request->data['UserGroupWallPost']['user_group_id'] : $groupId;
 			$this->UserGroupWallPost->create();
 			if ($this->UserGroupWallPost->save($this->request->data)) {
-				$this->redirect(array('plugin'=>'users','controller'=>'user_groups' , 'action'=>'view', $group_id));
+				$this->redirect(array('plugin'=>'users','controller'=>'user_groups' , 'action'=>'view', $groupId));
 			} 
 		}
 	}
@@ -60,4 +62,7 @@ class UserGroupWallPostsController extends UsersAppController {
 		$this->redirect(array('action' => 'index'));
 	}
 }
-?>
+
+if (!isset($refuseInit)) {
+	class UserGroupWallPostsController extends AppUserGroupWallPostsController {}
+}
