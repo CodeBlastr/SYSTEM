@@ -6,12 +6,12 @@ class AppUserGroupWallPostsController extends UsersAppController {
 	public $name = 'UserGroupWallPosts';
 	public $uses = 'Users.UserGroupWallPost';
 
-	function index() {
+	public function index() {
 		$this->UserGroupWallPost->recursive = 0;
 		$this->set('userGroupWallPosts', $this->paginate());
 	}
 
-	function view($id = null) {
+	public function view($id = null) {
 		if (!$id) {
 			$this->flash(__('Invalid user role wall post', true), array('action' => 'index'));
 		}
@@ -23,7 +23,7 @@ class AppUserGroupWallPostsController extends UsersAppController {
 	 * @param {int} group_id 
 	 * 
 	 */
-	function add($groupId = null) {
+	public function add($groupId = null) {
 		if ($this->request->is('post')) {
 			$this->request->data['UserGroupWallPost']['creator_id'] = $this->Auth->user('id');
 			$this->request->data['UserGroupWallPost']['user_group_id'] = !empty($this->request->data['UserGroupWallPost']['user_group_id']) ? $this->request->data['UserGroupWallPost']['user_group_id'] : $groupId;
@@ -34,7 +34,7 @@ class AppUserGroupWallPostsController extends UsersAppController {
 		}
 	}
 
-	function edit($id = null) {
+	public function edit($id = null) {
 		if (!$id && empty($this->request->data)) {
 			$this->flash(sprintf(__('Invalid user role wall post', true)), array('action' => 'index'));
 		}
@@ -51,15 +51,21 @@ class AppUserGroupWallPostsController extends UsersAppController {
 		$this->set(compact('userGroups'));
 	}
 
-	function delete($id = null) {
-		if (!$id) {
-			$this->flash(sprintf(__('Invalid user role wall post', true)), array('action' => 'index'));
+/**
+ * Delete method
+ * 
+ */
+	public function delete($id = null) {
+		$this->UserGroupWallPost->id = $id;
+		if (!$this->UserGroupWallPost->exists()) {
+			throw new NotFoundException(__('Invalid post'));
 		}
 		if ($this->UserGroupWallPost->delete($id)) {
-			$this->flash(__('User group wall post deleted', true), array('action' => 'index'));
+			$this->Session->setFlash('Post deleted.', 'flash_success');
+		} else {
+			$this->Session->setFlash('Error deleting post, please try again.', 'flash_danger');
 		}
-		$this->flash(__('User group wall post was not deleted', true), array('action' => 'index'));
-		$this->redirect(array('action' => 'index'));
+		$this->redirect($this->referer());
 	}
 }
 
