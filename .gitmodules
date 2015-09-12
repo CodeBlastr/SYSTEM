@@ -1,7 +1,6 @@
 [submodule "sites"]
 	path = sites
 	url = git@github.com:zuha/SITES.git
-	branch = press
 [submodule "app/Plugin/Twitter"]
 	path = app/Plugin/Twitter
 	url = git@github.com:zuha/Twitter-Zuha-Cakephp-Plugin.git
