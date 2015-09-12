@@ -2603,7 +2603,7 @@ class Model extends Object implements CakeEventListener {
 			if ($data['dependent'] !== true) {
 				continue;
 			}
-
+			$this->{$assoc}; // ZUHA Edit NOT SURE WHY THE HELL THIS HAS TO BE HERE (file_storage/file_storage/delete/{fileStorageId} is what made me put it in)
 			$model = $this->{$assoc};
 
 			if ($data['foreignKey'] === false && $data['conditions'] && in_array($this->name, $model->getAssociated('belongsTo'))) {
