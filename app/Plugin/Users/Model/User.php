@@ -377,11 +377,59 @@ class AppUser extends UsersAppModel {
 			if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
 				$this->welcome($welcomeData[$this->alias]['username']);
 			}
+			// after creation callback (to use, )
+			$this->_afterCreationCallback();
 		}
 		if($this->autoLogin && CakeSession::read('Auth.User.id') == $this->data[$this->alias]['id']) {
 			CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
 		}
 		return parent::afterSave($created, $options);
+	}
+
+/**
+ * After creation method
+ * 
+ * To use, send a non-registered user to a controller method
+ * that sets the session vars "afterUserCreated.model" & "afterUserCreated.method"
+ * then redirects the user to the registration page
+ * 
+ * @example Go to the InvitesController::accept() method to see an example. 
+ */
+ 	protected function _afterCreationCallback() {
+		if (CakeSession::read('afterUserCreated')) {
+			$model = CakeSession::read('afterUserCreated.model');
+			$method = CakeSession::read('afterUserCreated.method');
+			$data = CakeSession::read('afterUserCreated.data');
+			if (!empty($model) && !empty($method)) {
+				$Model = ClassRegistry::init($model);
+		 		if(method_exists($Model, $method) && is_callable(array($Model, $method))) {
+		 			$Model->$method($data, $this->id); // sends variables in the data session var, and the created user's id
+				}
+			}
+		}
+	}
+
+/**
+ * After login method
+ * 
+ * To use, send a user to a controller method
+ * that sets the session vars "afterUserCreated.model" & "afterUserCreated.method"
+ * then redirects the user to the login page
+ * 
+ * @example Go to the InvitesController::accept() method to see an example. 
+ */
+ 	protected function _afterLoginCallback() {
+		if (CakeSession::read('afterUserLogin')) {
+			$model = CakeSession::read('afterUserLogin.model');
+			$method = CakeSession::read('afterUserLogin.method');
+			$data = CakeSession::read('afterUserLogin.data');
+			if (!empty($model) && !empty($method)) {
+				$Model = ClassRegistry::init($model);
+		 		if(method_exists($Model, $method) && is_callable(array($Model, $method))) {
+		 			$Model->$method($data, $this->id); // sends variables in the data session var, and the created user's id
+				}
+			}
+		}
 	}
 
 /**
@@ -564,6 +612,7 @@ class AppUser extends UsersAppModel {
  * @todo				Implement Error Logging for non essential errors (mentioned below)
  */
 	public function loginMeta($data) {
+		$this->_afterLoginCallback(); 
 		if (!empty($data) && !empty($data['User']['username'])) {
 			$user = $this->find('first', array(
 				'conditions' => array('OR' => array(
@@ -705,7 +754,7 @@ class AppUser extends UsersAppModel {
 					throw new Exception(__('Verfication key failed to update.'));
 				}
 			} else {
-				throw new Exception(__('No user found.'));
+				throw new Exception(__('Verification key already used, invalid, or expired.  Try again, or login.'));
 			}
 		}
 		return $user;
