@@ -594,8 +594,8 @@ class AppUsersController extends UsersAppController {
  * just "key"
  */
 	public function verify($key = null) {
-		$user = $this->User->verify_key($key);
-		if ($user) {
+		try {
+			$user = $this->User->verify_key($key);
 			if ($key[0] == 'W') {
 				$this->Session->setFlash('Welcome, successful account verification. Please login.');
 				$this->redirect(array('action' => 'login'));
@@ -607,8 +607,8 @@ class AppUsersController extends UsersAppController {
 					$user['User']['id']
 				));
 			}
-		} else {
-			$this->Session->setFlash('Reset code invalid, expired or already used, please try again.');
+		} catch (Exception $e) {
+			$this->Session->setFlash($e->getMessage());
 			$this->redirect(array('action' => 'forgot_password'));
 		}
 	}
