@@ -304,8 +304,8 @@ class AppModel extends Model {
  * Subject and message have duel meanigns if it starts with webpages. we are using the db to genetrate the message were the subject is the recored we are using
  *
  * @param string		String - address to send email to
- * @param sring			$subject: subject of email.
- * @param string		$message['html'] in the layout will be replaced with this text.
+ * @param sring			$subject: subject of email |OR|  Webpage to use as a template (eg. Webpages.name-of-template)
+ * @param string		$message['html'] in the layout will be replaced with this text |OR| data array available to use for message replacement 
  * @param string		$template to be picked from folder for email. By default, if $mail is given in any template.
  * @param array			address/name pairs (e.g.: array(example@address.com => name, ...)
  * @param UNKNOWN		Have not used it don't know what it does or if it works.
