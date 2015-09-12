@@ -147,7 +147,6 @@ class OptimizableBehavior extends ModelBehavior {
 		if (!empty($this->data['Alias']['title']) || !empty($this->data['Alias']['keywords']) || !empty($this->data['Alias']['description'])) {
 			$this->meta = true;
 		}
-        		
 		return parent::beforeSave($Model, $options);
 	}
 
@@ -183,7 +182,6 @@ class OptimizableBehavior extends ModelBehavior {
 			$data['Alias']['keywords'] = $this->data['Alias']['keywords'];
 			$data['Alias']['description'] = $this->data['Alias']['description'];
         }
-
 		if (!empty($data['Alias'])) {
 			$Alias->create();
             if ($Alias->save($data)) {

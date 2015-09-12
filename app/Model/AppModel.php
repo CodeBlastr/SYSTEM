@@ -505,9 +505,8 @@ class AppModel extends Model {
 				// ignore, we don't care about missing plugin exceptions here
 				// debug($e->getMessage());
 			}
-			
 			if( method_exists($Model,'sitemap') && is_callable(array($Model,'sitemap')) ) {
-				$map = $Model->sitemap(); 
+				$map = $Model->sitemap();
 				$sitemap = is_array($map) ? array_merge($sitemap, $map) : $sitemap;
 			}
 		}

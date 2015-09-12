@@ -33,7 +33,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.skin = 'moono';
 
 	// temporary while transition to FileStorage is completed
-	if (window.location.host == 'www.lenovopartnernetwork.com' || window.location.host == 'www.apca.com' || window.location.host == 'dealer-area.tym-tractors.com' || window.location.host == 'procial.buildrr.com') {
+	if (window.location.host == 'www.moderncents.com' || window.location.host == 'www.lenovopartnernetwork.com' || window.location.host == 'www.apca.com' || window.location.host == 'dealer-area.tym-tractors.com' || window.location.host == 'procial.buildrr.com') {
 		config.filebrowserBrowseUrl = '/file_storage/file_storage/browser';
 		config.filebrowserImageBrowseUrl = '/file_storage/file_storage/browser?type=Image';
 		//config.filebrowserFlashBrowseUrl = '/file_storage/file_storage/browser?type=flash';

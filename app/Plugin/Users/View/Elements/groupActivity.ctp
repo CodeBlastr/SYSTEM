@@ -1,6 +1,35 @@
 <?php
+$UserGroup = $this->Helpers->load('Users.UserGroup');
+$options['limit'] = !empty($options['limit']) ? $options['limit'] : 3;
+$userGroup = $UserGroup->find('first', array(
+			'conditions'=>array(
+				'UserGroup.id' => $id
+				),
+			'contain'=>array(
+				'Creator'=>array(
+					'fields'=>array(
+						'id',
+						'username',
+						'full_name',
+						)
+					),
+				'User'=>array(
+					'fields'=>array(
+						'id',
+						'username',
+						'full_name',
+						)
+					),
+				'UserGroupWallPost' => array(
+					'order' => array('UserGroupWallPost.created' => 'DESC'),
+					'limit' => $options['limit'],
+					'Creator',
+					'Comment'
+				)
+			),
+			'limit' => $options['limit']
+		));
 
-$userGroup = $this->requestAction("/users/user_groups/groupActivity/$id");
 $output = '';
 
 if ( !empty($userGroup['UserGroupWallPost']) ) {
