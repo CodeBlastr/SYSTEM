@@ -111,7 +111,7 @@ echo $this->Form->input(key($aliasName), $inputOptions); ?>
     
     // normalize the url to remove characters we don't want to allow
     function normalize(string) {
-    	string = string.replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase();
+    	string = string.replace(/[^a-zA-Z0-9\/]+/g, '-').toLowerCase();
     	if(string.substr(-1) == '-') {
 	        return string.substr(0, str.length - 1);
 	    } else {
