@@ -271,11 +271,15 @@ EOD;
 		if (!empty($attributes['value'])) {
 			$attributes['value'] = date($dateFormat, strtotime($attributes['value']));
 		} 
-		// else {  WE SHOULD NOT FORCE TODAY'S DATE, ONTO THE FIELD, IF YOU WANT TODAY'S DATE AS DEFAULT USE default = date() in the Form->input() function.
+		if (empty($attributes['id'])) {
+			// make sure the id is unique, else the javascript will not attach to the input
+			$attributes['id'] = Inflector::camelize(Inflector::slug($fieldName . mt_rand()));
+		}
+		// else {  We should not force today's date, onto the field, if you want today's date as default then use array('default' => date()); as a the Form->input() option.
 			// $attributes['value'] = $attributes['value'] === null ? date($dateFormat) : $attributes['value'];
 		// }
 		
-		!empty($attributes['class']) ? $attributes['class'] = $attributes['class'] . ' date-time-picker' : $attributes['class'] = 'date-time-picker';
+		$attributes['class'] = !empty($attributes['class']) ? $attributes['class'] . ' date-picker' : 'date-picker';
 		
 		$firstId = !empty($attributes['id']) ? $attributes['id'] : Inflector::camelize(Inflector::slug($fieldName)); // same as taken from FormHelper
 		$this->View->Html->css('//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css', null, array('inline' => false));

@@ -339,6 +339,7 @@ class AppUser extends UsersAppModel {
  */
 	public function beforeSave($options = array()) {
 		// I don't know why __cleanAddData was moved so that it doesn't actually "Clean Add Data", but this is necessary!
+		
 		if (isset($this->data[$this->alias]['username']) && strpos($this->data[$this->alias]['username'], '@') && empty($this->data[$this->alias]['email'])) {
 			$this->data[$this->alias]['email'] = $this->data[$this->alias]['username'];
 		}
@@ -364,15 +365,71 @@ class AppUser extends UsersAppModel {
 		}
 		if ($created) {
 			$this->data = $this->__afterCreation($this->data);
+			$welcomeData = $this->data; // need this for the welcome email (gets rewritten after the second save below)
 		}
 		unset($this->data[$this->alias]['password']);
 		unset($this->data[$this->alias]['current_password']);
 		unset($this->data[$this->alias]['confirm_password']);
 		$this->save($data[$this->alias], array('callbacks' => false));
+		
+		if ($created) {
+			// Send a Welcome Email (moved to after the second save because the forgot_key is if we don't)
+			if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
+				$this->welcome($welcomeData[$this->alias]['username']);
+			}
+			// after creation callback (to use, )
+			$this->_afterCreationCallback();
+		}
 		if($this->autoLogin && CakeSession::read('Auth.User.id') == $this->data[$this->alias]['id']) {
 			CakeSession::write('Auth', Set::merge(CakeSession::read('Auth'), $this->data));
 		}
 		return parent::afterSave($created, $options);
+	}
+
+/**
+ * After creation method
+ * 
+ * To use, send a non-registered user to a controller method
+ * that sets the session vars "afterUserCreated.model" & "afterUserCreated.method"
+ * then redirects the user to the registration page
+ * 
+ * @example Go to the InvitesController::accept() method to see an example. 
+ */
+ 	protected function _afterCreationCallback() {
+		if (CakeSession::read('afterUserCreated')) {
+			$model = CakeSession::read('afterUserCreated.model');
+			$method = CakeSession::read('afterUserCreated.method');
+			$data = CakeSession::read('afterUserCreated.data');
+			if (!empty($model) && !empty($method)) {
+				$Model = ClassRegistry::init($model);
+		 		if(method_exists($Model, $method) && is_callable(array($Model, $method))) {
+		 			$Model->$method($data, $this->id); // sends variables in the data session var, and the created user's id
+				}
+			}
+		}
+	}
+
+/**
+ * After login method
+ * 
+ * To use, send a user to a controller method
+ * that sets the session vars "afterUserCreated.model" & "afterUserCreated.method"
+ * then redirects the user to the login page
+ * 
+ * @example Go to the InvitesController::accept() method to see an example. 
+ */
+ 	protected function _afterLoginCallback() {
+		if (CakeSession::read('afterUserLogin')) {
+			$model = CakeSession::read('afterUserLogin.model');
+			$method = CakeSession::read('afterUserLogin.method');
+			$data = CakeSession::read('afterUserLogin.data');
+			if (!empty($model) && !empty($method)) {
+				$Model = ClassRegistry::init($model);
+		 		if(method_exists($Model, $method) && is_callable(array($Model, $method))) {
+		 			$Model->$method($data, $this->id); // sends variables in the data session var, and the created user's id
+				}
+			}
+		}
 	}
 
 /**
@@ -394,46 +451,12 @@ class AppUser extends UsersAppModel {
 		// Initialize some fields
 		$data = $this->_cleanAddData($data);
 
-		// Send a Welcome Email (moved to after __cleanAddData because sometimes the email field is empty)
-		if (defined('__APP_REGISTRATION_EMAIL_VERIFICATION')) {
-			$this->welcome($this->data[$this->alias]['username']);
-		}
-
 		if (defined('__APP_REGISTRATION_HELLO')) {
 			$this->sendHelloEmail();
 		}
 
 		return $data;
 	}
-
-
-/**
- * Save all method
- *
- * @deprecated
- *
- * @todo should probably be declared deprecated, as saveUserAndContact() seems more appropriate than overriding the saveAll ^JB
- * @todo Done, left to see if it messes stuff up ^RK
- */
- 	// public function saveAll($data = null, $options = array()) {
-		// //$data = $this->_userContact($data);
- 		// return parent::saveAll($data, $options);
- 	// }
-
-/**
- * Save user and contact
- * 
- * REMOVED : It's Too Complicated, Needs to be Simplified (maybe a callback or something that the contact model can hook into)
- * @param array
- */
-	// public function saveUserAndContact($data) {
-		// $data = $this->_userContact($data);
-		// $data = $this->save($data);
-		// debug($data);
-		// exit;
-		// return $data;
-	// }
-
 
 /**
  * Moves ContactAddress's up to the root so that we can easily add/edit them from User::edit()
@@ -452,50 +475,11 @@ class AppUser extends UsersAppModel {
 	}
 
 /**
- * Add contact to the $data var if it exists, if it doesn't setup contact data for save.
- *
- * @todo	Finish the contact adding in the case where the data field exists.
- * @todo	We need to have be able to specify default contact details, like status, industry settings.
- * @todo	Remove this and make it a callback of some kind that the contact model can hook into
- */
-	// protected function _userContact($data) {
-		// if (!empty($data['Contact']['id'])) {
-			// $contact = $this->Contact->findById($data['Contact']['id']);
-			// $data['Contact'] = Set::merge($contact['Contact'], $data['Contact']);
-		// } else if (!empty($data[$this->alias]['id'])) {
-			// $contact = $this->Contact->findByUserId($data[$this->alias]['id']);
-			// if (!empty($contact)) {
-				// $data['Contact'] = $contact['Contact'];
-				// $data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : $contact['Contact']['name'];
-			// } else {
-				// $data[$this->alias]['full_name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'N/A';
-			// }
-		// } else if (!empty($data['Contact']['user_id'])) {
-			// debug($this->Contact->findByUserId($data['Contact']['user_id']));
-			// exit;
-		// } else {
-			// $data['Contact']['name'] = !empty($data[$this->alias]['full_name']) ? $data[$this->alias]['full_name'] : 'Not Provided';
-		// }
-		// $contactData = $data;
-		// unset($contactData['User']); // we will save this in the user model not from the contact model
-// 
-		// if ($this->Contact->saveAll($contactData)) {
-			// unset($data['Contact']);
-			// if ( $this->Contact->id ) {
-				// $data['Contact']['id'] = $this->Contact->id;
-			// }
-		// }
-		// $data = $this->_cleanAddData($data);
-// 
-		// return $data;
-	// }
-
-/**
  * Function to change the role of the user submitted
  * @todo Clean this up to what is neccessary ^JB
  */
 	public function changeRole($data = null) {
-		# check whether user is a data array or the actual user.
+		// check whether user is a data array or the actual user.
 		if (is_array($data)) {
 			# check whether its numeric or a name for both users and user role
 			$newRole['User']['id'] = $userId = $this->_getUserId($data['User']);
@@ -560,11 +544,12 @@ class AppUser extends UsersAppModel {
  * @todo				Implement Error Logging for non essential errors (mentioned below)
  */
 	public function loginMeta($data) {
-		if (!empty($data) && !empty($data['User']['username'])) {
+		$this->_afterLoginCallback();
+		if (!empty($data) && !empty($data[$this->alias]['username'])) {
 			$user = $this->find('first', array(
 				'conditions' => array('OR' => array(
-					'User.username' => $data['User']['username'],
-					'User.email' => $data['User']['username'],
+					$this->alias.'.username' => $data[$this->alias]['username'],
+					$this->alias.'.email' => $data[$this->alias]['username'],
 					)),
 				'contain' => array(
 					'UserRole',
@@ -685,8 +670,8 @@ class AppUser extends UsersAppModel {
 		if(!empty($key))	{
 			$user = $this->find('first', array(
 				'conditions' => array(
-					'User.forgot_key' => $key,
-					'User.forgot_key_created <=' => date('Y:m:d H:i:s', strtotime("+3 days")),
+					$this->alias.'.forgot_key' => $key,
+					$this->alias.'.forgot_key_created <=' => date('Y:m:d H:i:s', strtotime("+3 days")),
 					),
 				));
 			// if the user does exist, then reset user record forgot info, login and redirect to users/edit
@@ -701,7 +686,7 @@ class AppUser extends UsersAppModel {
 					throw new Exception(__('Verfication key failed to update.'));
 				}
 			} else {
-				throw new Exception(__('No user found.'));
+				throw new Exception(__('Verification key already used, invalid, or expired.  Try again, or login.'));
 			}
 		}
 		return $user;
@@ -715,7 +700,7 @@ class AppUser extends UsersAppModel {
 	public function findbyUsername($username) {
 		$user = $this->find('first', array(
 			'conditions' => array(
-				'User.username' => $username
+				$this->alias.'.username' => $username
 				)
 			));
 		if (!empty($user)) {
@@ -723,7 +708,7 @@ class AppUser extends UsersAppModel {
 		} else {
 			$user = $this->find('first', array(
 				'conditions' => array(
-					'User.email' => $username
+					$this->alias.'.email' => $username
 					)
 				));
 			if (!empty($user)) {
@@ -921,10 +906,10 @@ class AppUser extends UsersAppModel {
 		$user = $this->find('first' , array(
 			'fields' => array('id', 'credit_total'),
 			'conditions' => array(
-				'User.id' => $userId,
+				$this->alias.'.id' => $userId,
 				),
 			));
-		$user['User']['credit_total'] += $credits;
+		$user[$this->alias]['credit_total'] += $credits;
 		if(!($this->save($user, false))){
 			throw new Exception(__('Credits not Saved'));
 		}
@@ -988,7 +973,7 @@ class AppUser extends UsersAppModel {
 		$user = $this->find('first' , array(
 			'fields' => array('id', 'credit_total'),
 			'conditions' =>
-				array('User.id' => $data['OrderItem']['customer_id'])
+				array($this->alias.'.id' => $data['OrderItem']['customer_id'])
 			));
 
 		if(defined('__USERS_CREDITS_PER_PRICE_UNIT')) :
@@ -1033,19 +1018,15 @@ class AppUser extends UsersAppModel {
  * @todo		This needs to have the ability to resend in case the user didn't get it the first time or something.
  */
 	public function welcome($username) {
-		$user = $this->find('first', array('conditions' => array('User.username' => $username)));
+		$user = $this->find('first', array('conditions' => array($this->alias.'.username' => $username)));
 		if (!empty($user)) {
-			// don't set variables in the model (seems like the set() function would be available here)
-			//$this->set('name', $user['User']['full_name']);
-			//$this->set('key', $user['User']['forgot_key']);
-			// todo: temp change for error in swift mailer
-			$url =   Router::url(array('admin' => false, 'plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $user['User']['forgot_key']), true);
-			$message ="Dear {$user['User']['full_name']}, <br></br>
+			$url =   Router::url(array('admin' => false, 'plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $user[$this->alias]['forgot_key']), true);
+			$message ='Dear ' . $user[$this->alias]['full_name'] . ', <br></br>
 Congratulations! You have created an account with us.<br><br>
-To complete the registration please activate your account by following the link below or by copying it to your browser:</br>{$url}<br></br>
+To complete the registration please activate your account by following the link below or by copying it to your browser:  <br>' . $url . '<br><br>
 If you have received this message in error please ignore, the link will be unusable in three days.<br></br>
-Thank you for registering with us and welcome to the community.";
-			if ($this->__sendMail($user['User']['email'], 'Welcome', $message)) {
+Thank you for registering with us and welcome to the community.';
+			if ($this->__sendMail($user[$this->alias]['email'], 'Welcome', $message)) {
 				return true;
 			} else {
 				throw new Exception(__('Verification email failed to send.'));

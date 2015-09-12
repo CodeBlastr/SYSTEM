@@ -1,7 +1,7 @@
 <?php
 App::uses('UsersAppModel', 'Users.Model');
 
-class UserGroupWallPost extends UsersAppModel {
+class AppUserGroupWallPost extends UsersAppModel {
 	
 	public $name = 'UserGroupWallPost';
 	
@@ -31,6 +31,17 @@ class UserGroupWallPost extends UsersAppModel {
 				'conditions' => array('Comment.model' => 'UserGroupWallPost')
 			);
 		}
+		if (CakePlugin::loaded('Categories')) {
+			$this->actsAs[] = 'Categories.Categorizable';
+		}
+		
+		if (CakePlugin::loaded('FileStorage')) {
+			$this->actsAs[] = 'FileStorage.FileAttach';
+		}
 		parent::__construct($id, $table, $ds);
 	}
+}
+
+if (!isset($refuseInit)) {
+	class UserGroupWallPost extends AppUserGroupWallPost {}
 }

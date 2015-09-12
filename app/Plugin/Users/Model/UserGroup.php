@@ -189,14 +189,24 @@ class AppUserGroup extends UsersAppModel {
  * @return boolean
  * @throws Exception
  */
- 	public function processInvite($invite) {
- 		$userGroup = $this->find('first', array('conditions' => array('UserGroup.id' => $invite['Invite']['foreign_key'])));
+ 	public function processInvite($inviteId = null, $userId = null) {
+ 		// $inviteId used to be $invite and include the entire invite record (not needed, just using the inviteId is better)
+ 		if (is_array($inviteId)) {
+ 			$userGroupId = $inviteId['Invite']['foreign_key']; // backwards compatibility
+ 		} else {
+ 			$Invite = ClassRegistry::init('Invites.Invite');
+			$Invite->id = $inviteId;
+			$userGroupId = $Invite->field('foreign_key');
+ 		}
+		
+ 		$userGroup = $this->find('first', array('conditions' => array('UserGroup.id' => $userGroupId)));
 		if (!empty($userGroup)) {
-			$data['UsersUserGroup']['user_id'] = CakeSession::read('Auth.User.id');
-			$data['UsersUserGroup']['user_group_id'] = $invite['Invite']['foreign_key'];
+			$data['UsersUserGroup']['user_id'] = !empty($userId) ? $userId : CakeSession::read('Auth.User.id'); // backwards compatibility
+			$data['UsersUserGroup']['user_group_id'] = $userGroupId;
 			$data['UsersUserGroup']['is_approved'] = 1;
-			if ($this->UsersUserGroup->save($data)) {
-				return true;
+			if ($this->UsersUserGroup->add($data)) {
+				// update the invite status to accepted
+				return $Invite->_updateStatus($inviteId, 1, $data['UsersUserGroup']['user_id']);
 			} else {
 				throw new Exception(__('Auto add to user group failed.'));
 			}

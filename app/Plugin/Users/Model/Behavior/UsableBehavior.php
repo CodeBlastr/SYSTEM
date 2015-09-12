@@ -60,8 +60,7 @@ class UsableBehavior extends ModelBehavior {
 		$userId = $authUser['id'];
 
 		$UsersGroup = ClassRegistry::init('Users.UsersUserGroup');
-		$groupIds = isset($userId) ? Set::extract('/UsersUserGroup/user_group_id',
-			$UsersGroup->find('all', array('conditions' => array('UsersUserGroup.user_id' => $userId)))) : null;
+		$groupIds = isset($userId) ? Set::extract('/UsersUserGroup/user_group_id', $UsersGroup->find('all', array('conditions' => array('UsersUserGroup.user_id' => $userId)))) : null;
 
 
 		if (!empty($userId) /*&& $userRole != $this->superAdminRoleId*/ && empty($queryData['nocheck'])) {
@@ -106,11 +105,8 @@ class UsableBehavior extends ModelBehavior {
 				'order' => null,
 				'group' => null
 				), $Model);
-
-
 			$subQuery = "`{$Model->alias}`.`id` IN (" . $subQuery . ")";
 			$orStatment[] = '('.$Dbo->expression($subQuery)->value.')' ;
-			
 			
 			// First model records that aren't accessed controlled
 			$subQuery2 = $Dbo->buildStatement(array(
@@ -130,28 +126,29 @@ class UsableBehavior extends ModelBehavior {
 				), $Model);
 			$subQuery2 = "`{$Model->alias}`.`id` NOT IN (" . $subQuery2 . ")";
 			$orStatment[] = '(' . $Dbo->expression($subQuery2)->value . ')';
-
-			if(!empty($groupIds)){
-				$subQuery3 = $Dbo->buildStatement(array(
-					//'fields' => array('`User2`.`id`'),
-					'fields' => array('Used.foreign_key'),
-					'table' => 'used',
-					'alias' => 'Used',
-					'limit' => null,
-					'offset' => null,
-					'joins' => array(),
-					'conditions' => array(
-						'Used.model' => "{$Model->alias}",
-						'Used.user_group_id IN ('. implode(',',$groupIds) .')',
-					),
-					'order' => null,
-					'group' => null
-				), $Model);
-
-				$subQuery3 =  "`{$Model->alias}`.`id` IN (" . $subQuery3 . ")";
-				$orStatment[] = '(' . $Dbo->expression($subQuery3)->value . ')';
-
-			}
+			
+			// I wish there was a fucking comment about why this is here!!!!!
+			// if(!empty($groupIds)){
+				// $subQuery3 = $Dbo->buildStatement(array(
+					// //'fields' => array('`User2`.`id`'),
+					// 'fields' => array('Used.foreign_key'),
+					// 'table' => 'used',
+					// 'alias' => 'Used',
+					// 'limit' => null,
+					// 'offset' => null,
+					// 'joins' => array(),
+					// 'conditions' => array(
+						// 'Used.model' => "{$Model->alias}",
+						// 'Used.user_group_id IN ('. implode(',',$groupIds) .')',
+					// ),
+					// 'order' => null,
+					// 'group' => null
+				// ), $Model);
+// 
+				// $subQuery3 =  "`{$Model->alias}`.`id` IN (" . $subQuery3 . ")";
+				// $orStatment[] = '(' . $Dbo->expression($subQuery3)->value . ')';
+// 
+			// }
 
 			//$newQueryData2['conditions'][]['OR'] = array('('.$subQueryExpression->value.')', '('.$subQueryExpression2->value.')','('.$subQueryExpression3->value.')');
 			$newQueryData['conditions'][]['OR'] = $orStatment;

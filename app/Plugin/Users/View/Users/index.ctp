@@ -36,13 +36,13 @@ $this->set('context_menu', array('menus' => array(
 	array(
 		'heading' => 'Users',
 		'items' => array(
-			 $this->Html->link(__('New User', true), array('action' => 'procreate')),
+			 $this->Html->link(__('New User'), array('action' => 'procreate')),
 			 )
 		),
 	array(
 		'heading' => 'User Roles',
 		'items' => array(
-			 $this->Html->link(__('User Roles', true), array('controller' => 'user_roles', 'action' => 'index')),
+			 $this->Html->link(__('User Roles'), array('controller' => 'user_roles', 'action' => 'index')),
 			 )
 		),
-	)));?>
+	)));

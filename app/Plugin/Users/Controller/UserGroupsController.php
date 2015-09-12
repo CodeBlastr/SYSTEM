@@ -15,8 +15,9 @@ class AppUserGroupsController extends UsersAppController {
 	}
 
 /**
- * get cureent logged in user's groups
- * @return array |
+ * get current logged in user's groups
+ * @return array
+ * @todo should not be moderator by default (should be groups you're a part of, and have an option for moderated groups only)
  */
 	public function my() {
 		$uid = $this->userId;
@@ -240,7 +241,7 @@ class AppUserGroupsController extends UsersAppController {
 	}
 	
 /**
- *  Only show groups that a user is the moderator for
+ *  Only show groups that a user a moderator or member of
  * @deprecated use my instead
  */
 	public function mygroups() {
