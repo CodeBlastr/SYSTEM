@@ -854,6 +854,11 @@ class AppController extends Controller {
 		if (CakePlugin::loaded('Media')) {
 			$this->helpers[] = 'Media.Media';
 		}
+		// Used for media display, widely used enough to load in the appcontroller
+		// should replace Media at some point
+		if (CakePlugin::loaded('FileStorage')) {
+			$this->helpers[] = 'FileStorage.Attachment';
+		}
 	}
 
 /**
