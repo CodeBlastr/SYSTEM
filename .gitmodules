@@ -139,3 +139,9 @@
 [submodule "app/Plugin/Tracker"]
 	path = app/Plugin/Tracker
 	url = git@github.com:zuha/Tracker-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/FileStorage"]
+	path = app/Plugin/FileStorage
+	url = git@github.com:zuha/FileStorage-Zuha-Cakephp-Plugin.git
+[submodule "app/Plugin/Imagine"]
+	path = app/Plugin/Imagine
+	url = git@github.com:zuha/Imagine-Zuha-Cakephp-Plugin.git
