@@ -1276,7 +1276,7 @@ class AppWebpage extends WebpagesAppModel {
  * @return array
  */
 	public function sitemap() {		
-		$pages = $this->find('all', array('conditions' => array('NOT' => array('Webpage.type' => array('element', 'template'))), 'order' => array('Webpage.created' => 'ASC')));
+		$pages = $this->find('all', array('conditions' => array('NOT' => array('Webpage.type' => array('element', 'template'))), 'order' => array('Webpage.created' => 'ASC')));		
 		$sitemap = array();
 		for ($i=0; $i < count($pages); $i++) {
 			if (!empty($pages[$i]['Alias']['in_sitemap'])) {
