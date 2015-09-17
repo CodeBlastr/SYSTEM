@@ -226,7 +226,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 	/**
 	 * temporary convenience function for states options
 	 *
-	 * @todo 	delete this all together after making it db based in enumerations (but give default values)
+	 * @todo 	delete this all together after making it db based in enumerations (but give default values on install)
 	 */
 	function states() {
 		return array(
@@ -460,6 +460,7 @@ if (defined('SITE_DIR') && file_exists(ROOT.DS.SITE_DIR.DS.'Config'.DS.'bootstra
 				'answer_submissions' => 'Answers',
 				'product_options' => 'Products',
 				'products_product_options' => 'Products',
+				'file_attachments' => 'FileStorage'
 			);
 
 			if (array_key_exists($check, $unallowed)) {
