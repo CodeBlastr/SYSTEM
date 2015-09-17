@@ -43,11 +43,11 @@ class UsersSchema extends CakeSchema {
 	);
 	public $user_group_wall_posts = array(
 		'id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'subject' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 255, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'subject' => array('type' => 'string', 'null' => false, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'post' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'user_group_id' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'), // allowing null, let's us save posts that can later be shared with a group
 		'notification' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'visibility' => array('type' => 'integer', 'null' => true, 'default' => 0, 'comment' => 'Visibility level 0 - X, whatever number a website needs in order to manage visibilty levels (maybe even match user_role_ids if needed).'),
+		'visibility' => array('type' => 'integer', 'null' => true, 'default' => '0', 'comment' => 'Visibility level 0 through X, whatever number a website needs in order to manage visibilty levels (maybe even match user_role_ids if needed).'),
 		'creator_id' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'modifier_id' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 36, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'expiration' => array('type' => 'datetime', 'null' => true, 'default' => null),
@@ -150,7 +150,7 @@ class UsersSchema extends CakeSchema {
 		'totalTopics' => array('type' => 'integer', 'null' => true, 'default' => null, 'length' => 10),
 		'currentLogin' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'lastLogin' => array('type' => 'datetime', 'null' => true, 'default' => null),
-		'facebook_id' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 255),
+		'facebook_id' => array('type' => 'string', 'null' => true, 'default' => null),
 		'is_active' => array('type' => 'integer', 'null' => true, 'default' => '0', 'length' => 2),
 		'birthday' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 155, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'location' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),

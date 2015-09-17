@@ -44,6 +44,7 @@ echo $this->Form->input(key($aliasName), $inputOptions); ?>
    	var newPermaLink = null;
    	   	
     //$('h1.page-title').after(permaLinkHtml);
+    console.log(permaLinkHtml);
     $('<?php echo $dataDisplay; ?>').after(permaLinkHtml);
     
     var permaLink = $('<?php echo $aliasInput ?>').val();
@@ -111,9 +112,9 @@ echo $this->Form->input(key($aliasName), $inputOptions); ?>
     
     // normalize the url to remove characters we don't want to allow
     function normalize(string) {
-    	string = string.replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase();
+    	string = string.replace(/[^a-zA-Z0-9\/]+/g, '-').toLowerCase();
     	if(string.substr(-1) == '-') {
-	        return string.substr(0, str.length - 1);
+	        return string.substr(0, string.length - 1);
 	    } else {
 	    	return string;
 	    }

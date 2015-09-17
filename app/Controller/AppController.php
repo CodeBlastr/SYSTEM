@@ -208,7 +208,14 @@ class AppController extends Controller {
 		// order is important for these automatic view vars
 		$this->set('page_title_for_layout', $this->_pageTitleForLayout());
 		
-		//$alias = ZuhaSet::find_key($this->viewVars, 'Alias'); // can't use find_key because recursive iterator wasn't playing nice with some viewVars (eg. object type datetime)
+		
+		// Brought the below line back 9/13/2015 despite the comment below it. 
+		// If / when this error comes up again, we need a solution that works, because Alias SEO is not working
+		// DO NOT just comment this line out again, find a way to get the Alias array values instead.
+		$alias = ZuhaSet::find_key($this->viewVars, 'Alias');
+		// can't use find_key because recursive iterator wasn't playing nice with some viewVars (eg. object type datetime)
+		
+		
 		$alias = $this->viewVars[Inflector::singularize(Inflector::variable($this->request->controller))]['Alias']; // blog_posts controller becomes blogPost['Alias]
 		$this->set('title_for_layout', !empty($alias['title']) ? $alias['title'] : $this->_titleForLayout());
 		$this->set('keywords_for_layout', !empty($alias['keywords']) ? $alias['keywords'] : null);
@@ -950,7 +957,7 @@ class AppController extends Controller {
 		return $this->pageTitleForLayout = !empty($this->viewVars['page_title_for_layout']) ? $this->viewVars['page_title_for_layout'] : Inflector::humanize(Inflector::underscore(strtolower($this->request->controller)));
 	}
 
-	private function _titleForLayout() {		
+	private function _titleForLayout() {
 		return $this->titleForLayout = !empty($this->viewVars['title_for_layout']) ? $this->viewVars['title_for_layout'] : Inflector::humanize(Inflector::underscore($this->request->controller));
 	}
 	

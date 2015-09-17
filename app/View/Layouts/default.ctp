@@ -3,9 +3,9 @@
 <head>
 	<?php echo $this->Html->charset() . "\n"; ?>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title><?php echo __('%s : SITE Buildrr', $title_for_layout); ?></title>
+	<title><?php echo $this->element('title') ?></title>
+	<?php echo $this->element('seo'); ?>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="author" content="Buildrr LLC">
 	<?php echo $this->Html->meta('icon'); ?>
 	<?php echo $this->Html->css('system'); ?>
 	<?php echo $this->Html->css('twitter-bootstrap.3/bootstrap.min'); ?>

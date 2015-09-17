@@ -2,7 +2,7 @@
 $(function() {
 	// duplicate field inputs 
 	// example <div class="duplicate"><input type="text" class="changer"><input ...></div> <input 2> <input 3> </div>
-	$(document.body).on('keyup', '.changer', function() {
+	$(document.body).on('keyup change', '.changer', function() {
 		clone(this);
 	});
 });
