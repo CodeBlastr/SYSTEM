@@ -24,16 +24,15 @@ class SiteUpdateComponent extends Component {
 		$keysOfAllTables = array_keys($allTables);
 		$endTable = array_pop($keysOfAllTables); // check the session for the last TABLE run
 		// Turn on to debug
-//		debug($lastTable);
-//		debug($nextTable);
-//		debug($nextPlugin); // if false, means its not a plugin
-//		debug(CakePlugin::loaded());
-//		debug(CakePlugin::loaded($nextPlugin));
-//		debug($endTable);
-//		debug($allTables);
-//		debug($this->Session->read());
-//		exit;
-
+		// debug($lastTable);
+		// debug($nextTable);
+		// debug($nextPlugin); // if false, means its not a plugin
+		// debug(CakePlugin::loaded());
+		// debug(CakePlugin::loaded($nextPlugin));
+		// debug($endTable);
+		// debug($allTables);
+		// debug($this->Session->read());
+		// exit;
 		if (!empty($nextPlugin) && !CakePlugin::loaded($nextPlugin)) {
 			// plugin is not loaded so downgrade
 			$last = !empty($lastTableWithPlugin) ? array_merge($lastTableWithPlugin, $this->_downgrade($nextTable, $lastTable)) : $this->_downgrade($nextTable, $lastTable);
@@ -128,6 +127,10 @@ class SiteUpdateComponent extends Component {
  * @todo maybe if the table is empty you don't back it up?
  */
 	public function _downgrade($table, $lastTable) {
+// debug(Debugger::trace());
+// debug($table);
+// debug($lastTable);
+// exit;
 		$db = ConnectionManager::getDataSource('default');
 		$db->cacheSources = false;
 		$tableCheck = $db->query('SHOW TABLES LIKE "' . $table . '";');
@@ -189,10 +192,10 @@ class SiteUpdateComponent extends Component {
 			if (get_class($e) == 'MissingTableException' && in_array($table, array_keys($Schema->tables))) {
 				// missing table create it
 				$tableName = explode(' ', $e->getMessage()); // string like Table table_name for model TableName was not found in ...'
-//				 debug($e->getMessage());
-//				 debug($tableName);
-//				 debug($db->createSchema($Schema, $tableName[1]));
-//				 exit;
+// debug($e->getMessage());
+// debug($tableName);
+// debug($db->createSchema($Schema, $tableName[1]));
+// exit;
 				$this->_run($db->createSchema($Schema, $tableName[1]), 'create', $Schema);
 			} else {
 				debug('Hopefully we do not reach this spot.');
@@ -201,27 +204,29 @@ class SiteUpdateComponent extends Component {
 			}
 		}
 		$compare = $this->Schema->compare($Old, $Schema);
-
 		$contents = array();
 		if (empty($table)) {
+// debug($table);
+// debug($compare);
+// exit;
 			foreach ($compare as $table => $changes) {
 				$contents[$table] = $db->alterSchema(array($table => $changes), $table);
 			}
 		} elseif (isset($compare[$table])) {
-			// turn on to see what the change is
-//			 debug('old : table -> field -> parameters');
-//			 debug(array($table => array(key($compare[key($compare)]['change']) => $Old['tables'][key($compare)][key($compare[key($compare)]['change'])])));
-//			 debug('new');
-//			 debug($compare);
-			//exit;
+// turn on to see what the change is (works good for finding those tables that update every single time)
+// debug('old : table -> field -> parameters');
+// debug(array($table => array(key($compare[key($compare)]['change']) => $Old['tables'][key($compare)][key($compare[key($compare)]['change'])])));
+// debug('new');
+// debug($compare);
+// exit;
 			$contents[$table] = $db->alterSchema(array($table => $compare[$table]), $table);
-//			debug($contents);
-			//exit;
+// debug($contents);
+// exit;
 		} elseif (!empty($compare[key($compare)]['create'])) {
-//			 debug($compare);
-//			 debug($Schema);
-//			 debug($db->createSchema($Schema, key($compare)));
-//			 exit;
+// debug($compare);
+// debug($Schema);
+// debug($db->createSchema($Schema, key($compare)));
+// exit;
 			try {
 				$this->_run($db->createSchema($Schema, key($compare)), 'create', $Schema);
 			} catch (Exception $e) {
