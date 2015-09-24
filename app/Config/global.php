@@ -488,5 +488,18 @@ class ZuhaSet {
 	    }
 	    return $aHitList;
  	}
+	
+/**
+ * Recursively search an array for a value and return the key
+ */
+	public static function array_search_recursive($needle, $haystack) {
+	    foreach($haystack as $key => $value) {
+	        $currentKey = $key;
+	        if($needle === $value OR (is_array($value) && ZuhaSet::array_search_recursive($needle, $value) !== false)) {
+	            return $currentKey;
+	        }
+	    }
+    	return false;
+	}
 
 }
