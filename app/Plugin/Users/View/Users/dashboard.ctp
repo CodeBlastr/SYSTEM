@@ -42,6 +42,7 @@
             <?php endforeach; ?>
             <?php echo $this->Html->link('Manage User Roles', array('controller' => 'user_roles', 'action' => 'index'), array('class' => 'list-group-item')); ?>
             <?php echo $this->Html->link('Manage Privileges', array('admin' => false, 'plugin' => 'privileges', 'controller' => 'sections', 'action' => 'index'), array('class' => 'list-group-item')); ?>
+            <?php echo $this->Html->link('Bulk User Creation', array('admin' => true, 'plugin' => 'users', 'controller' => 'users', 'action' => 'import'), array('class' => 'list-group-item')); ?>
         </div>
     </div>
 </div>

@@ -304,7 +304,9 @@ class AppUser extends UsersAppModel {
 	    }
 	    $data = $this->data;
 	    if (empty($this->data[$this->alias]['user_role_id'])) {
-	        $user = $this->read();
+			// was $user = $this->read();  // changed because the tags behavior was not finding the array('User' => array('tags' => 'sometag')) field (nor if the model was Tag in that array)
+			// this was tested on procial 9/21/15 rk (was very hard to find)
+	        $user = $this->find('first', array('conditions' => array($this->alias . '.id' => $data[$this->alias]['id']), 'callbacks' => false));
 			$data[$this->alias]['user_role_id'] = $user['User']['user_role_id'];
 	    }
 	    if (empty($data[$this->alias]['user_role_id'])) {
@@ -763,8 +765,13 @@ class AppUser extends UsersAppModel {
 		if (!isset($data[$this->alias])) {
 			return $data;
 		}
+		
 		if (isset($data[$this->alias]['username']) && strpos($data[$this->alias]['username'], '@') && empty($data[$this->alias]['email'])) {
 			$data[$this->alias]['email'] = $data[$this->alias]['username'];
+		}
+		
+		if (isset($data[$this->alias]['email']) && strpos($data[$this->alias]['email'], '@') && empty($data[$this->alias]['username'])) {
+			$data[$this->alias]['username'] = $data[$this->alias]['email'];
 		}
 
 		if(!isset($data[$this->alias]['user_role_id'])) {
@@ -804,7 +811,7 @@ class AppUser extends UsersAppModel {
 		// this cannot be done like this, because it would change the code on every save
 		// and it should be in an affiliates plugin
 		$data[$this->alias]['reference_code'] = $this->generateRandomCode();
-
+		
 		return $data;
 	}
 
@@ -939,18 +946,20 @@ class AppUser extends UsersAppModel {
 
 
 		//Remove the user role validation so other users can create users
-		$this->validator()->remove('user_role_id');
-
+		$this->validator()->remove('user_role_id');		
+					
 		// save the setup data
 		$this->create();
-		if ($this->saveAll($data)) {
+		$saveAll = $this->saveAll($data);
+		if ($saveAll) {
 			if ((!empty($data['User']['username']) || !empty($data['User']['email'])) && $options['dryrun'] == false) {
 				$email = !empty($data['User']['email']) ? $data['User']['email'] : $data['User']['username'];
 				$site = defined('SITE_NAME') ? SITE_NAME : 'New';
 				$url = Router::url(array('admin' => false, 'plugin' => 'users', 'controller' => 'users', 'action' => 'verify', $data['User']['forgot_key']), true);
 				$message = __('You have a new user account. <br /><br /> username : %s <br /><br />Please <a href="%s">login</a> and change your password immediately.  <br /><br /> If the link above is not usable please copy and paste the following into your browser address bar : %s', $data['User']['username'], $url, $url);
 				if (!empty($data[$this->alias]['notify'])) {
-					if ($this->__sendMail($email, __('%s User Account Created', $site), $message)) {
+					// send procreate-notification template (or falback if it doesn't exist)
+					if ($this->__sendMail($email, array('message' => 'Webpages.procreate-notification', 'data' => $data, 'subjectFallback' => __('%s User Account Created', $site), 'messageFallback' => $message))) {
 						// do nothing it's been sent
 					} else {
 						throw new Exception(__('Failed to notify new user'));
@@ -1026,7 +1035,7 @@ Congratulations! You have created an account with us.<br><br>
 To complete the registration please activate your account by following the link below or by copying it to your browser:  <br>' . $url . '<br><br>
 If you have received this message in error please ignore, the link will be unusable in three days.<br></br>
 Thank you for registering with us and welcome to the community.';
-			if ($this->__sendMail($user[$this->alias]['email'], 'Welcome', $message)) {
+			if ($this->__sendMail($user[$this->alias]['email'], array('message' => 'Webpages.user-account-activation', 'data' => $user, 'subjectFallback' => 'Welcome', 'messageFallback' => $message))) {
 				return true;
 			} else {
 				throw new Exception(__('Verification email failed to send.'));
@@ -1124,6 +1133,86 @@ Thank you for registering with us and welcome to the community.';
 			$pass[] = $alphabet[$n];
 		}
 		return implode($pass); //turn the array into a string
+	}
+
+/**
+ * Import
+ * 
+ * Note: To avoid having to tweak the contents of $csvData,
+ * you should use your db field names as the heading names.
+ * eg: User.id, User.title, User.description
+ * 
+ * @param array $data
+ * @return type
+ * @todo Make sure fopen can't be hacked, it's the main point of entry for the base64 attack.
+ */
+	function importFromCsv($data = array(), $options = array()) {
+		$options = array_merge(array($this->alias => array('notify' => true)), $options);
+				
+		$this->caller = 'import';
+		if ( $data['Import']['csv']['error'] !== UPLOAD_ERR_OK ) {
+			return array('errors' => 'We did not receive your file. Please try again.');
+		}
+		// open the file
+		$handle = fopen($data['Import']['csv']['tmp_name'], "r");
+		// read the 1st row as headings
+		$header = fgetcsv($handle);
+		// create a message container
+		$return = array(
+			'messages' => array(),
+			'errors' => array(),
+		);
+
+		// read each data row in the file
+		while ( ($row = fgetcsv($handle)) !== FALSE ) {
+			$i++;
+			$csvData['User'] = $data['User'];		
+			
+			// for each header field 
+			foreach ($header as $k => $head) {
+				// get the data field from Model.field
+				if (strpos($head, '.') !== false) {
+					$h = explode('.', $head);
+					$csvData[$h[0]][$h[1]] = (isset($row[$k])) ? $row[$k] : '';
+				}
+				// get the data field from field
+				else {
+					$csvData[$this->alias][$head] = (isset($row[$k])) ? $row[$k] : '';
+				}
+			}
+			// see if we have an id             
+			$id = isset($csvData[$this->alias]['id']) ? $csvData[$this->alias]['id'] : 0;
+			// we have an id, so we update
+			if ($id) {
+				// there is 2 options here, 
+				// option 1:
+				// load the current row, and merge it with the new data
+				//$this->recursive = -1;
+				//$event = $this->read(null,$id);
+				//$csvData['Event'] = array_merge($event['Event'],$csvData['Event']);
+				// option 2:
+				// set the model id
+				$this->id = $id;
+			} else {
+				// or create a new record
+				$this->create();
+			}
+
+			// save the row
+			if ( $this->procreate($csvData) ) {
+				// success message!
+				$return['messages'][] = __('User for Row %d was saved.', $i);
+			} else {
+				$return['errors'][] = ZuhaInflector::flatten($this->validationErrors);
+				$return['messages'][] = __('User for Row %d failed to save.', $i);
+			}
+		}
+
+		// close the file
+		fclose($handle);
+
+		// return the messages
+		return $return;
 	}
 
 /**

@@ -141,7 +141,6 @@ class AppUsersController extends UsersAppController {
 				// upload image if it was set
 				$this->request->data['User']['avatar_url'] = $this->Upload->image($this->request->data['User']['avatar'], 'users', $this->Session->read('Auth.User.id'));
 			}
-
 			if ($this->User->saveAll($this->request->data, array('deep' => true))) {
 				$this->Session->setFlash('User Updated!');
 				$this->redirect(array(
@@ -748,6 +747,29 @@ If you have received this message in error please ignore, the link will be unusa
  		$id = $this->User->field('id', array('User.id' => $this->Session->read('Auth.User.id')));
 		$this->redirect($url + array($id));
  	}
+	
+/**
+ * Currently allows one to import Events for another
+ * Current AuthUser owns events if an OwnerId is not provided.
+ * 
+ */
+	public function import() {
+		$this->set('page_title_for_layout', 'Import Events');
+		if ($this->request->is('post')) {
+			$messages = $this->User->importFromCsv($this->request->data);
+			if ( empty($messages['errors']) ) {
+				$this->Session->setFlash(implode('<br>', $messages['messages']));
+				$this->redirect(array('action' => 'dashboard'));
+			} else {
+				$this->Session->setFlash(implode('<br>', $messages['messages']) . is_array($messages['errors']) ? implode('<br>', $messages['errors']) : $messages['errors']);
+			}
+		}
+		$this->set('page_title_for_layout', 'Import Users');
+		$this->set('title_for_layout', 'Import Users');
+		$this->set('schema', $this->User->schema());
+		// just an easy way to auto generate a sample csv file (just visit /users/users/import.csv to download)
+		$this->set('users', array('User' => array('first_name' => null, 'last_name' => null, 'email' => null, 'user_role_id' => null)));
+	}
 
 }
 
