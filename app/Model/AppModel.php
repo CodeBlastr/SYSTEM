@@ -315,11 +315,26 @@ class AppModel extends Model {
 		if ($this->notifications !== false) {
 			App::uses('AppController', 'Controller');
 			$Controller = new AppController;
-
-			if (strpos($subject, 'Webpages.') === 0){
-				$name = str_replace('Webpages.', '', $subject);
+			if (is_array($subject)) {
+				// a new and improved subject over the template, this one includes a fallback message if the template doesn't exist
 				App::uses('Webpage', 'Webpages.Model');
 				$Webpage = new Webpage();
+				$name = str_replace('Webpages.', '', $subject['message']);
+				$webpage = $Webpage->findByName($name);
+				if (!empty($webpage)) {
+					// $message should be something like this : array('SomeModel' => array('some_field' => 'some_value'));
+					$message = $Webpage->replaceTokens($webpage['Webpage']['content'], $subject['data']);	
+					$subject = $webpage['Webpage']['title'];
+				} elseif (!empty($toEmail) && !empty($subject['subjectFallback']) && !empty($subject['messageFallback'])) {
+					// send the fallback
+					return $Controller->__sendMail($toEmail, $subject['subjectFallback'], $subject['messageFallback'], $template, $from, $attachment);
+				} else {
+					throw new Exception(__('Please create an email template or fallback message.'));
+				}
+			} elseif (strpos($subject, 'Webpages.') === 0){
+				App::uses('Webpage', 'Webpages.Model');
+				$Webpage = new Webpage();
+				$name = str_replace('Webpages.', '', $subject);
 				$webpage = $Webpage->findByName($name);
 				if (!empty($webpage)) {
 					// $message should be something like this : array('SomeModel' => array('some_field' => 'some_value'));
@@ -330,7 +345,6 @@ class AppModel extends Model {
 					throw new Exception(__('Please create a email template named %s', $name));
 				}
 			}
-
 			return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
 		}
 	}
