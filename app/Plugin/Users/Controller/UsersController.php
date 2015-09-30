@@ -37,7 +37,7 @@ class AppUsersController extends UsersAppController {
 		'Ssl'
 	);
 
-	static $allowedActions = array(
+	public $allowedActions = array(
 		'login',
 		'desktop_login',
 		'logout',
