@@ -72,7 +72,7 @@ $logOutLink = $this->Html->link($textLogOut, array('plugin' => 'users', 'control
   		?></div>
 	<?php endif; ?>
   	
-	<?php echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' => 'login', 'plugin' => 'users'), 'class' => $formClass)); ?>
+	<?php echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' => 'login', 'plugin' => 'users'), 'type' => 'post', 'class' => $formClass)); ?>
       <div class="<?php echo $columnClass ?>">
         <div class="<?php echo $holderClass ?>">
           <?php echo $this->Form->input('username', array('label' => $usernameLabel, 'class' => $inputClass, 'div' => $rowClass, 'placeholder' => $usernameLabel, 'autofocus' => 'autofocus')); ?>
