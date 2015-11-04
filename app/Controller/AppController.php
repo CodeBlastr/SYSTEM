@@ -521,9 +521,11 @@ class AppController extends Controller {
 			$options = $this->_getPaginatorVars($object, $rangeField);
 			$range = explode(';', $options['fieldValue']);
 			if (!empty($options['fieldName'])) {
-				$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >='] = $range[0];
+				// THIS CANNOT BE Paginator->settings ^ 10/13/14 RK (note: didn't work on contacts dashboard)
+				$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' >='] = $range[0];
 				if (!empty($range[1])) {
-					$this->Paginator->settings['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' <='] = $range[1];
+					// THIS CANNOT BE Paginator->settings ^ 10/13/14 RK (note: didn't work on contacts dashboard)
+					$this->paginate['conditions'][$options['alias'] . '.' . $options['fieldName'] . ' <='] = $range[1];
 				}
 				$this->pageTitleForLayout = __(' %s ', $options['fieldValue']) . $this->pageTitleForLayout;
 			} else {
