@@ -193,6 +193,9 @@ class AppUser extends UsersAppModel {
 		if(CakePlugin::loaded('Media')) {
 			$this->actsAs[] = 'Media.MediaAttachable';
 		}
+		if(CakePlugin::loaded('Subscribers')) {
+			$this->actsAs[] = 'Subscribers.Subscribable';
+		}
 		if (CakePlugin::loaded('Transactions')) {
 			$this->hasMany['TransactionAddress'] = array(
 				'className' => 'Transactions.TransactionAddress',
