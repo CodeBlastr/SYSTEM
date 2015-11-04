@@ -39,10 +39,8 @@ if (empty($runUpdates)) : ?>
             <h3 class="title"><i class="glyphicon glyphicon-file"></i> <?php echo $this->Html->link('Forums', array('admin' => true, 'plugin' => 'forums', 'controller' => 'forums', 'action' => 'index')); ?></h3>
             <p>View, edit, delete, and create static content pages with text, graphics, video and/or audio. </p>
             <ul>
-            	<li><?php echo $this->Html->link('List Pages', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'content')); ?></li>
-            	<li><?php echo $this->Html->link('Add Page', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'content')); ?></li>
-            	<li><?php echo $this->Html->link('Add Section', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'add', 'section')); ?> (eg. page with multiple pages)</li>
-            	<li><?php echo $this->Html->link('Email Templates', array('admin' => true, 'plugin' => 'webpages', 'controller' => 'webpages', 'action' => 'index', 'email')); ?></li>
+            	<li><?php echo $this->Html->link('List Forum Topics', array('admin' => true, 'plugin' => 'forums', 'controller' => 'forums', 'action' => 'index')); ?></li>
+            	<li><?php echo $this->Html->link('Add Topic', array('admin' => true, 'plugin' => 'forums', 'controller' => 'forums', 'action' => 'topic')); ?> <small class="text-muted">(eg. category / container for posts)</small></li>
             </ul>
         </div>
        	<?php endif; ?>
@@ -269,7 +267,7 @@ if (empty($runUpdates)) : ?>
 
         <?php if (CakePlugin::loaded('Events')) : ?>
         <div class="masonryBox dashboardBox">
-            <h3 class="title"><i class="glyphicon glyphicon-calendar"></i> <?php echo $this->Html->link('Events', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'index')); ?> </h3>
+            <h3 class="title"><i class="glyphicon glyphicon-calendar"></i> <?php echo $this->Html->link('Events Dashboard', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'dashboard')); ?> </h3>
             <p>See and manage event listings.</p>
             <ul>
                 <li><?php echo $this->Html->link('Add Event', array('admin' => true, 'plugin' => 'events', 'controller' => 'events', 'action' => 'add')); ?></li>
