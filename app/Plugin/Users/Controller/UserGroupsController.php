@@ -261,6 +261,7 @@ class AppUserGroupsController extends UsersAppController {
  				$this->Session->setFlash(__('Could not create user.'), 'flash_warning');
  			}
  		}
+ 		$this->set('userRoles', ZuhaSet::devalue($this->UserGroup->User->UserRole->find('list'), 'guests'));
  		$this->set('userGroup', $this->UserGroup->read(null, $groupId));
  		$this->request->data['UserGroup']['UserGroup'][] = $groupId;
  	}

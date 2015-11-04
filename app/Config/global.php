@@ -274,6 +274,8 @@ class ZuhaSet {
 	
 /**
  * Remove a value from an array and reindex (if keepKeys is false)
+ * 
+ * @todo make it so that $unwantedValue can be a string or an array of values to remove
  */
 	public static function devalue($array, $unwantedValue, $keepKeys = false) {
 		foreach($array as $key => $value) {
