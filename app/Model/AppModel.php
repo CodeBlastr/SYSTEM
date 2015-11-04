@@ -347,6 +347,7 @@ class AppModel extends Model {
 			}
 			return $Controller->__sendMail($toEmail, $subject, $message, $template, $from, $attachment);
 		}
+		return true; // return true when notifications are off, so that checks don't fail
 	}
 
 
