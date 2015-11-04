@@ -405,6 +405,16 @@ class Setting extends AppModel {
 					,
 				),
 			),
+			'Subscribers' => array(
+				array(
+					'name' => 'AUTO_SUBSCRIBE',
+					'description' => 'A list of models and foreign keys (ids) that users are automatically subscribed to when their user account is created.' . PHP_EOL
+					. PHP_EOL . 'ForumPost[] = "15dd24cc-2c50-xxxx-a96b-4cf745a3a949"'
+					. PHP_EOL . 'Product[] = "15dd24cc-xxxx-xxxx-yyyy-4cf745a3a949"'
+					. PHP_EOL . 'Course[] = "15dd24cc-xxxx-xxxx-xxxx-4cf745a3a949"'
+					,
+				),
+			),
 			'Activities' => array(
 				array(
 					'name' => 'LIMIT_PINGS_BY_IP',
@@ -674,10 +684,9 @@ class Setting extends AppModel {
  * @return {array}
  */
 	public function types() {
-		foreach ($this->settings as $key => $value) :
+		foreach ($this->settings as $key => $value) {
 			$types[$key] = $key;
-		endforeach;
-
+		}
 		return $types;
 	}
 
