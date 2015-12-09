@@ -188,6 +188,8 @@ class SiteUpdateComponent extends Component {
 
 		try {
 			$Old = $this->Schema->read($options);
+// debug($Old);
+// exit;
 		} catch (Exception $e) {
 			if (get_class($e) == 'MissingTableException' && in_array($table, array_keys($Schema->tables))) {
 				// missing table create it
@@ -204,6 +206,11 @@ class SiteUpdateComponent extends Component {
 			}
 		}
 		$compare = $this->Schema->compare($Old, $Schema);
+// debug($table);
+// debug($compare);
+// debug($Old);
+// debug($Schema);
+// exit;
 		$contents = array();
 		if (empty($table)) {
 // debug($table);
