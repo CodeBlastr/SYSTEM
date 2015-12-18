@@ -40,7 +40,7 @@
 	url = git@github.com:Buildrr/Invoices.git
 [submodule "app/Plugin/Media"]
 	path = app/Plugin/Media
-	url = git@github.com:Buildrr/Media-Files.git
+	url = git@github.com:Buildrr/Media.git
 [submodule "app/Plugin/Messages"]
 	path = app/Plugin/Messages
 	url = git@github.com:Buildrr/Messages.git
