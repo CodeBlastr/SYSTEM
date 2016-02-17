@@ -1,4 +1,4 @@
-# Welcome to Zuha (By: Buildrr)
+# Welcome
 
 A collection of ever expanding functionality to rapidly build new sites.
 
