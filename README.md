@@ -1,4 +1,4 @@
-# Buildrr PLATFORM <sup><sub>(by: buildrr.com)</sub></sup>
+# Buildrr PLATFORM <sup><sub>(by: [buildrr.com](https://buildrr.com)</sub></sup>
 
 A collection of ever expanding functionality to rapidly build new sites.
 
@@ -8,7 +8,7 @@ Built on an MVC framework (CakePHP 2.X), by a CakePHP contributor.
 
 
 ## Installation
-1. Installation is not supported.
+Installation is not supported.
 
 <!---
 ## Security Issues
