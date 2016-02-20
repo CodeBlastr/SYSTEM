@@ -10,9 +10,10 @@ Built on an MVC framework (CakePHP 2.X), by a CakePHP contributor.
 ## Installation
 1. Installation is not supported.
 
+<!---
 ## Security Issues
 * Before install, for additional security you can open sites.default/core.php and change the values for Security.salt, and Security.cipherSeed.  If you do this after install, you will not be able to login with the admin user your created during install.
-<!---
+
 ## Troubleshooting
 * **IMPORTANT : You can NOT install to a subfolder.  Like example.com/platform**, only domains like example.localhost, localhost, example.com, subdomain.example.com
 * Only tested on : PHP 5.4, PHP 5.5, MySQL 5, XAMPP, WAMP, AWS Bitnami Apache Install
