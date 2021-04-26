@@ -1,4 +1,4 @@
-# Buildrr PLATFORM <sup><sub>(by: [buildrr.com](https://buildrr.com))</sub></sup>
+# the PLATFORM
 
 A collection of ever expanding functionality to rapidly build new sites.
 
